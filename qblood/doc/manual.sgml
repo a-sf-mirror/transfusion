@@ -6,7 +6,7 @@
    <title> BloodBath manual
    <author> Mathieu Olivier <tt>&lt;elric@planetblood.com&gt;</tt> and
    Dave Turner <tt>&lt;darth_linux@planetblood.com&gt;</tt>
-   <date>v?.?.? (development), April 4, 2002
+   <date>v?.?.? (development), April 12, 2002
    <abstract>
       This manual covers installation and usage of the
       <url url="http://www.planetblood.com/qblood/" name="BloodBath"> game.
@@ -282,6 +282,26 @@
       the removal of your weapons. When this happens, hammer away on that jump
       button and pray. A player can't put himself on the BOD. Also, it doesn't
       apply to someone who's on fire.
+   </sect>
+
+   <!-- Warmup -->
+
+   <sect><heading>Warmup<p>
+      The warmup is a short period of time before the fight actually begins. The
+      idea behind this system is to make sure all players start at the same time
+      so that no guy gets all the stuff before someone else even enters play.
+      Also it lets the time to players who don't know the map yet to explore it
+      a little bit.
+
+      You control the amount of time dedicated to the warmup by setting the
+      "g_warmup" cvar to a value in secondes. For instance, a server with
+      "g_warmup" set to "25" will wait 25 secondes after at least 2 players (of
+      different teams if any) have entered the game to start. It will then
+      reset the map and respawn all players. Of course, no frag can be taken
+      during warmup.
+
+      Setting "g_warmup" to "0" means no warmup at all. Be sure to set it
+      before starting the map, or you won't have any time for the warmup.
    </sect>
 
    <!-- Voting menu -->
