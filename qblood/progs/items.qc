@@ -650,7 +650,7 @@ void() obj_tree =
     precache_model("progs/tree.mdl");
     setmodel(self, "progs/tree.mdl");
 
-    setsize (self, '-16 -16 -32', '16 16 32');
+    setsize (self, '-16 -16 0', '16 16 32');
     StartObject ();
 };
 
@@ -660,7 +660,7 @@ void() obj_tree2 =
     precache_model("progs/tree2.mdl");
     setmodel(self, "progs/tree2.mdl");
 
-    setsize (self, '-16 -16 -32', '16 16 32');
+    setsize (self, '-16 -16 0', '16 16 32');
     StartObject ();
 };
 
