@@ -260,6 +260,17 @@ $frame frame5 0.67
 $frame frame6 0.67
 $framegroupend
 
+$modelname i_reflct
+$flags 8       // client side rotate
+$cd id1/models/i_reflct
+$base base
+$skin skin
+$framegroupstart
+$frame frame1 0.33
+$frame frame2 0.33
+$frame frame3 0.33
+$framegroupend
+
 $modelname invulner
 $flags 8        // client side rotate
 $cd id1/models/invulner
