@@ -1001,7 +1001,11 @@ void() W_FireRocket =
 
     setmodel (newmis, "progs/missile.mdl");
     setsize (newmis, '-1 -1 -1', '1 1 1');
-    setorigin (newmis, self.origin + v_forward*8 + '0 0 16');
+    setorigin (newmis, self.origin + v_forward * 20 + '0 0 10' + v_right * 10);
+
+    // If we do our 2nd shot with guns akimbo, fire from the left side
+    if (self.weaponframe != 1)
+        setorigin (newmis, newmis.origin - v_right * 20);
 };
 
 /*
