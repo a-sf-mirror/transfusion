@@ -424,8 +424,9 @@ local vector    org;
 
     SUB_UseTargets ();
 
-// put a tfog where the player was
-    spawn_tfog (other.origin);
+    // put a tfog where the player was
+    if (!(self.spawnflags & SILENT))
+        spawn_tfog (other.origin);
 
     t = find (world, targetname, self.target);
     if (!t)
@@ -435,7 +436,8 @@ local vector    org;
     makevectors (t.mangle);
     org = t.origin + 32 * v_forward;
 
-    spawn_tfog (org);
+    if (!(self.spawnflags & SILENT))
+        spawn_tfog (org);
     spawn_tdeath(t.origin, other);
 
 // move the player and lock him down for a little while
