@@ -228,6 +228,7 @@ void() worldspawn =
     if (qcextensions)
         if (checkextension ("DP_REGISTERCVAR"))
         {
+            registercvar ("g_flashyEffects", "0");
             registercvar ("g_lockTeams", "0");
             registercvar ("g_warmup", "0");
             registercvar ("g_weaponStay", "0");
@@ -236,6 +237,7 @@ void() worldspawn =
         }
 
     // Some engines create them on the fly
+    cvar ("g_flashyEffects");
     cvar ("g_lockTeams");
     doWarmup = cvar ("g_warmup");
     cvar ("g_weaponStay");

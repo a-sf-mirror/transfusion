@@ -6,7 +6,7 @@
    <title> Transfusion manual
    <author> Mathieu Olivier <tt>&lt;elric@planetblood.com&gt;</tt> and
    Dave Turner <tt>&lt;darth_linux@planetblood.com&gt;</tt>
-   <date>v0.0.2, August 28, 2002
+   <date>v0.0.3, September 5, 2002
    <abstract>
       This manual covers installation and usage of the
       <url url="http://www.planetblood.com/qblood/" name="Transfusion"> game.
@@ -328,6 +328,8 @@
          Transfusion has a few specific cvars that you may want to use if you host
          a server:
          <itemize>
+            <item> "g_flashyEffects": turn on/off some flashy effects. Some of
+            them may actually be changed only after restarting the map.
             <item> "g_lockTeams": if set during a teamplay, the end of the
             <ref id="warmup" name="warmup"> locks the teams so that no new
             player can join them until the end of the match.

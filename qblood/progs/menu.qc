@@ -234,8 +234,8 @@ float(.float vote_field, float bitmask, float value) Vote_IsPassed =
 
         return FALSE;
     }
-    else
-        return TRUE;
+
+    return TRUE;
 };
 
 
@@ -284,8 +284,10 @@ void(float vote, string newmap) Vote_AddMapVote =
 #define MAPS_CUSTOM     60
 
 // Options
+// All values must be powers of 2
 #define OPTION_WEAPONS_STAY    1
 #define OPTION_LOCK_TEAMS      2
+#define OPTION_FLASHY_EFFECTS  4
 
 
 /*
@@ -386,6 +388,7 @@ void() Menu_Draw =
                 "Vote for an option:\n"
                 "1) Toggle \"weapons stay\"\n"
                 "2) Toggle \"lock teams\"\n"
+                "3) Toggle \"flashy effects\"\n"
                 "\n"
                 "10) Go back to main menu\n");
     }
@@ -861,6 +864,11 @@ void() Menu_HandleVoteOptions =
     {
         cvarName = "g_lockTeams";
         option = OPTION_LOCK_TEAMS;
+    }
+    else if (self.impulse == 3)
+    {
+        cvarName = "g_flashyEffects";
+        option = OPTION_FLASHY_EFFECTS;
     }
     else
     {

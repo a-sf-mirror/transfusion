@@ -445,6 +445,9 @@ void() Leech_Drop =
     item.velocity_z = 150;
     item.movetype = MOVETYPE_TOSS;
 
+    if (cvar ("g_flashyEffects"))
+        item.effects = item.effects | EF_FLAME;
+
     // Sentry mode
     item.nextthink = time + 1.5;
     item.think = Leech_Think;
