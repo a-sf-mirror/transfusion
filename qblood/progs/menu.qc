@@ -416,6 +416,7 @@ void() Menu_Draw =
                 "1) e1m1  Cradle to Grave      | 2) e1m2  Wrong Side of the Tracks\n"
                 "3) e1m7  Altar of Stone       | 4) e2m8  The Lair of Shial\n"
                 "5) e3m7  The Pit of Cerberus  | 6) e4m8  The Hall of the Epiphany\n"
+                "7) e4m9  Mall of the Dead\n"
                 "\n"
                 "10) Go back to map menu\n");
     }
@@ -718,6 +719,8 @@ void() Menu_HandleVoteMapBloodSP =
         newmap = "e3m7";
     else if (self.impulse == 6)
         newmap = "e4m8";
+    else if (self.impulse == 7)
+        newmap = "e4m9";
     else
     {
         Sprint (self, PRINT_HIGH, "\n===== INVALID COMMAND =====\n\n");
