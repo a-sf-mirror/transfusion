@@ -112,7 +112,7 @@ void() main =
     precache_file ("gfx/p_save.lmp");
     precache_file ("gfx/p_multi.lmp");
 
-// sounds loaded by C code
+    // These sounds are used by the engine code - DON'T TOUCH !!
     precache_sound ("misc/menu1.wav");
     precache_sound ("misc/menu2.wav");
     precache_sound ("misc/menu3.wav");
@@ -201,45 +201,50 @@ void() worldspawn =
     W_Precache ();          // get weapon precaches
 
 // sounds used from C physics code
+    precache_sound ("hknight/hit.wav"); // misc/gibsq.wav
+ // ambience/qsuck1.wav
+    precache_sound ("misc/h2ohit.wav"); // foley/lndwater.wav
+    precache_sound ("misc/h2ohit1.wav"); // same as above
+    precache_sound ("misc/outwater.wav"); // foley/emerge.wav
+    precache_sound ("player/gasp1.wav"); // foley/gasp.wav
+    precache_sound ("player/gasp2.wav"); // foley/gasp.wav
+    precache_sound ("player/inh2o.wav"); // foley/submerge.wav
+    precache_sound ("player/inlava.wav"); // foley/??
+    precache_sound ("player/slimbrn2.wav"); // foley/??
+    precache_sound ("shambler/sattck1.wav"); // misc/qbasetry.wav
+    precache_sound ("misc/talk.wav"); // bludbath/message.wav
+    precache_sound ("wizard/hit.wav"); //  foley/??
+
+// setup precaches always needed
+
     precache_sound ("misc/gibsq.wav");    // used by when a head is destroyed
     precache_sound ("foley/punt.wav");    // used by kickable heads
-    precache_sound ("demon/dland2.wav");  // landing thud
-    precache_sound ("misc/h2ohit1.wav");  // landing splash
-
-// setup precaches allways needed
+    precache_sound ("demon/dland2.wav");  // landing thud -  foley/lnddirt.wav
     precache_sound ("bludbath/reappear.wav");     // item respawn sound
     precache_sound ("foley/jump.wav");            // player jump
     precache_sound ("foley/land.wav");            // player landing
-    precache_sound ("player/pain/play1105.wav");  // player hurt landing
     precache_sound ("ambience/bubrise.wav");      // drowning pain
     precache_sound ("foley/undchoke.wav");        // drowning pain
     precache_sound ("foley/gasp.wav");            // gasping for air
     precache_sound ("foley/undchoke.wav");        // taking breath
-    precache_sound ("ambience/bubrise.wav");      // drowning death
-
-    precache_sound ("misc/talk.wav");           // talk
     precache_sound ("bludbath/message.wav");    // talk
-    precache_sound ("firepod/fpodcol2.wav");    // telefrag
+    precache_sound ("player/play1115.wav");    // telefrag - evil laugh
     precache_sound ("misc/r_tele1.wav");        // teleport sounds
-    precache_sound ("misc/r_tele2.wav");
+    precache_sound ("misc/r_tele2.wav");    // these are all qbasetry.wav
     precache_sound ("misc/r_tele3.wav");
     precache_sound ("misc/r_tele4.wav");
     precache_sound ("misc/r_tele5.wav");
     precache_sound ("items/ammo.wav");              // ammo pick up
     precache_sound ("items/weaponup.wav");          // weapon up
     precache_sound ("items/pickarmr.wav");          // armor up
-    precache_sound ("weapons/tesla/teslaz~1.wav");  // lightning start
-
-    precache_sound ("misc/power.wav");              // lightning for boss
-
     precache_sound ("weapons/napalm/burn.wav");  // burning on lava
     precache_sound ("ambience/sizzle.wav");      // smelt on slime
 
 // player gib sounds
-    precache_sound ("butcher/fzomdie2.wav");    // player gib sound
-    precache_sound ("player/udeath.wav");       // FIXME: monster gib sound (use player gib sound instead)
-    precache_sound ("butcher/fzomdie3.wav");    // player gib sound
-    precache_sound ("player/tornoff2.wav");     // gib sound
+    precache_sound ("butcher/fzomdie1.wav");
+    precache_sound ("butcher/fzomdie2.wav");
+    precache_sound ("butcher/fzomdie3.wav");
+    precache_sound ("player/udeath.wav");  // extreme gib sound
 
 // player pain sounds
 
@@ -252,21 +257,24 @@ void() worldspawn =
     precache_sound ("player/pain/play1106.wav");
     precache_sound ("player/pain/play1107.wav");
     precache_sound ("player/pain/play1108.wav");
-    precache_sound ("player/play1115.wav");
 
     // player death sounds
     precache_sound ("player/die1.wav");
     precache_sound ("player/die2.wav");
     precache_sound ("player/die3.wav");
-    precache_sound ("butcher/fzomdie2.wav");
-    precache_sound ("butcher/fzomdie3.wav");
 
     // The Voice
+//    precache_sound ("thevoice/boned.wav");
+//    precache_sound ("thevoice/castra.wav");
     precache_sound ("thevoice/creamed.wav");
     precache_sound ("thevoice/destro.wav");
     precache_sound ("thevoice/diced.wav");
     precache_sound ("thevoice/disembo.wav");
+//    precache_sound ("thevoice/flatte.wav");
+//    precache_sound ("thevoice/justice.wav");
+//    precache_sound ("thevoice/madness.wav");
     precache_sound ("thevoice/killed.wav");
+//    precache_sound ("thevoice/massacr.wav");
     precache_sound ("thevoice/mincmeat.wav");
     precache_sound ("thevoice/mutila.wav");
     precache_sound ("thevoice/reamed.wav");
@@ -274,6 +282,7 @@ void() worldspawn =
     precache_sound ("thevoice/ripped.wav");
     #endif
     precache_sound ("thevoice/slaught.wav");
+//    precache_sound ("thevoice/sliced.wav");
     precache_sound ("thevoice/smashed.wav");
     precache_sound ("thevoice/sodomiz.wav");
     precache_sound ("thevoice/splatt.wav");
@@ -284,25 +293,20 @@ void() worldspawn =
     precache_sound ("thevoice/vo12.wav");
     precache_sound ("thevoice/vo17.wav");
     precache_sound ("thevoice/vo2.wav");
+//    precache_sound ("thevoice/vo30.wav");
     precache_sound ("thevoice/vo5.wav");
     precache_sound ("thevoice/vo7.wav");
-    precache_sound ("thevoice/vo8.wav");
+    precache_sound ("thevoice/vo8.wav");     // hamburger
+    precache_sound ("thevoice/vo9.wav");
     precache_sound ("thevoice/wasted.wav");
 
-// ax sounds
-    precache_sound ("zombie/claw.wav");              // ax swoosh
-    precache_sound ("player/pain/play1106.wav");     // ax hit meat
-    precache_sound ("weapons/pitchfrk/pstone.wav");  // ax hit world
-
+    // some foley sounds
     precache_sound ("foley/lndwater.wav");      // player jumping into water
-    precache_sound ("foley/submerge.wav");      // player enter liquid
     precache_sound ("foley/emerge.wav");        // leaving water sound
-
     precache_sound ("butcher/acidhit1.wav");      // slime burn
     precache_sound ("butcher/acidhit2.wav");      // slime burn
     precache_sound ("player/pain/play1120.wav");  // lava burn
     precache_sound ("player/pain/play1119.wav");  // lava burn
-
     precache_sound ("foley/swim.wav");          // swimming
     precache_sound ("foley/submerge.wav");      // swimming
 
@@ -313,6 +317,9 @@ void() worldspawn =
     precache_model ("progs/gib1.mdl");
     precache_model ("progs/gib2.mdl");
     precache_model ("progs/gib3.mdl");
+//    precache_model ("progs/flesh1.mdl");
+//    precache_model ("progs/flesh2.mdl");
+//    precache_model ("progs/flesh3.mdl");
 
     precache_model ("progs/s_bubble.spr");  // drowning bubbles
     precache_model ("progs/s_explod.spr");  // sprite explosion

@@ -37,21 +37,113 @@ void() SuperDamageSound;
 // called by worldspawn
 void() W_Precache =
 {
-    precache_sound ("weapons/r_exp3.wav");             // Explosion (used in c code)
-    precache_sound ("weapons/tommygun/_tom.wav");      // Tommy gun
-    precache_sound ("weapons/napalm/blaster.wav");     // Napalm launcher
-    precache_sound ("weapons/flaregun/flaref.wav");    // Flaregun
-    precache_sound ("weapons/ric1.wav");               // ricochet (used in c code)
-    precache_sound ("weapons/ric2.wav");               // ricochet (used in c code)
-    precache_sound ("weapons/ric3.wav");               // ricochet (used in c code)
+/*
+    // pitchfork
+    precache_sound ("weapons/pitchfrk/pflesh.wav");
+    precache_sound ("weapons/pitchfrk/pmetal.wav");
+*/
+    precache_sound ("weapons/pitchfrk/pstone.wav");
+/*
+    precache_sound ("weapons/pitchfrk/pwood.wav");
+
+    // flaregun
+    precache_sound ("weapons/flaregun/burstflm.wav");
+    precache_sound ("weapons/flaregun/flar_wat.wav");
+    precache_sound ("weapons/flaregun/flarair2.wav");
+*/
+    precache_sound ("weapons/flaregun/flaref.wav");  // Flaregun fire
+/*
+    precache_sound ("weapons/flaregun/flarefuw.wav");
+
+    // sawed-off
+    precache_sound ("weapons/shotgun/sawcock1.wav");
+    precache_sound ("weapons/shotgun/shotcock.wav");
+    precache_sound ("weapons/shotgun/shotfir2.wav");
+*/
+    precache_sound ("weapons/shotgun/shotfire.wav");  // shotgun fired
+//    precache_sound ("weapons/shotgun/shotload.wav");
+
+    // tommy gun
+    precache_sound ("weapons/tommygun/_tom.wav");  // Tommy gun
+//    precache_sound ("weapons/tommygun/tomcock.wav");
+
+    // napalm launcher
+    precache_sound ("weapons/napalm/blaster.wav");  // Napalm launcher
+/*
+    precache_sound ("weapons/napalm/burn.wav");
+    precache_sound ("weapons/napalm/explodfl.wav");
+    precache_sound ("weapons/napalm/explodul.wav");
+    precache_sound ("weapons/napalm/explodus.wav");
+    precache_sound ("weapons/napalm/naplmex2.wav");
+*/
+
+    // dynamite bundles/proximity/remote detonators
+    precache_sound ("weapons/tnt/tntfuse.wav");  // tnt lighted
+    precache_sound ("weapons/tnt/proxarm.wav");  // proximity bomb armed
+    precache_sound ("weapons/tnt/proxdet.wav");  // proximity bomb triggered
+    precache_sound ("weapons/tnt/tnttoss.wav");  // bounce sound
+/*
+    precache_sound ("weapons/tnt/zipclose.wav");
+    precache_sound ("weapons/tnt/ziplight.wav");
+    precache_sound ("weapons/tnt/zipopen.wav");
+
+    // spray can
+    precache_sound ("weapons/spraycan/burstflm.wav");
+    precache_sound ("weapons/spraycan/spraycan.wav");
+*/
     precache_sound ("weapons/spraycan/sprayfir.wav");  // spraycan fire
-    precache_sound ("weapons/tink1.wav");              // spikes tink (used in c code)
-    precache_sound ("weapons/tnt/tntfuse.wav");        // grenade launcher
-    precache_sound ("weapons/tnt/proxarm.wav");        // proximity bomb armed
-    precache_sound ("weapons/tnt/proxdet.wav");        // proximity bomb triggered
-    precache_sound ("weapons/tnt/tnttoss.wav");        // bounce sound
-    precache_sound ("weapons/shotgun/shotfire.wav");   // shotgun fired
-    precache_sound ("weapons/tesla/tessnght.wav");     // Tesla hit
+
+    // tesla cannon
+/*
+    precache_sound ("weapons/tesla/taltac3.wav");
+    precache_sound ("weapons/tesla/tesaltf2.wav");
+    precache_sound ("weapons/tesla/tesaltfr.wav");
+    precache_sound ("weapons/tesla/tesaltht.wav");
+    precache_sound ("weapons/tesla/tesla1.wav");
+*/
+    precache_sound ("weapons/tesla/teslaz~1.wav");
+/*
+    precache_sound ("weapons/tesla/teslaz~2.wav");
+    precache_sound ("weapons/tesla/tessngfr.wav");
+*/
+    precache_sound ("weapons/tesla/tessnght.wav");  // Tesla hit
+
+/*
+    // lifeleech
+    precache_sound ("weapons/lifelech/laltfr1.wav");
+    precache_sound ("weapons/lifelech/llaltfr2.wav");
+    precache_sound ("weapons/lifelech/llaltht.wav");
+    precache_sound ("weapons/lifelech/llcharge.wav");
+    precache_sound ("weapons/lifelech/llsngfr3.wav");
+    precache_sound ("weapons/lifelech/llsnght2.wav");
+    precache_sound ("weapons/lifelech/skulair4.wav");
+
+    // voodoo doll
+    precache_sound ("weapons/voodoodl/vooburn.wav");
+    precache_sound ("weapons/voodoodl/voochant.wav");
+    precache_sound ("weapons/voodoodl/voolaugh.wav");
+    precache_sound ("weapons/voodoodl/voostab.wav");
+
+    // common sounds - some are in the C code, some aren't
+    precache_sound ("weapons/bflesh.wav");
+    precache_sound ("weapons/bmetal.wav");
+    precache_sound ("weapons/bstone.wav");
+    precache_sound ("weapons/bwater.wav");
+    precache_sound ("weapons/bwood.wav");
+    precache_sound ("weapons/mtshls.wav");
+*/
+    precache_sound ("weapons/r_exp3.wav");  // Explosion (used in c code)
+    precache_sound ("weapons/ric1.wav");    // ricochet (used in c code)
+    precache_sound ("weapons/ric2.wav");    // ricochet (used in c code)
+    precache_sound ("weapons/ric3.wav");    // ricochet (used in c code)
+/*
+    precache_sound ("weapons/shtshl.wav");
+    precache_sound ("weapons/shtshl2.wav");
+    precache_sound ("weapons/shtshl3.wav");
+    precache_sound ("weapons/shtshl4.wav");
+*/
+    precache_sound ("weapons/tink1.wav");    // spikes tink (used in c code)
+//    precache_sound ("weapons/lstart.wav");
 };
 
 float() crandom =
@@ -1253,7 +1345,6 @@ void() W_Attack =
     if (self.weapon == IT_AXE)
     {
         self.attack_finished = time + 0.5;
-        sound (self, CHAN_WEAPON, "zombie/claw.wav", 1, ATTN_NORM);
         r = random();
         if (r < 0.25)
             player_axe1 ();
