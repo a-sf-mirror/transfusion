@@ -28,35 +28,6 @@ void() Spray_Fire;
 
 // ----- Spray Can model ----- //
 
-#ifndef NEW_MODELS
-$modelname v_nail2
-
-// idle (animation; 3 frames)
-$frame spray_idle1 /* spray_idle2 spray_idle3 */
-
-// fire
-$frame spray_fire1
-
-// alt
-$frame spray_alt1  spray_alt2 spray_alt3 spray_alt4 spray_alt5
-$frame spray_alt6  spray_alt7 spray_alt8 spray_alt9 spray_alt10
-$frame spray_alt11
-
-// draw
-$frame spray_draw1 spray_draw2 spray_draw3 spray_draw4 spray_draw5
-$frame spray_draw6 spray_draw7 spray_draw8
-
-// draw_half
-$frame spray_drawhlf1 spray_drawhlf2 spray_drawhlf3 spray_drawhlf4
-
-// holster
-$frame spray_holster1 spray_holster2 spray_holster3 spray_holster4
-
-// holster_half
-$frame spray_holsthlf1 spray_holsthlf2 spray_holsthlf3 spray_holsthlf4
-
-
-#else
 $modelname v_aerosol
 
 // idle
@@ -85,7 +56,6 @@ $frame spray_holsthlf1 spray_holsthlf2 spray_holsthlf3
 
 // fire
 $frame spray_fire1 spray_fire2 spray_fire3
-#endif
 
 
 // ----- Player related code ----- //
@@ -111,11 +81,9 @@ void() player_spray =
 
     muzzleflash ();
     
-    #ifdef NEW_MODELS
     self.weaponframe = self.weaponframe + 1;
     if (self.weaponframe > $spray_fire3)
         self.weaponframe = $spray_fire1;
-    #endif
 
     Spray_Fire ();
     self.attack_finished = time + 0.2;
@@ -127,23 +95,6 @@ void() player_spray2 = [$attack1, player_spray1] { player_spray (); };
 void() player_lightcan1 = [$attack2, player_lightcan2] { self.weaponframe = $spray_alt1; };
 void() player_lightcan2 = [$attack2, player_lightcan3] { self.weaponframe = $spray_alt2; };
 void() player_lightcan3 = [$attack2, player_lightcan4] { self.weaponframe = $spray_alt3; };
-#ifndef NEW_MODELS
-void() player_lightcan4 = [$attack2, player_lightcan5] { self.weaponframe = $spray_alt4; };
-void() player_lightcan5 = [$attack1, player_lightcan6] { self.weaponframe = $spray_alt5; };
-void() player_lightcan6 = [$attack1, player_lightcan4] { self.weaponframe = $spray_alt6; };
-
-void() player_altspray1 = [$attack2, player_altspray2] { self.weaponframe = $spray_alt7; };
-void() player_altspray2 = [$attack2, player_altspray3] { self.weaponframe = $spray_alt8; };
-void() player_altspray3 = [$attack2, player_altspray4] { self.weaponframe = $spray_alt9; };
-void() player_altspray4 = [$attack2, player_altspray5]
-{
-    self.weaponframe = $spray_alt10;
-    Bomb_Fire ();
-    Bomb_Uncharge ();
-    ShowThrowMeter ();
-};
-void() player_altspray5 = [$attack2, player_run] { self.weaponframe = $spray_alt11; };
-#else
 void() player_lightcan4 = [$attack2, player_lightcan5] { self.weaponframe = $spray_alt4; };
 void() player_lightcan5 = [$attack2, player_lightcan6] { self.weaponframe = $spray_alt5; };
 void() player_lightcan6 = [$attack1, player_lightcan7] { self.weaponframe = $spray_alt6; };
@@ -164,49 +115,28 @@ void() player_altspray6 = [$attack2, player_altspray7]
     ShowThrowMeter ();
 };
 void() player_altspray7 = [$attack2, player_run] { self.weaponframe = $spray_throw7; };
-#endif
 
 // Half draw
 void() player_sprayhalfdraw1 = [$attack2, player_sprayhalfdraw2] { self.weaponframe = $spray_drawhlf1; };
 void() player_sprayhalfdraw2 = [$attack2, player_sprayhalfdraw3] { self.weaponframe = $spray_drawhlf2; };
-#ifndef NEW_MODELS
-void() player_sprayhalfdraw3 = [$attack2, player_sprayhalfdraw4] { self.weaponframe = $spray_drawhlf3; };
-void() player_sprayhalfdraw4 = [$attack2, player_run           ] { self.weaponframe = $spray_drawhlf4; };
-#else
 void() player_sprayhalfdraw3 = [$attack2, player_run           ] { self.weaponframe = $spray_drawhlf3; };
-#endif
 
 // Normal draw
 void() player_spraydraw1 = [$attack2, player_spraydraw2] { self.weaponframe = $spray_draw1; };
 void() player_spraydraw2 = [$attack2, player_spraydraw3] { self.weaponframe = $spray_draw2; };
-#ifndef NEW_MODELS
-void() player_spraydraw3 = [$attack2, player_spraydraw4] { self.weaponframe = $spray_draw3; };
-void() player_spraydraw4 = [$attack2, player_run       ] { self.weaponframe = $spray_draw4; };
-#else
 void() player_spraydraw3 = [$attack2, player_run       ] { self.weaponframe = $spray_draw3; };
-#endif
 
 // Half holster
 void() player_sprayhalfholster1 = [$attack2, player_sprayhalfholster2] { self.weaponframe = $spray_holsthlf1; };
 void() player_sprayhalfholster2 = [$attack2, player_sprayhalfholster3] { self.weaponframe = $spray_holsthlf2; };
 void() player_sprayhalfholster3 = [$attack2, player_sprayhalfholster4] { self.weaponframe = $spray_holsthlf3; };
-#ifndef NEW_MODELS
-void() player_sprayhalfholster4 = [$attack2, player_sprayhalfholster5] { self.weaponframe = $spray_holsthlf4; };
-void() player_sprayhalfholster5 = [$attack2, player_run              ] { W_DrawWeapon (self.newweapon); };
-#else
 void() player_sprayhalfholster4 = [$attack2, player_run              ] { W_DrawWeapon (self.newweapon); };
-#endif
 
 // Normal holster
 void() player_sprayholster1 = [$attack2, player_sprayholster2] { self.weaponframe = $spray_holster1; };
 void() player_sprayholster2 = [$attack2, player_sprayholster3] { self.weaponframe = $spray_holster2; };
 void() player_sprayholster3 = [$attack2, player_sprayholster4] { self.weaponframe = $spray_holster3; };
-#ifndef NEW_MODELS
-void() player_sprayholster4 = [$attack2, player_sprayholster5] { self.weaponframe = $spray_holster4; };
-void() player_sprayholster5 = [$attack2, player_run          ] { W_DrawWeapon (self.newweapon); };
-#else
 void() player_sprayholster4 = [$attack2, player_run          ] { W_DrawWeapon (self.newweapon); };
-#endif
 
 
 //============================================================================
@@ -270,11 +200,7 @@ void() Spray_Attack =
     // Altfire
     if (self.tnt_time)
     {
-        #ifndef NEW_MODELS
-        self.attack_finished = time + 0.6;
-        #else
         self.attack_finished = time + 1.0;
-        #endif
         player_altspray1 ();
     }
     else
@@ -299,11 +225,7 @@ void() Spray_Draw =
 
     Spray_UpdateView ();
 
-    #ifndef NEW_MODELS
-    self.attack_finished = time + 0.5;
-    #else
     self.attack_finished = time + 0.9;
-    #endif
 
     // If we need to pop up the lighter
     if (self.weapon != IT_TNT)
@@ -327,11 +249,7 @@ Holster code for the spray can
 */
 void() Spray_Holster =
 {
-    #ifndef NEW_MODELS
-    self.attack_finished = time + 0.5;
-    #else
     self.attack_finished = time + 0.4;
-    #endif
 
     // If we need to close the lighter
     if (self.newweapon != IT_TNT)
@@ -353,10 +271,6 @@ Choose the right spray can model to display
 */
 void() Spray_UpdateView =
 {
-    #ifndef NEW_MODELS
-    self.weaponmodel = "progs/v_nail2.mdl";
-    #else
     self.weaponmodel = "models/weapons/v_aerosol.md3";
-    #endif
     self.items = self.items - (self.items & IT_GUNS_AKIMBO);
 };

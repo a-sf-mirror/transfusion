@@ -1569,21 +1569,11 @@ void() weapon_nailgun =
 // Spray Can
 void() weapon_supernailgun =
 {
-    #ifndef NEW_MODELS
-    precache_model ("progs/v_nail2.mdl");
-    precache_model ("progs/g_nail2.mdl");
-    precache_model ("progs/grd_aero.mdl");
-    #else
     precache_model ("models/weapons/v_aerosol.md3");
     precache_model ("models/ammo/g_aerosol.md3");
     precache_model ("models/weapons/grenades/gr_aerosol.md3");
-    #endif
 
-    #ifndef NEW_MODELS
-    setmodel (self, "progs/g_nail2.mdl");
-    #else
     setmodel (self, "models/ammo/g_aerosol.md3");
-    #endif
     self.weapon = IT_SPRAY_CAN;
     self.netname = "Spray Can";
     self.touch = weapon_touch;
@@ -1606,13 +1596,8 @@ void() weapon_supernailgun =
 // TNT (case & bundle)
 void() item_tnt_common =
 {
-    #ifndef NEW_MODELS
-    precache_model ("progs/v_rock.mdl");
-    precache_model ("progs/grd_bund.mdl");
-    #else
     precache_model ("models/weapons/v_tnt.md3");
     precache_model ("models/weapons/grenades/gr_tnt.md3");
-    #endif
 
     precache_model (self.model);
     setmodel (self, self.model);
@@ -1635,11 +1620,7 @@ void() item_tnt_common =
 // Case of TNT
 void() weapon_grenadelauncher =
 {
-    #ifndef NEW_MODELS
-    self.model = "progs/g_rock.mdl";
-    #else
     self.model = "models/weapons/g_tnt.md3";
-    #endif
     self.netname = "Case of TNT";
     item_tnt_common ();
     setsize (self, '-16 -16 0', '16 16 56');
@@ -1648,11 +1629,7 @@ void() weapon_grenadelauncher =
 // TNT Bundle
 void() item_tnt =
 {
-    #ifndef NEW_MODELS
-    self.model = "progs/i_tnt.mdl";
-    #else
     self.model = "models/ammo/a_tnt.md3";
-    #endif
     self.netname = "Bundle of TNT";
     item_tnt_common ();
     setsize (self, '-8 -8 0', '8 8 32');
@@ -1661,21 +1638,11 @@ void() item_tnt =
 // Proximity bombs
 void() weapon_proximity =
 {
-    #ifndef NEW_MODELS
-    precache_model ("progs/v_proxy.mdl");
-    precache_model ("progs/g_proxy.mdl");
-    precache_model ("progs/grd_prox.mdl");
-    #else
     precache_model ("models/weapons/v_proxy.md3");
     precache_model ("models/weapons/g_proxy.md3");
     precache_model ("models/weapons/grenades/gr_proxy.md3");
-    #endif
 
-    #ifndef NEW_MODELS
-    setmodel (self, "progs/g_proxy.mdl");
-    #else
     setmodel (self, "models/weapons/g_proxy.md3");
-    #endif
     self.weapon = IT_PROXIMITY_BOMB;
     self.netname = "Proximity Bomb";
     self.touch = weapon_touch;
@@ -1695,18 +1662,11 @@ void() weapon_proximity =
 // Remote detonators
 void() weapon_remote =
 {
-    #ifndef NEW_MODELS
-    precache_model ("progs/v_remote.mdl");
-    precache_model ("progs/grd_remo.mdl");
-    precache_model ("progs/g_remote.mdl");
-    setmodel (self, "progs/g_remote.mdl");
-    #else
     precache_model ("models/weapons/v_remote.md3");
     precache_model ("models/weapons/grenades/gr_remote.md3");
     precache_model ("models/weapons/g_remote.md3");
-    setmodel (self, "models/weapons/g_remote.md3");
-    #endif
 
+    setmodel (self, "models/weapons/g_remote.md3");
     self.weapon = IT_REMOTE_DETONATOR;
     self.netname = "Remote Detonator";
     self.touch = weapon_touch;
@@ -1778,19 +1738,10 @@ void() weapon_lightning =
 // Voodoo Doll
 void() weapon_voodoodoll =
 {
-    #ifndef NEW_MODELS
-    precache_model ("progs/v_voodoo.mdl");
-    precache_model ("progs/g_voodoo.mdl");
-    #else
     precache_model ("models/weapons/v_voodoo.md3");
     precache_model ("models/weapons/g_voodoo.md3");
-    #endif
 
-    #ifndef NEW_MODELS
-    setmodel (self, "progs/g_voodoo.mdl");
-    #else
     setmodel (self, "models/weapons/g_voodoo.md3");
-    #endif
     self.weapon = IT_VOODOO_DOLL;
     self.netname = "Voodoo Doll";
     self.touch = weapon_touch;

@@ -30,37 +30,6 @@ void() ShowThrowMeter;
 
 // ----- TNT model ----- //
 
-#ifndef NEW_MODELS
-$modelname v_rock
-
-// idle (animation; 3 frames)
-$frame tnt_idle1 /* tnt_idle2 tnt_idle3 */
-
-// fire
-// the last 3 frames must be looped while holding the lighted TNT
-$frame tnt_fire1 tnt_fire2 tnt_fire3 tnt_fire4 tnt_fire5
-$frame tnt_fire6 tnt_fire7 tnt_fire8 tnt_fire9
-
-// throw
-// at tnt_throw6, it's a new TNT that we have in hands
-$frame tnt_throw1  tnt_throw2 tnt_throw3 tnt_throw4 tnt_throw5
-$frame tnt_throw6  tnt_throw7 tnt_throw8
-
-// draw
-$frame tnt_draw1 tnt_draw2 tnt_draw3 tnt_draw4 tnt_draw5
-$frame tnt_draw6 tnt_draw7 tnt_draw8
-
-// draw half
-$frame tnt_drawhalf1 tnt_drawhalf2 tnt_drawhalf3 tnt_drawhalf4
-
-// holster
-$frame tnt_holster1 tnt_holster2 tnt_holster3 tnt_holster4
-
-// holster half
-$frame tnt_holsterhlf1 tnt_holsterhlf2 tnt_holsterhlf3 tnt_holsterhlf4
-
-
-#else
 $modelname v_tnt
 
 // idle (animation; 3 frames)
@@ -89,7 +58,6 @@ $frame tnt_holster1 tnt_holster2 tnt_holster3
 
 // holster half
 $frame tnt_holsterhlf1 tnt_holsterhlf2 tnt_holsterhlf3
-#endif
 
 
 // ----- Proximity Bomb model ----- //
@@ -99,18 +67,6 @@ $modelname v_proxy
 // idle
 $frame proxy_idle1
 
-#ifndef NEW_MODELS
-// throw
-$frame proxy_throw1  proxy_throw2 proxy_throw3 proxy_throw4 proxy_throw5
-$frame proxy_throw6  proxy_throw7
-
-// draw
-$frame proxy_draw1 proxy_draw2 proxy_draw3 proxy_draw4
-
-// holster
-$frame proxy_holster1 proxy_holster2 proxy_holster3 proxy_holster4
-
-#else
 // draw
 $frame proxy_draw1 proxy_draw2 proxy_draw3
 
@@ -120,7 +76,6 @@ $frame proxy_throw6  proxy_throw7
 
 // holster
 $frame proxy_holster1 proxy_holster2 proxy_holster3
-#endif
 
 
 // ----- Remote Detonator model ----- //
@@ -130,21 +85,6 @@ $modelname v_remote
 // idle
 $frame remote_idle1
 
-#ifndef NEW_MODELS
-// throw
-$frame remote_throw1  remote_throw2 remote_throw3 remote_throw4 remote_throw5
-$frame remote_throw6  remote_throw7
-
-// fire
-$frame remote_fire1 remote_fire2 remote_fire3
-
-// draw
-$frame remote_draw1 remote_draw2 remote_draw3 remote_draw4
-
-// holster
-$frame remote_holster1 remote_holster2 remote_holster3 remote_holster4
-
-#else
 // draw
 $frame remote_draw1 remote_draw2 remote_draw3
 
@@ -163,7 +103,6 @@ $frame remote_holster1 remote_holster2 remote_holster3
 
 // holster
 $frame remote_hlsthlf1 remote_hlsthlf2 remote_hlsthlf3
-#endif
 
 
 // ----- Player related code ----- //
@@ -182,12 +121,7 @@ void() player_throwtnt6 = [$attack1, player_throwtnt7]
     ShowThrowMeter ();
     self.player_state = PS_IDLE;
 };
-#ifndef NEW_MODELS
-void() player_throwtnt7 = [$attack1, player_throwtnt8] { self.weaponframe = $tnt_throw7; };
-void() player_throwtnt8 = [$attack2, player_run      ] { self.weaponframe = $tnt_throw8; };
-#else
 void() player_throwtnt7 = [$attack1, player_run      ] { self.weaponframe = $tnt_throw7; };
-#endif
 
 // Throw a proximity bomb
 void() player_throwproxy1 = [$attack2, player_throwproxy2] { self.weaponframe = $proxy_throw1; };
@@ -218,16 +152,6 @@ void() player_throwremote6 = [$attack1, player_throwremote7]
     Bomb_Uncharge ();
     ShowThrowMeter ();
 };
-#ifndef NEW_MODELS
-void() player_throwremote7 = [$attack1, player_throwremote8] { self.weaponframe = $remote_throw7; };
-void() player_throwremote8 = [$attack2, player_run         ]
-{
-    // We switch to the 1st remote frame
-    self.weaponframe = $remote_fire1;
-
-    self.player_state = PS_HOLD_FIRE;
-};
-#else
 void() player_throwremote7 = [$attack1, player_run         ]
 {
     self.weaponframe = $remote_throw7;
@@ -235,17 +159,11 @@ void() player_throwremote7 = [$attack1, player_run         ]
     // We hold on here
     self.player_state = PS_HOLD_FIRE;
 };
-#endif
 
 // TNT half draw
 void() player_tnthalfdraw1 = [$attack2, player_tnthalfdraw2] { self.weaponframe = $tnt_drawhalf1; };
 void() player_tnthalfdraw2 = [$attack2, player_tnthalfdraw3] { self.weaponframe = $tnt_drawhalf2; };
-#ifndef NEW_MODELS
-void() player_tnthalfdraw3 = [$attack2, player_tnthalfdraw4] { self.weaponframe = $tnt_drawhalf3; };
-void() player_tnthalfdraw4 = [$attack2, player_run         ] { self.weaponframe = $tnt_drawhalf4; };
-#else
 void() player_tnthalfdraw3 = [$attack2, player_run         ] { self.weaponframe = $tnt_drawhalf3; };
-#endif
 
 // TNT normal draw
 void() player_tntdraw1 = [$attack2, player_tntdraw2] { self.weaponframe = $tnt_draw1; };
@@ -261,65 +179,40 @@ void() player_tntdraw8 = [$attack2, player_run     ] { self.weaponframe = $tnt_d
 void() player_tnthalfholster1 = [$attack2, player_tnthalfholster2] { self.weaponframe = $tnt_holsterhlf1; };
 void() player_tnthalfholster2 = [$attack2, player_tnthalfholster3] { self.weaponframe = $tnt_holsterhlf2; };
 void() player_tnthalfholster3 = [$attack2, player_tnthalfholster4] { self.weaponframe = $tnt_holsterhlf3; };
-#ifndef NEW_MODELS
-void() player_tnthalfholster4 = [$attack2, player_tnthalfholster5] { self.weaponframe = $tnt_holsterhlf4; };
-void() player_tnthalfholster5 = [$attack2, player_run            ] { W_DrawWeapon (self.newweapon); };
-#else
 void() player_tnthalfholster4 = [$attack2, player_run            ] { W_DrawWeapon (self.newweapon); };
-#endif
 
 // TNT normal holster
 void() player_tntholster1 = [$attack2, player_tntholster2] { self.weaponframe = $tnt_holster1; };
 void() player_tntholster2 = [$attack2, player_tntholster3] { self.weaponframe = $tnt_holster2; };
 void() player_tntholster3 = [$attack2, player_tntholster4] { self.weaponframe = $tnt_holster3; };
-#ifndef NEW_MODELS
-void() player_tntholster4 = [$attack2, player_tntholster5] { self.weaponframe = $tnt_holster4; };
-void() player_tntholster5 = [$attack2, player_run        ] { W_DrawWeapon (self.newweapon); };
-#else
 void() player_tntholster4 = [$attack2, player_run        ] { W_DrawWeapon (self.newweapon); };
-#endif
 
 // Proximity bomb draw
 void() player_proxydraw1 = [$attack2, player_proxydraw2] { self.weaponframe = $proxy_draw1; };
 void() player_proxydraw2 = [$attack2, player_proxydraw3] { self.weaponframe = $proxy_draw2; };
-#ifndef NEW_MODELS
-void() player_proxydraw3 = [$attack2, player_proxydraw4] { self.weaponframe = $proxy_draw3; };
-void() player_proxydraw4 = [$attack2, player_run       ] { self.weaponframe = $proxy_draw4; };
-#else
 void() player_proxydraw3 = [$attack2, player_run       ] { self.weaponframe = $proxy_draw3; };
-#endif
 
 // Proximity bomb holster
 void() player_proxyholster1 = [$attack2, player_proxyholster2] { self.weaponframe = $proxy_holster1; };
 void() player_proxyholster2 = [$attack2, player_proxyholster3] { self.weaponframe = $proxy_holster2; };
 void() player_proxyholster3 = [$attack2, player_proxyholster4] { self.weaponframe = $proxy_holster3; };
-#ifndef NEW_MODELS
-void() player_proxyholster4 = [$attack2, player_proxyholster5] { self.weaponframe = $proxy_holster4; };
-void() player_proxyholster5 = [$attack2, player_run          ] { W_DrawWeapon (self.newweapon); };
-#else
 void() player_proxyholster4 = [$attack2, player_run          ] { W_DrawWeapon (self.newweapon); };
-#endif
 
-// Remote detonator draw
+// Remote detonator half draw
+void() player_remotehalfdraw1 = [$attack2, player_remotehalfdraw2] { self.weaponframe = $remote_drawhlf1; };
+void() player_remotehalfdraw2 = [$attack2, player_remotehalfdraw3] { self.weaponframe = $remote_drawhlf2; };
+void() player_remotehalfdraw3 = [$attack2, player_run            ] { self.weaponframe = $remote_drawhlf3; };
+
+// Remote detonator normal draw
 void() player_remotedraw1 = [$attack2, player_remotedraw2] { self.weaponframe = $remote_draw1; };
 void() player_remotedraw2 = [$attack2, player_remotedraw3] { self.weaponframe = $remote_draw2; };
-#ifndef NEW_MODELS
-void() player_remotedraw3 = [$attack2, player_remotedraw4] { self.weaponframe = $remote_draw3; };
-void() player_remotedraw4 = [$attack2, player_run        ] { self.weaponframe = $remote_draw4; };
-#else
 void() player_remotedraw3 = [$attack2, player_run        ] { self.weaponframe = $remote_draw3; };
-#endif
 
 // Remote detonator holster
 void() player_remoteholster1 = [$attack2, player_remoteholster2] { self.weaponframe = $remote_holster1; };
 void() player_remoteholster2 = [$attack2, player_remoteholster3] { self.weaponframe = $remote_holster2; };
 void() player_remoteholster3 = [$attack2, player_remoteholster4] { self.weaponframe = $remote_holster3; };
-#ifndef NEW_MODELS
-void() player_remoteholster4 = [$attack2, player_remoteholster5] { self.weaponframe = $remote_holster4; };
-void() player_remoteholster5 = [$attack2, player_run           ] { W_DrawWeapon (self.newweapon); };
-#else
 void() player_remoteholster4 = [$attack2, player_run           ] { W_DrawWeapon (self.newweapon); };
-#endif
 
 // Light a TNT
 void() player_lighttnt1 = [$attack2, player_lighttnt2] { self.weaponframe = $tnt_fire1; };
@@ -540,11 +433,7 @@ void() W_ChargeNormal =
             else  // if (self.weapon == IT_SPRAY_CAN)
             {
                 self.tnt_type = TNT_TYPE_NORMAL;
-                #ifndef NEW_MODELS
-                self.attack_finished = time + 0.6;  // let the animation play
-                #else
                 self.attack_finished = time + 0.9;  // let the animation play
-                #endif
                 player_lightcan1 ();
             }
         }
@@ -679,16 +568,11 @@ float() W_CheckRemote =
         else
         {
             if (self.currentammo != 0)
-            {
-                Remote_UpdateView ();
-                self.attack_finished = time + 0.4;
-                self.player_state = PS_IDLE;
-            }
+                Remote_Draw ();
             else
                 sprint (self, "You have no more remote bombs\n");
         }
 
-        self.impulse = 0;
         return TRUE;
     }
 
@@ -995,11 +879,7 @@ void() Bomb_Fire =
         newmis.dmg = DMG_PROXIMITY_BOMB;
         newmis.avelocity = '0 300 0';
         newmis.angles = '0 0 0';
-        #ifndef NEW_MODELS
-        newmis.model = "progs/grd_prox.mdl";
-        #else
         newmis.model = "models/weapons/grenades/gr_proxy.md3";
-        #endif
     }
     // else if we fire a remote detonator
     else if (self.weapon == IT_REMOTE_DETONATOR)
@@ -1008,11 +888,7 @@ void() Bomb_Fire =
         newmis.dmg = DMG_REMOTE_DETONATOR;
         newmis.avelocity = '0 300 0';
         newmis.angles = '0 0 0';
-        #ifndef NEW_MODELS
-        newmis.model = "progs/grd_remo.mdl";
-        #else
         newmis.model = "models/weapons/grenades/gr_remote.md3";
-        #endif
     }
     // Else, it's TNT or a spray can!
     else
@@ -1027,11 +903,7 @@ void() Bomb_Fire =
         {
             newmis.netname   = "Lit Spray Can";
             newmis.dmg       = DMG_SPRAY_CAN;
-            #ifndef NEW_MODELS
-            newmis.model     = "progs/grd_aero.mdl";
-            #else
             newmis.model     = "models/weapons/grenades/gr_aerosol.md3";
-            #endif
             newmis.angles    = '0 -300 0';
             if (newmis.style == TNT_TYPE_NORMAL)
                 newmis.avelocity = '150 150 150';
@@ -1044,11 +916,7 @@ void() Bomb_Fire =
         {
             newmis.netname   = "TNT";
             newmis.dmg       = DMG_TNT;
-            #ifndef NEW_MODELS
-            newmis.model     = "progs/grd_bund.mdl";
-            #else
             newmis.model     = "models/weapons/grenades/gr_tnt.md3";
-            #endif
             newmis.avelocity = '300 300 300';
             newmis.angles    = vectoangles(newmis.velocity);
         }
@@ -1108,11 +976,7 @@ void() TNT_Draw =
     else
     {
         player_tnthalfdraw1 ();
-        #ifndef NEW_MODELS
-        self.attack_finished = time + 0.5;
-        #else
         self.attack_finished = time + 0.4;
-        #endif
     }
 
     self.weapon = IT_TNT;
@@ -1128,11 +992,7 @@ Holster code for the TNT
 */
 void() TNT_Holster =
 {
-    #ifndef NEW_MODELS
-    self.attack_finished = time + 0.5;
-    #else
     self.attack_finished = time + 0.4;
-    #endif
 
     // If we need to close the lighter
     if (self.newweapon != IT_SPRAY_CAN)
@@ -1154,11 +1014,7 @@ Choose the right TNT model to display
 */
 void() TNT_UpdateView =
 {
-    #ifndef NEW_MODELS
-    self.weaponmodel = "progs/v_rock.mdl";
-    #else
     self.weaponmodel = "models/weapons/v_tnt.md3";
-    #endif
     self.items = self.items - (self.items & IT_GUNS_AKIMBO);
 };
 
@@ -1192,11 +1048,7 @@ void() Proxy_Draw =
 
     Proxy_UpdateView ();
 
-    #ifndef NEW_MODELS
-    self.attack_finished = time + 0.5;
-    #else
     self.attack_finished = time + 0.4;
-    #endif
     player_proxydraw1 ();
 };
 
@@ -1210,11 +1062,7 @@ Holster code for the proximity bomb
 */
 void() Proxy_Holster =
 {
-    #ifndef NEW_MODELS
-    self.attack_finished = time + 0.5;
-    #else
     self.attack_finished = time + 0.4;
-    #endif
     player_proxyholster1 ();
 };
 
@@ -1228,11 +1076,7 @@ Choose the right proximity bomb model to display
 */
 void() Proxy_UpdateView =
 {
-    #ifndef NEW_MODELS
-    self.weaponmodel = "progs/v_proxy.mdl";
-    #else
     self.weaponmodel = "models/weapons/v_proxy.md3";
-    #endif
     self.items = self.items - (self.items & IT_GUNS_AKIMBO);
 };
 
@@ -1266,18 +1110,13 @@ void() Remote_Draw =
 
     Remote_UpdateView ();
 
-    #ifndef NEW_MODELS
-    self.attack_finished = time + 0.5;
-    #else
     self.attack_finished = time + 0.4;
-    #endif
 
-    // If we have just the remote
-    if (self.currentammo == 0)
+    // If we already have the remote in hand, we just draw another bomb
+    if (self.player_state == PS_HOLD_FIRE)
     {
-        // FIXME: we should have a "half-draw" animation for this
-        self.weaponframe = $remote_fire1;
-        self.player_state = PS_HOLD_FIRE;
+        self.player_state = PS_DRAW;  // we didn't pass through W_DrawWeapon
+        player_remotehalfdraw1 ();
     }
     else
         player_remotedraw1 ();
@@ -1293,11 +1132,7 @@ Holster code for the remote detonator
 */
 void() Remote_Holster =
 {
-    #ifndef NEW_MODELS
-    self.attack_finished = time + 0.5;
-    #else
     self.attack_finished = time + 0.4;
-    #endif
     player_remoteholster1 ();
 };
 
@@ -1311,10 +1146,6 @@ Choose the right remote detonator model to display
 */
 void() Remote_UpdateView =
 {
-    #ifndef NEW_MODELS
-    self.weaponmodel = "progs/v_remote.mdl";
-    #else
     self.weaponmodel = "models/weapons/v_remote.md3";
-    #endif
     self.items = self.items - (self.items & IT_GUNS_AKIMBO);
 };
