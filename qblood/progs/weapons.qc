@@ -684,6 +684,13 @@ void(float weap) W_DrawWeapon =
     if (! (self.items & weap))
         return;
 
+    // Don't draw a fire based weapon under water
+    if (self.waterlevel == 3)
+    {
+        if (self.weapon == IT_TNT || self.weapon == IT_SPRAY_CAN)
+            weap = W_BestWeapon ();
+    }
+
     self.player_state = PS_DRAW;
 
     if (weap == IT_PITCHFORK)
@@ -880,7 +887,7 @@ float() W_BestWeapon =
         return IT_VOODOO_DOLL;
 
     // 6- Spray Can
-    if (self.ammo_spray >= 1 && (it & IT_SPRAY_CAN))
+    if (self.ammo_spray >= 1 && (it & IT_SPRAY_CAN) && self.waterlevel < 3)
         return IT_SPRAY_CAN;
 
     // 7- Life Leech
@@ -1066,6 +1073,16 @@ void() W_ChangeWeapon =
         return;
     }
 
+    // No TNT or spray can under water
+    if (self.waterlevel == 3)
+    {
+        if (new == IT_TNT || new == IT_SPRAY_CAN)
+        {
+            Sprint (self, PRINT_MEDIUM, "You can't select that weapon under water.\n");
+            return;
+        }
+    }
+
     // don't have the ammo
     if (am)
     {
@@ -1174,6 +1191,9 @@ void() CycleWeaponCommand =
         else if (newWeapon == IT_NAPALM_LAUNCHER)
         {
             newWeapon = IT_TNT;
+            // No TNT under water
+            if (self.waterlevel == 3)
+                am = 1;
             // No need to check the ammo (it's removed as soon as there's no more ammo)
         }
         else if (newWeapon == IT_TNT)
@@ -1190,7 +1210,8 @@ void() CycleWeaponCommand =
         else if (newWeapon == IT_REMOTE_DETONATOR)
         {
             newWeapon = IT_SPRAY_CAN;
-            if (self.ammo_spray < 1)
+            // No spray can under water
+            if (self.ammo_spray < 1 || self.waterlevel == 3)
                 am = 1;
         }
         else if (newWeapon == IT_SPRAY_CAN)

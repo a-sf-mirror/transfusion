@@ -921,9 +921,24 @@ void() WaterMove =
     }
     // Auto-use diving suit if underwater.
     if (self.waterlevel == 3)
+    {
         if (self.air_finished < time + 11)
             if (!self.dive_on)
                 Use_DivingSuit ();
+
+        // Holster all weapons based on fire
+        if (self.weapon == IT_TNT || self.weapon == IT_SPRAY_CAN)
+        {
+            if (self.player_state != PS_HOLSTER)
+            {
+                Bomb_Uncharge ();
+
+                // Switch to our best weapon
+                self.newweapon = W_BestWeapon ();
+                W_SwitchToWeapon (self.newweapon);
+            }
+        }
+    }
 
     if (!self.waterlevel || self.watertype == CONTENT_EMPTY)
     {
