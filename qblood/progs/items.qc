@@ -860,6 +860,28 @@ void() obj_shovel =
     StartObject ();
 };
 
+// a boiling cauldron
+void() obj_cauldron =
+{
+     precache_model("progs/cauldron.mdl");
+     setmodel(self, "progs/cauldron.mdl");
+     
+     setsize (self, '-32 -21 0', '24 20 34');
+     StartObject ();
+};
+
+// barrels - 
+//skin0 = tnt (don't use), skin1 = wine barrel,
+//skin2 = zombie head barrel, skin3 = "waste" barrel
+void() obj_barrel =
+{
+     precache_model("progs/barrel.mdl");
+     setmodel(self, "progs/barrel.mdl");
+     
+     setsize (self, '-14 20 -14', '14 20 39');
+     StartObject ();
+     };
+
 
 /*
 ===================================

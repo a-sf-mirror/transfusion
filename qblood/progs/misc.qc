@@ -181,6 +181,7 @@ void() light_flame_small_white =
     makestatic (self);
 };
 
+
 //============================================================================
 
 //  This fixes a bug in which barrel explosions cancel other explosions.
@@ -1150,6 +1151,12 @@ void() ambient_buzz2 =
     precache_sound ("ambience/buzz2.wav");
     ambientsound (self.origin, "ambience/buzz2.wav", 1, ATTN_STATIC);
 };
+
+void() light_office =
+{
+    ambient_buzz2 ();
+};
+
 
 /*QUAKED ambient_chain1 (0.3 0.1 0.6) (-10 -10 -8) (10 10 8)
 */
