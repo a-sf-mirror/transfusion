@@ -1843,7 +1843,7 @@ void() W_FireSpikes =
     else if (self.weaponframe == 13)
         dir = dir + v_right * (1 / 10);
 
-    FireBullets (1, dir, '0.04 0.04 0');
+    FireBullets (7, dir, '0.04 0.04 0'); 
 
     #ifdef QUAKEWORLD
     msg_entity = self;

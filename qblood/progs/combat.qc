@@ -250,12 +250,45 @@ void(entity targ, entity inflictor, entity attacker, float damage, float dflags,
     targ.remain_dmg = take - damage;
 
     // Figure momentum add
-    if ( (inflictor != world) && (targ.movetype == MOVETYPE_WALK) )
+    if (inflictor != world)
     {
         dir = targ.origin - (inflictor.absmin + inflictor.absmax) * 0.5;
-        dir = normalize(dir);
-        targ.velocity = targ.velocity + dir*damage*8;
-    }
+        if (dflags & DF_RADIUS)
+            dir = normalize(dir) * (damage * 8);    // Standard.
+        else
+            dir = normalize(dir) * (damage * 12);
+
+        if (targ.movetype == MOVETYPE_WALK)
+        {
+            // Target is most likely a player.
+            targ.velocity = targ.velocity + dir;
+        }
+        else if ((targ.flags & (FL_MONSTER|FL_SWIM|FL_FLY)) == FL_MONSTER)
+        {
+            // Target is a walkmonster.
+            if (targ.flags & FL_ONGROUND)
+            {
+                // Remove onground so velocity can affect monster.
+                targ.velocity = dir;
+                targ.flags = targ.flags - FL_ONGROUND;
+
+                if (damage > 30)
+                {
+                    // If big enough hit, pop the target up a bit.
+                    local   float   up;
+
+                    up = 150 + random() * 100;
+                    if (targ.velocity_z < up)
+                        targ.velocity_z = up;
+                }
+            }
+            else
+            {
+                // In mid-air, so simply add to current velocity.
+                targ.velocity = targ.velocity + dir;
+            }
+        }
+     }
 
     protected = FALSE;
     take = damage;
@@ -479,3 +512,15 @@ void(entity inflictor, entity attacker, float damage, entity ignore, string dtyp
         head = head.chain;
     }
 };
+/*
+=============
+T_BeamDamage
+=============
+*/
+
+void(entity attacker, float damage) T_BeamDamage =
+{
+     // PM: Default to another function.  is 'T_BeamDamage()' ever used?
+     T_RadiusDamage (attacker, attacker, damage, world, string_null);
+};
+
