@@ -52,21 +52,18 @@ void() W_Precache =
     precache_sound ("weapons/flaregun/flaref.wav");  // Flaregun fire
 /*
     precache_sound ("weapons/flaregun/flarefuw.wav");
-
 */
+
     // sawed-off
-//    precache_sound ("weapons/shotgun/sawcock1.wav");
- //same as shotcock.wav
+//    precache_sound ("weapons/shotgun/sawcock1.wav"); //same as shotcock.wav
     precache_sound ("weapons/shotgun/shotcock.wav");
-    precache_sound ("weapons/shotgun/shotfir2.wav");
-  //shotgun alt-fire
+//    precache_sound ("weapons/shotgun/shotfir2.wav");  //shotgun alt-fire
     precache_sound ("weapons/shotgun/shotfire.wav");  // shotgun fired
-    precache_sound ("weapons/shotgun/shotload.wav");
+//    precache_sound ("weapons/shotgun/shotload.wav");
 
     // tommy gun
     precache_sound ("weapons/tommygun/_tom.wav");  // Tommy gun
-    precache_sound ("weapons/tommygun/tomcock.wav");
- // out of bullet noise
+    precache_sound ("weapons/tommygun/tomcock.wav"); // out of bullet noise
 
     // napalm launcher
     precache_sound ("weapons/napalm/blaster.wav");  // Napalm launcher
@@ -544,6 +541,9 @@ void() DropShell =
     self.nextthink = time + 1.5;
     self.think = SUB_Remove;
     self.ltime = time - 1;
+
+    if (self.noise1)
+        sound (self ,CHAN_WEAPON, self.noise1, 1, ATTN_NORM);
 };
 
 
@@ -561,21 +561,37 @@ void() SpawnShell =
     shell = spawn ();
     shell.owner = self;
 
-    // Shotgun shells
+    // shell.noise is the hitting ground sound
+    // shell.noise1 is the cocking sound
+
+    // Shotgun shells (2 shells dropped)
     if (self.weapon == IT_SUPER_SHOTGUN)
     {
+        local entity shell2;
+
+        // 1st shell
         shell.nextthink = time + 0.4;  // delay shells until reload
-        shell.mdl = "progs/shotshl.mdl";
-        shell.noise = "weapons/shtshl2.wav";
+        shell.mdl    = "progs/shotshl.mdl";
+        shell.noise  = "weapons/shtshl2.wav";
+        shell.noise1 = "weapons/shotgun/shotcock.wav";
         shell.think = DropShell;
+
+        // 2nd shell
+        shell2 = spawn ();
+        shell2.owner = self;
+
+        shell2.nextthink = shell.nextthink;
+        shell2.mdl       = shell.mdl;
+        shell2.noise     = shell.noise;
+        shell2.think     = shell.think;
     }
     // Tommy gun shells
     else  // if (self.weapon == IT_NAILGUN)
     {
         local entity player;
 
-        shell.mdl = "progs/tommyshl.mdl";
-        shell.noise = "weapons/shtshl.wav";
+        shell.mdl    = "progs/tommyshl.mdl";
+        shell.noise  = "weapons/shtshl.wav";
 
         // since we directly call DropShell, the shell must be "self" temporary
         player = self;
@@ -613,7 +629,7 @@ void() W_FireSuperShotgun =
     self.currentammo = self.ammo_shells = self.ammo_shells - 2;
 
     dir = aim (self, 100000);
-    SpawnShell (); SpawnShell ();  // 2 shells dropped
+    SpawnShell ();
     FireBullets (30, dir, '0.14 0.08 0');  // quake = 14 bullets
 };
 
@@ -742,11 +758,9 @@ void() W_FireRocket =
     newmis.angles = vectoangles(newmis.velocity);
 
     newmis.touch = T_MissileTouch;
-    #ifdef QUAKEWORLD
-    newmis.classname = "missile";
-    newmis.voided = 0;
-    #else
     newmis.classname = "rocket";
+    #ifdef QUAKEWORLD
+    newmis.voided = 0;
     #endif
 
     // set newmis duration
