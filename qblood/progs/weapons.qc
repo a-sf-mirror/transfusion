@@ -731,16 +731,15 @@ Switch to another player's weapon
 */
 void(float newWeapon) W_SwitchToWeapon =
 {
+    self.newweapon = 0;
+
     // If we don't have that weapon
     if (! (self.items & newWeapon))
         return;
 
     // If the new weapon is already the current one
     if (self.weapon == newWeapon)
-    {
-        self.newweapon = 0;
         return;
-    }
 
     self.newweapon = newWeapon;
     self.player_state = PS_HOLSTER;
