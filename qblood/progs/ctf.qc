@@ -50,7 +50,7 @@ void(entity flg) RegenFlag =
     flg.cnt = FLAG_AT_BASE; // it's at home base
     flg.owner = world;
     flg.velocity = '0 0 0';
-    sound (flg, CHAN_VOICE, "bludbath/respawn2.wav", 1, ATTN_NORM); // play respawn sound
+    sound (flg, CHAN_ITEM, "bludbath/respawn2.wav", 1, ATTN_NORM); // play respawn sound
 };
 
 
@@ -130,7 +130,7 @@ void() CTF_FlagTouch =
 
             Cl_PrintTeamScores ();
 
-            sound (other, CHAN_VOICE, self.noise2, 1, ATTN_NONE);
+            sound (self, CHAN_VOICE, self.noise2, 1, ATTN_NONE);
 
             // other gets another 10 frag bonus
             other.frags = other.frags + TEAM_CAPTURE_CAPTURE_BONUS;
@@ -147,7 +147,7 @@ void() CTF_FlagTouch =
         else
             Bprint (PRINT_HIGH, " РЕТУРНЕД the блуе flag!\n"); // blue
         other.frags = other.frags + TEAM_CAPTURE_RECOVERY_BONUS;
-        sound (other, CHAN_ITEM, self.noise1, 1, ATTN_NORM);
+        sound (self, CHAN_ITEM, self.noise1, 1, ATTN_NONE);
         TeamCaptureReturnFlag(self);
         return;
     }
@@ -159,7 +159,7 @@ void() CTF_FlagTouch =
     else
         Bprint (PRINT_HIGH, " ГОТ the ред flag!\n"); // red
     centerprint (other, "ыоу гот тхе енемы флаг\n\nретурн то басе");  // == "YOU GOT THE ENEMY FLAG!\n\nRETURN TO BASE!"
-    sound (other, CHAN_ITEM, self.noise, 1, ATTN_NORM);
+    sound (self, CHAN_ITEM, self.noise, 1, ATTN_NONE);
 
     other.items2 = other.items2 + IT2_ENEMY_FLAG;
 
@@ -350,7 +350,7 @@ void() item_flag_team1 =
 
     precache_model ("progs/flag.mdl");
 
-    precache_sound ("thevoice/8001.wav");  // "Blue captures the flag"
+    precache_sound ("thevoice/8000.wav");  // "Red captures the flag"
     precache_sound ("thevoice/8002.wav");  // "Red returns the flag"
     precache_sound ("thevoice/8006.wav");  // "Red flag stolen"
 
@@ -378,7 +378,7 @@ void() item_flag_team2 =
 
     precache_model ("progs/flag.mdl");
 
-    precache_sound ("thevoice/8000.wav");  // "Red captures the flag"
+    precache_sound ("thevoice/8001.wav");  // "Blue captures the flag"
     precache_sound ("thevoice/8003.wav");  // "Blue returns the flag"
     precache_sound ("thevoice/8007.wav");  // "Blue flag stolen"
 
