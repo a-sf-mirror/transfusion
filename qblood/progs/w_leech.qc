@@ -208,11 +208,114 @@ void() Leech_BallFire =
     setsize (newmis, '0 0 0', '0 0 0');
     setorigin (newmis, self.origin + v_forward * 8 + '0 0 16');
 
-    newmis.dmg = 20;
+    newmis.dmg = 40;
 
     // set newmis duration
     newmis.nextthink = time + 5;
     newmis.think = SUB_Remove;
+};
+
+
+/*
+================
+Leech_AltBallTouch
+
+Touch function for the leech altfire missile
+================
+*/
+void() Leech_AltBallTouch =
+{
+    // Don't explode on owner (the Life Leech)
+    if (other == self.owner)
+        return;
+
+    #ifdef QUAKEWORLD
+    if (self.voided) {
+        return;
+    }
+    self.voided = 1;
+    #endif
+
+    // Switch ownership from the Life Leech itself to the LL owner
+    self.owner = self.owner.owner;
+
+    if (pointcontents(self.origin) == CONTENT_SKY)
+    {
+        remove (self);
+        return;
+    }
+
+    // If we can damage the entity we touch
+    if (other.takedamage)
+        T_Damage (other, self, self.owner, self.dmg, DF_MIND, "leech");
+
+    sound (self, CHAN_AUTO, "weapons/napalm/explodfs.wav", 1, ATTN_NORM);
+    remove (self);
+};
+
+
+/*
+==================
+Leech_Think
+
+Dropped LL think function
+==================
+*/
+void() Leech_Think =
+{
+    local float diff, bestdiff;
+    local entity ent, bestent;
+    local vector ballorigin;
+
+    self.nextthink = time + 0.75;
+    ballorigin = self.origin + '0 0 45';
+
+    // Look for a target (the closer, the better)
+    bestdiff = 10000;
+    bestent = world;
+    ent = findradius (self.origin, 500);
+    while (ent != world)
+    {
+        // If it's a player
+        if (ent.classname == "player")
+        {
+            // If he's closer than our current choice
+            diff = vlen (ent.origin - ballorigin);
+            if (diff < bestdiff && ent != self.owner)
+            {
+                // If he's visible
+                traceline (ballorigin, ent.origin, FALSE, self);
+                if (trace_ent == ent)
+                {
+                    bestent = ent;
+                    bestdiff = diff;
+                }
+            }
+        }
+
+        ent = ent.chain;
+    }
+
+    // If we haven't find a target, there's nothing to do
+    if (bestent == world)
+        return;
+
+    // Fire a ball of energy on the target
+    newmis = spawn ();
+    newmis.owner = self;
+    newmis.solid = SOLID_BBOX;
+    newmis.classname = "rocket";
+    #ifdef QUAKEWORLD
+    newmis.voided = 0;
+    #endif
+    newmis.velocity = 1500 * normalize (bestent.origin - ballorigin);
+    newmis.angles = vectoangles (newmis.velocity);
+    newmis.movetype = MOVETYPE_FLYMISSILE;
+    newmis.touch = Leech_AltBallTouch;
+    setmodel (newmis, "progs/bolt.mdl");  // the tesla ball is closer to the original look
+    setsize (newmis, '0 0 0', '0 0 0');
+    setorigin (newmis, ballorigin);
+    newmis.dmg = 15;
 };
 
 
@@ -234,18 +337,19 @@ void() Leech_Drop =
     setmodel (item, "progs/g_leech.mdl");
     setsize (item, '-5 -5 0', '5 7 41');
 
+    item.owner = self;
     item.solid = SOLID_BBOX;
     item.takedamage = DAMAGE_AIM;
-    item.health = 500;
+    item.health = 300;
 
     item.origin = self.origin + '0 0 12';
     item.velocity = aim (self, 1000) * 50;
     item.velocity_z = 150;
     item.movetype = MOVETYPE_TOSS;
 
-    // remove after 20 minutes
-    item.nextthink = time + 1200;
-    item.think = SUB_Remove;
+    // Sentry mode
+    item.nextthink = time + 0.75;
+    item.think = Leech_Think;
 
     item.touch = SUB_SolidTouch;
     item.th_die = SUB_Remove;

@@ -185,17 +185,25 @@ vector(float wep) weapon_range =
     else if (wep == IT_FLAREGUN)
         return '128 0 99999';
     else if (wep == IT_SAWED_OFF)
-        return '128 0 99999';
+        return '48 0 3000';
     else if (wep == IT_TOMMYGUN)
         return '180 0 3000';
-    else if (wep == IT_SPRAY_CAN)
-        return '180 0 3000';
-    else if (wep == IT_TNT)
-        return '180 48 3000';
     else if (wep == IT_NAPALM_LAUNCHER)
         return '180 48 3000';
+    else if (wep == IT_TNT)
+        return '180 48 3000';
+    else if (wep == IT_PROXIMITY_BOMB)
+        return '180 48 3000';
+    else if (wep == IT_REMOTE_DETONATOR)
+        return '180 48 3000';
+    else if (wep == IT_SPRAY_CAN)
+        return '128 0 512';
     else if (wep == IT_TESLA_CANNON)
-        return '350 0 512';
+        return '180 0 3000';
+    else if (wep == IT_VOODOO_DOLL)
+        return '256 0 3000';
+    else if (wep == IT_LIFE_LEECH)
+        return '180 0 3000';
 };
 /*
 -=-=-=-=-=-=-=-=-=-=-=-=-=-=-=-=-=-=-=-=-=-=-=
@@ -216,40 +224,59 @@ void(float brange) bot_weapon_switch =
 
     while(it)
     {
-        if ((self.ammo_rockets >= 1) && (it & 32))
+        // Napalm Launcher
+        if ((self.ammo_rockets >= 1) && (it & IT_NAPALM_LAUNCHER))
         {
-            flag = 32;
-            pulse = 7;
-        }
-        else if (self.waterlevel <= 1 && self.ammo_cells >= 1 && (it & 64))
-        {
-            flag = 64;
-            pulse = 8;
-        }
-        else if(self.ammo_nails >= 2 && (it & 8))
-        {
-            flag = 8;
+            flag = IT_NAPALM_LAUNCHER;
             pulse = 5;
         }
-        else if ((self.ammo_rockets >= 1) && (it & 16))
+        // Tesla Cannon
+        else if (self.ammo_cells >= 1 && (it & IT_TESLA_CANNON))
         {
-            flag = 16;
-            pulse = 6;
+            flag = IT_TESLA_CANNON;
+            pulse = 8;
         }
-        else if(self.ammo_shells >= 2 && (it & 2))
+        // Life Leech
+        else if(self.ammo_leech >= 1 && (it & IT_LIFE_LEECH))
         {
-            flag = 2;
+            flag = IT_LIFE_LEECH;
+            pulse = 9;
+        }
+        // Spray Can
+        else if(self.ammo_spray >= 1 && (it & IT_SPRAY_CAN))
+        {
+            flag = IT_SPRAY_CAN;
+            pulse = 7;
+        }
+        // Sawed Off
+        else if(self.ammo_shells >= 2 && (it & IT_SAWED_OFF))
+        {
+            flag = IT_SAWED_OFF;
             pulse = 3;
         }
-        else if(self.ammo_nails >= 1 && (it & 4))
+        // Tommy Gun
+        else if(self.ammo_nails >= 1 && (it & IT_TOMMYGUN))
         {
-            flag = 4;
+            flag = IT_TOMMYGUN;
             pulse = 4;
         }
-        else if(self.ammo_shells >= 1 && (it & 1))
+        // Voodoo Doll
+        else if(self.ammo_voodoo >= 1 && (it & IT_VOODOO_DOLL))
         {
-            flag = 1;
+            flag = IT_VOODOO_DOLL;
+            pulse = 17;
+        }
+        // Flaregun
+        else if(self.ammo_shells >= 1 && (it & IT_FLAREGUN))
+        {
+            flag = IT_FLAREGUN;
             pulse = 2;
+        }
+        // TNT
+        else if ((self.ammo_tnt_bundle >= 1) && (it & IT_TNT))
+        {
+            flag = IT_TNT;
+            pulse = 6;
         }
         else
         {
@@ -282,10 +309,10 @@ void() bot_shoot =
     // quick little function to stop making him shoot the wrong way ! Argh
     local float g;
     g = angcomp(self.v_angle_x, self.b_angle_x);
-    if (fabs(g) > 30)
+    if (fabs(g) > 10 * (4 - self.b_skill))
         return; // argh, too far away
     g = angcomp(self.v_angle_y, self.b_angle_y);
-    if (fabs(g) > 30)
+    if (fabs(g) > 10 * (4 - self.b_skill))
         return; // not again!
     self.button0 = TRUE;
 };

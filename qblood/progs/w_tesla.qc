@@ -201,9 +201,9 @@ void() Tesla_JoltTouch =
     if (other.takedamage)
         T_Damage (other, self, self.owner, self.dmg, DF_BODY, "tesla");
 
+    // Alt-fire touch.
     if (self.style == TESLA_BIGJOLT)
     {
-        // Alt-fire touch.
         T_RadiusDamage (self, self.owner, self.dmg, other, "tesla");
 
         self.origin = self.origin - 8 * normalize (self.velocity);
@@ -229,12 +229,9 @@ void() Tesla_JoltTouch =
         multicast  (self.origin, MULTICAST_PHS);
         #endif
     }
+    // Normal touch
     else
-    {
-        // Normal touch
-        self.origin = self.origin - 8 * normalize(self.velocity);
         sound (self, CHAN_AUTO, "weapons/tesla/tessnght.wav", 1, ATTN_NORM);
-    }
 
     remove (self);
 };

@@ -27,6 +27,9 @@
 #include "common.qh"
 
 
+float() crandom;
+
+
 /*
 -=-=-=-=-=-=-=-=-=-=-=-=-=-=-=-=-=-=-=-=-=-=-=
 
@@ -377,7 +380,7 @@ void() bot_handle_ai =
     }
     else if (self.b_aiflags & AI_SUPER_JUMP)
     {
-        if (self.weapon != 32)
+        if (self.weapon != IT_NAPALM_LAUNCHER)
             self.impulse = 7;
         else if (self.flags & FL_ONGROUND)
         {
@@ -599,28 +602,52 @@ float(entity thing) priority_for_thing =
     if ((thing.flags & FL_ITEM) && thing.model != string_null && thing.search_time < time)
     {
         // ugly hack
-                if (thing._last != self)
-                        thisp = 20;
+        if (thing._last != self)
+            thisp = 20;
         if (thing.classname == "item_artifact_super_damage")
             thisp = 65;
         else if (thing.classname == "item_artifact_invulnerability")
             thisp = 65;
         else if (thing.classname == "item_health")
         {
-            if (thing.spawnflags & 2)
+            if (thing.spawnflags & 2)  // 2 = H_MEGA
                 thisp = 55;
             if (self.health < 40)
                 thisp = thisp + 50;
         }
-        else if (thing.model == "progs/armor.mdl")
+        else if (thing.classname == "item_armorInv")
         {
-            if (self.armorvalue < 200)
-            {
-                if (thing.skin == 2)
-                    thisp = 60;
-                else if (self.armorvalue < 100)
-                    thisp = thisp + 25;
-            }
+            if (self.armor_body < 200 ||
+                self.armor_fire < 200 ||
+                self.armor_mind < 200 )
+                thisp = 60;
+        }
+        else if (thing.classname == "item_armor0")
+        {
+            if (self.armor_body < 100 ||
+                self.armor_fire < 100 ||
+                self.armor_mind < 100 )
+                thisp = 25;
+        }
+        else if (thing.classname == "item_armor1")
+        {
+            if (self.armor_body < 100)
+                thisp = 25;
+        }
+        else if (thing.classname == "item_armor2")
+        {
+            if (self.armor_fire < 100)
+                thisp = 25;
+        }
+        else if (thing.classname == "item_armor4")
+        {
+            if (self.armor_mind < 100)
+                thisp = 20;
+        }
+        else if (thing.classname == "weapon_flaregun")
+        {
+            if (!(self.items & IT_FLAREGUN))
+                thisp = 25;
         }
         else if (thing.classname == "weapon_supershotgun")
         {
@@ -640,7 +667,17 @@ float(entity thing) priority_for_thing =
         else if (thing.classname == "weapon_grenadelauncher")
         {
             if (!(self.items & IT_TNT))
-                thisp = 45;
+                thisp = 30;
+        }
+        else if (thing.classname == "weapon_proximity")
+        {
+            if (!(self.items & IT_PROXIMITY_BOMB))
+                thisp = 30;
+        }
+        else if (thing.classname == "weapon_remote")
+        {
+            if (!(self.items & IT_REMOTE_DETONATOR))
+                thisp = 30;
         }
         else if (thing.classname == "weapon_rocketlauncher")
         {
@@ -651,6 +688,16 @@ float(entity thing) priority_for_thing =
         {
             if (!(self.items & IT_TESLA_CANNON))
                 thisp = 50;
+        }
+        else if (thing.classname == "weapon_voodoodoll")
+        {
+            if (!(self.items & IT_VOODOO_DOLL))
+                thisp = 40;
+        }
+        else if (thing.classname == "weapon_lifeleech")
+        {
+            if (!(self.items & IT_LIFE_LEECH))
+                thisp = 55;
         }
     }
     else if (thing.classname == "player")
@@ -777,7 +824,7 @@ void() bot_angle_set =
             traceline(self.enemy.origin, view, FALSE, self);
             view = trace_endpos;
 
-            if (self.weapon == 32)
+            if (self.weapon == IT_NAPALM_LAUNCHER)
                 view = view - '0 0 22';
 
             view = normalize(view - self.origin);
@@ -798,6 +845,11 @@ void() bot_angle_set =
     }
     else
         self.b_angle_x = 0;
+
+    // Bad hack to try to make bots less precise
+    self.b_angle_x = self.b_angle_x + (crandom () * (3 - self.b_skill) * 15);
+    self.b_angle_y = self.b_angle_y + (crandom () * (3 - self.b_skill) * 15);
+
     // HACK HACK HACK HACK
     // The bot falls off ledges a lot because of "turning around"
     // so let the bot use instant turn around when not hunting a player

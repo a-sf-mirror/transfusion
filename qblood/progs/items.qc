@@ -1828,6 +1828,7 @@ void() weapon_lifeleech =
     precache_model ("progs/g_leech.mdl");
     precache_model ("progs/v_leech.mdl");
     precache_model ("progs/lechball.mdl");
+    precache_model ("progs/bolt.mdl");  // alftire ball
 
     setmodel (self, "progs/g_leech.mdl");
     self.weapon = IT_LIFE_LEECH;
@@ -1844,7 +1845,7 @@ void() weapon_lifeleech =
     //precache_sound ("weapons/lifelech/llsngfr3.wav");
     //precache_sound ("weapons/lifelech/llsnght2.wav");
     //precache_sound ("weapons/lifelech/skulair4.wav");
-
+    precache_sound ("weapons/napalm/explodfs.wav");  // altfire missile touch
     StartItem ();
 };
 
