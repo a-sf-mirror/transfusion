@@ -213,7 +213,7 @@ void() GibKnightCorpse =
     ThrowGib ("progs/gib2.mdl", self.health);
     ThrowGib ("progs/gib3.mdl", self.health);
 
-    sound (self, CHAN_VOICE, "player/udeath.wav", 1, ATTN_NONE);
+    sound (self, CHAN_ITEM, "zombie/z_miss.wav", 1, ATTN_NORM);
 
     remove (self);
 };

@@ -507,6 +507,21 @@ vector(float dm) VelocityForDamage =
 
 /*
 ====================
+HeadDie
+
+Function called when a head "dies"
+====================
+*/
+void() HeadDie =
+{
+    sound (self, CHAN_ITEM, "zombie/z_miss.wav", 1, ATTN_NORM);
+    ThrowGib ("progs/gib1.mdl", self.health);
+    remove (self);
+};
+
+
+/*
+====================
 HeadTouch
 
 Function used for throwing heads when someone touchs them
@@ -526,9 +541,7 @@ void() HeadTouch =
     self.health = self.health - 10;
     if (self.health < 0)
     {
-        sound(other, CHAN_ITEM, "zombie/z_miss.wav", 1, ATTN_NORM);
-        ThrowGib ("progs/gib1.mdl", self.health);
-        remove (self);
+        HeadDie ();
         return;
     }
 
@@ -574,7 +587,7 @@ void(string gibname, float dm) ThrowHead =
     // A player's head is invulnerable until this player respawns
     if (self.classname != "player")
     {
-        self.takedamage = DAMAGE_YES;
+        self.takedamage = DAMAGE_AIM;
 
         // Get rid of it in 2 minutes anyway (to avoid too many entities)
         self.nextthink = time + 120;
@@ -582,10 +595,24 @@ void(string gibname, float dm) ThrowHead =
     }
     else
         self.takedamage = DAMAGE_NO;
-    self.health = 120;
-    self.th_die = SUB_Remove;
-    self.touch = HeadTouch;
+
+    // Clean all
+    // if a monsters death sets off a trigger then dont let the corpses death do the same
+    self.use = SUB_Null;
+    self.target = string_null;
+    self.killtarget = string_null;
+    self.targetname = string_null;
+    self.th_stand = SUB_Null;
+    self.th_walk = SUB_Null;
+    self.th_run = SUB_Null;
+    self.th_missile = SUB_Null;
+    self.th_melee = SUB_Null;
     self.th_pain = SUB_Null;
+    self.flags = self.flags - (self.flags & FL_MONSTER);
+
+    self.health = 120;
+    self.th_die = HeadDie;
+    self.touch = HeadTouch;
 
     self.classname = "head";
     self.solid = SOLID_BBOX;

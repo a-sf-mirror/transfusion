@@ -404,15 +404,31 @@ Modify entity properties to change it to a destroyable corpse
 */
 void(float corpseHealth, void() corpseToGib) BecomeCorpse =
 {
+    // Clean all
+    // if a monsters death sets off a trigger then dont let the corpses death do the same
+    self.use = SUB_Null;
+    self.target = string_null;
+    self.killtarget = string_null;
+    self.targetname = string_null;
+    self.th_stand = SUB_Null;
+    self.th_walk = SUB_Null;
+    self.th_run = SUB_Null;
+    self.th_missile = SUB_Null;
+    self.th_melee = SUB_Null;
     self.th_pain = SUB_Null;
+    self.flags = self.flags - (self.flags & FL_MONSTER);
+
+    // Corpse will turn into gibs if destroyed
+    self.health = corpseHealth;
+    self.th_die = corpseToGib;
 
     // Get rid of it in 2 minutes anyway (to avoid too many entities)
     self.nextthink = time + 120;
     self.think = SUB_Remove;
 
     // Allow some interactions (so the corpses can be destroyed by explosions)
-    self.takedamage = DAMAGE_YES;
-    if (self.classname != "head")
+    self.takedamage = DAMAGE_AIM;
+    if (self.classname != "head")  // only player's heads go throw this function
     {
         self.touch = CorpseTouch;
         self.solid = SOLID_BBOX;
@@ -425,10 +441,6 @@ void(float corpseHealth, void() corpseToGib) BecomeCorpse =
 
         self.classname = "corpse";
     }
-
-    // Corpse will turn into gibs if destroyed
-    self.health = corpseHealth;
-    self.th_die = corpseToGib;
 };
 
 
@@ -445,7 +457,7 @@ void() GibPlayerCorpse =
     ThrowGib ("progs/gib2.mdl", self.health);
     ThrowGib ("progs/gib3.mdl", self.health);
 
-    sound (self, CHAN_VOICE, "player/gib.wav", 1, ATTN_NONE);
+    sound (self, CHAN_ITEM, "zombie/z_miss.wav", 1, ATTN_NORM);
 
     remove (self);
 };

@@ -222,7 +222,7 @@ void() GibArmyCorpse =
     ThrowGib ("progs/gib2.mdl", self.health);
     ThrowGib ("progs/gib3.mdl", self.health);
 
-    sound (self, CHAN_VOICE, "player/udeath.wav", 1, ATTN_NONE);
+    sound (self, CHAN_ITEM, "zombie/z_miss.wav", 1, ATTN_NORM);
 
     remove (self);
 };
@@ -295,8 +295,6 @@ void() monster_army =
     precache_sound ("soldier/pain2.wav");
     precache_sound ("soldier/sattck1.wav");
     precache_sound ("soldier/sight1.wav");
-
-    precache_sound ("player/udeath.wav");       // gib death
 
 
     self.solid = SOLID_SLIDEBOX;
