@@ -47,9 +47,6 @@
 
 // Linux
 #elif defined (linux) || defined (__linux__)
-    #include <sys/param.h>  // For MAXPATHLEN
-    #define MAX_PATH MAXPATHLEN
-
     #define StrCaseCmp strcasecmp
 
 #else
