@@ -336,7 +336,7 @@ void() Napalm_Fire =
         setmodel (newmis, "progs/missile.mdl");
         setsize (newmis, '0 0 0', '0 0 0');
 
-        newmis.dmg = 100 + random () * 40;
+        newmis.dmg = 100 + rint (random () * 40);
 
         // set newmis duration
         newmis.nextthink = time + 5;
