@@ -527,7 +527,6 @@ void() KickABot =
         {
 
             BotDisconnect(ty);
-            ty.ishuman = TRUE;
             ty = world;
         }
         else

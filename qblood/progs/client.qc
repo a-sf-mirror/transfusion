@@ -1391,6 +1391,8 @@ void() ClientDisconnect =
     sound (self, CHAN_BODY, "thevoice/vo2.wav", 1, ATTN_NONE);
     CTF_PlayerDropFlag ();
     set_suicide_frame ();
+
+    self.ishuman = 0;
 };
 
 /*
