@@ -45,6 +45,7 @@
 @baseclass size(-16 -16 -24, 16 16 32) color(0 255 0) = PlayerClass []
 
 @PointClass base(PlayerClass) = info_player_start : "Single player start" []
+@PointClass base(PlayerClass) = info_player_coop : "Cooperative player start" []
 @PointClass base(PlayerClass) = info_player_deathmatch : "Player deathmatch start" []
 @PointClass base(PlayerClass) = info_player_team1 : "Red team base start" []
 @PointClass base(PlayerClass) = info_player_team2 : "Blue team base start" []
@@ -85,6 +86,7 @@
 		8 : "Candle C"
 		4 : "Fast strobe"
 		9 : "Slow strobe"
+		32: "Light is usable"
 	]
 	delay(Choices) : "Attenuation" : 0 =
 	[
@@ -253,11 +255,20 @@
 	health(integer) : "Health (shoot open)" : 0
 	spawnflags(flags) =
 	[
-		1 : "Starts Open" : 0
-		4 : "Don't link" : 0
-		8 : "Gold Key required" : 0
-		16: "Silver Key required" : 0
-		32: "Toggle" : 0
+		1  : "Starts Open" : 0
+		4  : "Dont link" : 0
+		8  : "Eye Key required" : 0
+		16 : "Skull Key required" : 0
+		32 : "Toggle" : 0
+		64 : "Fire Key Required" : 0
+		128: "Dagger Key Required" : 0
+		256: "Spider Key Required" : 0
+		512: "Moon Key Required" : 0
+	]
+	flags(choices) =
+	[
+	    0 : "Player manually uses the door" : 0
+		1 : "Player proximity opens the door" : 0
 	]
 ]
 
@@ -274,7 +285,21 @@
 	]
 ]
 
-@SolidClass = func_wall : "Moving wall" []
+@SolidClass = func_wall : "Moving wall" 
+[
+	style(choices) : "Movement style" : 0 =
+	[
+		0: "Player activated, switches textures"
+		1: "Automated movement"
+	]	
+	speed(integer) : "Speed (units per second)" : 150
+	lip(integer) : "Lip remaining at end of move"
+]
+
+@SolidClass = func_changelevel : "End of level switch (Only shows in SP/COOP)" 
+[
+    map(string) : "The map to go to next"
+]
 
 @SolidClass = func_button : "Button"
 [
@@ -293,6 +318,15 @@
 		-1: "Stays pressed"
 	]
 	delay(integer) : "Delay before trigger"]
+	style(choices) : "Stationary / Moving button" : 0 =
+	[
+		0: "Stationary"
+		1: "Moving"
+	]
+	lip(integer) : "Lip remaining at end of move" : 8
+	targetname(string) : "Allows a button to be triggered by other triggers"
+    killtarget(string) : "kill certain entities, when used on their targetname"
+]
 
 @SolidClass base(Targetname) = func_train : "Moving platform"
 [
@@ -327,6 +361,13 @@
 		1: "Base fast"
 		2: "Chain Slow"
 	]
+	t_length(integer) : "t_length - ???" : 80
+    t_width(integer) : "t_width - ???" : 10
+	noise(string) : "Player defined sound 1 (must set both 1 & 2)"
+	noise1(string) : "Player defined sound 2 (must set both 1 & 2)"
+	speed(integer) : "Platform speed"
+	dmg(integer) : "Damage to inflict if blocked"
+	targetname(string) : "targetname"
 ]
 
 
@@ -395,6 +436,7 @@
 ]
 
 @SolidClass base(Trigger) = trigger_hurt : "Trigger player hurt" [ dmg(integer) : "Damage" : 10 ]
+@SolidClass base(Trigger) = trigger_changelevel : "Event triggers the change to the next level" [ map(string) : "Next map"]
 
 
 //
@@ -408,7 +450,11 @@
 @PointClass base(Weapon) = weapon_tommygun : "Tommy Gun" []
 @PointClass base(Weapon) = weapon_tnt : "TNT"
 [
-	spawnflags(flags) = [ 1: "Case of TNT" : 0 ]
+	spawnflags(flags) = 
+	[
+	    0: "Bundle of TNT" : 1
+		1: "Case of TNT" : 0 
+	]
 ]
 @PointClass base(Weapon) = weapon_napalmlauncher : "Napalm Launcher" []
 @PointClass base(Weapon) = weapon_teslacannon : "Tesla Cannon" []
@@ -428,7 +474,11 @@
 @PointClass base(Ammo) = ammo_flares : "Box of Flares" []
 @PointClass base(Ammo) size(-16 -16 0, 16 16 56) = ammo_shell : "Shotgun Shells"
 [
-	spawnflags(flags) = [ 1: "Box of shotgun shells" : 1 ]
+	spawnflags(flags) = 
+	[
+	    0: "4 shells" : 0
+		1: "Box of shotgun shells" : 1 
+	]
 ]
 @PointClass base(Ammo) = ammo_bullets : "Bullets"
 [
@@ -443,7 +493,7 @@
 // Powerups
 //
 
-@PointClass size(-7 -11 -1, 7 11 19) = item_artifact_bag : "Doctor's Bag" []
+@PointClass size(-7 -11 -1, 7 11 19) = item_artifact_bag : "Doctors Bag" []
 @PointClass size(-11 -10 -1, 4 10 19) = item_artifact_boots : "Boots of Jumping" []
 @PointClass size(-7 -7 -1, 7 7 14) = item_artifact_crystal : "Crystal Ball" []
 @PointClass size(-9 -13 -3, 8 13 74) = item_artifact_divingsuit : "Diving Suit" []
@@ -474,32 +524,16 @@
 	spawnflags(flags) =
 	[
 		1 : "Solid" : 0
-	]
+    ]
 ]
-@PointClass base(Object) size(-16 -15 -3, 16 16 14) = obj_bonepile : "Pile of Bones" []
-@PointClass base(Object) size(-31 -34 -1, 31 32 39) = obj_bush1 : "Small Bush" []
-@PointClass base(Object) size(-37 -17 -2, 39 17 13) = obj_corps2 : "Corpse, Face Up"
-[
-	skin(Choices) : "Skin" : 0 =
-	[
-		0 : "Body 1"
-		1 : "Body 2"
-		2 : "Body 3"
-		3 : "Body 4"
-		4 : "Body wrapped in spiderwebs"
-	]
-]
-@PointClass base(Object) size(-3 -12 -19, 3 12 21) = obj_cross : "Tilted Cross" []
-@PointClass base(Object) size(-31 -27 -1, 31 27 95) = obj_fountain : "Large 2 Tier Fountain" []
-@PointClass base(Object) size(-51 -65 -24, 55 65 90) = obj_goal : "Soccar Goal from FWH" []
-@PointClass base(Object) size(-27 -27 -1, 26 26 92) = obj_hedge1 : "Triangular Hedge" []
-@PointClass base(Object) size(-30 -29 -1, 29 30 30) = obj_plantgen : "Small Plant" []
-@PointClass base(Object) size(-30 -29 -1, 29 30 39) = obj_plantmez : "Potted Plant" []
-@PointClass base(Object) size(-39 -38 -1, 39 39 95) = obj_plantrom : "Plant in Vase" []
+
+@PointClass base(Object) size(-6 -14 0, 15 10 55) = obj_body_sitting : "Dead Innocent Sitting" []
+@PointClass base(Object) size(-6 -14 0, 15 10 55) = obj_body_spread : "Dead Innocent spread out" []
+@PointClass base(Object) size(-40 -52 0, 44 52 90) = obj_goal : "Soccer Goal from BB8" []
 @PointClass base(Object) size(-8 -9 0, 8 9 38) = obj_pot1 : "Large Vase (tile0537)" []
 @PointClass base(Object) size(-17 -18 0, 18 18 41) = obj_pot2 : "Large Urn (tile1063)" []
 @PointClass base(Object) size(-7 -7 0, 7 7 15) = obj_pot5 : "Small Pot (tile0604)" []
-@PointClass base(Object) size(-4 -5 0, 4 5 72) = obj_seaweed : "Flowing Seaweed" []
+@PointClass base(Object) size(-0 -7 -27, 3 7 26) = obj_shovel : "Shovel (tile1713)" []
 @PointClass base(Object) size(-6 -5 0, 5 5 52) = obj_skllstk1 : "Stake w/ 1 skull (tile0257)" []
 @PointClass base(Object) size(-6 -4 0, 5 6 55) = obj_skllstk2 : "Stake w/ 3 skulls (tile0258)" []
 @PointClass base(Object) size(-6 -5 0, 5 5 19) = obj_skllstk3 : "Impaled Skull (tile0685)" []
@@ -511,35 +545,43 @@
 @PointClass base(Object) size(-8 -16 0, 8 14 47) = obj_tombstn6 : "Wooden Cross Tombstone (tile0703)" []
 @PointClass base(Object) size(-32 -41 0, 52 45 174) = obj_tree : "Dead Tree (tile0540)" []
 @PointClass base(Object) size(-32 -41 0, 52 45 174) = obj_tree2 : "Live Tree (tile0541)" []
-@PointClass base(Object) size(-6 -4 0, 6 4 11) = obj_skull : "Brown Skull" []
-@PointClass base(Object) size(-7 -7 0, 7 7 18) = obj_stool : "A Stool" []
-@PointClass base(Object) size(-12 -8 -11, 12 8 11) = obj_m2 : "White Skull" []
-@PointClass base(Object) size(-12 -8 -11, 12 8 11) = obj_m3 : "Green Skull" []
-@PointClass base(Object) size(-0 -7 -27, 3 7 26) = obj_shovel : "Shovel (tile1713)" []
-@PointClass base(Object) size(-11 -7 -1, 14 8 28) = obj_brainjar : "Jar with brain in it"
-[
-	skin(Choices) : "Skin" : 0 =
-	[
-		0 : "Green fluid"
-		1 : "Red fluid"
-	]
-]
-@PointClass base(Object) size(-14 -14 -1, 14 14 36) = obj_drum : "Drum-type barrel"
-[
-	skin(Choices) : "Skin" : 0 =
-	[
-		0 : "Zombie head with blood"
-		1 : "Green slime"
-	]
-]
-
+@PointClass base(Object) size(-15 -15 0, 15 15 43) = obj_world_barrel : "Wooden Barrel (tile0907)" []
+@PointClass base(Object) size(-21 -12 -1, 27 23 19) = obj_world_body1 : "Dead body (tile2333)" []
+@PointClass base(Object) size(-2 -2 0, 2 2 16) = obj_world_bottle2 : "Bottle (tile0759)" []
+@PointClass base(Object) size(-18 -13 0, 18 13 10) = obj_world_boulder : "Boulder (tile804)" []
+@PointClass base(Object) size(-6 -6 0, 6 6 24) = obj_world_bucket1 : "Waste bucket (tile0505)" []
+@PointClass base(Object) size(-0 -5 -9, 2 5 10) = obj_world_calipers : "Calipers (tile1715)" []
+@PointClass base(Object) size(-3 -10 0, 3 10 38) = obj_world_candlbr1 : "Short Candelabra (tile0584)" []
+@PointClass base(Object) size(-5 -7 0, 5 7 54) = obj_world_candlbr2 : "Tall Candelabra (tile0580)" []
+@PointClass base(Object) size(0 -10 -10, 2 10 10) = obj_world_clock : "Clock (tile1165)" []
+@PointClass base(Object) size(-6 -18 0, 6 18 47) = obj_world_draven : "Draven Tombstone (tile1159)" []
+@PointClass base(Object) size(-4 -12 16, 4 13 61) = obj_world_extngsh : "Fire Extinguisher (tile0658)" []
+@PointClass base(Object) size(-11 -11 0, 11 11 55) = obj_world_ivdrip : "IV Drip (tile0962)" []
+@PointClass base(Object) size(-8 -8 0, 9 9 18) = obj_world_jar1 : "Glass Jar w/brain (tile0075)" []
+@PointClass base(Object) size(-3 -3 0, 3 3 9) = obj_world_jar2 : "Stone Jar (tile0802)" []
+@PointClass base(Object) size(-6 -8 0, 8 8 63) = obj_world_lantern1 : "Garden Lantern (tile0640)" []
+@PointClass base(Object) size(-8 -3 0, 9 4 7) = obj_world_leg1 : "Severed Leg (tile0682)" []
+@PointClass base(Object) size(-5 -6 -13, 5 6 13) = obj_world_light1 : "Ceiling Light (tile0468)" []
+@PointClass base(Object) size(-14 -14 0, 14 14 36) = obj_world_metbarrel : "Metal Barrel (tile0201)" []
+@PointClass base(Object) size(-14 -14 0, 14 14 36) = obj_world_metbarrel2 : "Metal Body Barrel (tile0563)" []
+@PointClass base(Object) size(-4 -4 0, 4 4 8) = obj_world_plant1 : "Potted Plant (tile1009)" []
+@PointClass base(Object) size(-1 -1 8, 1 3 36) = obj_world_poker : "Poker (tile1716)" []
+@PointClass base(Object) size(-17 -32 0, 17 35 43) = obj_world_pram : "Pram (tile0183)" []
+@PointClass base(Object) size(-1 -4 -9, 1 6 15) = obj_world_saw : "Saw (tile1714)" []
+@PointClass base(Object) size(-3 -11 0, 12 11 9) = obj_world_sinktaps : "Sink taps (tile0485)" []
+@PointClass base(Object) size(-5 -5 0, 5 5 8) = obj_world_skull1 : "Skull (tile807)" []
+@PointClass base(Object) size(-6 -19 0, 5 20 71) = obj_world_skullrag : "Skull on stake w/rags (tile0607)" []
+@PointClass base(Object) size(-1 -5 -18, 1 5 18) = obj_world_spade : "Spade (tile1712)" []
+@PointClass base(Object) size(-15 -17 0, 15 17 112) = obj_world_statue4 : "Stone Statue (tile0679)" []
+@PointClass base(Object) size(-5 -5 -6, 5 5 6) = obj_world_torch : "Wall torch (tile0570)" []
+@PointClass base(Object) size(-11 -16 0, 11 16 58) = obj_world_wreath1 : "Wreath (tile0575)" []
+@PointClass base(Object) size(0 -49 -42, 11 50 47) = obj_world_wreath2 : "Big Wreath (tile0633)" []
 
 //
 // Sentries
 //
 
 @PointClass = sentry_detect_custom : "Custom sound" [ noise(string) : "Sound file" ]
-
 @PointClass = sentry_detect_crypt : "Howling sound" []
 @PointClass = sentry_detect_laugh : "Laugh sound" []
 @PointClass = sentry_detect_switch1 : "Switch sound" []
@@ -558,10 +600,14 @@
 @PointClass base(Monster) size(-6 -14 0, 34 14 62) = monster_browncultist : "Brown Cultist" []
 @PointClass base(Monster) size(-8 -11 0, 11 11 50) = monster_butcher : "Butcher" []
 @PointClass base(Monster) size(-9 -1 -2, 6 1 2) = monster_eel : "Eel" []
+@PointClass base(Monster) size(-25 -31 0, 18 31 45) = monster_gargoyle : "Flesh Gargoyle" []
 @PointClass base(Monster) size(-6 -14 0, 34 14 62) = monster_greencultist : "Green Cultist" []
 @PointClass base(Monster) size(-39 -17 0, 38 17 35) = monster_hellhound : "Hellhound" []
+@PointClass base(Monster) size(-6 -14 0, 15 10 55) = monster_innocent : "Innocent" []
+@PointClass base(Monster) size(-16 -16 -10, 16 16 20) = monster_minicaleb : "Mini-Caleb" []
 @PointClass base(Monster) size(-13 -3 0, 13 3 6) = monster_rat : "Rat" []
 @PointClass base(Monster) size(-6 -14 0, 34 14 62) = monster_redcultist : "Red Cultist" []
+@PointClass base(Monster) size(-25 -31 0, 18 31 45) = monster_stonegargoyle : "Stone Gargoyle" []
 @PointClass base(Monster) size(-5 -15 0, 11 15 62) = monster_zombie : "Zombie" []
 
 
@@ -593,10 +639,11 @@
 	dmg(integer) : "Damage" : 240
 ]
 
-@PointClass size(-16 -16 0, 16 16 56) = item_health : "Health pak"
+@PointClass size(-16 -16 0, 16 16 56) = item_health : "Health giving items"
 [
 	spawnflags(flags) =
 	[
+		0 : "Medicine pouch" : 0
 		1 : "Life Essence" : 1
 		2 : "Life Seed" : 0
 	]
@@ -606,7 +653,7 @@
 
 @SolidClass base(Target, Targetname) = exploding_wall : "Exploding Wall"
 [	
-	alpha(integer) : "Opacity rate"
+	alpha(integer) : "Opacity rate 0.0 to 1.0"
 	health(integer) : "Health (shootable if > 0)"
 	skin(choices) : "Skin" : 0 =
 	[
@@ -631,3 +678,31 @@
 ]
 
 @PointClass = decal_custom : "Decal" [ model(string) : "Sprite model" ]
+
+@PointClass = hidden_exploder : "Unseen triggered explosion"
+[
+	noise(string) : "Sound to play when explosion occurs"
+	colormap(color255) : "color for explosion (0-255) with particle explosion"
+    target(target_destination) : "Target - great for chained explosions"
+    wait(interger) : "Delay until explosion"
+    style(choices) =
+	[
+	    0 : "Basic sprite explosion" : 1
+	    1 : "Medium opengl explosion" : 0
+	    2 : "Violet flash, then medium opengl explosion" : 0
+	    3 : "Red splash going up" : 0
+	    4 : "White spherical pulse" : 0
+	    5 : "Large opengl explosion" : 0
+	    6 : "Particle explosion" : 0
+	]
+]
+
+@PointClass = func_transparent : "Transparent wall"
+[
+    alpha(integer) : "Opacity rate 0.0 to 1.0"
+	style(choices) : "Solid / Non-solid" : 1 =
+	[
+	    0 : "Non-solid" : 0
+		1 : "Solid" : 1
+	]
+]
