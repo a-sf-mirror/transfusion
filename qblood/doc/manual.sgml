@@ -4,12 +4,12 @@
    <!-- Header and TOC -->
 
    <title> Transfusion manual
-   <author> Mathieu Olivier <tt>&lt;elric@planetblood.com&gt;</tt> and
-   Dave Turner <tt>&lt;darth_linux@planetblood.com&gt;</tt>
-   <date>v0.0.4, September 22, 2002
+   <author> Mathieu Olivier and Dave Turner
+      <tt>&lt;{elric,darth_linux}@planetblood.com&gt;</tt>
+   <date>v0.9.0, October 6, 2002
    <abstract>
       This manual covers installation and usage of the
-      <url url="http://www.planetblood.com/qblood/" name="Transfusion"> game.
+      <ref id="links" name="Transfusion"> game.
    </abstract>
    <toc>
 
@@ -33,31 +33,74 @@
    <!-- Installation -->
 
    <sect><heading>Installation<p>
-      If you only want to play on a LAN or with bots, then all you need to do
-      is run the Transfusion installer program, choose a suitable location for it
-      on your hard drive, and you are ready to play. Transfusion requires no
-      external files or games for it to run.
+      If you read this manual, chances are that you have already installed
+      Transfusion on your machine. If it's not the case though, don't worry,
+      it's extremely easy. If you are lucky enough to use a Transfusion
+      installer program, just follow the steps as with any other installer
+      program. If you have an archive file, such as a ZIP file for instance,
+      extract its contents in a new, clean directory. That's it. You can launch
+      the game now.
 
-      If you want to play on the internet with others using a dedicated server,
-      then you'll need to have a copy of Quake and QuakeWorld installed as
-      well. Those of you that are already familiar with Quake shouldn't have
-      any difficulties for installing Transfusion. Like with any mod, all you
-      have to do is to put all Transfusion PAK files in a subdirectory of Quake
-      (naming it "transfusion" is highly recommended), and then launch the game with
-      "glqwcl -game transfusion" if your QuakeWorld binary is "glqwcl.exe" and
-      Transfusion directory is "transfusion". In order for all of the graphics and
-      files to be used by Quakeworld you'll also need to add some files and
-      subdirectories into the "qw" directory of your Quake installation. These files
-      are present in the Transfusion distribution under the "qw" subdirectory. They
-      consist of the player and eyes models, the graphics wad file and some palette
-      lump files. Move these files out of your 'qw' when you play QuakeWorld proper
-      unless you don't mind still seeing the Transfusion graphics.
+      Unfortunately, there are a few cases where people will have to use another
+      Quake engine instead of the one we provide, because of a low-end machine,
+      or a poor network connection, or because of drivers with no OpenGL support
+      or even a video card with no 3D acceleration.
+
+      <sect1><heading>Using Transfusion as a Quake mod<p>
+         If you are in this case, you will be happy to know that Transfusion can
+         be run using any Quake compatible engine, as a simple mod. Theorically,
+         all you have to do is to copy the "transfusion" subdirectory (the one
+         which contains the PAK files) into your Quake directory. Or copy a
+         Quake binary in the Transfusion installation directory, for that
+         matters.
+
+         Be aware that most Quake 1 compatible engines will requier the Quake
+         original data, despite the fact that Transfusion doesn't need them. So
+         you may also want to have the "id1" directory by the side of the
+         "transfusion" data directory.
+
+         To launch Quake using Transfusion as a mod, type the following command
+         line: "winquake -game transfusion", if your Quake engine is named
+         "winquake" of course. You may encounter a few minor bugs (Quake engines
+         with a software renderer have a few visual bugs, in particular), but
+         the gameplay should be very similar to the one we intended to create.
+      </sect1>
+
+      <sect1><heading>Transfusion and QuakeWorld<p>
+         If you want to play on the internet and that your computer can't run
+         our engine, then you will have to use a QuakeWorld based engine. Bad
+         news...
+
+         First, make sure you <em>really</em> want to play Transfusion on the
+         internet and that there's <em>no way</em> to use our engine on your
+         machine. I insist because 1- it's not easy to install and use
+         Transfusion with QuakeWorld, and 2- the gameplay is significantly
+         different and some features are missing.
+
+         Now that you are sure you want to give it a try, start by getting a
+         copy of a good QuakeWorld based engine (<ref id="links" name="ZQuake">
+         is the best choice in my opinion). Then, (re)install Transfusion with
+         the QuakeWorld support if you haven't done it previously. You will get
+         a "qw" directory in your install directory. This "qw" directory
+         contains 2 PAK files. The first one, "pak0.pak", will stay in this
+         directory. The other one must be moved to the "transfusion"
+         subdirectory when you play Transfusion with QuakeWorld, <em>but only
+         during that period of time</em>. If this second PAK stays in
+         "transfusion" while playing the game with a non-QuakeWorld engine, you
+         will surely get at least visual bugs. Also, you may have the same kind
+         of problems than those mentioned in the previous paragraph (Quake data
+         needed, software renderer bugs, ...).
+
+         If you have enough luck or skills to make all things work correctly,
+         the greatest challenge still remains: finding a server and some other
+         QuakeWorld players... Good luck. You will need it.
+      </sect1>
    </sect>
 
    <!-- Basic usage -->
 
    <sect><heading> Basic usage<p>
-      <sect1>Game types<p>
+      <sect1><heading>Game types<p>
          Transfusion supports 3 game types:
          <itemize>
             <item> BloodBath (deathmatch = 0 or 1, and teamplay = 0): This
@@ -76,31 +119,36 @@
          </itemize>
       </sect1>
 
-      <sect1>Impulses<p>
-         Let's start with the impulse list:
+      <sect1><heading>Impulses<label id="impulses"><p>
+         Impulses are command numbers. You can bind them to keys, or type them
+         directly at console. For example, typing "impulse 12" at console will
+         make you use the secondary fire of your weapon; you could achieve the
+         same effect by binding a key to "impulse 12" and pressing it.
+
+         Here is the complete impulse list:
          <itemize>
             <item> impulses 1 to 9, and impulse 17: select a weapon
             <item> impulses 10 and 11: cycle to next/previous weapon
-            <item> impulse 12: secondary fire (equivalent to the "+button3"
-            command)
+            <item> impulse 12: secondary fire (equivalent to the "+button3" command)
             <item> impulse 13: use the currently selected item
             <item> impulses 14 and 15: select previous/next item
             <item> impulse 16: view the current value of the next armor type
             <item> impulse 20: become an observer (only allowed when dead)
             <item> impulse 50: enter the <ref id="menu" name="voting menu">
-            <item> impulse 100: add a bot (to the red team if available)
-            <item> impulse 101: add a bot (to the blue team if available)
-            <item> impulse 102: kick a bot
+            <item> impulse 100: add a <ref id="bots" name="bot"> (to the red team if available)
+            <item> impulse 101: add a <ref id="bots" name="bot"> (to the blue team if available)
+            <item> impulse 102: kick a <ref id="bots" name="bot">
             <item> impulse 141: identify the player you're aiming at
          </itemize>
 
          All those impulses are considered cheats (not available in multiplayer
          games, except if the server has the "sv_cheats" cvar set to a
-         non-zero value). <em>WARNING</em>: some of them MAY CRASH THE GAME.
+         non-zero value). <em>WARNING</em>: although it's unlikely, some of them
+         <em>may crash the game</em> under some conditions.
          <itemize>
-            <item> impulse 103: botcam mode (NQ only)
-            <item> impulse 104: waypoint edit mode (NQ only)
-            <item> impulse 250: Dump all entities stats to console (debug)
+            <item> impulse 103: botcam mode (unavailable in QuakeWorld)
+            <item> impulse 104: waypoint edit mode (unavailable in QuakeWorld)
+            <item> impulse 250: Dump all entities stats to console (for debugging)
             <item> impulse 251: Give full armor
             <item> impulse 252: Burn yourself !
             <item> impulse 253: Give all inventory items
@@ -120,6 +168,48 @@
             the floor. Stay away from these in a crowded game -- someone might
             teleport right into you, killing you instantly.
          </descrip>
+      </sect1>
+
+      <sect1><heading>Bots<label id="bots"><p>
+         Bots are fake players controled by a simple AI code. Transfusion bots
+         are heavily based on FrikBotX source code, a Quake mod that provides
+         its bot system as a separate piece of code.
+
+         The bots are easy to use. Take a look at the <ref id="impulses"
+         name="impulse list"> to see the few ones you'll have to use to
+         spawn and remove bots.
+
+         Bots count as normal players, so if you can't spawn bots (message:
+         "server is full") or if nobody can join your server, you have probably
+         reached the current maximum number of players on the server, or you may
+         have forgotten to put "-listen 8" or more in Quake's command line
+         ("-dedicated 8" for a dedicated server). By default, Quake allows only
+         1 client into the game. That's why you must explicitly start a
+         multiplayer game with the menu or add a "-listen" or "-dedicated"
+         argument to your command line to tell Quake you want more clients.
+
+         You can't fill a server with bots. Transfusion will always let one slot
+         free so that a new human player can come into the game. If a new player
+         comes and takes the last free slot, a bot will be kicked automatically
+         to free another slot if possible.
+      </sect1>
+
+      <sect1><heading>Brink Of Death<label id="BOD"><p>
+         Sometimes you'll knock opponents to their knees instead of
+         killing them outright. The victim spends several moments swaying,
+         poised between life and death. If no one reacts, the victim will slump
+         over and die, earning you a point. Of course, because your victim is
+         helpless, you'll have a moment or two to gloat. You may end the
+         torture swiftly by blowing the victim's head off. You may also draw it
+         out by tossing a lit bundle of dynamite on the ground nearby. Be
+         careful, though. Victims bring themselves back from the brink of death
+         after a dozen secondes.
+
+         You'll recognize the brink of death by the sudden inability to move
+         and the removal of your weapons.
+
+         Also, note that BOD doesn't apply to someone who's on fire, and does
+         <em>NOT</em> exist in QuakeWorld.
       </sect1>
    </sect>
 
@@ -269,23 +359,6 @@
    <!-- Advanced usage -->
 
    <sect><heading>Advanced usage<p>
-      <sect1><heading>Brink Of Death<label id="BOD"><p>
-         Sometimes you'll knock opponents to their knees instead of
-         killing them outright. The victim spends several moments swaying,
-         poised between life and death. If no one reacts, the victim will slump
-         over and die, earning you a point. Of course, because your victim is
-         helpless, you'll have a moment or two to gloat. You may end the
-         torture swiftly by blowing the victim's head off. You may also draw it
-         out by tossing a lit bundle of dynamite on the ground nearby. Be
-         careful, though. Victims bring themselves back from the brink of death
-         after a dozen secondes.
-
-         You'll recognize the brink of death by the sudden inability to move
-         and the removal of your weapons. When this happens, hammer away on
-         that jump button and pray. A player can't put himself on the BOD.
-         Also, it doesn't apply to someone who's on fire.
-      </sect1>
-
       <sect1><heading>Warmup<label id="warmup"><p>
          The warmup is a short period of time before the fight actually begins.
          The idea behind this system is to make sure all players start at the
@@ -320,13 +393,14 @@
 
       <sect1><heading>Cvars<p>
          You'll find in Transfusion quite a lot of the usual cvars from Quake
-         (be careful though, "samelevel" hasn't the same use as in Quake, see the
-         <ref id="map cycling" name="map cycling"> section for more informations).
-         We have already talked about "deathmatch", "teamplay", "fraglimit" and
-         "timelimit"; but you'll also find "skill" for setting the bots skill.
+         (be careful though, "samelevel" hasn't the same use as in Quake, see
+         the <ref id="map cycling" name="map cycling"> section for more
+         informations). We have already talked about "deathmatch", "teamplay",
+         "fraglimit" and "timelimit"; but you'll also find "skill" for setting
+         the bots skill.
 
-         Transfusion has a few specific cvars that you may want to use if you host
-         a server:
+         Transfusion has a few specific cvars that you may want to use if you
+         host a server:
          <itemize>
             <item> "g_flashyEffects": turn on/off some flashy effects. Some of
             them may actually be changed only after restarting the map.
@@ -338,10 +412,9 @@
             in secondes. If set to 0, the warmup is disabled.
             <item> "g_weaponStay": if set, weapons don't disappear when taken,
             but you can't take a weapon more than once (equivalent to "Doom Old
-            DeathMatch" and "Quake DM 3")
-            <item> "sv_cheats": enable a few more client impulses, which
-            may be used to CHEAT one way or another, and MAY CRASH THE GAME
-            under some conditions. You have been warned.
+            DeathMatch" and "Quake DM 3").
+            <item> "sv_cheats": enable a few client impulses which may be used
+            to cheat one way or another.
             <item> "sv_disable": a set of flags that allow a server
             administrator to keep his server under control despite the voting
             system. Its value must be set by adding the following numbers: 1 to
@@ -378,9 +451,10 @@
          alias map4 "changelevel crypt"
          </verb>
 
-         Note that the voting system still works correctly even if the server
-         administrator defines a map cycling list. The map will switch
-         according to the vote, and the cycle will resume afterwards.
+         Note that the <ref id="menu" name="voting system"> still works
+         correctly even if the server administrator defines a map cycling list.
+         The map will change according to the vote, and the cycle will resume
+         afterwards.
       </sect1>
    </sect>
 
@@ -388,19 +462,30 @@
 
    <sect><heading>Frequently Asked Questions<p>
       <descrip>
-         <tag>I can't spawn bots (server is full) / nobody can join my NQ
-         server</tag>
-         You may have forgotten to put "-listen 8" or more in Quake's command
-         line ("-dedicated 8" for a dedicated server). By default, Quake allows
-         only 1 client into the game. That's why you must explicitely start a
-         multiplayer game with the menu or add a "-listen" or "-dedicated"
-         argument to your command line to tell Quake you want more clients.
+         <tag>I just replaced a PAK file and some of the objects look all
+         messed up</tag>
+         Delete the "glquake" directory inside all of your Quake directories
+         and run Transfusion again.
+         <tag>Why didn't you use another engine to make Transfusion?</tag>
+         Because in order to make the necessary AI, physic and logic changes to
+         the game so that it feels and behaves like Blood, we need direct access
+         to the engine source code, not just the "game.dll" or game code, or
+         whatever you want to refer to it as. Making a "game.dll" only lets you
+         change some things, and they aren't enough things to do a total
+         conversion correctly (in our opinion). Therefore, we chose the Quake 1
+         engine, since we have complete control over every aspect of the game.
+         We felt it outweighed the other limitations of the Quake engine (low
+         count polys, lower resolution, lack of things like colored lights,
+         etc). Also, the Quake engine is licensed under the GNU GPL - which
+         means we are free to change it without paying anyone a dime... To use
+         the Quake 3 engine or the Unreal engine would have required us to
+         purchase a license, something we don't have the money to do.
          <tag>Transfusion exits with: <em>Z_Malloc: failed on allocation of XXX
          bytes</em></tag>
          The engine hasn't allocated enough "zone" memory. You can change this
          with the "-zone" command line argument. With most engines, "-zone 256"
          will be enough, but some of them may require more (try 512).
-         <tag>I want to contribute to the Transfusion Project. How can I do ?</tag>
+         <tag>I want to contribute to the Transfusion Project</tag>
          It's very simple. Start doing a quick tour through our 2 websites to
          be sure to know all the basic informations you may need. Then, contact
          the Project Coordinator and either the Lead Artist or the Lead
@@ -410,12 +495,18 @@
 
    <!-- Links -->
 
-   <sect>Links<label id="Links"><p>
+   <sect>Links<label id="links"><p>
       <itemize>
          <item><url url="http://www.planetblood.com/qblood/"
             name="The Transfusion Project">: our home page
          <item><url url="http://blood.sourceforge.net/"
             name="Transfusion on SourceForge.net">: our development page
+         <item><url url="http://icculus.org/twilight/darkplaces/"
+            name="The DarkPlaces engine">: the engine we recommend and provide
+         <item><url url="http://www.inside3d.com/frikbot/" name="FrikBotX">:
+            where our bots come from
+         <item><url url="http://zquake.frag.ru/" name="ZQuake">: arguably the
+            best QuakeWorld based engine
       </itemize>
    </sect>
 
