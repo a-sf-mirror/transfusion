@@ -34,21 +34,6 @@ $modelname v_leech
 // idle
 $frame leech_idle1
 
-#ifndef NEW_MODELS
-// fire
-$frame leech_fire1  leech_fire2  leech_fire3  leech_fire4  leech_fire5
-$frame leech_fire6  leech_fire7  leech_fire8  leech_fire9  leech_fire10
-$frame leech_fire11 leech_fire12 leech_fire13 leech_fire14 leech_fire15
-$frame leech_fire16 leech_fire17 leech_fire18 leech_fire19 leech_fire20
-$frame leech_fire21 leech_fire22 leech_fire23 leech_fire24 leech_fire25
-
-// draw
-$frame leech_draw1 leech_draw2 leech_draw3
-
-// holster
-$frame leech_holster1 leech_holster2 leech_holster3
-
-#else
 // draw
 $frame leech_draw1 leech_draw2 leech_draw3
 
@@ -61,7 +46,6 @@ $frame leech_fire21 leech_fire22 leech_fire23 leech_fire24 leech_fire25
 
 // holster
 $frame leech_holster1 leech_holster2 leech_holster3
-#endif
 
 
 // ------------ Player related code ---------- //
@@ -409,11 +393,7 @@ void() Leech_Drop =
 
     // Drop the Life Leech
     item = spawn();
-    #ifndef NEW_MODELS
-    setmodel (item, "progs/g_leech.mdl");
-    #else
     setmodel (item, "models/weapons/g_leech.md3");
-    #endif
     setsize (item, '-6 -6 0', '6 8 60');
 
     item.classname = "sentry";
@@ -530,10 +510,6 @@ Choose the right life leech model to display
 */
 void() Leech_UpdateView =
 {
-    #ifndef NEW_MODELS
-    self.weaponmodel = "progs/v_leech.mdl";
-    #else
     self.weaponmodel = "models/weapons/v_leech.md3";
-    #endif
     self.items = self.items - (self.items & IT_GUNS_AKIMBO);
 };

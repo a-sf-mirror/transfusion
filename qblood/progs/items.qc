@@ -91,11 +91,7 @@ void(float timeleft) Akimbo_Drop =
     item.solid = SOLID_TRIGGER;
     item.movetype = MOVETYPE_TOSS;
     item.noise = "bludbath/powerup.wav";
-    #ifndef NEW_MODELS
-    setmodel (item, "progs/quaddama.mdl");
-    #else
     setmodel (item, "models/items/i_akimbo.md3");
-    #endif
     setsize (item, '-16 -16 -2', '16 16 54');
     item.touch = Akimbo_Touch;
     item.nextthink = time + timeleft;    // remove it with the time left on it
@@ -183,14 +179,12 @@ void() PlaceItem =
         return;
     }
 
-    #ifdef NEW_MODELS
     // If the item has an animation loop
     if (self.think1)
     {
         self.nextthink = time + 0.1;
         self.think = self.think1;
     }
-    #endif
 };
 
 /*
@@ -250,14 +244,12 @@ void() PlaceObject =
 
     self.touch = SUB_SolidTouch;
 
-    #ifdef NEW_MODELS
     // If the object has an animation loop
     if (self.think1)
     {
         self.nextthink = time + 0.1;
         self.think = self.think1;
     }
-    #endif
 };
 
 /*
@@ -580,7 +572,8 @@ void() obj_drum =
 };
 
 
-#ifdef NEW_MODELS
+// -------------------- MD3 models -------------------- //
+
 // Glass Jar w/brain (tile0075)
 void() obj_world_jar1 =
 {
@@ -867,7 +860,6 @@ void() obj_world_metbarrel2 =
 {
     StartObject ("models/world/metbarrel2.md3", '-14 -14 0', '14 14 36');
 };
-#endif
 
 
 /*
@@ -1060,20 +1052,14 @@ void() item_health =
 
     if (self.spawnflags & H_LIFE_ESSENCE)
     {
-        #ifndef NEW_MODELS
-        self.model = "progs/i_lifess.mdl";
-        #else
         self.model = "models/items/i_essence.md3";
-        #endif
         self.healamount = 20;
         self.netname = "Life Essence";
         self.healtype = 1;
 
-        #ifdef NEW_MODELS
         // Set animation loop
         self.anim_len = 8;  // 8 frames in the animation
         self.think1 = SUB_AutoAnimation;
-        #endif
 
         // If flashy effects are allowed, make it glow
         if (cvar ("g_flashyEffects"))
@@ -1088,28 +1074,18 @@ void() item_health =
     }
     else if (self.spawnflags & H_LIFE_SEED)
     {
-        #ifndef NEW_MODELS
-        self.model = "progs/lifeseed.mdl";
-        #else
         self.model = "models/items/i_seed.md3";
-        #endif
         self.healamount = 100;
         self.netname = "Life Seed";
         self.healtype = 2;
 
-        #ifdef NEW_MODELS
         // Set animation loop
         self.anim_len = 9;  // 9 frames in the animation
         self.think1 = SUB_AutoAnimation;
-        #endif
     }
     else
     {
-        #ifndef NEW_MODELS
-        self.model = "progs/i_medpch.mdl";
-        #else
         self.model = "models/items/i_pouch.md3";
-        #endif
         self.healamount = 50;
         self.netname = "Medicine Patch";
         self.healtype = 1;
@@ -1242,11 +1218,7 @@ void() armor_touch =
 void() item_armor0 =
 {
     self.touch = armor_touch;
-    #ifndef NEW_MODELS
-    self.model = "progs/i_arm_bs.mdl";
-    #else
     self.model = "models/items/armour/i_arm_basic.md3";
-    #endif
     precache_model (self.model);
     setmodel (self, self.model);
     self.netname = "Basic Armor";
@@ -1259,11 +1231,7 @@ void() item_armor0 =
 void() item_armor4 =
 {
     self.touch = armor_touch;
-    #ifndef NEW_MODELS
-    self.model = "progs/i_arm_sp.mdl";
-    #else
     self.model = "models/items/armour/i_arm_spirit.md3";
-    #endif
     precache_model (self.model);
     setmodel (self, self.model);
     self.netname = "Spirit Armor";
@@ -1276,11 +1244,7 @@ void() item_armor4 =
 void() item_armor1 =
 {
     self.touch = armor_touch;
-    #ifndef NEW_MODELS
-    self.model = "progs/i_arm_bd.mdl";
-    #else
     self.model = "models/items/armour/i_arm_body.md3";
-    #endif
     precache_model (self.model);
     setmodel (self, self.model);
     self.netname = "Body Armor";
@@ -1293,11 +1257,7 @@ void() item_armor1 =
 void() item_armor2 =
 {
     self.touch = armor_touch;
-    #ifndef NEW_MODELS
-    self.model = "progs/i_arm_fr.mdl";
-    #else
     self.model = "models/items/armour/i_arm_fire.md3";
-    #endif
     precache_model (self.model);
     setmodel (self, self.model);
     self.netname = "Fire Armor";
@@ -1310,11 +1270,7 @@ void() item_armor2 =
 void() item_armorInv =
 {
     self.touch = armor_touch;
-    #ifndef NEW_MODELS
-    self.model = "progs/i_arm_su.mdl";
-    #else
     self.model = "models/items/armour/i_arm_super.md3";
-    #endif
     precache_model (self.model);
     setmodel (self, self.model);
     self.netname = "Super Armor";
@@ -1538,21 +1494,11 @@ void() weapon_touch =
 // Flaregun
 void() weapon_flaregun =
 {
-    #ifndef NEW_MODELS
-    precache_model ("progs/v_shot.mdl");
-    precache_model ("progs/g_flare.mdl");
-    precache_model ("progs/v_aflare.mdl");  // akimbo model
-    #else
     precache_model ("models/weapons/v_flare.md3");
     precache_model ("models/weapons/g_flare.md3");
     precache_model ("models/weapons/ga_flare.md3");  // akimbo model
-    #endif
 
-    #ifndef NEW_MODELS
-    setmodel (self, "progs/g_flare.mdl");
-    #else
     setmodel (self, "models/weapons/g_flare.md3");
-    #endif
     self.weapon = IT_FLAREGUN;
     self.netname = "Flare Gun";
     self.touch = weapon_touch;
@@ -1572,22 +1518,12 @@ void() weapon_flaregun =
 // Sawed-off
 void() weapon_supershotgun =
 {
-    #ifndef NEW_MODELS
-    precache_model ("progs/v_shot2.mdl");
-    precache_model ("progs/v_ashot2.mdl");  // akimbo model
-    precache_model ("progs/g_shot.mdl");
-    #else
     precache_model ("models/weapons/v_shot.md3");
     precache_model ("models/weapons/ga_shot.md3");  // akimbo model
     precache_model ("models/weapons/g_shot.md3");
-    #endif
     precache_model ("progs/shotshl.mdl");   // shotgun shell
 
-    #ifndef NEW_MODELS
-    setmodel (self, "progs/g_shot.mdl");
-    #else
     setmodel (self, "models/weapons/g_shot.md3");
-    #endif
     self.weapon = IT_SAWED_OFF;
     self.netname = "Sawed-off";
     self.touch = weapon_touch;
@@ -1608,22 +1544,12 @@ void() weapon_supershotgun =
 // Tommy Gun
 void() weapon_nailgun =
 {
-    #ifndef NEW_MODELS
-    precache_model ("progs/v_nail.mdl");
-    precache_model ("progs/v_anail.mdl");  // akimbo model
-    precache_model ("progs/g_nail.mdl");
-    #else
     precache_model ("models/weapons/v_tommy.md3");
     precache_model ("models/weapons/ga_tommy.md3");  // akimbo model
     precache_model ("models/weapons/g_tommy.md3");
-    #endif
     precache_model ("progs/tommyshl.mdl");  // tommy gun shell
 
-    #ifndef NEW_MODELS
-    setmodel (self, "progs/g_nail.mdl");
-    #else
     setmodel (self, "models/weapons/g_tommy.md3");
-    #endif
     self.weapon = IT_TOMMYGUN;
     self.netname = "Tommy Gun";
     self.touch = weapon_touch;
@@ -1800,21 +1726,11 @@ void() weapon_remote =
 // Napalm Launcher
 void() weapon_rocketlauncher =
 {
-    #ifndef NEW_MODELS
-    precache_model ("progs/v_rock2.mdl");
-    precache_model ("progs/v_arock2.mdl");
-    precache_model ("progs/g_rock2.mdl");
-    #else
     precache_model ("models/weapons/v_napalm.md3");
     precache_model ("models/weapons/ga_napalm.md3");
     precache_model ("models/weapons/g_napalm.md3");
-    #endif
 
-    #ifndef NEW_MODELS
-    setmodel (self, "progs/g_rock2.mdl");
-    #else
     setmodel (self, "models/weapons/g_napalm.md3");
-    #endif
     self.weapon = IT_NAPALM_LAUNCHER;
     self.netname = "Napalm Launcher";
     self.touch = weapon_touch;
@@ -1835,23 +1751,13 @@ void() weapon_rocketlauncher =
 // Telsa Cannon
 void() weapon_lightning =
 {
-    #ifndef NEW_MODELS
-    precache_model ("progs/v_light.mdl");
-    precache_model ("progs/v_alight.mdl");  // Akimbo model
-    precache_model ("progs/g_light.mdl");
-    #else
     precache_model ("models/weapons/v_tesla.md3");
     precache_model ("models/weapons/ga_tesla.md3");  // Akimbo model
     precache_model ("models/weapons/g_tesla.md3");
-    #endif
     precache_model ("progs/teslaball.spr");
     precache_model ("progs/bolt2.mdl");
 
-    #ifndef NEW_MODELS
-    setmodel (self, "progs/g_light.mdl");
-    #else
     setmodel (self, "models/weapons/g_tesla.md3");
-    #endif
     self.weapon = IT_TESLA_CANNON;
     self.netname = "Tesla Cannon";
     self.touch = weapon_touch;
@@ -1903,21 +1809,12 @@ void() weapon_voodoodoll =
 // Life Leech
 void() weapon_lifeleech =
 {
-    #ifndef NEW_MODELS
-    precache_model ("progs/v_leech.mdl");
-    precache_model ("progs/g_leech.mdl");
-    #else
     precache_model ("models/weapons/v_leech.md3");
     precache_model ("models/weapons/g_leech.md3");
-    #endif
     precache_model ("progs/bolt.mdl");
     precache_model ("progs/teslaball.spr");
 
-    #ifndef NEW_MODELS
-    setmodel (self, "progs/g_leech.mdl");
-    #else
     setmodel (self, "models/weapons/g_leech.md3");
-    #endif
     self.weapon = IT_LIFE_LEECH;
     self.netname = "Life Leech";
     self.touch = weapon_touch;
@@ -2064,11 +1961,7 @@ void() item_flares =
 {
     self.touch = ammo_touch;
 
-    #ifndef NEW_MODELS
-    self.model = "progs/i_flares.mdl";
-    #else
     self.model = "models/ammo/a_flares.md3";
-    #endif
     precache_model (self.model);
     setmodel (self, self.model);
 
@@ -2087,21 +1980,13 @@ void() item_shells =
 
     if (self.spawnflags & AMMO_BIG)
     {
-        #ifndef NEW_MODELS
-        self.model = "progs/i_boxshl.mdl";
-        #else
         self.model = "models/ammo/a_boxshell.md3";
-        #endif
         self.netname = "box of shotgun shells";
         self.aflag = 15;
     }
     else
     {
-        #ifndef NEW_MODELS
-        self.model = "progs/i_fewshl.mdl";
-        #else
         self.model = "models/ammo/a_fewshell.md3";
-        #endif
         self.netname = "4 shotgun shells";
         self.aflag = 4;
     }
@@ -2119,21 +2004,13 @@ void() item_spikes =
 
     if (self.spawnflags & AMMO_BIG)
     {
-        #ifndef NEW_MODELS
-        self.model = "progs/i_drum.mdl";
-        #else
         self.model = "models/ammo/a_drum.md3";
-        #endif
         self.netname = "full drum of bullets";
         self.aflag = 100;
     }
     else
     {
-        #ifndef NEW_MODELS
-        self.model = "progs/i_fewblt.mdl";
-        #else
         self.model = "models/ammo/a_fewbullet.md3";
-        #endif
         self.netname = "a few bullets";
         self.aflag = 15;
     }
@@ -2149,11 +2026,7 @@ void() item_rockets =
 {
     self.touch = ammo_touch;
 
-    #ifndef NEW_MODELS
-    self.model = "progs/i_gascan.mdl";
-    #else
     self.model = "models/ammo/a_gascan.md3";
-    #endif
     precache_model (self.model);
     setmodel (self, self.model);
     self.aflag = 6;
@@ -2169,11 +2042,7 @@ void() item_cells =
 {
     self.touch = ammo_touch;
 
-    #ifndef NEW_MODELS
-    self.model = "progs/i_teschg.mdl";
-    #else
     self.model = "models/ammo/a_battery.md3";
-    #endif
     precache_model (self.model);
     setmodel (self, self.model);
     self.aflag = 32;
@@ -2190,11 +2059,7 @@ void() item_soul =
 {
     self.touch = ammo_touch;
 
-    #ifndef NEW_MODELS
-    self.model = "progs/soul.mdl";
-    #else
     self.model = "models/ammo/a_soul.md3";
-    #endif
     precache_model (self.model);
     setmodel (self, self.model);
     self.aflag = 10;
@@ -2203,11 +2068,9 @@ void() item_soul =
     self.netname = "trapped soul";
     setsize (self, '0 0 0', '32 32 56');
 
-    #ifdef NEW_MODELS
     // Set animation loop
     self.anim_len = 12;  // 12 frames for the soul animation
     self.think1 = SUB_AutoAnimation;
-    #endif
 
     StartItem ();
 };
@@ -2345,11 +2208,7 @@ POWERUPS
 void() item_artifact_bag =
 {
     self.netname = "Doctor's Bag";
-    #ifndef NEW_MODELS
-    self.model   = "progs/i_docbag.mdl";
-    #else
     self.model   = "models/items/i_docbag.md3";
-    #endif
     item_powerup ();
     setsize (self, '-7 -11 -1', '7 11 19');
 };
@@ -2360,11 +2219,7 @@ void() item_artifact_boots =
     precache_sound ("bludbath/powerup.wav");
 
     self.netname = "Boots of Jumping";
-    #ifndef NEW_MODELS
-    self.model   = "progs/i_boots.mdl";
-    #else
     self.model   = "models/items/i_boots.md3";
-    #endif
     item_powerup ();
     setsize (self, '-11 -10 -1', '4 10 19');
 };
@@ -2375,11 +2230,7 @@ void() item_artifact_crystal =
     precache_sound ("bludbath/powerup.wav");
 
     self.netname = "Crystal Ball";
-    #ifndef NEW_MODELS
-    self.model   = "progs/i_crysbl.mdl";
-    #else
     self.model   = "models/items/i_crystal.md3";
-    #endif
     item_powerup ();
     setsize (self, '-7 -7 -1', '7 7 14');
 };
@@ -2390,11 +2241,7 @@ void() item_artifact_envirosuit =
     precache_sound ("foley/swimuw.wav"); // diving suit engage sound
 
     self.netname = "Diving Suit";
-    #ifndef NEW_MODELS
-    self.model   = "progs/suit.mdl";
-    #else
     self.model   = "models/items/i_diving.md3";
-    #endif
     item_powerup ();
     setsize (self, '-9 -13 -3', '8 13 74');
 };
@@ -2405,20 +2252,14 @@ void() item_artifact_invisibility =
     self.items = IT_INVISIBILITY;
 
     self.netname = "Cloak of Invisibility";
-    #ifndef NEW_MODELS
-    self.model   = "progs/invisibl.mdl";
-    #else
     self.model   = "models/items/i_invisible.md3";
-    #endif
     self.noise   = "bludbath/powerup.wav";
     item_powerup ();
     setsize (self, '-16 -16 -2', '16 16 54');
 
-    #ifdef NEW_MODELS
     // Set animation loop
     self.anim_len = 11;  // 11 frames in the animation
     self.think1 = SUB_AutoAnimation;
-    #endif
 };
 
 // Death Mask
@@ -2428,11 +2269,7 @@ void() item_artifact_invulnerability =
     self.items = IT_INVULNERABILITY;
 
     self.netname = "Death mask";
-    #ifndef NEW_MODELS
-    self.model   = "progs/invulner.mdl";
-    #else
     self.model   = "models/items/i_mask.md3";
-    #endif
     self.noise   = "bludbath/powerup.wav";
     item_powerup ();
     setsize (self, '-4 -12 0', '2 12 30');
@@ -2444,31 +2281,21 @@ void() item_artifact_reflect =
     self.effects = self.effects | EF_BLUE;
 
     self.netname = "Reflective Shots";
-    #ifndef NEW_MODELS
-    self.model   = "progs/i_reflct.mdl";
-    #else
     self.model   = "models/items/i_reflect.md3";
-    #endif
     self.noise   = "bludbath/powerup.wav";
     item_powerup ();
     setsize (self, '-7 -7 0', '7 11 16');
 
-    #ifdef NEW_MODELS
     // Set animation loop
     self.anim_len = 6;  // 6 frames in the animation
     self.think1 = SUB_AutoAnimation;
-    #endif
 };
 
 // Guns Akimbo
 void() item_artifact_super_damage =
 {
     self.netname = "Guns Akimbo";
-    #ifndef NEW_MODELS
-    self.model   = "progs/quaddama.mdl";
-    #else
     self.model   = "models/items/i_akimbo.md3";
-    #endif
     self.noise   = "bludbath/powerup.wav";
     item_powerup ();
     setsize (self, '-16 -16 -2', '16 16 54');
@@ -2480,11 +2307,7 @@ void() item_artifact_vision =
     precache_sound ("bludbath/powerup.wav");
 
     self.netname = "Beast Vision";
-    #ifndef NEW_MODELS
-    self.model   = "progs/i_vision.mdl";
-    #else
     self.model   = "models/items/i_vision.md3";
-    #endif
     item_powerup ();
     setsize (self, '-10 -9 0', '11 9 9');
 };

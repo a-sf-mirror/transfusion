@@ -78,7 +78,6 @@ void(string text1, string text2, string text3) bcenterprint3 =
 };
 
 
-#ifdef NEW_MODELS
 /*
 ====================
 SUB_AutoAnimation
@@ -94,7 +93,6 @@ void() SUB_AutoAnimation =
     if (self.frame >= self.anim_len)
         self.frame = 0;
 };
-#endif
 
 
 /*

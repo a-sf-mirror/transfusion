@@ -220,9 +220,7 @@ void() worldspawn =
     MandatoryExtension ("DP_EF_BLUE");
     MandatoryExtension ("DP_EF_RED");
     MandatoryExtension ("DP_INPUTBUTTONS");
-    #ifdef NEW_MODELS
     MandatoryExtension ("DP_QUAKE3_MODEL");
-    #endif
     MandatoryExtension ("DP_REGISTERCVAR");
 
     // Create our own cvars as soon as possible
@@ -316,11 +314,7 @@ void() worldspawn =
 
     precache_model ("progs/s_explod.spr");  // napalm sprite explosion
 
-    #ifndef NEW_MODELS
-    precache_model ("progs/v_axe.mdl");
-    #else
     precache_model ("models/weapons/v_pitch.md3");
-    #endif
 
 
     //

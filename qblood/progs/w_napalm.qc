@@ -28,50 +28,6 @@ void() Napalm_Fire;
 
 // ----- Napalm launcher models ----- //
 
-#ifndef NEW_MODELS
-// Normal model
-$modelname v_rock2
-
-// idle
-$frame napalm_idle1
-
-// fire
-$frame napalm_fire1 napalm_fire2 napalm_fire3 napalm_fire4 napalm_fire5
-$frame napalm_fire6
-
-// altfire
-$frame napalm_alt1 napalm_alt2 napalm_alt3 napalm_alt4 napalm_alt5
-$frame napalm_alt6
-
-// draw
-$frame napalm_draw1 napalm_draw2 napalm_draw3 napalm_draw4
-
-// holster
-$frame napalm_holster1 napalm_holster2 napalm_holster3 napalm_holster4
-
-
-// Akimbo model
-$modelname v_arock2
-
-// idle
-$frame anapalm_idle1
-
-// fire
-$frame anapalm_fire1 anapalm_fire2 anapalm_fire3 anapalm_fire4 anapalm_fire5
-$frame anapalm_fire6 anapalm_fire7 anapalm_fire8
-
-// altfire
-$frame anapalm_alt1  anapalm_alt2  anapalm_alt3  anapalm_alt4  anapalm_alt5
-$frame anapalm_alt6  anapalm_alt7  anapalm_alt8
-
-// draw
-$frame anapalm_draw1 anapalm_draw2 anapalm_draw3
-
-// holster
-$frame anapalm_holstr1 anapalm_holstr2 anapalm_holstr3
-
-
-#else
 // Normal model
 $modelname v_napalm
 
@@ -104,7 +60,6 @@ $frame anapalm_fire6
 
 // holster
 $frame anapalm_holstr1 anapalm_holstr2 anapalm_holstr3
-#endif
 
 
 // ----- Player related code ----- //
@@ -124,13 +79,7 @@ void() player_aknapalm3 = [$attack1, player_aknapalm4] { self.weaponframe = $ana
 void() player_aknapalm4 = [$attack1, player_aknapalm5] { self.weaponframe = $anapalm_fire4; };
 void() player_aknapalm5 = [$attack2, player_aknapalm6] { self.weaponframe = $anapalm_fire5; };
 void() player_aknapalm6 = [$attack2, player_aknapalm7] { self.weaponframe = $anapalm_fire6; };
-#ifndef NEW_MODELS
-void() player_aknapalm7 = [$attack2, player_aknapalm8] { self.weaponframe = $anapalm_fire7; };
-void() player_aknapalm8 = [$attack2, player_aknapalm9] { self.weaponframe = $anapalm_fire8; };
-void() player_aknapalm9 =
-#else
 void() player_aknapalm7 =
-#endif
 {
     // If we don't have enough ammo anymore, drop the guns akimbo
     if ((self.items & IT_GUNS_AKIMBO) && self.currentammo < 2)
@@ -142,23 +91,13 @@ void() player_aknapalm7 =
 // Normal draw
 void() player_napalmdraw1 = [$attack2, player_napalmdraw2] { self.weaponframe = $napalm_draw1; };
 void() player_napalmdraw2 = [$attack2, player_napalmdraw3] { self.weaponframe = $napalm_draw2; };
-#ifndef NEW_MODELS
-void() player_napalmdraw3 = [$attack2, player_napalmdraw4] { self.weaponframe = $napalm_draw3; };
-void() player_napalmdraw4 = [$attack2, player_run        ] { self.weaponframe = $napalm_draw4; };
-#else
 void() player_napalmdraw3 = [$attack2, player_run        ] { self.weaponframe = $napalm_draw3; };
-#endif
 
 // Normal holster
 void() player_napalmholst1 = [$attack2, player_napalmholst2] { self.weaponframe = $napalm_holster1; };
 void() player_napalmholst2 = [$attack2, player_napalmholst3] { self.weaponframe = $napalm_holster2; };
 void() player_napalmholst3 = [$attack2, player_napalmholst4] { self.weaponframe = $napalm_holster3; };
-#ifndef NEW_MODELS
-void() player_napalmholst4 = [$attack2, player_napalmholst5] { self.weaponframe = $napalm_holster4; };
-void() player_napalmholst5 = [$attack2, player_run         ] { W_DrawWeapon (self.newweapon); };
-#else
 void() player_napalmholst4 = [$attack2, player_run         ] { W_DrawWeapon (self.newweapon); };
-#endif
 
 // Akimbo draw
 void() player_aknapalmdraw1 = [$attack2, player_aknapalmdraw2] { self.weaponframe = $anapalm_draw1; };
@@ -386,11 +325,7 @@ void() Napalm_Attack =
     if (self.items & IT_GUNS_AKIMBO)
     {
         player_aknapalm1 ();
-        #ifndef NEW_MODELS
-        self.attack_finished = time + 0.8;
-        #else
         self.attack_finished = time + 0.6;
-        #endif
     }
     else
     {
@@ -424,11 +359,7 @@ void() Napalm_Draw =
     }
     else
     {
-        #ifndef NEW_MODELS
-        self.attack_finished = time + 0.5;
-        #else
         self.attack_finished = time + 0.4;
-        #endif
         player_napalmdraw1 ();
     }
 };
@@ -450,11 +381,7 @@ void() Napalm_Holster =
     }
     else
     {
-        #ifndef NEW_MODELS
-        self.attack_finished = time + 0.5;
-        #else
         self.attack_finished = time + 0.4;
-        #endif
         player_napalmholst1 ();
     }
 };
@@ -471,20 +398,12 @@ void() Napalm_UpdateView =
 {
     if (self.akimbo_finished > time && self.currentammo >= 2)
     {
-        #ifndef NEW_MODELS
-        self.weaponmodel = "progs/v_arock2.mdl";
-        #else
         self.weaponmodel = "models/weapons/ga_napalm.md3";
-        #endif
         self.items = self.items | IT_GUNS_AKIMBO;
     }
     else
     {
-        #ifndef NEW_MODELS
-        self.weaponmodel = "progs/v_rock2.mdl";
-        #else
         self.weaponmodel = "models/weapons/v_napalm.md3";
-        #endif
         self.items = self.items - (self.items & IT_GUNS_AKIMBO);
     }
 };

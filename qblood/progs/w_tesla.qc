@@ -28,52 +28,6 @@ void() Tesla_Fire;
 
 // ----- Tesla Cannon models ----- //
 
-#ifndef NEW_MODELS
-// Normal model
-$modelname v_light
-
-// idle
-$frame tesla_idle1 tesla_idle2
-
-// fire
-$frame tesla_fire1 tesla_fire2 tesla_fire3 tesla_fire4
-
-// altfire
-$frame tesla_alt1  tesla_alt2  tesla_alt3  tesla_alt4  tesla_alt5
-$frame tesla_alt6  tesla_alt7  tesla_alt8  tesla_alt9  tesla_alt10
-$frame tesla_alt11 tesla_alt12 tesla_alt13 tesla_alt14 tesla_alt15
-$frame tesla_alt16 tesla_alt17 tesla_alt18 tesla_alt19 tesla_alt20
-
-// draw
-$frame tesla_draw1 tesla_draw2 tesla_draw3
-
-// holster
-$frame tesla_holster1 tesla_holster2 tesla_holster3
-
-
-// Akimbo model
-$modelname v_alight
-
-// idle
-$frame atesla_idle1 atesla_idle2
-
-// fire
-$frame atesla_fire1 atesla_fire2 atesla_fire3 atesla_fire4
-
-// altfire
-$frame atesla_alt1  atesla_alt2  atesla_alt3  atesla_alt4  atesla_alt5
-$frame atesla_alt6  atesla_alt7  atesla_alt8  atesla_alt9  atesla_alt10
-$frame atesla_alt11 atesla_alt12 atesla_alt13 atesla_alt14 atesla_alt15
-$frame atesla_alt16 atesla_alt17 atesla_alt18 atesla_alt19 atesla_alt20
-
-// draw
-$frame atesla_draw1 atesla_draw2 atesla_draw3
-
-// holster
-$frame atesla_holster1 atesla_holster2 atesla_holster3
-
-
-#else
 // Normal model
 $modelname v_tesla
 
@@ -116,7 +70,6 @@ $frame atesla_alt16 atesla_alt17 atesla_alt18 atesla_alt19 atesla_alt20
 
 // holster
 $frame atesla_holster1 atesla_holster2 atesla_holster3
-#endif
 
 
 // ----- Player related code ----- //
@@ -431,20 +384,12 @@ void() Tesla_UpdateView =
 {
     if (self.akimbo_finished > time && self.currentammo >= 2)
     {
-        #ifndef NEW_MODELS
-        self.weaponmodel = "progs/v_alight.mdl";
-        #else
         self.weaponmodel = "models/weapons/ga_tesla.md3";
-        #endif
         self.items = self.items | IT_GUNS_AKIMBO;
     }
     else
     {
-        #ifndef NEW_MODELS
-        self.weaponmodel = "progs/v_light.mdl";
-        #else
         self.weaponmodel = "models/weapons/v_tesla.md3";
-        #endif
         self.items = self.items - (self.items & IT_GUNS_AKIMBO);
     }
 };
