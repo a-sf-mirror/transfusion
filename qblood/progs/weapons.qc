@@ -40,6 +40,7 @@ void() W_Precache =
 
     // flaregun
     precache_sound ("weapons/flaregun/burstflm.wav");
+    precache_sound ("weapons/napalm/explodfs.wav");
     precache_sound ("weapons/flaregun/flar_wat.wav");
     precache_sound ("weapons/flaregun/flarair2.wav");
 */
@@ -69,15 +70,7 @@ void() W_Precache =
 
     // voodoo doll
     precache_sound ("weapons/voodoodl/vooburn.wav");
-*/
 
-    // REMOVEME as soon as we have voodoo items directly in maps
-    // because the sound is also precached in item_voodoo
-    precache_sound ("weapons/voodoodl/voochant.wav");
-    precache_sound ("weapons/voodoodl/voolaugh.wav");
-    precache_sound ("weapons/voodoodl/voostab.wav");
-
-/*
     // common sounds - some are in the C code, some aren't
     precache_sound ("weapons/bflesh.wav");
     precache_sound ("weapons/bmetal.wav");
@@ -97,7 +90,6 @@ void() W_Precache =
     PM_PrecacheFire ();
 
 // PM:  Temporary -- remove.
-    precache_sound ("weapons/napalm/explodfs.wav");
     precache_sound ("weapons/tesla/tessnght.wav");  // Hit
 };
 
@@ -453,7 +445,7 @@ void() W_FireShotgun =
     #endif
 
     dir = aim (self, 1000);
-    if ((self.impulse == 12 || self.button1) && self.ammo_rockets >= 8)
+    if ((self.impulse == 12 || self.button1) && self.ammo_shells >= 8)
     {
         // PM:  Fire alt-flares instead.
         self.currentammo = self.ammo_shells = self.ammo_shells - 8;
@@ -981,7 +973,7 @@ void(vector p1, vector p2, entity from, float damage) LightningDamage =
 
 //  PM:  Tesla Cannon
 
-void() PM_TelsaTouch =
+void() PM_TeslaTouch =
 {
     if (other == self.owner)
         return;     // don't explode on owner
@@ -1017,7 +1009,7 @@ void() W_FireLightning =
     if (self.ammo_cells < 1)
         return;
 
-// FIXME:  Add alt-telsa mode.
+// FIXME:  Add alt-tesla mode.
     if (self.t_width < time)
     {
         sound (self, CHAN_WEAPON, "weapons/tesla/tessngfr.wav", 1, ATTN_NORM);
@@ -1052,13 +1044,13 @@ void() W_FireLightning =
     jolt.owner      = self;
     jolt.movetype   = MOVETYPE_FLYMISSILE;
     jolt.solid      = SOLID_BBOX;
-    jolt.classname  = "telsa";
+    jolt.classname  = "tesla";
     jolt.velocity   = dir * mspeed;
     jolt.avelocity  = '300 300 300';
     jolt.angles     = vectoangles(dir);
-    jolt.dmg        = 30;
+    jolt.dmg        = 25; // note, altfire = 170
 
-    jolt.touch      = PM_TelsaTouch;
+    jolt.touch      = PM_TeslaTouch;
     jolt.nextthink  = time + (8000 / mspeed);
     jolt.think      = SUB_Remove;
 
