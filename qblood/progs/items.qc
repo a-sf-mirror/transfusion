@@ -1539,6 +1539,8 @@ void() weapon_supernailgun =
     precache_sound ("weapons/tnt/lighter.wav");  // = zipopen.wav + ziplight.wav
     precache_sound ("weapons/tnt/zipclose.wav");
 
+    precache_model ("progs/sprayfir.spr");
+
     StartItem ();
 };
 

@@ -1731,6 +1731,37 @@ void(vector org, vector dir) launch_spike =
     newmis.velocity = dir * 2000;
 };
 
+void() flame_touch =
+{
+    local float rand;
+
+    if (other == self.owner)
+        return;
+
+    #ifdef QUAKEWORLD
+    if (self.voided) {
+        return;
+    }
+    self.voided = 1;
+    #endif
+
+    if (other.solid == SOLID_TRIGGER)
+        return; // trigger field, do nothing
+
+    if (pointcontents(self.origin) == CONTENT_SKY)
+    {
+        remove(self);
+        return;
+    }
+
+    // hit something that bleeds
+    if (other.takedamage)
+        PM_BurnDamage (other, self, 0, 30);
+
+    remove(self);
+
+};
+
 void() W_FireSuperSpikes =
 {
     local vector    dir;
@@ -1743,17 +1774,28 @@ void() W_FireSuperSpikes =
     self.attack_finished = time + 0.2;
     self.currentammo = self.ammo_spray = self.ammo_spray - 1;
     dir = aim (self, 1000);
-    launch_spike (self.origin + '0 0 16', dir);
-    newmis.touch = superspike_touch;
-    setmodel (newmis, "progs/s_spike.mdl");
-    setsize (newmis, VEC_ORIGIN, VEC_ORIGIN);
 
+    newmis = spawn ();
     #ifdef QUAKEWORLD
-    msg_entity = self;
-    WriteByte (MSG_ONE, SVC_SMALLKICK);
-    #else
-    self.punchangle_x = -2;
+    newmis.voided=0;
     #endif
+    newmis.owner = self;
+    newmis.movetype = MOVETYPE_FLYMISSILE;  // use MOVETYPE_NOCLIP for free move
+    newmis.solid = SOLID_BBOX;
+
+    newmis.angles = vectoangles(dir);
+
+    newmis.touch = flame_touch;
+    newmis.classname = "spike";
+    newmis.think = SUB_Remove;
+    newmis.nextthink = time + 6;
+    setmodel (newmis, "progs/sprayfir.spr");
+    setsize (newmis, '-5 -5 -7', '5 5 7');
+    setorigin (newmis, self.origin + '0 0 16' + v_forward * 50);
+
+    newmis.velocity = dir * 500;
+
+    newmis.frame = floor (random () * 3);
 };
 
 void() W_FireSpikes =

@@ -261,6 +261,13 @@ void() worldspawn =
     else if (deathmatch == 2)
     {
         gametype = GAMETYPE_CAPTURE_THE_FLAG;
+
+        // Tell the engine that we're actually in a team play
+        if (teamplay == 0)
+        {
+            teamplay = 1;
+            cvar_set ("teamplay", "1");
+        }
     }
     else
     {
@@ -269,7 +276,7 @@ void() worldspawn =
         else
             gametype = GAMETYPE_TEAM_BLOODBATH;
     }
-    friendlyfire = (cvar("teamplay") == 2);  // NOTE: should we allow friendlyfire changes during the game ?
+    friendlyfire = (teamplay == 2);  // NOTE: should we allow friendlyfire changes during the game ?
 
     // custom map attributes
     if (self.model == "maps/e1m8.bsp")
