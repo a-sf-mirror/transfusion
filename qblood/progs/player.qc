@@ -528,12 +528,27 @@ void(string gibname, float dm) ThrowGib =
 void(string gibname, float dm) ThrowHead =
 {
     setmodel (self, gibname);
-    self.classname = "head";
     self.frame = 0;
     self.nextthink = -1;
     self.movetype = MOVETYPE_BOUNCE;
-    self.takedamage = DAMAGE_NO;
-    self.solid = SOLID_NOT;
+
+    // A player's head is invulnerable until this player respawns
+    if (self.classname != "player")
+    {
+        self.takedamage = DAMAGE_YES;
+
+        // Get rid of it in 3 minutes anyway (to avoid too many entities)
+        self.nextthink = time + 180;
+        self.think = SUB_Remove;
+    }
+    else
+        self.takedamage = DAMAGE_NO;
+    self.health = 120;
+    self.th_die = SUB_Remove;
+    self.th_pain = SUB_Null;
+
+    self.classname = "head";
+    self.solid = SOLID_TRIGGER;
     self.view_ofs = '0 0 8';
     setsize (self, '-16 -16 0', '16 16 56');
     self.velocity = VelocityForDamage (dm);

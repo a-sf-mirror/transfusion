@@ -634,10 +634,12 @@ entity() SelectSpawnPoint =
     return spot;
 };
 
-#ifdef QUAKEWORLD
+
 void() DecodeLevelParms;
 void() PlayerDie;
 
+
+#ifdef QUAKEWORLD
 /*
 ===========
 ValidateUser
@@ -702,10 +704,6 @@ PutClientInServer
 called each time a player is spawned
 ============
 */
-void() DecodeLevelParms;
-void() PlayerDie;
-
-
 void() PutClientInServer =
 {
     local   entity spot;

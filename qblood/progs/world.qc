@@ -369,7 +369,7 @@ void() StartFrame =
 /*
 ==============================================================================
 
-BODY MANAGEMENT
+CORPSE MANAGEMENT
 
 ==============================================================================
 */
@@ -379,12 +379,40 @@ void(string gibname, float dm) ThrowGib;  // In player.qc
 
 /*
 ====================
-GibCorpse
+BecomeCorpse
 
-Remove the corpse and throw gibs
+Modify entity properties to change it to a destroyable corpse
 ====================
 */
-void() GibCorpse =
+void(float corpseHealth, void() corpseToGib) BecomeCorpse =
+{
+    self.touch = SUB_Null;
+    self.th_pain = SUB_Null;
+
+    // Get rid of it in 2 minutes anyway (to avoid too many entities)
+    self.nextthink = time + 120;
+    self.think = SUB_Remove;
+
+    // Allow some interactions (so the corpses can be destroyed by explosions)
+    self.takedamage = DAMAGE_YES;
+    self.solid = SOLID_SLIDEBOX;       // molivier: I would prefer SOLID_TRIGGER, but GLQuake doesn't agree for monsters
+    setsize (self, '0 0 0', '0 0 0');  // make a non-blocking corpse
+
+    // Corpse will turn into gibs if destroyed
+    self.classname = "corpse";
+    self.health = corpseHealth;
+    self.th_die = corpseToGib;
+};
+
+
+/*
+====================
+GibPlayerCorpse
+
+Remove a player's corpse and throw gibs
+====================
+*/
+void() GibPlayerCorpse =
 {
     ThrowGib ("progs/gib1.mdl", self.health);
     ThrowGib ("progs/gib2.mdl", self.health);
@@ -406,6 +434,7 @@ Make a clone for the given ent so the ent can be respawned elsewhere
 void(entity ent) CloneCorpse =
 {
     local entity clone;
+    local entity tempEnt;
 
     // Copy the entity characteristics
     clone = spawn ();
@@ -417,33 +446,24 @@ void(entity ent) CloneCorpse =
     clone.movetype = ent.movetype;
     clone.velocity = ent.velocity;
     clone.takedamage = ent.takedamage;
-    clone.touch = ent.touch;
-    clone.flags = 0;
     setorigin (clone, ent.origin);
     setsize (clone, ent.mins, ent.maxs);
 
-    // Get rid of it in 3 minutes anyway (to avoid too many entities)
-    clone.nextthink = time + 180;
-    clone.think = SUB_Remove;
-
-    // Allow some interactions (so the corpses can be
-    // destroyed by explosions, and the heads kicked)
-    clone.takedamage = DAMAGE_YES;
-    clone.solid = SOLID_TRIGGER;
-
-    // If the entity is a head, make it kickable
+    // If the entity is a head, we just need to remove it when it's destroyed
     if (ent.classname == "head")
     {
-        clone.health = 120;
-        clone.th_die = SUB_Remove;
+        tempEnt = self;
+        self = clone;
+        BecomeCorpse (120, SUB_Remove);
+        self = tempEnt;
 
-        // TODO: kick stuff
-
+        clone.classname = "head";  // BecomeCorpse has modified the classname, so we need to fix it
         return;
     }
 
     // Corpse will turn into gibs if destroyed
-    clone.classname = "corpse";
-    clone.health = 100;
-    clone.th_die = GibCorpse;
+    tempEnt = self;
+    self = clone;
+    BecomeCorpse (100, GibPlayerCorpse);
+    self = tempEnt;
 };
