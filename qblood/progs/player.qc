@@ -144,6 +144,7 @@ void(entity player, entity attacker) Player_BrinkOfDeath =
 
     player.attack_finished = time + 10;
     sound (player, CHAN_VOICE, "thevoice/vo15.wav", 1, ATTN_NONE);
+    centerprint (player, "YOU ARE ON THE BRINK OF DEATH!!");
     // If there's a real attacker (not a BOD triggered by cheat code)
     if (attacker != world)
         centerprint (attacker, "FINISH HIM!!");
