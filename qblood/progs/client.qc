@@ -754,14 +754,6 @@ void() PutClientInServer =
 
     spawn_tdeath (self.origin, self);
 
-    #ifdef QUAKEWORLD
-    // Set Rocket Jump Modifiers
-    if (stof(infokey(world, "rj")) != 0)
-    {
-        rj = stof(infokey(world, "rj"));
-    }
-    #endif
-
     self.weapon = W_BestWeapon ();
     W_SetCurrentAmmo ();
 };
@@ -900,14 +892,8 @@ Exit deathmatch games upon conditions
 void() CheckRules =
 {
     #ifndef QUAKEWORLD
-    local   float       timelimit;
-    local   float       fraglimit;
-
     if (gameover)   // someone else quit the game already
         return;
-
-    timelimit = cvar("timelimit") * 60;
-    fraglimit = cvar("fraglimit");
     #endif
 
     if (timelimit && time >= timelimit)

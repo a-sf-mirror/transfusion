@@ -297,13 +297,11 @@ entity team2_lastspawn;
 //
 #ifdef QUAKEWORLD
 float       teamplay;
+float       deathmatch;
+#endif
 float       timelimit;
 float       fraglimit;
-float       deathmatch;
-float       rj          = 1;
-#else
 float       skill;
-#endif
 
 //================================================
 

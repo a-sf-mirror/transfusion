@@ -551,9 +551,6 @@ testing air bubbles
 void() air_bubbles =
 
 {
-    #ifdef QUAKEWORLD
-    remove (self);
-    #else
     if (deathmatch)
     {
         remove (self);
@@ -562,7 +559,6 @@ void() air_bubbles =
     precache_model ("progs/s_bubble.spr");
     self.nextthink = time + 1;
     self.think = make_bubbles;
-    #endif
 };
 
 void() make_bubbles =

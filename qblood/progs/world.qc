@@ -473,14 +473,10 @@ void() worldspawn =
 void() StartFrame =
 {
     teamplay = cvar("teamplay");
-
-    #ifdef QUAKEWORLD
     timelimit = cvar("timelimit") * 60;
     fraglimit = cvar("fraglimit");
     deathmatch = cvar("deathmatch");
-    #else
     skill = cvar("skill");
-    #endif
 
     framecount = framecount + 1;
 };
@@ -581,17 +577,13 @@ void() GibPlayerCorpse =
 
     sound (self, CHAN_ITEM, "misc/gibsq.wav", 1, ATTN_NORM);
 
-    #ifndef QUAKEWORLD
     if (deathmatch)
     {
-    #endif
         Bprint (PRINT_MEDIUM, self.enemy.netname);
         Bprint (PRINT_MEDIUM, " desecrated ");
         Bprint (PRINT_MEDIUM, self.netname);
         Bprint (PRINT_MEDIUM, "'s corpse\n");
-    #ifndef QUAKEWORLD
     }
-    #endif
 
     remove (self);
 };

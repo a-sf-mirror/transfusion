@@ -271,23 +271,7 @@ void(entity targ, entity inflictor, entity attacker, float damage, float dflags,
     {
         dir = targ.origin - (inflictor.absmin + inflictor.absmax) * 0.5;
         dir = normalize(dir);
-        #ifdef QUAKEWORLD
-        // Set kickback for smaller weapons
-//Zoid -- use normal NQ kickback
-//      // Read: only if it's not yourself doing the damage
-//      if ( (damage < 60) & ((attacker.classname == "player") & (targ.classname == "player")) & ( attacker.netname != targ.netname))
-//          targ.velocity = targ.velocity + dir * damage * 11;
-//      else
-        // Otherwise, these rules apply to rockets and grenades
-        // for blast velocity
-            targ.velocity = targ.velocity + dir * damage * 8;
-
-        // Rocket Jump modifiers
-        if ( (rj > 1) & ((attacker.classname == "player") & (targ.classname == "player")) & ( attacker.netname == targ.netname))
-            targ.velocity = targ.velocity + dir * damage * rj;
-        #else
         targ.velocity = targ.velocity + dir*damage*8;
-        #endif
     }
 
     protected = FALSE;
