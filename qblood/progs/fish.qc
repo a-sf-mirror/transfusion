@@ -16,6 +16,11 @@
 
     See file, 'COPYING', for details.
 */
+
+
+#include "common.qh"
+
+
 $cd id1/models/fish
 $origin 0 0 24
 $base base

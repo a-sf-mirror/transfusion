@@ -17,13 +17,8 @@
     See file, 'COPYING', for details.
 */
 
-#ifdef QUAKEWORLD
-#define Bprint(p, s)    bprint (p, s)
-#define Sprint(e, p, s) sprint (e, p, s)
-#else
-#define Bprint(p, s)    bprint (s)
-#define Sprint(e, p, s) sprint (e, s)
-#endif
+
+#include "common.qh"
 
 
 // prototypes
@@ -485,9 +480,7 @@ Player entered the suicide command
 */
 void() ClientKill =
 {
-//    Bprint (PRINT_MEDIUM, self.netname);
- // no netname for suicide message - dturner
-    Bprint (PRINT_MEDIUM, " Kevorkian approves!\n");
+    Bprint (PRINT_MEDIUM, "Kevorkian approves!\n");
     sound (self, CHAN_AUTO, "thevoice/vo5.wav", 1, ATTN_NORM);
     set_suicide_frame ();
     self.modelindex = modelindex_player;

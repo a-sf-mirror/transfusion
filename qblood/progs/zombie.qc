@@ -16,6 +16,11 @@
 
     See file, 'COPYING', for details.
 */
+
+
+#include "common.qh"
+
+
 /*
 ==============================================================================
 
@@ -68,7 +73,7 @@ $frame paine29 paine30
 
 $frame cruc_1 cruc_2 cruc_3 cruc_4 cruc_5 cruc_6
 
-float   SPAWN_CRUCIFIED = 1;
+#define SPAWN_CRUCIFIED 1
 
 //=============================================================================
 

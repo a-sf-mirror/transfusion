@@ -16,18 +16,14 @@
 
     See file, 'COPYING', for details.
 */
+
+
+#include "common.qh"
+
+
 void() W_SetCurrentAmmo;
 /* ALL LIGHTS SHOULD BE 0 1 0 IN COLOR ALL OTHER ITEMS SHOULD
 BE .8 .3 .4 IN COLOR */
-
-
-#ifdef QUAKEWORLD
-#define Bprint(p, s)    bprint (p, s)
-#define Sprint(e, p, s) sprint (e, p, s)
-#else
-#define Bprint(p, s)    bprint (s)
-#define Sprint(e, p, s) sprint (e, s)
-#endif
 
 
 void() SUB_regen =
@@ -242,8 +238,8 @@ rot you down to your maximum health limit,
 one point per second.
 */
 
-float   H_ROTTEN = 1;
-float   H_MEGA = 2;
+#define H_ROTTEN    1
+#define H_MEGA      2
 .float  healamount, healtype;
 void() health_touch;
 void() item_megahealth_rot;
@@ -866,7 +862,7 @@ local float     best;
 };
 
 
-float WEAPON_BIG2 = 1;
+#define AMMO_BIG 1
 
 /*QUAKED item_shells (0 .5 .8) (0 0 0) (32 32 32) big
 */
@@ -875,7 +871,7 @@ void() item_shells =
 {
     self.touch = ammo_touch;
 
-    if (self.spawnflags & WEAPON_BIG2)
+    if (self.spawnflags & AMMO_BIG)
     {
         precache_model ("maps/b_shell1.bsp");
         setmodel (self, "maps/b_shell1.bsp");
@@ -900,7 +896,7 @@ void() item_spikes =
 {
     self.touch = ammo_touch;
 
-    if (self.spawnflags & WEAPON_BIG2)
+    if (self.spawnflags & AMMO_BIG)
     {
         precache_model ("maps/b_nail1.bsp");
         setmodel (self, "maps/b_nail1.bsp");
@@ -925,7 +921,7 @@ void() item_rockets =
 {
     self.touch = ammo_touch;
 
-    if (self.spawnflags & WEAPON_BIG2)
+    if (self.spawnflags & AMMO_BIG)
     {
         precache_model ("maps/b_rock1.bsp");
         setmodel (self, "maps/b_rock1.bsp");
@@ -951,7 +947,7 @@ void() item_cells =
 {
     self.touch = ammo_touch;
 
-    if (self.spawnflags & WEAPON_BIG2)
+    if (self.spawnflags & AMMO_BIG)
     {
         precache_model ("maps/b_batt1.bsp");
         setmodel (self, "maps/b_batt1.bsp");
@@ -974,10 +970,10 @@ void() item_cells =
 DO NOT USE THIS!!!! IT WILL BE REMOVED!
 */
 
-float WEAPON_SHOTGUN = 1;
-float WEAPON_ROCKET = 2;
-float WEAPON_SPIKES = 4;
-float WEAPON_BIG = 8;
+#define WEAPON_SHOTGUN  1
+#define WEAPON_ROCKET   2
+#define WEAPON_SPIKES   4
+#define WEAPON_BIG      8
 void() item_weapon =
 {
     self.touch = ammo_touch;

@@ -17,6 +17,10 @@
     See file, 'COPYING', for details.
 */
 
+
+#include "common.qh"
+
+
 void() T_MissileTouch;
 void() info_player_start;
 void(entity targ, entity attacker) ClientObituary;

@@ -25,6 +25,10 @@
 
 */
 
+
+#include "common.qh"
+
+
 void() monster_ogre = {remove(self);};
 void() monster_demon1 = {remove(self);};
 void() monster_shambler = {remove(self);};

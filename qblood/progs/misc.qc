@@ -17,6 +17,10 @@
     See file, 'COPYING', for details.
 */
 
+
+#include "common.qh"
+
+
 /*QUAKED info_null (0 0.5 0) (-4 -4 -4) (4 4 4)
 Used as a positional target for spotlights, etc.
 */
@@ -34,7 +38,7 @@ void() info_notnull =
 
 //============================================================================
 
-float START_OFF = 1;
+#define START_OFF   1
 
 void() light_use =
 {
@@ -320,8 +324,8 @@ void() misc_explobox2 =
 
 //============================================================================
 
-float SPAWNFLAG_SUPERSPIKE  = 1;
-float SPAWNFLAG_LASER = 2;
+#define SPAWNFLAG_SUPERSPIKE    1
+#define SPAWNFLAG_LASER         2
 
 void() Laser_Touch =
 {

@@ -17,11 +17,9 @@
     See file, 'COPYING', for details.
 */
 
-#ifdef QUAKEWORLD
-#define Sprint(e, p, s) sprint (e, p, s)
-#else
-#define Sprint(e, p, s) sprint (e, s)
-#endif
+
+#include "common.qh"
+
 
 void (entity targ, entity inflictor, entity attacker, float damage) T_Damage;
 void () player_run;
@@ -62,7 +60,6 @@ void() W_Precache =
 */
     precache_sound ("weapons/shotgun/shotfire.wav");  // shotgun fired
 //    precache_sound ("weapons/shotgun/shotload.wav");
-    precache_sound ("weapons/shtshl2.wav");           // shell hitting ground
 
     // tommy gun
     precache_sound ("weapons/tommygun/_tom.wav");  // Tommy gun
@@ -70,12 +67,11 @@ void() W_Precache =
 
     // napalm launcher
     precache_sound ("weapons/napalm/blaster.wav");  // Napalm launcher
-    precache_sound ("weapons/napalm/explodcs.wav");
-    precache_sound ("weapons/napalm/explodfl.wav");
+    precache_sound ("weapons/napalm/explodcs.wav");  // REMOVEME: not used
+    precache_sound ("weapons/napalm/explodfl.wav");  // REMOVEME: not used
 
 /*
     precache_sound ("weapons/napalm/burn.wav");
-
     precache_sound ("weapons/napalm/explodul.wav");
     precache_sound ("weapons/napalm/explodus.wav");
     precache_sound ("weapons/napalm/naplmex2.wav");
@@ -142,9 +138,11 @@ void() W_Precache =
     precache_sound ("weapons/ric1.wav");    // ricochet (used in c code)
     precache_sound ("weapons/ric2.wav");    // ricochet (used in c code)
     precache_sound ("weapons/ric3.wav");    // ricochet (used in c code)
+
+    // shells hitting ground
+    precache_sound ("weapons/shtshl.wav");   // tommy gun shell
+    precache_sound ("weapons/shtshl2.wav");  // shotgun shell
 /*
-    precache_sound ("weapons/shtshl.wav");
-    precache_sound ("weapons/shtshl2.wav");
     precache_sound ("weapons/shtshl3.wav");
     precache_sound ("weapons/shtshl4.wav");
 */
@@ -536,12 +534,12 @@ void() DropShell =
     setsize (self, VEC_ORIGIN, VEC_ORIGIN);
     makevectors (self.owner.v_angle);
     setorigin (self, self.owner.origin + v_forward * 15);
-    self.velocity = (crandom() + 1)*v_forward*30 + v_up*(220 + crandom()*10) - v_right*crandom()*50;
+    self.velocity = (crandom() + 1)*v_forward*30 + v_up*(220 + crandom()*10) - v_right*crandom()*30;
     self.avelocity_x = crandom()*500;
     self.avelocity_y = crandom()*500;
     self.avelocity_z = crandom()*500;
     self.touch = ShellHit;
-    self.nextthink = time + 10;
+    self.nextthink = time + 1.5;
     self.think = SUB_Remove;
     self.ltime = time - 1;
 };
@@ -561,11 +559,28 @@ void() SpawnShell =
     shell = spawn ();
     shell.owner = self;
 
-    // Shotgun shells only for now
-    shell.nextthink = time + 0.4;  // delay shells until reload
-    shell.mdl = "progs/shotshl.mdl";
-    shell.noise = "weapons/shtshl2.wav";
-    shell.think = DropShell;
+    // Shotgun shells
+    if (self.weapon == IT_SUPER_SHOTGUN)
+    {
+        shell.nextthink = time + 0.4;  // delay shells until reload
+        shell.mdl = "progs/shotshl.mdl";
+        shell.noise = "weapons/shtshl2.wav";
+        shell.think = DropShell;
+    }
+    // Tommy gun shells
+    else  // if (self.weapon == IT_NAILGUN)
+    {
+        local entity player;
+
+        shell.mdl = "progs/tommyshl.mdl";
+        shell.noise = "weapons/shtshl.wav";
+
+        // since we directly call DropShell, the shell must be "self" temporary
+        player = self;
+        self = shell;
+        DropShell ();
+        self = player;
+    }
 };
 
 
@@ -882,8 +897,8 @@ void() W_FireLightning =
 
 //=============================================================================
 
-float   DMG_GRENADE        = 120;
-float   DMG_PROXIMITY_BOMB = 150;
+#define DMG_TNT            120
+#define DMG_PROXIMITY_BOMB 150
 
 void() GrenadeExplode =
 {
@@ -932,11 +947,11 @@ void() ProximBombCheck =
     thing = findradius (self.origin, self.dmg + 20);
     while (thing)
     {
-        // If it's a player or a monster, explode in 650 msec
+        // If it's a player or a monster, explode in 400 msec
         if (thing.classname == "player" || (thing.flags & FL_MONSTER))
         {
             sound (self, CHAN_WEAPON, "weapons/tnt/proxdet.wav", 1, ATTN_NORM);
-            self.nextthink = time + 0.65;
+            self.nextthink = time + 0.4;
             self.think = GrenadeExplode;
             return;
         }
@@ -946,7 +961,7 @@ void() ProximBombCheck =
     }
 
     // Retry in a moment
-    self.nextthink = time + 0.5;
+    self.nextthink = time + 0.25;
 };
 
 
@@ -961,8 +976,6 @@ void() ProximBombArmed =
 {
     sound (self, CHAN_WEAPON, "weapons/tnt/proxarm.wav", 1, ATTN_NORM);
 
-    // Check its neighborhood every 1/4 sec
-    self.nextthink = time + 0.25;
     self.think = ProximBombCheck;
 };
 
@@ -977,7 +990,7 @@ GrenadeTouch
 void() GrenadeTouch =
 {
     // Normal grenades are the only ones which can explode on touch
-    if (self.dmg = DMG_GRENADE)
+    if (self.dmg = DMG_TNT)
     {
         if (other == self.owner)
             return;     // don't explode on owner
@@ -1056,10 +1069,10 @@ void() W_FireGrenade =
     else
     {
         newmis.think = GrenadeExplode;
-        newmis.netname = "normal grenade";
-        newmis.dmg = DMG_GRENADE;
+        newmis.netname = "TNT";
+        newmis.dmg = DMG_TNT;
 
-        sound (newmis, CHAN_WEAPON, "weapons/tnt/tntfuse.wav", 1, ATTN_NORM);
+        sound (newmis, CHAN_VOICE, "weapons/tnt/tntfuse.wav", 1, ATTN_NORM);
     }
 
     setmodel (newmis, "progs/grenade.mdl");
@@ -1150,6 +1163,7 @@ void() W_FireSpikes =
     self.attack_finished = time + 0.2;
     self.currentammo = self.ammo_nails = self.ammo_nails - 1;
     dir = aim (self, 1000);
+    SpawnShell ();
     launch_spike (self.origin + '0 0 16' + v_right * 8 + v_forward * 4, dir);
 
     #ifdef QUAKEWORLD

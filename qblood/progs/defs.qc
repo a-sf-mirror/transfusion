@@ -17,6 +17,10 @@
     See file, 'COPYING', for details.
 */
 
+
+#include "common.qh"
+
+
 /*
 ==============================================================================
 
@@ -252,218 +256,6 @@ void        end_sys_fields;         // flag for structure dumping
 ==============================================================================
 */
 
-
-//
-// constants
-//
-
-float   FALSE                   = 0;
-float   TRUE                    = 1;
-
-// edict.flags
-float   FL_FLY                  = 1;
-float   FL_SWIM                 = 2;
-float   FL_CLIENT               = 8;    // set for all client edicts
-float   FL_INWATER              = 16;   // for enter / leave water splash
-float   FL_MONSTER              = 32;
-float   FL_GODMODE              = 64;   // player cheat
-float   FL_NOTARGET             = 128;  // player cheat
-float   FL_ITEM                 = 256;  // extra wide size for bonus items
-float   FL_ONGROUND             = 512;  // standing on something
-float   FL_PARTIALGROUND        = 1024; // not all corners are valid
-float   FL_WATERJUMP            = 2048; // player jumping out of water
-float   FL_JUMPRELEASED         = 4096; // for jump debouncing
-
-// edict.movetype values
-float   MOVETYPE_NONE           = 0;    // never moves
-//float MOVETYPE_ANGLENOCLIP    = 1;
-//float MOVETYPE_ANGLECLIP      = 2;
-float   MOVETYPE_WALK           = 3;    // players only
-float   MOVETYPE_STEP           = 4;    // discrete, not real time unless fall
-float   MOVETYPE_FLY            = 5;
-float   MOVETYPE_TOSS           = 6;    // gravity
-float   MOVETYPE_PUSH           = 7;    // no clip to world, push and crush
-float   MOVETYPE_NOCLIP         = 8;
-float   MOVETYPE_FLYMISSILE     = 9;    // fly with extra size against monsters
-float   MOVETYPE_BOUNCE         = 10;
-float   MOVETYPE_BOUNCEMISSILE  = 11;   // bounce with extra size
-
-// edict.solid values
-float   SOLID_NOT               = 0;    // no interaction with other objects
-float   SOLID_TRIGGER           = 1;    // touch on edge, but not blocking
-float   SOLID_BBOX              = 2;    // touch on edge, block
-float   SOLID_SLIDEBOX          = 3;    // touch on edge, but not an onground
-float   SOLID_BSP               = 4;    // bsp clip, touch on edge, block
-
-// range values
-float   RANGE_MELEE             = 0;
-float   RANGE_NEAR              = 1;
-float   RANGE_MID               = 2;
-float   RANGE_FAR               = 3;
-
-// deadflag values
-
-float   DEAD_NO                 = 0;
-float   DEAD_DYING              = 1;
-float   DEAD_DEAD               = 2;
-float   DEAD_RESPAWNABLE        = 3;
-
-// takedamage values
-
-float   DAMAGE_NO               = 0;
-float   DAMAGE_YES              = 1;
-float   DAMAGE_AIM              = 2;
-
-// items (32 max; each value must be a power of 2)
-float   IT_AXE                  = 4096;     // 13 - pitchfork
-float   IT_SHOTGUN              = 1;        // 1  - flaregun
-float   IT_SUPER_SHOTGUN        = 2;        // 2  - sawed-off
-float   IT_NAILGUN              = 4;        // 3  - tommy gun
-float   IT_ROCKET_LAUNCHER      = 8;        // 4  - napalm launcher
-float   IT_GRENADE_LAUNCHER     = 16;       // 5  - tnt
-float   IT_SUPER_NAILGUN        = 32;       // 6  - spray can
-float   IT_LIGHTNING            = 64;       // 7  - tesla cannon
-float   IT_PROXIMITY_BOMB       = 128;      // 8  - proximity bomb
-
-float   IT_SHELLS               = 256;      // 9  - shot shells
-float   IT_NAILS                = 512;      // 10 - drum of  bullets
-float   IT_ROCKETS              = 1024;     // 11 - gasoline can
-float   IT_CELLS                = 2048;     // 12 - tesla charge
-
-float   IT_ARMOR1               = 8192;     // 14 - basic armor
-float   IT_ARMOR2               = 16384;    // 15 - fire armor
-float   IT_ARMOR3               = 32768;    // 16 - spirit armor
-float   IT_SUPERHEALTH          = 65536;    // 17 - life essence
-
-float   IT_KEY1                 = 131072;   // 18 - skull
-float   IT_KEY2                 = 262144;   // 19 - dagger
-
-float   IT_INVISIBILITY         = 524288;   // 20 - cloak
-float   IT_INVULNERABILITY      = 1048576;  // 21 - deathmask
-float   IT_SUIT                 = 2097152;  // 22 - diving suit
-float   IT_QUAD                 = 4194304;  // 23 - guns akimbo
-
-// point content values
-
-float   CONTENT_EMPTY           = -1;
-float   CONTENT_SOLID           = -2;
-float   CONTENT_WATER           = -3;
-float   CONTENT_SLIME           = -4;
-float   CONTENT_LAVA            = -5;
-float   CONTENT_SKY             = -6;
-
-float   STATE_TOP       = 0;
-float   STATE_BOTTOM    = 1;
-float   STATE_UP        = 2;
-float   STATE_DOWN      = 3;
-
-vector  VEC_ORIGIN = '0 0 0';
-vector  VEC_HULL_MIN = '-16 -16 -24';
-vector  VEC_HULL_MAX = '16 16 32';
-
-vector  VEC_HULL2_MIN = '-32 -32 -24';
-vector  VEC_HULL2_MAX = '32 32 64';
-
-// protocol bytes
-float   SVC_TEMPENTITY      = 23;
-float   SVC_KILLEDMONSTER   = 27;
-float   SVC_FOUNDSECRET     = 28;
-float   SVC_INTERMISSION    = 30;
-float   SVC_FINALE          = 31;
-float   SVC_CDTRACK         = 32;
-float   SVC_SELLSCREEN      = 33;
-#ifdef QUAKEWORLD
-float   SVC_SMALLKICK           = 34;
-float   SVC_BIGKICK                     = 35;
-float   SVC_MUZZLEFLASH         = 39;
-#endif
-
-float   TE_SPIKE        = 0;
-float   TE_SUPERSPIKE   = 1;
-float   TE_GUNSHOT      = 2;
-float   TE_EXPLOSION    = 3;
-float   TE_TAREXPLOSION = 4;
-float   TE_LIGHTNING1   = 5;
-float   TE_LIGHTNING2   = 6;
-float   TE_WIZSPIKE     = 7;
-float   TE_KNIGHTSPIKE  = 8;
-float   TE_LIGHTNING3   = 9;
-float   TE_LAVASPLASH   = 10;
-float   TE_TELEPORT     = 11;
-#ifdef QUAKEWORLD
-float   TE_BLOOD                = 12;
-float   TE_LIGHTNINGBLOOD = 13;
-#endif
-
-// sound channels
-// channel 0 never willingly overrides
-// other channels (1-7) allways override a playing sound on that channel
-float   CHAN_AUTO       = 0;
-float   CHAN_WEAPON     = 1;
-float   CHAN_VOICE      = 2;
-float   CHAN_ITEM       = 3;
-float   CHAN_BODY       = 4;
-#ifdef QUAKEWORLD
-float   CHAN_NO_PHS_ADD = 8;    // ie: CHAN_BODY+CHAN_NO_PHS_ADD
-#else
-float   CHAN_NO_PHS_ADD = 0;    // Not supported by classic Quake
-#endif
-
-float   ATTN_NONE       = 0;
-float   ATTN_NORM       = 1;
-float   ATTN_IDLE       = 2;
-float   ATTN_STATIC     = 3;
-
-// update types
-
-float   UPDATE_GENERAL  = 0;
-float   UPDATE_STATIC   = 1;
-float   UPDATE_BINARY   = 2;
-float   UPDATE_TEMP     = 3;
-
-// entity effects
-
-#ifndef QUAKEWORLD
-float EF_BRIGHTFIELD  = 1;
-float EF_MUZZLEFLASH  = 2;
-#endif
-float   EF_BRIGHTLIGHT  = 4;
-float   EF_DIMLIGHT     = 8;
-#ifdef QUAKEWORLD
-float   EF_FLAG1                = 16;
-float   EF_FLAG2                = 32;
-// GLQuakeWorld Stuff
-float   EF_BLUE     =   64; // Blue Globe effect for Quad
-float   EF_RED      =   128;    // Red Globe effect for Pentagram
-#endif
-
-// messages
-float   MSG_BROADCAST   = 0;        // unreliable to all
-float   MSG_ONE         = 1;        // reliable to one (msg_entity)
-float   MSG_ALL         = 2;        // reliable to all
-float   MSG_INIT        = 3;        // write to the init string
-#ifdef QUAKEWORLD
-float   MSG_MULTICAST   = 4;            // for multicast() call
-#endif
-
-#ifdef QUAKEWORLD
-// message levels
-float   PRINT_LOW               = 0;            // pickup messages
-float   PRINT_MEDIUM        = 1;            // death messages
-float   PRINT_HIGH              = 2;            // critical messages
-float   PRINT_CHAT              = 3;            // also goes to chat console
-
-// multicast sets
-float   MULTICAST_ALL   = 0;            // every client
-float   MULTICAST_PHS   = 1;            // within hearing
-float   MULTICAST_PVS   = 2;            // within sight
-float   MULTICAST_ALL_R = 3;            // every client, reliable
-float   MULTICAST_PHS_R = 4;            // within hearing, reliable
-float   MULTICAST_PVS_R = 5;            // within sight, reliable
-#endif
-
-//================================================
-
 //
 // globals
 //
@@ -538,10 +330,6 @@ float       skill;
 .float  search_time;
 .float  attack_state;
 
-float   AS_STRAIGHT     = 1;
-float   AS_SLIDING      = 2;
-float   AS_MELEE        = 3;
-float   AS_MISSILE      = 4;
 
 //
 // player only fields

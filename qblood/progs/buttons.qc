@@ -18,6 +18,10 @@
 */
 // button and multiple button
 
+
+#include "common.qh"
+
+
 void() button_wait;
 void() button_return;
 

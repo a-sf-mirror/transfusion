@@ -18,13 +18,16 @@
 */
 
 
+#include "common.qh"
+
+
 void() plat_center_touch;
 void() plat_outside_touch;
 void() plat_trigger_use;
 void() plat_go_up;
 void() plat_go_down;
 void() plat_crush;
-float PLAT_LOW_TRIGGER = 1;
+#define PLAT_LOW_TRIGGER 1
 
 void() plat_spawn_inside_trigger =
 {

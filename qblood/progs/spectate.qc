@@ -26,6 +26,7 @@
         Boston, MA  02111-1307, USA
 
 */
+
 // Added Aug11'97 by Zoid <zoid@idsoftware.com>
 //
 // These functions are called from the server if they exist.
@@ -35,6 +36,10 @@
 // have any weapons and things can explode.
 //
 //   --- Zoid.
+
+
+#include "common.qh"
+
 
 /*
 ===========

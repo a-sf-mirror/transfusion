@@ -17,13 +17,8 @@
     See file, 'COPYING', for details.
 */
 
-#ifdef QUAKEWORLD
-#define Bprint(p, s)    bprint (p, s)
-#define Sprint(e, p, s) sprint (e, p, s)
-#else
-#define Bprint(p, s)    bprint (s)
-#define Sprint(e, p, s) sprint (e, s)
-#endif
+
+#include "common.qh"
 
 
 void() bubble_bob;

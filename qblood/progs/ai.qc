@@ -16,6 +16,11 @@
 
     See file, 'COPYING', for details.
 */
+
+
+#include "common.qh"
+
+
 void() movetarget_f;
 void() t_movetarget;
 void() knight_walk1;

@@ -17,11 +17,15 @@
     See file, 'COPYING', for details.
 */
 
-float DOOR_START_OPEN = 1;
-float DOOR_DONT_LINK = 4;
-float DOOR_GOLD_KEY = 8;
-float DOOR_SILVER_KEY = 16;
-float DOOR_TOGGLE = 32;
+
+#include "common.qh"
+
+
+#define DOOR_START_OPEN 1
+#define DOOR_DONT_LINK  4
+#define DOOR_GOLD_KEY   8
+#define DOOR_SILVER_KEY 16
+#define DOOR_TOGGLE     32
 
 /*
 
@@ -576,11 +580,11 @@ void() fd_secret_move5;
 void() fd_secret_move6;
 void() fd_secret_done;
 
-float SECRET_OPEN_ONCE = 1;     // stays open
-float SECRET_1ST_LEFT = 2;      // 1st move is left of arrow
-float SECRET_1ST_DOWN = 4;      // 1st move is down from arrow
-float SECRET_NO_SHOOT = 8;      // only opened by trigger
-float SECRET_YES_SHOOT = 16;    // shootable even if targeted
+#define SECRET_OPEN_ONCE    1   // stays open
+#define SECRET_1ST_LEFT     2   // 1st move is left of arrow
+#define SECRET_1ST_DOWN     4   // 1st move is down from arrow
+#define SECRET_NO_SHOOT     8   // only opened by trigger
+#define SECRET_YES_SHOOT    16  // shootable even if targeted
 
 
 void () fd_secret_use =

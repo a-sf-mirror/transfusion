@@ -18,6 +18,9 @@
 */
 
 
+#include "common.qh"
+
+
 void() main =
 {
     dprint ("main function\n");
@@ -359,6 +362,7 @@ void() worldspawn =
     precache_model ("progs/v_rock2.mdl");
 
     precache_model ("progs/shotshl.mdl");   // shotgun shell
+    precache_model ("progs/tommyshl.mdl");  // tommy gun shell
 
     precache_model ("progs/bolt.mdl");      // for lightning gun
     precache_model ("progs/bolt2.mdl");     // for lightning gun

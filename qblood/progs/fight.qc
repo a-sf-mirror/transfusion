@@ -17,6 +17,10 @@
     See file, 'COPYING', for details.
 */
 
+
+#include "common.qh"
+
+
 /*
 
 A monster is in fight mode if it thinks it can effectively attack its

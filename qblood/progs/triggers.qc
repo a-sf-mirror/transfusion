@@ -17,6 +17,10 @@
     See file, 'COPYING', for details.
 */
 
+
+#include "common.qh"
+
+
 entity stemp, otemp, s, old;
 
 
@@ -27,8 +31,8 @@ void() trigger_reactivate =
 
 //=============================================================================
 
-float   SPAWNFLAG_NOMESSAGE = 1;
-float   SPAWNFLAG_NOTOUCH = 1;
+#define SPAWNFLAG_NOMESSAGE 1
+#define SPAWNFLAG_NOTOUCH   1
 
 // the wait time has passed, so set back up for another activation
 void() multi_wait =
@@ -288,8 +292,8 @@ TELEPORT TRIGGERS
 ==============================================================================
 */
 
-float   PLAYER_ONLY = 1;
-float   SILENT = 2;
+#define PLAYER_ONLY 1
+#define SILENT      2
 
 void() play_teleport =
 {
@@ -614,7 +618,7 @@ void() trigger_hurt =
 
 //============================================================================
 
-float PUSH_ONCE = 1;
+#define PUSH_ONCE 1
 
 void() trigger_push_touch =
 {
