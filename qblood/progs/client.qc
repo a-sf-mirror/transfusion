@@ -23,7 +23,7 @@
 
 // prototypes
 void () W_WeaponFrame;
-void() W_SetCurrentAmmo;
+void(float weaponHasChanged) W_SetCurrentAmmo;
 void() player_pain;
 void() player_stand1;
 void (vector org) spawn_tfog;
@@ -750,7 +750,7 @@ void() PutClientInServer =
 
     // Let's start with our best weapon
     self.weapon = W_BestWeapon ();
-    W_SetCurrentAmmo ();
+    W_SetCurrentAmmo (TRUE);
 };
 
 

@@ -40,7 +40,7 @@
 //    ammo_cells   -> telsa cannon
 
 
-void() W_SetCurrentAmmo;
+void(float weaponHasChanged) W_SetCurrentAmmo;
 /* ALL LIGHTS SHOULD BE 0 1 0 IN COLOR ALL OTHER ITEMS SHOULD
 BE .8 .3 .4 IN COLOR */
 
@@ -990,9 +990,7 @@ float (entity e, float healamount, float ignore) T_Heal =
 /*QUAKED item_health (.3 .3 1) (0 0 0) (32 32 32) rotten megahealth
 Health box. Normally gives 50 points.
 Rotten box heals 20 points,
-megahealth will add 100 health, then
-rot you down to your maximum health limit,
-one point per second.
+megahealth will add 100 health.
 */
 .float  healamount, healtype;
 
@@ -1306,64 +1304,6 @@ void() bound_other_ammo =
 };
 
 
-float(float w) RankForWeapon =
-{
-    if (w == IT_LIGHTNING)
-        return 1;
-    if (w == IT_ROCKET_LAUNCHER)
-        return 2;
-    if (w == IT_SUPER_NAILGUN)
-        return 3;
-    if (w == IT_GRENADE_LAUNCHER || w == IT_PROXIMITY_BOMB || w == IT_REMOTE_DETONATOR)
-        return 4;
-    if (w == IT_SUPER_SHOTGUN)
-        return 5;
-    if (w == IT_NAILGUN)
-        return 6;
-    if (w == IT_VOODOO_DOLL)
-        return 7;
-    return 8;
-};
-
-float (float w) WeaponCode =
-{
-    if (w == IT_SUPER_SHOTGUN)
-        return 3;
-    if (w == IT_NAILGUN)
-        return 4;
-    if (w == IT_SUPER_NAILGUN)
-        return 5;
-    if (w == IT_GRENADE_LAUNCHER || w == IT_PROXIMITY_BOMB || w == IT_REMOTE_DETONATOR)
-        return 6;
-    if (w == IT_ROCKET_LAUNCHER)
-        return 7;
-    if (w == IT_LIGHTNING)
-        return 8;
-    if (w == IT_VOODOO_DOLL)
-        return 9;
-    return 1;
-};
-
-
-/*
-=============
-Deathmatch_Weapon
-
-Deathmatch weapon change rules for picking up a weapon
-
-.float      ammo_shells, ammo_nails, ammo_rockets, ammo_cells;
-=============
-*/
-void(float old, float new) Deathmatch_Weapon =
-{
-    local float or, nr;
-
-    // change self.weapon if desired
-    or = RankForWeapon (self.weapon);
-    nr = RankForWeapon (new);
-    if ( nr < or )
-        self.weapon = new;
-};
 
 float() W_BestWeapon;
 
@@ -1374,9 +1314,8 @@ weapon_touch
 */
 void() weapon_touch =
 {
-    local   float   new, old;
+    local   float   new;
     local   float   leave;
-    local   entity  stemp;
 
     if (!(other.flags & FL_CLIENT))
         return;
@@ -1473,21 +1412,8 @@ void() weapon_touch =
 
     bound_other_ammo ();
 
-    // change to the weapon
-    old = other.items;
+    // add the weapon to the player's equipment
     other.items = other.items | new;
-
-    stemp = self;
-    self = other;
-
-    if (!deathmatch)
-        self.weapon = new;
-    else
-        Deathmatch_Weapon (old, new);
-
-    W_SetCurrentAmmo();
-
-    self = stemp;
 
     if (leave)
         return;
@@ -1727,20 +1653,10 @@ AMMO
 
 void() ammo_touch =
 {
-local entity    stemp;
-local float     best;
-
     if (other.classname != "player")
         return;
     if (other.health <= 0)
         return;
-
-    // if the player was using his best weapon, change up to the new one if better
-    stemp = self;
-    self = other;
-    best = W_BestWeapon();
-    self = stemp;
-
 
     // shotgun
     if (self.weapon == 1)
@@ -1764,7 +1680,7 @@ local float     best;
         other.ammo_rockets = other.ammo_rockets + self.aflag;
     }
     // cells
-    if (self.weapon == 4)
+    else if (self.weapon == 4)
     {
         if (other.ammo_cells >= MAX_CELLS)
             return;
@@ -1775,28 +1691,28 @@ local float     best;
     // flares
     else if (self.weapon == 5)
     {
-        if (other.ammo_cells >= MAX_FLARES)
+        if (other.ammo_flares >= MAX_FLARES)
             return;
         other.ammo_flares = other.ammo_flares + self.aflag;
     }
     // tnt bundle
     else if (self.weapon == 6)
     {
-        if (other.ammo_cells >= MAX_TNT)
+        if (other.ammo_tnt_bundle >= MAX_TNT)
             return;
         other.ammo_tnt_bundle = other.ammo_tnt_bundle + self.aflag;
     }
     // tnt proxy
     else if (self.weapon == 7)
     {
-        if (other.ammo_cells >= MAX_PROXY)
+        if (other.ammo_tnt_proxy >= MAX_PROXY)
             return;
         other.ammo_tnt_proxy = other.ammo_tnt_proxy + self.aflag;
     }
     // tnt remote
     else if (self.weapon == 8)
     {
-        if (other.ammo_cells >= MAX_REMOTE)
+        if (other.ammo_tnt_remote >= MAX_REMOTE)
             return;
         other.ammo_tnt_remote = other.ammo_tnt_remote + self.aflag;
     }
@@ -1810,14 +1726,14 @@ local float     best;
     // voodoo doll
     else if (self.weapon == 10)
     {
-        if (other.ammo_cells >= MAX_VOODOO)
+        if (other.ammo_voodoo >= MAX_VOODOO)
             return;
         other.ammo_voodoo = other.ammo_voodoo + self.aflag;
     }
     // leech life
     else if (self.weapon == 11)
     {
-        if (other.ammo_cells >= MAX_LEECH)
+        if (other.ammo_leech >= MAX_LEECH)
             return;
         other.ammo_leech = other.ammo_leech + self.aflag;
     }
@@ -1832,21 +1748,7 @@ local float     best;
     sound (other, CHAN_ITEM, "items/ammo.wav", 1, ATTN_NORM);
     stuffcmd (other, "bf\n");
 
-    // change to a better weapon if appropriate
-    if ( other.weapon == best )
-    {
-        stemp = self;
-        self = other;
-        self.weapon = W_BestWeapon();
-        W_SetCurrentAmmo ();
-        self = stemp;
-    }
-
-    // if changed current ammo, update it
-    stemp = self;
-    self = other;
-    W_SetCurrentAmmo();
-    self = stemp;
+    W_SetCurrentAmmo (FALSE);
 
     // remove it in single player, or setup for respawning in deathmatch
     self.model = string_null;
@@ -2341,8 +2243,6 @@ PLAYER BACKPACKS
 void() BackpackTouch =
 {
     local   string  s;
-    local   float   best, old, new;
-    local   entity  stemp;
     local   float   acount;
 
     if (other.classname != "player")
@@ -2361,7 +2261,7 @@ void() BackpackTouch =
             Sprint (other, PRINT_LOW, self.netname);
         }
 
-    // change weapons
+    // update ammo counts
     other.ammo_shells = other.ammo_shells + self.ammo_shells;
     other.ammo_nails = other.ammo_nails + self.ammo_nails;
     other.ammo_rockets = other.ammo_rockets + self.ammo_rockets;
@@ -2376,11 +2276,8 @@ void() BackpackTouch =
     other.ammo_voodoo = other.ammo_voodoo + self.ammo_voodoo;
     other.ammo_leech = other.ammo_leech + self.ammo_leech;
 
-    new = self.items;
-    if (!new)
-        new = other.weapon;
-    old = other.items;
-    other.items = other.items | new;
+    // Add the weapon (if any) to the player's equipment
+    other.items = other.items | self.items;
 
     bound_other_ammo ();
 
@@ -2501,13 +2398,7 @@ void() BackpackTouch =
     remove(self);
     self = other;
 
-    // change to the weapon
-    if (!deathmatch)
-        self.weapon = new;
-    else
-        Deathmatch_Weapon (old, new);
-
-    W_SetCurrentAmmo ();
+    W_SetCurrentAmmo (FALSE);
 };
 
 /*

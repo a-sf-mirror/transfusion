@@ -128,7 +128,7 @@ void(entity targ, entity attacker) Killed =
 };
 
 
-#define MAX_RECURSION_COUNT 6
+#define MAX_RECURSION_COUNT 5
 
 /*
 ============
