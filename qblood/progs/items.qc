@@ -809,6 +809,8 @@ void() weapon_rocketlauncher =
     self.touch = weapon_touch;
     setsize (self, '-16 -16 0', '16 16 56');
 
+    precache_model ("progs/naltball.mdl"); // napalm alt fire model
+
     // Precache the necessary sounds
     precache_sound ("weapons/napalm/blaster.wav");  // Napalm launcher
 /*

@@ -28,10 +28,6 @@ void() SuperDamageSound;
 entity() identify_player;
 
 
-#define ATTACK_NORMAL  0
-#define ATTACK_ALTFIRE 1
-
-
 // called by worldspawn
 void() W_Precache =
 {
@@ -539,12 +535,15 @@ void() SpawnShell =
 W_FireSuperShotgun - Sawed Off
 ================
 */
-void(float nbshots) W_FireSuperShotgun =
+void() W_FireSuperShotgun =
 {
+    local float nbshots;
     local vector dir;
 
-    if ((self.currentammo & 1) == 1 && nbshots != 1)
+    if ((self.impulse != 12 && !self.button1) || (self.currentammo & 1) == 1)
         nbshots = 1;
+    else
+        nbshots = 2;
 
     #ifndef QUAKEWORLD
     self.punchangle_x = -2 * nbshots;
@@ -724,7 +723,7 @@ void() T_MissileTouch =
 W_FireRocket
 ================
 */
-void(float attackMode) W_FireRocket =
+void() W_FireRocket =
 {
     sound (self, CHAN_WEAPON, "weapons/napalm/blaster.wav", 1, ATTN_NORM);
 
@@ -752,7 +751,7 @@ void(float attackMode) W_FireRocket =
     newmis.voided = 0;
     #endif
 
-    if (attackMode == ATTACK_ALTFIRE && self.ammo_rockets >= 12)
+    if ((self.impulse == 12 || self.button1) && self.ammo_rockets >= 12)
     {
         self.ammo_rockets = self.ammo_rockets - 12;
         newmis.cnt = 8;  // set the number of bouncing balls
@@ -1231,6 +1230,9 @@ void() W_FireSpikes =
     local vector    dir;
     local entity    old;
 
+    if (self.ammo_nails < 1)
+        return;
+
     makevectors (self.v_angle);
 
     if (self.ammo_nails >= 2 && self.weapon == IT_SUPER_NAILGUN)
@@ -1239,14 +1241,20 @@ void() W_FireSpikes =
         return;
     }
 
-    if (self.ammo_nails < 1)
-        return;
-
     sound (self, CHAN_WEAPON, "weapons/tommygun/_tom.wav", 1, ATTN_NORM);
     self.attack_finished = time + 0.2;
     self.currentammo = self.ammo_nails = self.ammo_nails - 1;
-    dir = aim (self, 1000);
     SpawnShell ();
+
+    // set the bullet direction according to the weapon real direction
+    dir = aim (self, 1000);
+    if (self.weaponframe == 1 || self.weaponframe == 3)
+        dir = dir - v_right * (1 / 10);
+    else if (self.weaponframe == 2)
+        dir = dir - v_right * (1 / 5);
+    else if (self.weaponframe == 5)
+        dir = dir + v_right * (1 / 10);
+
     launch_spike (self.origin + '0 0 16' + v_right * 8 + v_forward * 4, dir);
 
     #ifdef QUAKEWORLD
@@ -1515,7 +1523,7 @@ void()  player_nail1;
 void()  player_light1;
 void()  player_rocket1;
 
-void(float attackMode) W_Attack =
+void() W_Attack =
 {
     local   float   r;
 
@@ -1553,7 +1561,7 @@ void(float attackMode) W_Attack =
     {
         player_shot1 ();
         self.attack_finished = time + 0.7;
-        W_FireSuperShotgun (attackMode + 1);
+        W_FireSuperShotgun ();
     }
     else if (self.weapon == IT_NAILGUN || self.weapon == IT_SUPER_NAILGUN)
     {
@@ -1569,7 +1577,7 @@ void(float attackMode) W_Attack =
     {
         player_rocket1();
         self.attack_finished = time + 0.8;
-        W_FireRocket(attackMode);
+        W_FireRocket();
     }
     else if (self.weapon == IT_LIGHTNING)
     {
@@ -1898,24 +1906,6 @@ void() QuadCheat =
 
 /*
 ============
-W_AltFire
-
-Alternative attack
-============
-*/
-void() W_AltFire =
-{
-    // Check for normal attack instead
-    if (self.button0)
-        return;
-
-    SuperDamageSound ();
-    W_Attack (ATTACK_ALTFIRE);
-};
-
-
-/*
-============
 ImpulseCommands
 
 ============
@@ -1932,8 +1922,16 @@ void() ImpulseCommands =
             CycleWeaponCommand ();
         else if (self.impulse == 11)
             CycleWeaponReverseCommand ();
+
+        // Altfire
         else if (self.impulse == 12)
-            W_AltFire ();
+        {
+            SuperDamageSound ();
+            W_Attack ();
+
+            self.button0 = 0;  // avoid a normal attack
+            self.button1 = 0;  // avoid a double altfire attack
+        }
 
         #ifndef QUAKEWORLD
         else if (self.impulse == 254)
@@ -1965,10 +1963,10 @@ void() W_WeaponFrame =
     ImpulseCommands ();
 
     // Check for attack
-    if (self.button0)
+    if (self.button0 || self.button1)
     {
         SuperDamageSound ();
-        W_Attack (ATTACK_NORMAL);
+        W_Attack ();
     }
 };
 

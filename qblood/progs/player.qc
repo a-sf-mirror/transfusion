@@ -206,17 +206,29 @@ void() player_nail =
 {
     muzzleflash ();
 
-    if (!self.button0 || intermission_running || self.impulse || self.ammo_nails < 1)
+    if ((!self.button0 && !self.button1 && self.impulse != 12) || intermission_running || self.ammo_nails < 1)
     {
         player_run ();
         return;
     }
-    self.weaponframe = self.weaponframe + 1;
-    if (self.weaponframe == 8 )
-        self.weaponframe = 1;
+
+    // If it's a normal fire start
+    if (self.weaponframe == 0 && self.impulse != 12 && !self.button1)
+        self.weaponframe = 7;
+    else
+    {
+        self.weaponframe = self.weaponframe + 1;
+        if (self.weaponframe == 15)  // frame 14 is the last frame of the normal fire animation
+            self.weaponframe = 7;
+        else if (self.weaponframe == 7)  // frame 6 is the last frame of the alt fire animation
+            self.weaponframe = 1;
+    }
+
     SuperDamageSound ();
     W_FireSpikes ();
     self.attack_finished = time + 0.2;
+
+    self.impulse = 0;  // REMOVEME as soon as the altfire will no longer be bind to an impulse
 };
 
 void() player_nail1 = [$nailatt1, player_nail2] { player_nail (); };
@@ -228,7 +240,7 @@ void() player_light =
 {
     muzzleflash ();
 
-    if (!self.button0 || intermission_running || self.ammo_cells < 1)
+    if ((!self.button0 && !self.button1 && self.impulse != 12) || intermission_running || self.ammo_cells < 1)
     {
         player_run ();
         return;
@@ -239,6 +251,8 @@ void() player_light =
     SuperDamageSound ();
     W_FireLightning ();
     self.attack_finished = time + 0.2;
+
+    self.impulse = 0;  // REMOVEME as soon as the altfire will no longer be bind to an impulse
 };
 
 void() player_light1 = [$light1, player_light2] { player_light (); };

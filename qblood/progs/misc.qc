@@ -736,6 +736,264 @@ void() func_bossgate =
     setmodel (self, self.model);
 };
 
+
+/*
+==============================================================================
+EXPLODING WALLS
+
+The following code was originally donated by Than
+Modified by Mathieu Olivier
+==============================================================================
+*/
+
+// exploding_wall
+// original code taken from Zerstorer
+// heavily modified by than 04.2001
+
+void() brik_touch =
+{
+    if (self.velocity == '0 0 0')
+    {
+        self.avelocity = '0 0 0';
+        self.solid = SOLID_NOT;
+        self.touch = SUB_Null;
+        self.think = SUB_Remove;
+        self.nextthink = time + (6 * random()) + 2;
+        return;
+    }
+    if (! self.cnt)
+        return;
+
+    if (self.attack_finished < time && pointcontents (self.origin) > -3)
+    {
+        // bounce sound
+        if(self.noise1) // if noise has been set, sound is enabled so play sounds
+        {
+            if (self.cnt == 1)
+                sound (self, CHAN_AUTO, self.noise1, 1, ATTN_NORM);
+            else
+                sound (self, CHAN_AUTO, self.noise2, 1, ATTN_NORM);
+        }
+
+        self.attack_finished = time + 0.3;
+    }
+};
+
+void(string gibname, float dm) ThrowRubble=
+{
+    local entity new;
+    local float sndrnd;
+
+    new = spawn();
+    sndrnd = random();
+    // new.origin = self.origin doesnt work because the origin is at world (0,0,0).
+    new.origin_x = self.absmin_x + (random() * self.size_x);
+    new.origin_y = self.absmin_y + (random() * self.size_y);
+    new.origin_z = self.absmin_z + (random() * self.size_z);
+    setmodel (new, gibname);
+    setsize (new, '0 0 0', '0 0 0');
+
+    if (sndrnd < 0.25)
+        new.cnt = 1;
+    else if (sndrnd < 0.5)
+        new.cnt = 2;
+
+    // set the skin of the piece of rubble
+    new.skin = self.skin;
+
+    if (self.noise1)
+    {
+        new.noise1 = self.noise1;  // set noise1 for the rubble
+        new.noise2 = self.noise2;  // set noise2 for the rubble
+    }
+    new.velocity = VelocityForDamage (dm);
+    new.movetype = MOVETYPE_BOUNCE;
+    new.classname = "rubble";
+    new.solid = SOLID_TRIGGER;
+    new.touch = brik_touch;
+    new.avelocity_x = random()*600;
+    new.avelocity_y = random()*600;
+    new.avelocity_z = random()*600;
+    new.think = SUB_Remove;
+    new.ltime = time;
+    new.nextthink = time + 10 + random()*10;
+    new.frame = 0;
+    new.flags = 0;
+};
+
+// called when the wall is destroyed.
+// throws gibs (rubble).
+void () wall_killed =
+{
+    // spawnflag 8 is no longer needed since noise would be set if sound is on
+    if (self.noise)
+    {
+        local entity sndspot;
+        sndspot = spawn();
+        sndspot.origin = self.absmin;
+        setorigin(sndspot, sndspot.origin);
+        sound (sndspot, CHAN_AUTO, self.noise, 1, ATTN_NORM);
+        remove(sndspot);
+    }
+
+    if (! (self.spawnflags & 16)) // if rubble is not disabled
+    {
+        // if cnt is not set, use object bbox volume to set it
+        if (! self.cnt)
+            self.cnt = (self.size_x * self.size_y * self.size_z) / 64000;
+        if (self.cnt > 6)
+            self.cnt = 6;
+
+        while (self.cnt > 0)
+        {
+            self.dest_x = (random() * 100) - 50;
+            self.dest_y = (random() * 100) - 50;
+            self.dest_z = (random() * 100);
+
+            ThrowRubble ("progs/rubble1.mdl", self.health);
+            ThrowRubble ("progs/rubble2.mdl", self.health);
+            ThrowRubble ("progs/rubble3.mdl", self.health);
+            self.cnt = self.cnt - 1;
+        }
+    }
+
+    activator = self;
+    SUB_UseTargets();
+};
+
+void() wall_pain =
+{
+    // If it's not enough to destroy the wall and if it's a "one shot kill" wall
+    if ((self.spawnflags & 2) && self.health > 0)
+        self.health = self.max_health;
+};
+
+void() wall_use =
+{
+    self.health = -50;
+    self.dest_x = (random() * 10) - 5;
+    self.dest_y = (random() * 10) - 5;
+    self.dest_z = (random() * 10);
+    wall_killed();
+};
+
+/*QUAKED exploding_wall
+When the exploding wall is shot, it "gibs" into rubble. Since this has been changed, the entity
+has become a lot more flexible and mapper friendly (not that it was hard to use before :). It
+now also supports multiple material types (skin, which selects the sounds to be used also). The
+amount of rubble thrown is based on the size of the entity by default but can be set manually.
+However, it should be noted that cnt should be set between 1 and 6 and that the actual number of
+pieces of rubble thrown is cnt*3 (the loop is faster this way).
+
+**
+Note: as an undocumented feature, you can disable sound using the spawnflag but then set noise,
+noise1 and noise2 in the .map directly thus allowing the user to set their own custom sounds for
+both the wall breaking and the rubble bouncing.
+**
+
+VARIABLES
+"targetname"    allows the wall to be triggered by something else
+"target"    all entities with a matching targetname will be used when killed
+"health"    the amount of damage needed to destroy the wall instead of touched (default 15)
+"skin"      the type of rubble to throw (default 0)
+"cnt"       the amount of rubble to throw (default volume based)
+
+SKIN TYPES
+0 = grey concrete
+1 = brown concrete
+2 = red/brown bricks
+3 = rusty metal
+4 = rotten wood
+
+SPAWNFLAGS
+1 = the wall will not take damage when shot and will only break if triggered
+2 = the wall will return to full health if not destroyed with one hit
+4 = use bsp clipping rather than bounding box clipping
+8 = play no sounds
+16 = throw no rubble
+*/
+void() exploding_wall =
+{
+    setmodel (self, self.model);
+
+    // precache rubble models (two models used since red trails on gibs, grey on other rubble)
+    if (! (self.spawnflags & 16))  // if rubble is not turned off
+    {
+        precache_model ("progs/rubble1.mdl");
+        precache_model ("progs/rubble2.mdl");
+        precache_model ("progs/rubble3.mdl");
+    }
+
+    // if sounds are not turned off
+    if (! (self.spawnflags & 8))
+    {
+        // self.noise  - object breaking
+        // self.noise1 - rubble bounce 1
+        // self.noise2 - rubble bounce 2
+
+        if(self.skin == 3)
+        {
+            self.noise = "misc/wb_metal.wav";
+            self.noise1 = "misc/methit1.wav";
+            self.noise2 = "misc/methit2.wav";
+        }
+        else if (self.skin == 4)
+        {
+            self.noise = "misc/wb_wood.wav";
+            self.noise1 = "misc/woodhit1.wav";
+            self.noise2 = "misc/woodhit2.wav";
+        }
+        else
+        {
+            self.noise = "misc/wb_brick.wav";
+            self.noise1 = "misc/brikhit1.wav";
+            self.noise2 = "misc/brikhit2.wav";
+        }
+    }
+
+    // In case of a manual sound setting by the creator of the map
+    if (self.noise)
+        precache_sound(self.noise);
+    if (self.noise1)
+    {
+        precache_sound(self.noise1);
+        precache_sound(self.noise2);
+    }
+
+    // This flag toggles bsp/bounding box clipping
+    if (self.spawnflags & 4)
+    {
+        self.solid = SOLID_BSP;
+        self.movetype = MOVETYPE_PUSH;
+    }
+    else
+    {
+        self.solid = SOLID_BBOX;
+        self.movetype = MOVETYPE_NONE;
+    }
+
+    // Only destroyable by triggering
+    if (self.spawnflags & 1)
+        self.takedamage = DAMAGE_NO;
+    else
+    {
+        self.takedamage = DAMAGE_YES;
+        if (! self.health)
+            self.health = 15;  // set default health if none set
+    }
+
+    // "One shot kill" only
+    if (self.spawnflags & 2)
+        self.max_health = self.health;  // set health value to return to if not killed
+
+    self.th_pain = wall_pain;
+    self.th_die = wall_killed;
+
+    if (self.targetname)
+        self.use = wall_use;
+};
+
+
 //============================================================================
 /*QUAKED ambient_suck_wind (0.3 0.1 0.6) (-10 -10 -8) (10 10 8)
 */
