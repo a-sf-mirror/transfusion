@@ -34,9 +34,8 @@ void() SpectatorConnect =
     ClientFixRankings();
     #endif
 
-    bprint (PRINT_MEDIUM, "Spectator ");
     bprint (PRINT_MEDIUM, self.netname);
-    bprint (PRINT_MEDIUM, " entered the game\n");
+    bprint (PRINT_MEDIUM, " entered the game as a spectator\n");
 
     self.goalentity = world; // used for impulse 1 below
     self.classname = "spectator";
@@ -51,7 +50,6 @@ called when a spectator disconnects from a server
 */
 void() SpectatorDisconnect =
 {
-    bprint (PRINT_MEDIUM, "Spectator ");
     bprint (PRINT_MEDIUM, self.netname);
     bprint (PRINT_MEDIUM, " left the game\n");
 };

@@ -1400,7 +1400,6 @@ void() ClientConnect =
     ClientInRankings();
     #endif
 
-    Bprint (PRINT_HIGH, "Player ");
     Bprint (PRINT_HIGH, self.netname);
     Bprint (PRINT_HIGH, " entered the game\n");
 
@@ -1604,303 +1603,325 @@ void(entity attacker) ClientObituary =
 
             rnum = random()*54;
 
-            // Messages with no names
+            deathstring2 = string_null;
+
+            // Beaten like a Cur
             if (rnum <= 1)
             {
-                Bprint (PRINT_MEDIUM, "Beaten like a Cur.\n");
+                deathstring = " beaten ";
+                deathstring2 = " like a cur";
                 self.noise1 = "thevoice/vo39.wav";
             }
+            // Bobbettized!
             else if (rnum <= 2)
             {
-                Bprint (PRINT_MEDIUM, "Bobbettized!\n");
+                deathstring = " bobbettized ";
                 self.noise1 = "thevoice/vo31.wav";
             }
+            // Destroyed!
             else if (rnum <= 3)
             {
-                Bprint (PRINT_MEDIUM, "Destroyed!\n");
+                deathstring = " destroyed ";
                 self.noise1 = "thevoice/vo24.wav";
             }
+            // Dog meat
             else if (rnum <= 4)
             {
-                Bprint (PRINT_MEDIUM, "Dog meat.\n");
+                deathstring = " made dog meat with ";
                 self.noise1 = "thevoice/vo36.wav";
             }
+            // Excellent!
             else if (rnum <= 5)
             {
-                Bprint (PRINT_MEDIUM, "Excellent!\n");
+                deathstring = " showed his excellence to ";
                 self.noise1 = "thevoice/vo44.wav";
             }
+            // Fine work
             else if (rnum <= 6)
             {
-                Bprint (PRINT_MEDIUM, "Fine work.\n");
+                deathstring = " did a fine work on ";
                 self.noise1 = "thevoice/vo22.wav";
             }
+            // Good one
             else if (rnum <= 7)
             {
-                Bprint (PRINT_MEDIUM, "Good one\n");
+                deathstring = " showed ";
+                deathstring2 = " how good he is";
                 self.noise1 = "thevoice/vo20.wav";
             }
+            // He shoots! He scores!
             else if (rnum <= 8)
             {
-                Bprint (PRINT_MEDIUM, "He shoots! He scores!\n");
+                deathstring = " shot at ";
+                deathstring2 = " and scored!";
                 self.noise1 = "thevoice/vo33.wav";
             }
+            // Hosed!
             else if (rnum <= 8)
             {
-                Bprint (PRINT_MEDIUM, "Hosed!\n");
+                deathstring = " hosed ";
                 self.noise1 = "thevoice/vo25.wav";
             }
+            // Humiliated!
             else if (rnum <= 10)
             {
-                Bprint (PRINT_MEDIUM, "Humiliated!\n");
+                deathstring = " humiliated ";
                 self.noise1 = "thevoice/vo26.wav";
             }
+            // Lunch meat!
             else if (rnum <= 11)
             {
-                Bprint (PRINT_MEDIUM, "Lunch meat!\n");
+                deathstring = " made lunch meat with ";
                 self.noise1 = "thevoice/vo21.wav";
             }
+            // Pass the chili!
             else if (rnum <= 12)
             {
-                Bprint (PRINT_MEDIUM, "Pass the chili!\n");
+                deathstring = " passed the chili to ";
                 self.noise1 = "thevoice/vo29.wav";
             }
+            // Punishment delivered
             else if (rnum <= 13)
             {
-                Bprint (PRINT_MEDIUM, "Punishment delivered\n");
+                deathstring = " delivered punishment to ";
                 self.noise1 = "thevoice/vo30.wav";
             }
+            // Ripped 'em loose
             else if (rnum <= 14)
             {
-                Bprint (PRINT_MEDIUM, "Ripped 'em loose.\n");
+                deathstring = " ripped ";
                 self.noise1 = "thevoice/vo38.wav";
             }
+            // Sent to HELL!
             else if (rnum <= 15)
             {
-                Bprint (PRINT_MEDIUM, "Sent to HELL!\n");
+                deathstring = " sent ";
+                deathstring2 = " to hell!";
                 self.noise1 = "thevoice/vo28.wav";
             }
+            // Snuffed!
             else if (rnum <= 16)
             {
-                Bprint (PRINT_MEDIUM, "Snuffed!\n");
+                deathstring = " snuffed ";
                 self.noise1 = "thevoice/vo41.wav";
             }
+            // Spillage!
             else if (rnum <= 17)
             {
-                Bprint (PRINT_MEDIUM, "Spillage!\n");
+                deathstring = " spilt ";
                 self.noise1 = "thevoice/vo34.wav";
             }
+            // Sprayed!
             else if (rnum <= 18)
             {
-                Bprint (PRINT_MEDIUM, "Sprayed!\n");
+                deathstring = " sprayed ";
                 self.noise1 = "thevoice/vo35.wav";
             }
+            // Stiffed!
             else if (rnum <= 19)
             {
-                Bprint (PRINT_MEDIUM, "Stiffed!\n");
+                deathstring = " stiffed ";
                 self.noise1 = "thevoice/vo32.wav";
             }
+            // Talented!
             else if (rnum <= 20)
             {
-                Bprint (PRINT_MEDIUM, "Talented!\n");
+                deathstring = " showed his talent to ";
                 self.noise1 = "thevoice/vo19.wav";
             }
+            // Toasted!
             else if (rnum <= 21)
             {
-                Bprint (PRINT_MEDIUM, "Toasted!\n");
+                deathstring = " toasted ";
                 self.noise1 = "thevoice/vo27.wav";
             }
+            // Vaporized!
             else if (rnum <= 22)
             {
-                Bprint (PRINT_MEDIUM, "Vaporized!\n");
+                deathstring = " vaporized ";
                 self.noise1 = "thevoice/vo43.wav";
             }
+            // Well done!
             else if (rnum <= 23)
             {
-                Bprint (PRINT_MEDIUM, "Well done!\n");
+                deathstring = " did well with ";
                 self.noise1 = "thevoice/vo23.wav";
             }
+            // Whipped and creamed!
             else if (rnum <= 24)
             {
-                Bprint (PRINT_MEDIUM, "Whipped and creamed!\n");
+                deathstring = " whipped and creamed ";
                 self.noise1 = "thevoice/vo40.wav";
             }
-
-            // Messages with the attacker name only
+            // Scrotum separation
             else if (rnum <= 25)
             {
-                Bprint (PRINT_MEDIUM, self.netname);
-                Bprint (PRINT_MEDIUM, " suffered scrotum separation\n");
+                deathstring = " made ";
+                deathstring2 = " suffered scrotum separation";
                 self.noise1 = "thevoice/vo9.wav";
             }
+            // Excrement
             else if (rnum <= 26)
             {
-                Bprint (PRINT_MEDIUM, self.netname);
-                Bprint (PRINT_MEDIUM, " is excrement\n");
+                deathstring = " turned ";
+                deathstring2 = " into excrement";
                 self.noise1 = "thevoice/vo7.wav";
             }
+            // Hamburger
             else if (rnum <= 27)
             {
-                Bprint (PRINT_MEDIUM, self.netname);
-                Bprint (PRINT_MEDIUM, " is hamburger\n");
+                deathstring = " turned ";
+                deathstring2 = " into hamburger";
                 self.noise1 = "thevoice/vo8.wav";
             }
             else if (rnum <= 28)
             {
-                Bprint (PRINT_MEDIUM, self.netname);
-                Bprint (PRINT_MEDIUM, " had his spleen vented\n");
+                deathstring = " vented ";
+                deathstring2 = " spleen";
                 self.noise1 = "thevoice/vo42.wav";
             }
-
-            // Messages with attacker name and target name
+            else if (rnum <= 29)
+            {
+                deathstring = " body bagged ";
+                self.noise1 = "thevoice/vo10.wav";
+            }
+            else if (rnum <= 30)
+            {
+                deathstring = " boned ";
+                deathstring2 = " like a fish!";
+                self.noise1 = "thevoice/boned.wav";
+            }
+            else if (rnum <= 31)
+            {
+                deathstring = " gave ";
+                deathstring2 = " Anal Justice!";
+                self.noise1 = "thevoice/justice.wav";
+            }
+            else if (rnum <= 32)
+            {
+                deathstring = " hurt ";
+                deathstring2 = " real bad!\n";
+                self.noise1 = string_null;
+            }
+            else if (rnum <= 33)
+            {
+                deathstring = " ripped ";
+                deathstring2 = " a new orifice!";
+                self.noise1 = "thevoice/ripped.wav";
+            }
+            else if (rnum <= 34)
+            {
+                deathstring = " castrated ";
+                self.noise1 = "thevoice/castra.wav";
+            }
+            else if (rnum <= 35)
+            {
+                deathstring = " creamed ";
+                self.noise1 = "thevoice/creamed.wav";
+            }
+            else if (rnum <= 36)
+            {
+                deathstring = " decimated ";
+                self.noise1 = "thevoice/decimat.wav";
+            }
+            else if (rnum <= 37)
+            {
+                deathstring = " destroyed ";
+                self.noise1 = "thevoice/destro.wav";
+            }
+            else if (rnum <= 38)
+            {
+                deathstring = " diced ";
+                self.noise1 = "thevoice/diced.wav";
+            }
+            else if (rnum <= 39)
+            {
+                deathstring = " disembowled ";
+                self.noise1 = "thevoice/disembo.wav";
+            }
+            else if (rnum <= 40)
+            {
+                deathstring = " flattened ";
+                self.noise1 = "thevoice/flatte.wav";
+            }
+            else if (rnum <= 41)
+            {
+                deathstring = " killed ";
+                self.noise1 = "thevoice/killed.wav";
+            }
+            else if (rnum <= 42)
+            {
+                deathstring = " gave AnAl MaDnEsS to ";
+                self.noise1 = "thevoice/madness.wav";
+            }
+            else if (rnum <= 43)
+            {
+                deathstring = " massacred ";
+                self.noise1 = "thevoice/massacr.wav";
+            }
+            else if (rnum <= 44)
+            {
+                deathstring = " made mincemeat out of ";
+                self.noise1 = "thevoice/mincmeat.wav";
+            }
+            else if (rnum <= 45)
+            {
+                deathstring = " mutilated ";
+                self.noise1 = "thevoice/mutila.wav";
+            }
+            else if (rnum <= 46)
+            {
+                deathstring = " reamed ";
+                self.noise1 = "thevoice/reamed.wav";
+            }
+            else if (rnum <= 47)
+            {
+                deathstring = " shat upon ";
+                self.noise1 = "thevoice/vo14.wav";
+            }
+            else if (rnum <= 48)
+            {
+                deathstring = " slaughtered ";
+                self.noise1 = "thevoice/slaught.wav";
+            }
+            else if (rnum <= 49)
+            {
+                deathstring = " sliced ";
+                self.noise1 = "thevoice/sliced.wav";
+            }
+            else if (rnum <= 50)
+            {
+                deathstring = " smashed ";
+                self.noise1 = "thevoice/smashed.wav";
+            }
+            else if (rnum <= 51)
+            {
+                deathstring = " sodomized ";
+                self.noise1 = "thevoice/sodomiz.wav";
+            }
+            else if (rnum <= 52)
+            {
+                deathstring = " splattered ";
+                self.noise1 = "thevoice/splatt.wav";
+            }
+            else if (rnum <= 53)
+            {
+                deathstring = " throttled ";
+                self.noise1 = "thevoice/throttl.wav";
+            }
             else
             {
-                deathstring2 = string_null;
-
-                if (rnum <= 29)
-                {
-                    deathstring = " body bagged ";
-                    self.noise1 = "thevoice/vo10.wav";
-                }
-                else if (rnum <= 30)
-                {
-                    deathstring = " boned ";
-                    deathstring2 = " like a fish!";
-                    self.noise1 = "thevoice/boned.wav";
-                }
-                else if (rnum <= 31)
-                {
-                    deathstring = " gave ";
-                    deathstring2 = " Anal Justice!";
-                    self.noise1 = "thevoice/justice.wav";
-                }
-                else if (rnum <= 32)
-                {
-                    deathstring = " hurt ";
-                    deathstring2 = " real bad!\n";
-                    self.noise1 = string_null;
-                }
-                else if (rnum <= 33)
-                {
-                    deathstring = " ripped ";
-                    deathstring2 = " a new orifice!";
-                    self.noise1 = "thevoice/ripped.wav";
-                }
-                else if (rnum <= 34)
-                {
-                    deathstring = " castrated ";
-                    self.noise1 = "thevoice/castra.wav";
-                }
-                else if (rnum <= 35)
-                {
-                    deathstring = " creamed ";
-                    self.noise1 = "thevoice/creamed.wav";
-                }
-                else if (rnum <= 36)
-                {
-                    deathstring = " decimated ";
-                    self.noise1 = "thevoice/decimat.wav";
-                }
-                else if (rnum <= 37)
-                {
-                    deathstring = " destroyed ";
-                    self.noise1 = "thevoice/destro.wav";
-                }
-                else if (rnum <= 38)
-                {
-                    deathstring = " diced ";
-                    self.noise1 = "thevoice/diced.wav";
-                }
-                else if (rnum <= 39)
-                {
-                    deathstring = " disembowled ";
-                    self.noise1 = "thevoice/disembo.wav";
-                }
-                else if (rnum <= 40)
-                {
-                    deathstring = " flattened ";
-                    self.noise1 = "thevoice/flatte.wav";
-                }
-                else if (rnum <= 41)
-                {
-                    deathstring = " killed ";
-                    self.noise1 = "thevoice/killed.wav";
-                }
-                else if (rnum <= 42)
-                {
-                    deathstring = " gave AnAl MaDnEsS to ";
-                    self.noise1 = "thevoice/madness.wav";
-                }
-                else if (rnum <= 43)
-                {
-                    deathstring = " massacred ";
-                    self.noise1 = "thevoice/massacr.wav";
-                }
-                else if (rnum <= 44)
-                {
-                    deathstring = " made mincemeat out of ";
-                    self.noise1 = "thevoice/mincmeat.wav";
-                }
-                else if (rnum <= 45)
-                {
-                    deathstring = " mutilated ";
-                    self.noise1 = "thevoice/mutila.wav";
-                }
-                else if (rnum <= 46)
-                {
-                    deathstring = " reamed ";
-                    self.noise1 = "thevoice/reamed.wav";
-                }
-                else if (rnum <= 47)
-                {
-                    deathstring = " shat upon ";
-                    self.noise1 = "thevoice/vo14.wav";
-                }
-                else if (rnum <= 48)
-                {
-                    deathstring = " slaughtered ";
-                    self.noise1 = "thevoice/slaught.wav";
-                }
-                else if (rnum <= 49)
-                {
-                    deathstring = " sliced ";
-                    self.noise1 = "thevoice/sliced.wav";
-                }
-                else if (rnum <= 50)
-                {
-                    deathstring = " smashed ";
-                    self.noise1 = "thevoice/smashed.wav";
-                }
-                else if (rnum <= 51)
-                {
-                    deathstring = " sodomized ";
-                    self.noise1 = "thevoice/sodomiz.wav";
-                }
-                else if (rnum <= 52)
-                {
-                    deathstring = " splattered ";
-                    self.noise1 = "thevoice/splatt.wav";
-                }
-                else if (rnum <= 53)
-                {
-                    deathstring = " throttled ";
-                    self.noise1 = "thevoice/throttl.wav";
-                }
-                else
-                {
-                    deathstring = " wasted ";
-                    self.noise1 = "thevoice/wasted.wav";
-                }
-
-                Bprint (PRINT_MEDIUM, attacker.netname);
-                Bprint (PRINT_MEDIUM, deathstring);
-                Bprint (PRINT_MEDIUM, self.netname);
-                if (deathstring2)
-                    Bprint (PRINT_MEDIUM, deathstring2);
-                Bprint (PRINT_MEDIUM, "\n");
+                deathstring = " wasted ";
+                self.noise1 = "thevoice/wasted.wav";
             }
+
+            Bprint (PRINT_MEDIUM, attacker.netname);
+            Bprint (PRINT_MEDIUM, deathstring);
+            Bprint (PRINT_MEDIUM, self.netname);
+            if (deathstring2)
+                Bprint (PRINT_MEDIUM, deathstring2);
+            Bprint (PRINT_MEDIUM, "\n");
         }
-        return;
     }
     else
     {
