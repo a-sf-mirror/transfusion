@@ -138,7 +138,10 @@ $cd id1/models/v_nail
 $origin 0 0 54
 $base base
 $skin skin
-$frame shot1 shot2 shot3 shot4 shot5 shot6 shot7 shot8 shot9
+// regular fire
+$frame shot1 shot2 shot3 shot4 shot5 shot6 shot7 shot8
+// alt fire
+$frame alt1 alt2 alt3 alt4 alt5 alt6 alt7
 
 $modelname v_light
 $cd id1/models/v_light
