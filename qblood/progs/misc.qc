@@ -315,6 +315,58 @@ void() hidden_exploder =
     self.use = hidden_use;
 };
 
+
+void() shake_screen =
+{
+    local entity ent;
+	
+	if (self.dmgtime <= 0)
+	{
+	    remove(self);
+		return;
+	}
+	
+	
+	ent = findradius(self.origin, self.dmg);
+	
+	while (ent != world)
+    {	    
+	    if (ent.classname == "player")
+		{            
+		    ent.punchangle_x = rint(random() * 3) - 1;
+	        ent.punchangle_y = rint(random() * 3) - 1;
+	        ent.punchangle_z = rint(random() * 3) - 1;		
+		}	
+	    ent = ent.chain;
+	}
+	
+	self.dmgtime = self.dmgtime - 0.1;
+	
+	self.think = shake_screen;
+	self.nextthink = time + 0.1;
+
+};
+
+void () shake_start =
+{
+    local entity shaker;
+	local entity temp;
+	
+	temp = find(world, classname, "player");
+	
+	if (temp != world)
+	{
+	    bprint("Shaker made\n");
+		shaker = spawn();
+	    shaker.origin = temp.origin;
+	    shaker.dmgtime = 5;
+        shaker.dmg = 1000;
+		shaker.think = shake_screen;
+	    shaker.nextthink = time + 0.1;
+	}
+};
+
+
 /*
 ===========================================================================
 TRAPS
@@ -851,20 +903,30 @@ void() exploding_wall =
     // Save the model name for wall_reset
     self.mdl = self.model;
 
-    // precache rubble models (two models used since red trails on gibs, grey on other rubble)
+    // Set to be destroyed by TNT only by default
+    if ( (self.skin <= 3)      &&
+	    !(self.spawnflags & 1) &&
+		!(self.spawnflags & 2) &&
+		!(self.spawnflags & 32))
+	{
+	    self.spawnflags = self.spawnflags | 32;
+		self.health = 1;
+	}
+		
+	// precache rubble models (two models used since red trails on gibs, grey on other rubble)
     if (! (self.spawnflags & 16))  // if rubble is not turned off
     {
         if (self.skin > 4)  // if skin is set to glass, use the glass shards instead - d.turner
         {
             precache_model ("models/objects/glass1.md3");
             precache_model ("models/objects/glass2.md3");
-            precache_model ("models/objects/glass3.md3");
+            precache_model ("models/objects/glass3.md3");			
         }
         else
         {
             precache_model ("models/objects/rubble1.md3");
             precache_model ("models/objects/rubble2.md3");
-            precache_model ("models/objects/rubble3.md3");
+            precache_model ("models/objects/rubble3.md3");			
         }
     }
 

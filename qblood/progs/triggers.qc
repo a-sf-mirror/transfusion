@@ -20,9 +20,7 @@
 
 #include "common.qh"
 
-
-entity stemp, otemp, old;
-
+void () shake_screen;
 
 void() trigger_reactivate =
 {
@@ -64,7 +62,7 @@ void() multi_trigger =
     if (self.noise)
         sound (self, CHAN_VOICE, self.noise, 1, ATTN_NORM);
 
-// don't trigger again until reset
+    // don't trigger again until reset
     self.takedamage = DAMAGE_NO;
 
     activator = self.enemy;
@@ -587,12 +585,12 @@ void() trigger_changelevel =
     self.use = changelevel_use;	
 };
 
+// So player has to be touching trigger AND hitting the use button
 void() trigger_use_touch =
 {
     if (other.button4)
 	    SUB_UseTargets();
 };
-
 
 /*
     trigger_use
@@ -601,11 +599,11 @@ void() trigger_use_touch =
 
 */
 void() trigger_use =
-{
-    if (!self.target)
+{    
+	if (!self.target)
         objerror ("trigger_use doesn't have a target");
 
     InitTrigger ();
     
-	self.touch = trigger_use_touch;   
+	self.touch = trigger_use_touch;
 };

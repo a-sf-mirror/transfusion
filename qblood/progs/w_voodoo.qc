@@ -128,10 +128,10 @@ void(float damage) Voodoo_ApplyDamage =
 
     death_type = "voodoo";
 
-    if (deathmatch)
+    if (gametype != GT_COOPERATIVE && gametype != GT_SINGLE_PLAYER)
 	    targ = SUB_GetPointedPlayer (0.15);
 
-	else
+	else // SP or Coop mode
 	    targ = SUB_GetPointedMonster (0.15);
 
     // If we had a target that can be damaged and seems alive

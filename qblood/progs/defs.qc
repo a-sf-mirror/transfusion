@@ -48,7 +48,6 @@ float   force_retouch;  // force all entities to touch triggers
                         // to guarantee everything is touched
 string  mapname;
 
-// WARNING: don't use them directly. Use gametype (cf below)
 float   deathmatch;
 float   coop;
 float   teamplay;
@@ -352,16 +351,11 @@ float map_cycle;
 // QuakeC extensions
 .float      button3;        // altfire; DP_INPUTBUTTONS extension
 .float      button4;        // use; DP_INPUTBUTTONS extension
-//.float      button5;      // UNUSED; DP_INPUTBUTTONS extension
-//.float      button6;      // UNUSED; DP_INPUTBUTTONS extension
-//.float      button7;      // UNUSED; DP_INPUTBUTTONS extension
-//.float      button8;      // UNUSED; DP_INPUTBUTTONS extension
 .float      alpha;          // controls opacity of the entity (0.0 or 1.0 is solid, -1 is invisible); DP_ENT_ALPHA extension
 .float      glow_color;     // Glowing light effect, paletted color (note: 0 and 254 are white); DP_ENT_GLOW extension
 .float      glow_size;      // 0 or higher (Darkplaces imposes a 1020 limit); DP_ENT_GLOW extension
 .float      glow_trail;     // If true, leave a trail of particles of the same color as the light; DP_ENT_GLOW extension
 .float      scale;          // Rendering scale of the object (0 is forced to 1); DP_ENT_SCALE extension
-
 
 //
 // Fire
@@ -526,7 +520,6 @@ void(vector ang)  makevectors                   = #1;  // sets v_forward, etc gl
 void(entity e, vector o) setorigin              = #2;
 void(entity e, string m) setmodel               = #3;  // set movetype and solid first
 void(entity e, vector min, vector max) setsize  = #4;
-// #5 was removed
 void() break                                    = #6;
 float() random                                  = #7;  // returns 0 - 1
 #ifdef NO_FRIKBOT
@@ -541,11 +534,13 @@ float(vector v) vectoyaw            = #13;
 entity() spawn                      = #14;
 void(entity e) remove               = #15;
 
-// sets trace_* globals
-// nomonsters can be:
-// An entity will also be ignored for testing if forent == test,
-// forent->owner == test, or test->owner == forent
-// a forent of world is ignored
+/*
+    sets trace_* globals
+    nomonsters can be:
+    An entity will also be ignored for testing if forent == test,
+    forent->owner == test, or test->owner == forent
+    a forent of world is ignored
+*/
 void(vector v1, vector v2, float nomonsters, entity forent) traceline = #16;
 
 entity() checkclient                                                = #17;  // returns a client to look for
@@ -574,16 +569,13 @@ void() traceon                                                      = #29;  // t
 void() traceoff                                                     = #30;
 void(entity e) eprint                                               = #31;  // prints an entire edict
 float(float yaw, float dist) walkmove                               = #32;  // returns TRUE or FALSE
-// #33 was removed
 float() droptofloor                                                 = #34;  // TRUE if landed on floor
 void(float style, string value) lightstyle                          = #35;
 float(float v) rint                                                 = #36;  // round to nearest int
 float(float v) floor                                                = #37;  // largest integer <= v
 float(float v) ceil                                                 = #38;  // smallest integer >= v
-// #39 was removed
 float(entity e) checkbottom                                         = #40;  // true if self is on ground
 float(vector v) pointcontents                                       = #41;  // returns a CONTENT_*
-// #42 was removed
 float(float f) fabs                                                 = #43;
 #ifdef NO_FRIKBOT
 vector(entity e, float speed) aim                                   = #44;  // returns the shooting vector
@@ -593,7 +585,6 @@ void(string s) localcmd                                             = #46;  // p
 entity(entity e) nextent                                            = #47;  // for looping through all ents
 void(vector o, vector d, float color, float count) particle         = #48;  // start a particle effect
 void() ChangeYaw                                                    = #49;  // turn towards self.ideal_yaw at self.yaw_speed
-// #50 was removed
 vector(vector v) vectoangles                                        = #51;
 
 #ifdef NO_FRIKBOT
@@ -625,11 +616,6 @@ void(entity client, string s1, string s2, string s3) centerprint3   = #73;
 #endif
 
 void(vector pos, string samp, float vol, float atten) ambientsound  = #74;
-
-// Use precache_model, precache_sound and precache_file instead
-//string(string s) precache_model2    = #75;  // registered version only
-//string(string s) precache_sound2    = #76;  // registered version only
-//string(string s) precache_file2     = #77;  // registered version only
 
 #ifdef NO_FRIKBOT
 void(entity e) setspawnparms = #78;  // set parm1... to the values at level start for coop respawn
@@ -666,4 +652,3 @@ void(vector mincorner, vector maxcorner, vector vel, float howmany, float color)
 
 //creates a customized light flash.
 void(vector org, float radius, float lifetime, vector color) te_customflash = #417;
-

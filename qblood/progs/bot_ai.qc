@@ -227,7 +227,7 @@ void(entity targ) bot_check_lost =
     {
         if (targ.health <= 0)
             bot_lost(targ, TRUE);
-        else if (gametype >= GT_TEAM_BLOODBATH && targ.team == self.team)
+        else if ( (gametype == GT_TEAM_BLOODBATH || gametype == GT_CAPTURE_THE_FLAG) && targ.team == self.team)
         {
             if (targ.target1.classname == "player")
             {
@@ -607,7 +607,7 @@ float(entity thing) priority_for_thing =
             thisp = 65;
         else if (thing.classname == "item_health")
         {
-            if (thing.spawnflags & 2)  // 2 = H_LIFE_SEED
+            if (thing.spawnflags & H_LIFE_SEED)
                 thisp = 55;
             if (self.health < 40)
                 thisp = thisp + 50;
@@ -734,7 +734,7 @@ float(entity thing) priority_for_thing =
             {
                 if (thing.items & IT_INVISIBILITY) //FIXME
                     thisp = 2;
-                else if (gametype >= GT_TEAM_BLOODBATH && thing.team == self.team)
+                else if ( (gametype == GT_TEAM_BLOODBATH || gametype == GT_CAPTURE_THE_FLAG) && thing.team == self.team)
                 {
                     thisp = 100;
                     if (thing.target1.classname == "player")
@@ -747,7 +747,7 @@ float(entity thing) priority_for_thing =
     }
     else if (thing.classname == "sentry")
     {
-        if (gametype >= GT_TEAM_BLOODBATH && thing.team == self.team)
+        if ( (gametype == GT_TEAM_BLOODBATH || gametype == GT_CAPTURE_THE_FLAG) && thing.team == self.team)
             return 0;
         if (!thing.takedamage)
             return 0;

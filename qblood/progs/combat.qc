@@ -180,18 +180,20 @@ void(entity targ, entity inflictor, entity attacker, float damage, float dflags,
     local   float   save;
     local   float   take;
     local   float   protected;  // PM:  Boolean for invulnerability.
-
-    if (!targ.takedamage)
+    
+	if (!targ.takedamage)
         return;
-
+    
     // Some exploding_wall entities are only destroyable by explosives
     // FIXME: The damage code should really be rewritten to prevent these kinds of hack
-    if (targ.spawnflags & 32)
-        if (targ.classname == "exploding_wall")
-            if (inflictor.classname != "exploding_barrel" &&  // TNT barrels
-                inflictor.classname != "grenade"          &&  // All bombs, lighted Spray Can, Napalm Launcher (altfire)
-                inflictor.classname != "missile")             // Napalm Launcher (normal), Life Leech
-                return;
+    if (targ.spawnflags & 32                      &&
+        targ.classname == "exploding_wall"        &&
+        inflictor.classname != "exploding_barrel" &&  // TNT barrels
+        inflictor.classname != "grenade"          &&  // All bombs, lighted Spray Can, Napalm Launcher (altfire)
+        inflictor.classname != "missile")             // Napalm Launcher (normal), Life Leech
+    {
+	    return;
+	}
 	
 	// Hellhound / Cerebrus can't be hurt by fire, but can be hurt by the napalm launcher and TNT
 	if ((targ.classname == "monster_hellhound" || targ.classname == "monster_cerebrus") && 
@@ -256,7 +258,7 @@ void(entity targ, entity inflictor, entity attacker, float damage, float dflags,
             protected = TRUE;
         }
         // Team play avoidance.
-        else if (gametype >= GT_TEAM_BLOODBATH && ! friendlyfire &&
+        else if ((gametype == GT_TEAM_BLOODBATH || gametype == GT_CAPTURE_THE_FLAG) && ! friendlyfire &&
                  targ != attacker && attacker.classname == "player" && inflictor.classname != "door")
         {
             if (targ.team == attacker.team)

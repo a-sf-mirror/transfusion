@@ -166,7 +166,6 @@ void() door_fire =
 
 void() door_use =
 {
-    //dprint ("door_use\n");
     local entity oself;
 
     self.message = string_null;          // door message are for touch only
@@ -237,7 +236,9 @@ void() door_touch =
         return;
 
     // FIXME: blink key on player's status bar
-    if ((self.items2 & other.items2) != self.items2)
+    if ((self.items2 & other.items2) != self.items2 &&
+	     (gametype == GT_COOPERATIVE || gametype == GT_SINGLE_PLAYER))
+		 // So all doors are unlocked in deathmatch/ctf
     {
         if (self.owner.items2 == IT2_KEY1)
             centerprint (other, "You need the skull key");
@@ -258,10 +259,7 @@ void() door_touch =
         sound (other, CHAN_VOICE, self.noise3, 1, ATTN_NORM);
         sound (other, CHAN_BODY, self.noise3, 1, ATTN_NORM);
         return;
-    }
-
-    // PM:  Keys aren't used up.
-    //    other.items2 = other.items2 - self.items2;
+    }    
     self.touch = SUB_Null;
     if (self.enemy)
         self.enemy.touch = SUB_Null;    // get paired door

@@ -261,45 +261,37 @@ void() worldspawn =
     #endif
 
     // Compute the game type
-    teamplay = cvar("teamplay");
-    deathmatch = cvar("deathmatch");
-	
-    // Set up SP cooperative play
-    if ((teamplay) && !(deathmatch))
+    	
+    if (cvar("coop"))
 	{
-	    cvar_set ("coop", "1");
-        coop = 1;
 		gametype = GT_COOPERATIVE;
-	}
-	else
-	{
-	    cvar_set ("coop", "0");
-        coop = 0;
-	}
-
-    // Select the game type
-    if (deathmatch == 2)
-    {
-        gametype = GT_CAPTURE_THE_FLAG;
-
-        // Tell the engine that we're actually in a team play
-        if (teamplay == 0)
-        {
-            teamplay = 1;
-            cvar_set ("teamplay", "1");
-        }
+		cvar_set ("deathmatch", "0");
+	    cvar_set ("teamplay", "0");
     }
-    else if (gametype != GT_COOPERATIVE)
+	else if (cvar("teamplay"))
     {
-        cvar_set ("deathmatch", "1");
-        deathmatch = 1;
+	    if (cvar("deathmatch"))
+	        gametype = GT_TEAM_BLOODBATH;		
 
-        if (! teamplay)
-            gametype = GT_BLOODBATH;
-        else
-            gametype = GT_TEAM_BLOODBATH;
-    }
-    friendlyfire = (teamplay == 2);  // NOTE: should we allow friendlyfire changes during the game ?
+		else
+		    gametype = GT_CAPTURE_THE_FLAG;
+			
+		cvar_set ("coop", "0");
+	}		
+    else if (cvar("deathmatch"))
+	    gametype = GT_BLOODBATH;
+		
+    else
+    {
+	    gametype = GT_BLOODBATH;      // When we finish the episode 1 media, we can finally do the switch!
+		cvar_set("deathmatch", "1");
+		//gametype = GT_SINGLE_PLAYER;
+	}
+
+    friendlyfire = (cvar("teamplay") == 2);  // NOTE: should we allow friendlyfire changes during the game ?
+    
+	if (cvar("coop") == 2)
+	    friendlyfire = 1;
 
     // Set gravity
     cvar_set ("sv_gravity", "800");

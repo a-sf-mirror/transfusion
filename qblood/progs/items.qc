@@ -25,6 +25,7 @@ void() W_SetCurrentAmmo;
 void(float newWeapon) W_SwitchToWeapon;
 void() FireAmbient;
 void() ambient_water1;
+void() Bomb_Explode;
 
 /* ALL LIGHTS SHOULD BE 0 1 0 IN COLOR ALL OTHER ITEMS SHOULD
 BE .8 .3 .4 IN COLOR */
@@ -32,8 +33,8 @@ BE .8 .3 .4 IN COLOR */
 
 void() SUB_regen =
 {
-     // Items don't respawn in singleplayer / coop
-	 if (!(deathmatch))
+     // Items only respawn in deathmatch/ctf/team deathmatch
+	 if (gametype == GT_COOPERATIVE || gametype == GT_SINGLE_PLAYER)
 	 {
 	     remove(self);
 		 return;
@@ -124,7 +125,7 @@ void() Invisibility_Touch =
     if (other.health <= 0)
         return;
 
-    // FIXME: need to set alpha for each weapon instead of totally losing player v_weap
+    // FIXME: need to set alpha for each v_weapon
     other.alpha = 0.2;
 	self.mdl = self.model;
 
@@ -466,6 +467,10 @@ void() obj_world_lantern1 =
 // Fire Extinguisher (tile0658)
 void() obj_world_extngsh =
 {
+    // TESTME:
+	self.health = 1;
+	self.dmg = DMG_TNT;
+	self.th_die = Bomb_Explode;
     StartObject ("models/world/extngsh.md3", '-4 -12 16', '4 13 61');
 };
 
@@ -527,7 +532,8 @@ void() obj_world_plant1 =
 // Draven Tombstone (tile1159)
 void() obj_world_draven =
 {
-    StartObject ("models/world/draven.md3", '-6 -18 0', '6 18 47');
+    // FIXME: Needs self.spawnflags = SF_USABLE; self.use = play sound
+	StartObject ("models/world/draven.md3", '-6 -18 0', '6 18 47');
 };
 
 // Spade (tile1712)
@@ -1838,18 +1844,14 @@ KEYS
 
 void() key_touch =
 {
-local entity    stemp;
-local float     best;
+    local entity    stemp;
+    local float     best;
 
-    if (other.classname != "player")
-        return;
-    if (other.health <= 0)
-        return;
-
-    // Changed to .items2 since that is where key bits are stored.
-    if (other.items2 & self.items2)
-        return;
-
+    if (other.classname != "player" || // if it's a player
+	    other.health <= 0           || // if player is alive
+		other.items2 & self.items2)    // if player already has the key
+		return;
+	
     sprint3 (other, "Picked up ", self.netname, "\n");
 
     sound (other, CHAN_ITEM, self.noise, 1, ATTN_NORM);
@@ -1858,8 +1860,16 @@ local float     best;
     // Changed to .items2 since that is where key bits are stored.
     other.items2 = other.items2 | self.items2;
 
-    self.solid = SOLID_NOT;
-    self.model = string_null;
+    if (gametype == GT_COOPERATIVE)  // So others can pick up the key
+	{
+	    self.think = SUB_regen;
+		self.nextthink = time + 15;
+	}
+	else
+	{
+	    self.solid = SOLID_NOT;
+        self.model = string_null;
+	}
 
     activator = other;
     SUB_UseTargets();               // fire all targets / killtargets
@@ -1873,7 +1883,16 @@ Skull, Eye, Fire, Dagger, Spider, Moon
 */
 void() item_key =
 {
-    self.classname = "item_key";
+    // Keys don't exist in multiplayer
+	if (gametype != GT_COOPERATIVE && gametype != GT_SINGLE_PLAYER)
+    {
+	    remove(self);
+		return;
+	}
+
+	//for monster dropped keys
+	self.classname = "item_key";
+	
     if ((self.spawnflags & 63) == 0)
     {
         // Convert to skull key.

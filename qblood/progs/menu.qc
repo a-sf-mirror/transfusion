@@ -70,20 +70,38 @@ void(float newGametype) Vote_ChangeGametype =
 {
     local string gt;
 
-    // If it's a CTF game
-    if (newGametype >= 4)
-        cvar_set ("deathmatch", "2");
-    else
-        cvar_set ("deathmatch", "1");
-
-    // If it's a Blood Bath
-    if (newGametype == 1)
-        cvar_set ("teamplay", "0");
-    // Else, if the friendly fire must be activated
-    else if (newGametype == 3 || newGametype == 5)
-        cvar_set ("teamplay", "2");
-    else
-        cvar_set ("teamplay", "1");
+    if (newGametype == 1) // Bloodbath
+	{
+	   cvar_set ("coop", "0");
+	   cvar_set ("deathmatch", "1");
+	   cvar_set ("teamplay", "0");
+	}
+	else if (newGametype == 2) // Team Bloodbath
+	{
+	   cvar_set ("coop", "0");
+	   cvar_set ("deathmatch", "1");
+	   cvar_set ("teamplay", "2");
+	}
+	else if (newGametype == 3) // Team Bloodbath with friendly fire
+	{
+	   cvar_set ("coop", "0");
+	   cvar_set ("deathmatch", "1");
+	   cvar_set ("teamplay", "1");
+	}
+	else if (newGametype == 4) // Capture the flag
+	{
+	   cvar_set ("coop", "0");
+	   cvar_set ("deathmatch", "0");
+	   cvar_set ("teamplay", "2");
+	}
+	else if (newGametype == 5) // Capture the flag with friendly fire
+	{
+	   cvar_set ("coop", "0");
+	   cvar_set ("deathmatch", "0");
+	   cvar_set ("teamplay", "1");
+	}
+	else
+	    error("Something is wrong with the Vote_ChangeGametype() code\n");
 
     gt = Vote_GametypeToString (newGametype);
 

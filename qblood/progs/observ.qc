@@ -165,9 +165,9 @@ void() Impulses_Observer =
         return;
 
     // If we're not in a team mode, join the game on impulse 1 or 2, or on "jump" or "fire"
-    if (gametype < GT_TEAM_BLOODBATH)
+    if ((gametype != GT_TEAM_BLOODBATH && gametype != GT_CAPTURE_THE_FLAG))
     {
-        if (self.impulse == 1 || self.impulse == 2 || self.button0 || self.button2)
+        if (self.impulse == 1 || self.impulse == 2 || self.button0 || self.button1 || self.button2 || self.button3 || self.button4)
         {
             self.observer = 0;
             respawn (FALSE);
@@ -177,7 +177,7 @@ void() Impulses_Observer =
     // Else (in a team mode)
     else
     {
-        if (self.button0 || self.button2)
+		if (self.button0 || self.button1 || self.button2 || self.button3 || self.button4)
             centerprint (self, "Type:\nimpulse 1 for joining the RED team\nimpulse 2 for joining the BLUE team");
         else if (self.impulse == 1 || self.impulse == 2)
         {

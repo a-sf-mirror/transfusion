@@ -1,0 +1,12 @@
+$base base
+$skin skin
+
+// idle
+$frame idle1 idle2 idle3 idle4 idle5 idle6 idle7 idle8
+
+// walking
+$frame walk1 walk2 walk3 walk4 walk5 walk6
+$frame walk7 walk8 walk9 walk10 walk11 walk12 
+
+// attacking
+$frame attack1 attack2

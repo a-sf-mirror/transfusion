@@ -144,7 +144,7 @@ void() bot_dodge_stuff =
             {
                 if (foe.health > 0)
                 {
-                    if (gametype < GT_TEAM_BLOODBATH || self.team != foe.team)
+                    if ((gametype != GT_TEAM_BLOODBATH && gametype != GT_CAPTURE_THE_FLAG) || self.team != foe.team)
                     {
                         flen = vlen(foe.origin - self.origin);
                         if (flen < foedist)
@@ -175,7 +175,7 @@ void() bot_dodge_stuff =
     {
         if (foe.classname == "sentry" && foe.leech_sentry != self)
         {
-            if (gametype < GT_TEAM_BLOODBATH || self.team != foe.team)
+            if ((gametype != GT_TEAM_BLOODBATH && gametype != GT_CAPTURE_THE_FLAG) || self.team != foe.team)
             {
                 flen = vlen(foe.origin - self.origin);
                 if (flen < foedist)
@@ -415,7 +415,7 @@ void() bot_fight_style =
         {
             // try to avoid shooting teammates
             if (trace_ent.classname == "player")
-                if (trace_ent.team == self.team && gametype >= GT_TEAM_BLOODBATH)
+                if (trace_ent.team == self.team && (gametype == GT_TEAM_BLOODBATH || gametype == GT_CAPTURE_THE_FLAG))
                     return;
                 else 
 				    bot_shoot();
@@ -431,7 +431,7 @@ void() bot_fight_style =
 
         if (foesz > mysz)
         {
-            if (gametype >= GT_TEAM_BLOODBATH)
+            if ((gametype == GT_TEAM_BLOODBATH || gametype == GT_CAPTURE_THE_FLAG))
             {
                 if (random() < 0.02)
                 {

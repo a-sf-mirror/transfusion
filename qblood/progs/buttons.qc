@@ -215,7 +215,7 @@ void() changelevel_use =
         return;
     }
 
-    if (coop || deathmatch)
+    if (gametype != GT_SINGLE_PLAYER)
     {
         bprint (other.netname);
         bprint (" exited the level\n");
@@ -227,7 +227,7 @@ void() changelevel_use =
 
     self.frame = 1 - self.frame;
 
-    if ( (self.spawnflags & 1) && (deathmatch == 0) )
+    if ( (self.spawnflags & 1) && gametype != GT_SINGLE_PLAYER)
     {    // NO_INTERMISSION
         GotoNextMap();
         return;

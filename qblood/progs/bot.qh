@@ -1,0 +1,105 @@
+/*  Copyright (C) 2001-2003  Mathieu Olivier, Timothy Hale
+
+    This program is free software; you can redistribute it and/or modify
+    it under the terms of the GNU General Public License as published by
+    the Free Software Foundation; either version 2 of the License, or
+    (at your option) any later version.
+
+    This program is distributed in the hope that it will be useful,
+    but WITHOUT ANY WARRANTY; without even the implied warranty of
+    MERCHANTABILITY or FITNESS FOR A PARTICULAR PURPOSE.  See the
+    GNU General Public License for more details.
+
+    You should have received a copy of the GNU General Public License
+    along with this program; if not, write to the Free Software
+    Foundation, Inc., 59 Temple Place, Suite 330, Boston, MA 02111-1307 USA
+
+    See file, 'COPYING', for details.
+*/
+
+/*
+ * Original version of this file taken from FrikBot X v0.10.1
+ * Copyright (C) 2001  Ryan Smith
+ * See the file COPYING.FrikBotX for the copyright notice.
+ */
+
+#ifndef _BOT_QH_
+#define _BOT_QH_
+
+// --------defines-----
+#define SVC_UPDATENAME    13
+#define SVC_UPDATEFRAGS   14
+#define SVC_UPDATECOLORS  17
+
+// used for the physics & movement AI
+#define KEY_MOVEUP        1
+#define KEY_MOVEDOWN      2
+#define KEY_MOVELEFT      4
+#define KEY_MOVERIGHT     8
+#define KEY_MOVEFORWARD   16
+#define KEY_MOVEBACK      32
+#define KEY_LOOKUP        64
+#define KEY_LOOKDOWN      128
+#define KEY_LOOKLEFT      256
+#define KEY_LOOKRIGHT     512
+
+// these are aiflags for waypoints
+// some overlap to the bot
+#define AI_TELELINK_1     1       // link type
+#define AI_TELELINK_2     2       // link type
+#define AI_TELELINK_3     4       // link type
+#define AI_TELELINK_4     8       // link type
+#define AI_DOORFLAG       16      // read ahead
+#define AI_PRECISION      32      // read ahead + point
+#define AI_SURFACE        64      // point
+#define AI_BLIND          128     // read ahead + point
+#define AI_JUMP           256     // point + ignore
+#define AI_DIRECTIONAL    512     // read ahead + ignore
+#define AI_PLAT_BOTTOM    1024    // read ahead
+#define AI_RIDE_TRAIN     2048    // read ahead
+#define AI_SUPER_JUMP     4096    // point + ignore + route test
+#define AI_SNIPER         8192    // point type
+#define AI_AMBUSH         16384   // point type
+#define AI_DOOR_NO_OPEN   32768   // read ahead
+#define AI_DIFFICULT      65536   // route test
+#define AI_TRACE_TEST     131072  // route test
+
+// these are flags for bots/players (dynamic/editor flags)
+#define AI_OBSTRUCTED     1
+#define AI_HOLD_SELECT    2
+#define AI_ROUTE_FAILED   2
+#define AI_WAIT           4
+#define AI_DANGER         8
+
+// addition masks
+#define AI_POINT_TYPES        29152
+#define AI_READAHEAD_TYPES    36528
+#define AI_IGNORE_TYPES       4864
+
+#define WM_UNINIT         0
+#define WM_DYNAMIC        1
+#define WM_LOADING        2
+#define WM_LOADED         3
+// editor modes aren't available in QW, but we retain support of them
+// since the editor is still built into the AI in places
+#define WM_EDITOR         4
+#define WM_EDITOR_DYNAMIC 5
+#define WM_EDITOR_DYNLINK 6
+
+#define MENU_MAIN         1
+#define MENU_WAYPOINTS    2
+#define MENU_LINKS        3
+#define MENU_FLAGS        4
+#define MENU_FLAGS2       5
+#define MENU_BOTS         6
+#define MENU_WAYLIST      7
+// 8 = link way
+// 9 = telelink way
+// 10 = delete link
+// 11 = create link X2
+// 12 = delete link x2
+// 13 = confirmation of delete all
+// 14 = Teleport to way
+// 15 = confirmation of delete point
+
+#endif  // #ifndef _BOT_QH_

@@ -244,25 +244,24 @@ void() Leech_Think =
     ent = findradius (self.origin, 500);
     while (ent != world)
     {
-		if (ent.takedamage)
-            // If it's a player
-            if (ent.classname == "player" || (ent.flags & FL_MONSTER))
-                // If he's a valid target (not the owner or a player from the same team)
-                if (ent != self.leech_sentry && (gametype == GT_BLOODBATH || ent.team != self.team))
+		if (ent.takedamage                                       && // You can't kill it if it doesn't take damage      
+           (ent.classname == "player" || ent.flags & FL_MONSTER) && // If it's a player or monster
+            ent != self.leech_sentry                             && // Don't attack owner
+			ent.team != self.team)                                  // Don't attack team mates	
+        {
+            // If he's closer than our current choice
+            diff = vlen (ent.origin - ballorigin);
+            if (diff < bestdiff)
+            {
+                // If he's visible
+                traceline (ballorigin, ent.origin, FALSE, self);
+                if (trace_ent == ent)
                 {
-                    // If he's closer than our current choice
-                    diff = vlen (ent.origin - ballorigin);
-                    if (diff < bestdiff)
-                    {
-                        // If he's visible
-                        traceline (ballorigin, ent.origin, FALSE, self);
-                        if (trace_ent == ent)
-                        {
-                            bestent = ent;
-                            bestdiff = diff;
-                        }
-                    }
+                    bestent = ent;
+                    bestdiff = diff;
                 }
+            }
+        }
 
         ent = ent.chain;
     }

@@ -40,6 +40,7 @@ void () Taunt8;
 void () Taunt9;
 void () FadePlayerDisplay;
 void () ResetPlayerDisplay;
+void () shake_start;
 /*
 =============================================================================
 
@@ -349,7 +350,7 @@ void(entity player, float fragsToAdd) Cl_UpdatePlayerFrags =
 
     player.frags = player.frags + fragsToAdd;
 
-    if (gametype == GT_TEAM_BLOODBATH)
+    if ((gametype == GT_TEAM_BLOODBATH || gametype == GT_CAPTURE_THE_FLAG))
     {
         if (player.team == TEAM_COLOR1)
             team1score = team1score + fragsToAdd;
@@ -545,7 +546,7 @@ entity() SelectSpawnPoint =
     local entity spawnpoint;
 
     // choose a info_player_deathmatch point
-	if (coop)
+	if (gametype == GT_COOPERATIVE)
 	{
 		spawnpoint = Cl_GetRandomSpawnPoint("info_player_coop");
 		
@@ -558,7 +559,7 @@ entity() SelectSpawnPoint =
 		bprint("Coop mode set, but no info_player_coop or info_player_start entities in the map\n");
 	}	
 	// If it's a team based game, try to spawn on one of the team's points
-    else if (gametype != GT_BLOODBATH)
+    else if ((gametype != GT_TEAM_BLOODBATH && gametype != GT_CAPTURE_THE_FLAG))
     {
         if (self.team == TEAM_COLOR1)
         {
@@ -665,7 +666,8 @@ void() PutClientInServer =
 
     player_stand ();
 
-    if (self.do_observer)
+    
+	if (self.do_observer && gametype != GT_SINGLE_PLAYER)
     {
         BecomeObserver (self);
         World_CheckWarmup ();
@@ -769,7 +771,7 @@ void() CheckRules =
     if (fraglimit)
     {
         // If we are in a team based mode
-        if (gametype > GT_BLOODBATH)
+        if ((gametype == GT_TEAM_BLOODBATH || gametype == GT_CAPTURE_THE_FLAG))
         {
             if (team1score >= fraglimit || team2score >= fraglimit)
             {
@@ -1113,7 +1115,6 @@ void() CheckPowerups =
     // invisibility
     if (self.invisible_finished)
     {
-        break;
 		// sound and screen flash when items starts to run out
         if (self.invisible_sound < time)
         {
@@ -1331,10 +1332,10 @@ void(float isAlive) Impulses_Player =
         else if (self.impulse == IMP_TAUNT_9)
             Taunt9();
         
-/*
+
 		else if (self.impulse == 80)
-		    self.poison = 255;
-*/
+		    shake_start();
+
         // These ones are considered cheats and are only allowed when the "sv_cheats" cvar is set
         else if (cvar ("sv_cheats"))
         {

@@ -279,8 +279,11 @@ void () monster_stepped_on =
 
 void () monster_check =
 {    	
-    if (deathmatch)
-    	SUB_Remove();
+    if ((gametype != GT_COOPERATIVE && gametype != GT_SINGLE_PLAYER) || cvar("nomonsters"))
+    {
+	    remove(self);
+		return;
+	}
 
 	self.netname = "monster";
 };

@@ -35,7 +35,7 @@
 #define GT_TEAM_BLOODBATH     1  // 1 team VS 1 team  (NOTE: should we add support for more than 2 teams ?)
 #define GT_CAPTURE_THE_FLAG   2  // 1 team VS 1 team
 #define GT_COOPERATIVE        3  // Play the game with buddies
-#define GT_SINGLEPLAYER       4  // Play with your self
+#define GT_SINGLE_PLAYER      4  // Play with your self
 
 // edict.flags
 #define FL_FLY              1
@@ -385,6 +385,12 @@
 #define CULTIST_GREEN 1 // TNT
 #define CULTIST_RED   0 // Shotgun / beastmorph
 
+// Blood's 5 difficulties
+#define DIFFICULTY_STILL_KICKING      1
+#define DIFFICULTY_PINK_ON_THE_INSIDE 2
+#define DIFFICULTY_LIGHTLY_BROILED    3
+#define DIFFICULTY_WELL_DONE          4
+#define DIFFICULTY_EXTRA_CRISPY       5
 
 /*
     Item related
