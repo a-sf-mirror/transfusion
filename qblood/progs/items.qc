@@ -481,7 +481,7 @@ void() obj_corps2 =
     precache_model("progs/corps2.mdl");
     setmodel(self, "progs/corps2.mdl");
 
-    setsize (self, '-37 -17 -2', '39 17 13');
+    setsize (self, '-2 -2 -2', '2 2 2'); //modifed so JoeV can better place
     StartObject ();
 };
 
@@ -879,6 +879,18 @@ void() obj_barrel =
     setmodel(self, "progs/barrel.mdl");
 
     setsize (self, '-14 20 -14', '14 20 39');
+    StartObject ();
+};
+
+// jar with a brain in it
+// skin0 is green fluid
+//skin1 is red fluid
+void() obj_brainjar =
+{
+    precache_model("progs/jar.mdl");
+    setmodel(self, "progs/jar.mdl");
+    
+    setsize (self, '-11 -7 -1', '14 8 28');
     StartObject ();
 };
 
