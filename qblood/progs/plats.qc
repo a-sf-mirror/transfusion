@@ -65,7 +65,7 @@ void() plat_spawn_inside_trigger =
 
 void() plat_hit_top =
 {
-    sound (self, CHAN_NO_PHS_ADD+CHAN_VOICE, self.noise1, 1, ATTN_NORM);
+    sound (self, CHAN_VOICE, self.noise1, 1, ATTN_NORM);
     self.state = STATE_TOP;
     self.think = plat_go_down;
     self.nextthink = self.ltime + 3;
@@ -73,7 +73,7 @@ void() plat_hit_top =
 
 void() plat_hit_bottom =
 {
-    sound (self, CHAN_NO_PHS_ADD+CHAN_VOICE, self.noise1, 1, ATTN_NORM);
+    sound (self, CHAN_VOICE, self.noise1, 1, ATTN_NORM);
     self.state = STATE_BOTTOM;
 };
 
@@ -261,7 +261,7 @@ void() train_wait =
     if (self.wait)
     {
         self.nextthink = self.ltime + self.wait;
-        sound (self, CHAN_NO_PHS_ADD+CHAN_VOICE, self.noise, 1, ATTN_NORM);
+        sound (self, CHAN_VOICE, self.noise, 1, ATTN_NORM);
     }
     else
         self.nextthink = self.ltime + 0.1;

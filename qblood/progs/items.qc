@@ -70,10 +70,10 @@ void() Akimbo_Touch =
 
     s=ftos(rint(other.akimbo_finished - time));
 
-    Bprint (PRINT_LOW, other.netname);
-    Bprint (PRINT_LOW, " picked up a guns akimbo with ");
-    Bprint (PRINT_LOW, s);
-    Bprint (PRINT_LOW, " seconds remaining!\n");
+    bprint (other.netname);
+    bprint (" picked up a guns akimbo with ");
+    bprint (s);
+    bprint (" seconds remaining!\n");
 
     activator = other;
     SUB_UseTargets();                               // fire all targets / killtargets
@@ -124,10 +124,10 @@ void() Invisibility_Touch =
     other.invisible_time = 1;
     other.invisible_finished = self.cnt;
     s=ftos(rint(other.invisible_finished - time));
-    Bprint (PRINT_LOW, other.netname);
-    Bprint (PRINT_LOW, " picked up a cloak with ");
-    Bprint (PRINT_LOW, s);
-    Bprint (PRINT_LOW, " seconds remaining!\n");
+    bprint (other.netname);
+    bprint (" picked up a cloak with ");
+    bprint (s);
+    bprint (" seconds remaining!\n");
 
 
     activator = other;
@@ -820,9 +820,9 @@ void() powerup_touch =
         InvenSet (other, S_BEAST_VISION, 100);
     }
 
-    Sprint (other, PRINT_LOW, "Picked up ");
-    Sprint (other, PRINT_LOW,  self.netname);
-    Sprint (other, PRINT_LOW, "\n");
+    sprint (other, "Picked up ");
+    sprint (other,  self.netname);
+    sprint (other, "\n");
 
     self.mdl = self.model;
     if ((self.classname == "item_artifact_invulnerability") ||
@@ -912,10 +912,10 @@ void() health_touch =
             return;
     }
 
-    Sprint(other, PRINT_LOW, "Picked up ");
+    sprint(other, "Picked up ");
     s = ftos(self.healamount);
-    Sprint(other, PRINT_LOW, self.netname);
-    Sprint(other, PRINT_LOW, " \n");
+    sprint(other, self.netname);
+    sprint(other, " \n");
 
     // health touch sound
     sound(other, CHAN_ITEM, self.noise, 1, ATTN_NORM);
@@ -1082,7 +1082,7 @@ void() armor_touch =
     }
     else
     {
-        Sprint(other, PRINT_MEDIUM, "Tried to pickup illegal armor.\n");
+        sprint(other, "Tried to pickup illegal armor.\n");
     }
 
     other.armorvalue = value;
@@ -1095,9 +1095,9 @@ void() armor_touch =
     self.think = SUB_regen;
     self.reset = SUB_regen;
 
-    Sprint(other, PRINT_LOW, "Picked up ");
-    Sprint(other, PRINT_LOW, self.netname);
-    Sprint(other, PRINT_LOW, "\n");
+    sprint(other, "Picked up ");
+    sprint(other, self.netname);
+    sprint(other, "\n");
     sound(other, CHAN_ITEM, "items/pickarmr.wav", 1, ATTN_NORM);
     stuffcmd (other, "bf\n");
 
@@ -1338,9 +1338,9 @@ void() weapon_touch =
 
     bound_other_ammo ();
 
-    Sprint (other, PRINT_LOW, "Picked up ");
-    Sprint (other, PRINT_LOW, self.netname);
-    Sprint (other, PRINT_LOW, "\n");
+    sprint (other, "Picked up ");
+    sprint (other, self.netname);
+    sprint (other, "\n");
 
     // weapon touch sound
     sound (other, CHAN_ITEM, "items/weaponup.wav", 1, ATTN_NORM);
@@ -1769,9 +1769,9 @@ void() ammo_touch =
 
     bound_other_ammo ();
 
-    Sprint (other, PRINT_LOW, "Picked up ");
-    Sprint (other, PRINT_LOW, self.netname);
-    Sprint (other, PRINT_LOW, "\n");
+    sprint (other, "Picked up ");
+    sprint (other, self.netname);
+    sprint (other, "\n");
 
     // ammo touch sound
     sound (other, CHAN_ITEM, "items/ammo.wav", 1, ATTN_NORM);
@@ -1929,9 +1929,9 @@ local float     best;
     if (other.items2 & self.items2)
         return;
 
-    Sprint (other, PRINT_LOW, "Picked up ");
-    Sprint (other, PRINT_LOW, self.netname);
-    Sprint (other,PRINT_LOW, "\n");
+    sprint (other, "Picked up ");
+    sprint (other, self.netname);
+    sprint (other, "\n");
 
     sound (other, CHAN_ITEM, self.noise, 1, ATTN_NORM);
     stuffcmd (other, "bf\n");

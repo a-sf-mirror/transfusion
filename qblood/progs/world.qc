@@ -123,9 +123,7 @@ void() PrecacheSounds =
     precache_sound ("thevoice/vo12.wav");  // Population control
     precache_sound ("thevoice/vo13.wav");  // Unassisted death
     precache_sound ("thevoice/vo14.wav");
-    #ifndef QUAKEWORLD  // QW doesn't have BOD
     precache_sound ("thevoice/vo15.wav");  // Finish him
-    #endif
     precache_sound ("thevoice/vo16.wav");  // Darwin Award
     precache_sound ("thevoice/vo19.wav");
     precache_sound ("thevoice/vo20.wav");
@@ -263,18 +261,12 @@ void() worldspawn =
     #endif
 
     // Compute the game type
-    #ifdef QUAKEWORLD
-    local float teamplay, deathmatch;
-    #endif
-
     teamplay = cvar("teamplay");
     deathmatch = cvar("deathmatch");
 
     // we don't care about SP cooperative play anyway
     cvar_set ("coop", "0");
-    #ifndef QUAKEWORLD
     coop = 0;
-    #endif
 
     // Select the game type
     if (deathmatch == 2)
@@ -291,9 +283,7 @@ void() worldspawn =
     else
     {
         cvar_set ("deathmatch", "1");
-        #ifndef QUAKEWORLD
         deathmatch = 1;
-        #endif
 
         if (! teamplay)
             gametype = GT_BLOODBATH;
@@ -465,7 +455,7 @@ void() World_EndWarmup =
 
     // Use this occasion to test if cheats are enabled (the players should know that)
     if (cvar ("sv_cheats"))
-        Bprint (PRINT_HIGH, "×ÁÒÎÉÎÇº Cheats are enabled on this server!!\n");
+        bprint ("×ÁÒÎÉÎÇº Cheats are enabled on this server!!\n");
 };
 
 
@@ -549,10 +539,10 @@ void() World_StartWarmup =
     warmup_endtime = time + duration;
     warmup_counttime = time + duration - (floor (duration / 5) * 5);
 
-    Bprint (PRINT_HIGH, "¾¾ Warmup started (");
+    bprint ("¾¾ Warmup started (");
     str = ftos (duration);
-    Bprint (PRINT_HIGH, str);
-    Bprint (PRINT_HIGH, " sec) ¼¼\n");
+    bprint (str);
+    bprint (" sec) ¼¼\n");
 };
 
 
@@ -571,7 +561,7 @@ void() World_StopWarmup =
 
     warmup_endtime = 0;
     warmup_counttime = time + 5;  // "waiting for opponents" in 5 sec
-    Bprint (PRINT_HIGH, "¾¾ Warmup canceled ¼¼\n");
+    bprint ("¾¾ Warmup canceled ¼¼\n");
 };
 
 

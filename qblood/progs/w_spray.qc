@@ -157,9 +157,6 @@ void() Spray_Fire =
     dir = aim (self, 1000);
 
     newmis = spawn ();
-    #ifdef QUAKEWORLD
-    newmis.voided=0;
-    #endif
     newmis.owner = self;
     newmis.movetype = MOVETYPE_FLYMISSILE;
     newmis.solid = SOLID_BBOX;

@@ -132,21 +132,11 @@ void(entity targ, vector org, float damage) TineHit =
         // hit wall
         sound (self, CHAN_WEAPON, "weapons/pitchfrk/pstone.wav", 1, ATTN_NORM);
 
-        #ifdef QUAKEWORLD
-        WriteByte (MSG_MULTICAST, SVC_TEMPENTITY);
-        WriteByte (MSG_MULTICAST, TE_GUNSHOT);
-        WriteByte (MSG_MULTICAST, 3);
-        WriteCoord (MSG_MULTICAST, org_x);
-        WriteCoord (MSG_MULTICAST, org_y);
-        WriteCoord (MSG_MULTICAST, org_z);
-        multicast (org, MULTICAST_PVS);
-        #else
         WriteByte (MSG_BROADCAST, SVC_TEMPENTITY);
         WriteByte (MSG_BROADCAST, TE_GUNSHOT);
         WriteCoord (MSG_BROADCAST, org_x);
         WriteCoord (MSG_BROADCAST, org_y);
         WriteCoord (MSG_BROADCAST, org_z);
-        #endif
     }
 };
 
@@ -203,19 +193,7 @@ void() Fork_Attack =
 {
     local float r;
 
-    #ifdef QUAKEWORLD
-    r = random ();
-    if (r < 0.25)
-        self.frame = $axatt1;
-    else if (r < 0.5)
-        self.frame = $axattb1;
-    else if (r < 0.75)
-        self.frame = $axattc1;
-    else
-        self.frame = $axattd1;
-    #else
     self.frame = $pitchattack1;
-    #endif
 
     player_fork1 ();
     self.attack_finished = time + 0.5;

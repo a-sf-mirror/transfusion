@@ -46,23 +46,10 @@ vector() wall_velocity =
 SpawnBlood
 ================
 */
-#ifdef QUAKEWORLD
-void(vector org, float damage) QW_SpawnBlood =
-{
-    WriteByte (MSG_MULTICAST, SVC_TEMPENTITY);
-    WriteByte (MSG_MULTICAST, TE_BLOOD);
-    WriteByte (MSG_MULTICAST, 1);
-    WriteCoord (MSG_MULTICAST, org_x);
-    WriteCoord (MSG_MULTICAST, org_y);
-    WriteCoord (MSG_MULTICAST, org_z);
-    multicast (org, MULTICAST_PVS);
-};
-#else
-void(vector org, vector vel, float damage) NQ_SpawnBlood =
+void(vector org, vector vel, float damage) SpawnBlood =
 {
     particle (org, vel*0.1, 73, damage*2);
 };
-#endif
 
 
 /*
@@ -149,22 +136,10 @@ Collects multiple small damages into a single damage
 entity  multi_ent;
 float   multi_damage;
 
-#ifdef QUAKEWORLD
-vector  blood_org;
-float   blood_count;
-
-vector  puff_org;
-float   puff_count;
-#endif
-
 void() ClearMultiDamage =
 {
     multi_ent = world;
     multi_damage = 0;
-    #ifdef QUAKEWORLD
-    blood_count = 0;
-    puff_count = 0;
-    #endif
 };
 
 void() ApplyMultiDamage =
@@ -188,33 +163,6 @@ void(entity hit, float damage) AddMultiDamage =
     else
         multi_damage = multi_damage + damage;
 };
-
-#ifdef QUAKEWORLD
-void() Multi_Finish =
-{
-    if (puff_count)
-    {
-        WriteByte (MSG_MULTICAST, SVC_TEMPENTITY);
-        WriteByte (MSG_MULTICAST, TE_GUNSHOT);
-        WriteByte (MSG_MULTICAST, puff_count);
-        WriteCoord (MSG_MULTICAST, puff_org_x);
-        WriteCoord (MSG_MULTICAST, puff_org_y);
-        WriteCoord (MSG_MULTICAST, puff_org_z);
-        multicast (puff_org, MULTICAST_PVS);
-    }
-
-    if (blood_count)
-    {
-        WriteByte (MSG_MULTICAST, SVC_TEMPENTITY);
-        WriteByte (MSG_MULTICAST, TE_BLOOD);
-        WriteByte (MSG_MULTICAST, blood_count);
-        WriteCoord (MSG_MULTICAST, blood_org_x);
-        WriteCoord (MSG_MULTICAST, blood_org_y);
-        WriteCoord (MSG_MULTICAST, blood_org_z);
-        multicast (puff_org, MULTICAST_PVS);
-    }
-};
-#endif
 
 /*
 ==============================================================================
@@ -256,25 +204,16 @@ void(float damage, vector dir) TraceAttack =
     // Make players bleed
     if (trace_ent.takedamage && trace_ent.classname == "player")
     {
-        #ifdef QUAKEWORLD
-        blood_count = blood_count + 1;
-        blood_org = org;
-        #else
         SpawnBlood (org, vel*0.2, damage);
-        #endif
         SpawnBloodSpray (trace_ent, org);
     }
     else
     {
-        #ifdef QUAKEWORLD
-        puff_count = puff_count + 1;
-        #else
         WriteByte (MSG_BROADCAST, SVC_TEMPENTITY);
         WriteByte (MSG_BROADCAST, TE_GUNSHOT);
         WriteCoord (MSG_BROADCAST, org_x);
         WriteCoord (MSG_BROADCAST, org_y);
         WriteCoord (MSG_BROADCAST, org_z);
-        #endif
     }
 };
 
@@ -299,11 +238,6 @@ void(vector orig, vector dir, float shotcount, float damage, vector spread) Fire
 
     ClearMultiDamage ();
 
-    #ifdef QUAKEWORLD
-    traceline (src, src + dir*2048, FALSE, self);
-    puff_org = trace_endpos - dir*4;
-    #endif
-
     while (shotcount > 0)
     {
         direction = dir + crandom()*spread_x*v_right + crandom()*spread_y*v_up;
@@ -315,10 +249,6 @@ void(vector orig, vector dir, float shotcount, float damage, vector spread) Fire
         shotcount = shotcount - 1;
     }
     ApplyMultiDamage ();
-
-    #ifdef QUAKEWORLD
-    Multi_Finish ();
-    #endif
 };
 
 
@@ -479,7 +409,6 @@ void(entity client) PsychoCaleb =
 };
 
 
-#ifndef QUAKEWORLD
 // 13 frames for Blood's explosion
 void() s_explode1  = [0,  s_explode2]  {};
 void() s_explode2  = [1,  s_explode3]  {};
@@ -505,7 +434,6 @@ void() BecomeExplosion =
     self.reset = SUB_Remove;
     s_explode1 ();
 };
-#endif
 
 
 //=============================================================================
@@ -516,13 +444,6 @@ void() flame_touch =
 
     if (other == self.owner)
         return;
-
-    #ifdef QUAKEWORLD
-    if (self.voided) {
-        return;
-    }
-    self.voided = 1;
-    #endif
 
     if (other.solid == SOLID_TRIGGER)
         return; // trigger field, do nothing
@@ -963,7 +884,7 @@ void() W_ChangeWeapon =
     // don't have the weapon
     if (!(self.items & new))
     {
-        Sprint (self, PRINT_MEDIUM, "You don't have that weapon.\n");
+        sprint (self, "You don't have that weapon.\n");
         return;
     }
 
@@ -972,7 +893,7 @@ void() W_ChangeWeapon =
     {
         if (new == IT_TNT || new == IT_SPRAY_CAN)
         {
-            Sprint (self, PRINT_MEDIUM, "You can't select that weapon under water.\n");
+            sprint (self, "You can't select that weapon under water.\n");
             return;
         }
     }
@@ -980,7 +901,7 @@ void() W_ChangeWeapon =
     // don't have the ammo
     if (am)
     {
-        Sprint (self, PRINT_MEDIUM, "You are out of ammo.\n");
+        sprint (self, "You are out of ammo.\n");
         return;
     }
 
@@ -1196,7 +1117,7 @@ void() Cheat_Akimbo =
     self.akimbo_finished = time + 30;
     W_SetCurrentAmmo ();
 
-    Sprint (self, PRINT_MEDIUM, "Tequila!\n");
+    sprint (self, "Tequila!\n");
     dprint ("Akimbo cheat\n");
 };
 

@@ -35,9 +35,9 @@ void(string newmap) Vote_ChangeMap =
     nextmap = newmap;
     Cl_ChangeLevel (TRUE);
 
-    Bprint (PRINT_HIGH, "ш Vote passed. Switching to map ");  // "[ Vote passed ..."
-    Bprint (PRINT_HIGH, newmap);
-    Bprint (PRINT_HIGH, " щ\n");  // " ]\n"
+    bprint ("ш Vote passed. Switching to map ");  // "[ Vote passed ..."
+    bprint (newmap);
+    bprint (" щ\n");  // " ]\n"
 };
 
 
@@ -50,9 +50,9 @@ Used when the vote for a frag limit is passed
 */
 void(string newFraglimit) Vote_ChangeFraglimit =
 {
-    Bprint (PRINT_HIGH, "ш Vote passed. New frag limit: ");  // "[ Vote passed ..."
-    Bprint (PRINT_HIGH, newFraglimit);
-    Bprint (PRINT_HIGH, " щ\n");  // " ]\n"
+    bprint ("ш Vote passed. New frag limit: ");  // "[ Vote passed ..."
+    bprint (newFraglimit);
+    bprint (" щ\n");  // " ]\n"
 
     if (newFraglimit == "unlimited")
         cvar_set ("fraglimit", "0");
@@ -87,10 +87,10 @@ void(float newGametype) Vote_ChangeGametype =
     else
         cvar_set ("teamplay", "1");
 
-    Bprint (PRINT_HIGH, "ш Vote passed. Next game type: ");  // "[ Vote passed ..."
+    bprint ("ш Vote passed. Next game type: ");  // "[ Vote passed ..."
     gt = Vote_GametypeToString (newGametype);
-    Bprint (PRINT_HIGH, gt);
-    Bprint (PRINT_HIGH, " щ\n");  // " ]\n"
+    bprint (gt);
+    bprint (" щ\n");  // " ]\n"
 };
 
 
@@ -103,9 +103,9 @@ Used when the vote for a time limit is passed
 */
 void(string newTimelimit) Vote_ChangeTimelimit =
 {
-    Bprint (PRINT_HIGH, "ш Vote passed. New time limit: ");  // "[ Vote passed ..."
-    Bprint (PRINT_HIGH, newTimelimit);
-    Bprint (PRINT_HIGH, " щ\n");  // " ]\n"
+    bprint ("ш Vote passed. New time limit: ");  // "[ Vote passed ..."
+    bprint (newTimelimit);
+    bprint (" щ\n");  // " ]\n"
 
     if (newTimelimit == "unlimited")
         cvar_set ("timelimit", "0");
@@ -123,16 +123,16 @@ Used when the vote for a warmup duration is passed
 */
 void(string newDuration) Vote_ChangeWarmup =
 {
-    Bprint (PRINT_HIGH, "ш Vote passed. New warmup duration: ");  // "[ Vote passed ..."
-    Bprint (PRINT_HIGH, newDuration);
-    Bprint (PRINT_HIGH, " secondes щ\n");  // " secondes ]\n"
+    bprint ("ш Vote passed. New warmup duration: ");  // "[ Vote passed ..."
+    bprint (newDuration);
+    bprint (" secondes щ\n");  // " secondes ]\n"
 
     cvar_set ("g_warmup", newDuration);
 
     // Test if the engine support creation of new cvars by progs
     if (newDuration != "0")
         if (cvar ("g_warmup") == 0)
-            Bprint (PRINT_HIGH, "варнинг╨ the engine doesn't support dynamic cvar creation. Can't change warmup duration\n");  // "WARNING ..."
+            bprint ("варнинг╨ the engine doesn't support dynamic cvar creation. Can't change warmup duration\n");  // "WARNING ..."
 };
 
 
@@ -148,18 +148,18 @@ void(string cvarName) Vote_ChangeOption =
     local string newValue;
 
     newValue = ftos (! cvar (cvarName));
-    Bprint (PRINT_HIGH, "ш Vote passed. New option: \"");  // "[ Vote passed ..."
-    Bprint (PRINT_HIGH, cvarName);
-    Bprint (PRINT_HIGH, "\" = ");
-    Bprint (PRINT_HIGH, newValue);
-    Bprint (PRINT_HIGH, " щ\n");  // " ]\n"
+    bprint ("ш Vote passed. New option: \"");  // "[ Vote passed ..."
+    bprint (cvarName);
+    bprint ("\" = ");
+    bprint (newValue);
+    bprint (" щ\n");  // " ]\n"
 
     cvar_set (cvarName, newValue);
 
     // Test if the engine support creation of new cvars by progs
     if (newValue == "1")
         if (cvar (cvarName) != 1)
-            Bprint (PRINT_HIGH, "варнинг╨ the engine doesn't support dynamic cvar creation. Can't change option\n");  // "WARNING ..."
+            bprint ("варнинг╨ the engine doesn't support dynamic cvar creation. Can't change option\n");  // "WARNING ..."
 };
 
 
@@ -227,10 +227,10 @@ float(.float vote_field, float bitmask, float value) Vote_IsPassed =
     {
         local string tmpString;
 
-        Bprint (PRINT_HIGH, "ш ");  // "[ "
+        bprint ("ш ");  // "[ "
         tmpString = ftos (VoteCount);
-        Bprint (PRINT_HIGH, tmpString);
-        Bprint (PRINT_HIGH, " votes missing щ\n");  // " ]\n"
+        bprint (tmpString);
+        bprint (" votes missing щ\n");  // " ]\n"
 
         return FALSE;
     }
@@ -249,11 +249,11 @@ Add one vote to the map
 void(float vote, string newmap) Vote_AddMapVote =
 {
     self.vote_map = vote;
-    Bprint (PRINT_HIGH, "ш ");  // "[ "
-    Bprint (PRINT_HIGH, self.netname);
-    Bprint (PRINT_HIGH, " votes for map ");
-    Bprint (PRINT_HIGH, newmap);
-    Bprint (PRINT_HIGH, " щ\n");  // " ]\n"
+    bprint ("ш ");  // "[ "
+    bprint (self.netname);
+    bprint (" votes for map ");
+    bprint (newmap);
+    bprint (" щ\n");  // " ]\n"
 
     // If the vote is passed
     if (Vote_IsPassed (vote_map, 255, vote))
@@ -305,7 +305,7 @@ void() Menu_Draw =
 {
     if (self.menu_index == MENU_MAIN)
     {
-        Sprint (self, PRINT_HIGH,
+        sprint (self,
                 "1) Vote for a map\n"
                 "2) Vote for a game type\n"
                 "3) Vote for the frag limit\n"
@@ -317,7 +317,7 @@ void() Menu_Draw =
     }
     else if (self.menu_index == MENU_VOTE_MAP)
     {
-        Sprint (self, PRINT_HIGH,
+        sprint (self,
                 "Choose a map group:\n"
                 "1) Blood maps\n"
                 "2) Blood Single Player maps\n"
@@ -330,7 +330,7 @@ void() Menu_Draw =
     }
     else if (self.menu_index == MENU_VOTE_GAMETYPE)
     {
-        Sprint (self, PRINT_HIGH,
+        sprint (self,
                 "Vote for a game type:\n"
                 "1) BloodBath\n"
                 "2) Team BloodBath\n"
@@ -342,7 +342,7 @@ void() Menu_Draw =
     }
     else if (self.menu_index == MENU_VOTE_FRAGLIMIT)
     {
-        Sprint (self, PRINT_HIGH,
+        sprint (self,
                 "Vote for the frag limit:\n"
                 "1) 10\n"
                 "2) 20\n"
@@ -358,7 +358,7 @@ void() Menu_Draw =
     }
     else if (self.menu_index == MENU_VOTE_TIMELIMIT)
     {
-        Sprint (self, PRINT_HIGH,
+        sprint (self,
                 "Vote for the time limit:\n"
                 "1) 5 minutes\n"
                 "2) 10 minutes\n"
@@ -374,7 +374,7 @@ void() Menu_Draw =
     }
     else if (self.menu_index == MENU_VOTE_WARMUP)
     {
-        Sprint (self, PRINT_HIGH,
+        sprint (self,
                 "Vote for the warmup duration:\n"
                 "1) 0 secondes (no warmup)\n"
                 "2) 10 secondes\n"
@@ -390,7 +390,7 @@ void() Menu_Draw =
     }
     else if (self.menu_index == MENU_VOTE_OPTIONS)
     {
-        Sprint (self, PRINT_HIGH,
+        sprint (self,
                 "Vote for an option:\n"
                 "1) Toggle \"weapons stay\"\n"
                 "2) Toggle \"lock teams\"\n"
@@ -400,7 +400,7 @@ void() Menu_Draw =
     }
     else if (self.menu_index == MENU_VOTE_MAP_BLOOD)
     {
-        Sprint (self, PRINT_HIGH,
+        sprint (self,
                 "Vote for a map:\n"
                 "1) bb1  The Stronghold  | 2) bb2  Winter Wonderland\n"
                 "3) bb3  Bodies          | 4) bb4  The Tower\n"
@@ -411,7 +411,7 @@ void() Menu_Draw =
     }
     else if (self.menu_index == MENU_VOTE_MAP_BLOOD_SP)
     {
-        Sprint (self, PRINT_HIGH,
+        sprint (self,
                 "Vote for a map:\n"
                 "1) e1m1  Cradle to Grave      | 2) e1m2  Wrong Side of the Tracks\n"
                 "3) e1m7  Altar of Stone       | 4) e2m8  The Lair of Shial\n"
@@ -422,7 +422,7 @@ void() Menu_Draw =
     }
     else if (self.menu_index == MENU_VOTE_MAP_BLOODPACKS)
     {
-        Sprint (self, PRINT_HIGH,
+        sprint (self,
                 "Vote for a map:\n"
                 "1) cpbb01  Crypt of Despair      | 2) cpbb03  Unholy Cathedral\n"
                 "3) dm1     Monolith Building 11  | 4) dm2     Power!\n"
@@ -433,7 +433,7 @@ void() Menu_Draw =
     }
     else if (self.menu_index == MENU_VOTE_MAP_BLOOD2)
     {
-        Sprint (self, PRINT_HIGH,
+        sprint (self,
                 "Vote for a map:\n"
                 "1) b2a15  Area 15 (B2)  | 2) barena  Blood Arena\n"
                 "3) bkeep  Blood Keep    | 4) bstar   Brown Star\n"
@@ -443,7 +443,7 @@ void() Menu_Draw =
     }
     else if (self.menu_index == MENU_VOTE_MAP_TRANSFUSION)
     {
-        Sprint (self, PRINT_HIGH,
+        sprint (self,
                 "Vote for a map:\n"
                 "1) bb3_2k1   Bodies Infusion  | 2) dcamp  DeathCamp\n"
                 "3) highnoon  HighNoon         | 4) qbb1   The Confluence\n"
@@ -453,7 +453,7 @@ void() Menu_Draw =
     }
     else if (self.menu_index == MENU_VOTE_MAP_CONVERSIONS)
     {
-        Sprint (self, PRINT_HIGH,
+        sprint (self,
                 "Vote for a map:\n"
                 "1) dranzbb6  Black Coffee  | 2) fragm  Frag'M\n"
                 "3) maim      Maim          | 4) qe1m7  The House of Chthon\n"
@@ -477,7 +477,7 @@ void() Menu_HandleMain =
     if (self.impulse == 10)
     {
         self.player_state = PS_IDLE;
-        Sprint (self, PRINT_HIGH, "\nExited from menu\n");
+        sprint (self, "\nExited from menu\n");
         return;
     }
 
@@ -486,7 +486,7 @@ void() Menu_HandleMain =
     {
         // If map voting is disabled
         if (cvar ("sv_disable") & SV_DISABLE_VOTE_MAP)
-            Sprint (self, PRINT_HIGH, "\n===== Map voting is disabled on this server =====\n\n");
+            sprint (self, "\n===== Map voting is disabled on this server =====\n\n");
         else
             self.menu_index = MENU_VOTE_MAP;
     }
@@ -494,7 +494,7 @@ void() Menu_HandleMain =
     {
         // If game type voting is disabled
         if (cvar ("sv_disable") & SV_DISABLE_VOTE_GAME)
-            Sprint (self, PRINT_HIGH, "\n===== Game type voting is disabled on this server =====\n\n");
+            sprint (self, "\n===== Game type voting is disabled on this server =====\n\n");
         else
             self.menu_index = MENU_VOTE_GAMETYPE;
     }
@@ -502,7 +502,7 @@ void() Menu_HandleMain =
     {
         // If frag limit voting is disabled
         if (cvar ("sv_disable") & SV_DISABLE_VOTE_FRAG)
-            Sprint (self, PRINT_HIGH, "\n===== Frag limit voting is disabled on this server =====\n\n");
+            sprint (self, "\n===== Frag limit voting is disabled on this server =====\n\n");
         else
             self.menu_index = MENU_VOTE_FRAGLIMIT;
     }
@@ -510,7 +510,7 @@ void() Menu_HandleMain =
     {
         // If time limit voting is disabled
         if (cvar ("sv_disable") & SV_DISABLE_VOTE_TIME)
-            Sprint (self, PRINT_HIGH, "\n===== Time limit voting is disabled on this server =====\n\n");
+            sprint (self, "\n===== Time limit voting is disabled on this server =====\n\n");
         else
             self.menu_index = MENU_VOTE_TIMELIMIT;
     }
@@ -518,7 +518,7 @@ void() Menu_HandleMain =
     {
         // If warmup limit voting is disabled
         if (cvar ("sv_disable") & SV_DISABLE_VOTE_WARMUP)
-            Sprint (self, PRINT_HIGH, "\n===== Warmup duration voting is disabled on this server =====\n\n");
+            sprint (self, "\n===== Warmup duration voting is disabled on this server =====\n\n");
         else
             self.menu_index = MENU_VOTE_WARMUP;
     }
@@ -526,12 +526,12 @@ void() Menu_HandleMain =
     {
         // If time limit voting is disabled
         if (cvar ("sv_disable") & SV_DISABLE_VOTE_OPTIONS)
-            Sprint (self, PRINT_HIGH, "\n===== Options voting is disabled on this server =====\n\n");
+            sprint (self, "\n===== Options voting is disabled on this server =====\n\n");
         else
             self.menu_index = MENU_VOTE_OPTIONS;
     }
     else
-        Sprint (self, PRINT_HIGH, "\n===== INVALID COMMAND =====\n\n");
+        sprint (self, "\n===== INVALID COMMAND =====\n\n");
 
     Menu_Draw ();
 };
@@ -576,17 +576,17 @@ void() Menu_HandleVoteFraglimit =
         fl = "unlimited";
     else
     {
-        Sprint (self, PRINT_HIGH, "\n===== INVALID COMMAND =====\n\n");
+        sprint (self, "\n===== INVALID COMMAND =====\n\n");
         Menu_Draw ();
         return;
     }
 
     self.vote_fraglimit = self.impulse;
-    Bprint (PRINT_HIGH, "ш ");  // "[ "
-    Bprint (PRINT_HIGH, self.netname);
-    Bprint (PRINT_HIGH, " votes for a new frag limit: ");
-    Bprint (PRINT_HIGH, fl);
-    Bprint (PRINT_HIGH, " щ\n");  // " ]\n"
+    bprint ("ш ");  // "[ "
+    bprint (self.netname);
+    bprint (" votes for a new frag limit: ");
+    bprint (fl);
+    bprint (" щ\n");  // " ]\n"
 
     // If the vote is passed
     if (Vote_IsPassed (vote_fraglimit, 255, self.impulse))
@@ -618,18 +618,18 @@ void() Menu_HandleVoteGametype =
     // If the command is invalid
     if (self.impulse > 5 )
     {
-        Sprint (self, PRINT_HIGH, "\n===== INVALID COMMAND =====\n\n");
+        sprint (self, "\n===== INVALID COMMAND =====\n\n");
         Menu_Draw ();
         return;
     }
 
     self.vote_gametype = self.impulse;
-    Bprint (PRINT_HIGH, "ш ");  // "[ "
-    Bprint (PRINT_HIGH, self.netname);
-    Bprint (PRINT_HIGH, " votes for ");
+    bprint ("ш ");  // "[ "
+    bprint (self.netname);
+    bprint (" votes for ");
     gt = Vote_GametypeToString (self.impulse);
-    Bprint (PRINT_HIGH, gt);
-    Bprint (PRINT_HIGH, " щ\n");  // " ]\n"
+    bprint (gt);
+    bprint (" щ\n");  // " ]\n"
 
     // If the vote is passed
     if (Vote_IsPassed (vote_gametype, 255, self.impulse))
@@ -676,7 +676,7 @@ void() Menu_HandleVoteMapBlood =
         newmap = "bb8";
     else
     {
-        Sprint (self, PRINT_HIGH, "\n===== INVALID COMMAND =====\n\n");
+        sprint (self, "\n===== INVALID COMMAND =====\n\n");
         Menu_Draw ();
         return;
     }
@@ -723,7 +723,7 @@ void() Menu_HandleVoteMapBloodSP =
         newmap = "e4m9";
     else
     {
-        Sprint (self, PRINT_HIGH, "\n===== INVALID COMMAND =====\n\n");
+        sprint (self, "\n===== INVALID COMMAND =====\n\n");
         Menu_Draw ();
         return;
     }
@@ -770,7 +770,7 @@ void() Menu_HandleVoteMapBloodPacks =
         newmap = "e6m8";
     else
     {
-        Sprint (self, PRINT_HIGH, "\n===== INVALID COMMAND =====\n\n");
+        sprint (self, "\n===== INVALID COMMAND =====\n\n");
         Menu_Draw ();
         return;
     }
@@ -813,7 +813,7 @@ void() Menu_HandleVoteMapBlood2 =
         newmap = "crypt";
     else
     {
-        Sprint (self, PRINT_HIGH, "\n===== INVALID COMMAND =====\n\n");
+        sprint (self, "\n===== INVALID COMMAND =====\n\n");
         Menu_Draw ();
         return;
     }
@@ -858,7 +858,7 @@ void() Menu_HandleVoteMapTransfusion =
         newmap = "qbb3";
     else
     {
-        Sprint (self, PRINT_HIGH, "\n===== INVALID COMMAND =====\n\n");
+        sprint (self, "\n===== INVALID COMMAND =====\n\n");
         Menu_Draw ();
         return;
     }
@@ -901,7 +901,7 @@ void() Menu_HandleVoteMapConversions =
         newmap = "simple";
     else
     {
-        Sprint (self, PRINT_HIGH, "\n===== INVALID COMMAND =====\n\n");
+        sprint (self, "\n===== INVALID COMMAND =====\n\n");
         Menu_Draw ();
         return;
     }
@@ -944,7 +944,7 @@ void() Menu_HandleVoteMap =
     else if (self.impulse == 6)
         self.menu_index = MENU_VOTE_MAP_CONVERSIONS;
     else
-        Sprint (self, PRINT_HIGH, "\n===== INVALID COMMAND =====\n\n");
+        sprint (self, "\n===== INVALID COMMAND =====\n\n");
 
     Menu_Draw ();
 };
@@ -988,7 +988,7 @@ void() Menu_HandleVoteOptions =
     }
     else
     {
-        Sprint (self, PRINT_HIGH, "\n===== INVALID COMMAND =====\n\n");
+        sprint (self, "\n===== INVALID COMMAND =====\n\n");
         Menu_Draw ();
         return;
     }
@@ -999,11 +999,11 @@ void() Menu_HandleVoteOptions =
     else
         self.vote_options = self.vote_options - (self.vote_options & option);
 
-    Bprint (PRINT_HIGH, "ш ");  // "[ "
-    Bprint (PRINT_HIGH, self.netname);
-    Bprint (PRINT_HIGH, " votes for toggling \"");
-    Bprint (PRINT_HIGH, cvarName);
-    Bprint (PRINT_HIGH, "\" щ\n");  // " ]\n"
+    bprint ("ш ");  // "[ "
+    bprint (self.netname);
+    bprint (" votes for toggling \"");
+    bprint (cvarName);
+    bprint ("\" щ\n");  // " ]\n"
 
     // If the vote is passed
     if (Vote_IsPassed (vote_options, option, option * newValue))
@@ -1052,17 +1052,17 @@ void() Menu_HandleVoteTimelimit =
         tl = "unlimited";
     else
     {
-        Sprint (self, PRINT_HIGH, "\n===== INVALID COMMAND =====\n\n");
+        sprint (self, "\n===== INVALID COMMAND =====\n\n");
         Menu_Draw ();
         return;
     }
 
     self.vote_timelimit = self.impulse;
-    Bprint (PRINT_HIGH, "ш ");  // "[ "
-    Bprint (PRINT_HIGH, self.netname);
-    Bprint (PRINT_HIGH, " votes for a new time limit: ");
-    Bprint (PRINT_HIGH, tl);
-    Bprint (PRINT_HIGH, " щ\n");  // " ]\n"
+    bprint ("ш ");  // "[ "
+    bprint (self.netname);
+    bprint (" votes for a new time limit: ");
+    bprint (tl);
+    bprint (" щ\n");  // " ]\n"
 
     // If the vote is passed
     if (Vote_IsPassed (vote_timelimit, 255, self.impulse))
@@ -1111,17 +1111,17 @@ void() Menu_HandleVoteWarmup =
         duration = "180";
     else
     {
-        Sprint (self, PRINT_HIGH, "\n===== INVALID COMMAND =====\n\n");
+        sprint (self, "\n===== INVALID COMMAND =====\n\n");
         Menu_Draw ();
         return;
     }
 
     self.vote_warmup = self.impulse;
-    Bprint (PRINT_HIGH, "ш ");  // "[ "
-    Bprint (PRINT_HIGH, self.netname);
-    Bprint (PRINT_HIGH, " votes for a new warmup duration: ");
-    Bprint (PRINT_HIGH, duration);
-    Bprint (PRINT_HIGH, " secondes щ\n");  // " ]\n"
+    bprint ("ш ");  // "[ "
+    bprint (self.netname);
+    bprint (" votes for a new warmup duration: ");
+    bprint (duration);
+    bprint (" secondes щ\n");  // " ]\n"
 
     // If the vote is passed
     if (Vote_IsPassed (vote_warmup, 255, self.impulse))

@@ -184,12 +184,6 @@ void() Tesla_JoltTouch =
     if (other == self.owner)
         return;
 
-    #ifdef QUAKEWORLD
-    if (self.voided)
-        return;
-    self.voided = 1;
-    #endif
-
     // If we go out of the map
     if (pointcontents(self.origin) == CONTENT_SKY)
     {
@@ -209,7 +203,6 @@ void() Tesla_JoltTouch =
         self.origin = self.origin - 8 * normalize (self.velocity);
         sound (self, CHAN_AUTO, "weapons/tesla/tesaltht.wav", 1, ATTN_NORM);
 
-        #ifndef QUAKEWORLD
         WriteByte  (MSG_BROADCAST, SVC_TEMPENTITY);
         WriteByte  (MSG_BROADCAST, TE_EXPLOSION2);
         WriteCoord (MSG_BROADCAST, self.origin_x);
@@ -217,17 +210,6 @@ void() Tesla_JoltTouch =
         WriteCoord (MSG_BROADCAST, self.origin_z);
         WriteByte  (MSG_BROADCAST, 244);
         WriteByte  (MSG_BROADCAST, 3);
-
-        // FIXME: the explosion used in QW is the classic one for now.
-        //        because TE_EXPLOSION2 has no equivalent in QW
-        #else
-        WriteByte  (MSG_MULTICAST, SVC_TEMPENTITY);
-        WriteByte  (MSG_MULTICAST, TE_EXPLOSION);
-        WriteCoord (MSG_MULTICAST, self.origin_x);
-        WriteCoord (MSG_MULTICAST, self.origin_y);
-        WriteCoord (MSG_MULTICAST, self.origin_z);
-        multicast  (self.origin, MULTICAST_PHS);
-        #endif
     }
     // Normal touch
     else
@@ -249,10 +231,6 @@ void(vector org, vector dir, float mspeed) Tesla_LaunchJolt =
     local entity jolt;
 
     jolt = spawn();
-
-    #ifdef QUAKEWORLD
-    jolt.voided     = 0;
-    #endif
 
     jolt.owner      = self;
     jolt.movetype   = MOVETYPE_FLYMISSILE;
@@ -310,12 +288,7 @@ void() Tesla_Fire =
 
     muzzleflash ();
 
-    #ifndef QUAKEWORLD
     self.punchangle_x = -2;
-    #else
-    msg_entity = self;
-    WriteByte (MSG_ONE, SVC_SMALLKICK);
-    #endif
 
     // If we want an altfire shot (we've already checked the ammo count in Tesla_Attack)
     if (self.player_state == PS_ALTFIRE)

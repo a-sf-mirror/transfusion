@@ -107,13 +107,6 @@ void() Leech_BallTouch =
     if (other == self.owner)
         return;     // don't explode on owner
 
-    #ifdef QUAKEWORLD
-    if (self.voided) {
-        return;
-    }
-    self.voided = 1;
-    #endif
-
     if (pointcontents(self.origin) == CONTENT_SKY)
     {
         remove(self);
@@ -131,23 +124,12 @@ void() Leech_BallTouch =
 
     self.origin = self.origin - 8 * normalize (self.velocity);
 
-    #ifdef QUAKEWORLD
-    WriteByte (MSG_MULTICAST, SVC_TEMPENTITY);
-    WriteByte (MSG_MULTICAST, TE_EXPLOSION);
-    WriteCoord (MSG_MULTICAST, self.origin_x);
-    WriteCoord (MSG_MULTICAST, self.origin_y);
-    WriteCoord (MSG_MULTICAST, self.origin_z);
-    multicast (self.origin, MULTICAST_PHS);
-    remove(self);
-
-    #else
     WriteByte (MSG_BROADCAST, SVC_TEMPENTITY);
     WriteByte (MSG_BROADCAST, TE_EXPLOSION);
     WriteCoord (MSG_BROADCAST, self.origin_x);
     WriteCoord (MSG_BROADCAST, self.origin_y);
     WriteCoord (MSG_BROADCAST, self.origin_z);
     BecomeExplosion ();
-    #endif
 };
 
 
@@ -162,12 +144,7 @@ void() Leech_BallFire =
 {
     local vector spread;
 
-    #ifdef QUAKEWORLD
-    msg_entity = self;
-    WriteByte (MSG_ONE, SVC_SMALLKICK);
-    #else
     self.punchangle_x = -2;
-    #endif
     muzzleflash ();
 
     newmis = spawn ();
@@ -186,9 +163,6 @@ void() Leech_BallFire =
     newmis.owner = self;
     newmis.solid = SOLID_BBOX;
     newmis.classname = "missile";
-    #ifdef QUAKEWORLD
-    newmis.voided = 0;
-    #endif
     newmis.angles = vectoangles(newmis.velocity);
     newmis.movetype = MOVETYPE_FLYMISSILE;
 
@@ -229,13 +203,6 @@ void() Leech_AltBallTouch =
     // Don't explode on owner (the Life Leech)
     if (other == self.owner)
         return;
-
-    #ifdef QUAKEWORLD
-    if (self.voided) {
-        return;
-    }
-    self.voided = 1;
-    #endif
 
     // Switch ownership from the Life Leech itself to the LL owner
     self.owner = self.owner.leech_sentry;
@@ -310,9 +277,6 @@ void() Leech_Think =
     newmis.owner = self;
     newmis.solid = SOLID_BBOX;
     newmis.classname = "missile";
-    #ifdef QUAKEWORLD
-    newmis.voided = 0;
-    #endif
     newmis.velocity = 1500 * normalize (bestent.origin - ballorigin);
     newmis.angles = vectoangles (newmis.velocity);
     newmis.movetype = MOVETYPE_FLYMISSILE;

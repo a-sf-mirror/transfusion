@@ -91,9 +91,7 @@
 #define PS_DRAW             5
 #define PS_HOLSTER          6
 #define PS_MENU             7   // when a player is browsing the menu
-#ifndef QUAKEWORLD
-# define PS_BRINK_OF_DEATH  8   // when a player reaches exactly 0 HP, he may survive
-#endif
+#define PS_BRINK_OF_DEATH   8   // when a player is around 0 HP
 
 // takedamage values
 #define DAMAGE_NO   0
@@ -170,11 +168,7 @@
 #define STATE_DOWN      3
 
 #define VEC_ORIGIN      '0 0 0'
-#ifdef QUAKEWORLD
-# define VEC_HULL_MIN    '-16 -16 -24'
-#else
-# define VEC_HULL_MIN    '-16 -16 -20'
-#endif
+#define VEC_HULL_MIN    '-16 -16 -20'
 #define VEC_HULL_MAX    '16 16 32'
 
 // protocol bytes
@@ -185,11 +179,6 @@
 #define SVC_FINALE          31
 #define SVC_CDTRACK         32
 #define SVC_SELLSCREEN      33
-#ifdef QUAKEWORLD
-# define SVC_SMALLKICK      34
-# define SVC_BIGKICK        35
-# define SVC_MUZZLEFLASH    39
-#endif
 
 // Temp entities
 #define TE_SPIKE            0
@@ -204,28 +193,18 @@
 #define TE_LIGHTNING3       9
 #define TE_LAVASPLASH       10
 #define TE_TELEPORT         11
-#ifdef QUAKEWORLD
-# define TE_BLOOD           12
-# define TE_LIGHTNINGBLOOD  13
-#else
-# define TE_EXPLOSION2      12  // color mapped explosion. No sprite
-# define TE_BEAM            13
-#endif
+#define TE_EXPLOSION2       12  // color mapped explosion. No sprite
+#define TE_BEAM             13
 
 
 // sound channels
 // channel 0 never willingly overrides
 // other channels (1-7) allways override a playing sound on that channel
-#define CHAN_AUTO           0
-#define CHAN_WEAPON         1
-#define CHAN_VOICE          2
-#define CHAN_ITEM           3
-#define CHAN_BODY           4
-#ifdef QUAKEWORLD
-# define CHAN_NO_PHS_ADD    8  // ie: CHAN_BODY+CHAN_NO_PHS_ADD
-#else
-# define CHAN_NO_PHS_ADD    0  // Not supported by classic Quake
-#endif
+#define CHAN_AUTO   0
+#define CHAN_WEAPON 1
+#define CHAN_VOICE  2
+#define CHAN_ITEM   3
+#define CHAN_BODY   4
 
 #define ATTN_NONE   0
 #define ATTN_NORM   1
@@ -239,16 +218,10 @@
 #define UPDATE_TEMP     3
 
 // entity effects
-#ifndef QUAKEWORLD
-# define EF_BRIGHTFIELD 1
-# define EF_MUZZLEFLASH 2
-#endif
+#define EF_BRIGHTFIELD  1
+#define EF_MUZZLEFLASH  2
 #define EF_BRIGHTLIGHT  4
 #define EF_DIMLIGHT     8
-#ifdef QUAKEWORLD
-# define EF_FLAG1       16      // EF_FLAG? flags make the client render a flag automatically
-# define EF_FLAG2       32      // attached to the client entity (i.e. it's a *really* evil hack)
-#endif
 #define EF_BLUE         64      // Blue Globe effect for Quad
 #define EF_RED          128     // Red Globe effect for Pentagram
 #define EF_FLAME        1024    // Entity is surrounded by fire (WARNING: only available on DarkPlaces)
@@ -259,28 +232,6 @@
 #define MSG_ONE         1  // reliable to one (msg_entity)
 #define MSG_ALL         2  // reliable to all
 #define MSG_INIT        3  // write to the init string
-#ifdef QUAKEWORLD
-# define MSG_MULTICAST  4  // for multicast() call
-#endif
-
-
-#ifdef QUAKEWORLD
-
-// message levels
-#define PRINT_LOW       0  // pickup messages
-#define PRINT_MEDIUM    1  // death messages
-#define PRINT_HIGH      2  // critical messages
-#define PRINT_CHAT      3  // also goes to chat console
-
-// multicast sets
-#define MULTICAST_ALL   0  // every client
-#define MULTICAST_PHS   1  // within hearing
-#define MULTICAST_PVS   2  // within sight
-#define MULTICAST_ALL_R 3  // every client, reliable
-#define MULTICAST_PHS_R 4  // within hearing, reliable
-#define MULTICAST_PVS_R 5  // within sight, reliable
-
-#endif  // #ifdef QUAKEWORLD
 
 
 // attack state
@@ -320,28 +271,8 @@
 /* ----------------- */
 
 // Team colors
-#ifdef QUAKEWORLD
-# define TEAM_COLOR1 4
-# define TEAM_COLOR2 13
-#else
-# define TEAM_COLOR1 5
-# define TEAM_COLOR2 14
-#endif
-
-
-/* -------------- */
-/* --- Macros --- */
-/* -------------- */
-
-#ifdef QUAKEWORLD
-# define Bprint(p, s)           bprint (p, s)
-# define Sprint(e, p, s)        sprint (e, p, s)
-# define SpawnBlood(o, v, d)    QW_SpawnBlood (o, d)
-#else
-# define Bprint(p, s)           bprint (s)
-# define Sprint(e, p, s)        sprint (e, s)
-# define SpawnBlood(o, v, d)    NQ_SpawnBlood (o, v, d)
-#endif
+#define TEAM_COLOR1 5
+#define TEAM_COLOR2 14
 
 
 #endif  // #ifndef _COMMON_QH_

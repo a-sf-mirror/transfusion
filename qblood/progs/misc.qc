@@ -180,19 +180,9 @@ void() barrel_damage =
     setorigin (self, self.origin + '0 0 32');
     T_RadiusDamage (self, self, self.dmg, world, string_null);
 
-    #ifdef QUAKEWORLD
-    WriteByte (MSG_MULTICAST, SVC_TEMPENTITY);
-    WriteByte (MSG_MULTICAST, TE_EXPLOSION);
-    WriteCoord (MSG_MULTICAST, self.origin_x);
-    WriteCoord (MSG_MULTICAST, self.origin_y);
-    WriteCoord (MSG_MULTICAST, self.origin_z);
-    multicast (self.origin, MULTICAST_PHS);
-    remove (self);
-    #else
     sound (self, CHAN_VOICE, "weapons/napalm/explodfl.wav", 1, ATTN_NORM);
     particle (self.origin, '0 0 0', 75, 255);
     BecomeExplosion ();
-    #endif
 
     if (! warmup_done)
         self = tempEnt;

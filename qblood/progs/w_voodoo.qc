@@ -125,17 +125,7 @@ void(float damage) Voodoo_ApplyDamage =
     // If we had a target that can be damaged and seems alive
     if (targ != world && targ.takedamage)
     {
-        #ifdef QUAKEWORLD
-        WriteByte (MSG_MULTICAST, SVC_TEMPENTITY);
-        WriteByte (MSG_MULTICAST, TE_BLOOD);
-        WriteByte (MSG_MULTICAST, 1);
-        WriteCoord (MSG_MULTICAST, targ.origin_x);
-        WriteCoord (MSG_MULTICAST, targ.origin_y);
-        WriteCoord (MSG_MULTICAST, targ.origin_z);
-        multicast (puff_org, MULTICAST_PVS);
-        #else
         SpawnBlood (targ.origin, '0 0 0', damage);
-        #endif
     }
     // Else, WE take the damage
     else
@@ -190,7 +180,7 @@ float() Voodoo_Stab =
         damage = damage*11 + 4;
     }
     else
-        Sprint (self, PRINT_MEDIUM, "There's a problem with the voodoo doll code\n");
+        sprint (self, "There's a problem with the voodoo doll code\n");
 
     // Play the appropriate sound
     if (stab_type >= 3)  // Stab Groin

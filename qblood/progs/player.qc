@@ -36,11 +36,9 @@ void() player_run;
 
 float(void() idleFunction) player_idleWeapon =
 {
-    #ifndef QUAKEWORLD
     // Do NOTHING  when on the BOD
     if (self.player_state == PS_BRINK_OF_DEATH)
         return FALSE;
-    #endif
 
     self.nextthink = time + 0.1;
     self.think = idleFunction;
@@ -70,27 +68,10 @@ void() player_stand =
         return;
     }
 
-    #ifdef QUAKEWORLD
-    if (self.weapon == IT_PITCHFORK)
-    {
-        if (self.frame >= $pitchstand12 || self.frame < $pitchstand1)
-        {
-            self.frame = $pitchstand1;
-            return;
-        }
-    }
-    else if (self.frame >= $stand5 || self.frame < $stand1)
-    {
-        self.frame = $stand1;
-        return;
-    }
-    self.frame = self.frame + 1;
-    #else
     if (self.weapon == IT_PITCHFORK)
         self.frame = $pitchstand1;
     else
         self.frame = $stand1;
-    #endif
 };
 
 void() player_run =
@@ -122,13 +103,7 @@ void() player_run =
 
 void() muzzleflash =
 {
-    #ifdef QUAKEWORLD
-    WriteByte (MSG_MULTICAST, SVC_MUZZLEFLASH);
-    WriteEntity (MSG_MULTICAST, self);
-    multicast (self.origin, MULTICAST_PVS);
-    #else
     self.effects = self.effects | EF_MUZZLEFLASH;
-    #endif
 };
 
 
@@ -149,7 +124,6 @@ void() Player_Reset =
 // Brink Of Death
 //============================================================================
 
-#ifndef QUAKEWORLD
 void() player_bod1  = [$fall1, player_bod2 ] {};
 void() player_bod2  = [$fall2, player_bod3 ] {};
 void() player_bod3  = [$fall3, player_bod4 ] {};
@@ -212,8 +186,6 @@ void() Player_LiveAgain =
     player_run ();
     W_DrawWeapon (self.weapon);
 };
-
-#endif
 
 
 //============================================================================
@@ -284,27 +256,13 @@ void() player_pain1 = [$pain1, player_pain2] {};
 void() player_pain2 = [$pain2, player_pain3] {};
 void() player_pain3 = [$pain3, player_pain4] {};
 void() player_pain4 = [$pain4, player_pain5] {};
-#ifdef QUAKEWORLD
-void() player_pain5 = [$pain5, player_pain6] {};
-void() player_pain6 = [$pain6, player_run  ] {};
-#else
 void() player_pain5 = [$pain5, player_run  ] {};
-#endif
 
-#ifdef QUAKEWORLD
-void()  player_axpain1 = [$axpain1, player_axpain2] {};
-void()  player_axpain2 = [$axpain2, player_axpain3] {};
-void()  player_axpain3 = [$axpain3, player_axpain4] {};
-void()  player_axpain4 = [$axpain4, player_axpain5] {};
-void()  player_axpain5 = [$axpain5, player_axpain6] {};
-void()  player_axpain6 = [$axpain6, player_run    ] {};
-#else
 void() player_axpain1 = [$pitchpain1, player_axpain2] {};
 void() player_axpain2 = [$pitchpain2, player_axpain3] {};
 void() player_axpain3 = [$pitchpain3, player_axpain4] {};
 void() player_axpain4 = [$pitchpain4, player_axpain5] {};
 void() player_axpain5 = [$pitchpain5, player_run    ] {};
-#endif
 
 void() player_pain =
 {
@@ -337,82 +295,12 @@ void() PlayerDead =
 };
 
 
-#ifdef QUAKEWORLD
-void() player_diea1  = [$deatha1,  player_diea2 ] {};
-void() player_diea2  = [$deatha2,  player_diea3 ] {};
-void() player_diea3  = [$deatha3,  player_diea4 ] {};
-void() player_diea4  = [$deatha4,  player_diea5 ] {};
-void() player_diea5  = [$deatha5,  player_diea6 ] {};
-void() player_diea6  = [$deatha6,  player_diea7 ] {};
-void() player_diea7  = [$deatha7,  player_diea8 ] {};
-void() player_diea8  = [$deatha8,  player_diea9 ] {};
-void() player_diea9  = [$deatha9,  player_diea10] {};
-void() player_diea10 = [$deatha10, player_diea11] {};
-void() player_diea11 = [$deatha11, player_diea11] {PlayerDead();};
-
-void() player_dieb1 = [$deathb1, player_dieb2] {};
-void() player_dieb2 = [$deathb2, player_dieb3] {};
-void() player_dieb3 = [$deathb3, player_dieb4] {};
-void() player_dieb4 = [$deathb4, player_dieb5] {};
-void() player_dieb5 = [$deathb5, player_dieb6] {};
-void() player_dieb6 = [$deathb6, player_dieb7] {};
-void() player_dieb7 = [$deathb7, player_dieb8] {};
-void() player_dieb8 = [$deathb8, player_dieb9] {};
-void() player_dieb9 = [$deathb9, player_dieb9] {PlayerDead();};
-
-void() player_diec1  = [$deathc1,  player_diec2 ] {};
-void() player_diec2  = [$deathc2,  player_diec3 ] {};
-void() player_diec3  = [$deathc3,  player_diec4 ] {};
-void() player_diec4  = [$deathc4,  player_diec5 ] {};
-void() player_diec5  = [$deathc5,  player_diec6 ] {};
-void() player_diec6  = [$deathc6,  player_diec7 ] {};
-void() player_diec7  = [$deathc7,  player_diec8 ] {};
-void() player_diec8  = [$deathc8,  player_diec9 ] {};
-void() player_diec9  = [$deathc9,  player_diec10] {};
-void() player_diec10 = [$deathc10, player_diec11] {};
-void() player_diec11 = [$deathc11, player_diec12] {};
-void() player_diec12 = [$deathc12, player_diec13] {};
-void() player_diec13 = [$deathc13, player_diec14] {};
-void() player_diec14 = [$deathc14, player_diec15] {};
-void() player_diec15 = [$deathc15, player_diec15] {PlayerDead();};
-
-void() player_died1 = [$deathd1, player_died2] {};
-void() player_died2 = [$deathd2, player_died3] {};
-void() player_died3 = [$deathd3, player_died4] {};
-void() player_died4 = [$deathd4, player_died5] {};
-void() player_died5 = [$deathd5, player_died6] {};
-void() player_died6 = [$deathd6, player_died7] {};
-void() player_died7 = [$deathd7, player_died8] {};
-void() player_died8 = [$deathd8, player_died9] {};
-void() player_died9 = [$deathd9, player_died9] {PlayerDead();};
-
-void() player_diee1 = [$deathe1, player_diee2] {};
-void() player_diee2 = [$deathe2, player_diee3] {};
-void() player_diee3 = [$deathe3, player_diee4] {};
-void() player_diee4 = [$deathe4, player_diee5] {};
-void() player_diee5 = [$deathe5, player_diee6] {};
-void() player_diee6 = [$deathe6, player_diee7] {};
-void() player_diee7 = [$deathe7, player_diee8] {};
-void() player_diee8 = [$deathe8, player_diee9] {};
-void() player_diee9 = [$deathe9, player_diee9] {PlayerDead();};
-
-void() player_die_ax1 = [$axdeth1, player_die_ax2] {};
-void() player_die_ax2 = [$axdeth2, player_die_ax3] {};
-void() player_die_ax3 = [$axdeth3, player_die_ax4] {};
-void() player_die_ax4 = [$axdeth4, player_die_ax5] {};
-void() player_die_ax5 = [$axdeth5, player_die_ax6] {};
-void() player_die_ax6 = [$axdeth6, player_die_ax7] {};
-void() player_die_ax7 = [$axdeth7, player_die_ax8] {};
-void() player_die_ax8 = [$axdeth8, player_die_ax9] {};
-void() player_die_ax9 = [$axdeth9, player_die_ax9] {PlayerDead();};
-#else
 void() player_die1 = [$deatha1, player_die2] {};
 void() player_die2 = [$deatha2, player_die3] {};
 void() player_die3 = [$deatha3, player_die4] {};
 void() player_die4 = [$deatha4, player_die5] {};
 void() player_die5 = [$deatha5, player_die6] {};
 void() player_die6 = [$deatha6, player_die6] {PlayerDead();};
-#endif
 
 
 void() DeathSound =
@@ -682,21 +570,21 @@ void() PlayerDie =
 
     if (self.akimbo_finished > 0)
     {
-        Bprint (PRINT_LOW, self.netname);
-        Bprint (PRINT_LOW, " lost a Guns Akimbo with ");
+        bprint (self.netname);
+        bprint (" lost a Guns Akimbo with ");
         s = ftos(rint(self.akimbo_finished - time));
-        Bprint (PRINT_LOW, s);
-        Bprint (PRINT_LOW, " seconds remaining\n");
+        bprint (s);
+        bprint (" seconds remaining\n");
         Akimbo_Drop (self.akimbo_finished - time);
     }
 
     if (self.invisible_finished > 0)
     {
-        Bprint (PRINT_LOW, self.netname);
-        Bprint (PRINT_LOW, " lost a cloak with ");
+        bprint (self.netname);
+        bprint (" lost a cloak with ");
         s = ftos(rint(self.invisible_finished - time));
-        Bprint (PRINT_LOW, s);
-        Bprint (PRINT_LOW, " seconds remaining\n");
+        bprint (s);
+        bprint (" seconds remaining\n");
         Invisibility_Drop (self.invisible_finished - time);
     }
 
@@ -729,25 +617,6 @@ void() PlayerDie =
     self.angles_x = 0;
     self.angles_z = 0;
 
-    #ifdef QUAKEWORLD
-    if (self.weapon == IT_PITCHFORK)
-    {
-        player_die_ax1 ();
-        return;
-    }
-
-    i = 1 + floor (random () * 6);
-    if (i == 1)
-        player_diea1();
-    else if (i == 2)
-        player_dieb1();
-    else if (i == 3)
-        player_diec1();
-    else if (i == 4)
-        player_died1();
-    else
-        player_diee1();
-    #else
     // If the player was on the Brink Of Death
     if (self.player_state == PS_BRINK_OF_DEATH)
     {
@@ -780,7 +649,6 @@ void() PlayerDie =
     }
     else
         player_die1 ();
-    #endif
 };
 
 // used by kill command and disconnect command
@@ -788,11 +656,7 @@ void() set_suicide_frame =
 {
     if (self.model == "progs/player.mdl")
     {
-        #ifdef QUAKEWORLD
-        self.frame = $deatha11;
-        #else
         self.frame = $deatha6;
-        #endif
     }
     else if (self.observer)
     {

@@ -359,7 +359,7 @@ void() W_ChargeNormal =
         // If the fuse is burned up, the TNT explodes in our hands...
         if (self.tnt_time && self.tnt_time <= time)
         {
-            Sprint (self, PRINT_LOW, "Timed out . . .\n");
+            sprint (self, "Timed out . . .\n");
 
             // Indeed, we use a little trick: we drop the dynamite with a zero match time
             self.charge = 0;    // Make sure it's dropped, not thrown
@@ -466,7 +466,7 @@ void() W_ChargeBomb =
     // Altfire -> drop the bomb at the current position
     if (altfire)
     {
-        Sprint (self, PRINT_LOW, "Bomb dropped\n");
+        sprint (self, "Bomb dropped\n");
         self.charge = 0;    // Make sure it's dropped, not thrown
         W_Attack ();
     }
@@ -475,13 +475,6 @@ void() W_ChargeBomb =
 
 void() Bomb_Explode =
 {
-    #ifdef QUAKEWORLD
-    if (self.voided) {
-        return;
-    }
-    self.voided = 1;
-    #endif
-
     // Stop the fuse sound if any
     sound (self, CHAN_BODY, "misc/null.wav", 0, ATTN_NORM);
 
@@ -504,23 +497,12 @@ void() Bomb_Explode =
     T_RadiusDamage (self, self.owner, self.dmg, world, "grenade");
     KillBurner (self);
 
-    #ifdef QUAKEWORLD
-    WriteByte (MSG_MULTICAST, SVC_TEMPENTITY);
-    WriteByte (MSG_MULTICAST, TE_EXPLOSION);
-    WriteCoord (MSG_MULTICAST, self.origin_x);
-    WriteCoord (MSG_MULTICAST, self.origin_y);
-    WriteCoord (MSG_MULTICAST, self.origin_z);
-    multicast (self.origin, MULTICAST_PHS);
-    remove (self);
-
-    #else
     WriteByte (MSG_BROADCAST, SVC_TEMPENTITY);
     WriteByte (MSG_BROADCAST, TE_EXPLOSION);
     WriteCoord (MSG_BROADCAST, self.origin_x);
     WriteCoord (MSG_BROADCAST, self.origin_y);
     WriteCoord (MSG_BROADCAST, self.origin_z);
     BecomeExplosion ();
-    #endif
 };
 
 
@@ -589,7 +571,7 @@ float() W_CheckRemote =
                 self.player_state = PS_IDLE;
             }
             else
-                Sprint (self, PRINT_LOW, "You have no more remote bombs\n");
+                sprint (self, "You have no more remote bombs\n");
         }
 
         self.impulse = 0;
@@ -798,9 +780,6 @@ void() proximity_mine =
     precache_sound ("weapons/tnt/proxdet.wav");  // proximity bomb triggered
 
     self.owner      = world;
-    #ifdef QUAKEWORLD
-    self.voided     = 0;
-    #endif
     self.solid      = SOLID_BBOX;
     self.takedamage = DAMAGE_AIM;
     self.health     = 1;
@@ -848,14 +827,8 @@ void() Bomb_Fire =
     newmis.movetype = MOVETYPE_BOUNCE;
     newmis.solid = SOLID_BBOX;
     newmis.classname = "grenade";
-    #ifdef QUAKEWORLD
-    newmis.voided=0;
 
-    msg_entity = self;
-    WriteByte (MSG_ONE, SVC_SMALLKICK);
-    #else
     self.punchangle_x = -2;
-    #endif
 
     // set newmis speed
     makevectors (self.v_angle);

@@ -43,17 +43,12 @@ void(entity flg) RegenFlag =
     flg.movetype = MOVETYPE_TOSS;
     flg.solid = SOLID_TRIGGER;
     if (flg.owner)
-    #ifdef QUAKEWORLD
-        flg.owner.effects = flg.owner.effects - (flg.owner.effects & (EF_FLAG1 | EF_FLAG2));
-    setmodel(flg, flg.mdl);
-    #else
         flg.owner.effects = flg.owner.effects - (flg.owner.effects & EF_DIMLIGHT);
     flg.effects = flg.effects | EF_DIMLIGHT;
     if (flg.team == TEAM_COLOR1)
         flg.effects = flg.effects | EF_RED;
     else
         flg.effects = flg.effects | EF_BLUE;
-    #endif
     setorigin(flg, flg.oldorigin);
     flg.angles = flg.mangle;
     flg.cnt = FLAG_AT_BASE; // it's at home base
@@ -131,11 +126,11 @@ void() CTF_FlagTouch =
 
             // the flag is at home base.  if the player has the enemy
             // flag, he's just won!
-            Bprint (PRINT_HIGH, other.netname);
+            bprint (other.netname);
             if (other.team == TEAM_COLOR1)
-                Bprint (PRINT_HIGH, " γαπτυςεδ the ΒΜΥΕ flag!\n"); // blue
+                bprint (" γαπτυςεδ the ΒΜΥΕ flag!\n"); // blue
             else
-                Bprint (PRINT_HIGH, " γαπτυςεδ the ÒΕΔ flag!\n"); // red
+                bprint (" γαπτυςεδ the ÒΕΔ flag!\n"); // red
 
             Cl_PrintTeamScores ();
 
@@ -150,11 +145,11 @@ void() CTF_FlagTouch =
         }
 
         // hey, its not home.  return it by teleporting it back
-        Bprint (PRINT_HIGH, other.netname);
+        bprint (other.netname);
         if (other.team == TEAM_COLOR1)
-            Bprint (PRINT_HIGH, " ςετυςξεδ the ÒΕΔ flag!\n"); // red
+            bprint (" ςετυςξεδ the ÒΕΔ flag!\n"); // red
         else
-            Bprint (PRINT_HIGH, " ςετυςξεδ the ΒΜΥΕ flag!\n"); // blue
+            bprint (" ςετυςξεδ the ΒΜΥΕ flag!\n"); // blue
         other.frags = other.frags + TEAM_CAPTURE_RECOVERY_BONUS;
         sound (self, CHAN_ITEM, self.noise1, 1, ATTN_NONE);
         TeamCaptureReturnFlag(self);
@@ -162,11 +157,11 @@ void() CTF_FlagTouch =
     }
 
     // hey, its not our flag, pick it up
-    Bprint (PRINT_HIGH, other.netname);
+    bprint (other.netname);
     if (other.team == TEAM_COLOR1)
-        Bprint (PRINT_HIGH, " ηοτ the ΒΜΥΕ flag!\n"); // blue
+        bprint (" ηοτ the ΒΜΥΕ flag!\n"); // blue
     else
-        Bprint (PRINT_HIGH, " ηοτ the ÒΕΔ flag!\n"); // red
+        bprint (" ηοτ the ÒΕΔ flag!\n"); // red
     centerprint (other, "ΩΟΥ ΗΟΤ ΤΘΕ ΕΞΕΝΩ ΖΜΑΗ\n\nÒΕΤΥÒΞ ΤΟ ΒΑΣΕ");  // == "YOU GOT THE ENEMY FLAG!\n\nRETURN TO BASE!"
     sound (self, CHAN_ITEM, self.noise, 1, ATTN_NONE);
 
@@ -174,23 +169,13 @@ void() CTF_FlagTouch =
 
     // pick up the flag
     self.cnt = FLAG_CARRIED;
-    #ifndef QUAKEWORLD
     self.movetype = MOVETYPE_NOCLIP;
-    #endif
     self.solid = SOLID_NOT;
     self.owner = other;
 
-    #ifdef QUAKEWORLD
-    if (self.team == TEAM_COLOR1)
-        self.owner.effects = self.owner.effects | EF_FLAG1;
-    else // must be other team
-        self.owner.effects = self.owner.effects | EF_FLAG2;
-    setmodel (self, string_null);  // Make the flag desappear. The EF_FLAG? effect will show it on the client
-    #else
     // We remove the glow on the flag and transfers the EF_DIMLIGHT effect to the player
     self.effects = self.effects - (self.effects & (EF_DIMLIGHT | EF_RED | EF_BLUE));
     self.owner.effects = self.owner.effects | EF_DIMLIGHT;
-    #endif
 
     p = find(world, classname, "player");
     while (p != world) {
@@ -213,16 +198,12 @@ void(entity flg) TeamDropFlag =
 
     p = flg.owner;
 
-    Bprint (PRINT_HIGH, p.netname);
+    bprint (p.netname);
     if (p.team == TEAM_COLOR1)
-        Bprint (PRINT_HIGH, " μοστ the ΒΜΥΕ flag!\n"); // blue
+        bprint (" μοστ the ΒΜΥΕ flag!\n"); // blue
     else
-        Bprint (PRINT_HIGH, " μοστ the ÒΕΔ flag!\n"); // red
-    #ifdef QUAKEWORLD
-    p.effects = p.effects - (p.effects & (EF_FLAG1 | EF_FLAG2));
-    #else
+        bprint (" μοστ the ÒΕΔ flag!\n"); // red
     p.effects = p.effects - (p.effects & EF_DIMLIGHT);
-    #endif
 
     flg.origin = p.origin - '0 0 24';
     flg.cnt = FLAG_DROPPED;
@@ -232,15 +213,11 @@ void(entity flg) TeamDropFlag =
     flg.flags = FL_ITEM;
     flg.solid = SOLID_TRIGGER;
     flg.movetype = MOVETYPE_TOSS;
-    #ifdef QUAKEWORLD
-    setmodel(flg, flg.mdl);
-    #else
     flg.effects = flg.effects | EF_DIMLIGHT;
     if (flg.team == TEAM_COLOR1)
         flg.effects = flg.effects | EF_RED;
     else
         flg.effects = flg.effects | EF_BLUE;
-    #endif
     setsize(flg, '-16 -16 0', '16 16 74');
 
     // return it after so long
@@ -287,8 +264,7 @@ void() CTF_FlagThink =
     if (self.cnt != FLAG_CARRIED)
         objerror("Flag in invalid state\n");
 
-    // If we're not in QW, we must manage the flag ourselves
-    #ifndef QUAKEWORLD
+    // We must manage the flag ourselves
     e = self.owner;
     if ((e.classname != "player") || (e.deadflag)) {
         TeamDropFlag(self);
@@ -320,7 +296,6 @@ void() CTF_FlagThink =
     self.angles = e.angles + '0 0 -45';
     setorigin (self, self.origin);
     self.nextthink = time + 0.01;
-    #endif
 };
 
 
@@ -340,12 +315,10 @@ void() place_flag = {
     self.cnt = FLAG_AT_BASE;
     self.mangle = self.angles;
     self.effects = self.effects | EF_DIMLIGHT;
-    #ifndef QUAKEWORLD
     if (self.team == TEAM_COLOR1)
         self.effects = self.effects | EF_RED;
     else
         self.effects = self.effects | EF_BLUE;
-    #endif
     if (!droptofloor()) {
         dprint ("Flag fell out of level at ");
         dprint (vtos(self.origin));

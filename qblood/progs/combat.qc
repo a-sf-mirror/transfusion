@@ -24,9 +24,7 @@
 void() T_MissileTouch;
 void(entity attacker) ClientObituary;
 void(entity inflictor, entity attacker, float damage, entity ignore, string dtype) T_RadiusDamage;
-#ifndef QUAKEWORLD
 void(entity player, entity attacker) Player_BrinkOfDeath;
-#endif
 
 
 //============================================================================
@@ -325,7 +323,6 @@ void(entity targ, entity inflictor, entity attacker, float damage, float dflags,
     targ.health = targ.health - take;
     if (targ.health <= 0)
     {
-        #ifndef QUAKEWORLD  // No BOD in QW
         // If a player reaches between -1 and 1 HP (Brink Of Death)
         if (targ.health >= -1 && targ.health <= 1 && targ.classname == "player")
         {
@@ -341,7 +338,6 @@ void(entity targ, entity inflictor, entity attacker, float damage, float dflags,
                 }
             }
         }
-        #endif
 
         // Target was slain!
         if (!targ.deadflag)

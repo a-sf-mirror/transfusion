@@ -209,8 +209,8 @@ void() Impulses_Observer =
     // If the player has just spawned into the arena
     if (!self.observer)
     {
-        Bprint (PRINT_HIGH, self.netname);
-        Bprint (PRINT_HIGH, " lives again!\n");
+        bprint (self.netname);
+        bprint (" lives again!\n");
     }
 
     if (self.impulse == 141)
@@ -228,10 +228,6 @@ void() ObserverThink =
     local vector f,vp,vs;
 
     self.flags = self.flags | FL_ONGROUND;
-    #ifdef QUAKEWORLD
-    // REMOVEME / FIXME: QW somehow changes movetype to MOVETYPE_WALK regularly
-    self.movetype = MOVETYPE_FLY;
-    #endif
 
     svz = self.velocity_z * 0.75;
     self.velocity_z = 0;

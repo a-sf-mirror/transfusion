@@ -224,12 +224,7 @@ void() Shot_Fire =
 
     makevectors (self.v_angle);
 
-    #ifndef QUAKEWORLD
     self.punchangle_x = -2 * nbshots;
-    #else
-    msg_entity = self;
-    WriteByte (MSG_ONE, SVC_SMALLKICK + nbshots - 1);
-    #endif
 
     self.currentammo = self.ammo_shells = self.ammo_shells - nbshots;
 

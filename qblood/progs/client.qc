@@ -45,9 +45,6 @@ Use mangle instead of angle, so you can set pitch or roll as well as yaw.  'pitc
 */
 void() info_intermission =
 {
-    #ifdef QUAKEWORLD
-    self.angles = self.mangle;      // so C can get at it
-    #endif
 };
 
 void() SetChangeParms =
@@ -147,7 +144,7 @@ entity() FindIntermission =
 
     // If we haven't found an "info_intermission" entity,
     // use an "info_player_deathmatch" entity instead
-    Bprint (PRINT_HIGH, "варнинг╨ FindIntermission: no info_intermission\n");  // "WARNING: ..."
+    bprint ("варнинг╨ FindIntermission: no info_intermission\n");  // "WARNING: ..."
     spot = find (world, classname, "info_player_deathmatch");
     if (spot)
         return spot;
@@ -267,18 +264,7 @@ void() execute_changelevel =
     WriteByte (MSG_ALL, SVC_CDTRACK);
     WriteByte (MSG_ALL, 3);
 
-    #ifndef QUAKEWORLD
     WriteByte (MSG_ALL, 3);
-
-    #else
-    WriteByte (MSG_ALL, SVC_INTERMISSION);
-    WriteCoord (MSG_ALL, pos.origin_x);
-    WriteCoord (MSG_ALL, pos.origin_y);
-    WriteCoord (MSG_ALL, pos.origin_z);
-    WriteAngle (MSG_ALL, pos.mangle_x);
-    WriteAngle (MSG_ALL, pos.mangle_y);
-    WriteAngle (MSG_ALL, pos.mangle_z);
-    #endif
 
     other = nextent (world);
     while (other != world)
@@ -286,12 +272,10 @@ void() execute_changelevel =
         if (other.classname == "player" || other.classname == "observer")
         {
             KillBurner (other);
-            #ifndef QUAKEWORLD
             other.view_ofs = '0 0 0';
             other.angles = other.v_angle = pos.mangle;
             other.fixangle = TRUE;      // turn this way immediately
             other.nextthink = time + 0.5;
-            #endif
 
             other.takedamage = DAMAGE_NO;
             other.solid = SOLID_NOT;
@@ -299,17 +283,13 @@ void() execute_changelevel =
             other.modelindex = 0;
             other.health = 1;
 
-            #ifndef QUAKEWORLD
             setorigin (other, pos.origin);
-            #endif
         }
 
         other = nextent (other);
     }
 
-    #ifndef QUAKEWORLD
     WriteByte (MSG_ALL, SVC_INTERMISSION);
-    #endif
 };
 
 
@@ -332,13 +312,13 @@ void() Cl_PrintTeamScores =
 {
     local string score;
 
-    Bprint (PRINT_HIGH, "ред╨ ");      // "RED: "
+    bprint ("ред╨ ");      // "RED: "
     score = ftos (team1score);
-    Bprint (PRINT_HIGH, score);
-    Bprint (PRINT_HIGH, " ╞ блуе╨ ");  // " / BLUE: "
+    bprint (score);
+    bprint (" ╞ блуе╨ ");  // " / BLUE: "
     score = ftos (team2score);
-    Bprint (PRINT_HIGH, score);
-    Bprint (PRINT_HIGH, "\n");
+    bprint (score);
+    bprint ("\n");
 };
 
 
@@ -398,16 +378,13 @@ void() ClientKill =
     if (self.observer)
         return;
 
-    Bprint (PRINT_MEDIUM, "Kevorkian approves ");
-    Bprint (PRINT_MEDIUM, self.netname);
-    Bprint (PRINT_MEDIUM, "!\n");
+    bprint ("Kevorkian approves ");
+    bprint (self.netname);
+    bprint ("!\n");
     sound (self, CHAN_AUTO, "thevoice/vo5.wav", 1, ATTN_NORM);
     CTF_PlayerDropFlag ();
     set_suicide_frame ();
     self.modelindex = modelindex_player;
-    #ifdef QUAKEWORLD
-    logfrag (self, self);
-    #endif
     Cl_UpdatePlayerFrags (self, -2);  // extra penalty
     respawn (TRUE);
 };
@@ -815,20 +792,12 @@ void() PlayerJump =
 
     local   float   jump;
 
-    #ifndef QUAKEWORLD
     jump = 360;     // quake value was 270
-    #else
-    jump = 90;     // quake will add 270 to that
-    #endif
 
     // Boots let player jump about 4x as high.
     // NOTE:  max height = v0^2 / 2g.
     if (self.boots_on)
-        #ifndef QUAKEWORLD
         jump = jump + 350;
-        #else
-        jump = jump + 650;
-        #endif
 
     self.flags = self.flags - FL_ONGROUND;  // don't stairwalk
     self.velocity_z = self.velocity_z + jump;
@@ -941,10 +910,8 @@ void() WaterMove =
         self.dmgtime = 0;
     }
 
-    #ifndef QUAKEWORLD
     if (! (self.flags & FL_WATERJUMP) )
         self.velocity = self.velocity - 0.8*self.waterlevel*frametime*self.velocity;
-    #endif
 };
 
 void() CheckWaterJump =
@@ -1022,10 +989,8 @@ void() PlayerPreThink =
     CheckRules ();
     WaterMove ();
 
-    #ifndef QUAKEWORLD
     if (self.waterlevel == 2)
         CheckWaterJump ();
-    #endif
 
     if (self.deadflag >= DEAD_DEAD)
     {
@@ -1033,7 +998,6 @@ void() PlayerPreThink =
         return;
     }
 
-    #ifndef QUAKEWORLD
     // Players on the BOD can't move
     if (self.player_state == PS_BRINK_OF_DEATH)
     {
@@ -1041,7 +1005,6 @@ void() PlayerPreThink =
         self.velocity_y = 0;
         return;
     }
-    #endif
 
     if (self.observer)
     {
@@ -1091,7 +1054,7 @@ void() CheckPowerups =
         {
             if (self.invisible_time == 1)
             {
-                Sprint (self, PRINT_HIGH, "Cloak of Invisibility is draining\n");
+                sprint (self, "Cloak of Invisibility is draining\n");
                 stuffcmd (self, "bf\n");
                 sound (self, CHAN_AUTO, "bludbath/powerup.wav", 1, ATTN_NORM);
                 self.invisible_time = time + 1;
@@ -1126,7 +1089,7 @@ void() CheckPowerups =
         {
             if (self.invincible_time == 1)
             {
-                Sprint (self, PRINT_HIGH, "Death Mask is almost used up\n");
+                sprint (self, "Death Mask is almost used up\n");
                 stuffcmd (self, "bf\n");
                 sound (self, CHAN_AUTO, "bludbath/powerup.wav", 1, ATTN_NORM);
                 self.invincible_time = time + 1;
@@ -1158,10 +1121,9 @@ void() CheckPowerups =
         if (self.akimbo_finished < time)
         {
             self.akimbo_finished = 0;
-            #ifndef QUAKEWORLD
+
             // Don't reset the weapon view while on the BOD
             if (self.player_state != PS_BRINK_OF_DEATH)
-            #endif
                 W_SetCurrentAmmo ();
         }
     }
@@ -1227,7 +1189,7 @@ void() Impulses_Player =
     {
         // If bots are disabled
         if (cvar ("sv_disable") & SV_DISABLE_BOTS)
-            Sprint (self, PRINT_HIGH, "Bots are disabled on this server\n");
+            sprint (self, "Bots are disabled on this server\n");
         else
         {
             local float botskill;
@@ -1240,7 +1202,7 @@ void() Impulses_Player =
         KickABot();
     #else
     else if (self.impulse >= 100 && self.impulse <= 102)
-        Sprint (self, PRINT_HIGH, "Sorry, these progs don't have bot support\n");
+        sprint (self, "Sorry, these progs don't have bot support\n");
     #endif
 
     else if (self.impulse == 141)
@@ -1249,7 +1211,7 @@ void() Impulses_Player =
     // These ones are considered cheats and are only allowed when the "sv_cheats" cvar is set
     else if (cvar ("sv_cheats"))
     {
-        #if !defined(NO_FRIKBOT) && !defined (QUAKEWORLD)
+        #if !defined(NO_FRIKBOT)
         if (self.impulse == 103)
             botcam_u ();
         else if (self.impulse == 104)
@@ -1263,21 +1225,19 @@ void() Impulses_Player =
         }
         else if (self.impulse == 251)
         {
-            Sprint (self, PRINT_MEDIUM, "griswold -- You have full armor.\n");
+            sprint (self, "griswold -- You have full armor.\n");
             self.armor_fire = self.armor_body = self.armor_mind = self.armorvalue = 200;
             self.items = self.items - (self.items & (IT_ARMOR1 | IT_ARMOR2 | IT_ARMOR3)) + IT_ARMOR2;
         }
         else if (self.impulse == 252)
         {
-            Sprint (self, PRINT_MEDIUM, "mcgee -- You're fired!\n");
+            sprint (self, "mcgee -- You're fired!\n");
             Ignite (self, self, DF_FIRE, 10, 20);
         }
         else if (self.impulse == 253)
             Cheat_Inventory ();
-        #ifndef QUAKEWORLD
         else if (self.impulse == 254)
             Player_BrinkOfDeath (self, world);
-        #endif
         else if (self.impulse == 255)
             Cheat_Akimbo ();
     }
@@ -1303,8 +1263,8 @@ void() Impulses_Dead =
     {
         self.do_observer = 1;
         respawn (TRUE);
-        Bprint (PRINT_MEDIUM, self.netname);
-        Bprint (PRINT_MEDIUM, " is an observer again\n");
+        bprint (self.netname);
+        bprint (" is an observer again\n");
     }
 
     // Toggle menu
@@ -1317,7 +1277,7 @@ void() Impulses_Dead =
     {
         // If bots are disabled
         if (cvar ("sv_disable") & SV_DISABLE_BOTS)
-            Sprint (self, PRINT_HIGH, "Bots are disabled on this server\n");
+            sprint (self, "Bots are disabled on this server\n");
         else
         {
             local float botskill;
@@ -1330,7 +1290,7 @@ void() Impulses_Dead =
         KickABot();
     #else
     else if (self.impulse >= 100 && self.impulse <= 102)
-        Sprint (self, PRINT_HIGH, "Sorry, these progs don't have bot support\n");
+        sprint (self, "Sorry, these progs don't have bot support\n");
     #endif
 
     else if (self.impulse == 141)
@@ -1397,7 +1357,6 @@ void() PlayerPostThink =
 
     CheckPowerups ();
 
-    #ifndef QUAKEWORLD  // No BOD in QW
     // If we are on the Brink Of Death
     if (self.player_state == PS_BRINK_OF_DEATH)
     {
@@ -1406,7 +1365,6 @@ void() PlayerPostThink =
         ResetIdle (self);
         return;
     }
-    #endif
 
     W_WeaponFrame ();
 
@@ -1434,8 +1392,8 @@ void() ClientConnect =
     ClientInRankings();
     #endif
 
-    Bprint (PRINT_HIGH, self.netname);
-    Bprint (PRINT_HIGH, " entered the game\n");
+    bprint (self.netname);
+    bprint (" entered the game\n");
 
     sound (self, CHAN_AUTO, "thevoice/vo1.wav", 1, ATTN_NORM); // Let the Bloodbath Begin!
     self.do_observer = 1;
@@ -1486,11 +1444,11 @@ void() ClientDisconnect =
         return;
 
     // let everyone else know
-    Bprint (PRINT_HIGH, self.netname);
-    Bprint (PRINT_HIGH, " left this world for another with ");
+    bprint (self.netname);
+    bprint (" left this world for another with ");
     finalscore = ftos (self.frags);
-    Bprint (PRINT_HIGH, finalscore);
-    Bprint (PRINT_HIGH, " kills\n");
+    bprint (finalscore);
+    bprint (" kills\n");
     sound (self, CHAN_BODY, "thevoice/vo2.wav", 1, ATTN_NONE);
     CTF_PlayerDropFlag ();
     set_suicide_frame ();
@@ -1518,14 +1476,11 @@ void(entity attacker) ClientObituary =
 
     if (attacker.classname == "teledeath")
     {
-        Bprint (PRINT_MEDIUM,self.netname);
-        Bprint (PRINT_MEDIUM,"'s personal space was invaded by ");
-        Bprint (PRINT_MEDIUM,attacker.owner.netname);
-        Bprint (PRINT_MEDIUM,"\n");
+        bprint (self.netname);
+        bprint ("'s personal space was invaded by ");
+        bprint (attacker.owner.netname);
+        bprint ("\n");
         self.noise1 = "thevoice/splatt.wav";
-        #ifdef QUAKEWORLD
-        logfrag (attacker.owner, self);
-        #endif
 
         Cl_UpdatePlayerFrags (attacker.owner, 1);
         return;
@@ -1533,15 +1488,12 @@ void(entity attacker) ClientObituary =
 
     if (attacker.classname == "teledeath2")
     {
-        Bprint (PRINT_MEDIUM,"Tchernobog's Death Mask deflects ");
-        Bprint (PRINT_MEDIUM,self.netname);
-        Bprint (PRINT_MEDIUM,"'s telefrag on ");
-        Bprint (PRINT_MEDIUM,attacker.owner.netname);
-        Bprint (PRINT_MEDIUM,"\n");
+        bprint ("Tchernobog's Death Mask deflects ");
+        bprint (self.netname);
+        bprint ("'s telefrag on ");
+        bprint (attacker.owner.netname);
+        bprint ("\n");
         self.noise1 = "thevoice/splatt.wav";
-        #ifdef QUAKEWORLD
-        logfrag (self, self);
-        #endif
 
         Cl_UpdatePlayerFrags (self, -1);
         return;
@@ -1550,27 +1502,21 @@ void(entity attacker) ClientObituary =
     // double 666 telefrag
     if (attacker.classname == "teledeath3")
     {
-        Bprint (PRINT_MEDIUM,self.netname);
-        Bprint (PRINT_MEDIUM," was overcome by ");
-        Bprint (PRINT_MEDIUM,attacker.owner.netname);
-        Bprint (PRINT_MEDIUM, "'s Death Mask power\n");
+        bprint (self.netname);
+        bprint (" was overcome by ");
+        bprint (attacker.owner.netname);
+        bprint ("'s Death Mask power\n");
         Cl_UpdatePlayerFrags (self, -1);
         self.noise1 = "thevoice/splatt.wav";
-        #ifdef QUAKEWORLD
-        logfrag (self, self);
-        #endif
         return;
     }
 
     if (self.deathtype == "squish")
     {
-        Bprint (PRINT_MEDIUM,self.netname);
-        Bprint (PRINT_MEDIUM," was squashed\n");
+        bprint (self.netname);
+        bprint (" was squashed\n");
         self.noise1 = "thevoice/squash.wav";
         Cl_UpdatePlayerFrags (self, -1);  // killed self
-        #ifdef QUAKEWORLD
-        logfrag (self, self);
-        #endif
         return;
     }
 
@@ -1579,11 +1525,8 @@ void(entity attacker) ClientObituary =
         if (self == attacker)
         {
             // killed self in a dumb fashion
-            #ifdef QUAKEWORLD
-            logfrag (attacker, attacker);
-            #endif
             Cl_UpdatePlayerFrags (attacker, -1);
-            Bprint (PRINT_MEDIUM,self.netname);
+            bprint (self.netname);
 
             if (rnum < 0.33)
             {
@@ -1601,7 +1544,7 @@ void(entity attacker) ClientObituary =
                 self.noise1 = "thevoice/vo13.wav";
             }
 
-            Bprint (PRINT_MEDIUM, deathstring);
+            bprint (deathstring);
             return;
         }
         else if (friendlyfire && self.team > 0 && self.team == attacker.team)
@@ -1614,25 +1557,18 @@ void(entity attacker) ClientObituary =
                 deathstring = " gets a frag for the other team on ";
             else
                 deathstring = " loses his friend ";
-            Bprint (PRINT_MEDIUM, attacker.netname);
-            Bprint (PRINT_MEDIUM, deathstring);
-            Bprint (PRINT_MEDIUM, self.netname);
-            Bprint (PRINT_MEDIUM, "\n");
+            bprint (attacker.netname);
+            bprint (deathstring);
+            bprint (self.netname);
+            bprint ("\n");
 
             Cl_UpdatePlayerFrags (attacker, -1);
 
-            #ifdef QUAKEWORLD
-            // killing a teammate logs as suicide
-            logfrag (attacker, attacker);
-            #endif
             return;
         }
         else
         {
             // no weapon associations, just random message and Announcer voice
-            #ifdef QUAKEWORLD
-            logfrag (attacker, self);
-            #endif
             Cl_UpdatePlayerFrags (attacker, 1);
 
             rnum = random()*54;
@@ -1951,23 +1887,20 @@ void(entity attacker) ClientObituary =
                 self.noise1 = "thevoice/wasted.wav";
             }
 
-            Bprint (PRINT_MEDIUM, attacker.netname);
-            Bprint (PRINT_MEDIUM, deathstring);
-            Bprint (PRINT_MEDIUM, self.netname);
+            bprint (attacker.netname);
+            bprint (deathstring);
+            bprint (self.netname);
             if (deathstring2)
-                Bprint (PRINT_MEDIUM, deathstring2);
-            Bprint (PRINT_MEDIUM, "\n");
+                bprint (deathstring2);
+            bprint ("\n");
         }
     }
     else
     {
-        #ifdef QUAKEWORLD
-        logfrag (self, self);
-        #endif
         Cl_UpdatePlayerFrags (self, -1);
 
         // hell if I know; he's just dead!!!
-        Bprint (PRINT_MEDIUM, self.netname);
-        Bprint (PRINT_MEDIUM," died\n");
+        bprint (self.netname);
+        bprint (" died\n");
     }
 };

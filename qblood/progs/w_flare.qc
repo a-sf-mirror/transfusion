@@ -120,14 +120,7 @@ This causes the flare to emit sparks
 void() FlareSpark =
 {
     // FIXME:  Use better particle effects -- custom source port recommended.
-
-    // FIXME(2): Currently, this does NOTHING in QW.  Without a particle
-    //           function, the only way to produce a spawn shower is to create an
-    //           entity for each spark, and that is bad for netplay.
-
-    #ifndef QUAKEWORLD
     particle (self.origin, '0 0 50', 151, 32);
-    #endif
 };
 
 
@@ -142,12 +135,6 @@ void() FlareTouch =
 {
     if (other.solid == SOLID_TRIGGER)
         return;
-
-    #ifdef QUAKEWORLD
-    if (self.voided)
-        return;
-    self.voided = 1;
-    #endif
 
     if (pointcontents(self.origin) == CONTENT_SKY)
     {
@@ -176,10 +163,6 @@ entity(entity attacker, vector spot) NewFlare =
     local   entity  fire;
 
     fire = spawn();
-
-    #ifdef QUAKEWORLD
-    fire.voided     = 0;
-    #endif
 
     setmodel (fire, "progs/flame2.mdl");
     setsize (fire, '0 0 0', '0 0 0');
@@ -223,12 +206,6 @@ void() AltFlareTouch =
         self.dmgtime = 5;
         FlareTouch ();
     }
-
-    #ifdef QUAKEWORLD
-    if (self.voided)
-        return;
-    self.voided = 1;
-    #endif
 
     if (pointcontents(self.origin) == CONTENT_SKY)
     {
@@ -380,12 +357,7 @@ void() Flare_Fire =
 
     sound (self, CHAN_WEAPON, "weapons/flaregun/flaref.wav", 1, ATTN_NORM);
 
-    #ifndef QUAKEWORLD
     self.punchangle_x = -2;
-    #else
-    msg_entity = self;
-    WriteByte (MSG_ONE, SVC_SMALLKICK);
-    #endif
 
     mspeed = 1000;
     dir = aim (self, mspeed);

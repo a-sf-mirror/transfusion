@@ -38,12 +38,6 @@ entity  world;
 float   time;
 float   frametime;
 
-#ifdef QUAKEWORLD
-entity  newmis;         // if this is set, the entity that just
-                        // run created a new missile that should
-                        // be simulated immediately
-#endif
-
 float   force_retouch;  // force all entities to touch triggers
                         // next frame.  this is needed because
                         // non-moving things don't normally scan
@@ -54,12 +48,10 @@ float   force_retouch;  // force all entities to touch triggers
                         // to guarantee everything is touched
 string  mapname;
 
-#ifndef QUAKEWORLD
 // WARNING: don't use them directly. Use gametype (cf below)
 float   deathmatch;
 float   coop;
 float   teamplay;
-#endif
 
 float   serverflags;    // propagated from level to level, used to
                         // keep track of completed episodes
@@ -135,9 +127,6 @@ void    end_sys_globals;    // flag for structure dumping
 .vector absmin, absmax; // *** origin + mins / maxs
 
 .float  ltime;          // local time for entity
-#ifdef QUAKEWORLD
-.float  lastruntime;    // *** to allow entities to run out of sequence
-#endif
 
 .float  movetype;
 .float  solid;
@@ -148,9 +137,7 @@ void    end_sys_globals;    // flag for structure dumping
 .vector angles;
 .vector avelocity;
 
-#ifndef QUAKEWORLD
 .vector punchangle;     // temp angle adjust from damage or recoil
-#endif
 
 .string classname;      // spawn function
 .string model;
@@ -195,9 +182,7 @@ void    end_sys_globals;    // flag for structure dumping
 
 .float  fixangle;
 .vector v_angle;        // view / targeting angle for players
-#ifndef QUAKEWORLD
 .float  idealpitch;     // calculated pitch angle for lookup up slopes
-#endif
 
 .string netname;
 
@@ -266,9 +251,7 @@ string  nextmap;
 
 string  string_null;        // null string, nothing should be held here
 
-#ifndef QUAKEWORLD
 entity  newmis;             // launch_spike sets this after spawning it
-#endif
 
 entity  activator;          // the entity that activated a trigger or brush
 
@@ -404,9 +387,6 @@ float map_cycle;
 //
 // player only fields
 //
-#ifdef QUAKEWORLD
-.float      voided;
-#endif
 
 // Menu / voting system
 .float      menu_index;
@@ -422,11 +402,6 @@ float map_cycle;
 .float      do_observer;
 
 .float      items2;
-
-#ifdef QUAKEWORLD
-.float      maxspeed;       // Used to set Maxspeed on a player
-.float      gravity;        // Gravity Multiplier (0 to 1.0)
-#endif
 
 .float      player_state;   // cf PS_*
 
@@ -551,16 +526,9 @@ string(string s) precache_model     = #20;
 void(entity client, string s)stuffcmd = #21;
 #endif
 entity(vector org, float rad) findradius = #22;
-#ifdef QUAKEWORLD
-void(float level, string s) bprint  = #23;
-#ifdef NO_FRIKBOT
-void(entity client, float level, string s) sprint = #24;
-#endif
-#else
 void(string s) bprint               = #23;
 #ifdef NO_FRIKBOT
 void(entity client, string s) sprint = #24;
-#endif
 #endif
 void(string s) dprint               = #25;
 string(float f) ftos                = #26;
@@ -587,11 +555,7 @@ vector(entity e, float speed) aim = #44;        // returns the shooting vector
 float(string s) cvar = #45;                     // return cvar.value
 void(string s) localcmd = #46;                  // put string into local que
 entity(entity e) nextent = #47;                 // for looping through all ents
-#ifdef QUAKEWORLD
-// #48 was removed
-#else
 void(vector o, vector d, float color, float count) particle = #48;// start a particle effect
-#endif
 void() ChangeYaw = #49;                     // turn towards self.ideal_yaw
                                             // at self.yaw_speed
 // #50 was removed
@@ -651,15 +615,6 @@ string(string s) precache_file2     = #77;      // registered version only
 void(entity e) setspawnparms        = #78;      // set parm1... to the
                                                 // values at level start
                                                 // for coop respawn
-#endif
-
-#ifdef QUAKEWORLD
-void(entity killer, entity killee) logfrag = #79;       // add to stats
-
-string(entity e, string key) infokey    = #80;  // get a key value (world = serverinfo)
-float(string s) stof                    = #81;  // convert string to float
-void(vector where, float set) multicast = #82;  // sends the temp message to a set
-                                                // of clients, possibly in PVS or PHS
 #endif
 
 // QC extensions

@@ -17,14 +17,11 @@
     See file, 'COPYING', for details.
 */
 
-//==========================================================================
-//  inven.qc -- by Patrick Martin               Last updated:  10-1-2001
-//--------------------------------------------------------------------------
-//  This controls a player's inventory of items.
+// This controls a player's inventory of items.
 //
-//  NOTE:  Each item can be carried for later use.  All unused items
-//         start with 100 points.
-//==========================================================================
+// NOTE:  Each item can be carried for later use.  All unused items
+//        start with 100 points.
+
 
 #include "common.qh"
 
@@ -186,12 +183,12 @@ void() Use_FirstAid =
     faid = InvenFuel (S_FIRST_AID);
     if (faid == 0)
     {
-        Sprint (self, PRINT_MEDIUM, "You don't have the Doctor's Bag\n");
+        sprint (self, "You don't have the Doctor's Bag\n");
         return;
     }
     if (self.health >= self.max_health)
     {
-        Sprint (self, PRINT_MEDIUM, "You don't need the Doctor's Bag\n");
+        sprint (self, "You don't need the Doctor's Bag\n");
         return;
     }
 
@@ -204,15 +201,15 @@ void() Use_FirstAid =
         local   string  text;
 
         text = ftos(faid);
-        Sprint (self, PRINT_MEDIUM, "Doctor's Bag health level is now at ");
-        Sprint (self, PRINT_MEDIUM, text);
-        Sprint (self, PRINT_MEDIUM, "%\n");
+        sprint (self, "Doctor's Bag health level is now at ");
+        sprint (self, text);
+        sprint (self, "%\n");
     }
     else
     {
         self.health = self.health + faid;
         faid = 0;
-        Sprint (self, PRINT_MEDIUM, "Doctor's Bag is used up\n");
+        sprint (self, "Doctor's Bag is used up\n");
     }
 
     InvenSet (self, S_FIRST_AID, faid);
@@ -237,14 +234,14 @@ void() Use_DivingSuit =
             return;
         }
 
-        Sprint (self, PRINT_MEDIUM, "Diving Suit ON\n");
+        sprint (self, "Diving Suit ON\n");
         self.items = self.items | IT_SUIT;
         self.dive_time = time + self.dive_time;
         sound (self, CHAN_ITEM, "foley/swimuw.wav", 1, ATTN_NORM);
     }
     else
     {
-        Sprint (self, PRINT_MEDIUM, "Diving Suit OFF\n");
+        sprint (self, "Diving Suit OFF\n");
         self.items = self.items - (self.items & IT_SUIT);
         self.dive_time = self.dive_time - time;
     }
@@ -255,7 +252,7 @@ void() Use_CrystalBall =
     if (!InvenFuel (S_CRYSTAL_BALL))
         return;
 
-    Sprint (self, PRINT_MEDIUM, "FIXME:  Crystal ball\n");
+    sprint (self, "FIXME:  Crystal ball\n");
     InvenSet (self, S_CRYSTAL_BALL, 0);     // Remove it from inventory.
     sound (self, CHAN_ITEM, "bludbath/powerup.wav", 1, ATTN_NORM);
 };
@@ -265,7 +262,7 @@ void() Use_BeastVision =
     if (!InvenFuel (S_BEAST_VISION))
         return;
 
-    Sprint (self, PRINT_MEDIUM, "FIXME:  Beast vision\n");
+    sprint (self, "FIXME:  Beast vision\n");
     InvenSet (self, S_BEAST_VISION, 0);     // Remove it from inventory.
     sound (self, CHAN_ITEM, "bludbath/powerup.wav", 1, ATTN_NORM);
 };
@@ -278,13 +275,13 @@ void() Use_JumpBoots =
     self.boots_on = !self.boots_on;
     if (self.boots_on)
     {
-        Sprint (self, PRINT_MEDIUM, "Boots of Jumping ON\n");
+        sprint (self, "Boots of Jumping ON\n");
         self.boots_time = time + self.boots_time;
         sound (self, CHAN_ITEM, "bludbath/powerup.wav", 1, ATTN_NORM);
     }
     else
     {
-        Sprint (self, PRINT_MEDIUM, "Boots of Jumping OFF\n");
+        sprint (self, "Boots of Jumping OFF\n");
         self.boots_time = self.boots_time - time;
     }
 };
@@ -307,7 +304,7 @@ void() InvenUse =
     else if (self.it_select == S_JUMP_BOOTS)
         Use_JumpBoots ();
     else
-        Sprint (self, PRINT_MEDIUM, "Tried to use unknown item\n");
+        sprint (self, "Tried to use unknown item\n");
 };
 
 // This displays the inventory.  Selected item is displayed in red.
@@ -322,10 +319,10 @@ void(float chosen) InvenList =
     {
         text = ftos(fuel);
         if (chosen == S_FIRST_AID)
-            Sprint (self, PRINT_MEDIUM, "Δογτος§σ ΒαηΊ ");
+            sprint (self, "Δογτος§σ ΒαηΊ ");
         else
-            Sprint (self, PRINT_MEDIUM, "Doctor's Bag: ");
-        Sprint (self, PRINT_MEDIUM, text);
+            sprint (self, "Doctor's Bag: ");
+        sprint (self, text);
         i = i + 1;
     }
 
@@ -334,12 +331,12 @@ void(float chosen) InvenList =
     {
         text = ftos(fuel);
         if (i)
-            Sprint (self, PRINT_MEDIUM, " / ");
+            sprint (self, " / ");
         if (chosen == S_DIVING_SUIT)
-            Sprint (self, PRINT_MEDIUM, "Διφιξη ΣυιτΊ ");
+            sprint (self, "Διφιξη ΣυιτΊ ");
         else
-            Sprint (self, PRINT_MEDIUM, "Diving Suit: ");
-        Sprint (self, PRINT_MEDIUM, text);
+            sprint (self, "Diving Suit: ");
+        sprint (self, text);
         i = i + 1;
     }
 
@@ -348,12 +345,12 @@ void(float chosen) InvenList =
     {
         text = ftos(fuel);
         if (i)
-            Sprint (self, PRINT_MEDIUM, " / ");
+            sprint (self, " / ");
         if (chosen == S_CRYSTAL_BALL)
-            Sprint (self, PRINT_MEDIUM, "Γςωσταμ ΒαμμΊ ");
+            sprint (self, "Γςωσταμ ΒαμμΊ ");
         else
-            Sprint (self, PRINT_MEDIUM, "Crystal Ball: ");
-        Sprint (self, PRINT_MEDIUM, text);
+            sprint (self, "Crystal Ball: ");
+        sprint (self, text);
         i = i + 1;
     }
 
@@ -362,12 +359,12 @@ void(float chosen) InvenList =
     {
         text = ftos(fuel);
         if (i)
-            Sprint (self, PRINT_MEDIUM, " / ");
+            sprint (self, " / ");
         if (chosen == S_BEAST_VISION)
-            Sprint (self, PRINT_MEDIUM, "Βεαστ ΦισιοξΊ ");
+            sprint (self, "Βεαστ ΦισιοξΊ ");
         else
-            Sprint (self, PRINT_MEDIUM, "Beast Vision: ");
-        Sprint (self, PRINT_MEDIUM, text);
+            sprint (self, "Beast Vision: ");
+        sprint (self, text);
         i = i + 1;
     }
 
@@ -376,19 +373,19 @@ void(float chosen) InvenList =
     {
         text = ftos(fuel);
         if (i)
-            Sprint (self, PRINT_MEDIUM, " / ");
+            sprint (self, " / ");
         if (chosen == S_JUMP_BOOTS)
-            Sprint (self, PRINT_MEDIUM, "Βοοτσ οζ ΚυνπιξηΊ ");
+            sprint (self, "Βοοτσ οζ ΚυνπιξηΊ ");
         else
-            Sprint (self, PRINT_MEDIUM, "Boots of Jumping: ");
-        Sprint (self, PRINT_MEDIUM, text);
+            sprint (self, "Boots of Jumping: ");
+        sprint (self, text);
         i = i + 1;
     }
 
     if (!i)
-        Sprint (self, PRINT_MEDIUM, "You aren't carrying anything");
+        sprint (self, "You aren't carrying anything");
 
-    Sprint (self, PRINT_MEDIUM, "\n");
+    sprint (self, "\n");
 };
 
 // This lets a player select another item in the inventory.
@@ -400,7 +397,7 @@ void(float add, float noprint) InvenSelect =
             // No items.
             self.it_select = 0;
             if (!noprint)
-                Sprint (self, PRINT_MEDIUM, "You aren't carrying anything\n");
+                sprint (self, "You aren't carrying anything\n");
             return;
         }
 
@@ -456,7 +453,7 @@ void() Cheat_Inventory =
     InvenSet (self, S_CRYSTAL_BALL, 100);
     InvenSet (self, S_BEAST_VISION, 100);
     InvenSet (self, S_JUMP_BOOTS, 100);
-    Sprint (self, PRINT_MEDIUM, "satchel -- Your inventory is full.\n");
+    sprint (self, "satchel -- Your inventory is full.\n");
 };
 
 
@@ -490,9 +487,9 @@ void() InvenCheck =
                 if (floor(fuel) == fuel)
                 {
                     text = ftos(fuel * 10);
-                    Sprint (self, PRINT_MEDIUM, "Dive Suit air remaining: ");
-                    Sprint (self, PRINT_MEDIUM, text);
-                    Sprint (self, PRINT_MEDIUM, "%\n");
+                    sprint (self, "Dive Suit air remaining: ");
+                    sprint (self, text);
+                    sprint (self, "%\n");
                 }
             }
             // All gone. Turn it off
@@ -523,9 +520,9 @@ void() InvenCheck =
                 if (floor(fuel) == fuel)
                 {
                     text = ftos(fuel * 10);
-                    Sprint (self, PRINT_MEDIUM, "Boots of Jumping time remaining ");
-                    Sprint (self, PRINT_MEDIUM, text);
-                    Sprint (self, PRINT_MEDIUM, "%\n");
+                    sprint (self, "Boots of Jumping time remaining ");
+                    sprint (self, text);
+                    sprint (self, "%\n");
                 }
             }
             // All gone. Turn it off

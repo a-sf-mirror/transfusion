@@ -147,9 +147,7 @@ void(entity fire, float radius, float damage, float burn, entity ignore) BurnRad
 //------------------------------------------------------------------------//
 void(entity fire) MakeSmoke =
 {
-    #ifndef QUAKEWORLD
     particle (fire.origin, '0 0 100', 6, 50);
-    #endif
 };
 
 //------------------------------------------------------------------------//

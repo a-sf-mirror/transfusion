@@ -236,12 +236,7 @@ void() Tommy_Fire =
         FireBullets (self.origin + v_up * 20, dir, 1, damage, spread);
     }
 
-    #ifdef QUAKEWORLD
-    msg_entity = self;
-    WriteByte (MSG_ONE, SVC_SMALLKICK + akimboFactor - 1);
-    #else
     self.punchangle_x = -2 * akimboFactor;
-    #endif
 };
 
 

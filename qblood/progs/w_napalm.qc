@@ -157,9 +157,6 @@ NOTE: a few fields ("velocity", "origin" and "cnt") must be set by the caller
 */
 void(entity newball) Napalm_ThrowBouncingBall =
 {
-    #ifdef QUAKEWORLD
-    newball.voided=0;
-    #endif
     // Remember who really owns the ball.
     if (self.owner)
         newball.owner = self.owner;
@@ -194,13 +191,6 @@ void() T_MissileTouch =
     if (other == self.owner)
         return;     // don't explode on owner
 
-    #ifdef QUAKEWORLD
-    if (self.voided) {
-        return;
-    }
-    self.voided = 1;
-    #endif
-
     if (pointcontents(self.origin) == CONTENT_SKY)
     {
         remove(self);
@@ -222,23 +212,12 @@ void() T_MissileTouch =
 
     self.origin = self.origin - 8 * normalize (self.velocity);
 
-    #ifdef QUAKEWORLD
-    WriteByte (MSG_MULTICAST, SVC_TEMPENTITY);
-    WriteByte (MSG_MULTICAST, TE_EXPLOSION);
-    WriteCoord (MSG_MULTICAST, self.origin_x);
-    WriteCoord (MSG_MULTICAST, self.origin_y);
-    WriteCoord (MSG_MULTICAST, self.origin_z);
-    multicast (self.origin, MULTICAST_PHS);
-    remove(self);
-
-    #else
     WriteByte (MSG_BROADCAST, SVC_TEMPENTITY);
     WriteByte (MSG_BROADCAST, TE_EXPLOSION);
     WriteCoord (MSG_BROADCAST, self.origin_x);
     WriteCoord (MSG_BROADCAST, self.origin_y);
     WriteCoord (MSG_BROADCAST, self.origin_z);
     BecomeExplosion ();
-    #endif
 };
 
 
@@ -292,12 +271,7 @@ void() Napalm_Fire =
 {
     sound (self, CHAN_WEAPON, "weapons/napalm/blaster.wav", 1, ATTN_NORM);
 
-    #ifdef QUAKEWORLD
-    msg_entity = self;
-    WriteByte (MSG_ONE, SVC_SMALLKICK);
-    #else
     self.punchangle_x = -2;
-    #endif
 
     newmis = spawn ();
 
@@ -321,9 +295,6 @@ void() Napalm_Fire =
         newmis.owner = self;
         newmis.solid = SOLID_BBOX;
         newmis.classname = "missile";
-        #ifdef QUAKEWORLD
-        newmis.voided = 0;
-        #endif
         newmis.angles = vectoangles(newmis.velocity);
 
         newmis.movetype = MOVETYPE_FLYMISSILE;

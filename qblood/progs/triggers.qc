@@ -321,20 +321,11 @@ void(vector org) spawn_tfog =
     ent.nextthink = time + 0.2;
     ent.think = play_teleport;
 
-    #ifdef QUAKEWORLD
-    WriteByte (MSG_MULTICAST, SVC_TEMPENTITY);
-    WriteByte (MSG_MULTICAST, TE_TELEPORT);
-    WriteCoord (MSG_MULTICAST, org_x);
-    WriteCoord (MSG_MULTICAST, org_y);
-    WriteCoord (MSG_MULTICAST, org_z);
-    multicast (org, MULTICAST_PHS);
-    #else
     WriteByte (MSG_BROADCAST, SVC_TEMPENTITY);
     WriteByte (MSG_BROADCAST, TE_TELEPORT);
     WriteCoord (MSG_BROADCAST, org_x);
     WriteCoord (MSG_BROADCAST, org_y);
     WriteCoord (MSG_BROADCAST, org_z);
-    #endif
 };
 
 

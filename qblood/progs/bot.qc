@@ -46,9 +46,6 @@ for all variable in the bot...
 .float  priority, ai_time, b_sound, missile_speed;
 .float  portal_time, b_skill, switch_wallhug;
 .float  b_aiflags, b_num, b_chattime;
-#ifdef QUAKEWORLD
-.float  b_entertime, b_userid; // QW stuff
-#endif
 .float  b_menu, b_menu_time, b_menu_value;
 .float route_failed, dyn_flags, dyn_time;
 .float dyn_plat;
@@ -59,9 +56,6 @@ for all variable in the bot...
 .vector b_angle, b_dest, mouse_emu, obs_dir;
 .vector movevect, b_dir;
 .vector dyn_dest;
-#ifdef QUAKEWORLD
-.vector punchangle; // HACK - Don't want to screw with bot_phys
-#endif
 
 // --------defines-----
 float SVC_UPDATENAME    = 13;
@@ -127,14 +121,8 @@ float WM_EDITOR_DYNLINK = 6;
 float   active_clients;
 float   max_clients, real_frametime;
 float   bot_count;
-#ifdef QUAKEWORLD
-float   lasttime;
-#endif
 float   waypoint_mode, dump_mode;
 float   waypoints, direct_route;
-#ifdef QUAKEWORLD
-float   userid;
-#endif
 float   sv_friction, sv_gravity;
 float   sv_accelerate, sv_maxspeed, sv_stopspeed;
 entity  fixer;
@@ -142,9 +130,7 @@ entity  route_table;
 entity  b_temp1, b_temp2, b_temp3;
 entity  player_head, player_tail, phys_head, way_head;
 float   busy_waypoints;
-#ifndef QUAKEWORLD
 float   saved_bots, current_bots;
-#endif
 
 // -------ProtoTypes------
 // external
@@ -200,21 +186,15 @@ void() bot_chat;
 void(float tpic) bot_start_topic;
 
 
-#ifndef QUAKEWORLD
 // editor stuffs
 void()              bot_way_edit;
 void()              bot_menu_display;
-#endif
 
 
 // ----------Commands---------
 void(entity e, float chan, string samp, float vol, float atten) frik_sound = #8;
 void(entity client, string s)   frik_stuffcmd = #21;
-#ifndef QUAKEWORLD
 void(entity client, string s)   frik_sprint = #24;
-#else
-void(entity client, float level, string s)  frik_sprint = #24;
-#endif
 vector(entity e, float sped)                         frik_aim = #44;
 void(entity client, string s)                        frik_centerprint = #73;
 void(entity client, string s1, string s2)            frik_centerprint2 = #73;
@@ -229,10 +209,8 @@ void(float to, float f)     frik_WriteAngle = #57;
 void(float to, string s)    frik_WriteString    = #58;
 void(float to, entity s)    frik_WriteEntity    = #59;
 
-#ifndef QUAKEWORLD
 void(entity client, string s1, string s2, string s3, string s4, string s5, string s6, string s7)
 frik_big_centerprint = #73;
-#endif
 
 //----------------------------------------------------------------------------
 
@@ -254,7 +232,6 @@ void(entity client, string s) stuffcmd =
 {
     if (client.ishuman == 1)
         frik_stuffcmd(client, s);
-    #ifndef QUAKEWORLD
     b_temp1 = player_head;
 
     while(b_temp1)
@@ -266,7 +243,6 @@ void(entity client, string s) stuffcmd =
         }
         b_temp1 = b_temp1._next;
     }
-    #endif
 };
 
 void(entity e) setspawnparms =
@@ -275,7 +251,6 @@ void(entity e) setspawnparms =
         frik_setspawnparms(e);
     else
     {
-        #ifndef QUAKEWORLD
         b_temp1 = player_head;
         while(b_temp1)
         {
@@ -286,18 +261,12 @@ void(entity e) setspawnparms =
             }
             b_temp1 = b_temp1._next;
         }
-        #endif
         SetNewParms();
     }
 };
 
-#ifndef QUAKEWORLD
 void(entity client, string s) sprint =
-#else
-void(entity client, float level, string s) sprint =
-#endif
 {
-    #ifndef QUAKEWORLD
     if (client.ishuman == 1)
         frik_sprint(client, s);
     b_temp1 = player_head;
@@ -311,16 +280,11 @@ void(entity client, float level, string s) sprint =
         }
         b_temp1 = b_temp1._next;
     }
-    #else
-    if (client.ishuman)
-        frik_sprint(client, level, s);
-    #endif
 };
 void(entity client, string s) centerprint =
 {
     if (client.ishuman == 1)
         frik_centerprint(client, s);
-    #ifndef QUAKEWORLD
     b_temp1 = player_head;
 
     while(b_temp1)
@@ -332,13 +296,11 @@ void(entity client, string s) centerprint =
         }
         b_temp1 = b_temp1._next;
     }
-    #endif
 };
 void(entity client, string s1, string s2) centerprint2 =
 {
     if (client.ishuman == 1)
         frik_centerprint2(client, s1, s2);
-    #ifndef QUAKEWORLD
     b_temp1 = player_head;
 
     while(b_temp1)
@@ -350,13 +312,11 @@ void(entity client, string s1, string s2) centerprint2 =
         }
         b_temp1 = b_temp1._next;
     }
-    #endif
 };
 void(entity client, string s1, string s2, string s3) centerprint3 =
 {
     if (client.ishuman == 1)
         frik_centerprint3(client, s1, s2, s3);
-    #ifndef QUAKEWORLD
     b_temp1 = player_head;
 
     while(b_temp1)
@@ -368,7 +328,6 @@ void(entity client, string s1, string s2, string s3) centerprint3 =
         }
         b_temp1 = b_temp1._next;
     }
-    #endif
 };
 
 vector(entity e, float sped) aim =
@@ -442,7 +401,6 @@ float(float clientno) ClientIsActive =
 };
 
 
-#ifndef QUAKEWORLD
 /*
 -=-=-=-=-=-=-=-=-=-=-=-=-=-=-=-=-=-=-=-=-=-=-=
 
@@ -532,7 +490,6 @@ void() botcam_u =
     sprint(self, self.enemy.netname);
     sprint(self, "\n");
 };
-#endif
 
 
 /*
@@ -590,10 +547,6 @@ void() ClientInRankings =
     player_head = self;
     if (!player_tail)
         player_tail = self;
-    #ifdef QUAKEWORLD
-    userid = userid + 1;
-    self.b_userid = userid;
-    #endif
 
     if (!self.phys_obj)
     {
@@ -650,10 +603,8 @@ float () BotPreFrame =
     {
         if (self.switch_wallhug)
             ClientFixRankings();
-        #ifndef QUAKEWORLD
         if (self.classname == "botcam")
             return TRUE;
-        #endif
     }
     if (self.b_frags != self.frags)
     {
@@ -668,14 +619,6 @@ float () BotPreFrame =
         else
             bot_start_topic(2);
         self.b_frags = self.frags;
-        #ifdef QUAKEWORLD
-        if (!self.ishuman)
-        {
-            WriteByte(2, 14);
-            WriteByte(2, self.b_clientno);
-            WriteShort(2, self.frags);
-        }
-        #endif
     }
     DynamicWaypoint();
     return FALSE;
@@ -684,7 +627,6 @@ float () BotPostFrame =
 {
     if (self.b_clientno == -1)
         return TRUE;
-    #ifndef QUAKEWORLD
     if (self.ishuman)
     {
         if (waypoint_mode > WM_LOADED)
@@ -693,7 +635,6 @@ float () BotPostFrame =
         if (botcam())
             return TRUE;
     }
-    #endif
     return FALSE;
 };
 
@@ -709,40 +650,26 @@ The rest of this code is in bot_misc.qc
 void(string h) BotSay = // simulate talking by composing a 'chat' message
 {
     WriteByte(MSG_ALL, 8);
-    #ifdef QUAKEWORLD
-    WriteByte(MSG_ALL, 3);
-    #endif
     WriteByte(MSG_ALL, 1);
     WriteString(MSG_ALL, self.netname);
     WriteByte(MSG_ALL, 8);
-    #ifdef QUAKEWORLD
-    WriteByte(MSG_ALL, 3);
-    #endif
     WriteByte(MSG_ALL, 2);
     WriteString(MSG_ALL, h);
 };
 void() BotSayInit =
 {
     WriteByte(MSG_ALL, 8);
-    #ifdef QUAKEWORLD
-    WriteByte(MSG_ALL, 3);
-    #endif
     WriteByte(MSG_ALL, 1);
     WriteString(MSG_ALL, self.netname);
 };
 void(string h) BotSay2 =
 {
     WriteByte(MSG_ALL, 8);
-    #ifdef QUAKEWORLD
-    WriteByte(MSG_ALL, 3);
-    #endif
     WriteByte(MSG_ALL, 2);
     WriteString(MSG_ALL, h);
 };
 void(string h) BotSayTeam =
 {
-    // FBX QW doesn't support teamplay...yet
-    #ifndef QUAKEWORLD
     local entity t;
 
     t = player_head;
@@ -762,7 +689,6 @@ void(string h) BotSayTeam =
         }
         t = t._next;
     }
-    #endif
 };
 /*
 -=-=-=-=-=-=-=-=-=-=-=-=-=-=-=-=-=-=-=-=-=-=-=
@@ -807,7 +733,6 @@ void() BotInit =
         numents = numents + 1;
         ent = nextent(ent);
     }
-    #ifndef QUAKEWORLD
     precache_model("progs/s_light.spr");
     precache_model("progs/s_bubble.spr");
     // the bots return!
@@ -822,9 +747,6 @@ void() BotInit =
     }
     else
         waypoint_mode = WM_LOADED;
-    #else
-    waypoint_mode = WM_DYNAMIC;
-    #endif
 
 };
 
@@ -842,7 +764,6 @@ signs on to the server.
 
 void(entity who) UpdateClient =
 {
-    #ifndef QUAKEWORLD
     WriteByte (MSG_ALL, SVC_UPDATENAME);
     WriteByte (MSG_ALL, who.b_clientno);
     WriteString (MSG_ALL, who.netname);
@@ -852,85 +773,6 @@ void(entity who) UpdateClient =
     WriteByte (MSG_ALL, SVC_UPDATEFRAGS);
     WriteByte (MSG_ALL, who.b_clientno);
     WriteShort (MSG_ALL, who.frags);
-    #else
-    WriteByte(2, 14 );
-    WriteByte(2, who.b_clientno);
-    WriteShort(2, who.frags);
-    WriteByte(2, 36);
-    WriteByte(2, who.b_clientno);
-    WriteShort(2, 100 * (3 - who.b_skill));
-    WriteByte(2, 37);                // update entertime
-    WriteByte(2, who.b_clientno);          // client number
-    WriteLong(2, time - who.b_entertime);   // client entertime
-    WriteByte(2, 40 );            // update userinfo
-    WriteByte(2, who.b_clientno);      // client number
-    WriteLong(2, who.b_userid);      // client userid
-    WriteByte(2, 92); // \
-    WriteByte(2, 98); // b
-    WriteByte(2, 111); // o
-    WriteByte(2, 116); // t
-    WriteByte(2, 116); // t
-    WriteByte(2, 111); // o
-    WriteByte(2, 109); // m
-    WriteByte(2, 99); // c
-    WriteByte(2, 111); // o
-    WriteByte(2, 108); // l
-    WriteByte(2, 111); // o
-    WriteByte(2, 114); // r
-    WriteByte(2, 92); // \
-    if(who.b_pants > 9)
-    {
-        WriteByte(2, 49);
-        WriteByte(2, 38 + who.b_pants);
-    }
-    else
-        WriteByte(2, 48 + who.b_pants);
-    WriteByte(2, 92);  // \
-    WriteByte(2, 116); // t
-    WriteByte(2, 111); // o
-    WriteByte(2, 112); // p
-    WriteByte(2, 99);  // c
-    WriteByte(2, 111); // o
-    WriteByte(2, 108); // l
-    WriteByte(2, 111); // o
-    WriteByte(2, 114); // r
-    WriteByte(2, 92);  // \
-    if(who.b_shirt > 9)
-    {
-        WriteByte(2, 49);
-        WriteByte(2, 38 + who.b_shirt);
-    }
-    else
-        WriteByte(2, 48 + who.b_shirt);
-    WriteByte(2, 92);  // \
-    WriteByte(2, 116); // t
-    WriteByte(2, 101); // e
-    WriteByte(2, 97);  // a
-    WriteByte(2, 109); // m
-    WriteByte(2, 92);  // \
-    WriteByte(2, 98);  // b
-    WriteByte(2, 111); // o
-    WriteByte(2, 116); // t
-    // FIXME: do teams properly
-    // note this has no effect on infokey
-    WriteByte(2, 92 );  // \
-    WriteByte(2, 115); // s
-    WriteByte(2, 107); // k
-    WriteByte(2, 105); // i
-    WriteByte(2, 110); // n
-    WriteByte(2, 92);  // \
-    WriteByte(2, 98);  // b
-    WriteByte(2, 97);  // a
-    WriteByte(2, 115); // s
-    WriteByte(2, 101); // e
-    WriteByte(2, 92);  // \
-    WriteByte(2, 110); // n
-    WriteByte(2, 97);  // a
-    WriteByte(2, 109); // m
-    WriteByte(2, 101); // e
-    WriteByte(2, 92);  // \
-    WriteString( 2, who.netname);
-    #endif
 };
 
 float(float clientno) ClientBitFlag =
@@ -971,7 +813,6 @@ float() ClientNextAvailable =
 
 void(entity e1, entity e2, float flag) DeveloperLightning =
 {
-    #ifndef QUAKEWORLD
     // used to show waypoint links for debugging
     WriteByte (MSG_BROADCAST, 23);
     if (flag)
@@ -985,7 +826,6 @@ void(entity e1, entity e2, float flag) DeveloperLightning =
     WriteCoord (MSG_BROADCAST, e2.origin_x);
     WriteCoord (MSG_BROADCAST, e2.origin_y);
     WriteCoord (MSG_BROADCAST, e2.origin_z);
-    #endif
 };
 
 
@@ -1019,7 +859,7 @@ void(float whichteam, float whatbot, float whatskill) BotConnect =
     uself = self;
     if(f == -1)
     {
-        Bprint (PRINT_HIGH, "Unable to connect a bot (no more room)\n");
+        bprint ("Unable to connect a bot (no more room)\n");
         return;
     }
 
@@ -1028,9 +868,7 @@ void(float whichteam, float whatbot, float whatskill) BotConnect =
 
     bot_count = bot_count + 1;
     self = GetClientEntity(f);
-    #ifndef QUAKEWORLD
     if (!saved_bots)
-    #endif
         bot_start_topic(1);
     self.b_clientno = f;
     self.colormap = f + 1;
@@ -1047,10 +885,6 @@ void(float whichteam, float whatbot, float whatskill) BotConnect =
         whatskill = 0;
     self.b_skill = whatskill;
 
-    #ifdef QUAKEWORLD
-    self.b_entertime = time;
-    #endif
-
     UpdateClient(self);
     SetNewParms();
     self.ishuman = 2;
@@ -1060,7 +894,6 @@ void(float whichteam, float whatbot, float whatskill) BotConnect =
     // Select a team at spawn time
     self.impulse = whichteam + 1;
 
-    #ifndef QUAKEWORLD
     // this is risky... could corrupt .way files if done wrong
     // If you're not the gambling type, comment this out
 
@@ -1069,7 +902,6 @@ void(float whichteam, float whatbot, float whatskill) BotConnect =
 
     h = ftos(current_bots);
     cvar_set("scratch1", h);
-    #endif
 
     self = uself;
 
@@ -1083,11 +915,9 @@ void(entity bot) BotDisconnect =
     self = bot;
 
     bot_count = bot_count - 1;
-    #ifndef QUAKEWORLD
     current_bots = current_bots - (current_bots & ClientBitFlag(self.b_num - 1));
     h = ftos(current_bots);
     cvar_set("scratch1", h);
-    #endif
 
     ClientDisconnect();
 
@@ -1111,7 +941,6 @@ void(entity bot) BotDisconnect =
 };
 
 
-#ifndef QUAKEWORLD
 /*
 -=-=-=-=-=-=-=-=-=-=-=-=-=-=-=-=-=-=-=-=-=-=-=
 
@@ -1202,7 +1031,6 @@ void() WaypointWatch =
         }
     }
 };
-#endif
 
 void() BotFrame =
 {
@@ -1231,36 +1059,18 @@ void() BotFrame =
                 CL_KeyMove();
                 SV_ClientThink();
                 SV_Physics_Client();
-
-                #ifdef QUAKEWORLD
-                // this is sickening
-                if (self.phys_obj)
-                {
-                    if (self.phys_obj.modelindex != self.modelindex)
-                    {
-                        setmodel(self.phys_obj, "progs/player.mdl");
-                        self.phys_obj.modelindex = self.modelindex;
-                    }
-                    self.phys_obj.frame = self.frame;
-                    self.phys_obj.angles = self.angles;
-                    self.phys_obj.colormap = self.colormap;
-                    self.phys_obj.effects = self.effects;
-                }
-                #endif
             }
         }
         self = nextent(self);
         num = num + 1;
     }
 
-    #ifndef QUAKEWORLD
     WaypointWatch();
 
     if (saved_bots)
         // Don't respawn bots until at least 1 player has entered the game
         if (active_clients)
             bot_return();
-    #endif
 };
 
 
