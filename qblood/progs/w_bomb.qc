@@ -853,10 +853,10 @@ void() Bomb_Fire =
     mspeed = 200 + (self.charge * 50);
     if (mspeed < 300)
         mspeed = 300;  // don't throw the grenade on our own feet !
-    mup = mspeed / 2;
+    mup = mspeed / 1.75;
 
     if (self.v_angle_x)
-        newmis.velocity = v_forward * (mspeed / 1.25) + v_up * mup + crandom () * v_right * 10 + crandom () * v_up * 10;
+        newmis.velocity = v_forward * mspeed + v_up * mup + crandom () * v_right * 10 + crandom () * v_up * 10;
     else
     {
         newmis.velocity = aim(self, 10000);

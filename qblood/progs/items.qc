@@ -2088,7 +2088,7 @@ void() item_soul =
     setmodel (self, "progs/soul.mdl");
 
     self.netname = "trapped soul";
-    self.aflag = 35;
+    self.aflag = 10;
     self.weapon = 11;
 
     setsize (self, '0 0 0', '32 32 56');
