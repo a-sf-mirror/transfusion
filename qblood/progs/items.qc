@@ -854,7 +854,7 @@ void() item_artifact_shadow =
 void() obj_goal =
 {
      self.model = "progs/goalpost.mdl";
-}
+};
 
 /*
 =========================================================================
