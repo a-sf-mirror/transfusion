@@ -156,7 +156,7 @@ void(float timeleft) DropRing =
     item.movetype = MOVETYPE_TOSS;
     item.noise = "bludbath/powerup.wav";
     setmodel (item, "progs/invisibl.mdl");
-    setsize (item, '-16 -16 -24', '16 16 32');
+    setsize (item, '-3 -6 -2', '6 7 23');
     item.cnt = time + timeleft;
     item.touch = r_touch;
     item.nextthink = time + timeleft;    // remove after 30 seconds
@@ -1020,7 +1020,7 @@ void() item_artifact_boots =
     self.netname = "Boots of Jumping";
     self.model   = "progs/i_boots.mdl";
     self.noise   = "items/pickup.wav";
-    setsize (self, '-11 -10 0', '4 10 19');
+    setsize (self, '-11 -10 -1', '4 10 19');
     item_powerup ();
 };
 
@@ -2444,7 +2444,7 @@ void() item_artifact_invisibility =
     setmodel (self, "progs/invisibl.mdl");
     self.netname = "Cloak of Invisibility";
     self.items = IT_INVISIBILITY;
-    setsize (self, '-3 -6 2', '6 7 23');
+    setsize (self, '-3 -6 -2', '6 7 23');
     StartItem ();
 };
 

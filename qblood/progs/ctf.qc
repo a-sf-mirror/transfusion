@@ -308,7 +308,7 @@ void() CTF_FlagThink =
 
 void() place_flag = {
     setmodel (self, "progs/flag.mdl");
-    setsize(self, '-16 -16 0', '16 16 74');
+    setsize(self, '-6 -7 -1', '6 49 75');
 
     self.mdl = self.model;      // so it can be restored on respawn
     self.flags = FL_ITEM;       // make extra wide
