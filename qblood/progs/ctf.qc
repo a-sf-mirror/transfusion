@@ -42,8 +42,17 @@ void(entity flg) RegenFlag =
 {
     flg.movetype = MOVETYPE_TOSS;
     flg.solid = SOLID_TRIGGER;
+    if (flg.owner)
     #ifdef QUAKEWORLD
+        flg.owner.effects = flg.owner.effects - (flg.owner.effects & (EF_FLAG1 | EF_FLAG2));
     setmodel(flg, flg.mdl);
+    #else
+        flg.owner.effects = flg.owner.effects - (flg.owner.effects & EF_DIMLIGHT);
+    flg.effects = flg.effects | EF_DIMLIGHT;
+    if (flg.team == TEAM_COLOR1)
+        flg.effects = flg.effects | EF_RED;
+    else
+        flg.effects = flg.effects | EF_BLUE;
     #endif
     setorigin(flg, flg.oldorigin);
     flg.angles = flg.mangle;
@@ -177,6 +186,10 @@ void() CTF_FlagTouch =
     else // must be other team
         self.owner.effects = self.owner.effects | EF_FLAG2;
     setmodel (self, string_null);  // Make the flag desappear. The EF_FLAG? effect will show it on the client
+    #else
+    // We remove the glow on the flag and transfers the EF_DIMLIGHT effect to the player
+    self.effects = self.effects - (self.effects & (EF_DIMLIGHT | EF_RED | EF_BLUE));
+    self.owner.effects = self.owner.effects | EF_DIMLIGHT;
     #endif
 
     p = find(world, classname, "player");
@@ -207,12 +220,12 @@ void(entity flg) TeamDropFlag =
         Bprint (PRINT_HIGH, " μοστ the ÒΕΔ flag!\n"); // red
     #ifdef QUAKEWORLD
     p.effects = p.effects - (p.effects & (EF_FLAG1 | EF_FLAG2));
+    #else
+    p.effects = p.effects - (p.effects & EF_DIMLIGHT);
     #endif
 
     flg.origin = p.origin - '0 0 24';
     flg.cnt = FLAG_DROPPED;
-    //NOTE! We check lastteam here instead of team--this is because
-    //in the mode where we change colors, we get killed
     flg.velocity_z = 300;
     flg.velocity_x = 0;
     flg.velocity_y = 0;
@@ -221,6 +234,12 @@ void(entity flg) TeamDropFlag =
     flg.movetype = MOVETYPE_TOSS;
     #ifdef QUAKEWORLD
     setmodel(flg, flg.mdl);
+    #else
+    flg.effects = flg.effects | EF_DIMLIGHT;
+    if (flg.team == TEAM_COLOR1)
+        flg.effects = flg.effects | EF_RED;
+    else
+        flg.effects = flg.effects | EF_BLUE;
     #endif
     setsize(flg, '-16 -16 0', '16 16 74');
 
