@@ -6,7 +6,7 @@
    <title> Transfusion manual
    <author> Mathieu Olivier and Dave Turner
       <tt>&lt;{elric,darth_linux}@planetblood.com&gt;</tt>
-   <date>v0.9.2, October 21, 2002
+   <date>v1.0.0, October 22, 2002
    <abstract>
       This manual covers installation and usage of the
       <ref id="links" name="Transfusion"> game.
@@ -476,7 +476,7 @@
          things: 1) that the engine you use support cvar creation by the game
          code (the engine we provide with Transfusion does this), 2) that you
          have run the game code (i.e. launched a map) at least once before
-		 trying to set the cvar value.
+         trying to set the cvar value.
 
          For instance, if you run "transfusion +set g_warmup 15 +map bb3", the
          "g_warmup" value will be 0 because the map is launched after the "set"
@@ -528,7 +528,7 @@
             name="Transfusion on SourceForge.net">: our development page
          <item><url url="http://icculus.org/twilight/darkplaces/"
             name="The DarkPlaces engine">: the engine we recommend and provide
-         <item><url url="http://inside3d.quakesrc.org/frikbot/" name="FrikBotX">:
+         <item><url url="http://www.inside3d.com/frikbot/" name="FrikBotX">:
             where our bots come from
          <item><url url="http://zquake.frag.ru/" name="ZQuake">: arguably the
             best QuakeWorld based engine
