@@ -49,17 +49,17 @@ void() W_Precache =
 
     // dynamite bundles/proximity/remote detonators
     precache_sound ("misc/null.wav");            // null .wav to stop fuse
-    precache_sound ("weapons/tnt/tntfuse.wav");  // tnt lighted
+    precache_sound ("weapons/tnt/tntfuse.wav");  // tnt lit
     precache_sound ("weapons/tnt/proxarm.wav");  // proximity bomb armed
     precache_sound ("weapons/tnt/proxdet.wav");  // proximity bomb triggered
     precache_sound ("weapons/tnt/tnttoss.wav");  // bounce sound
-    precache_sound ("weapons/tnt/remdet.wav");   // remote triggered
-/*
-    precache_sound ("weapons/tnt/remfire.wav");  // remote set off
+    precache_sound ("weapons/tnt/remfire.wav");  // remote triggered
     precache_sound ("weapons/tnt/zipclose.wav");
-    precache_sound ("weapons/tnt/ziplight.wav");
-    precache_sound ("weapons/tnt/zipopen.wav");
+    //precache_sound ("weapons/tnt/ziplight.wav");
+    //precache_sound ("weapons/tnt/zipopen.wav");
+    precache_sound ("weapons/tnt/lighter.wav");
 
+/*
     // lifeleech
     precache_sound ("weapons/lifelech/laltfr1.wav");
     precache_sound ("weapons/lifelech/llaltfr2.wav");
@@ -87,9 +87,12 @@ void() W_Precache =
 
     precache_sound ("weapons/tink1.wav");    // spikes tink (used in c code)
     precache_sound ("weapons/tommygun/tomcock.wav");  // Out of ammo
+    precache_sound ("ambience/slabmove.wav"); // used in intro.dem
+    precache_sound ("player/taunts/t1010.wav"); // used in intro.dem
+
 //    precache_sound ("weapons/lstart.wav");
 
-    PM_PrecacheFire ();  // why is this *here* and what does it do? D_L
+    PM_PrecacheFire ();
 
     precache_sound ("weapons/napalm/explodfs.wav"); // For alt-flares.
 //  PM:  Currently here so alt-napalm won't crash in levels without
@@ -1613,6 +1616,7 @@ void() W_ActivateRemoteBombs =
     {
         if (grenadeEnt.netname == "remote detonator" && grenadeEnt.owner == self)
         {
+            sound (self, CHAN_BODY, "weapons/tnt/remfire.wav", 1, ATTN_NORM);
             tempEnt = self;
             self = grenadeEnt;
             GrenadeExplode ();
@@ -1725,7 +1729,7 @@ void() W_FireGrenade =
     setsize (newmis, '-1 -1 -1', '1 1 1');
     setorigin (newmis, self.origin);
 
-    // If we have no more dynamite, we "loose" the weapon
+    // If we have no more dynamite, we "lose" the weapon
     // (expect for remote detonators: we always have the remote)
     if (self.currentammo == 0 && self.weapon != IT_REMOTE_DETONATOR)
     {
@@ -1999,6 +2003,8 @@ void(float weaponHasChanged) W_SetCurrentAmmo =
     {
         self.currentammo = self.ammo_spray;
         self.weaponmodel = "progs/v_nail2.mdl";
+        sound (self, CHAN_WEAPON, "weapons/tnt/lighter.wav", 1, ATTN_NORM);
+        
 //        self.items = self.items | IT_NAILS;
     }
     else if (self.weapon == IT_GRENADE_LAUNCHER)
@@ -2007,6 +2013,7 @@ void(float weaponHasChanged) W_SetCurrentAmmo =
         self.weaponmodel = "progs/v_rock.mdl";
 //        self.items = self.items | IT_ROCKETS;
         Sprint (self, PRINT_MEDIUM, "TNT Bundle selected\n");
+        sound (self, CHAN_WEAPON, "weapons/tnt/lighter.wav", 1, ATTN_NORM); 
     }
     else if (self.weapon == IT_PROXIMITY_BOMB)
     {
@@ -2017,7 +2024,7 @@ void(float weaponHasChanged) W_SetCurrentAmmo =
         {
             self.weaponmodel = "progs/v_rock.mdl";
 //            self.items = self.items | IT_ROCKETS;
-            Sprint (self, PRINT_MEDIUM, "Promixity bombs selected\n");
+            Sprint (self, PRINT_MEDIUM, "Promixity Bombs selected\n");
         }
     }
     else if (self.weapon == IT_REMOTE_DETONATOR)
@@ -2030,12 +2037,12 @@ void(float weaponHasChanged) W_SetCurrentAmmo =
             if (!self.currentammo)
             {
                 self.weaponmodel = "";  // FIXME: we don't have the remote model / frames yet
-                Sprint (self, PRINT_MEDIUM, "Remote detonator selected\n");
+                Sprint (self, PRINT_MEDIUM, "Remote Detonator selected\n");
             }
             else
             {
                 self.weaponmodel = "progs/v_rock.mdl";
-                Sprint (self, PRINT_MEDIUM, "Remote bombs selected\n");
+                Sprint (self, PRINT_MEDIUM, "Remote Detonator selected\n");
             }
 
 //            self.items = self.items | IT_ROCKETS;
@@ -2271,13 +2278,14 @@ void() W_ChangeWeapon =
             // If the TNT was already selected
             if (self.weapon == IT_GRENADE_LAUNCHER)
             {
+                sound (self, CHAN_WEAPON, "weapons/tnt/zipclose.wav", 1, ATTN_NORM);
                 if (self.ammo_tnt_proxy > 0)
                     fl = IT_PROXIMITY_BOMB;
                 else if (self.items & IT_REMOTE_DETONATOR)
                     fl = IT_REMOTE_DETONATOR;
                 else
                     fl = IT_GRENADE_LAUNCHER;
-            }
+                }
 
             // Else, if the proximity bombs were already selected
             else if (self.weapon == IT_PROXIMITY_BOMB)
@@ -2335,7 +2343,7 @@ void() W_ChangeWeapon =
 
     if (am)
     {   // don't have the ammo
-        Sprint (self, PRINT_MEDIUM, "You have no ammo.\n");
+        Sprint (self, PRINT_MEDIUM, "You are out of ammo.\n");
         return;
     }
 
@@ -2691,10 +2699,10 @@ void() W_ChargeNormal =
     {
         // We have lit dynamite
 
-        // If the match is over, the TNT explodes in our hands...
+        // If the fuse is burned up, the TNT explodes in our hands...
         if (self.tnt_time && self.tnt_time <= time)
         {
-            Sprint (self, PRINT_LOW, "Sorry, the match is over...\n");
+            Sprint (self, PRINT_LOW, "Sorry, the fuse has run out . . .\n");
 
             // Indeed, we use a little trick: we drop the dynamite with a zero match time
             self.charge = 0;    // Make sure it's dropped, not thrown
@@ -2748,7 +2756,7 @@ void() W_ChargeNormal =
 
         self.tnt_time = time + FUSE_TIME;
         self.t_width  = 0;  // So the fuse wav starts at the next frame
-        Sprint (self, PRINT_LOW, "WARNING: you've just lit up the TNT match (5 sec)...\n");
+        Sprint (self, PRINT_LOW, "WARNING: you've just lit up the TNT fuse (5 sec)...\n");
     }
 };
 
@@ -2795,10 +2803,10 @@ float() W_CheckRemote =
         // If we trigger the bombs
         if (self.button0)
         {
-            sound (self, CHAN_WEAPON, "weapons/tnt/remdet.wav", 1, ATTN_NORM);
+            sound (self, CHAN_WEAPON, "weapons/tnt/remfire.wav", 1, ATTN_NORM);
             W_ActivateRemoteBombs ();
 
-            // If we have no more remote bombs, we "loose" this weapon
+            // If we have no more remote bombs, we "lose" this weapon
             if (self.currentammo == 0)
             {
                 self.items = self.items - self.weapon;
@@ -2927,7 +2935,7 @@ void() ImpulseCommands =
         // Altfire (will be treated later; just return)
         else if (self.impulse == 12)
             return;
-
+        
         // Inventory selection/usage.
         else if (self.impulse == 13)
             InvenUse ();
