@@ -249,6 +249,8 @@ void() worldspawn =
     warmup_endtime = 0;
     warmup_counttime = 0;
 
+    starttime = time;
+
     // Empty the lists of available weapons
     available_weapons = IT_PITCHFORK;
 
@@ -428,6 +430,8 @@ void() World_EndWarmup =
     Bcenterprint ("Resetting level...\n");
     warmup_done = TRUE;
     warmup_counttime = 0;
+
+    starttime = time;
 
     tempEnt = self;
 

@@ -702,7 +702,7 @@ void() CheckRules =
     if (gameover)   // someone else quit the game already
         return;
 
-    if (timelimit && time >= timelimit)
+    if (warmup_done && timelimit && time - starttime >= timelimit)
     {
         Cl_ChangeLevel (FALSE);
         return;
