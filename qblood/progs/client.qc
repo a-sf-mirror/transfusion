@@ -1540,42 +1540,13 @@ void(entity targ, entity attacker) ClientObituary =
 
         if (targ.deathtype == "squish")
         {
-            #ifndef QUAKEWORLD
-            if (teamplay && targ.team == attacker.team && attacker.team > 0 && targ != attacker)
-            #else
-            if (teamplay && targteam == attackerteam && attackerteam != "" && targ != attacker)
+            Bprint (PRINT_MEDIUM,targ.netname);
+            Bprint (PRINT_MEDIUM," was squished\n");
+            targ.frags = targ.frags - 1;            // killed self
+            #ifdef QUAKEWORLD
+            logfrag (targ, targ);
             #endif
-            {
-                #ifdef QUAKEWORLD
-                logfrag (attacker, attacker);
-                #endif
-                attacker.frags = attacker.frags - 1;
-                Bprint (PRINT_MEDIUM,attacker.netname);
-                Bprint (PRINT_MEDIUM," squished a teammate\n");
-                return;
-            }
-            else if (attacker.classname == "player" && attacker != targ)
-            {
-                Bprint (PRINT_MEDIUM, attacker.netname);
-                Bprint (PRINT_MEDIUM," squishes ");
-                Bprint (PRINT_MEDIUM,targ.netname);
-                Bprint (PRINT_MEDIUM,"\n");
-                #ifdef QUAKEWORLD
-                logfrag (attacker, targ);
-                #endif
-                attacker.frags = attacker.frags + 1;
-                return;
-            }
-            else
-            {
-                #ifdef QUAKEWORLD
-                logfrag (targ, targ);
-                #endif
-                targ.frags = targ.frags - 1;            // killed self
-                Bprint (PRINT_MEDIUM,targ.netname);
-                Bprint (PRINT_MEDIUM," was squished\n");
-                return;
-            }
+            return;
         }
 
         if (attacker.classname == "player")
