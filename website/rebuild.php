@@ -339,8 +339,71 @@
 
 	<!-- MAP files -->
 	<span class="boldtitle">The MAP files:</span><br />
-	This format is <b>really</b> complicated and so we still need time to write this section.<br />
-	Soon...<br />
+	We started to study this complicated format to do a Blood to BUILD map
+	converter, and we stopped working on it as soon as we got what we want: a
+	converter that works. In other words, we don't know the Blood MAP format well,
+	we just know enough of it.<br />
+	Our converter, BLUD2B, is more a series of hacks than a real tool. It's full
+	of arbitrary constants and little tricks to do the job. For example, it do not
+	know how to compute the encryption / decryption keys a map uses, but we found
+	a way to guess them! (it's easily doable thanks to the simplicity of the
+	encryption method and the fact that BUILD map data are mostly zeros).<br />
+	If you're interested by this format, take a look at BLUD2B source code and the
+	following email by Matt Saettler. None of them contain "The Truth" about the
+	MAP format, but they should help you to figure it out.<br />
+	<pre>
+	Typical header with signature.
+
+	Header has version. Version 6.03 is unencrypted. Version 7.0 is encrypted
+	(same xor encryption algorithm used in RFF file format).
+
+	After header comes (possible encrypted) Information structure. This contains
+	global information like map revision count, 'start' x,y,z, number of walls,
+	sectors, etc. This is the same for 6.03 and 7.0
+	CryptKey: 0x7474614d
+
+	Version 7.0 then has extra information. Info includes copyright. Not sure
+	what else.
+	CryptKey: numwalls
+
+	Next comes skyofsetts (for moving skys)
+	CryptKey: buffer size
+
+	The Build info and the 'Extra' information. The Extra info is where the
+	blood-specific information is stored. This info is kept in an array by
+	type. The 'extra' member of the base build structure is the array offset
+	into the extra array. If zero, then there is no extra information. see
+	mapedit for access to what the info is; mapedit allows editing of all this
+	structure).
+
+
+	all valid sectors
+	Sector
+	CryptKey: map Rev * sizeof(SECTOR) (I was sneaky, using maprev.. So it
+	changes each time you save it....)
+	If extra:
+	Xsector
+	CryptKey: Unencrypted
+
+	All valid walls
+	wall
+	CryptKey: map Rev * sizeof(SECTOR) | 0x7474614d
+	if extra:
+	xwall
+	CryptKey: Unencrypted
+
+	all valid sprites
+	sprite
+	CryptKey: map Rev * sizeof(SPRITE) | 0x7474614d
+	if extra:
+	xsprite
+	CryptKey: UnEncrypted
+
+	Last is a CRC of the entire file (to detect modifications)
+
+
+	If you are converting to basic Build files, you can just read and ignore the
+	'extra' information.</pre>
 	<br />
 
 	<!-- RFF files -->
