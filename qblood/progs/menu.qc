@@ -1152,5 +1152,5 @@ void() Menu_Update =
     else if (self.menu_index == MENU_VOTE_MAP_CONVERSIONS)
         Menu_HandleVoteMapConversions ();
 
-    self.impulse = 0;
+    self.impulse = IMP_NONE;
 };

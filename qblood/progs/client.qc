@@ -546,7 +546,7 @@ void() PutClientInServer =
 
     // You surely don't want to toss your brand new TNT *right now*...
     self.attack_finished = time + 0.3;
-    self.impulse = 0;
+    self.impulse = IMP_NONE;
 
     self.th_pain = player_pain;
     self.th_die = PlayerDie;
@@ -1143,16 +1143,16 @@ Impulse list for living players
 void(float isAlive) Impulses_Player =
 {
     // Nothing to do
-    if (self.impulse == 0)
+    if (self.impulse == IMP_NONE)
         return;
 
     // Toggle menu
-    if (self.impulse == 50)
+    if (self.impulse == IMP_MENU)
         Menu_Start ();
 
     #ifndef NO_FRIKBOT
     // Bot management
-    else if (self.impulse == 100 || self.impulse == 101)
+    else if (self.impulse == IMP_BOT_ADD_RED || self.impulse == IMP_BOT_ADD_BLUE)
     {
         // If bots are disabled
         if (cvar ("sv_disable") & SV_DISABLE_BOTS)
@@ -1162,24 +1162,24 @@ void(float isAlive) Impulses_Player =
             local float botskill;
 
             botskill = cvar ("skill");
-            BotConnect (self.impulse - 100, 0, botskill);
+            BotConnect (self.impulse - IMP_BOT_ADD_RED, 0, botskill);
         }
     }
-    else if (self.impulse == 102)
+    else if (self.impulse == IMP_BOT_KICK)
         KickABot();
     #else
-    else if (self.impulse >= 100 && self.impulse <= 102)
+    else if (self.impulse >= IMP_BOT_ADD_RED && self.impulse <= IMP_BOT_KICK)
         sprint (self, "Sorry, these progs don't have bot support\n");
     #endif
 
-    else if (self.impulse == 141)
+    else if (self.impulse == IMP_IDENT_PLAYER)
         identify_player ();
 
     // If we're dead
     else if (!isAlive)
     {
         // If we want to go back to the observer mode
-        if (self.impulse == 20)
+        if (self.impulse == IMP_OBSERVER)
         {
             self.do_observer = 1;
             respawn (TRUE);
@@ -1190,62 +1190,65 @@ void(float isAlive) Impulses_Player =
     // If we aren't dead, we can play with our stuff
     else
     {
-        if ((self.impulse >= 1 && self.impulse <= 9) || self.impulse == 17)
+        // Weapons
+        if ((self.impulse >= IMP_PITCHFORK && self.impulse <= IMP_VOODOO_DOLL) ||
+            self.impulse == IMP_PROXIMITY_BOMB ||
+            self.impulse == IMP_REMOTE_DETONATOR)
             W_ChangeWeapon ();
 
-        else if (self.impulse == 10)
+        else if (self.impulse == IMP_WEAP_NEXT)
             CycleWeaponCommand (FALSE);
-        else if (self.impulse == 11)
+        else if (self.impulse == IMP_WEAP_PREV)
             CycleWeaponCommand (TRUE);
 
         // Inventory selection/usage.
-        else if (self.impulse == 13)
-            InvenUse ();
-        else if (self.impulse == 14)
-            InvenSelect (FALSE, FALSE);
-        else if (self.impulse == 15)
+        else if (self.impulse == IMP_INV_NEXT)
             InvenSelect (TRUE, FALSE);
+        else if (self.impulse == IMP_INV_PREV)
+            InvenSelect (FALSE, FALSE);
+        else if (self.impulse == IMP_INV_USE)
+            InvenUse ();
+        else if (self.impulse >= IMP_FIRST_AID && self.impulse <= IMP_JUMP_BOOTS)
+            InventChange ();
 
         // Armor cycle.
-        else if (self.impulse == 16)
+        else if (self.impulse == IMP_ARMOR_NEXT)
             ArmorTest ();
 
         // These ones are considered cheats and are only allowed when the "sv_cheats" cvar is set
         else if (cvar ("sv_cheats"))
         {
             #if !defined(NO_FRIKBOT)
-            if (self.impulse == 103)
+            if (self.impulse == IMP_BOT_CAM)
                 botcam_u ();
-            else if (self.impulse == 104)
+            else if (self.impulse == IMP_BOT_WAYPT_EDIT)
                 bot_way_edit ();
             else
             #endif
 
-            if (self.impulse == 250)
-            {
-                coredump ();
-            }
-            else if (self.impulse == 251)
+            if (self.impulse == IMP_CHEAT_ARMOR)
             {
                 sprint (self, "griswold -- You have full armor.\n");
                 self.armor_fire = self.armor_body = self.armor_mind = self.armorvalue = 200;
                 self.items = self.items - (self.items & (IT_ARMOR1 | IT_ARMOR2 | IT_ARMOR3)) + IT_ARMOR2;
             }
-            else if (self.impulse == 252)
+            else if (self.impulse == IMP_CHEAT_IN_FIRE)
             {
                 sprint (self, "mcgee -- You're fired!\n");
                 Ignite (self, self, DF_FIRE, 10, 20);
             }
-            else if (self.impulse == 253)
+            else if (self.impulse == IMP_CHEAT_INVENT)
                 Cheat_Inventory ();
-            else if (self.impulse == 254)
+            else if (self.impulse == IMP_CHEAT_BOD)
                 Player_BrinkOfDeath (self, world);
-            else if (self.impulse == 255)
+            else if (self.impulse == IMP_CHEAT_AKIMBO)
                 Cheat_Akimbo ();
+            else if (self.impulse == IMP_COREDUMP)
+                coredump ();
         }
     }
 
-    self.impulse = 0;
+    self.impulse = IMP_NONE;
 };
 
 

@@ -263,55 +263,55 @@ void(float brange) bot_weapon_switch =
         if ((self.ammo_rockets >= 1) && (it & IT_NAPALM_LAUNCHER))
         {
             flag = IT_NAPALM_LAUNCHER;
-            pulse = 5;
+            pulse = IMP_NAPALM_LAUNCHER;
         }
         // Tesla Cannon
         else if (self.ammo_cells >= 1 && (it & IT_TESLA_CANNON))
         {
             flag = IT_TESLA_CANNON;
-            pulse = 8;
+            pulse = IMP_TESLA_CANNON;
         }
         // Life Leech
         else if(self.ammo_leech >= 1 && (it & IT_LIFE_LEECH))
         {
             flag = IT_LIFE_LEECH;
-            pulse = 9;
+            pulse = IMP_LIFE_LEECH;
         }
         // Spray Can
         else if(self.ammo_spray >= 1 && (it & IT_SPRAY_CAN))
         {
             flag = IT_SPRAY_CAN;
-            pulse = 7;
+            pulse = IMP_SPRAY_CAN;
         }
         // Sawed Off
         else if(self.ammo_shells >= 2 && (it & IT_SAWED_OFF))
         {
             flag = IT_SAWED_OFF;
-            pulse = 3;
+            pulse = IMP_SAWED_OFF;
         }
         // Tommy Gun
         else if(self.ammo_nails >= 1 && (it & IT_TOMMYGUN))
         {
             flag = IT_TOMMYGUN;
-            pulse = 4;
+            pulse = IMP_TOMMYGUN;
         }
         // Voodoo Doll
         else if(self.ammo_voodoo >= 1 && (it & IT_VOODOO_DOLL))
         {
             flag = IT_VOODOO_DOLL;
-            pulse = 17;
+            pulse = IMP_VOODOO_DOLL;
         }
         // Flaregun
         else if(self.ammo_shells >= 1 && (it & IT_FLAREGUN))
         {
             flag = IT_FLAREGUN;
-            pulse = 2;
+            pulse = IMP_FLAREGUN;
         }
         // TNT
         else if ((self.ammo_tnt_bundle >= 1) && (it & IT_TNT))
         {
             flag = IT_TNT;
-            pulse = 6;
+            pulse = IMP_BOMBS;
         }
         else
         {

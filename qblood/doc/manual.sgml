@@ -6,7 +6,7 @@
    <title> Transfusion manual
    <author> Mathieu Olivier and Dave Turner
       <tt>&lt;{elric,darth_linux}@planetblood.com&gt;</tt>
-   <date>v1.0.1, October 22, 2002
+   <date>v1.1cvs, August 22, 2003
    <abstract>
       This manual covers installation and usage of the
       <ref id="links" name="Transfusion"> game.
@@ -119,41 +119,55 @@
          </itemize>
       </sect1>
 
-      <sect1><heading>Impulses<label id="impulses"><p>
+      <sect1><heading>Impulses and extra commands<label id="impulses"><p>
          Impulses are command numbers. You can bind them to keys, or type them
-         directly at console. For example, typing "impulse 12" at console will
-         make you use the secondary fire of your weapon; you could achieve the
-         same effect by binding a key to "impulse 12" and pressing it.
+         directly at console. For example, typing "impulse 10" at console will
+         make you switch to your next weapon; you could achieve the
+         same effect by binding a key to "impulse 10" and pressing it.
 
          Here is the complete impulse list:
          <itemize>
-            <item> impulses 1 to 9, and impulse 17: select a weapon
-            <item> impulses 10 and 11: cycle to next/previous weapon
-            <item> impulse 12: secondary fire (equivalent to the "+button3" command)
-            <item> impulse 13: use the currently selected item
-            <item> impulses 14 and 15: select previous/next item
-            <item> impulse 16: view the current value of the next armor type
-            <item> impulse 20: become an observer (only allowed when dead)
-            <item> impulse 50: enter the <ref id="menu" name="voting menu">
-            <item> impulse 100: add a <ref id="bots" name="bot"> (to the red team if available)
-            <item> impulse 101: add a <ref id="bots" name="bot"> (to the blue team if available)
-            <item> impulse 102: kick a <ref id="bots" name="bot">
-            <item> impulse 141: identify the player you're aiming at
+            <item> impulses 1 to 10: select a weapon
+            <item> impulses 21 and 22: cycle to next/previous weapon
+            <item> impulses 23 and 24: select previous/next item
+            <item> impulse 25: use the currently selected item
+            <item> impulse 26: view the current value of the next armor type
+            <item> impulse 27: identify the player you're aiming at
+            <item> impulse 35: select the proximity bombs
+            <item> impulse 36: select the remote detonators
+            <item> impulse 40: select the <ref id="dr_bag" name="Dr.'s Bag">
+            <item> impulse 41: select the Crystal Ball
+            <item> impulse 42: select the Beast Vision
+            <item> impulse 43: select the <ref id="boots" name="Jump Boots">
+            <item> impulse 50: add a <ref id="bots" name="bot"> (to the red team if available)
+            <item> impulse 51: add a <ref id="bots" name="bot"> (to the blue team if available)
+            <item> impulse 52: kick a <ref id="bots" name="bot">
+            <item> impulse 55: enter the <ref id="menu" name="voting menu">
+            <item> impulse 56: go back to the observer mode (only allowed when dead)
          </itemize>
 
          All those impulses are considered cheats (not available in multiplayer
          games, except if the server has the "sv_cheats" cvar set to a
-         non-zero value). <em>WARNING</em>: although it's unlikely, some of them
-         <em>may crash the game</em> under some conditions.
+         non-zero value). <em>WARNING</em>: although it's very unlikely, it may
+         be possible that some of them <em>crash the game</em> under certain
+         conditions. Be fully aware of that if you allow cheats on your server.
          <itemize>
-            <item> impulse 103: botcam mode (unavailable in QuakeWorld)
-            <item> impulse 104: waypoint edit mode (unavailable in QuakeWorld)
-            <item> impulse 250: Dump all entities stats to console (for debugging)
+            <item> impulse 53: botcam mode (unavailable in QuakeWorld)
+            <item> impulse 54: waypoint edit mode (unavailable in QuakeWorld)
+            <item> impulse 250: Put you on the <ref id="BOD" name="Brink Of Death">
             <item> impulse 251: Give full armor
             <item> impulse 252: Burn yourself !
             <item> impulse 253: Give all inventory items
-            <item> impulse 254: Put you on the <ref id="BOD" name="Brink Of Death">
-            <item> impulse 255: Give <ref id="akimbo" name="Guns Akimbo">
+            <item> impulse 254: Give <ref id="akimbo" name="Guns Akimbo">
+            <item> impulse 255: Dump all entities stats to console (for debugging)
+         </itemize>
+         
+         Lastly, the DarkPlaces engine provides us with a few extra commands,
+         that you use the same way you use impulses (at the console, or by
+         binding them to keys). In Transfusion, we use the following ones: 
+         <itemize>
+            <item> +button3: secondary fire
+            <item> +button4: use object (you must be close enough)
          </itemize>
       </sect1>
 
@@ -336,14 +350,14 @@
             <tag>Death Mask</tag> Provides temporary invulnerability to all
             attacks. Note that you are still susceptible to physics, which means
             a dynamite blast may hurl you off a cliff.
-            <tag>Jump Boots</tag> Enable you to jump much higher than normal.
+            <tag>Jump Boots<label id="boots"></tag> Enable you to jump much higher than normal.
             Useful for those hard to reach places or crossing chasms the easy
             way.
             <tag>Cloak of Invisibility</tag> The cloak will hide you from your
             enemies. That is, until you decide to attack them, even then they
             will have a hard time attacking you. Definately, one of the more
             useful power-ups in the game.
-            <tag>Dr.'s Bag</tag> Will restore up to 100 points of health when
+            <tag>Dr.'s Bag<label id="dr_bag"></tag> Will restore up to 100 points of health when
             activated. The unused medicine will remain in your inventory until
             used up. Keep this item handy!
             <tag>Guns akimbo<label id="akimbo"></tag> Gives you double-fisted

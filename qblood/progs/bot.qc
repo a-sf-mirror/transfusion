@@ -478,7 +478,7 @@ float() botcam =
         WriteAngle (MSG_ONE,self.enemy.v_angle_z);
     self.modelindex = 0;
 
-    self.impulse = 0;
+    self.impulse = IMP_NONE;
     return TRUE;
 
 };

@@ -91,7 +91,7 @@ void() player_tommy =
     Tommy_Fire ();
     self.attack_finished = time + 0.1;
 
-    self.impulse = 0;
+    self.impulse = IMP_NONE;
 };
 
 void() player_tommy1 = [$attack1, player_tommy2] { player_tommy (); self.weaponframe = $tommy_fire1; };
@@ -114,7 +114,7 @@ void() player_alttommy =
     Tommy_Fire ();
     self.attack_finished = time + 0.1;
 
-    self.impulse = 0;
+    self.impulse = IMP_NONE;
 };
 void() player_alttommy1 = [$attack1, player_alttommy2] { player_alttommy (); };
 void() player_alttommy2 = [$attack2, player_alttommy1] { player_alttommy (); };

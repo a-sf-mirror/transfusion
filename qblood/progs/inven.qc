@@ -386,6 +386,45 @@ void(float chosen) InvenList =
     sprint (self, "\n");
 };
 
+
+/*
+====================
+InventChange
+
+Called when the player explicitely switches
+its current inventory item using an impulse
+====================
+*/
+void() InventChange =
+{
+    local float choice;
+
+    choice = -1;
+    if (self.impulse == IMP_FIRST_AID)
+        choice = INV_FIRST_AID;
+    else if (self.impulse == IMP_CRYSTAL_BALL)
+        choice = INV_CRYSTAL_BALL;
+    else if (self.impulse == IMP_BEAST_VISION)
+        choice = INV_BEAST_VISION;
+    else if (self.impulse == IMP_JUMP_BOOTS)
+        choice = INV_JUMP_BOOTS;
+
+    // If there's no item matching the impulse
+    if (choice == -1)
+        error ("No inventory item is assigned to that impulse number\n");
+
+    // If we don't have that item
+    if (!InvenFuel (choice))
+    {
+        sprint (self, "You don't have that item.\n");
+        return;
+    }
+
+    self.it_select = choice;
+    InvenList (choice);
+};
+
+
 // This lets a player select another item in the inventory.
 void(float add, float noprint) InvenSelect =
 {

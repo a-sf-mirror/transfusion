@@ -161,7 +161,7 @@ Impulse list for observers
 */
 void() Impulses_Observer =
 {
-    if (self.impulse == 0 && !self.button0 && !self.button2)
+    if (self.impulse == IMP_NONE && !self.button0 && !self.button2)
         return;
 
     // If we're not in a team mode, join the game on impulse 1 or 2, or on "jump" or "fire"
@@ -210,10 +210,10 @@ void() Impulses_Observer =
     if (!self.observer)
         bprint2 (self.netname, " lives again!\n");
 
-    if (self.impulse == 141)
+    if (self.impulse == IMP_IDENT_PLAYER)
         identify_player ();
 
-    self.impulse = 0;
+    self.impulse = IMP_NONE;
 };
 
 

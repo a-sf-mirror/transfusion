@@ -749,7 +749,7 @@ void() W_Attack =
     else if (self.weapon == IT_LIFE_LEECH)
         Leech_Attack ();
 
-    self.impulse = 0;
+    self.impulse = IMP_NONE;
 };
 
 /*
@@ -769,35 +769,35 @@ void() W_ChangeWeapon =
     old = self.weapon;
     am = 0;
 
-    if (self.impulse == 1)
+    if (self.impulse == IMP_PITCHFORK)
     {
         new = IT_PITCHFORK;
     }
-    else if (self.impulse == 2)
+    else if (self.impulse == IMP_FLAREGUN)
     {
         new = IT_FLAREGUN;
         if (self.ammo_flare < 1)
             am = 1;
     }
-    else if (self.impulse == 3)
+    else if (self.impulse == IMP_SAWED_OFF)
     {
         new = IT_SAWED_OFF;
         if (self.ammo_shells < 1)
             am = 1;
     }
-    else if (self.impulse == 4)
+    else if (self.impulse == IMP_TOMMYGUN)
     {
         new = IT_TOMMYGUN;
         if (self.ammo_nails < 1)
             am = 1;
     }
-    else if (self.impulse == 5)
+    else if (self.impulse == IMP_NAPALM_LAUNCHER)
     {
         new = IT_NAPALM_LAUNCHER;
         if (self.ammo_rockets < 1)
             am = 1;
     }
-    else if (self.impulse == 6)
+    else if (self.impulse == IMP_BOMBS)
     {
         new = 0;
 
@@ -843,31 +843,35 @@ void() W_ChangeWeapon =
             }
         }
     }
-    else if (self.impulse == 7)
+    else if (self.impulse == IMP_PROXIMITY_BOMB)
+        new = IT_PROXIMITY_BOMB;
+    else if (self.impulse == IMP_REMOTE_DETONATOR)
+        new = IT_REMOTE_DETONATOR;
+    else if (self.impulse == IMP_SPRAY_CAN)
     {
         new = IT_SPRAY_CAN;
         if (self.ammo_spray < 1)
             am = 1;
     }
-    else if (self.impulse == 8)
+    else if (self.impulse == IMP_TESLA_CANNON)
     {
         new = IT_TESLA_CANNON;
         if (self.ammo_cells < 1)
             am = 1;
     }
-    else if (self.impulse == 9)
+    else if (self.impulse == IMP_LIFE_LEECH)
     {
         new = IT_LIFE_LEECH;
         // Life Leech doesn't need ammo
     }
-    else if (self.impulse == 17)
+    else if (self.impulse == IMP_VOODOO_DOLL)
     {
         new = IT_VOODOO_DOLL;
         if (self.ammo_voodoo < 1)
             am = 1;
     }
 
-    self.impulse = 0;
+    self.impulse = IMP_NONE;
 
     // don't have the weapon
     if (!(self.items & new))

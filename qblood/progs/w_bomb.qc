@@ -351,7 +351,7 @@ void() W_ChargeNormal =
     if (self.button3)
     {
         altfire = TRUE;
-        self.impulse = 0;
+        self.impulse = IMP_NONE;
     }
     else
         altfire = FALSE;
@@ -451,7 +451,7 @@ void() W_ChargeBomb =
     if (self.button3)
     {
         altfire = TRUE;
-        self.impulse = 0;
+        self.impulse = IMP_NONE;
     }
     else
         altfire = FALSE;
