@@ -51,30 +51,6 @@ $frame tesla_draw1 tesla_draw2 tesla_draw3
 $frame tesla_holster1 tesla_holster2 tesla_holster3
 
 
-#else
-// Normal model
-$modelname v_tesla
-
-// idle
-$frame tesla_idle1
-
-// draw
-$frame tesla_draw1 tesla_draw2 tesla_draw3
-
-// fire
-$frame tesla_fire1 tesla_fire2 tesla_fire3 tesla_fire4
-
-// altfire
-$frame tesla_alt1  tesla_alt2  tesla_alt3  tesla_alt4  tesla_alt5
-$frame tesla_alt6  tesla_alt7  tesla_alt8  tesla_alt9  tesla_alt10
-$frame tesla_alt11 tesla_alt12 tesla_alt13 tesla_alt14 tesla_alt15
-$frame tesla_alt16 tesla_alt17 tesla_alt18 tesla_alt19 tesla_alt20
-
-// holster
-$frame tesla_holster1 tesla_holster2 tesla_holster3
-#endif
-
-
 // Akimbo model
 $modelname v_alight
 
@@ -97,7 +73,56 @@ $frame atesla_draw1 atesla_draw2 atesla_draw3
 $frame atesla_holster1 atesla_holster2 atesla_holster3
 
 
+#else
+// Normal model
+$modelname v_tesla
+
+// idle
+$frame tesla_idle1
+
+// draw
+$frame tesla_draw1 tesla_draw2 tesla_draw3
+
+// fire
+$frame tesla_fire1 tesla_fire2 tesla_fire3 tesla_fire4
+
+// altfire
+$frame tesla_alt1  tesla_alt2  tesla_alt3  tesla_alt4  tesla_alt5
+$frame tesla_alt6  tesla_alt7  tesla_alt8  tesla_alt9  tesla_alt10
+$frame tesla_alt11 tesla_alt12 tesla_alt13 tesla_alt14 tesla_alt15
+$frame tesla_alt16 tesla_alt17 tesla_alt18 tesla_alt19 tesla_alt20
+
+// holster
+$frame tesla_holster1 tesla_holster2 tesla_holster3
+
+
+// Akimbo model
+$modelname ga_tesla
+
+// idle
+$frame atesla_idle1
+
+// draw
+$frame atesla_draw1 atesla_draw2 atesla_draw3
+
+// fire
+$frame atesla_fire1 atesla_fire2 atesla_fire3 atesla_fire4
+
+// altfire
+$frame atesla_alt1  atesla_alt2  atesla_alt3  atesla_alt4  atesla_alt5
+$frame atesla_alt6  atesla_alt7  atesla_alt8  atesla_alt9  atesla_alt10
+$frame atesla_alt11 atesla_alt12 atesla_alt13 atesla_alt14 atesla_alt15
+$frame atesla_alt16 atesla_alt17 atesla_alt18 atesla_alt19 atesla_alt20
+
+// holster
+$frame atesla_holster1 atesla_holster2 atesla_holster3
+#endif
+
+
 // ----- Player related code ----- //
+
+// WARNING:
+// the code assumes that the normal and akimbo models have the same frame layout
 
 // Normal fire
 void() player_tesla =
@@ -111,8 +136,8 @@ void() player_tesla =
 
     // Fire
     self.weaponframe = self.weaponframe + 1;
-    if (self.weaponframe > $atesla_fire4)
-        self.weaponframe = $atesla_fire1;
+    if (self.weaponframe > $tesla_fire4)
+        self.weaponframe = $tesla_fire1;
 
     Tesla_Fire ();
 };
@@ -142,52 +167,39 @@ void()  player_alttesla1  = [$attack1, player_alttesla2 ]
     else
         sound (self, CHAN_WEAPON, "weapons/tesla/tessuper.wav", 1, ATTN_NORM);
 
-    self.weaponframe = $atesla_alt1;
+    self.weaponframe = $tesla_alt1;
 };
-
-// Altfire
-void()  player_alttesla2  = [$attack2, player_alttesla3 ] { self.weaponframe = $atesla_alt2; };
-void()  player_alttesla3  = [$attack2, player_alttesla4 ] { self.weaponframe = $atesla_alt3; };
-void()  player_alttesla4  = [$attack2, player_alttesla5 ] { self.weaponframe = $atesla_alt4; };
-void()  player_alttesla5  = [$attack2, player_alttesla6 ] { self.weaponframe = $atesla_alt5; };
-void()  player_alttesla6  = [$attack2, player_alttesla7 ] { self.weaponframe = $atesla_alt6; };
-void()  player_alttesla7  = [$attack2, player_alttesla8 ] { self.weaponframe = $atesla_alt7; };
-void()  player_alttesla8  = [$attack2, player_alttesla9 ] { self.weaponframe = $atesla_alt8; };
-void()  player_alttesla9  = [$attack2, player_alttesla10] { self.weaponframe = $atesla_alt9; };
-void()  player_alttesla10 = [$attack2, player_alttesla11] { self.weaponframe = $atesla_alt10; };
-void()  player_alttesla11 = [$attack2, player_alttesla12] { self.weaponframe = $atesla_alt11; };
-void()  player_alttesla12 = [$attack2, player_alttesla13] { self.weaponframe = $atesla_alt12; };
-void()  player_alttesla13 = [$attack2, player_alttesla14] { self.weaponframe = $atesla_alt13; };
-void()  player_alttesla14 = [$attack2, player_alttesla15] { self.weaponframe = $atesla_alt14; };
-void()  player_alttesla15 = [$attack1, player_alttesla16] { self.weaponframe = $atesla_alt15; Tesla_Fire (); };
-void()  player_alttesla16 = [$attack1, player_alttesla17] { self.weaponframe = $atesla_alt16; };
-void()  player_alttesla17 = [$attack1, player_alttesla18] { self.weaponframe = $atesla_alt17; };
-void()  player_alttesla18 = [$attack1, player_alttesla19] { self.weaponframe = $atesla_alt18; };
-void()  player_alttesla19 = [$attack1, player_alttesla20] { self.weaponframe = $atesla_alt19; };
-void()  player_alttesla20 = [$attack2, player_alttesla21] { self.weaponframe = $atesla_alt20; };
+void()  player_alttesla2  = [$attack2, player_alttesla3 ] { self.weaponframe = $tesla_alt2; };
+void()  player_alttesla3  = [$attack2, player_alttesla4 ] { self.weaponframe = $tesla_alt3; };
+void()  player_alttesla4  = [$attack2, player_alttesla5 ] { self.weaponframe = $tesla_alt4; };
+void()  player_alttesla5  = [$attack2, player_alttesla6 ] { self.weaponframe = $tesla_alt5; };
+void()  player_alttesla6  = [$attack2, player_alttesla7 ] { self.weaponframe = $tesla_alt6; };
+void()  player_alttesla7  = [$attack2, player_alttesla8 ] { self.weaponframe = $tesla_alt7; };
+void()  player_alttesla8  = [$attack2, player_alttesla9 ] { self.weaponframe = $tesla_alt8; };
+void()  player_alttesla9  = [$attack2, player_alttesla10] { self.weaponframe = $tesla_alt9; };
+void()  player_alttesla10 = [$attack2, player_alttesla11] { self.weaponframe = $tesla_alt10; };
+void()  player_alttesla11 = [$attack2, player_alttesla12] { self.weaponframe = $tesla_alt11; };
+void()  player_alttesla12 = [$attack2, player_alttesla13] { self.weaponframe = $tesla_alt12; };
+void()  player_alttesla13 = [$attack2, player_alttesla14] { self.weaponframe = $tesla_alt13; };
+void()  player_alttesla14 = [$attack2, player_alttesla15] { self.weaponframe = $tesla_alt14; };
+void()  player_alttesla15 = [$attack1, player_alttesla16] { self.weaponframe = $tesla_alt15; Tesla_Fire (); };
+void()  player_alttesla16 = [$attack1, player_alttesla17] { self.weaponframe = $tesla_alt16; };
+void()  player_alttesla17 = [$attack1, player_alttesla18] { self.weaponframe = $tesla_alt17; };
+void()  player_alttesla18 = [$attack1, player_alttesla19] { self.weaponframe = $tesla_alt18; };
+void()  player_alttesla19 = [$attack1, player_alttesla20] { self.weaponframe = $tesla_alt19; };
+void()  player_alttesla20 = [$attack2, player_alttesla21] { self.weaponframe = $tesla_alt20; };
 void()  player_alttesla21 = [$attack2, player_run       ] {};
 
-// Normal draw
+// Draw
 void() player_tesladraw1 = [$attack2, player_tesladraw2] { self.weaponframe = $tesla_draw1; };
 void() player_tesladraw2 = [$attack2, player_tesladraw3] { self.weaponframe = $tesla_draw2; };
 void() player_tesladraw3 = [$attack2, player_run       ] { self.weaponframe = $tesla_draw3; };
 
-// Normal holster
+// Holster
 void() player_teslaholster1 = [$attack2, player_teslaholster2] { self.weaponframe = $tesla_holster1; };
 void() player_teslaholster2 = [$attack2, player_teslaholster3] { self.weaponframe = $tesla_holster2; };
 void() player_teslaholster3 = [$attack2, player_teslaholster4] { self.weaponframe = $tesla_holster3; };
 void() player_teslaholster4 = [$attack2, player_run          ] { W_DrawWeapon (self.newweapon); };
-
-// Akimbo draw
-void() player_aktesladraw1 = [$attack2, player_aktesladraw2] { self.weaponframe = $atesla_draw1; };
-void() player_aktesladraw2 = [$attack2, player_aktesladraw3] { self.weaponframe = $atesla_draw2; };
-void() player_aktesladraw3 = [$attack2, player_run         ] { self.weaponframe = $atesla_draw3; };
-
-// Akimbo holster
-void() player_akteslaholster1 = [$attack2, player_akteslaholster2] { self.weaponframe = $atesla_holster1; };
-void() player_akteslaholster2 = [$attack2, player_akteslaholster3] { self.weaponframe = $atesla_holster2; };
-void() player_akteslaholster3 = [$attack2, player_akteslaholster4] { self.weaponframe = $atesla_holster3; };
-void() player_akteslaholster4 = [$attack2, player_run            ] { W_DrawWeapon (self.newweapon); };
 
 
 //============================================================================
@@ -389,16 +401,8 @@ void() Tesla_Draw =
 
     Tesla_UpdateView ();
 
-    if (self.items & IT_GUNS_AKIMBO)
-    {
-        self.attack_finished = time + 0.4;
-        player_aktesladraw1 ();
-    }
-    else
-    {
-        self.attack_finished = time + 0.4;
-        player_tesladraw1 ();
-    }
+    self.attack_finished = time + 0.4;
+    player_tesladraw1 ();
 };
 
 
@@ -411,16 +415,8 @@ Holster code for the tesla cannon
 */
 void() Tesla_Holster =
 {
-    if (self.items & IT_GUNS_AKIMBO)
-    {
-        self.attack_finished = time + 0.5;
-        player_akteslaholster1 ();
-    }
-    else
-    {
-        self.attack_finished = time + 0.5;
-        player_teslaholster1 ();
-    }
+    self.attack_finished = time + 0.4;
+    player_teslaholster1 ();
 };
 
 
@@ -435,7 +431,11 @@ void() Tesla_UpdateView =
 {
     if (self.akimbo_finished > time && self.currentammo >= 2)
     {
+        #ifndef NEW_MODELS
         self.weaponmodel = "progs/v_alight.mdl";
+        #else
+        self.weaponmodel = "models/weapons/ga_tesla.md3";
+        #endif
         self.items = self.items | IT_GUNS_AKIMBO;
     }
     else
