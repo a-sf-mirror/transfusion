@@ -850,6 +850,12 @@ void() item_artifact_shadow =
 };
 
 
+// Soccer Goal Post
+void() obj_goal =
+{
+     self.model = "progs/goalpost.mdl";
+}
+
 /*
 =========================================================================
 
