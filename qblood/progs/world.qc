@@ -219,9 +219,6 @@ World Types:
 //=======================
 void() worldspawn =
 {
-    // Initialize the recursion counter
-    recursioncount = 0;
-
     lastspawn = world;
 
     // Check for QC extensions

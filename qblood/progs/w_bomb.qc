@@ -473,7 +473,7 @@ void() W_ChargeBomb =
 };
 
 
-void() GrenadeExplode =
+void() Bomb_Explode =
 {
     #ifdef QUAKEWORLD
     if (self.voided) {
@@ -484,10 +484,6 @@ void() GrenadeExplode =
 
     // Stop the fuse sound if any
     sound (self, CHAN_BODY, "misc/null.wav", 0, ATTN_NORM);
-
-    // Don't let the remote find and detonate grenades that are already
-    // exploding
-    self.classname = "exploded";
 
     // Don't let grenade explode twice.
     self.takedamage = DAMAGE_NO;
@@ -528,6 +524,15 @@ void() GrenadeExplode =
 };
 
 
+void() Bomb_Trigger =
+{
+    self.takedamage = DAMAGE_NO;
+    self.classname = "triggered_grenade";
+    self.nextthink = time + 0.1;
+    self.think = Bomb_Explode;
+};
+
+
 /*
 ================
 W_ActivateRemoteBombs
@@ -549,7 +554,7 @@ void() W_ActivateRemoteBombs =
                 sound (grenadeEnt, CHAN_BODY, "weapons/tnt/remdet.wav", 1, ATTN_NORM);
                 tempEnt = self;
                 self = grenadeEnt;
-                GrenadeExplode ();
+                Bomb_Trigger ();
                 self = tempEnt;
             }
         grenadeEnt = find (grenadeEnt, classname, "grenade");
@@ -713,7 +718,7 @@ void() ProximBombThink =
     {
         if (self.think1 == SUB_Null)
         {
-            GrenadeExplode ();
+            Bomb_Explode ();
             return;
         }
         self.think1 ();
@@ -751,7 +756,7 @@ void() DynaTouch =
             traceline (self.origin - self.dest*4, self.origin + self.dest*16, TRUE, self);
             if (trace_fraction == 1 || trace_plane_normal_z >= 0)
             {
-                GrenadeExplode ();
+                Bomb_Explode ();
                 return;
             }
         }
@@ -766,7 +771,7 @@ void() DynaThink =
 {
     if (self.pausetime <= time)
     {
-        GrenadeExplode ();
+        Bomb_Trigger ();
         return;
     }
 
@@ -799,7 +804,7 @@ void() proximity_mine =
     self.solid      = SOLID_BBOX;
     self.takedamage = DAMAGE_AIM;
     self.health     = 1;
-    self.th_die     = GrenadeExplode;
+    self.th_die     = Bomb_Trigger;
     self.nextthink  = 0.1;
     self.pausetime  = time;
     self.think1     = ProximBombCheck;
@@ -882,7 +887,7 @@ void() Bomb_Fire =
     // Explodes as soon as it takes 1 point of damage
     newmis.takedamage = DAMAGE_AIM;
     newmis.health = 1;
-    newmis.th_die = GrenadeExplode;
+    newmis.th_die = Bomb_Trigger;  // do not make it explode directly
 
     newmis.nextthink = 0.1;
     newmis.think     = BombThink;

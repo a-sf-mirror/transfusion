@@ -275,8 +275,6 @@ entity  activator;      // the entity that activated a trigger or brush
 entity  damage_attacker;    // set by T_Damage
 entity  damage_inflictor;
 
-float   recursioncount;  // used to avoid stack overflow with explosions
-
 float   qcextensions;  // Does the engine support QC extensions?
 
 

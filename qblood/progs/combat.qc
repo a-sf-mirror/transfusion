@@ -182,11 +182,6 @@ void(entity targ, entity inflictor, entity attacker, float damage, float dflags,
     if (!targ.takedamage)
         return;
 
-    // If we are at the maximum recursion deep supported, just return
-    if (recursioncount >= MAX_RECURSION_COUNT)
-        return;
-    recursioncount = recursioncount + 1;
-
     // Used by buttons and triggers to set activator for target firing
     damage_attacker = attacker;
     damage_inflictor = inflictor;
@@ -269,11 +264,7 @@ void(entity targ, entity inflictor, entity attacker, float damage, float dflags,
     }
 
     if (protected)
-    {
-        // Decrease the recursion count.
-        recursioncount = recursioncount - 1;
         return;     // Target is invulnerable to damage.
-    }
 
     // Now check for armor damage.
     if (save)
@@ -340,9 +331,6 @@ void(entity targ, entity inflictor, entity attacker, float damage, float dflags,
                 if (targ.burner == world)
                 {
                     Player_BrinkOfDeath (targ, attacker);
-
-                    // Decrease the recursion count.
-                    recursioncount = recursioncount - 1;
                     return;
                 }
             }
@@ -354,9 +342,6 @@ void(entity targ, entity inflictor, entity attacker, float damage, float dflags,
             targ.deathtype = dtype;
 
         Killed (targ, attacker);
-
-        // Decrease the recursion count.
-        recursioncount = recursioncount - 1;
         return;
     }
 
@@ -380,9 +365,6 @@ void(entity targ, entity inflictor, entity attacker, float damage, float dflags,
     }
 
     self = oldself;
-
-    // Decrease the recursion count
-    recursioncount = recursioncount - 1;
 };
 
 
