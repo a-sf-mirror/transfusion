@@ -845,7 +845,19 @@ void () wall_killed =
             self.cnt = 6;
 
         while (self.cnt > 0)
-        {
+        if (self.skin > 4)
+	{
+	    self.dest_x = (random() * 100) - 50;
+	    self.dest_y = (random() * 100) - 50;
+	    self.dest_z = (random() * 100);
+	    
+	    ThrowRubble ("progs/glass1.mdl", self.health);
+	    ThrowRubble ("progs/glass2.mdl", self.health);
+	    ThrowRubble ("progs/glass3.mdl", self.health);
+	    self.cnt = self.cnt - 1;
+	}
+	else
+	{
             self.dest_x = (random() * 100) - 50;
             self.dest_y = (random() * 100) - 50;
             self.dest_z = (random() * 100);
@@ -854,7 +866,7 @@ void () wall_killed =
             ThrowRubble ("progs/rubble2.mdl", self.health);
             ThrowRubble ("progs/rubble3.mdl", self.health);
             self.cnt = self.cnt - 1;
-        }
+	}
     }
 
     activator = self;
@@ -904,6 +916,8 @@ SKIN TYPES
 2 = red/brown bricks
 3 = rusty metal
 4 = rotten wood
+5 = stained glass // d.turner
+6 = regular glass // d.turner
 
 SPAWNFLAGS
 1 = the wall will not take damage when shot and will only break if triggered
@@ -919,6 +933,15 @@ void() exploding_wall =
     // precache rubble models (two models used since red trails on gibs, grey on other rubble)
     if (! (self.spawnflags & 16))  // if rubble is not turned off
     {
+	if (self.skin > 4)
+	{ // if skin is set to glass, use the glass shards instead - d.turner
+	precache_model ("progs/glass1.mdl");
+	precache_model ("progs/glass2.mdl");
+	precache_model ("progs/glass3.mdl");
+	}
+	
+	else
+	
         precache_model ("progs/rubble1.mdl");
         precache_model ("progs/rubble2.mdl");
         precache_model ("progs/rubble3.mdl");
@@ -931,7 +954,14 @@ void() exploding_wall =
         // self.noise1 - rubble bounce 1
         // self.noise2 - rubble bounce 2
 
-        if(self.skin == 3)
+	if(self.skin > 4)
+	{
+	    self.noise = "ambience/glashit2.wav";
+	    self.noise1 = "ambience/glashit3.wav";
+	    self.noise2 = "ambience/glashit4.wav";
+	}
+    
+        else if(self.skin == 3)
         {
             self.noise = "misc/wb_metal.wav";
             self.noise1 = "misc/methit1.wav";
