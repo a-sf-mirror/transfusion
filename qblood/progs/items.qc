@@ -91,7 +91,11 @@ void(float timeleft) Akimbo_Drop =
     item.solid = SOLID_TRIGGER;
     item.movetype = MOVETYPE_TOSS;
     item.noise = "bludbath/powerup.wav";
+    #ifndef NEW_MODELS
     setmodel (item, "progs/quaddama.mdl");
+    #else
+    setmodel (item, "models/items/i_akimbo.md3");
+    #endif
     setsize (item, '-16 -16 -2', '16 16 54');
     item.touch = Akimbo_Touch;
     item.nextthink = time + timeleft;    // remove it with the time left on it
