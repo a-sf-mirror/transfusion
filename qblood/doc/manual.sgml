@@ -5,7 +5,7 @@
 
    <title> qBlood manual
    <author> Mathieu Olivier <tt>&lt;elric@planetblood.com&gt;</tt>
-   <date>v?.?.? (development), November 11, 2001
+   <date>v?.?.? (development), November 13, 2001
    <abstract>
       This manual covers <url url="http://www.planetblood.com/qblood/"
       name="qBlood"> installation and usage.
@@ -78,6 +78,7 @@
          using these impulses may crash the game if the requiered sounds and
          models are not precached at this moment.
          <itemize>
+            <item> impulse 250: Dump all entities stats to console (debug)<p>
             <item> impulse 251: Give full armor<p>
             <item> impulse 252: Burn yourself !<p>
             <item> impulse 253: Give all inventory items<p>

@@ -1537,7 +1537,7 @@ void() weapon_supernailgun =
 {
     precache_model ("progs/v_nail2.mdl");
     precache_model ("progs/g_nail2.mdl");
-    precache_model ("progs/grenade.mdl");
+    precache_model ("progs/grd_aero.mdl");
 
     setmodel (self, "progs/g_nail2.mdl");
     self.weapon = IT_SUPER_NAILGUN;

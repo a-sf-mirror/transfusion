@@ -1555,7 +1555,7 @@ void() W_ActivateRemoteBombs =
     grenadeEnt = find (world, classname, "grenade");
     while (grenadeEnt)
     {
-        if (grenadeEnt.netname == "remote detonator" && grenadeEnt.owner == self)
+        if (grenadeEnt.netname == "Remote Detonator" && grenadeEnt.owner == self)
         {
             sound (self, CHAN_BODY, "weapons/tnt/remfire.wav", 1, ATTN_NORM);
             tempEnt = self;
@@ -1653,28 +1653,24 @@ void() W_FireGrenade =
         newmis.pausetime = time + 2.5;
         newmis.think = ProximBombThink;
         newmis.think1 = ProximBombArmed;
-        newmis.netname = "proximity bomb";
+        newmis.netname = "Proximity Bomb";
         newmis.dmg = DMG_PROXIMITY_BOMB;
         newmis.avelocity = '0 300 0';
         newmis.angles = '0 0 0';
-
-        setmodel (newmis, "progs/grd_prox.mdl");
-        newmis.frame = 1;
+        newmis.model = "progs/grd_prox.mdl";
     }
     // else if we fire a remote detonator
     else if (self.weapon == IT_REMOTE_DETONATOR)
     {
-        newmis.netname = "remote detonator";
+        newmis.netname = "Remote Detonator";
         newmis.dmg = DMG_REMOTE_DETONATOR;
         newmis.avelocity = '0 300 0';
         newmis.angles = '0 0 0';
+        newmis.model = "progs/grd_remo.mdl";
 
         // We switch to the remote model / frames
         self.weaponmodel = "";  // FIXME: we don't have the remote model / frames yet
         Sprint (self, PRINT_LOW, "You now have the remote in your hands...\n");
-
-        setmodel (newmis, "progs/grd_remo.mdl");
-        newmis.frame = 1;
     }
     // Else, it's TNT or a spray can!
     else
@@ -1690,20 +1686,19 @@ void() W_FireGrenade =
         {
             newmis.netname = "Lit Spray Can";
             newmis.dmg     = DMG_SPRAY_CAN;
-            self.weaponframe = 0;  // reset the weapon view
+            newmis.model   = "progs/grd_aero.mdl";
 
-            setmodel (newmis, "progs/grenade.mdl");
+            self.weaponframe = 0;  // reset the weapon view
         }
         else
         {
             newmis.netname = "TNT";
             newmis.dmg     = DMG_TNT;
-
-            newmis.frame = 1;
-            setmodel (newmis, "progs/grd_bund.mdl");
+            newmis.model   = "progs/grd_bund.mdl";
         }
     }
 
+    setmodel (newmis, newmis.model);
     setsize (newmis, '-1 -1 -1', '1 1 1');
     setorigin (newmis, self.origin);
 
@@ -3040,7 +3035,11 @@ void() ImpulseCommands =
         // Cheat codes are not allowed in multiplayer games (except when the "sv_allowCheat" cvar is set)
         else if (gametype == GAMETYPE_SINGLE_PLAYER || cvar ("sv_allowCheat"))
         {
-            if (self.impulse == 251)
+            if (self.impulse == 250)
+            {
+                coredump ();
+            }
+            else if (self.impulse == 251)
             {
                 Sprint (self, PRINT_MEDIUM, "griswold -- You have full armor.\n");
                 self.armor_fire = self.armor_body = self.armor_mind = self.armorvalue = 200;

@@ -649,8 +649,9 @@ void() HeadTouch =
     if (self.takedamage != DAMAGE_NO)
     {
         self.health = self.health - 10;
-        if (self.health < 0)
+        if (self.health <= 0)
         {
+            self.enemy = other;
             self.th_die ();
             return;
         }

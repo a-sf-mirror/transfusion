@@ -128,8 +128,6 @@ void(entity targ, entity attacker) Killed =
 };
 
 
-#define MAX_RECURSION_COUNT 5
-
 /*
 ============
 T_Damage
@@ -210,6 +208,9 @@ float(entity targ, float armour, float damage) PM_ArmorSave =
     return save;
 };
 
+
+#define MAX_RECURSION_COUNT 5
+
 // PM:  Below is the new damage function that replaces 'T_Damage'.
 void(entity targ, entity inflictor, entity attacker, float damage, float dflags, string dtype) T_NewDamage =
 {
@@ -286,9 +287,10 @@ void(entity targ, entity inflictor, entity attacker, float damage, float dflags,
             }
             protected = TRUE;
         }
-        else
+        // Team play avoidance.
+        else if (gametype >= GAMETYPE_TEAM_BLOODBATH && ! friendlyfire &&
+                 targ != attacker && attacker.classname == "player" && inflictor.classname != "door")
         {
-            // Team play avoidance.
             #ifdef QUAKEWORLD
             local   string  attackerteam, targteam;
 
@@ -296,12 +298,10 @@ void(entity targ, entity inflictor, entity attacker, float damage, float dflags,
             attackerteam = infokey(attacker, "team");
             targteam = infokey(targ, "team");
 
-            if (targteam == attackerteam && attackerteam != "" &&
+            if (targteam == attackerteam && attackerteam != "")
             #else
-            if (targ.team == attacker.team &&
+            if (targ.team == attacker.team)
             #endif
-            !friendlyfire && targ != attacker &&
-            attacker.classname == "player" && inflictor.classname !="door")
                 protected = TRUE;
         }
     }
@@ -386,6 +386,7 @@ void(entity targ, entity inflictor, entity attacker, float damage, float dflags,
         // Target was slain!
         if (!targ.deadflag)
             targ.deathtype = dtype;
+        targ.enemy = attacker;
         Killed (targ, attacker);
 
         // Decrease the recursion count.

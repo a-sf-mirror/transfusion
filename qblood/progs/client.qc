@@ -1281,7 +1281,7 @@ void() CheckPowerups =
         if (self.invincible_finished > time)
             self.effects = self.effects | EF_DIMLIGHT | EF_RED;
         else
-            self.effects = self.effects - (self.effects & EF_DIMLIGHT & EF_RED);
+            self.effects = self.effects - (self.effects & (EF_DIMLIGHT | EF_RED));
     }
 
     // Guns akimbo
@@ -1298,7 +1298,7 @@ void() CheckPowerups =
         if (self.akimbo_finished > time)
             self.effects = self.effects | EF_DIMLIGHT | EF_BLUE;
         else
-            self.effects = self.effects - (self.effects & EF_DIMLIGHT & EF_BLUE);
+            self.effects = self.effects - (self.effects & (EF_DIMLIGHT | EF_BLUE));
     }
 
     // Reflective shots
@@ -1310,7 +1310,7 @@ void() CheckPowerups =
         {   // just stopped
             self.reflect_finished = 0;
 
-            self.effects = self.effects - (self.effects & EF_DIMLIGHT & EF_BLUE);
+            self.effects = self.effects - (self.effects & (EF_DIMLIGHT | EF_BLUE));
         }
         else
             self.effects = self.effects | EF_DIMLIGHT | EF_BLUE;
@@ -1706,19 +1706,19 @@ void(entity attacker) ClientObituary =
             else if (rnum <= 25)
             {
                 Bprint (PRINT_MEDIUM, self.netname);
-                Bprint (PRINT_MEDIUM, " suffered scrotum separation ");
+                Bprint (PRINT_MEDIUM, " suffered scrotum separation\n");
                 self.noise1 = "thevoice/vo9.wav";
             }
             else if (rnum <= 26)
             {
                 Bprint (PRINT_MEDIUM, self.netname);
-                Bprint (PRINT_MEDIUM, " is excrement\n ");
+                Bprint (PRINT_MEDIUM, " is excrement\n");
                 self.noise1 = "thevoice/vo7.wav";
             }
             else if (rnum <= 27)
             {
                 Bprint (PRINT_MEDIUM, self.netname);
-                Bprint (PRINT_MEDIUM, " is hamburger\n ");
+                Bprint (PRINT_MEDIUM, " is hamburger\n");
                 self.noise1 = "thevoice/vo8.wav";
             }
             else if (rnum <= 28)
@@ -1741,13 +1741,13 @@ void(entity attacker) ClientObituary =
                 else if (rnum <= 30)
                 {
                     deathstring = " boned ";
-                    deathstring2 = " like a fish!\n";
+                    deathstring2 = " like a fish!";
                     self.noise1 = "thevoice/boned.wav";
                 }
                 else if (rnum <= 31)
                 {
                     deathstring = " gave ";
-                    deathstring2 = " Anal Justice!\n";
+                    deathstring2 = " Anal Justice!";
                     self.noise1 = "thevoice/justice.wav";
                 }
                 else if (rnum <= 32)
@@ -1759,7 +1759,7 @@ void(entity attacker) ClientObituary =
                 else if (rnum <= 33)
                 {
                     deathstring = " ripped ";
-                    deathstring2 = " a new orifice!\n";
+                    deathstring2 = " a new orifice!";
                     self.noise1 = "thevoice/ripped.wav";
                 }
                 else if (rnum <= 34)
@@ -1873,6 +1873,7 @@ void(entity attacker) ClientObituary =
                 Bprint (PRINT_MEDIUM, self.netname);
                 if (deathstring2)
                     Bprint (PRINT_MEDIUM, deathstring2);
+                Bprint (PRINT_MEDIUM, "\n");
             }
         }
         return;
