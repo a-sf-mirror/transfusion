@@ -1099,7 +1099,7 @@ void() item_health =
 
         #ifdef NEW_MODELS
         // Set animation loop
-        self.anim_len = 5;  // 5 frames in the animation
+        self.anim_len = 9;  // 9 frames in the animation
         self.think1 = SUB_AutoAnimation;
         #endif
     }
