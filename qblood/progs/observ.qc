@@ -21,7 +21,6 @@
 #include "common.qh"
 
 
-void() respawn;
 entity() SelectSpawnPoint;
 
 void(entity player,entity door) ObserverDoor =
@@ -171,7 +170,7 @@ void() Impulses_Observer =
         if (self.impulse == 1 || self.impulse == 2 || self.button0 || self.button2)
         {
             self.observer = 0;
-            respawn();
+            respawn (FALSE);
         }
     }
 
@@ -196,7 +195,7 @@ void() Impulses_Observer =
 
             // ...and join the game
             self.observer = 0;
-            respawn();
+            respawn (FALSE);
         }
     }
 

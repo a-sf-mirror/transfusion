@@ -373,6 +373,10 @@ Update the frag count of the player and his team
 */
 void(entity player, float fragsToAdd) UpdatePlayerFrags =
 {
+    // No frag until the warmup is finished
+    if (!warmup_done)
+        return;
+
     local string score;
 
     player.frags = player.frags + fragsToAdd;
@@ -397,10 +401,10 @@ void(entity player, float fragsToAdd) UpdatePlayerFrags =
 
 
 // called by ClientKill and DeadThink
-void() respawn =
+void(float cloneCorpse) respawn =
 {
     // make a copy of the dead body for appearances sake
-    if (self.classname != "observer")
+    if (cloneCorpse)
         CloneCorpse (self);
 
     // set default spawn parms
@@ -434,13 +438,7 @@ void() ClientKill =
     logfrag (self, self);
     #endif
     UpdatePlayerFrags (self, -2);  // extra penalty
-    respawn ();
-};
-
-
-float(vector v) CheckSpawnPoint =
-{
-    return FALSE;
+    respawn (TRUE);
 };
 
 
@@ -776,6 +774,7 @@ void() CheckRules =
     }
 };
 
+
 //============================================================================
 
 void() PlayerDeathThink =
@@ -817,7 +816,7 @@ void() PlayerDeathThink =
     self.button0 = 0;
     self.button3 = 0;
     self.button2 = 0;
-    respawn();
+    respawn (TRUE);
 };
 
 
@@ -1257,6 +1256,12 @@ void() Impulses_Player =
     else if (self.impulse == 16)
         ArmorTest ();
 
+    // TEMP: for testing
+    else if (self.impulse == 33)
+        World_EndWarmup (FALSE);
+    else if (self.impulse == 34)
+        World_EndWarmup (TRUE);
+
     // Toggle menu
     else if (self.impulse == 50)
         Menu_Start ();
@@ -1342,7 +1347,7 @@ void() Impulses_Dead =
     if (self.impulse == 20)
     {
         self.do_observer = 1;
-        respawn ();
+        respawn (TRUE);
         Bprint (PRINT_MEDIUM, self.netname);
         Bprint (PRINT_MEDIUM, " is an observer again\n");
     }

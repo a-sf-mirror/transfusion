@@ -154,6 +154,7 @@ void() FlareStick =
     dist = dist / 4;
 
     // Get the proper angles.
+    // FIXME: where do those "self.dest_*" come from??
     spot_x = self.enemy.angles_x - self.dest_x;
     spot_y = self.enemy.angles_y + self.dest_y;
     spot_z = 0;

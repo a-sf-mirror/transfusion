@@ -183,11 +183,34 @@ void() light_flame_small_white =
 
 //============================================================================
 
+void() barrel_reset =
+{
+    self.solid = SOLID_BBOX;
+    self.takedamage = DAMAGE_AIM;
+    self.classname = "misc_explobox2";
+    self.model = "progs/barrel.mdl";
+    self.health = 20;
+};
+
 //  This fixes a bug in which barrel explosions cancel other explosions.
 //  Here, the barrel explosion is delayed for one frame so that other
 //  explosions can occur without interference from the barrel.
 void() barrel_damage =
 {
+    local entity tempEnt;
+
+    // If the warmup hasn't been done, don't really destroy it
+    if (! warmup_done)
+    {
+        self.solid = SOLID_NOT;
+        self.model = string_null;
+
+        tempEnt = self;
+        self = spawn ();
+        self.dmg = tempEnt.dmg;
+        self.origin = tempEnt.origin;
+    }
+
     setorigin (self, self.origin + '0 0 32');
     T_RadiusDamage (self, self, self.dmg, world, string_null);
 
@@ -204,6 +227,9 @@ void() barrel_damage =
     particle (self.origin, '0 0 0', 75, 255);
     BecomeExplosion ();
     #endif
+
+    if (! warmup_done)
+        self = tempEnt;
 };
 
 void() barrel_explode =
@@ -232,6 +258,7 @@ void() misc_explobox2 =
     if (!self.dmg)
         self.dmg = 240;
     self.health = 20;
+    self.reset = barrel_reset;
     self.th_die = barrel_explode;
     self.use = barrel_explode;
     self.takedamage = DAMAGE_AIM;
@@ -624,10 +651,34 @@ void(string gibname, float dm) ThrowRubble=
     new.flags = 0;
 };
 
+void() wall_reset =
+{
+    if (self.spawnflags & 4)
+        self.solid = SOLID_BSP;
+    else
+        self.solid = SOLID_BBOX;
+
+    if (! (self.spawnflags & 1))
+    {
+        self.takedamage = DAMAGE_AIM;
+        self.health = self.max_health;
+    }
+
+    self.model = self.mdl;
+};
+
+
 // called when the wall is destroyed.
 // throws gibs (rubble).
 void () wall_killed =
 {
+    // If the warmup hasn't been done, don't really destroy it
+    if (! warmup_done)
+    {
+        self.solid = SOLID_NOT;
+        self.model = string_null;
+    }
+
     // spawnflag 8 is no longer needed since noise would be set if sound is on
     if (self.noise)
     {
@@ -641,18 +692,17 @@ void () wall_killed =
 
     if (! (self.spawnflags & 16)) // if rubble is not disabled
     {
+        local float nbRubbles;
+
         // if cnt is not set, use object bbox volume to set it
         if (! self.cnt)
             self.cnt = (self.size_x * self.size_y * self.size_z) / 64000;
         if (self.cnt > 6)
             self.cnt = 6;
 
-        while (self.cnt > 0)
+        nbRubbles = self.cnt;
+        while (nbRubbles > 0)
         {
-            self.dest_x = (random() * 100) - 50;
-            self.dest_y = (random() * 100) - 50;
-            self.dest_z = (random() * 100);
-
             if (self.skin > 4)
             {
                 ThrowRubble ("progs/glass1.mdl", self.health);
@@ -666,14 +716,16 @@ void () wall_killed =
                 ThrowRubble ("progs/rubble3.mdl", self.health);
             }
 
-            self.cnt = self.cnt - 1;
+            nbRubbles = nbRubbles - 1;
         }
     }
 
     activator = self;
     SUB_UseTargets();
 
-    remove (self);
+    // We only remove it if the warmup has been done
+    if (warmup_done)
+        remove (self);
 };
 
 void() wall_pain =
@@ -686,9 +738,6 @@ void() wall_pain =
 void() wall_use =
 {
     self.health = -50;
-    self.dest_x = (random() * 10) - 5;
-    self.dest_y = (random() * 10) - 5;
-    self.dest_z = (random() * 10);
     wall_killed();
 };
 
@@ -732,6 +781,9 @@ SPAWNFLAGS
 void() exploding_wall =
 {
     setmodel (self, self.model);
+
+    // Save the model name for wall_reset
+    self.mdl = self.model;
 
     // precache rubble models (two models used since red trails on gibs, grey on other rubble)
     if (! (self.spawnflags & 16))  // if rubble is not turned off
@@ -810,10 +862,8 @@ void() exploding_wall =
             self.health = 15;  // set default health if none set
     }
 
-    // "One shot kill" only
-    if (self.spawnflags & 2)
-        self.max_health = self.health;  // set health value to return to if not killed
-
+    self.max_health = self.health;
+    self.reset = wall_reset;
     self.th_pain = wall_pain;
     self.th_die = wall_killed;
 

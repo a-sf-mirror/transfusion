@@ -260,23 +260,25 @@ void    end_sys_fields;         // flag for structure dumping
 //
 // globals
 //
-float   gameover;       // set when a rule exits
+float   gameover;           // set when a rule exits
 
 string  nextmap;
 
-string  string_null;    // null string, nothing should be held here
+string  string_null;        // null string, nothing should be held here
 
 #ifndef QUAKEWORLD
-entity  newmis;         // launch_spike sets this after spawning it
+entity  newmis;             // launch_spike sets this after spawning it
 #endif
 
-entity  activator;      // the entity that activated a trigger or brush
+entity  activator;          // the entity that activated a trigger or brush
 
 entity  damage_attacker;    // set by T_Damage
 entity  damage_inflictor;
 
-float   qcextensions;  // Does the engine support QC extensions?
+float   qcextensions;       // Does the engine support QC extensions?
 
+float   warmup_done;        // set to TRUE when the warmup has been done
+float   warmup_endtime;     // set to 0 before AND after the warmup
 
 // cvars checked each frame
 float timelimit;
@@ -357,6 +359,10 @@ float team2score;
 
 .entity     leech_sentry;
 
+.void()     reset;          // Used by the warmup code. Most of the time, it resets
+                            // the entity to its original state or just remove it
+
+// QuakeC extensions
 .float      button3;        // altfire; DP_INPUTBUTTONS extension
 .float      alpha;          // controls opacity of the entity (0.0 or 1.0 is solid, -1 is invisible); DP_ENT_ALPHA extension
 

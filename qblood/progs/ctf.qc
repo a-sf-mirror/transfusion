@@ -106,10 +106,14 @@ void() CTF_FlagTouch =
 
             other.items2 = other.items2 - IT2_ENEMY_FLAG;
 
-            if (self.team == TEAM_COLOR1)
-                team1score = team1score + 1;
-            else
-                team2score = team2score + 1;
+            // The score stays 0/0 until the warmup is finished
+            if (warmup_done)
+            {
+                if (self.team == TEAM_COLOR1)
+                    team1score = team1score + 1;
+                else
+                    team2score = team2score + 1;
+            }
 
             // the flag is at home base.  if the player has the enemy
             // flag, he's just won!

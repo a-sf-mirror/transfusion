@@ -35,6 +35,11 @@ void() SUB_regen =
     self.solid = SOLID_TRIGGER; // allow it to be touched again
     sound (self, CHAN_VOICE, "bludbath/reappear.wav", 1, ATTN_NORM);    // item respawn sound
     setorigin (self, self.origin);
+
+    // Don't call it back later
+    if (self.think == SUB_regen)
+        self.nextthink = 0;
+    self.reset = SUB_Null;
 };
 
 
@@ -223,6 +228,7 @@ void() lure_touch =
     self.model = string_null;
     self.nextthink = time + 20;
     self.think = SUB_regen;
+    self.reset = SUB_regen;
 
     Sprint (other, PRINT_LOW, "Picked up a LURE\n");
     sound (other, CHAN_ITEM, self.noise, 1, ATTN_NORM);
@@ -969,6 +975,7 @@ void() powerup_touch =
     else
         self.nextthink = time + 60;
     self.think = SUB_regen;
+    self.reset = SUB_regen;
 
     sound (other, CHAN_VOICE, self.noise, 1, ATTN_NORM);
     stuffcmd (other, "bf\n");
@@ -1119,6 +1126,7 @@ void() health_touch =
 
     self.nextthink = time + 20;
     self.think = SUB_regen;
+    self.reset = SUB_regen;
 
     activator = other;
     SUB_UseTargets();       // fire all targets / killtargets
@@ -1273,6 +1281,7 @@ void() armor_touch =
     self.model = string_null;
     self.nextthink = time + 20;
     self.think = SUB_regen;
+    self.reset = SUB_regen;
 
     Sprint(other, PRINT_LOW, "Picked up ");
     Sprint(other, PRINT_LOW, self.netname);
@@ -1558,6 +1567,7 @@ void() weapon_touch =
     self.solid = SOLID_NOT;
     self.nextthink = time + 30;
     self.think = SUB_regen;
+    self.reset = SUB_regen;
 
     activator = other;
     SUB_UseTargets();               // fire all targets / killtargets
@@ -1978,6 +1988,7 @@ void() ammo_touch =
     self.nextthink = time + 30;
 
     self.think = SUB_regen;
+    self.reset = SUB_regen;
 
     activator = other;
     SUB_UseTargets();               // fire all targets / killtargets

@@ -228,15 +228,21 @@ void() worldspawn =
     if (qcextensions)
         if (checkextension ("DP_REGISTERCVAR"))
         {
+            registercvar ("g_warmup", "0");
             registercvar ("g_weaponStay", "0");
             registercvar ("sv_allowCheat", "0");
             registercvar ("sv_disable", "0");
         }
 
     // Some engines create them on the fly
+    cvar ("g_warmup");
     cvar ("g_weaponStay");
     cvar ("sv_allowCheat");
     cvar ("sv_disable");
+
+    // Warmup initialization
+    warmup_done = 0;
+    warmup_endtime = 0;
 
     #ifdef FRIKBOT
     // FrikBot X initialization
@@ -378,6 +384,72 @@ void() StartFrame =
     #ifdef FRIKBOT
     BotFrame();
     #endif
+};
+
+
+/*
+==============================================================================
+
+WARMUP
+
+==============================================================================
+*/
+
+/*
+====================
+World_EndWarmup
+
+Ends the warmup and resets/respawns all entities.
+If "startPlay" is TRUE, the game begins; else it restarts the whole warmup process
+====================
+*/
+void(float cloneCorpse) respawn;
+void(float startPlay) World_EndWarmup =
+{
+    if (warmup_done)
+        return;
+
+    local entity ent, tempEnt;
+
+    tempEnt = self;
+
+    // Reset all entities
+    ent = nextent (world);
+    while (ent != world)
+    {
+        // If the entity has a reset function, call it
+        if (ent.reset)
+        {
+            self = ent;
+            ent.reset ();
+        }
+        ent = nextent (ent);
+    }
+
+    // Respawn all players
+    ent = find (world, classname, "player");
+    while (ent != world)
+    {
+        self = ent;
+        respawn (FALSE);
+        ent = find (ent, classname, "player");
+    }
+    ent = find (world, classname, "head");
+    while (ent != world)
+    {
+        // If the head is actually a gibbed player that hasn't yet respawn
+        if (!ent.takedamage)
+        {
+            self = ent;
+            respawn (FALSE);
+        }
+        ent = find (ent, classname, "head");
+    }
+
+    self = tempEnt;
+
+    warmup_done = startPlay;
+    warmup_endtime = 0;
 };
 
 
