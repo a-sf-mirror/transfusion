@@ -91,6 +91,10 @@ void() W_Precache =
 
 // PM:  Temporary -- remove.
     precache_sound ("weapons/tesla/tessnght.wav");  // Hit
+    precache_sound ("weapons/napalm/explodfs.wav"); // For alt-flares.
+//  PM:  Currently here so alt-napalm won't crash in levels without
+//       incinerator.  Should remove later.
+    precache_model ("progs/naltball.mdl");
 };
 
 float() crandom =
@@ -192,10 +196,26 @@ void() ClearMultiDamage;
 void(entity hit, float damage) AddMultiDamage;
 void() ApplyMultiDamage;
 
+float(entity targ) Reflected =
+{
+    if (!targ)
+        return FALSE;
+    return (targ.reflect_finished >= time);
+};
+
 void(entity targ, vector org, float damage) TineHit =
 {
     if (targ.takedamage)
     {
+        if (Reflected (targ))
+        {
+            if (Reflected (self))
+                return;     // Both have reflection, so negate attack.
+
+            // Hit attacker instead.
+            targ = self;
+            org = self.origin;
+        }
         targ.axhitme = 1;
         SpawnBlood (org, '0 0 0', damage);
         AddMultiDamage (targ, damage);
@@ -351,6 +371,17 @@ TraceAttack
 */
 void(float damage, vector dir) TraceAttack =
 {
+    if (Reflected (trace_ent))
+    {
+        if (Reflected (self))
+            return;     // Both have reflection, so negate attack.
+
+        // Hit attacker instead.
+        trace_ent = self;
+        trace_endpos = self.origin;
+        dir = '0 0 0' - dir;
+    }
+
     local   vector  vel, org;
 
     vel = normalize(dir + v_up*crandom() + v_right*crandom());
@@ -433,6 +464,7 @@ W_FireShotgun - Flaregun
 void() W_FireShotgun =
 {
     local vector dir;
+    local float  mspeed;
 
 // Launch flare instead.
     sound (self, CHAN_WEAPON, "weapons/flaregun/flaref.wav", 1, ATTN_NORM);
@@ -444,17 +476,18 @@ void() W_FireShotgun =
     WriteByte (MSG_ONE, SVC_SMALLKICK);
     #endif
 
-    dir = aim (self, 1000);
+    mspeed = 1000;
+    dir = aim (self, mspeed);
     if ((self.impulse == 12 || self.button1) && self.ammo_shells >= 8)
     {
         // PM:  Fire alt-flares instead.
         self.currentammo = self.ammo_shells = self.ammo_shells - 8;
-        PM_FireAltFlares (self, self.origin + '0 0 16', dir, 1000, 10, 10);
+        PM_FireAltFlares (self, self.origin + '0 0 16', dir, mspeed, 10, 50);
         return;
     }
 
     self.currentammo = self.ammo_shells = self.ammo_shells - 1;
-    PM_FireFlare (self, self.origin + '0 0 16', dir, 1000, 10);
+    PM_FireFlare (self, self.origin + '0 0 16', dir, mspeed);
 };
 
 
@@ -616,11 +649,53 @@ ROCKETS
 ==============================================================================
 */
 
-//  PM:  Napalm blast effects.
+.float  charge;
+.float  powertime;
+.float  tnt_time;
+.float  tnt_type;
+
+.float  idle_time;
+.float  idle_done;
+
+void(entity client) PM_ResetIdle =
+{
+    client.idle_done = FALSE;
+    client.idle_time = time + 10 + random() * 10;  // 10-20 sec.
+};
+
+// This makes the player rave.
+void(entity client) PM_BoredCaleb =
+{
+    if (client.health <= 0)
+        return;
+    if (client.deadflag)
+        return;
+    if (client.classname != "player")
+        return;
+
+    local   float   rs;
+    local   string  playit;
+
+    rs = random() * 4;
+    rs = floor (rs);
+
+    if (rs == 0)
+        playit = "player/songs/1093.wav";   // "Strangers in the night..."
+    else if (rs == 1)
+        playit = "player/songs/1094.wav";   // "There's no business like..."
+    else if (rs == 2)
+        playit = "player/songs/1095.wav";   // "I did it... my way!"
+    else
+        playit = "player/songs/1097.wav";   // "...putting on the Ritz."
+
+    sound (client, CHAN_VOICE, playit, 1, ATTN_NORM);
+};
 
 // This makes the player laugh or utter one of Caleb's signature one-liners.
 void(entity client) PM_PsychoCaleb =
 {
+    if (random() > 0.05)
+        return;     // Only 5% chance per call.
     if (client.health <= 0)
         return;
     if (client.deadflag)
@@ -662,7 +737,9 @@ void(entity client) PM_PsychoCaleb =
             playit = "player/play1116.wav";
     }
 
+    // To make sure Caleb is loud enough, play sound on multiple channels.
     sound (client, CHAN_VOICE, playit, 1, ATTN_NONE);
+    sound (client, CHAN_BODY, playit, 1, ATTN_NONE);
 };
 
 // This creates a blank entity that inflicts burn damage for several
@@ -822,6 +899,7 @@ void() T_MissileTouch =
 
     damg = 50 + random()*50; // quake = 100 + random()*20
 
+    self.deathtype = "rocket";  // Done for the fire code.
     if (other.health)
     {
         other.deathtype = "rocket";
@@ -829,12 +907,14 @@ void() T_MissileTouch =
         if (other.classname == "monster_shambler")
             damg = damg * 0.5;  // mostly immune
         #endif
-        T_Damage (other, self, self.owner, damg );
+//        T_Damage (other, self, self.owner, damg );
+        PM_BurnDamage (other, self, damg*0.75, damg*0.25);
     }
 
     // don't do radius damage to the other, because all the damage
     // was done in the impact
-    T_RadiusDamage (self, self.owner, 120, other, "rocket");
+//    T_RadiusDamage (self, self.owner, 120, other, "rocket");
+    PM_BurnRadius (self, 90, 30, other);
 
     self.origin = self.origin - 8*normalize(self.velocity);
 
@@ -849,9 +929,7 @@ void() T_MissileTouch =
 
     PM_ThrowEmbers (8);
     PM_MakeBlastDamage (self, 160, 20, 10);
-
-    if (random() < 0.05)
-        PM_PsychoCaleb (self.owner);
+    PM_PsychoCaleb (self.owner);
 
     #ifdef QUAKEWORLD
     WriteByte (MSG_MULTICAST, SVC_TEMPENTITY);
@@ -1003,8 +1081,10 @@ void() PM_TeslaTouch =
 
 void() W_FireLightning =
 {
-    local   vector      org;
-    local   float       cells;
+    local   vector  org;
+    local   entity  jolt;
+    local   vector  dir;
+    local   float   mspeed;
 
     if (self.ammo_cells < 1)
         return;
@@ -1024,16 +1104,11 @@ void() W_FireLightning =
 
     self.currentammo = self.ammo_cells = self.ammo_cells - 1;
 
-    org = self.origin + '0 0 16';
-
     // PM:  This is for the plasma gun-wannabe mode.
-    local   entity  jolt;
-    local   vector  dir;
-    local   float   mspeed;
-
     mspeed = 1000;
     makevectors (self.v_angle);
     dir = aim(self, mspeed);
+    org = self.origin + '0 0 4';
 
     jolt = spawn();
 
@@ -1082,6 +1157,7 @@ void() W_UseVoodooDoll =
     local vector vel, org;
     local float stab_type;
     local float damage;
+    local entity targ;
 
     muzzleflash ();
 
@@ -1167,14 +1243,15 @@ void() W_UseVoodooDoll =
         SpawnBlood (org, vel*0.2, damage);
         #endif
 
-        // PM:  I assume voodoo does 'spiritual' damage.
-        T_NewDamage (trace_ent, self, self, damage, DF_MIND, "voodoo");
+        targ = trace_ent;
     }
 
     // Else, WE take the damage
     else
-        // PM:  I assume voodoo does 'spiritual' damage.
-        T_NewDamage (self, self, self, damage, DF_MIND, "voodoo");
+        targ = self;
+
+    // PM:  I assume voodoo does 'spiritual' damage.
+    T_NewDamage (targ, self, self, damage, DF_MIND, "voodoo");
 };
 
 
@@ -1198,6 +1275,9 @@ void() GrenadeExplode =
     self.voided = 1;
     #endif
 
+// PM:  Don't let grenade explode twice.
+    self.takedamage = DAMAGE_NO;
+
     // Remember who really owns the napalm.
     if (self.netname == "Napalm Ball")
     {
@@ -1210,8 +1290,7 @@ void() GrenadeExplode =
         PM_MakeBlastDamage (self, radius, damage, burn);
     }
 
-    if (random() < 0.05)
-        PM_PsychoCaleb (self.owner);
+    PM_PsychoCaleb (self.owner);
 
     T_RadiusDamage (self, self.owner, self.dmg, world, "grenade");
 
@@ -1294,14 +1373,36 @@ GrenadeTouch
 */
 void() GrenadeTouch =
 {
+// PM:  Removed dynamite stuff.
+    if (self.velocity == '0 0 0')
+        self.avelocity = '0 0 0';
+};
+
+
+// PM:  Dynamite stuff.
+
+void() DynaTouch =
+{
     // Normal grenades are the only ones which can explode on touch
-    if (self.dmg = DMG_TNT)
+    if (!self.style)
     {
-        if (other == self.owner)
-            return;     // don't explode on owner
-        if (other.takedamage == DAMAGE_AIM)
+        local   float   blow;
+
+        blow = TRUE;
+
+        // Rebound if it hits the ceiling.  Otherwise, explode.
+        traceline (self.origin - self.dest*4, self.origin + self.dest*16, TRUE, self);
+        if (trace_fraction < 1)
         {
-            GrenadeExplode();
+//            bprint (vtos(trace_plane_normal)); bprint("\n");
+            if (trace_plane_normal_z < 0)
+                blow = FALSE;
+        }
+
+        if (blow)
+        {
+// FIXME:  Play null.wav to stop fuse sound.
+            GrenadeExplode ();
             return;
         }
     }
@@ -1310,6 +1411,32 @@ void() GrenadeTouch =
         self.avelocity = '0 0 0';
 };
 
+void() DynaThink =
+{
+    if (self.pausetime <= time)
+    {
+// FIXME:  Play null.wav to stop fuse sound.
+        GrenadeExplode ();
+        return;
+    }
+
+    if (self.t_width <= time)
+    {
+        self.t_width    = time + 3;
+        sound (self, CHAN_BODY, "weapons/tnt/tntfuse.wav", 1, ATTN_NORM);
+    }
+    self.dest       = normalize (self.velocity);
+    self.nextthink  = time + 0.1;
+
+    // Dynamite will take damage then explode if in slime or lava.
+    local   float   pc;
+
+    pc = pointcontents (self.origin);
+    if (pc == CONTENT_SLIME)
+        T_NewDamage (self, world, world, 4, DF_BODY, "acid");
+    else if (pc == CONTENT_LAVA)
+        T_NewDamage (self, world, world, 10, DF_FIRE, "fire");
+};
 
 /*
 ================
@@ -1342,14 +1469,23 @@ void() W_FireGrenade =
 
     // set newmis speed
     makevectors (self.v_angle);
+// PM:  TNT Charge/throw meter power.
+    local   float   mspeed, mup;
+
+    mspeed = 200 + (self.charge * 50);
+    mup = mspeed / 2;
+
     if (self.v_angle_x)
-        newmis.velocity = v_forward*600 + v_up * 200 + crandom()*v_right*10 + crandom()*v_up*10;
+        newmis.velocity = v_forward*mspeed + v_up * mup + crandom()*v_right*10 + crandom()*v_up*10;
     else
     {
         newmis.velocity = aim(self, 10000);
-        newmis.velocity = newmis.velocity * 600;
-        newmis.velocity_z = 200;
+        newmis.velocity = newmis.velocity * mspeed;
+        newmis.velocity_z = mup;
     }
+
+    if (!self.charge)
+        newmis.velocity = '0 0 0';
 
     newmis.avelocity = '300 300 300';
     newmis.angles = vectoangles(newmis.velocity);
@@ -1370,14 +1506,20 @@ void() W_FireGrenade =
         newmis.netname = "proximity bomb";
         newmis.dmg = DMG_PROXIMITY_BOMB;
     }
-    // Else, it's a normal grenade
+    // Else, it's dynamite!
     else
     {
-        newmis.think = GrenadeExplode;
-        newmis.netname = "TNT";
-        newmis.dmg = DMG_TNT;
-
-        sound (newmis, CHAN_VOICE, "weapons/tnt/tntfuse.wav", 1, ATTN_NORM);
+        newmis.style     = self.tnt_type;
+        if (newmis.style)
+            newmis.pausetime = self.tnt_time;   // Alt-fire TNT
+        else
+            newmis.pausetime = time + 5;        // Normal TNT
+        newmis.nextthink = 0.1;
+        newmis.think     = DynaThink;
+        newmis.touch     = DynaTouch;
+        newmis.netname   = "TNT";
+        newmis.dmg       = DMG_TNT;
+        newmis.dest      = normalize (newmis.velocity);
     }
 
     setmodel (newmis, "progs/grenade.mdl");
@@ -1429,7 +1571,7 @@ void() W_FireSuperSpikes =
 
     sound (self, CHAN_WEAPON, "weapons/spraycan/sprayfir.wav", 1, ATTN_NORM);
     self.attack_finished = time + 0.2;
-    self.currentammo = self.ammo_nails = self.ammo_nails - 2;
+    self.currentammo = self.ammo_nails = self.ammo_nails - 1;
     dir = aim (self, 1000);
     launch_spike (self.origin + '0 0 16', dir);
     newmis.touch = superspike_touch;
@@ -1454,7 +1596,7 @@ void() W_FireSpikes =
 
     makevectors (self.v_angle);
 
-    if (self.ammo_nails >= 2 && self.weapon == IT_SUPER_NAILGUN)
+    if (self.weapon == IT_SUPER_NAILGUN)
     {
         W_FireSuperSpikes ();
         return;
@@ -1807,14 +1949,16 @@ void() W_Attack =
     else if (self.weapon == IT_LIGHTNING)
     {
         self.attack_finished = time + 0.1;
-        sound (self, CHAN_AUTO, "weapons/tesla/tessngfr.wav", 1, ATTN_NORM);
+        //sound (self, CHAN_AUTO, "weapons/tesla/tessngfr.wav", 1, ATTN_NORM);
         player_light1();
     }
     else if (self.weapon == IT_VOODOO_DOLL)
     {
         W_UseVoodooDoll();
         self.attack_finished = time + 0.7;
-        player_doll1 ();
+// PM:  Don't call player_run if dead.
+        if (!self.deadflag)
+            player_doll1 ();
     }
 };
 
@@ -1886,6 +2030,9 @@ void() W_ChangeWeapon =
 
     self.impulse = 0;
 
+// PM:  Don't let player change weapons while holding lit dynamite.
+    if (self.tnt_time)
+        return;
     if (!(self.items & fl))
     {   // don't have the weapon or the ammo
         Sprint (self, PRINT_MEDIUM, "You don't have that weapon.\n");
@@ -1971,6 +2118,9 @@ void() CycleWeaponCommand =
 
     self.impulse = 0;
 
+// PM:  Don't let player change weapons while holding lit dynamite.
+    if (self.tnt_time)
+        return;
     while (1)
     {
         am = 0;
@@ -2050,6 +2200,9 @@ void() CycleWeaponReverseCommand =
 
     self.impulse = 0;
 
+// PM:  Don't let player change weapons while holding lit dynamite.
+    if (self.tnt_time)
+        return;
     while (1)
     {
         am = 0;
@@ -2125,10 +2278,211 @@ void() QuadCheat =
 
     self.super_time = 1;
     self.super_damage_finished = time + 30;
-    self.items = self.items | IT_QUAD;
+// PM:  Guns Akimbo no longer uses IT_QUAD.
+    Sprint (self, PRINT_MEDIUM, "tequila\n");
     dprint ("quad cheat\n");
 };
 #endif
+
+//========================================================================
+
+void() ShowThrowMeter =
+{
+    local   string  text;
+
+    if (self.charge == 20)
+        text = "žžžžžžžžžžžžžžžžžžžž";
+    else if (self.charge == 19)
+        text = "žžžžžžžžžžžžžžžžžžž ";
+    else if (self.charge == 18)
+        text = "žžžžžžžžžžžžžžžžžž  ";
+    else if (self.charge == 17)
+        text = "žžžžžžžžžžžžžžžžž   ";
+    else if (self.charge == 16)
+        text = "žžžžžžžžžžžžžžžž    ";
+    else if (self.charge == 15)
+        text = "žžžžžžžžžžžžžžž     ";
+    else if (self.charge == 14)
+        text = "žžžžžžžžžžžžžž      ";
+    else if (self.charge == 13)
+        text = "žžžžžžžžžžžžž       ";
+    else if (self.charge == 12)
+        text = "žžžžžžžžžžžž        ";
+    else if (self.charge == 11)
+        text = "žžžžžžžžžžž         ";
+    else if (self.charge == 10)
+        text = "žžžžžžžžžž          ";
+    else if (self.charge == 9)
+        text = "žžžžžžžžž           ";
+    else if (self.charge == 8)
+        text = "žžžžžžžž            ";
+    else if (self.charge == 7)
+        text = "žžžžžžž             ";
+    else if (self.charge == 6)
+        text = "žžžžžž              ";
+    else if (self.charge == 5)
+        text = "žžžžž               ";
+    else if (self.charge == 4)
+        text = "žžžž                ";
+    else if (self.charge == 3)
+        text = "žžž                 ";
+    else if (self.charge == 2)
+        text = "žž                  ";
+    else if (self.charge == 1)
+        text = "ž                   ";
+    else
+        text = "";
+
+    centerprint (self, text);
+};
+
+void() W_Uncharge =
+{
+    self.charge     = 0;
+    self.powertime  = 0;
+    self.tnt_time   = 0;
+};
+
+#define FUSE_TIME   5.5
+
+float() W_FireCharge =
+{
+    if (self.weapon == IT_GRENADE_LAUNCHER)
+    {
+        if (self.ammo_rockets < 1)
+        {
+            // Out of ammo, so don't bother trying to throw.
+            W_Uncharge ();
+            return FALSE;
+        }
+
+        if (self.tnt_time)
+        {
+            // Check for lit fuse sounds.
+            if (self.t_width <= time)
+            {
+                sound (self, CHAN_WEAPON, "weapons/tnt/tntfuse.wav", 1, ATTN_NORM);
+                self.t_width = time + 3;
+            }
+        }
+
+        if ((self.impulse == 12) || self.button1)
+        {
+            // Alt-fire dynamite.
+            if (self.tnt_time)
+            {
+                if (!self.button0)
+                {
+                    // Drop lit dynamite.
+                    self.charge = 0;    // Make sure it's dropped, not thrown.
+                    SuperDamageSound ();
+                    W_Attack ();
+
+                    W_Uncharge ();
+                    ShowThrowMeter ();  // Remove throw meter.
+                }
+            }
+            else
+            {
+                self.tnt_time = time + FUSE_TIME;   // Start the fuse.
+                self.tnt_type = TRUE;
+            }
+        }
+
+        if ( self.button0 && (!self.tnt_time || (self.tnt_time > time)) )
+        {
+            // Charge TNT.
+            if (!self.tnt_time)
+            {
+                self.tnt_time = time + FUSE_TIME;   // Start the fuse.
+                self.tnt_type = FALSE;
+            }
+
+            PM_ResetIdle (self);    // Don't let Caleb rave.
+
+            if (self.charge >= 20)
+            {
+                // Maxed out.
+                self.powertime = 0;
+            }
+            else if (self.powertime <= time)
+            {
+                self.powertime = time + 0.1;
+                self.charge = self.charge + 1;
+            }
+            ShowThrowMeter ();
+        }
+        else if (self.tnt_time)
+        {
+            if (!self.tnt_type || self.charge || (self.tnt_time <= time))
+            {
+                // Throw the dynamite.
+                SuperDamageSound ();
+                W_Attack ();
+
+                W_Uncharge ();
+                ShowThrowMeter ();  // Remove throw meter.
+            }
+        }
+
+        return TRUE;
+    }
+
+    // Player is not holding dynamite, and can rapid-fire the weapon.
+    W_Uncharge ();
+    return FALSE;
+};
+
+// PM:  Let's player change the armor shown if he has more than one armor.
+void() PM_ArmorTest =
+{
+    if (self.items & IT_ARMOR2)
+    {
+        if (self.armor_body)
+        {
+            self.armorvalue = self.armor_body;
+            self.items = self.items - (self.items & (IT_ARMOR1 | IT_ARMOR2 | IT_ARMOR3)) + IT_ARMOR1;
+        }
+        else if (self.armor_mind)
+        {
+            self.armorvalue = self.armor_mind;
+            self.items = self.items - (self.items & (IT_ARMOR1 | IT_ARMOR2 | IT_ARMOR3)) + IT_ARMOR3;
+        }
+    }
+    else if (self.items & IT_ARMOR1)
+    {
+        if (self.armor_mind)
+        {
+            self.armorvalue = self.armor_mind;
+            self.items = self.items - (self.items & (IT_ARMOR1 | IT_ARMOR2 | IT_ARMOR3)) + IT_ARMOR3;
+        }
+        else if (self.armor_fire)
+        {
+            self.armorvalue = self.armor_fire;
+            self.items = self.items - (self.items & (IT_ARMOR1 | IT_ARMOR2 | IT_ARMOR3)) + IT_ARMOR2;
+        }
+    }
+    else //if (self.items & IT_ARMOR3)
+    {
+        if (self.armor_fire)
+        {
+            self.armorvalue = self.armor_fire;
+            self.items = self.items - (self.items & (IT_ARMOR1 | IT_ARMOR2 | IT_ARMOR3)) + IT_ARMOR2;
+        }
+        else if (self.armor_body)
+        {
+            self.armorvalue = self.armor_body;
+            self.items = self.items - (self.items & (IT_ARMOR1 | IT_ARMOR2 | IT_ARMOR3)) + IT_ARMOR1;
+        }
+        else if (self.armor_mind)
+        {
+            self.armorvalue = self.armor_mind;
+            self.items = self.items - (self.items & (IT_ARMOR1 | IT_ARMOR2 | IT_ARMOR3)) + IT_ARMOR3;
+        }
+    }
+};
+
+//========================================================================
 
 /*
 ============
@@ -2152,14 +2506,41 @@ void() ImpulseCommands =
         // Altfire
         else if (self.impulse == 12)
         {
-            SuperDamageSound ();
-            W_Attack ();
+            if (!self.button1 && !W_FireCharge ())  // if button1 is triggered, it has priority
+            {
+                SuperDamageSound ();
+                W_Attack ();
 
-            self.button0 = 0;  // avoid a normal attack
-            self.button1 = 0;  // avoid a double altfire attack
+                self.button0 = 0;  // avoid a normal attack
+            }
         }
 
+        // Inventory selection/usage.
+        else if (self.impulse == 13)
+            InvenUse ();
+        else if (self.impulse == 14)
+            InvenSelect (FALSE);
+        else if (self.impulse == 15)
+            InvenSelect (TRUE);
+
+        // Armor cycle.
+        else if (self.impulse == 16)
+            PM_ArmorTest ();
+
         #ifndef QUAKEWORLD
+        else if (self.impulse == 251)
+        {
+            Sprint (self, PRINT_MEDIUM, "griswold -- You have full armor.\n");
+            self.armor_fire = self.armor_body = self.armor_mind = self.armorvalue = 200;
+            self.items = self.items - (self.items & (IT_ARMOR1 | IT_ARMOR2 | IT_ARMOR3)) + IT_ARMOR2;
+        }
+        else if (self.impulse == 252)
+        {
+            Sprint (self, PRINT_MEDIUM, "mcgee -- You're fired!\n");
+            PM_Ignite (self, self, 200);
+        }
+        else if (self.impulse == 253)
+            InvenCheat ();
         else if (self.impulse == 254)
             CheatCommand ();
         else if (self.impulse == 255)
@@ -2188,9 +2569,13 @@ void() W_WeaponFrame =
 
     ImpulseCommands ();
 
+    if (W_FireCharge ())
+        return;
+
     // Check for attack
     if (self.button0 || self.button1)
     {
+        PM_ResetIdle (self);
         SuperDamageSound ();
         W_Attack ();
     }

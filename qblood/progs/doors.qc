@@ -243,45 +243,28 @@ void() door_touch =
     if ((self.items2 & other.items2) != self.items2)
     {
         if (self.owner.items2 == IT2_KEY1)
-        {
-            if (world.worldtype == 2)
-            {
-                centerprint (other, "You need the silver keycard");
-                sound (self, CHAN_VOICE, self.noise3, 1, ATTN_NORM);
-            }
-            else if (world.worldtype == 1)
-            {
-                centerprint (other, "You need the silver runekey");
-                sound (self, CHAN_VOICE, self.noise3, 1, ATTN_NORM);
-            }
-            else if (world.worldtype == 0)
-            {
-                centerprint (other, "You need the silver key");
-                sound (self, CHAN_VOICE, self.noise3, 1, ATTN_NORM);
-            }
-        }
+            centerprint (other, "You need the skull key");
+        else if (self.owner.items2 == IT2_KEY2)
+            centerprint (other, "You need the eye key");
+        else if (self.owner.items2 == IT2_KEY3)
+            centerprint (other, "You need the fire key");
+        else if (self.owner.items2 == IT2_KEY4)
+            centerprint (other, "You need the dagger key");
+        else if (self.owner.items2 == IT2_KEY5)
+            centerprint (other, "You need the spider key");
+        else if (self.owner.items2 == IT2_KEY6)
+            centerprint (other, "You need the moon key");
         else
-        {
-            if (world.worldtype == 2)
-            {
-                centerprint (other, "You need the gold keycard");
-                sound (self, CHAN_VOICE, self.noise3, 1, ATTN_NORM);
-            }
-            else if (world.worldtype == 1)
-            {
-                centerprint (other, "You need the gold runekey");
-                sound (self, CHAN_VOICE, self.noise3, 1, ATTN_NORM);
-            }
-            else if (world.worldtype == 0)
-            {
-                centerprint (other, "You need the gold key");
-                sound (self, CHAN_VOICE, self.noise3, 1, ATTN_NORM);
-            }
-        }
+            centerprint (other, "It's locked but the key doesn't exist!");
+
+        // Play on two channels so the player can hear himself clearly.
+        sound (other, CHAN_VOICE, self.noise3, 1, ATTN_NORM);
+        sound (other, CHAN_BODY, self.noise3, 1, ATTN_NORM);
         return;
     }
 
-    other.items2 = other.items2 - self.items2;
+// PM:  Keys aren't used up.
+//    other.items2 = other.items2 - self.items2;
     self.touch = SUB_Null;
     if (self.enemy)
         self.enemy.touch = SUB_Null;    // get paired door
@@ -447,31 +430,31 @@ void() func_door =
 
 {
 
+    // All key doors make Caleb say "I need a key!"
+    precache_sound ("player/hunt4.wav");
+    self.noise3 = "player/hunt4.wav";
+
+    // Worldtype for key doors.  Should not be necessary for qblood.
     if (world.worldtype == 0)
     {
-        precache_sound ("locks/qlatch2.wav");
         precache_sound ("locks/baseuse.wav");
-        self.noise3 = "locks/qlatch2.wav";
         self.noise4 = "locks/baseuse.wav";
     }
     else if (world.worldtype == 1)
     {
-        precache_sound ("locks/runetry.wav");
         precache_sound ("locks/runeuse.wav");
-        self.noise3 = "locks/runetry.wav";
         self.noise4 = "locks/runeuse.wav";
     }
     else if (world.worldtype == 2)
     {
-        precache_sound ("locks/swtchbrk.wav");
         precache_sound ("locks/swtchwrk.wav");
-        self.noise3 = "locks/swtchbrk.wav";
         self.noise4 = "locks/swtchwrk.wav";
     }
     else
     {
         dprint ("no worldtype set!\n");
     }
+
     if (self.sounds == 0)
     {
         precache_sound ("misc/null.wav");

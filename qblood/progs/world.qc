@@ -285,6 +285,12 @@ void() worldspawn =
     precache_sound ("player/quips/1039.wav");   // "SOB must pay!"
     precache_sound ("player/quips/1050.wav");   // "That's all folks!"
 
+    // Player songs (when idle for too long).
+    precache_sound ("player/songs/1093.wav");
+    precache_sound ("player/songs/1094.wav");
+    precache_sound ("player/songs/1095.wav");
+    precache_sound ("player/songs/1097.wav");
+
     // player death sounds
     precache_sound ("player/die1.wav");
     precache_sound ("player/die2.wav");

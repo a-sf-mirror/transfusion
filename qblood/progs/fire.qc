@@ -1,12 +1,10 @@
 //==========================================================================
-//  fire.qc -- by Patrick Martin                Last updated:  7-11-2001
+//  fire.qc -- by Patrick Martin                Last updated:  8-17-2001
 //--------------------------------------------------------------------------
 //  Fire acts like poison.  When a target is infected, it burns.
 //  The target loses one hit point for each frame it burns.
 //  The flames can be snuffed by diving under the surface of
 //  water or other liquid.
-//
-//  FIXME:  Use time instead of hit points.
 //==========================================================================
 
 #include "common.qh"
@@ -15,11 +13,6 @@
 //  NEW EDICT FIELDS  //
 //--------------------//
 .entity burner;         // The flame generator linked on an entity.
-
-// FIXME:  Moved these elsewhere.
-.float      armor_fire;
-.float      armor_body;
-.float      armor_mind;
 
 
 //==========================================================================
@@ -52,29 +45,6 @@ void() PM_PrecacheFire =
     // FIXME:  Maybe place elsewhere with flaregun item code.
     precache_model ("progs/s_oldexp.spr");
     precache_sound2 ("weapons/flaregun/burstflm.wav");
-};
-
-//----------------------------------------------------/ New Code /--------//
-//  This spawns and returns a brand new flame.
-//------------------------------------------------------------------------//
-entity(entity attacker, entity victim, vector spot) PM_NewFire =
-{
-    local   entity  fire;
-
-    fire = spawn();
-    setmodel (fire, "progs/flame2.mdl");
-    setsize (fire, '0 0 0', '0 0 0');
-    setorigin (fire, spot);
-
-    fire.solid      = SOLID_NOT;
-    fire.takedamage = DAMAGE_NO;
-    fire.frame      = $flame;
-    fire.owner      = attacker;
-    fire.enemy      = victim;
-    fire.classname  = "fire";
-    fire.netname    = "fire";
-
-    return fire;
 };
 
 
@@ -161,6 +131,17 @@ float(entity ent) PM_FireResistant =
 #endif
 
 //----------------------------------------------------/ New Code /--------//
+//  This inflicts standard fire damage like in Blood.
+//------------------------------------------------------------------------//
+void(entity targ, entity inflictor, entity attacker) PM_FireDamage =
+{
+    #ifndef QUAKEWORLD
+    if (!PM_FireResistant (targ))
+    #endif
+        T_NewDamage (targ, inflictor, attacker, 0.75, DF_FIRE | DF_MIN_PAIN, "fire");
+};
+
+//----------------------------------------------------/ New Code /--------//
 //  This damages a single entity and possibly sets it on fire.
 //------------------------------------------------------------------------//
 void(entity victim, entity fire, float damage, float burn) PM_BurnDamage =
@@ -190,7 +171,9 @@ void(entity fire, float damage, float burn, entity ignore) PM_BurnRadius =
     if (fire.height > 0)
     {
         radius = fire.height;
-        fade = 0.5;     // Targets take 50% damage at maximum distance.
+        fade = 1 - fire.distance;
+        if (fade < 0)
+            fade = 0;   // Do constant damage.
     }
     else
     {
@@ -219,8 +202,6 @@ void(entity fire, float damage, float burn, entity ignore) PM_BurnRadius =
                 org = head.origin + (head.mins + head.maxs)*0.5;
                 dist = vlen (fire.origin - org);
                 dist = 1 - (dist * fade / radius);
-//                if (head == fire.owner)
-//                    dist = dist * 0.5;  // Attacker takes 1/2 damage.
                 PM_BurnDamage (head, fire, damage * dist, burn * dist);
             }
 
@@ -420,31 +401,8 @@ void() PM_Burn =
     // Keep on burning.
     PM_MakeEmbers ();
 
-    if (self.wait < time)
-    {
-        // Damage the victim.
-        local   float   damage, dflags;
-
-        damage = 1;
-        if (damage > self.dmg)
-            damage = self.dmg;
-        self.dmg = self.dmg - damage;   // Update the burn damage limit.
-
-        dflags = DF_FIRE | DF_MIN_PAIN;
-        self.lefty = self.lefty + (damage * 0.5);
-        if (self.lefty >= 1)
-            self.lefty = self.lefty - floor(self.lefty);
-        else
-            dflags = dflags | DF_ALT_SAVE;
-
-        #ifndef QUAKEWORLD
-        if (!PM_FireResistant (self.enemy))
-        #endif
-            T_NewDamage (self.enemy, self.enemy, self.owner, damage, dflags, "fire");
-
-        // The fire can burn again after a moment.
-        self.wait = 0;
-    }
+    self.dmg = self.dmg - 1;    // Update the burn damage limit.
+    PM_FireDamage (self.enemy, self.enemy, self.owner);
 
     self.nextthink  = time + 0.1;
 };
@@ -485,8 +443,6 @@ void(entity victim, entity attacker, float burn) PM_Ignite =
     fire.deathtype  = "fire";
     fire.wait       = time;
     fire.dmg        = burn;
-//    fire.cnt        = 0;
-    fire.lefty      = 0;
     fire.nextthink  = 0.1;      // ASAP
     fire.think      = PM_Burn;
 
@@ -631,7 +587,7 @@ void() PM_DeathFlameThink =
         {
             if (head != self.enemy)
                 if (CanDamage (head, self))
-                    T_Damage (head, self, self.owner, 1);
+                    PM_FireDamage (head, self, self.owner);
 
             head = head.chain;
         }
@@ -662,13 +618,21 @@ void(vector offset) PM_DeathFlame =
     PM_KillBurner (self);
 
     // Create the fire.
-    fire = PM_NewFire (self.enemy, self, spot);
+    fire = spawn();
+    setmodel (fire, "progs/flame2.mdl");
+    setsize (fire, '0 0 0', '0 0 0');
+    setorigin (fire, spot);
     fire.frame      = $flameb;  // Use a *big* flame.
+    fire.solid      = SOLID_NOT;
+    fire.takedamage = DAMAGE_NO;
     fire.effects    = fire.effects | EF_DIMLIGHT;
+    fire.owner      = self.enemy;
+    fire.enemy      = self;
     fire.mdl        = fire.model;
     fire.dest       = offset;
     fire.nextthink  = 0.1;  // ASAP
     fire.think      = PM_DeathFlameThink;
+    fire.classname  = "fire";
 
     // HACK:  Zombie...
     if (self.classname != "monster_zombie")
@@ -754,23 +718,26 @@ void(float ents) PM_ThrowEmbers =
         if (trace_fraction == 1.0)
         {
             // Ember will not impact the wall immediately.
-            fire = PM_NewFire (other, other, self.origin);
-            fire.frame    = 5;
+            fire = spawn();
+            setmodel (fire, "progs/flame2.mdl");
+            setsize (fire, '0 0 0', '0 0 0');
+            setorigin (fire, self.origin);
+
+            fire.frame    = $ember4;
             fire.solid    = SOLID_BBOX;
             fire.movetype = MOVETYPE_TOSS;
+            fire.owner    = other;
 
             fire.velocity = dir * (200 + random() * 800);
             fire.angles = vectoangles(dir) + '90 0 0';
 
-            #ifdef QUAKEWORLD
-            fire.pausetime = time + random();
-            #else
             // Make embers disappear faster in netgames.
+            #ifndef QUAKEWORLD
             if (deathmatch || coop)
                 fire.pausetime = time + random();
             else
-                fire.pausetime = time + 3 + random() * 2;
             #endif
+                fire.pausetime = time + 3 + random() * 2;
 
             fire.touch = SUB_Remove;
             fire.nextthink = time + 0.1;
@@ -868,7 +835,7 @@ void() PM_FlareStick =
 //------------------------------------------------------------------------//
 void() PM_FlareThink =
 {
-    if (self.cnt <= 0)
+    if (self.dmg <= 0)
     {
         remove (self);
         return;
@@ -883,15 +850,9 @@ void() PM_FlareThink =
     PM_FlareStick ();
     PM_FlareSpark ();
 
-    local   float   damage, nextframe;
+    local   float   nextframe;
 
     nextframe = time + 0.1;
-
-    damage = 1;
-    if (damage > self.cnt)
-        damage = self.cnt;
-    self.cnt = self.cnt - damage;
-
     if (self.enemy.flare_time <= time)
     {
         // Only one flare can damage at any given frame.
@@ -899,12 +860,7 @@ void() PM_FlareThink =
 
         // Do burn damage if not already burning.
         if (!self.enemy.burner)
-        {
-            #ifndef QUAKEWORLD
-            if (!PM_FireResistant (self.enemy))
-            #endif
-                T_NewDamage (self.enemy, self, self.owner, damage, DF_MIN_PAIN | DF_FIRE, "fire");
-        }
+            PM_FireDamage (self.enemy, self, self.owner);
     }
 
     self.nextthink = nextframe;
@@ -935,7 +891,7 @@ void() PM_FlareTouch =
     {
         if (other.flags & FL_MONSTER)
         {
-            PM_BurnDamage (other, self, self.dmg, 0);
+//            PM_BurnDamage (other, self, 1, 0);
 
             // Change flare properties so it can stick without interference.
             self.velocity   = '0 0 0';
@@ -960,7 +916,7 @@ void() PM_FlareTouch =
         }
 
         // Just set the target on fire.
-        PM_BurnDamage (other, self, self.dmg, self.cnt);
+        PM_BurnDamage (other, self, 0, self.dmg);
     }
 
     PM_FlareSpark ();   // Throw a few sparks.
@@ -968,35 +924,58 @@ void() PM_FlareTouch =
 };
 
 //----------------------------------------------------/ New Code /--------//
-//  Create and launch a fire.
+//  This spawns and returns a brand new flare.
 //------------------------------------------------------------------------//
-void(entity attacker, vector org, vector dir, float sped, float damage)
-    PM_FireFlare =
+entity(entity attacker, vector spot) PM_NewFlare =
 {
     local   entity  fire;
 
-    fire = PM_NewFire(attacker, attacker, org);
+    fire = spawn();
+
     #ifdef QUAKEWORLD
     fire.voided     = 0;
     #endif
+
+    setmodel (fire, "progs/flame2.mdl");
+    setsize (fire, '0 0 0', '0 0 0');
+    setorigin (fire, spot);
+
+    fire.solid      = SOLID_NOT;
+    fire.takedamage = DAMAGE_NO;
+    fire.frame      = $flame;
     fire.skin       = 1;        // FIXME:  Temporary purple skin
+    fire.owner      = attacker;
+    fire.classname  = "flare";
+    fire.netname    = "flare";
+
     fire.effects    = fire.effects | EF_DIMLIGHT;
     fire.movetype   = MOVETYPE_FLYMISSILE;
     fire.solid      = SOLID_BBOX;
+
+    return fire;
+};
+
+//----------------------------------------------------/ New Code /--------//
+//  Create and launch a fire.
+//------------------------------------------------------------------------//
+void(entity attacker, vector org, vector dir, float sped) PM_FireFlare =
+{
+    local   entity  fire;
+
+    fire = PM_NewFlare (attacker, org);
     fire.angles     = vectoangles(dir) + '90 0 0';
     fire.velocity   = dir * sped;
     fire.touch      = PM_FlareTouch;
     fire.nextthink  = time + (8000 / sped);
     fire.think      = SUB_Remove;
-    fire.classname  = "flare";
-    fire.netname    = "flare";
-    fire.dmg        = damage;
-    fire.cnt        = 50;       // Flares last five seconds.
+    fire.dmg        = 50;       // Flares last five seconds.
 };
 
 
 //==========================================================================
 //  Alt-mode Flares
+
+void(entity client) PM_PsychoCaleb;
 
 //----------------------------------------------------/ New Code /--------//
 //  This animates the napalm cloud, and makes it burn things around it.
@@ -1054,7 +1033,7 @@ void() PM_AltFlareTouch =
     muzzleflash ();     // In qblood's 'player.qc'.
 
     // Do the damage.
-    self.height = 80;
+    self.height = 120;
     PM_BurnRadius (self, self.dmg, self.cnt, other);
     self.origin = self.origin - 8*normalize(self.velocity);
     if (other.takedamage)
@@ -1062,7 +1041,8 @@ void() PM_AltFlareTouch =
 
     // Make some fire.
     self.solid = SOLID_NOT;     // So embers can't touch 'self'.
-    PM_ThrowEmbers (2);     // NOTE:  Used to throw 4.
+    PM_ThrowEmbers (self.count);
+    PM_PsychoCaleb (self.owner);
     sound (self, CHAN_AUTO, "weapons/napalm/explodfs.wav", 1, ATTN_NORM);
     PM_BecomeOldExplosion ();
 };
@@ -1070,23 +1050,60 @@ void() PM_AltFlareTouch =
 //----------------------------------------------------/ New Code /--------//
 //  This causes the flare to change its path in mid-flight.
 //------------------------------------------------------------------------//
-void() PM_AltFlareThink =
+void() PM_AltFlareSplit =
 {
-    local   vector  dir, vec;
+    local   entity  fire;
+    local   vector  dir, spread;
+    local   float   loop;
 
     dir = normalize (self.velocity);
-    vec = vectoangles (dir);
+    dir = vectoangles (dir);
+    dir_x = 0 - dir_x;
+    makevectors (dir);
 
-    vec_x = 0 - vec_x;
-    makevectors (vec);
-    dir = (v_forward * self.dest_x) + (v_right * self.dest_y) +
-        (v_up * self.dest_z);
-    self.velocity = dir * self.speed;
-    dir = normalize (self.velocity);
-    self.angles = vectoangles(dir) + '90 0 0';
+    // Create eight new flares.
+    loop = 8;
+    while (loop > 0)
+    {
+        if (loop == 8)
+            spread = '1 0 0.15';
+        else if (loop == 7)
+            spread = '1 0.15 0';
+        else if (loop == 6)
+            spread = '1 0 -0.15';
+        else if (loop == 5)
+            spread = '1 -0.15 0';
+        else if (loop == 4)
+            spread = '1 0.05 0.05';
+        else if (loop == 3)
+            spread = '1 -0.05 0.05';
+        else if (loop == 2)
+            spread = '1 -0.05 -0.05';
+        else if (loop == 1)
+            spread = '1 0.05 -0.05';
+        else
+            spread = '1 0 0';   // This shouldn't happen.
 
-    self.nextthink = self.pausetime;
-    self.think = SUB_Remove;
+        dir = (v_forward * spread_x) + (v_right * spread_y) + (v_up * spread_z);
+        dir = normalize (dir);
+
+        fire = PM_NewFlare (self.owner, self.origin);
+        fire.angles     = vectoangles(dir) + '90 0 0';
+        fire.velocity   = dir * self.speed;
+        fire.touch      = PM_AltFlareTouch;
+        fire.nextthink  = self.pausetime;
+        fire.think      = SUB_Remove;
+        fire.cnt        = self.cnt;
+        fire.dmg        = self.dmg;
+        fire.speed      = self.speed;
+        fire.distance   = self.distance;
+        fire.count      = 2;    // Number of embers.
+
+        loop = loop - 1;
+    }
+
+    // Remove the old flare.
+    remove (self);
 };
 
 //----------------------------------------------------/ New Code /--------//
@@ -1096,51 +1113,53 @@ void(entity attacker, vector org, vector dir, float sped, float damage,
     float burn) PM_FireAltFlares =
 {
     local   entity  fire;
-    local   vector  spread;
-    local   float   loop;
 
-    loop = 8;
-    while (loop > 0)
+    fire = PM_NewFlare (attacker, org);
+    fire.angles     = vectoangles(dir) + '90 0 0';
+    fire.velocity   = dir * sped;
+    fire.touch      = PM_AltFlareTouch;
+    fire.nextthink  = time + 0.4;   // Approximate time alt-flares split.
+    fire.think      = PM_AltFlareSplit;
+    fire.pausetime  = time + (8000 / sped);
+    fire.cnt        = burn;
+    fire.dmg        = damage;
+    fire.speed      = sped;
+    fire.distance   = 0.8;  // Damage is 80% at max radius.
+    fire.count      = 6;    // Number of embers.
+};
+
+
+//==========================================================================
+//  Burn Trigger
+
+.float  burn_time;
+
+void() burn_touch =
+{
+    if (other.burn_time <= time)
     {
-        fire = PM_NewFire(attacker, attacker, org);
-        #ifdef QUAKEWORLD
-        fire.voided     = 0;
-        #endif
-        fire.movetype   = MOVETYPE_FLYMISSILE;
-        fire.skin       = 1;
-        fire.effects    = fire.effects | EF_DIMLIGHT;
-        fire.solid      = SOLID_BBOX;
-        fire.angles     = vectoangles(dir) + '90 0 0';
-        fire.velocity   = dir * sped;
-        fire.touch      = PM_AltFlareTouch;
-        fire.nextthink  = time + 0.4;   // Approximate time alt-flares split.
-        fire.think      = PM_AltFlareThink;
-        fire.pausetime  = time + (8000 / sped);
-        fire.cnt        = burn;
-        fire.dmg        = damage;
-        fire.speed      = sped;
-
-        if (loop == 8)
-            fire.dest   = '1 0 0.15';
-        else if (loop == 7)
-            fire.dest   = '1 0.15 0';
-        else if (loop == 6)
-            fire.dest   = '1 0 -0.15';
-        else if (loop == 5)
-            fire.dest   = '1 -0.15 0';
-        else if (loop == 4)
-            fire.dest   = '1 0.05 0.05';
-        else if (loop == 3)
-            fire.dest   = '1 -0.05 0.05';
-        else if (loop == 2)
-            fire.dest   = '1 -0.05 -0.05';
-        else if (loop == 1)
-            fire.dest   = '1 0.05 -0.05';
-        else
-            fire.dest   = '1 0 0';      // This shouldn't happen.
-
-        loop = loop - 1;
+        other.burn_time = time + 0.1;
+        if (other.takedamage)
+            PM_FireDamage (other, self, self);
     }
+
+    // Once an object moves into the field, make sure it takes more hits
+    // if it stops moving inside the field.
+    force_retouch = 2;
+};
+
+/*QUAKED trigger_burn (.5 .5 .5) ?
+This variable-sized trigger is similar to 'trigger_hurt'.
+Any object touching this will suffer burn damage for each
+frame the object stays in the triggers.  Fire-resistant
+monsters like stone gargoyles are immune to this effect.
+This should be placed above stoves, grills, and the like.
+(e.g., the rat burgers stand in e1m4 -- Dark Carnival.)
+*/
+void() trigger_burn =
+{
+    InitTrigger ();
+    self.touch = burn_touch;
 };
 
 

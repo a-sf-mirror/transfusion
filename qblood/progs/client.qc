@@ -69,6 +69,9 @@ void() SetChangeParms =
     self.items  = self.items  - (self.items  & (IT_INVISIBILITY | IT_INVULNERABILITY | IT_SUIT | IT_QUAD));
     self.items2 = self.items2 - (self.items2 & (IT2_KEY1 | IT2_KEY2));
 
+    // PM:  Recharge inventory, except for first-aid.
+    InvenRecharge ();
+
 // cap super health
     if (self.health > 100)
         self.health = 100;
@@ -86,6 +89,9 @@ void() SetChangeParms =
     parm7 = self.ammo_cells;
     parm8 = self.weapon;
     parm9 = self.armortype * 100;
+    // PM:  Remember inventory.
+    parm10 = self.items3;
+    parm11 = self.items4;
 };
 
 void() SetNewParms =
@@ -99,6 +105,9 @@ void() SetNewParms =
     parm7 = 0;
     parm8 = 1;
     parm9 = 0;
+    // PM:  Player starts with no inventory.
+    parm10 = 0;
+    parm11 = 0;
 };
 
 void() DecodeLevelParms =
@@ -118,6 +127,9 @@ void() DecodeLevelParms =
     self.ammo_cells = parm7;
     self.weapon = parm8;
     self.armortype = parm9 * 0.01;
+    // PM:  Restore inventory.
+    self.items3 = parm10;
+    self.items4 = parm11;
 };
 
 /*
@@ -676,6 +688,13 @@ void() PutClientInServer =
     self.effects = 0;
     self.invincible_time = 0;
     PM_KillBurner (other);
+// fixme2
+    self.reflect_finished = 0;
+    self.remain_dmg = 0;
+    self.remain_arm = 0;
+
+    W_Uncharge ();
+    PM_ResetIdle (self);
 
     DecodeLevelParms ();
 
@@ -982,8 +1001,16 @@ void() PlayerJump =
     sound (self, CHAN_BODY, "foley/jump.wav", 1, ATTN_NORM);
 
     #ifndef QUAKEWORLD
+    local   float   jump;
+
+// Boots let player jump about 4x as high.
+// NOTE:  max height = v0^2 / 2g.
+    if (self.boots_on)
+        jump = 740;     // Velocity is doubled.
+    else
+        jump = 370;     // quake = 270
     self.flags = self.flags - FL_ONGROUND;  // don't stairwalk
-    self.velocity_z = self.velocity_z + 370;  // quake = 270
+    self.velocity_z = self.velocity_z + jump;
     #endif
 };
 
@@ -1012,6 +1039,8 @@ void() WaterMove =
             sound (self, CHAN_VOICE, "foley/gasp.wav", 1, ATTN_NORM);
         self.air_finished = time + 12;
         self.dmg = 2;
+        if (self.dive_on)
+            Use_DivingSuit ();  // Turn of diving suit.
     }
     else if (self.air_finished < time)
     {   // drown!
@@ -1025,6 +1054,11 @@ void() WaterMove =
             self.pain_finished = time + 1;
         }
     }
+    // Auto-use diving suit if underwater.
+    if (self.waterlevel == 3)
+        if (self.air_finished < time + 11)
+            if (!self.dive_on)
+                Use_DivingSuit ();
 
     if (!self.waterlevel)
     {
@@ -1041,21 +1075,21 @@ void() WaterMove =
     {   // do damage
         if (self.dmgtime < time)
         {
-            if (self.radsuit_finished > time)
+            if (self.dive_on)
                 self.dmgtime = time + 1;
             else
                 self.dmgtime = time + 0.2;
 
             // PM:  Fire-based damage.
-            T_NewDamage (self, world, world, 10*self.waterlevel, DF_FIRE, "lava");
+            T_NewDamage (self, world, world, 10*self.waterlevel, DF_FIRE, "fire");
         }
     }
     else if (self.watertype == CONTENT_SLIME)
     {   // do damage
-        if (self.dmgtime < time && self.radsuit_finished < time)
+        if (self.dmgtime < time)
+            if (!self.dive_on)
         {
             self.dmgtime = time + 1;
-            // PM:  Acid damage.
             T_NewDamage (self, world, world, 4*self.waterlevel, DF_BODY, "acid");
         }
     }
@@ -1294,7 +1328,7 @@ void() CheckPowerups =
 
         if (self.super_damage_finished < time)
         {   // just stopped
-            self.items = self.items - IT_QUAD;
+// PM:  Guns akimbo don't use IT_QUAD.
             self.super_damage_finished = 0;
             self.super_time = 0;
         }
@@ -1314,37 +1348,34 @@ void() CheckPowerups =
         }
     }
 
-// suit
-    if (self.radsuit_finished)
+// Reflective shots
+    if (self.reflect_finished)
     {
-        self.air_finished = time + 12;      // don't drown
+        // In Blood, there is no warning when it stops.
 
-// sound and screen flash when items starts to run out
-        if (self.radsuit_finished < time + 3)
-        {
-            if (self.rad_time == 1)
-            {
-                Sprint (self, PRINT_HIGH, "Air supply in Diving Suit expiring\n");
-                stuffcmd (self, "bf\n");
-                sound (self, CHAN_AUTO, "foley/uwbreath.wav", 1, ATTN_NORM);
-                self.rad_time = time + 1;
-            }
-
-            if (self.rad_time < time)
-            {
-                self.rad_time = time + 1;
-                stuffcmd (self, "bf\n");
-            }
-        }
-
-        if (self.radsuit_finished < time)
+        if (self.reflect_finished < time)
         {   // just stopped
-            self.items = self.items - IT_SUIT;
-            self.rad_time = 0;
-            self.radsuit_finished = 0;
+            self.items = self.items - IT_QUAD;
+            self.reflect_finished = 0;
+
+            self.effects = self.effects - (self.effects & EF_DIMLIGHT);
+            #ifdef QUAKEWORLD
+            self.effects = self.effects - (self.effects & EF_BLUE);
+            #endif
+        }
+        else
+        {
+            self.effects = self.effects | EF_DIMLIGHT;
+            #ifdef QUAKEWORLD
+            self.effects = self.effects | EF_BLUE;
+            #endif
         }
     }
 
+// removed quake suit check.
+
+    // PM:  Check inventory items.
+    InvenCheck ();
 };
 
 
@@ -1372,13 +1403,12 @@ void() PlayerPostThink =
             sound (self, CHAN_BODY, "foley/lndwater.wav", 1, ATTN_NORM);
 
         // if higher than 300 units, do 5 damage, and set the falling death flag if player is killed
-        else if (self.jump_flag < -650)
+        else if (self.jump_flag < -750)     // was -650
         {
-            sound (self, CHAN_VOICE, "player/pain/play1105.wav", 1, ATTN_NORM);
             // PM:  Armor does not protect against falling.
             // Quake falling damage = 5.
             aspeed = 0 - self.jump_flag;
-            aspeed = (aspeed - 600) * 0.2;
+            aspeed = (aspeed - 700) * 0.2;
             T_NewDamage (self, world, world, aspeed, 0, "falling");
         }
         else
@@ -1392,6 +1422,21 @@ void() PlayerPostThink =
     CheckPowerups ();
 
     W_WeaponFrame ();
+
+// PM:  Check for boredom.
+    if (self.velocity == '0 0 0')
+    {
+        if (self.idle_time <= time)
+            if (!self.idle_done)
+            {
+                PM_BoredCaleb (self);
+                self.idle_done = TRUE;
+            }
+    }
+    else
+    {
+        PM_ResetIdle (self);
+    }
 };
 
 

@@ -212,16 +212,25 @@ void() player_nail =
         return;
     }
 
-    // If it's an altfire start
-    if (self.weaponframe == 0 && (self.impulse == 12 || self.button1))
-        self.weaponframe = 8;
-    else
+    if (self.weapon == IT_SUPER_NAILGUN)
     {
         self.weaponframe = self.weaponframe + 1;
-        if (self.weaponframe == 14)  // frame 13 is the last frame of the alt fire animation (frame 14 is skipped (== frame 8))
+        if (self.weaponframe == 9)
+            self.weaponframe = 0;
+    }
+    else if (self.weapon == IT_NAILGUN)
+    {
+        // If it's an altfire start
+        if (self.weaponframe == 0 && (self.impulse == 12 || self.button1))
             self.weaponframe = 8;
-        else if (self.weaponframe == 8)  // frame 7 is the last frame of the normal fire animation
-            self.weaponframe = 1;
+        else
+        {
+            self.weaponframe = self.weaponframe + 1;
+            if (self.weaponframe == 14)  // frame 13 is the last frame of the alt fire animation (frame 14 is skipped (== frame 8))
+                self.weaponframe = 8;
+            else if (self.weaponframe == 8)  // frame 7 is the last frame of the normal fire animation
+                self.weaponframe = 1;
+        }
     }
 
     SuperDamageSound ();
@@ -294,55 +303,40 @@ void() player_rocket5   =[$rockatt5, player_rocket6  ] {self.weaponframe=5;};
 void() player_rocket6   =[$rockatt6, player_run  ] {self.weaponframe=6;};
 void(float num_bubbles) DeathBubbles;
 
-void() PainSound =
+float() PainSound =
 {
 local float     rs;
 
     if (self.health < 0)
-        return;
+        return FALSE;
 
     if (damage_attacker.classname == "teledeath")
     {
         sound (self, CHAN_AUTO, "butcher/fzomdie3.wav", 1, ATTN_NONE);
-        return;
+        return TRUE;
     }
 
-// water pain sounds
-    if (self.watertype == CONTENT_WATER && self.waterlevel == 3)
+    if (self.pain_finished > time)
+        return FALSE;
+
+    self.axhitme = 0;   // No need for this in qBlood.
+    self.pain_finished = time + 0.5;
+
+    if (self.deathtype == "drowning")
     {
         DeathBubbles(1);
         if (random() > 0.5)
             sound (self, CHAN_VOICE, "ambience/bubrise.wav", 1, ATTN_NORM);
         else
             sound (self, CHAN_VOICE, "foley/undchoke.wav", 1, ATTN_NORM);
-        return;
+        return TRUE;
     }
-
-// slime pain sounds
-    if (self.watertype == CONTENT_SLIME)
+    if (self.deathtype == "falling")
     {
-        if (random() > 0.5)
-            sound (self, CHAN_VOICE, "butcher/acidhit1.wav", 1, ATTN_NORM);
-        else
-            sound (self, CHAN_VOICE, "butcher/acidhit2.wav", 1, ATTN_NORM);
-        return;
+        sound (self, CHAN_VOICE, "player/pain/play1105.wav", 1, ATTN_NORM);
+        return TRUE;
     }
-
-    if (self.watertype == CONTENT_LAVA)
-    {
-        if (random() > 0.5)
-            sound (self, CHAN_VOICE, "player/pain/play1120.wav", 1, ATTN_NORM);
-        else
-            sound (self, CHAN_VOICE, "player/pain/play1119.wav", 1, ATTN_NORM);
-        return;
-    }
-
-    if (self.pain_finished > time)
-    {
-        self.axhitme = 0;
-        return;
-    }
-    if (self.burner)
+    if (self.deathtype == "fire")
     {
         // PM -- Player is on fire so scream.
         rs = ceil(random() * 3);
@@ -362,53 +356,30 @@ local float     rs;
             self.pain_finished = time + 2.6;
         }
         sound (self, CHAN_VOICE, self.noise, 1, ATTN_NORM);
-        return;
-    }
-    self.pain_finished = time + 0.5;
-
-// don't make multiple pain sounds right after each other
-
-// ax pain sound
-    if (self.axhitme == 1)
-    {
-        self.axhitme = 0;
-        sound (self, CHAN_VOICE, "player/pain/play1106.wav", 1, ATTN_NORM);
-        return;
+        return TRUE;
     }
 
-    rs = rint((random() * 8) + 1);
-
-    if (rs == 1)
-        self.noise = "player/pain/play1100.wav";
-    else if (rs == 2)
-        self.noise = "player/pain/play1101.wav";
-    else if (rs == 3)
-        self.noise = "player/pain/play1102.wav";
-    else if (rs == 4)
-        self.noise = "player/pain/play1103.wav";
-    else if (rs == 5)
-        self.noise = "player/pain/play1104.wav";
-    else if (rs == 6)
-        self.noise = "player/pain/play1105.wav";
-    else if (rs == 7)
+    // Normal pain sound.
+    rs = ceil(random() * 3);
+    if (rs == 0)
         self.noise = "player/pain/play1106.wav";
-    else if (rs == 8)
+    else if (rs == 1)
         self.noise = "player/pain/play1107.wav";
-    else  // if (rs == 9)
+    else
         self.noise = "player/pain/play1108.wav";
 
     sound (self, CHAN_VOICE, self.noise, 1, ATTN_NORM);
-    return;
+    return TRUE;
 };
 
-void()  player_pain1 =  [   $pain1, player_pain2    ] {PainSound();self.weaponframe=0;};
+void()  player_pain1 =  [   $pain1, player_pain2    ] {};
 void()  player_pain2 =  [   $pain2, player_pain3    ] {};
 void()  player_pain3 =  [   $pain3, player_pain4    ] {};
 void()  player_pain4 =  [   $pain4, player_pain5    ] {};
 void()  player_pain5 =  [   $pain5, player_pain6    ] {};
 void()  player_pain6 =  [   $pain6, player_run  ] {};
 
-void()  player_axpain1 =    [   $axpain1,   player_axpain2  ] {PainSound();self.weaponframe=0;};
+void()  player_axpain1 =    [   $axpain1,   player_axpain2  ] {};
 void()  player_axpain2 =    [   $axpain2,   player_axpain3  ] {};
 void()  player_axpain3 =    [   $axpain3,   player_axpain4  ] {};
 void()  player_axpain4 =    [   $axpain4,   player_axpain5  ] {};
@@ -423,10 +394,15 @@ void() player_pain =
     if (self.invisible_finished > time)
         return;     // eyes don't have pain frames
 
-    if (self.weapon == IT_AXE)
-        player_axpain1 ();
-    else
-        player_pain1 ();
+    // Changed so player only shows pain when player make noise.
+    if (PainSound ())
+    {
+        self.weaponframe = 0;
+        if (self.weapon == IT_AXE)
+            player_axpain1 ();
+        else
+            player_pain1 ();
+    }
 };
 
 void() player_diea1;

@@ -21,6 +21,18 @@
 #include "common.qh"
 
 
+//--------------------//
+//  NEW EDICT FIELDS  //
+//--------------------//
+.float      armor_fire;
+.float      armor_body;
+.float      armor_mind;
+
+.float      remain_arm;
+.float      remain_dmg;
+
+.float      reflect_finished;
+
 void() T_MissileTouch;
 void() info_player_start;
 void(entity attacker) ClientObituary;
@@ -130,7 +142,6 @@ The damage is coming from inflictor, but get mad at attacker
 This should be the only function that ever reduces health.
 ============
 */
-//----------------------------------------------------/ New Code /--------//
 #ifndef QUAKEWORLD
 // PM:  Support function that checks if both sides are friendly enough.
 float(entity victim, entity attacker) PM_MonsterAlly =
@@ -169,9 +180,9 @@ float(entity victim, entity attacker) PM_GetMad =
 #endif
 
 // PM:  Blood's armor damage protection algorithm, or close to it.
-float(float armour, float damage) PM_ArmorSave =
+float(entity targ, float armour, float damage) PM_ArmorSave =
 {
-    local   float   hi, lo;
+    local   float   hi, lo, save, add;
 
     hi = armour;
     if (hi > 200)
@@ -179,14 +190,30 @@ float(float armour, float damage) PM_ArmorSave =
     lo = hi - damage;
     if (lo < 0)
         lo = 0;
-    armour = (hi + lo) * 0.5;
+    save = (hi + lo) * 0.5;
 
-    armour = 20 + (armour * 0.4);
-    if (armour > 1)
-        armour = 1;
-    armour = armour * 0.01;
+    save = 20 + (save * 0.4);
+    if (save < 1)
+        save = 1;
+    add = save * 0.01 * damage;
 
-    return armour;
+    // Now adjust the armor.  Remember fractions for later use.
+    save = floor (add);
+    targ.remain_arm = targ.remain_arm + (add - save);
+    if (targ.remain_arm >= 1)
+    {
+        add = floor(targ.remain_arm);
+        save = save + add;
+        targ.remain_arm = targ.remain_arm - add;
+    }
+    if (save >= armour)
+    {
+        // Lost all armor.
+        save = armour;
+        targ.remain_arm = 0;
+    }
+
+    return save;
 };
 
 // PM:  Below is the new damage function that replaces 'T_Damage'.
@@ -212,10 +239,13 @@ void(entity targ, entity inflictor, entity attacker, float damage, float dflags,
 
     // Used by buttons and triggers to set activator for target firing
     damage_attacker = attacker;
+    damage_inflictor = inflictor;
 
-    // Check for quad damage powerup on the attacker
-    if (attacker.super_damage_finished > time && inflictor.classname != "door")
-        damage = damage * 4;
+// FIXME:  Remove quad damage.
+    // Check for quad damage powerup on the attacker.
+    if (attacker.super_damage_finished > time)
+        if (inflictor.classname != "door")
+            damage = damage * 4;
 
     #ifndef QUAKEWORLD
     if (dflags & DF_RADIUS)
@@ -224,9 +254,17 @@ void(entity targ, entity inflictor, entity attacker, float damage, float dflags,
         if (targ.classname == "monster_shambler")
             damage = damage * 0.5;
     }
+
+    // Players take more damage at higher skill levels.
+    if (!deathmatch)
+        if (targ.classname == "player")
+            damage = damage * (1 + (cvar("skill") * 0.4));
     #endif
 
-    damage_inflictor = inflictor;
+    // Save fractions for later use.
+    take = damage + targ.remain_dmg;
+    damage = floor (take);
+    targ.remain_dmg = take - damage;
 
     // Figure momentum add
     if ( (inflictor != world) && (targ.movetype == MOVETYPE_WALK) )
@@ -261,38 +299,13 @@ void(entity targ, entity inflictor, entity attacker, float damage, float dflags,
         // Save damage based on the target's armor level, but do not apply
         // the savings to the armor yet... in case target is invulnerable.
         if (dflags & DF_FIRE)
-        {
-            save = damage * PM_ArmorSave (targ.armor_fire, damage);
-            if (dflags & DF_ALT_SAVE)
-                save = floor(save);
-            else
-                save = ceil(save);
-            if (save >= targ.armor_fire)
-                save = targ.armor_fire;
-            take = ceil(damage-save);
-        }
+            save = PM_ArmorSave (targ, targ.armor_fire, damage);
         else if (dflags & DF_BODY)
-        {
-            save = damage * PM_ArmorSave (targ.armor_body, damage);
-            if (dflags & DF_ALT_SAVE)
-                save = floor(save);
-            else
-                save = ceil(save);
-            if (save >= targ.armor_body)
-                save = targ.armor_body;
-            take = ceil(damage-save);
-        }
+            save = PM_ArmorSave (targ, targ.armor_body, damage);
         else if (dflags & DF_MIND)
-        {
-            save = damage * PM_ArmorSave (targ.armor_mind, damage);
-            if (dflags & DF_ALT_SAVE)
-                save = floor(save);
-            else
-                save = ceil(save);
-            if (save >= targ.armor_mind)
-                save = targ.armor_mind;
-            take = ceil(damage-save);
-        }
+            save = PM_ArmorSave (targ, targ.armor_mind, damage);
+        take = ceil(damage-save);
+
         // Check for godmode or invincibility.
         if (targ.flags & FL_GODMODE)
         {
@@ -430,9 +443,11 @@ void(entity targ, entity inflictor, entity attacker, float damage, float dflags,
 
     if (self.th_pain)
     {
+        targ.deathtype = dtype;     // For player pain sounds.
+
         // Set value for monsters that support nopain.
         if (dflags & DF_MIN_PAIN)
-            take = 1;
+            take = 0;
 
         self.th_pain (attacker, take);
 
@@ -449,14 +464,11 @@ void(entity targ, entity inflictor, entity attacker, float damage, float dflags,
     recursioncount = recursioncount - 1;
 };
 
-//------------------------------------------------------------------------//
 
 void(entity targ, entity inflictor, entity attacker, float damage) T_Damage=
 {
-//----------------------------------------------------/ Code Change /-----//
     // PM:  Default to the new damage function.
     T_NewDamage (targ, inflictor, attacker, damage, DF_BODY, string_null);
-//------------------------------------------------------------------------//
 };
 
 /*

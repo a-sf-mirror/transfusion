@@ -762,6 +762,103 @@ POWERUPS
 
 ===================================
 */
+void() powerup_touch =
+{
+local entity    stemp;
+local float     best;
+
+    if (other.classname != "player")
+        return;
+    if (other.health <= 0)
+        return;
+
+    Sprint (other, PRINT_LOW, "Picked up ");
+    Sprint (other, PRINT_LOW,  self.netname);
+    Sprint (other, PRINT_LOW, "\n");
+
+    #ifndef QUAKEWORLD
+    if (deathmatch)
+    {
+    #endif
+        self.mdl = self.model;
+
+        if ((self.classname == "item_artifact_invulnerability") ||
+            (self.classname == "item_artifact_invisibility"))
+            self.nextthink = time + 60*5;
+        else
+            self.nextthink = time + 60;
+
+        self.think = SUB_regen;
+    #ifndef QUAKEWORLD
+    }
+    #endif
+
+    sound (other, CHAN_VOICE, self.noise, 1, ATTN_NORM);
+    stuffcmd (other, "bf\n");
+    self.solid = SOLID_NOT;
+    other.items = other.items | self.items;
+    self.model = string_null;
+
+// do the apropriate action
+// PM:  Listed in alphabetical order.
+    if (self.classname == "item_artifact_bag")
+    {
+        InvenSet (other, S_FIRST_AID, 100);
+    }
+    else if (self.classname == "item_artifact_boots")
+    {
+        InvenSet (other, S_JUMP_BOOTS, 100);
+    }
+    else if (self.classname == "item_artifact_crystal")
+    {
+        InvenSet (other, S_CRYSTAL_BALL, 100);
+    }
+    else if (self.classname == "item_artifact_envirosuit")
+    {
+        InvenSet (other, S_DIVING_SUIT, 100);
+    }
+    else if (self.classname == "item_artifact_invisibility")
+    {
+        other.invisible_time = 1;
+        other.invisible_finished = time + 30;
+    }
+    else if (self.classname == "item_artifact_invulnerability")
+    {
+        other.invincible_time = 1;
+        other.invincible_finished = time + 30;
+    }
+    else if (self.classname == "item_artifact_reflect")
+    {
+        other.reflect_finished = time + 30;
+    }
+    else if (self.classname == "item_artifact_super_damage")
+    {
+        other.super_time = 1;
+        other.super_damage_finished = time + 30;
+    }
+    else if (self.classname == "item_artifact_vision")
+    {
+        InvenSet (other, S_BEAST_VISION, 100);
+    }
+
+    activator = other;
+    SUB_UseTargets();               // fire all targets / killtargets
+};
+
+void() item_powerup =
+{
+    if (self.noise == "" || self.noise == string_null)
+        self.noise = "items/pickup.wav";
+
+    self.touch = powerup_touch;
+
+    precache_model (self.model);
+    precache_sound (self.noise);
+    setmodel (self, self.model);
+
+    setsize (self, '-16 -16 -24', '16 16 32');
+    StartItem ();
+};
 
 //various powerups that aren't in other sections already
 
@@ -807,39 +904,52 @@ void() item_tnt =
 // Doctor's Bag
 void() item_artifact_bag =
 {
-    self.model = "progs/i_docbag.mdl";
-    item_lure ();
+    self.netname = "Doctor's Bag";
+    self.model   = "progs/i_docbag.mdl";
+    self.noise   = "items/pickup.wav";
+    item_powerup ();
 };
 
 // Boots of Jumping
 void() item_artifact_boots =
 {
-    self.model = "progs/i_boots.mdl";
-    item_lure ();
+    self.netname = "Boots of Jumping";
+    self.model   = "progs/i_boots.mdl";
+    self.noise   = "items/pickup.wav";
+    item_powerup ();
 };
 
 // Crystal Ball
 void() item_artifact_crystal =
 {
-    self.model = "progs/i_crysbal.mdl";
-    item_lure ();
+    self.netname = "Crystal Ball";
+    self.model   = "progs/i_crysbl.mdl";
+    self.noise   = "items/pickup.wav";
+    item_powerup ();
 };
 
 // Reflective Shots
 void() item_artifact_reflect =
 {
-    self.model = "progs/i_reflct.mdl";
+    self.netname = "Reflective Shots";
+    self.model   = "progs/i_reflct.mdl";
+    self.noise   = "bludbath/powerup.wav";
+
+    self.items   = IT_QUAD;
     #ifdef QUAKEWORLD
     self.effects = self.effects | EF_BLUE;
     #endif
-    item_lure ();
+
+    item_powerup ();
 };
 
 // Beast Vision
 void() item_artifact_vision =
 {
-    self.model = "progs/i_vision.mdl";
-    item_lure ();
+    self.netname = "Beast Vision";
+    self.model   = "progs/i_vision.mdl";
+    self.noise   = "items/pickup.wav";
+    item_powerup ();
 };
 
 // Cloak of Shadows
@@ -879,8 +989,9 @@ float (entity e, float healamount, float ignore) T_Heal =
     if ((!ignore) && (e.health >= other.max_health))
         e.health = other.max_health;
 
-    if (e.health > 250)
-        e.health = 250;
+// PM:  In Blood, life seed and cheats maxed out health at 200.
+    if (e.health > 200)
+        e.health = 200;
     return 1;
 };
 
@@ -896,7 +1007,6 @@ one point per second.
 #define H_MEGA      2
 .float  healamount, healtype;
 void() health_touch;
-void() item_megahealth_rot;
 
 void() item_health =
 {
@@ -909,7 +1019,7 @@ void() item_health =
         precache_sound("items/pickheal.wav");
         setmodel(self, "progs/i_lifess.mdl");
         self.noise = "items/pickheal.wav";
-        self.healamount = 15;
+        self.healamount = 20;   // PM:  Quake = 15
         self.netname = "Life Essence";
         #ifdef QUAKEWORLD
         self.effects = self.effects | EF_RED;
@@ -951,7 +1061,7 @@ void() health_touch =
 
     if (self.healtype == 2) // Megahealth?  Ignore max_health...
     {
-        if (other.health >= 250)
+        if (other.health >= 200)
             return;
         if (!T_Heal(other, self.healamount, 1))
             return;
@@ -975,15 +1085,8 @@ void() health_touch =
     self.model = string_null;
     self.solid = SOLID_NOT;
 
-    // Megahealth = rot down the player's super health
-    if (self.healtype == 2)
-    {
-        other.items = other.items | IT_SUPERHEALTH;
-        self.nextthink = time + 5;
-        self.think = item_megahealth_rot;
-        self.owner = other;
-    }
-    else if (deathmatch)
+// PM:  Do NOT rot health after taking life seed.
+    if (deathmatch)
     {
         self.nextthink = time + 20;
         self.think = SUB_regen;
@@ -991,28 +1094,6 @@ void() health_touch =
 
     activator = other;
     SUB_UseTargets();               // fire all targets / killtargets
-};
-
-void() item_megahealth_rot =
-{
-    other = self.owner;
-
-    if (other.health > other.max_health)
-    {
-        other.health = other.health - 1;
-        self.nextthink = time + 1;
-        return;
-    }
-
-// it is possible for a player to die and respawn between rots, so don't
-// just blindly subtract the flag off
-    other.items = other.items - (other.items & IT_SUPERHEALTH);
-
-    if (deathmatch)
-    {
-        self.nextthink = time + 20;
-        self.think = SUB_regen;
-    }
 };
 
 /*
@@ -1615,6 +1696,7 @@ void() weapon_voodoodoll =
     // Precache the necessary sounds
     precache_sound ("weapons/voodoodl/voolaugh.wav");
     precache_sound ("weapons/voodoodl/voostab.wav");
+    precache_sound ("weapons/voodoodl/voochant.wav");
 
     StartItem ();
 };
@@ -1935,7 +2017,8 @@ local float     best;
         return;
     if (other.health <= 0)
         return;
-    if (other.items & self.items)
+// PM:  Changed to .items2 since that is where key bits are stored.
+    if (other.items2 & self.items2)
         return;
 
     Sprint (other, PRINT_LOW, "Picked up ");
@@ -1944,7 +2027,8 @@ local float     best;
 
     sound (other, CHAN_ITEM, self.noise, 1, ATTN_NORM);
     stuffcmd (other, "bf\n");
-    other.items = other.items | self.items;
+// PM:  Changed to .items2 since that is where key bits are stored.
+    other.items = other.items2 | self.items2;
 
     #ifndef QUAKEWORLD
     if (!coop)
@@ -1961,105 +2045,92 @@ local float     best;
 };
 
 
-void() key_setsounds =
-{
-    if (world.worldtype == 0)
-    {
-        precache_sound ("items/pickkey.wav");  // medkey
-        self.noise = "items/pickkey.wav";
-    }
-    if (world.worldtype == 1)
-    {
-        precache_sound ("items/pickkey.wav");  // runekey
-        self.noise = "items/pickkey.wav";
-    }
-    if (world.worldtype == 2)
-    {
-        precache_sound2 ("items/pickkey.wav");  // basekey
-        self.noise = "items/pickkey.wav";
-    }
-};
-
-/*QUAKED item_key1 (0 .5 .8) (-16 -16 -24) (16 16 32)
-SILVER key
-In order for keys to work
-you MUST set your maps
-worldtype to one of the
-following:
-0: medieval
-1: metal
-2: base
-
+/*QUAKED item_key (0 .5 .8) (-16 -16 -24) (16 16 32)
+one of six keys in Blood
 the following keys need to exist in single player qBlood:
 Skull, Eye, Fire, Dagger, Spider, Moon
-
 */
-
-void() item_key1 =
+void() item_key =
 {
-    if (world.worldtype == 0)
+    if ((self.spawnflags & 63) == 0)
     {
-        precache_model ("progs/w_s_key.mdl");
-        setmodel (self, "progs/w_s_key.mdl");
-        self.netname = "silver key";
+        // Convert to skull key.
+        dprint ("No key type -- converted to skull type.\n");
+        self.spawnflags = self.spawnflags | 1;
     }
-    else if (world.worldtype == 1)
+
+    if (self.spawnflags & 32)
     {
-        precache_model ("progs/m_s_key.mdl");
-        setmodel (self, "progs/m_s_key.mdl");
-        self.netname = "silver runekey";
+        precache_model ("progs/b_g_key.mdl");
+        setmodel (self, "progs/b_g_key.mdl");
+        self.netname    = "moon key";
+        self.items2     = IT2_KEY6;
     }
-    else if (world.worldtype == 2)
+    else if (self.spawnflags & 16)
     {
-        precache_model2 ("progs/b_s_key.mdl");
+        precache_model ("progs/b_s_key.mdl");
         setmodel (self, "progs/b_s_key.mdl");
-        self.netname = "silver keycard";
+        self.netname    = "spider key";
+        self.items2     = IT2_KEY5;
     }
-    key_setsounds();
-    self.touch = key_touch;
-    self.items2 = IT2_KEY1;
-    setsize (self, '-16 -16 -24', '16 16 32');
-    StartItem ();
-};
-
-/*QUAKED item_key2 (0 .5 .8) (-16 -16 -24) (16 16 32)
-GOLD key
-In order for keys to work
-you MUST set your maps
-worldtype to one of the
-following:
-0: medieval
-1: metal
-2: base
-*/
-
-void() item_key2 =
-{
-    if (world.worldtype == 0)
-    {
-        precache_model ("progs/w_g_key.mdl");
-        setmodel (self, "progs/w_g_key.mdl");
-        self.netname = "gold key";
-    }
-    if (world.worldtype == 1)
+    else if (self.spawnflags & 8)
     {
         precache_model ("progs/m_g_key.mdl");
         setmodel (self, "progs/m_g_key.mdl");
-        self.netname = "gold runekey";
+        self.netname    = "dagger key";
+        self.items2     = IT2_KEY4;
     }
-    if (world.worldtype == 2)
+    else if (self.spawnflags & 4)
     {
-        precache_model2 ("progs/b_g_key.mdl");
-        setmodel (self, "progs/b_g_key.mdl");
-        self.netname = "gold keycard";
+        precache_model ("progs/m_s_key.mdl");
+        setmodel (self, "progs/m_s_key.mdl");
+        self.netname    = "fire key";
+        self.items2     = IT2_KEY3;
     }
-    key_setsounds();
-    self.touch = key_touch;
-    self.items2 = IT2_KEY2;
+    else if (self.spawnflags & 2)
+    {
+        precache_model ("progs/w_g_key.mdl");
+        setmodel (self, "progs/w_g_key.mdl");
+        self.netname    = "eye key";
+        self.items2     = IT2_KEY2;
+    }
+    else if (self.spawnflags & 1)
+    {
+        precache_model ("progs/w_s_key.mdl");
+        setmodel (self, "progs/w_s_key.mdl");
+        self.netname    = "skull key";
+        self.items2     = IT2_KEY1;
+    }
+    else
+    {
+        dprint ("No key type -- removed!\n");
+        remove (self);
+        return;
+    }
+
+    precache_sound ("items/pickkey.wav");
+    self.noise  = "items/pickkey.wav";
+    self.touch  = key_touch;
     setsize (self, '-16 -16 -24', '16 16 32');
     StartItem ();
 };
 
+/*QUAKED item_key1 (0 .5 .8) (-16 -16 -24) (16 16 32)
+*/
+void() item_key1 =
+{
+    self.spawnflags = 1;    // For compatibility with Quake maps.
+    self.classname = "item_key";
+    item_key ();
+};
+/*QUAKED item_key2 (0 .5 .8) (-16 -16 -24) (16 16 32)
+*/
+void() item_key2 =
+{
+    self.spawnflags = 2;    // For compatibility with Quake maps.
+    self.classname = "item_key";
+    item_key ();
+};
 
 
 /*
@@ -2140,73 +2211,6 @@ POWERUPS
 ===============================================================================
 */
 
-void() powerup_touch =
-{
-local entity    stemp;
-local float     best;
-
-    if (other.classname != "player")
-        return;
-    if (other.health <= 0)
-        return;
-
-    Sprint (other, PRINT_LOW, "Picked up ");
-    Sprint (other,PRINT_LOW,  self.netname);
-    Sprint (other,PRINT_LOW, "\n");
-
-    #ifndef QUAKEWORLD
-    if (deathmatch)
-    {
-    #endif
-        self.mdl = self.model;
-
-        if ((self.classname == "item_artifact_invulnerability") ||
-            (self.classname == "item_artifact_invisibility"))
-            self.nextthink = time + 60*5;
-        else
-            self.nextthink = time + 60;
-
-        self.think = SUB_regen;
-    #ifndef QUAKEWORLD
-    }
-    #endif
-
-    sound (other, CHAN_VOICE, self.noise, 1, ATTN_NORM);
-    stuffcmd (other, "bf\n");
-    self.solid = SOLID_NOT;
-    other.items = other.items | self.items;
-    self.model = string_null;
-
-// do the apropriate action
-    if (self.classname == "item_artifact_envirosuit")
-    {
-        other.rad_time = 1;
-        other.radsuit_finished = time + 30;
-    }
-
-    if (self.classname == "item_artifact_invulnerability")
-    {
-        other.invincible_time = 1;
-        other.invincible_finished = time + 30;
-    }
-
-    if (self.classname == "item_artifact_invisibility")
-    {
-        other.invisible_time = 1;
-        other.invisible_finished = time + 30;
-    }
-
-    if (self.classname == "item_artifact_super_damage")
-    {
-        other.super_time = 1;
-        other.super_damage_finished = time + 30;
-    }
-
-    activator = other;
-    SUB_UseTargets();               // fire all targets / killtargets
-};
-
-
 
 /*QUAKED item_artifact_invulnerability (0 .5 .8) (-16 -16 -24) (16 16 32)
 Player is invulnerable for 30 seconds
@@ -2241,7 +2245,7 @@ void() item_artifact_envirosuit =
     self.noise = "foley/frbreath.wav";
     setmodel (self, "progs/suit.mdl");
     self.netname = "Diving Suit";
-    self.items = IT_SUIT;
+// PM:  Diving suit/IT_SUIT controlled by inventory.
     setsize (self, '-16 -16 -24', '16 16 32');
     StartItem ();
 };
@@ -2278,7 +2282,7 @@ void() item_artifact_super_damage =
     setmodel (self, "progs/quaddama.mdl");
 
     self.netname = "Guns Akimbo";
-    self.items = IT_QUAD;
+// PM:  Reflective shots now use IT_QUAD instead.
     #ifdef QUAKEWORLD
     self.effects = self.effects | EF_BLUE;
     #endif

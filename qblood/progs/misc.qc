@@ -312,7 +312,7 @@ void() misc_explobox2 =
     self.movetype = MOVETYPE_NONE;
     precache_model2 ("progs/barrel.mdl"); // maps/b_exbox2.bsp
     setmodel (self, "progs/barrel.mdl"); // maps/b_exbox2.bsp");
-    setsize (self, '0 0 0', '32 32 32');
+    setsize (self, '-16 -16 0', '16 16 32');
     precache_sound ("weapons/napalm/explodfl.wav");
     self.health = 20;
     self.th_die = barrel_explode;

@@ -116,7 +116,18 @@
 
 // In ".items2"
 #define IT2_KEY1            1        // 1 - skull
-#define IT2_KEY2            2        // 2 - dagger
+#define IT2_KEY2            2        // 2 - eye
+#define IT2_KEY3            4        // 3 - fire
+#define IT2_KEY4            8        // 4 - dagger
+#define IT2_KEY5            16       // 5 - spider
+#define IT2_KEY6            32       // 6 - moon
+
+// Inventory items
+#define S_FIRST_AID     0
+#define S_DIVING_SUIT   1
+#define S_CRYSTAL_BALL  2
+#define S_BEAST_VISION  3
+#define S_JUMP_BOOTS    4
 
 
 // point content values
@@ -251,10 +262,9 @@
 #define DF_RADIUS       1   // Splash damage.
 #define DF_MIN_PAIN     2   // Attack causes minimal pain.
 #define DF_NO_PROTECT   4   // Ignores all protection, including godmode.
-#define DF_ALT_SAVE     8   // Drop save fractions.  (Don't round up.)
-#define DF_FIRE         16  // Damage is absorbed by fire armor.
-#define DF_BODY         32  // Damage is absorbed by body armor.
-#define DF_MIND         64  // Damage is absorbed by spirit armor.
+#define DF_FIRE         8   // Damage is absorbed by fire armor.
+#define DF_BODY         16  // Damage is absorbed by body armor.
+#define DF_MIND         32  // Damage is absorbed by spirit armor.
 
 
 /* ----------------- */
