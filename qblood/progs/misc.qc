@@ -92,8 +92,8 @@ void() light_fluoro =
             lightstyle(self.style, "m");
     }
 
-    precache_sound ("ambience/fl_hum1.wav");
-    ambientsound (self.origin, "ambience/fl_hum1.wav", 0.5, ATTN_STATIC);
+    precache_sound ("ambience/amb25.wav");
+    ambientsound (self.origin, "ambience/amb25.wav", 0.5, ATTN_STATIC);
 };
 
 /*QUAKED light_fluorospark (0 1 0) (-8 -8 -8) (8 8 8)
@@ -107,8 +107,8 @@ void() light_fluorospark =
     if (!self.style)
         self.style = 10;
 
-    precache_sound ("ambience/buzz1.wav");
-    ambientsound (self.origin, "ambience/buzz1.wav", 0.5, ATTN_STATIC);
+    precache_sound ("ambience/elecgen2.wav");
+    ambientsound (self.origin, "ambience/elecgen2.wav", 0.5, ATTN_STATIC);
 };
 
 /*QUAKED light_globe (0 1 0) (-8 -8 -8) (8 8 8)
@@ -125,9 +125,9 @@ void() light_globe =
 
 void() FireAmbient =
 {
-    precache_sound ("ambience/fire1.wav");
-// attenuate fast
-    ambientsound (self.origin, "ambience/fire1.wav", 0.5, ATTN_STATIC);
+    precache_sound ("ambience/sizzle.wav");
+    // attenuate fast
+    ambientsound (self.origin, "ambience/sizzle.wav", 0.5, ATTN_STATIC);
 };
 
 /*QUAKED light_torch_small_walltorch (0 .5 0) (-10 -10 -20) (10 10 20)
@@ -245,7 +245,7 @@ void() barrel_explode =
     multicast (self.origin, MULTICAST_PHS);
     remove (self);
     #else
-    sound (self, CHAN_VOICE, "weapons/r_exp3.wav", 1, ATTN_NORM);
+    sound (self, CHAN_VOICE, "weapons/napalm/explodfl.wav", 1, ATTN_NORM);
     particle (self.origin, '0 0 0', 75, 255);
 
     self.origin_z = self.origin_z + 32;
@@ -268,7 +268,7 @@ void() misc_explobox =
     precache_model ("maps/b_explob.bsp");
     setmodel (self, "maps/b_explob.bsp");
     setsize (self, '0 0 0', '32 32 64');
-    precache_sound ("weapons/r_exp3.wav");
+    precache_sound ("weapons/napalm/explodfl.wav");
     self.health = 20;
     self.th_die = barrel_explode;
     self.takedamage = DAMAGE_AIM;
@@ -301,7 +301,7 @@ void() misc_explobox2 =
     precache_model2 ("maps/b_exbox2.bsp");
     setmodel (self, "maps/b_exbox2.bsp");
     setsize (self, '0 0 0', '32 32 32');
-    precache_sound ("weapons/r_exp3.wav");
+    precache_sound ("weapons/napalm/explodfl.wav");
     self.health = 20;
     self.th_die = barrel_explode;
     self.takedamage = DAMAGE_AIM;
@@ -336,7 +336,7 @@ void() Laser_Touch =
         return;
     }
 
-    sound (self, CHAN_WEAPON, "enforcer/enfstop.wav", 1, ATTN_STATIC);
+    sound (self, CHAN_WEAPON, "ambience/spark.wav", 1, ATTN_STATIC);
     org = self.origin - 8*normalize(self.velocity);
 
     if (other.health)
@@ -376,7 +376,7 @@ void(vector org, vector vec) LaunchLaser =
     local   vector  vec;
 
     if (self.classname == "monster_enforcer")
-        sound (self, CHAN_WEAPON, "enforcer/enfire.wav", 1, ATTN_NORM);
+        sound (self, CHAN_WEAPON, "weapons/tesla/tessngfr.wav", 1, ATTN_NORM);
 
     vec = normalize(vec);
 
@@ -403,12 +403,12 @@ void() spikeshooter_use =
 {
     if (self.spawnflags & SPAWNFLAG_LASER)
     {
-        sound (self, CHAN_VOICE, "enforcer/enfire.wav", 1, ATTN_NORM);
+        sound (self, CHAN_VOICE, "weapons/tesla/tessngfr.wav", 1, ATTN_NORM);
         LaunchLaser (self.origin, self.movedir);
     }
     else
     {
-        sound (self, CHAN_VOICE, "weapons/spike2.wav", 1, ATTN_NORM);
+        sound (self, CHAN_VOICE, "weapons/tommygun/_tom.wav", 1, ATTN_NORM);
         launch_spike (self.origin, self.movedir);
         newmis.velocity = self.movedir * 500;
         if (self.spawnflags & SPAWNFLAG_SUPERSPIKE)
@@ -437,11 +437,11 @@ void() trap_spikeshooter =
     {
         precache_model2 ("progs/laser.mdl");
 
-        precache_sound2 ("enforcer/enfire.wav");
-        precache_sound2 ("enforcer/enfstop.wav");
+        precache_sound2 ("weapons/tesla/tessngfr.wav");
+        precache_sound2 ("ambience/spark.wav");
     }
     else
-        precache_sound ("weapons/spike2.wav");
+        precache_sound ("weapons/tommygun/_tom.wav");
 };
 
 
@@ -680,38 +680,38 @@ void() func_bossgate =
 */
 void() ambient_suck_wind =
 {
-    precache_sound ("ambience/suck1.wav");
-    ambientsound (self.origin, "ambience/suck1.wav", 1, ATTN_STATIC);
+    precache_sound ("ambience/amb1.wav");
+    ambientsound (self.origin, "ambience/amb1.wav", 1, ATTN_STATIC);
 };
 
 /*QUAKED ambient_drone (0.3 0.1 0.6) (-10 -10 -8) (10 10 8)
 */
 void() ambient_drone =
 {
-    precache_sound ("ambience/drone6.wav");
-    ambientsound (self.origin, "ambience/drone6.wav", 0.5, ATTN_STATIC);
+    precache_sound ("ambience/drone.wav");
+    ambientsound (self.origin, "ambience/drone.wav", 0.5, ATTN_STATIC);
 };
 
 /*QUAKED ambient_flouro_buzz (0.3 0.1 0.6) (-10 -10 -8) (10 10 8)
 */
 void() ambient_flouro_buzz =
 {
-    precache_sound ("ambience/buzz1.wav");
-    ambientsound (self.origin, "ambience/buzz1.wav", 1, ATTN_STATIC);
+    precache_sound ("ambience/elecgen2.wav");
+    ambientsound (self.origin, "ambience/elecgen2.wav", 1, ATTN_STATIC);
 };
 /*QUAKED ambient_drip (0.3 0.1 0.6) (-10 -10 -8) (10 10 8)
 */
 void() ambient_drip =
 {
-    precache_sound ("ambience/drip1.wav");
-    ambientsound (self.origin, "ambience/drip1.wav", 0.5, ATTN_STATIC);
+    precache_sound ("ambience/drip3.wav");
+    ambientsound (self.origin, "ambience/drip3.wav", 0.5, ATTN_STATIC);
 };
 /*QUAKED ambient_comp_hum (0.3 0.1 0.6) (-10 -10 -8) (10 10 8)
 */
 void() ambient_comp_hum =
 {
-    precache_sound ("ambience/comp1.wav");
-    ambientsound (self.origin, "ambience/comp1.wav", 1, ATTN_STATIC);
+    precache_sound ("ambience/gearstar.wav");
+    ambientsound (self.origin, "ambience/gearstar.wav", 1, ATTN_STATIC);
 };
 /*QUAKED ambient_thunder (0.3 0.1 0.6) (-10 -10 -8) (10 10 8)
 */
@@ -724,22 +724,22 @@ void() ambient_thunder =
 */
 void() ambient_light_buzz =
 {
-    precache_sound ("ambience/fl_hum1.wav");
-    ambientsound (self.origin, "ambience/fl_hum1.wav", 0.5, ATTN_STATIC);
+    precache_sound ("ambience/hum.wav");
+    ambientsound (self.origin, "ambience/hum.wav", 0.5, ATTN_STATIC);
 };
 /*QUAKED ambient_swamp1 (0.3 0.1 0.6) (-10 -10 -8) (10 10 8)
 */
 void() ambient_swamp1 =
 {
-    precache_sound ("ambience/swamp1.wav");
-    ambientsound (self.origin, "ambience/swamp1.wav", 0.5, ATTN_STATIC);
+    precache_sound ("ambience/swamp.wav");
+    ambientsound (self.origin, "ambience/swamp.wav", 0.5, ATTN_STATIC);
 };
 /*QUAKED ambient_swamp2 (0.3 0.1 0.6) (-10 -10 -8) (10 10 8)
 */
 void() ambient_swamp2 =
 {
-    precache_sound ("ambience/swamp2.wav");
-    ambientsound (self.origin, "ambience/swamp2.wav", 0.5, ATTN_STATIC);
+    precache_sound ("ambience/amb11.wav");
+    ambientsound (self.origin, "ambience/amb11.wav", 0.5, ATTN_STATIC);
 };
 
 //============================================================================

@@ -504,9 +504,9 @@ void() trigger_teleport =
 
     if (!(self.spawnflags & SILENT))
     {
-        precache_sound ("ambience/hum1.wav");
+        precache_sound ("ambience/amb17.wav");
         o = (self.mins + self.maxs)*0.5;
-        ambientsound (o, "ambience/hum1.wav",0.5 , ATTN_STATIC);
+        ambientsound (o, "ambience/amb17.wav",0.5 , ATTN_STATIC);
     }
 };
 

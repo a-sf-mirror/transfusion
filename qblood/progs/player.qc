@@ -269,7 +269,7 @@ local float     rs;
 
     if (damage_attacker.classname == "teledeath")
     {
-        sound (self, CHAN_VOICE, "player/teledth1.wav", 1, ATTN_NONE);
+        sound (self, CHAN_VOICE, "firepod/fpodcol2.wav", 1, ATTN_NONE);
         return;
     }
 
@@ -278,29 +278,30 @@ local float     rs;
     {
         DeathBubbles(1);
         if (random() > 0.5)
-            sound (self, CHAN_VOICE, "player/drown1.wav", 1, ATTN_NORM);
+            sound (self, CHAN_VOICE, "ambience/bubrise.wav", 1, ATTN_NORM);
         else
-            sound (self, CHAN_VOICE, "player/drown2.wav", 1, ATTN_NORM);
+            sound (self, CHAN_VOICE, "foley/undchoke.wav", 1, ATTN_NORM);
         return;
     }
 
 // slime pain sounds
     if (self.watertype == CONTENT_SLIME)
     {
-// FIX ME   put in some steam here
+        // FIX ME   put in some steam here
+        // dturner: 4/11/2001 - closest we got is butcher stomach acid
         if (random() > 0.5)
-            sound (self, CHAN_VOICE, "player/lburn1.wav", 1, ATTN_NORM);
+            sound (self, CHAN_VOICE, "butcher/acidhit1.wav", 1, ATTN_NORM);
         else
-            sound (self, CHAN_VOICE, "player/lburn2.wav", 1, ATTN_NORM);
+            sound (self, CHAN_VOICE, "butcher/acidhit2.wav", 1, ATTN_NORM);
         return;
     }
 
     if (self.watertype == CONTENT_LAVA)
     {
         if (random() > 0.5)
-            sound (self, CHAN_VOICE, "player/lburn1.wav", 1, ATTN_NORM);
+            sound (self, CHAN_VOICE, "player/pain/play1120.wav", 1, ATTN_NORM);
         else
-            sound (self, CHAN_VOICE, "player/lburn2.wav", 1, ATTN_NORM);
+            sound (self, CHAN_VOICE, "player/pain/play1119.wav", 1, ATTN_NORM);
         return;
     }
 
@@ -317,26 +318,32 @@ local float     rs;
     if (self.axhitme == 1)
     {
         self.axhitme = 0;
-        sound (self, CHAN_VOICE, "player/axhit1.wav", 1, ATTN_NORM);
+        sound (self, CHAN_VOICE, "player/pain/play1106.wav", 1, ATTN_NORM);
         return;
     }
 
 
-    rs = rint((random() * 5) + 1);
+    rs = rint((random() * 8) + 1);
 
-    self.noise = "";
+    self.noise = "";  // FIXME: do we really need this ?
     if (rs == 1)
-        self.noise = "player/pain1.wav";
+        self.noise = "player/pain/play1100.wav";
     else if (rs == 2)
-        self.noise = "player/pain2.wav";
+        self.noise = "player/pain/play1101.wav";
     else if (rs == 3)
-        self.noise = "player/pain3.wav";
+        self.noise = "player/pain/play1102.wav";
     else if (rs == 4)
-        self.noise = "player/pain4.wav";
+        self.noise = "player/pain/play1103.wav";
     else if (rs == 5)
-        self.noise = "player/pain5.wav";
+        self.noise = "player/pain/play1104.wav";
+    else if (rs == 6)
+        self.noise = "player/pain/play1105.wav";
+    else if (rs == 7)
+        self.noise = "player/pain/play1106.wav";
+    else if (rs == 8)
+        self.noise = "player/pain/play1107.wav";
     else
-        self.noise = "player/pain6.wav";
+        self.noise = "player/pain/play1108.wav";
 
     sound (self, CHAN_VOICE, self.noise, 1, ATTN_NORM);
     return;
@@ -426,21 +433,21 @@ local float     rs;
     if (self.waterlevel == 3)
     {
         DeathBubbles(20);
-        sound (self, CHAN_VOICE, "player/h2odeath.wav", 1, ATTN_NONE);
+        sound (self, CHAN_VOICE, "ambience/bubrise.wav", 1, ATTN_NONE);
         return;
     }
 
     rs = rint ((random() * 4) + 1);
     if (rs == 1)
-        self.noise = "player/death1.wav";
-    if (rs == 2)
-        self.noise = "player/death2.wav";
-    if (rs == 3)
-        self.noise = "player/death3.wav";
-    if (rs == 4)
-        self.noise = "player/death4.wav";
-    if (rs == 5)
-        self.noise = "player/death5.wav";
+        self.noise = "player/die1.wav";
+    else if (rs == 2)
+        self.noise = "player/die2.wav";
+    else if (rs == 3)
+        self.noise = "player/die3.wav";
+    else if (rs == 4)
+        self.noise = "butcher/fzomdie2.wav";
+    else
+        self.noise = "butcher/fzomdie3.wav";
 
     sound (self, CHAN_VOICE, self.noise, 1, ATTN_NONE);
     return;
@@ -519,7 +526,7 @@ void() HeadTouch =
     if (other.classname != "player")
         return;
 
-    sound(other, CHAN_ITEM, "zombie/z_hit.wav", 1, ATTN_NORM);
+    sound(other, CHAN_ITEM, "foley/punt.wav", 1, ATTN_NORM);
 
     // Destroy the head, kick after kick
     self.health = self.health - 10;
@@ -619,20 +626,20 @@ void() GibPlayer =
 
     if (damage_attacker.classname == "teledeath")
     {
-        sound (self, CHAN_VOICE, "player/teledth1.wav", 1, ATTN_NONE);
+        sound (self, CHAN_VOICE, "firepod/fpodcol2.wav", 1, ATTN_NONE);
         return;
     }
 
     if (damage_attacker.classname == "teledeath2")
     {
-        sound (self, CHAN_VOICE, "player/teledth1.wav", 1, ATTN_NONE);
+        sound (self, CHAN_VOICE, "firepod/fpodcol2.wav", 1, ATTN_NONE);
         return;
     }
 
     if (random() < 0.5)
-        sound (self, CHAN_VOICE, "player/gib.wav", 1, ATTN_NONE);
+        sound (self, CHAN_VOICE, "butcher/fzomdie2.wav", 1, ATTN_NONE);
     else
-        sound (self, CHAN_VOICE, "player/udeath.wav", 1, ATTN_NONE);
+        sound (self, CHAN_VOICE, "butcher/fzomdie3.wav", 1, ATTN_NONE);
 };
 
 void() PlayerDie =
@@ -650,7 +657,7 @@ void() PlayerDie =
     {
         DropQuad (self.super_damage_finished - time);
         Bprint (PRINT_LOW, self.netname);
-        Bprint (PRINT_LOW, " lost a quad with ");
+        Bprint (PRINT_LOW, " lost a Guns Akimbo with ");
         s = ftos(rint(self.super_damage_finished - time));
         Bprint (PRINT_LOW, s);
         Bprint (PRINT_LOW, " seconds remaining\n");
@@ -663,7 +670,7 @@ void() PlayerDie =
     #endif
     {
         Bprint (PRINT_LOW, self.netname);
-        Bprint (PRINT_LOW, " lost a ring with ");
+        Bprint (PRINT_LOW, " lost a cloak with ");
         s = ftos(rint(self.invisible_finished - time));
         Bprint (PRINT_LOW, s);
         Bprint (PRINT_LOW, " seconds remaining\n");

@@ -107,23 +107,23 @@ local float     gtemp, ftemp;
 
     if (self.sounds == 0)
     {
-        precache_sound ("buttons/airbut1.wav");
-        self.noise = "buttons/airbut1.wav";
+        precache_sound ("locks/switch1.wav");
+        self.noise = "locks/switch1.wav";
     }
     if (self.sounds == 1)
     {
-        precache_sound ("buttons/switch21.wav");
-        self.noise = "buttons/switch21.wav";
+        precache_sound ("locks/runeuse.wav");
+        self.noise = "locks/runeuse.wav";
     }
     if (self.sounds == 2)
     {
-        precache_sound ("buttons/switch02.wav");
-        self.noise = "buttons/switch02.wav";
+        precache_sound ("locks/qlatch2.wav");
+        self.noise = "locks/qlatch2.wav";
     }
     if (self.sounds == 3)
     {
-        precache_sound ("buttons/switch04.wav");
-        self.noise = "buttons/switch04.wav";
+        precache_sound ("locks/runetry2.wav");
+        self.noise = "locks/runetry2.wav";
     }
 
     SetMovedir ();

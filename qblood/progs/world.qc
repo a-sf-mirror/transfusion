@@ -22,7 +22,7 @@ void() main =
 {
     dprint ("main function\n");
 
-// these are just commands the the prog compiler to copy these files
+    // these are just commands to the prog compiler to copy these files
 
     precache_file ("progs.dat");
     precache_file ("gfx.wad");
@@ -201,77 +201,80 @@ void() worldspawn =
     W_Precache ();          // get weapon precaches
 
 // sounds used from C physics code
-    precache_sound ("zombie/z_miss.wav");       // used by destroyable corpses
-    precache_sound ("misc/gibsq.wav");          // used by when a head is destroyed
-    precache_sound ("zombie/z_hit.wav");        // used by kickable heads
-    precache_sound ("demon/dland2.wav");        // landing thud
-    precache_sound ("misc/h2ohit1.wav");        // landing splash
+    precache_sound ("misc/gibsq.wav");    // used by when a head is destroyed
+    precache_sound ("foley/punt.wav");    // used by kickable heads
+    precache_sound ("demon/dland2.wav");  // landing thud
+    precache_sound ("misc/h2ohit1.wav");  // landing splash
 
 // setup precaches allways needed
-    precache_sound ("items/itembk2.wav");       // item respawn sound
-    precache_sound ("player/plyrjmp8.wav");     // player jump
-    precache_sound ("player/land.wav");         // player landing
-    precache_sound ("player/land2.wav");        // player hurt landing
-    precache_sound ("player/drown1.wav");       // drowning pain
-    precache_sound ("player/drown2.wav");       // drowning pain
-    precache_sound ("player/gasp1.wav");        // gasping for air
-    precache_sound ("player/gasp2.wav");        // taking breath
-    precache_sound ("player/h2odeath.wav");     // drowning death
+    precache_sound ("bludbath/reappear.wav");     // item respawn sound
+    precache_sound ("foley/jump.wav");            // player jump
+    precache_sound ("foley/land.wav");            // player landing
+    precache_sound ("player/pain/play1105.wav");  // player hurt landing
+    precache_sound ("ambience/bubrise.wav");      // drowning pain
+    precache_sound ("foley/undchoke.wav");        // drowning pain
+    precache_sound ("foley/gasp.wav");            // gasping for air
+    precache_sound ("foley/undchoke.wav");        // taking breath
+    precache_sound ("ambience/bubrise.wav");      // drowning death
 
     precache_sound ("misc/talk.wav");           // talk
-    precache_sound ("player/teledth1.wav");     // telefrag
+    precache_sound ("bludbath/message.wav");    // talk
+    precache_sound ("firepod/fpodcol2.wav");    // telefrag
     precache_sound ("misc/r_tele1.wav");        // teleport sounds
     precache_sound ("misc/r_tele2.wav");
     precache_sound ("misc/r_tele3.wav");
     precache_sound ("misc/r_tele4.wav");
     precache_sound ("misc/r_tele5.wav");
-    precache_sound ("weapons/lock4.wav");       // ammo pick up
-    precache_sound ("weapons/pkup.wav");        // weapon up
-    precache_sound ("items/armor1.wav");        // armor up
-    precache_sound ("weapons/lhit.wav");        //lightning
-    precache_sound ("weapons/lstart.wav");      //lightning start
-    precache_sound ("items/damage3.wav");
+    precache_sound ("items/ammo.wav");              // ammo pick up
+    precache_sound ("items/weaponup.wav");          // weapon up
+    precache_sound ("items/pickarmr.wav");          // armor up
+    precache_sound ("weapons/tesla/teslaz~1.wav");  // lightning start
 
     precache_sound ("misc/power.wav");          //lightning for boss
 
 // player gib sounds
-    precache_sound ("player/gib.wav");          // player gib sound
-    precache_sound ("player/udeath.wav");       // player gib sound
+    precache_sound ("butcher/fzomdie2.wav");    // player gib sound
+    precache_sound ("player/udeath.wav");       // FIXME: monster gib sound (use player gib sound instead)
+    precache_sound ("butcher/fzomdie3.wav");    // player gib sound
     precache_sound ("player/tornoff2.wav");     // gib sound
 
 // player pain sounds
 
-    precache_sound ("player/pain1.wav");
-    precache_sound ("player/pain2.wav");
-    precache_sound ("player/pain3.wav");
-    precache_sound ("player/pain4.wav");
-    precache_sound ("player/pain5.wav");
-    precache_sound ("player/pain6.wav");
+    precache_sound ("player/pain/play1100.wav");
+    precache_sound ("player/pain/play1101.wav");
+    precache_sound ("player/pain/play1102.wav");
+    precache_sound ("player/pain/play1103.wav");
+    precache_sound ("player/pain/play1104.wav");
+    precache_sound ("player/pain/play1105.wav");
+    precache_sound ("player/pain/play1106.wav");
+    precache_sound ("player/pain/play1107.wav");
+    precache_sound ("player/pain/play1108.wav");
 
 // player death sounds
-    precache_sound ("player/death1.wav");
-    precache_sound ("player/death2.wav");
-    precache_sound ("player/death3.wav");
-    precache_sound ("player/death4.wav");
-    precache_sound ("player/death5.wav");
+    precache_sound ("player/die1.wav");
+    precache_sound ("player/die2.wav");
+    precache_sound ("player/die3.wav");
+    precache_sound ("butcher/fzomdie2.wav");
+    precache_sound ("butcher/fzomdie3.wav");
 
 // ax sounds
-    precache_sound ("zombie/azomswip.wav");          // ax swoosh
-    precache_sound ("player/axhit1.wav");            // ax hit meat
+    precache_sound ("zombie/claw.wav");              // ax swoosh
+    precache_sound ("player/pain/play1106.wav");     // ax hit meat
     precache_sound ("weapons/pitchfrk/pstone.wav");  // ax hit world
 
-    precache_sound ("player/h2ojump.wav");      // player jumping into water
-    precache_sound ("player/slimbrn2.wav");     // player enter slime
-    precache_sound ("player/inh2o.wav");        // player enter water
-    precache_sound ("player/inlava.wav");       // player enter lava
-    precache_sound ("misc/outwater.wav");       // leaving water sound
+    precache_sound ("foley/lndwater.wav");      // player jumping into water
+    precache_sound ("foley/submerge.wav");      // player enter liquid
+    precache_sound ("foley/emerge.wav");        // leaving water sound
 
-    precache_sound ("player/lburn1.wav");       // lava burn
-    precache_sound ("player/lburn2.wav");       // lava burn
+    precache_sound ("butcher/acidhit1.wav");      // slime burn
+    precache_sound ("butcher/acidhit2.wav");      // slime burn
+    precache_sound ("player/pain/play1120.wav");  // lava burn
+    precache_sound ("player/pain/play1119.wav");  // lava burn
 
-    precache_sound ("misc/water1.wav");         // swimming
-    precache_sound ("misc/water2.wav");         // swimming
+    precache_sound ("foley/swim.wav");          // swimming
+    precache_sound ("foley/submerge.wav");      // swimming
 
+    // models and stuff
     precache_model ("progs/player.mdl");
     precache_model ("progs/eyes.mdl");
     precache_model ("progs/h_player.mdl");
@@ -429,7 +432,7 @@ void(float corpseHealth, void() corpseToGib) BecomeCorpse =
 
     // Allow some interactions (so the corpses can be destroyed by explosions)
     self.takedamage = DAMAGE_AIM;
-    if (self.classname != "head")  // only player's heads go throw this function
+    if (self.classname != "head")  // only player's heads go through this function
     {
         self.touch = CorpseTouch;
         self.solid = SOLID_BBOX;
@@ -458,7 +461,7 @@ void() GibPlayerCorpse =
     ThrowGib ("progs/gib2.mdl", self.health);
     ThrowGib ("progs/gib3.mdl", self.health);
 
-    sound (self, CHAN_ITEM, "zombie/z_miss.wav", 1, ATTN_NORM);
+    sound (self, CHAN_ITEM, "misc/gibsq.wav", 1, ATTN_NORM);
 
     remove (self);
 };

@@ -226,7 +226,7 @@ void() door_touch =
     if (self.owner.message != "")
     {
         centerprint (other, self.owner.message);
-        sound (other, CHAN_VOICE, "misc/talk.wav", 1, ATTN_NORM);
+        sound (other, CHAN_VOICE, "bludbath/message.wav", 1, ATTN_NORM);
     }
 
 // key door stuff
@@ -443,24 +443,24 @@ void() func_door =
 
     if (world.worldtype == 0)
     {
-        precache_sound ("doors/medtry.wav");
-        precache_sound ("doors/meduse.wav");
-        self.noise3 = "doors/medtry.wav";
-        self.noise4 = "doors/meduse.wav";
+        precache_sound ("locks/qlatch2.wav");
+        precache_sound ("locks/baseuse.wav");
+        self.noise3 = "locks/qlatch2.wav";
+        self.noise4 = "locks/baseuse.wav";
     }
     else if (world.worldtype == 1)
     {
-        precache_sound ("doors/runetry.wav");
-        precache_sound ("doors/runeuse.wav");
-        self.noise3 = "doors/runetry.wav";
-        self.noise4 = "doors/runeuse.wav";
+        precache_sound ("locks/runetry.wav");
+        precache_sound ("locks/runeuse.wav");
+        self.noise3 = "locks/runetry.wav";
+        self.noise4 = "locks/runeuse.wav";
     }
     else if (world.worldtype == 2)
     {
-        precache_sound ("doors/basetry.wav");
-        precache_sound ("doors/baseuse.wav");
-        self.noise3 = "doors/basetry.wav";
-        self.noise4 = "doors/baseuse.wav";
+        precache_sound ("locks/swtchbrk.wav");
+        precache_sound ("locks/swtchwrk.wav");
+        self.noise3 = "locks/swtchbrk.wav";
+        self.noise4 = "locks/swtchwrk.wav";
     }
     else
     {
@@ -475,31 +475,31 @@ void() func_door =
     }
     if (self.sounds == 1)
     {
-        precache_sound ("doors/drclos4.wav");
-        precache_sound ("doors/doormv1.wav");
-        self.noise1 = "doors/drclos4.wav";
-        self.noise2 = "doors/doormv1.wav";
+        precache_sound ("doors/qdrclos4.wav");
+        precache_sound ("doors/qdoormv1.wav");
+        self.noise1 = "doors/qdrclos4.wav";
+        self.noise2 = "doors/qdoormv1.wav";
     }
     if (self.sounds == 2)
     {
-        precache_sound ("doors/hydro1.wav");
-        precache_sound ("doors/hydro2.wav");
-        self.noise2 = "doors/hydro1.wav";
-        self.noise1 = "doors/hydro2.wav";
+        precache_sound ("ambience/elvstr2.wav");
+        precache_sound ("ambience/elstop3.wav");
+        self.noise2 = "ambience/elstop3.wav";
+        self.noise1 = "ambience/elvstr2.wav";
     }
     if (self.sounds == 3)
     {
-        precache_sound ("doors/stndr1.wav");
-        precache_sound ("doors/stndr2.wav");
-        self.noise2 = "doors/stndr1.wav";
-        self.noise1 = "doors/stndr2.wav";
+        precache_sound ("doors/creakrot.wav");
+        precache_sound ("doors/qdrclos4.wav");
+        self.noise2 = "doors/qdrclos4.wav";
+        self.noise1 = "doors/creakrot.wav";
     }
     if (self.sounds == 4)
     {
-        precache_sound ("doors/ddoor1.wav");
-        precache_sound ("doors/ddoor2.wav");
-        self.noise1 = "doors/ddoor2.wav";
-        self.noise2 = "doors/ddoor1.wav";
+        precache_sound ("doors/doorclos.wav");
+        precache_sound ("doors/dooropen.wav");
+        self.noise1 = "doors/doorclos.wav";
+        self.noise2 = "doors/dooropen.wav";
     }
 
 
@@ -720,7 +720,7 @@ void() secret_touch =
     if (self.message)
     {
         centerprint (other, self.message);
-        sound (other, CHAN_BODY, "misc/talk.wav", 1, ATTN_NORM);
+        sound (other, CHAN_BODY, "bludbath/message.wav", 1, ATTN_NORM);
     }
 };
 
@@ -748,28 +748,28 @@ void () func_door_secret =
         self.sounds = 3;
     if (self.sounds == 1)
     {
-        precache_sound ("doors/latch2.wav");
-        precache_sound ("doors/winch2.wav");
-        precache_sound ("doors/drclos4.wav");
-        self.noise1 = "doors/latch2.wav";
-        self.noise2 = "doors/winch2.wav";
-        self.noise3 = "doors/drclos4.wav";
+        precache_sound ("locks/qlatch2.wav");
+        precache_sound ("doors/rustdoor.wav");
+        precache_sound ("doors/qdrclos4.wav");
+        self.noise1 = "locks/qlatch2.wav";
+        self.noise2 = "doors/rustdoor.wav";
+        self.noise3 = "doors/qdrclos4.wav";
     }
     if (self.sounds == 2)
     {
-        precache_sound ("doors/airdoor1.wav");
-        precache_sound ("doors/airdoor2.wav");
-        self.noise2 = "doors/airdoor1.wav";
-        self.noise1 = "doors/airdoor2.wav";
-        self.noise3 = "doors/airdoor2.wav";
+        precache_sound ("doors/qairdoor.wav");
+        precache_sound ("doors/qdrclos4.wav");
+        self.noise2 = "doors/qairdoor.wav";
+        self.noise1 = "doors/qdrclos4.wav";
+        self.noise3 = "doors/qdrclos4.wav";
     }
     if (self.sounds == 3)
     {
-        precache_sound ("doors/basesec1.wav");
-        precache_sound ("doors/basesec2.wav");
-        self.noise2 = "doors/basesec1.wav";
-        self.noise1 = "doors/basesec2.wav";
-        self.noise3 = "doors/basesec2.wav";
+        precache_sound ("ambience/elvstr2.wav");
+        precache_sound ("ambience/elstop3.wav");
+        self.noise2 = "ambience/elvstr2.wav";
+        self.noise1 = "ambience/elstop3.wav";
+        self.noise3 = "ambience/elstop3.wav";
     }
 
     if (!self.dmg)

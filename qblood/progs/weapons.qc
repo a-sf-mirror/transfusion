@@ -37,20 +37,21 @@ void() SuperDamageSound;
 // called by worldspawn
 void() W_Precache =
 {
-    precache_sound ("weapons/r_exp3.wav");           // Explosion (used in c code)
-    precache_sound ("weapons/tommygun/_tom.wav");    // Tommy gun
-    precache_sound ("weapons/napalm/blaster.wav");   // Napalm launcher
-    precache_sound ("weapons/guncock.wav"); // player shotgun
-    precache_sound ("weapons/ric1.wav");             // ricochet (used in c code)
-    precache_sound ("weapons/ric2.wav");             // ricochet (used in c code)
-    precache_sound ("weapons/ric3.wav");             // ricochet (used in c code)
-    precache_sound ("weapons/spike2.wav");  // super spikes
-    precache_sound ("weapons/tink1.wav");            // spikes tink (used in c code)
-    precache_sound ("weapons/grenade.wav");          // grenade launcher
-    precache_sound ("weapons/tnt/proxarm.wav");      // proximity grenade armed
-    precache_sound ("weapons/tnt/proxdet.wav");      // proximity grenade triggered
-    precache_sound ("weapons/bounce.wav");      // grenade bounce
-    precache_sound ("weapons/shotgun/shotfire.wav"); // shotgun fired
+    precache_sound ("weapons/r_exp3.wav");             // Explosion (used in c code)
+    precache_sound ("weapons/tommygun/_tom.wav");      // Tommy gun
+    precache_sound ("weapons/napalm/blaster.wav");     // Napalm launcher
+    precache_sound ("weapons/flaregun/flaref.wav");    // Flaregun
+    precache_sound ("weapons/ric1.wav");               // ricochet (used in c code)
+    precache_sound ("weapons/ric2.wav");               // ricochet (used in c code)
+    precache_sound ("weapons/ric3.wav");               // ricochet (used in c code)
+    precache_sound ("weapons/spraycan/sprayfir.wav");  // spraycan fire
+    precache_sound ("weapons/tink1.wav");              // spikes tink (used in c code)
+    precache_sound ("weapons/tnt/tntfuse.wav");        // grenade launcher
+    precache_sound ("weapons/tnt/proxarm.wav");        // proximity grenade armed
+    precache_sound ("weapons/tnt/proxdet.wav");        // proximity grenade triggered
+    precache_sound ("weapons/tnt/tnttoss.wav");        // bounce sound
+    precache_sound ("weapons/shotgun/shotfire.wav");   // shotgun fired
+    precache_sound ("weapons/tesla/tessnght.wav");     // Tesla hit
 };
 
 float() crandom =
@@ -389,7 +390,7 @@ void() W_FireShotgun =
 {
     local vector dir;
 
-    sound (self, CHAN_WEAPON, "weapons/guncock.wav", 1, ATTN_NORM);
+    sound (self, CHAN_WEAPON, "weapons/flaregun/flaref.wav", 1, ATTN_NORM);
 
     #ifndef QUAKEWORLD
     self.punchangle_x = -2;
@@ -499,7 +500,6 @@ void() T_MissileTouch =
     // was done in the impact
     T_RadiusDamage (self, self.owner, 120, other, "rocket");
 
-//  sound (self, CHAN_WEAPON, "weapons/r_exp3.wav", 1, ATTN_NORM);
     self.origin = self.origin - 8*normalize(self.velocity);
 
     #ifdef QUAKEWORLD
@@ -664,7 +664,7 @@ void() W_FireLightning =
 
     if (self.t_width < time)
     {
-        sound (self, CHAN_WEAPON, "weapons/lhit.wav", 1, ATTN_NORM);
+        sound (self, CHAN_WEAPON, "weapons/tesla/tessnght.wav", 1, ATTN_NORM);
         self.t_width = time + 0.6;
     }
     #ifndef QUAKEWORLD
@@ -710,6 +710,8 @@ void() W_FireLightning =
 
 //=============================================================================
 
+float   DMG_NORM_GRENADE    = 120;
+float   DMG_PROXIM_GRENADE  = 150;
 
 void() GrenadeExplode =
 {
@@ -720,7 +722,7 @@ void() GrenadeExplode =
     self.voided = 1;
     #endif
 
-    T_RadiusDamage (self, self.owner, 120, world, "grenade");
+    T_RadiusDamage (self, self.owner, self.dmg, world, "grenade");
 
     #ifdef QUAKEWORLD
     WriteByte (MSG_MULTICAST, SVC_TEMPENTITY);
@@ -741,20 +743,6 @@ void() GrenadeExplode =
     #endif
 };
 
-void() GrenadeTouch =
-{
-    if (other == self.owner)
-        return;     // don't explode on owner
-    if (other.takedamage == DAMAGE_AIM)
-    {
-        GrenadeExplode();
-        return;
-    }
-    sound (self, CHAN_WEAPON, "weapons/bounce.wav", 1, ATTN_NORM);  // bounce sound
-    if (self.velocity == '0 0 0')
-        self.avelocity = '0 0 0';
-};
-
 
 /*
 ================
@@ -768,14 +756,15 @@ void() ProximGrenadeCheck =
     local entity thing;
 
     // Try to find something interesting nearby
-    thing = findradius (self.origin, 160);
+    // Note: in T_RadiusDamage, an explosion can damage someone up to a distance of its damage + 40
+    thing = findradius (self.origin, self.dmg + 20);
     while (thing)
     {
-        // If it's a player or a monster, explode in 750 msec
+        // If it's a player or a monster, explode in 650 msec
         if (thing.classname == "player" || (thing.flags & FL_MONSTER))
         {
             sound (self, CHAN_WEAPON, "weapons/tnt/proxdet.wav", 1, ATTN_NORM);
-            self.nextthink = time + 0.75;
+            self.nextthink = time + 0.65;
             self.think = GrenadeExplode;
             return;
         }
@@ -800,68 +789,35 @@ void() ProximGrenadeArmed =
 {
     sound (self, CHAN_WEAPON, "weapons/tnt/proxarm.wav", 1, ATTN_NORM);
 
-    // Check its neighborhood every 1/2 sec
-    self.nextthink = time + 0.5;
+    // Check its neighborhood every 1/4 sec
+    self.nextthink = time + 0.25;
     self.think = ProximGrenadeCheck;
 };
 
 
 /*
 ================
-W_FireProximityGrenade
+GrenadeTouch
 
-Fire a proximity grenade
+"Touch" function for grenades
 ================
 */
-void() W_FireProximityGrenade =
+void() GrenadeTouch =
 {
-    self.currentammo = self.ammo_rockets = self.ammo_rockets - 1;
-
-    sound (self, CHAN_WEAPON, "weapons/grenade.wav", 1, ATTN_NORM);
-
-    #ifdef QUAKEWORLD
-    msg_entity = self;
-    WriteByte (MSG_ONE, SVC_SMALLKICK);
-    #else
-    self.punchangle_x = -2;
-    #endif
-
-    newmis = spawn ();
-    #ifdef QUAKEWORLD
-    newmis.voided=0;
-    #endif
-    newmis.owner = self;
-    newmis.movetype = MOVETYPE_BOUNCE;
-    newmis.solid = SOLID_BBOX;
-    newmis.classname = "grenade";
-
-    // Explodes as soon as it takes 1 point of damage
-    newmis.takedamage = DAMAGE_YES;
-    newmis.health = 1;
-    newmis.th_die = GrenadeExplode;
-
-    // set newmis speed
-    makevectors (self.v_angle);
-    if (self.v_angle_x)
-        newmis.velocity = v_forward*600 + v_up * 200 + crandom()*v_right*10 + crandom()*v_up*10;
-    else
+    // Normal grenades are the only ones which can explode on touch
+    if (self.dmg = DMG_NORM_GRENADE)
     {
-        newmis.velocity = aim(self, 10000);
-        newmis.velocity = newmis.velocity * 600;
-        newmis.velocity_z = 200;
+        if (other == self.owner)
+            return;     // don't explode on owner
+        if (other.takedamage == DAMAGE_AIM)
+        {
+            GrenadeExplode();
+            return;
+        }
     }
 
-    newmis.avelocity = '300 300 300';
-    newmis.angles = vectoangles(newmis.velocity);
-    newmis.touch = SUB_Null;  // don't explode when touching someone
-
-    // set missile duration
-    newmis.nextthink = time + 3.0;
-    newmis.think = ProximGrenadeArmed;  // will be ready to explode in 3.0 sec
-
-    setmodel (newmis, "progs/grenade.mdl");
-    setsize (newmis, '-2 -2 -2', '2 2 2');
-    setorigin (newmis, self.origin);
+    if (self.velocity == '0 0 0')
+        self.avelocity = '0 0 0';
 };
 
 
@@ -869,14 +825,14 @@ void() W_FireProximityGrenade =
 ================
 W_FireGrenade
 
-Fire a normal grenade
+Fire a grenade
 ================
 */
 void() W_FireGrenade =
 {
     self.currentammo = self.ammo_rockets = self.ammo_rockets - 1;
 
-    sound (self, CHAN_WEAPON, "weapons/grenade.wav", 1, ATTN_NORM);
+    sound (self, CHAN_WEAPON, "weapons/tnt/tnttoss.wav", 1, ATTN_NORM);
 
     #ifdef QUAKEWORLD
     msg_entity = self;
@@ -909,12 +865,33 @@ void() W_FireGrenade =
     newmis.angles = vectoangles(newmis.velocity);
     newmis.touch = GrenadeTouch;
 
+    // Explodes as soon as it takes 1 point of damage
+    newmis.takedamage = DAMAGE_YES;
+    newmis.health = 1;
+    newmis.th_die = GrenadeExplode;
+
     // set missile duration
     newmis.nextthink = time + 2.5;
-    newmis.think = GrenadeExplode;
+
+    // If we fire a proximity grenade
+    if (self.weapon == IT_PROXIMITY_GRENADE)
+    {
+        newmis.think = ProximGrenadeArmed;
+        newmis.netname = "proximity grenade";
+        newmis.dmg = DMG_PROXIM_GRENADE;
+    }
+    // Else, it's a normal grenade
+    else
+    {
+        newmis.think = GrenadeExplode;
+        newmis.netname = "normal grenade";
+        newmis.dmg = DMG_NORM_GRENADE;
+
+        sound (newmis, CHAN_WEAPON, "weapons/tnt/tntfuse.wav", 1, ATTN_NORM);
+    }
 
     setmodel (newmis, "progs/grenade.mdl");
-    setsize (newmis, '0 0 0', '0 0 0');
+    setsize (newmis, '-2 -2 -2', '2 2 2');
     setorigin (newmis, self.origin);
 };
 
@@ -960,7 +937,7 @@ void() W_FireSuperSpikes =
     local vector    dir;
     local entity    old;
 
-    sound (self, CHAN_WEAPON, "weapons/spike2.wav", 1, ATTN_NORM);
+    sound (self, CHAN_WEAPON, "weapons/spraycan/sprayfir.wav", 1, ATTN_NORM);
     self.attack_finished = time + 0.2;
     self.currentammo = self.ammo_nails = self.ammo_nails - 2;
     dir = aim (self, 1000);
@@ -1001,7 +978,7 @@ void() W_FireSpikes =
     self.attack_finished = time + 0.2;
     self.currentammo = self.ammo_nails = self.ammo_nails - 1;
     dir = aim (self, 1000);
-    launch_spike (self.origin + '0 0 16' + v_right * 8, dir);
+    launch_spike (self.origin + '0 0 16' + v_right * 4 + v_forward * 4, dir);
 
     #ifdef QUAKEWORLD
     msg_entity = self;
@@ -1276,7 +1253,7 @@ void() W_Attack =
     if (self.weapon == IT_AXE)
     {
         self.attack_finished = time + 0.5;
-        sound (self, CHAN_WEAPON, "zombie/azomswip.wav", 1, ATTN_NORM); // dturner: pf woosh
+        sound (self, CHAN_WEAPON, "zombie/claw.wav", 1, ATTN_NORM);
         r = random();
         if (r < 0.25)
             player_axe1 ();
@@ -1312,10 +1289,7 @@ void() W_Attack =
     {
         player_rocket1();
         self.attack_finished = time + 0.6;
-        if (self.weapon == IT_PROXIMITY_GRENADE)
-            W_FireProximityGrenade();
-        else
-            W_FireGrenade();
+        W_FireGrenade();
     }
     else if (self.weapon == IT_ROCKET_LAUNCHER)
     {
@@ -1326,7 +1300,7 @@ void() W_Attack =
     else if (self.weapon == IT_LIGHTNING)
     {
         self.attack_finished = time + 0.1;
-        sound (self, CHAN_AUTO, "weapons/lstart.wav", 1, ATTN_NORM);
+        sound (self, CHAN_AUTO, "weapons/tesla/teslaz~1.wav", 1, ATTN_NORM);
         player_light1();
     }
 };
@@ -1699,7 +1673,7 @@ void() SuperDamageSound =
         if (self.super_sound < time)
         {
             self.super_sound = time + 1;
-            sound (self, CHAN_BODY, "items/damage3.wav", 1, ATTN_NORM);
+            sound (self, CHAN_BODY, "bludbath/powerup.wav", 1, ATTN_NORM);
         }
     }
     return;

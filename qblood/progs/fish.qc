@@ -78,7 +78,7 @@ void() f_walk18 =[      $swim18, f_walk1 ] {ai_walk(8);};
 
 void() f_run1  =[      $swim1, f_run2 ] {ai_run(12);
     if (random() < 0.5)
-        sound (self, CHAN_VOICE, "fish/idle.wav", 1, ATTN_NORM);
+        sound (self, CHAN_VOICE, "eels/eelroam.wav", 1, ATTN_NORM);
 };
 void() f_run2  =[      $swim3, f_run3 ] {ai_run(12);};
 void() f_run3  =[      $swim5, f_run4 ] {ai_run(12);};
@@ -102,7 +102,7 @@ void() fish_melee =
     if (vlen(delta) > 60)
         return;
 
-    sound (self, CHAN_VOICE, "fish/bite.wav", 1, ATTN_NORM);
+    sound (self, CHAN_VOICE, "eels/eelspot.wav", 1, ATTN_NORM);
     ldmg = (random() + random()) * 3;
     T_Damage (self.enemy, self, self, ldmg);
 };
@@ -127,7 +127,7 @@ void() f_attack17       =[      $attack17,      f_attack18] {ai_charge(10);};
 void() f_attack18       =[      $attack18,      f_run1    ] {ai_charge(10);};
 
 void() f_death1 =[      $death1,        f_death2        ] {
-sound (self, CHAN_VOICE, "fish/death.wav", 1, ATTN_NORM);
+    sound (self, CHAN_VOICE, "eels/eeldie1.wav", 1, ATTN_NORM);
 };
 void() f_death2 =[      $death2,        f_death3        ] {};
 void() f_death3 =[      $death3,        f_death4        ] {};
@@ -180,9 +180,12 @@ void() monster_fish =
     }
     precache_model2 ("progs/fish.mdl");
 
-    precache_sound2 ("fish/death.wav");
-    precache_sound2 ("fish/bite.wav");
-    precache_sound2 ("fish/idle.wav");
+    precache_sound2 ("eels/eeldie1.wav");
+    //precache_sound2 ("eels/eeldie2.wav");  // UNUSED
+    //precache_sound2 ("eels/eeldie3.wav");  // UNUSED
+    //precache_sound2 ("eels/eelpain.wav");  // UNUSED
+    precache_sound2 ("eels/eelroam.wav");
+    precache_sound2 ("eels/eelspot.wav");
 
     self.solid = SOLID_SLIDEBOX;
     self.movetype = MOVETYPE_STEP;

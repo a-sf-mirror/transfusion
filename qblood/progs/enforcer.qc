@@ -221,7 +221,7 @@ void() GibEnfCorpse =
     ThrowGib ("progs/gib2.mdl", self.health);
     ThrowGib ("progs/gib3.mdl", self.health);
 
-    sound (self, CHAN_ITEM, "zombie/z_miss.wav", 1, ATTN_NORM);
+    sound (self, CHAN_ITEM, "misc/gibsq.wav", 1, ATTN_NORM);
 
     remove (self);
 };
@@ -292,8 +292,8 @@ void() monster_enforcer =
     precache_model2 ("progs/laser.mdl");
 
     precache_sound2 ("enforcer/death1.wav");
-    precache_sound2 ("enforcer/enfire.wav");
-    precache_sound2 ("enforcer/enfstop.wav");
+    precache_sound2 ("weapons/tesla/tessngfr.wav");
+    precache_sound2 ("ambience/spark.wav");
     precache_sound2 ("enforcer/idle1.wav");
     precache_sound2 ("enforcer/pain1.wav");
     precache_sound2 ("enforcer/pain2.wav");

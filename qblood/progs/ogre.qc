@@ -71,7 +71,7 @@ $frame pull1 pull2 pull3 pull4 pull5 pull6 pull7 pull8 pull9 pull10 pull11
 void() OgreGrenadeExplode =
 {
     T_RadiusDamage (self, self.owner, 40, world, "grenade");
-    sound (self, CHAN_VOICE, "weapons/r_exp3.wav", 1, ATTN_NORM);
+    sound (self, CHAN_VOICE, "weapons/napalm/explodcs.wav", 1, ATTN_NORM);
 
     WriteByte (MSG_BROADCAST, SVC_TEMPENTITY);
     WriteByte (MSG_BROADCAST, TE_EXPLOSION);
@@ -95,7 +95,7 @@ void() OgreGrenadeTouch =
         OgreGrenadeExplode();
         return;
     }
-    sound (self, CHAN_VOICE, "weapons/bounce.wav", 1, ATTN_NORM);   // bounce sound
+    sound (self, CHAN_VOICE, "weapons/tnt/tnttoss.wav", 1, ATTN_NORM);  // bounce sound
     if (self.velocity == '0 0 0')
         self.avelocity = '0 0 0';
 };
@@ -111,7 +111,7 @@ void() OgreFireGrenade =
 
     self.effects = self.effects | EF_MUZZLEFLASH;
 
-    sound (self, CHAN_WEAPON, "weapons/grenade.wav", 1, ATTN_NORM);
+    sound (self, CHAN_WEAPON, "weapons/tnt/tntfuse.wav", 1, ATTN_NORM);
 
     missile = spawn ();
     missile.owner = self;
@@ -383,7 +383,7 @@ void() GibOgreCorpse =
     ThrowGib ("progs/gib3.mdl", self.health);
     ThrowGib ("progs/gib3.mdl", self.health);
 
-    sound (self, CHAN_ITEM, "zombie/z_miss.wav", 1, ATTN_NORM);
+    sound (self, CHAN_ITEM, "misc/gibsq.wav", 1, ATTN_NORM);
 
     remove (self);
 };

@@ -486,7 +486,7 @@ Player entered the suicide command
 void() ClientKill =
 {
     Bprint (PRINT_MEDIUM, self.netname);
-    Bprint (PRINT_MEDIUM, " suicides\n");
+    Bprint (PRINT_MEDIUM, " has suicided\n");
     set_suicide_frame ();
     self.modelindex = modelindex_player;
     #ifdef QUAKEWORLD
@@ -999,9 +999,9 @@ void() PlayerJump =
         {
             self.swim_flag = time + 1;
             if (random() < 0.5)
-                sound (self, CHAN_BODY, "misc/water1.wav", 1, ATTN_NORM);
+                sound (self, CHAN_BODY, "foley/swim.wav", 1, ATTN_NORM);
             else
-                sound (self, CHAN_BODY, "misc/water2.wav", 1, ATTN_NORM);
+                sound (self, CHAN_BODY, "foley/submerge.wav", 1, ATTN_NORM);
         }
 
         return;
@@ -1017,7 +1017,7 @@ void() PlayerJump =
 
     self.button2 = 0;
 // player jumping sound
-    sound (self, CHAN_BODY, "player/plyrjmp8.wav", 1, ATTN_NORM);
+    sound (self, CHAN_BODY, "foley/jump.wav", 1, ATTN_NORM);
 
     #ifndef QUAKEWORLD
     self.flags = self.flags - FL_ONGROUND;  // don't stairwalk
@@ -1045,9 +1045,9 @@ void() WaterMove =
     if (self.waterlevel != 3)
     {
         if (self.air_finished < time)
-            sound (self, CHAN_VOICE, "player/gasp2.wav", 1, ATTN_NORM);
+            sound (self, CHAN_VOICE, "foley/undchoke.wav", 1, ATTN_NORM);
         else if (self.air_finished < time + 9)
-            sound (self, CHAN_VOICE, "player/gasp1.wav", 1, ATTN_NORM);
+            sound (self, CHAN_VOICE, "foley/gasp.wav", 1, ATTN_NORM);
         self.air_finished = time + 12;
         self.dmg = 2;
     }
@@ -1068,7 +1068,7 @@ void() WaterMove =
         if (self.flags & FL_INWATER)
         {
             // play leave water sound
-            sound (self, CHAN_BODY, "misc/outwater.wav", 1, ATTN_NORM);
+            sound (self, CHAN_BODY, "foley/emerge.wav", 1, ATTN_NORM);
             self.flags = self.flags - FL_INWATER;
         }
         return;
@@ -1098,14 +1098,14 @@ void() WaterMove =
     if ( !(self.flags & FL_INWATER) )
     {
 
-// player enter water sound
-
+        // player enter water sound
+        // FIXME: we should have different sounds for each type of liquid
         if (self.watertype == CONTENT_LAVA)
-            sound (self, CHAN_BODY, "player/inlava.wav", 1, ATTN_NORM);
+            sound (self, CHAN_BODY, "foley/submerge.wav", 1, ATTN_NORM);
         if (self.watertype == CONTENT_WATER)
-            sound (self, CHAN_BODY, "player/inh2o.wav", 1, ATTN_NORM);
+            sound (self, CHAN_BODY, "foley/submerge.wav", 1, ATTN_NORM);
         if (self.watertype == CONTENT_SLIME)
-            sound (self, CHAN_BODY, "player/slimbrn2.wav", 1, ATTN_NORM);
+            sound (self, CHAN_BODY, "foley/submerge.wav", 1, ATTN_NORM);
 
         self.flags = self.flags + FL_INWATER;
         self.dmgtime = 0;
@@ -1225,7 +1225,7 @@ void() CheckPowerups =
 // sound and screen flash when items starts to run out
         if (self.invisible_sound < time)
         {
-            sound (self, CHAN_AUTO, "items/inv3.wav", 0.5, ATTN_IDLE);
+            sound (self, CHAN_AUTO, "bludbath/powerup.wav", 0.5, ATTN_IDLE);
             self.invisible_sound = time + ((random() * 3) + 1);
         }
 
@@ -1234,9 +1234,9 @@ void() CheckPowerups =
         {
             if (self.invisible_time == 1)
             {
-                Sprint (self, PRINT_HIGH, "Ring of Shadows magic is fading\n");
+                Sprint (self, PRINT_HIGH, "Cloak of Invisibility is draining\n");
                 stuffcmd (self, "bf\n");
-                sound (self, CHAN_AUTO, "items/inv2.wav", 1, ATTN_NORM);
+                sound (self, CHAN_AUTO, "bludbath/powerup.wav", 1, ATTN_NORM);
                 self.invisible_time = time + 1;
             }
 
@@ -1269,9 +1269,9 @@ void() CheckPowerups =
         {
             if (self.invincible_time == 1)
             {
-                Sprint (self, PRINT_HIGH, "Protection is almost burned out\n");
+                Sprint (self, PRINT_HIGH, "Death Mask is almost used up\n");
                 stuffcmd (self, "bf\n");
-                sound (self, CHAN_AUTO, "items/protect2.wav", 1, ATTN_NORM);
+                sound (self, CHAN_AUTO, "bludbath/powerup.wav", 1, ATTN_NORM);
                 self.invincible_time = time + 1;
             }
 
@@ -1314,9 +1314,9 @@ void() CheckPowerups =
         {
             if (self.super_time == 1)
             {
-                Sprint (self, PRINT_HIGH, "Quad Damage is wearing off\n");
+                Sprint (self, PRINT_HIGH, "Guns Akimbo is wearing off\n");
                 stuffcmd (self, "bf\n");
-                sound (self, CHAN_AUTO, "items/damage2.wav", 1, ATTN_NORM);
+                sound (self, CHAN_AUTO, "bludbath/powerup.wav", 1, ATTN_NORM);
                 self.super_time = time + 1;
             }
 
@@ -1359,9 +1359,9 @@ void() CheckPowerups =
         {
             if (self.rad_time == 1)
             {
-                Sprint (self, PRINT_HIGH, "Air supply in Biosuit expiring\n");
+                Sprint (self, PRINT_HIGH, "Air supply in Diving Suit expiring\n");
                 stuffcmd (self, "bf\n");
-                sound (self, CHAN_AUTO, "items/suit2.wav", 1, ATTN_NORM);
+                sound (self, CHAN_AUTO, "foley/uwbreath.wav", 1, ATTN_NORM);
                 self.rad_time = time + 1;
             }
 
@@ -1404,15 +1404,15 @@ void() PlayerPostThink =
     if ((self.jump_flag < -300) && (self.flags & FL_ONGROUND) && (self.health > 0))
     {
         if (self.watertype == CONTENT_WATER)
-            sound (self, CHAN_BODY, "player/h2ojump.wav", 1, ATTN_NORM);
+            sound (self, CHAN_BODY, "foley/lndwater.wav", 1, ATTN_NORM);
         else if (self.jump_flag < -650)
         {
             T_Damage (self, world, world, 5);
-            sound (self, CHAN_VOICE, "player/land2.wav", 1, ATTN_NORM);
+            sound (self, CHAN_VOICE, "player/pain/play1105.wav", 1, ATTN_NORM);
             self.deathtype = "falling";
         }
         else
-            sound (self, CHAN_VOICE, "player/land.wav", 1, ATTN_NORM);
+            sound (self, CHAN_VOICE, "foley/land.wav", 1, ATTN_NORM);
 
         self.jump_flag = 0;
     }
@@ -1435,7 +1435,7 @@ called when a player connects to a server
 void() ClientConnect =
 {
     Bprint (PRINT_HIGH, self.netname);
-    Bprint (PRINT_HIGH, " entered the game\n");
+    Bprint (PRINT_HIGH, " lives again!\n"); // entered the game
 
 // a client connecting during an intermission can cause problems
     if (intermission_running)
@@ -1468,7 +1468,7 @@ void() ClientDisconnect =
     Bprint (PRINT_HIGH, " left the game with ");
     Bprint (PRINT_HIGH, ftos(self.frags));
     Bprint (PRINT_HIGH, " frags\n");
-    sound (self, CHAN_BODY, "player/tornoff2.wav", 1, ATTN_NONE);
+    sound (self, CHAN_BODY, "misc/gibsq.wav", 1, ATTN_NONE);
     set_suicide_frame ();
 };
 
@@ -1500,7 +1500,7 @@ void(entity targ, entity attacker) ClientObituary =
         if (attacker.classname == "teledeath")
         {
             Bprint (PRINT_MEDIUM,targ.netname);
-            Bprint (PRINT_MEDIUM," was telefragged by ");
+            Bprint (PRINT_MEDIUM,"'s personal space was invaded by ");
             Bprint (PRINT_MEDIUM,attacker.owner.netname);
             Bprint (PRINT_MEDIUM,"\n");
             #ifdef QUAKEWORLD
@@ -1513,7 +1513,7 @@ void(entity targ, entity attacker) ClientObituary =
 
         if (attacker.classname == "teledeath2")
         {
-            Bprint (PRINT_MEDIUM,"Satan's power deflects ");
+            Bprint (PRINT_MEDIUM,"Tchernobog's Death Mask deflects ");
             Bprint (PRINT_MEDIUM,targ.netname);
             Bprint (PRINT_MEDIUM,"'s telefrag\n");
             #ifdef QUAKEWORLD
@@ -1528,9 +1528,9 @@ void(entity targ, entity attacker) ClientObituary =
         if (attacker.classname == "teledeath3")
         {
             Bprint (PRINT_MEDIUM,targ.netname);
-            Bprint (PRINT_MEDIUM," was telefragged by ");
+            Bprint (PRINT_MEDIUM," was overcome by  ");
             Bprint (PRINT_MEDIUM,attacker.owner.netname);
-            Bprint (PRINT_MEDIUM, "'s Satan's power\n");
+            Bprint (PRINT_MEDIUM, "'s Death Mask power\n");
             targ.frags = targ.frags - 1;
             #ifdef QUAKEWORLD
             logfrag (targ, targ);
@@ -1571,9 +1571,9 @@ void(entity targ, entity attacker) ClientObituary =
                     return;
                 }
                 else if (targ.weapon == IT_GRENADE_LAUNCHER || targ.weapon == IT_PROXIMITY_GRENADE)
-                    Bprint (PRINT_MEDIUM," tries to put the pin back in\n");
+                    Bprint (PRINT_MEDIUM," is hamburger\n");
                 else if (rnum)
-                    Bprint (PRINT_MEDIUM," becomes bored with life\n");
+                    Bprint (PRINT_MEDIUM," volunteered for population control\n");
                 else
                     Bprint (PRINT_MEDIUM," checks if his weapon is loaded\n");
                 return;
@@ -1612,17 +1612,17 @@ void(entity targ, entity attacker) ClientObituary =
 
                 rnum = attacker.weapon;
                 #ifdef QUAKEWORLD
-                if (targ.deathtype == "nail")
+                if (targ.deathtype == "nail")  //tommy gun
                 {
                     deathstring = " was nailed by ";
                     deathstring2 = "\n";
                 }
-                else if (targ.deathtype == "supernail")
+                else if (targ.deathtype == "supernail")  // spray can
                 {
-                    deathstring = " was punctured by ";
+                    deathstring = " was barbequed by ";
                     deathstring2 = "\n";
                 }
-                else if (targ.deathtype == "grenade")
+                else if (targ.deathtype == "grenade")  // tnt
                 {
                     deathstring = " eats ";
                     deathstring2 = "'s pineapple\n";
@@ -1632,37 +1632,37 @@ void(entity targ, entity attacker) ClientObituary =
                         deathstring2 = "'s grenade\n";
                     }
                 }
-                else if (targ.deathtype == "rocket")
+                else if (targ.deathtype == "rocket")  // napalm
                 {
                     if (attacker.super_damage_finished > 0 && targ.health < -40)
                     {
                         rnum = random();
                         if (rnum < 0.3)
-                            deathstring = " was brutalized by ";
+                            deathstring = " was mutilated by ";
                         else if (rnum < 0.6)
-                            deathstring = " was smeared by ";
+                            deathstring = " was splattered by ";
                         else
                         {
                             bprint (PRINT_MEDIUM, attacker.netname);
-                            bprint (PRINT_MEDIUM, " rips ");
+                            bprint (PRINT_MEDIUM, " ripped ");
                             bprint (PRINT_MEDIUM, targ.netname);
-                            bprint (PRINT_MEDIUM, " a new one\n");
+                            bprint (PRINT_MEDIUM, " a new orifice\n");
                             return;
                         }
-                        deathstring2 = "'s quad rocket\n";
+                        deathstring2 = "'s Guns Akimbo Napalm Launchers\n";  //quad rl
                     }
                     else
                     {
-                        deathstring = " rides ";
-                        deathstring2 = "'s rocket\n";
+                        deathstring = " got Anal Justice from ";
+                        deathstring2 = "'s napalm\n";
                         if (targ.health < -40)
                         {
-                            deathstring = " was gibbed by ";
-                            deathstring2 = "'s rocket\n" ;
+                            deathstring = " received AnAl MaDnEsS from ";
+                            deathstring2 = "'s napalm\n" ;
                         }
                     }
                 }
-                else if (rnum == IT_AXE)
+                else if (rnum == IT_AXE)  // pitchfork
                 #else
                 if (rnum == IT_AXE)
                 #endif
@@ -1670,28 +1670,28 @@ void(entity targ, entity attacker) ClientObituary =
                     deathstring = " was ax-murdered by ";
                     deathstring2 = "\n";
                 }
-                else if (rnum == IT_SHOTGUN)
+                else if (rnum == IT_SHOTGUN)  // flaregun
                 {
                     deathstring = " chewed on ";
                     deathstring2 = "'s boomstick\n";
                 }
-                else if (rnum == IT_SUPER_SHOTGUN)
+                else if (rnum == IT_SUPER_SHOTGUN)  // shotgun
                 {
                     deathstring = " ate 2 loads of ";
                     deathstring2 = "'s buckshot\n";
                 }
                 #ifndef QUAKEWORLD
-                else if (rnum == IT_NAILGUN)
+                else if (rnum == IT_NAILGUN)  // tommy gun
                 {
                     deathstring = " was nailed by ";
                     deathstring2 = "\n";
                 }
-                else if (rnum == IT_SUPER_NAILGUN)
+                else if (rnum == IT_SUPER_NAILGUN)  // spray can
                 {
                     deathstring = " was punctured by ";
                     deathstring2 = "\n";
                 }
-                else if (rnum == IT_GRENADE_LAUNCHER || rnum == IT_PROXIMITY_GRENADE)
+                else if (rnum == IT_GRENADE_LAUNCHER || rnum == IT_PROXIMITY_GRENADE)  // tnt/det/prox
                 {
                     deathstring = " eats ";
                     deathstring2 = "'s pineapple\n";
@@ -1701,7 +1701,7 @@ void(entity targ, entity attacker) ClientObituary =
                         deathstring2 = "'s grenade\n";
                     }
                 }
-                else if (rnum == IT_ROCKET_LAUNCHER)
+                else if (rnum == IT_ROCKET_LAUNCHER)  // napalm launcher
                 {
                     deathstring = " rides ";
                     deathstring2 = "'s rocket\n";
@@ -1712,7 +1712,7 @@ void(entity targ, entity attacker) ClientObituary =
                     }
                 }
                 #endif
-                else if (rnum == IT_LIGHTNING)
+                else if (rnum == IT_LIGHTNING)  // tesla cannon
                 {
                     deathstring = " accepts ";
                     if (attacker.waterlevel > 1)

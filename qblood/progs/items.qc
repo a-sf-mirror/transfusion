@@ -34,7 +34,7 @@ void() SUB_regen =
 {
     self.model = self.mdl;      // restore original model
     self.solid = SOLID_TRIGGER; // allow it to be touched again
-    sound (self, CHAN_VOICE, "items/itembk2.wav", 1, ATTN_NORM);    // play respawn sound
+    sound (self, CHAN_VOICE, "bludbath/reappear.wav", 1, ATTN_NORM);    // item respawn sound
     setorigin (self, self.origin);
 };
 
@@ -77,7 +77,7 @@ local string    s;
     s=ftos(rint(other.super_damage_finished - time));
 
     Bprint (PRINT_LOW, other.netname);
-    Bprint (PRINT_LOW, " recovered a Quad with ");
+    Bprint (PRINT_LOW, " recovered a Guns Akimbo with ");
     Bprint (PRINT_LOW, s);
     Bprint (PRINT_LOW, " seconds remaining!\n");
 
@@ -99,7 +99,7 @@ void(float timeleft) DropQuad =
     item.flags = FL_ITEM;
     item.solid = SOLID_TRIGGER;
     item.movetype = MOVETYPE_TOSS;
-    item.noise = "items/damage.wav";
+    item.noise = "bludbath/powerup.wav";
     setmodel (item, "progs/quaddama.mdl");
     setsize (item, '-16 -16 -24', '16 16 32');
     item.cnt = time + timeleft;
@@ -132,7 +132,7 @@ local string    s;
     other.invisible_finished = self.cnt;
     s=ftos(rint(other.invisible_finished - time));
     Bprint (PRINT_LOW, other.netname);
-    Bprint (PRINT_LOW, " recovered a Ring with ");
+    Bprint (PRINT_LOW, " recovered a Cloak with ");
     Bprint (PRINT_LOW, s);
     Bprint (PRINT_LOW, " seconds remaining!\n");
 
@@ -155,7 +155,7 @@ void(float timeleft) DropRing =
     item.flags = FL_ITEM;
     item.solid = SOLID_TRIGGER;
     item.movetype = MOVETYPE_TOSS;
-    item.noise = "items/inv1.wav";
+    item.noise = "bludbath/powerup.wav";
     setmodel (item, "progs/invisibl.mdl");
     setsize (item, '-16 -16 -24', '16 16 32');
     item.cnt = time + timeleft;
@@ -256,28 +256,27 @@ void() item_health =
     {
         precache_model("maps/b_bh10.bsp");
 
-        precache_sound("items/r_item1.wav");
+        precache_sound("items/pickheal.wav");
         setmodel(self, "maps/b_bh10.bsp");
-        self.noise = "items/r_item1.wav";
+        self.noise = "items/pickheal.wav";
         self.healamount = 15;
         self.healtype = 0;
     }
-    else
-    if (self.spawnflags & H_MEGA)
+    else if (self.spawnflags & H_MEGA)
     {
         precache_model("maps/b_bh100.bsp");
-        precache_sound("items/r_item2.wav");
+        precache_sound("items/pickup.wav");
         setmodel(self, "maps/b_bh100.bsp");
-        self.noise = "items/r_item2.wav";
+        self.noise = "items/pickup.wav";
         self.healamount = 100;
         self.healtype = 2;
     }
     else
     {
         precache_model("maps/b_bh25.bsp");
-        precache_sound("items/health1.wav");
+        precache_sound("items/pickheal.wav");
         setmodel(self, "maps/b_bh25.bsp");
-        self.noise = "items/health1.wav";
+        self.noise = "items/pickheal.wav";
         self.healamount = 25;
         self.healtype = 1;
     }
@@ -307,10 +306,10 @@ void() health_touch =
             return;
     }
 
-    Sprint(other, PRINT_LOW, "You receive ");
+    Sprint(other, PRINT_LOW, "Picked up ");
     s = ftos(self.healamount);
     Sprint(other, PRINT_LOW, s);
-    Sprint(other, PRINT_LOW, " health\n");
+    Sprint(other, PRINT_LOW, " life essence\n"); // need a different string for Doctors Bag
 
 // health touch sound
     sound(other, CHAN_ITEM, self.noise, 1, ATTN_NORM);
@@ -410,9 +409,8 @@ void() armor_touch =
         self.nextthink = time + 20;
     self.think = SUB_regen;
 
-    Sprint(other, PRINT_LOW, "You got armor\n");
-// armor touch sound
-    sound(other, CHAN_ITEM, "items/armor1.wav", 1, ATTN_NORM);
+    Sprint(other, PRINT_LOW, "Picked up armor\n");
+    sound(other, CHAN_ITEM, "items/pickarmr.wav", 1, ATTN_NORM);
     stuffcmd (other, "bf\n");
 
     activator = other;
@@ -627,7 +625,7 @@ void() weapon_touch =
     //ZOID--remove unnessary msgs
     if (!deathmatch) {
     #endif
-        Sprint (other, PRINT_LOW, "You got the ");
+        Sprint (other, PRINT_LOW, "Picked up ");
         Sprint (other, PRINT_LOW, self.netname);
         Sprint (other, PRINT_LOW, "\n");
     #ifndef QUAKEWORLD
@@ -635,7 +633,7 @@ void() weapon_touch =
     #endif
 
 // weapon touch sound
-    sound (other, CHAN_ITEM, "weapons/pkup.wav", 1, ATTN_NORM);
+    sound (other, CHAN_ITEM, "items/weaponup.wav", 1, ATTN_NORM);
     stuffcmd (other, "bf\n");
 
     bound_other_ammo ();
@@ -694,7 +692,7 @@ void() weapon_supershotgun =
     precache_model ("progs/g_shot.mdl");
     setmodel (self, "progs/g_shot.mdl");
     self.weapon = IT_SUPER_SHOTGUN;
-    self.netname = "Double-barrelled Shotgun";
+    self.netname = "Sawed Off";
     self.touch = weapon_touch;
     setsize (self, '-16 -16 0', '16 16 56');
     StartItem ();
@@ -708,7 +706,7 @@ void() weapon_nailgun =
     precache_model ("progs/g_nail.mdl");
     setmodel (self, "progs/g_nail.mdl");
     self.weapon = IT_NAILGUN;
-    self.netname = "nailgun";
+    self.netname = "Tommy Gun";
     self.touch = weapon_touch;
     setsize (self, '-16 -16 0', '16 16 56');
     StartItem ();
@@ -722,7 +720,7 @@ void() weapon_supernailgun =
     precache_model ("progs/g_nail2.mdl");
     setmodel (self, "progs/g_nail2.mdl");
     self.weapon = IT_SUPER_NAILGUN;
-    self.netname = "Super Nailgun";
+    self.netname = "Spray Can";
     self.touch = weapon_touch;
     setsize (self, '-16 -16 0', '16 16 56');
     StartItem ();
@@ -736,7 +734,7 @@ void() weapon_grenadelauncher =
     precache_model ("progs/g_rock.mdl");
     setmodel (self, "progs/g_rock.mdl");
     self.weapon = 3;
-    self.netname = "Grenade Launcher";
+    self.netname = "Dynamite";
     self.touch = weapon_touch;
     setsize (self, '-16 -16 0', '16 16 56');
     StartItem ();
@@ -750,7 +748,7 @@ void() weapon_rocketlauncher =
     precache_model ("progs/g_rock2.mdl");
     setmodel (self, "progs/g_rock2.mdl");
     self.weapon = 3;
-    self.netname = "Rocket Launcher";
+    self.netname = "Napalm Launcher";
     self.touch = weapon_touch;
     setsize (self, '-16 -16 0', '16 16 56');
     StartItem ();
@@ -765,7 +763,7 @@ void() weapon_lightning =
     precache_model ("progs/g_light.mdl");
     setmodel (self, "progs/g_light.mdl");
     self.weapon = 3;
-    self.netname = "Thunderbolt";
+    self.netname = "Tesla Cannon";
     self.touch = weapon_touch;
     setsize (self, '-16 -16 0', '16 16 56');
     StartItem ();
@@ -831,11 +829,11 @@ local float     best;
 
     bound_other_ammo ();
 
-    Sprint (other, PRINT_LOW, "You got the ");
+    Sprint (other, PRINT_LOW, "Picked up ");
     Sprint (other, PRINT_LOW, self.netname);
     Sprint (other, PRINT_LOW, "\n");
 // ammo touch sound
-    sound (other, CHAN_ITEM, "weapons/lock4.wav", 1, ATTN_NORM);
+    sound (other, CHAN_ITEM, "items/ammo.wav", 1, ATTN_NORM);
     stuffcmd (other, "bf\n");
 
 // change to a better weapon if appropriate
@@ -1065,7 +1063,7 @@ local float     best;
     if (other.items & self.items)
         return;
 
-    Sprint (other, PRINT_LOW, "You got the ");
+    Sprint (other, PRINT_LOW, "Picked up ");
     Sprint (other, PRINT_LOW, self.netname);
     Sprint (other,PRINT_LOW, "\n");
 
@@ -1092,18 +1090,18 @@ void() key_setsounds =
 {
     if (world.worldtype == 0)
     {
-        precache_sound ("misc/medkey.wav");
-        self.noise = "misc/medkey.wav";
+        precache_sound ("items/pickkey.wav");  // medkey
+        self.noise = "items/pickkey.wav";
     }
     if (world.worldtype == 1)
     {
-        precache_sound ("misc/runekey.wav");
-        self.noise = "misc/runekey.wav";
+        precache_sound ("items/pickkey.wav");  // runekey
+        self.noise = "items/pickkey.wav";
     }
     if (world.worldtype == 2)
     {
-        precache_sound2 ("misc/basekey.wav");
-        self.noise = "misc/basekey.wav";
+        precache_sound2 ("items/pickkey.wav");  // basekey
+        self.noise = "items/pickkey.wav";
     }
 };
 
@@ -1203,7 +1201,7 @@ local float     best;
     if (other.health <= 0)
         return;
 
-    centerprint (other, "You got the rune!");
+    centerprint (other, "Picked up the rune!");
 
     sound (other, CHAN_ITEM, self.noise, 1, ATTN_NORM);
     stuffcmd (other, "bf\n");
@@ -1226,8 +1224,8 @@ void() item_sigil =
     if (!self.spawnflags)
         objerror ("no spawnflags");
 
-    precache_sound ("misc/runekey.wav");
-    self.noise = "misc/runekey.wav";
+    precache_sound ("items/pickkey.wav");  // runekey
+    self.noise = "items/pickkey.wav";
 
     if (self.spawnflags & 1)
     {
@@ -1276,7 +1274,7 @@ local float     best;
     if (other.health <= 0)
         return;
 
-    Sprint (other, PRINT_LOW, "You got the ");
+    Sprint (other, PRINT_LOW, "Picked up ");
     Sprint (other,PRINT_LOW,  self.netname);
     Sprint (other,PRINT_LOW, "\n");
 
@@ -1342,12 +1340,10 @@ void() item_artifact_invulnerability =
     self.touch = powerup_touch;
 
     precache_model ("progs/invulner.mdl");
-    precache_sound ("items/protect.wav");
-    precache_sound ("items/protect2.wav");
-    precache_sound ("items/protect3.wav");
-    self.noise = "items/protect.wav";
+    precache_sound ("bludbath/powerup.wav");
+    self.noise = "bludbath/powerup.wav";
     setmodel (self, "progs/invulner.mdl");
-    self.netname = "Pentagram of Protection";
+    self.netname = "Death Mask";
     #ifdef QUAKEWORLD
     self.effects = self.effects | EF_RED;
     #endif
@@ -1364,11 +1360,11 @@ void() item_artifact_envirosuit =
     self.touch = powerup_touch;
 
     precache_model ("progs/suit.mdl");
-    precache_sound ("items/suit.wav");
-    precache_sound ("items/suit2.wav");
-    self.noise = "items/suit.wav";
+    precache_sound ("foley/frbreath.wav");
+    precache_sound ("foley/uwbreath.wav");
+    self.noise = "foley/frbreath.wav";
     setmodel (self, "progs/suit.mdl");
-    self.netname = "Biosuit";
+    self.netname = "Diving Suit";
     self.items = IT_SUIT;
     setsize (self, '-16 -16 -24', '16 16 32');
     StartItem ();
@@ -1383,12 +1379,10 @@ void() item_artifact_invisibility =
     self.touch = powerup_touch;
 
     precache_model ("progs/invisibl.mdl");
-    precache_sound ("items/inv1.wav");
-    precache_sound ("items/inv2.wav");
-    precache_sound ("items/inv3.wav");
-    self.noise = "items/inv1.wav";
+    precache_sound ("bludbath/powerup.wav");
+    self.noise = "bludbath/powerup.wav";
     setmodel (self, "progs/invisibl.mdl");
-    self.netname = "Ring of Shadows";
+    self.netname = "Cloak of Invisibility";
     self.items = IT_INVISIBILITY;
     setsize (self, '-16 -16 -24', '16 16 32');
     StartItem ();
@@ -1403,13 +1397,11 @@ void() item_artifact_super_damage =
     self.touch = powerup_touch;
 
     precache_model ("progs/quaddama.mdl");
-    precache_sound ("items/damage.wav");
-    precache_sound ("items/damage2.wav");
-    precache_sound ("items/damage3.wav");
-    self.noise = "items/damage.wav";
+    precache_sound ("bludbath/powerup.wav");
+    self.noise = "bludbath/powerup.wav";
     setmodel (self, "progs/quaddama.mdl");
 
-    self.netname = "Quad Damage";
+    self.netname = "Guns Akimbo";
     self.items = IT_QUAD;
     #ifdef QUAKEWORLD
     self.effects = self.effects | EF_BLUE;
@@ -1487,7 +1479,7 @@ void() BackpackTouch =
         acount = 1;
         s = ftos(self.ammo_shells);
         Sprint (other, PRINT_LOW, s);
-        Sprint (other, PRINT_LOW, " shells");
+        Sprint (other, PRINT_LOW, " shells");  // "Box of shotgun shells"
     }
     if (self.ammo_nails)
     {
@@ -1496,7 +1488,7 @@ void() BackpackTouch =
         acount = 1;
         s = ftos(self.ammo_nails);
         Sprint (other, PRINT_LOW, s);
-        Sprint (other, PRINT_LOW, " nails");
+        Sprint (other, PRINT_LOW, " nails");  // "Full drum of bullets"
     }
     if (self.ammo_rockets)
     {
@@ -1505,7 +1497,7 @@ void() BackpackTouch =
         acount = 1;
         s = ftos(self.ammo_rockets);
         Sprint (other, PRINT_LOW, s);
-        Sprint (other, PRINT_LOW, " rockets");
+        Sprint (other, PRINT_LOW, " rockets");  // "Gasoline Can"
     }
     if (self.ammo_cells)
     {
@@ -1514,12 +1506,23 @@ void() BackpackTouch =
         acount = 1;
         s = ftos(self.ammo_cells);
         Sprint (other, PRINT_LOW, s);
-        Sprint (other, PRINT_LOW, " cells");
+        Sprint (other, PRINT_LOW, " cells");  // "Tesla Charge"
     }
 
+/* dturner,4/10/2001
+   still need Flares,
+   Bundle of TNT, Case of Tnt,
+   Voodoo Doll,
+   Trapped Soul,
+   Spray Can,
+   Proximaty Detonator,
+   Remote Detonator
+   */
+
     Sprint(other, PRINT_LOW, "\n");
-// backpack touch sound
-    sound (other, CHAN_ITEM, "weapons/lock4.wav", 1, ATTN_NORM);
+
+    // backpack touch sound
+    sound (other, CHAN_ITEM, "items/ammo.wav", 1, ATTN_NORM);
     stuffcmd (other, "bf\n");
 
 // remove the backpack, change self to the player
@@ -1573,23 +1576,24 @@ void() DropBackpack =
 
     item.items = self.weapon;
     if (item.items == IT_AXE)
-        item.netname = "Axe";
+        item.netname = "Pitchfork";
     else if (item.items == IT_SHOTGUN)
-        item.netname = "Shotgun";
+        item.netname = "Flare Gun";
     else if (item.items == IT_SUPER_SHOTGUN)
-        item.netname = "Double-barrelled Shotgun";
+        item.netname = "Sawed Off";
     else if (item.items == IT_NAILGUN)
-        item.netname = "Nailgun";
+        item.netname = "Tommy Gun";
     else if (item.items == IT_SUPER_NAILGUN)
-        item.netname = "Super Nailgun";
+        item.netname = "Spray Can";
     else if (item.items == IT_GRENADE_LAUNCHER)
-        item.netname = "Grenade Launcher";
+        item.netname = "Dynamite";
     else if (item.items == IT_ROCKET_LAUNCHER)
-        item.netname = "Rocket Launcher";
+        item.netname = "Napalm Launcher";
     else if (item.items == IT_LIGHTNING)
-        item.netname = "Thunderbolt";
+        item.netname = "Tesla Cannon";
     else
         item.netname = "";
+    // need voodoo doll, tnt variants, life leech
 
     item.ammo_shells = self.ammo_shells;
     item.ammo_nails = self.ammo_nails;
