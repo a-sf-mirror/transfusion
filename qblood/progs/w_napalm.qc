@@ -218,7 +218,6 @@ void() T_MissileTouch =
     // was done in the impact
     BurnRadius (self, 90, 30, other);
 
-    ThrowEmbers (4);
     MakeBlastDamage (self, 160, 20, 10);
     PsychoCaleb (self.owner);
 

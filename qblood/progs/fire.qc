@@ -30,20 +30,6 @@
 
 
 //==========================================================================
-//  Frame Data
-
-//  Frame Macros for modified 'flame2.mdl'.
-$modelname flame2
-
-// These are grouped scenes.
-$frame flame
-$frame flameb
-
-// These scenes are not grouped.
-$frame ember1 ember2 ember3 ember4 ember5 ember6
-
-
-//==========================================================================
 //  General Fire Code
 
 //==========================================================================
@@ -205,15 +191,6 @@ void(entity ent) KillBurner =
     RemoveFlares (ent);
 };
 
-//------------------------------------------------------------------------//
-//  These animate the embers that rise from a burning entity.
-//------------------------------------------------------------------------//
-void()  m_ember1 =[   $ember1,    m_ember2] {};
-void()  m_ember2 =[   $ember2,    m_ember3] {};
-void()  m_ember3 =[   $ember3,    m_ember4] {};
-void()  m_ember4 =[   $ember4,    m_ember5] {};
-void()  m_ember5 =[   $ember5,    m_ember6] {};
-void()  m_ember6 =[   $ember6,    SUB_Remove] {};
 
 //------------------------------------------------------------------------//
 //  MakeEmbers makes flaming embers rise from a burning victim.
@@ -370,98 +347,6 @@ void(entity victim, entity attacker, float burn, float dmgtype) Ignite =
     fire.reset      = SUB_Remove;
 
     victim.burner   = fire;     // Link entity to fire.
-};
-
-
-////////////////////////////////////////////////////////////////////////////
-//  Flame weapons (flares and napalm)
-////////////////////////////////////////////////////////////////////////////
-
-
-//==========================================================================
-//  Embers
-
-// FIXME:  Embers can be done much more efficiently with a TE -- use
-//         a custom engine.
-
-//------------------------------------------------------------------------//
-//  This enforces air resistance on embers and updates their angles.
-//------------------------------------------------------------------------//
-void() EmberThink =
-{
-    if (self.pausetime <= time)
-    {
-        m_ember4 ();
-        return;
-    }
-
-    local   vector  dir;
-
-    dir = normalize (self.velocity);
-
-    // Cheap hack -- apply air resistance by reducing velocity.
-    self.velocity = self.velocity * 0.75;
-
-    // Update angles to its current direction.
-    self.angles = vectoangles(dir) + '90 0 0';
-
-    // Think again next frame.
-    self.nextthink = time + 0.1;
-};
-
-//------------------------------------------------------------------------//
-//  This throws a shower of embers.
-//------------------------------------------------------------------------//
-void(float ents) ThrowEmbers =
-{
-    // Not in QuakeWorld!
-    #ifndef QUAKEWORLD
-    local   entity  fire;
-    local   vector  dir;
-    local   float   loop;
-
-    loop = ents * 6;
-    while (loop > 0)
-    {
-        // Get initial direction.
-        dir_x = (random() - 0.5) * 180;
-        dir_y = random() * 360;
-        dir_z = 0;
-        makevectors (dir);
-        dir = v_forward;
-
-        traceline (self.origin, self.origin + dir*64, FALSE, other);
-        if (trace_fraction == 1.0)
-        {
-            // Ember will not impact the wall immediately.
-            fire = spawn();
-            setmodel (fire, "progs/flame2.mdl");
-            setsize (fire, '0 0 0', '0 0 0');
-            setorigin (fire, self.origin);
-
-            fire.frame    = $ember4;
-            fire.solid    = SOLID_BBOX;
-            fire.movetype = MOVETYPE_TOSS;
-            fire.owner    = other;
-
-            fire.velocity = dir * (200 + random() * 800);
-            fire.angles = vectoangles(dir) + '90 0 0';
-
-            fire.pausetime = time + random();
-
-            fire.touch = SUB_Remove;
-            fire.nextthink = time + 0.1;
-            fire.think = EmberThink;
-            fire.reset = SUB_Remove;
-
-            ents = ents - 1;
-            if (ents <= 0)
-                return;
-        }
-
-        loop = loop - 1;
-    }
-    #endif
 };
 
 

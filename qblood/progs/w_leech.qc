@@ -127,7 +127,6 @@ void() Leech_BallTouch =
         BurnDamage (other, self, self.dmg, DF_MIND, self.dmg * 0.5);
     }
 
-    ThrowEmbers (4);
     PsychoCaleb (self.owner);
 
     self.origin = self.origin - 8 * normalize (self.velocity);

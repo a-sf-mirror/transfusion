@@ -490,7 +490,6 @@ void() Bomb_Explode =
 
     if (self.netname == "Napalm Ball")
     {
-        ThrowEmbers (2);
         local   float   radius, damage, burn;
         radius = self.dmg + 40;
         damage = self.dmg / 6;

@@ -239,7 +239,6 @@ void() AltFlareTouch =
 
     // Make some fire.
     self.solid = SOLID_NOT;     // So embers can't touch 'self'.
-    ThrowEmbers (floor (self.count * 0.5));
     PsychoCaleb (self.owner);
     sound (self, CHAN_AUTO, "weapons/napalm/explodfs.wav", 1, ATTN_NORM);
     BecomeOldExplosion ();
@@ -300,7 +299,6 @@ void() AltFlareSplit =
         fire.dmg        = self.dmg;
         fire.speed      = self.speed;
         fire.distance   = self.distance;
-        fire.count      = 2;    // Number of embers.
 
         loop = loop - 1;
     }
@@ -332,7 +330,6 @@ void(entity attacker, vector org, vector dir, float sped, float damage, float bu
     fire.dmg        = damage;
     fire.speed      = sped;
     fire.distance   = 0.8;  // Damage is 80% at max radius.
-    fire.count      = 6;    // Number of embers.
 };
 
 
