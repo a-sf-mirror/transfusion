@@ -92,27 +92,27 @@ void() InitPlayerCharacteristics =
         self.armor_fire = 50;
         self.armor_mind = 50;
         if (available_weapons & IT_FLAREGUN)
-            self.ammo_flares = self.ammo_flares + 15;
+            self.ammo_flares = self.ammo_flares + 10;
         if (available_weapons & IT_SAWED_OFF)
-            self.ammo_shells = self.ammo_shells + 20;
+            self.ammo_shells = self.ammo_shells + 15;
         if (available_weapons & IT_TOMMYGUN)
             self.ammo_nails = self.ammo_nails + 50;
         if (available_weapons & IT_NAPALM_LAUNCHER)
-            self.ammo_rockets = self.ammo_rockets + 10;
+            self.ammo_rockets = self.ammo_rockets + 5;
         if (available_weapons & IT_TNT)
             self.ammo_tnt_bundle = self.ammo_tnt_bundle + 5;
         if (available_weapons & IT_PROXIMITY_BOMB)
-            self.ammo_tnt_proxy = self.ammo_tnt_proxy + 5;
+            self.ammo_tnt_proxy = self.ammo_tnt_proxy + 2;
         if (available_weapons & IT_REMOTE_DETONATOR)
             self.ammo_tnt_remote = self.ammo_tnt_remote + 5;
         if (available_weapons & IT_SPRAY_CAN)
             self.ammo_spray = self.ammo_spray + 50;
         if (available_weapons & IT_TESLA_CANNON)
-            self.ammo_cells = self.ammo_cells + 50;
+            self.ammo_cells = self.ammo_cells + 40;
         if (available_weapons & IT_VOODOO_DOLL)
             self.ammo_voodoo = self.ammo_voodoo + 100;
         if (available_weapons & IT_LIFE_LEECH)
-            self.ammo_leech = self.ammo_leech + 50;
+            self.ammo_leech = self.ammo_leech + 30;
     }
 
     self.armorvalue = self.armor_body;
@@ -156,23 +156,53 @@ entity() FindIntermission =
 };
 
 
+/*
+====================
+GotoNextMap
+
+Switch to the next map
+====================
+*/
 void() GotoNextMap =
 {
-    #ifdef QUAKEWORLD
-    local string newmap;
+    local entity warp;
+    local string str;
+    local float maxmap;
 
-    // QW supports a configurable map list
-    // see if the current map exists as a serverinfo / localinfo var
-    newmap = infokey(world, mapname);
-    if (newmap != string_null)
-        changelevel (newmap);
-    else
-    #endif
+    // Figure out if the change was due to a vote
+    warp = find (world, classname, "execute_changelevel");
+    if (warp)
+        if (warp.style)
+        {
+            // Save the position in the map list
+            str = ftos (map_cycle);
+            cvar_set ("saved1", str);
+
+            changelevel (nextmap);
+            return;
+        }
+
+    // Else, we use the map cycle if available, or we go on with the same map
+    maxmap = cvar ("samelevel");
+    if (maxmap)
     {
-        if (nextmap == string_null)
-            nextmap = mapname;
-        changelevel (nextmap);
+        // If we reached the end of the list, restart from the beginning
+        if (map_cycle >= maxmap)
+            map_cycle = 1;
+        else
+            map_cycle = map_cycle + 1;
+        str = ftos (map_cycle);
+
+        // Save the position in map list
+        cvar_set ("saved1", str);
+
+        // Switch to the next map in the list
+        localcmd ("map");
+        localcmd (str);
+        localcmd ("\n");
     }
+    else
+        changelevel (mapname);
 };
 
 
@@ -253,12 +283,7 @@ void() execute_changelevel =
     other = nextent (world);
     while (other != world)
     {
-        // If it's a (real) player
-        #ifndef NO_FRIKBOT
-        if (other.ishuman == TRUE && other.b_clientno != -1)
-        #else
         if (other.classname == "player" || other.classname == "observer")
-        #endif
         {
             KillBurner (other);
             #ifndef QUAKEWORLD
@@ -643,7 +668,7 @@ Cl_ChangeLevel
 End the current game and switch to intermission
 ============
 */
-void() Cl_ChangeLevel =
+void(float forcemap) Cl_ChangeLevel =
 {
     local entity warp;
 
@@ -654,10 +679,15 @@ void() Cl_ChangeLevel =
     // we can't move people right now, because touch functions are called
     // in the middle of C movement code, so set a think time to do it
     warp = spawn();
+    warp.classname = "execute_changelevel";
     warp.think = execute_changelevel;
+    warp.style = forcemap;
     warp.nextthink = time + 0.1;
 
     gameover = TRUE;
+
+    // Load the map list before GotoNextMap
+    localcmd ("exec maps.cfg\n");
 };
 
 /*
@@ -674,7 +704,7 @@ void() CheckRules =
 
     if (timelimit && time >= timelimit)
     {
-        Cl_ChangeLevel ();
+        Cl_ChangeLevel (FALSE);
         return;
     }
 
@@ -685,13 +715,13 @@ void() CheckRules =
         {
             if (team1score >= fraglimit || team2score >= fraglimit)
             {
-                Cl_ChangeLevel ();
+                Cl_ChangeLevel (FALSE);
                 return;
             }
         }
         else if (self.frags >= fraglimit)
         {
-            Cl_ChangeLevel ();
+            Cl_ChangeLevel (FALSE);
             return;
         }
     }
@@ -1800,7 +1830,7 @@ void(entity attacker) ClientObituary =
             else if (rnum <= 32)
             {
                 deathstring = " hurt ";
-                deathstring2 = " real bad!\n";
+                deathstring2 = " real bad!";
                 self.noise1 = string_null;
             }
             else if (rnum <= 33)

@@ -19,7 +19,7 @@
 
 #include "common.qh"
 
-void() Cl_ChangeLevel;
+void(float forcemap) Cl_ChangeLevel;
 string(float gtNumber) Vote_GametypeToString;
 
 
@@ -33,7 +33,7 @@ Used when the vote for a map is passed
 void(string newmap) Vote_ChangeMap =
 {
     nextmap = newmap;
-    Cl_ChangeLevel ();
+    Cl_ChangeLevel (TRUE);
 
     Bprint (PRINT_HIGH, "Û Vote passed. Switching to map ");  // "[ Vote passed ..."
     Bprint (PRINT_HIGH, newmap);

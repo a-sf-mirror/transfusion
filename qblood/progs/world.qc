@@ -250,6 +250,9 @@ void() worldspawn =
     // Empty the lists of available weapons
     available_weapons = IT_PITCHFORK;
 
+    // Save the map index before BotInit has a chance to overwrite it
+    map_cycle = cvar ("saved1");
+
     #ifndef NO_FRIKBOT
     // FrikBot X initialization
     BotInit();

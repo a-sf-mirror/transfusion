@@ -210,10 +210,11 @@ void() Tommy_Fire =
     // If we're in akimbo mode
     if (akimboFactor == 2)
     {
-        // Spawn the shells
-        orig = orig + v_right * 4;
-        Tommy_SpawnShell (orig);
-        orig = orig - v_right * 8;
+        // Spawn 1 shell alternatively for each gun
+        if ((self.weaponframe - $atommy_fire1) & 1)
+            orig = orig + v_right * 4;
+        else
+            orig = orig - v_right * 4;
         Tommy_SpawnShell (orig);
 
         orig = self.origin + v_right * 4 + v_up * 20;
@@ -228,8 +229,9 @@ void() Tommy_Fire =
     }
     else
     {
-        // Spawn the shell
-        Tommy_SpawnShell (orig);
+        // Spawn 1 shell every 2 shots
+        if ((self.weaponframe - $tommy_fire1) & 1)
+            Tommy_SpawnShell (orig);
 
         FireBullets (self.origin + v_up * 20, dir, 1, damage, spread);
     }

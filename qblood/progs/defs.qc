@@ -304,6 +304,9 @@ float team2score;
 // have been precached). Used for the warmup and the "give all" cheat
 float available_weapons;
 
+// Number of the current map in the map cycle
+float map_cycle;
+
 
 //================================================
 
