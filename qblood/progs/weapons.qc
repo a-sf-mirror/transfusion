@@ -524,9 +524,9 @@ void() SpawnShell =
 
         shell.mdl    = "progs/tommyshl.mdl";
         if (random() < 0.5)
-            shell.noise  = "weapons/mtshls.wav";
-        else
             shell.noise  = "weapons/shtshl.wav";
+        else
+            shell.noise  = "weapons/shtshl3.wav";
 
         // since we directly call DropShell, the shell must be "self" temporary
         player = self;
