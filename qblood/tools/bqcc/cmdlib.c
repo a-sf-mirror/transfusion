@@ -1,11 +1,23 @@
-// Copyright (C) 1999-2000 Id Software, Inc.
-//
+/*
+    Copyright (C) 1999-2000  Id Software, Inc.
 
-// cmdlib.c
+    This program is free software; you can redistribute it and/or modify
+    it under the terms of the GNU General Public License as published by
+    the Free Software Foundation; either version 2 of the License, or
+    (at your option) any later version.
+
+    This program is distributed in the hope that it will be useful,
+    but WITHOUT ANY WARRANTY; without even the implied warranty of
+    MERCHANTABILITY or FITNESS FOR A PARTICULAR PURPOSE.  See the
+    GNU General Public License for more details.
+
+    You should have received a copy of the GNU General Public License
+    along with this program; if not, write to the Free Software
+    Foundation, Inc., 59 Temple Place, Suite 330, Boston, MA  02111-1307  USA
+*/
+
 
 #include "cmdlib.h"
-
-#define PATHSEPERATOR   '/'
 
 char com_token[1024];
 int com_eof;
@@ -94,6 +106,35 @@ skipwhite:
 
 /*
 =================
+Error
+
+For abnormal program terminations
+=================
+*/
+void Error (const char *error, ...)
+{
+	va_list argptr;
+
+	printf ("\n************ ERROR ************\n");
+
+	va_start (argptr,error);
+	vprintf (error,argptr);
+	va_end (argptr);
+	printf ("\n");
+	exit (1);
+}
+
+
+/*
+=============================================================================
+
+						MEMORY FUNCTIONS
+
+=============================================================================
+*/
+
+/*
+=================
 GetClearedMemory
 =================
 */
@@ -136,100 +177,168 @@ void FreeMemory (void *ptr)
 }
 
 
-#if defined(__unix__)
+/*
+=============================================================================
+
+						LOG FUNCTIONS
+
+=============================================================================
+*/
+
+static FILE *logfile;
+
+
+/*
+=================
+Log_Open
+=================
+*/
+void Log_Open (char *filename)
+{
+	if (!filename || !strlen (filename))
+	{
+		printf("openlog <filename>\n");
+		return;
+	}
+
+	if (logfile)
+	{
+		printf ("log file is already opened\n");
+		return;
+	}
+
+	logfile = fopen (filename, "wb");
+	if (!logfile)
+	{
+		printf ("can't open the log file %s\n", filename);
+		return;
+	}
+
+	printf ("Opened log %s\n", filename);
+}
+
+
+/*
+=================
+Loc_Close
+=================
+*/
+void Log_Close (void)
+{
+	if (!logfile)
+		return;
+
+	if (fclose (logfile))
+	{
+		printf ("can't close log file\n");
+		return;
+	}
+
+	logfile = NULL;
+}
+
+
+/*
+=================
+Log_Print
+=================
+*/
+void Log_Print (char *fmt, ...)
+{
+	va_list ap;
+
+	va_start (ap, fmt);
+	vprintf (fmt, ap);
+	if (logfile)
+	{
+		vfprintf (logfile, fmt, ap);
+		fflush (logfile);
+	}
+	va_end (ap);
+}
+
+
+/*
+=================
+Log_Write
+=================
+*/
+void Log_Write (char *fmt, ...)
+{
+	va_list ap;
+
+	if (!logfile)
+		return;
+
+	va_start (ap, fmt);
+	vfprintf (logfile, fmt, ap);
+	va_end (ap);
+	fflush (logfile);
+}
+
+
+/*
+=============================================================================
+
+						FILE FUNCTIONS
+
+=============================================================================
+*/
+
 /*
 ================
-filelength
+FileLength
 ================
 */
-int filelength (int handle)
+long FileLength (FILE* handle)
 {
-	int pos;
-	int end;
+	long pos;
+	long end;
 
-	pos = tell(handle);
-	lseek(handle, 0, SEEK_END);
-	end = tell(handle);
-	lseek(handle, pos, SEEK_SET);
+	pos = ftell (handle);
+	fseek (handle, 0, SEEK_END);
+	end = ftell (handle);
+	fseek (handle, pos, SEEK_SET);
 
 	return end;
 }
 
-int tell (int handle)
+
+FILE* SafeOpen (const char *filename, const char *mode)
 {
-	return lseek (handle, 0, SEEK_CUR);
-}
-#endif  // #if defined(__unix__)
+	FILE* handle;
 
+	handle = fopen (filename, mode);
 
-/*
-=============================================================================
-
-						MISC FUNCTIONS
-
-=============================================================================
-*/
-
-/*
-=================
-Error
-
-For abnormal program terminations
-=================
-*/
-void Error (char *error, ...)
-{
-	va_list argptr;
-
-	printf ("\n************ ERROR ************\n");
-
-	va_start (argptr,error);
-	vprintf (error,argptr);
-	va_end (argptr);
-	printf ("\n");
-	exit (1);
-}
-
-
-#ifndef O_BINARY
-#define O_BINARY 0
-#endif
-
-int SafeOpenWrite (char *filename)
-{
-	int handle;
-
-	handle = open(filename,O_WRONLY | O_CREAT | O_TRUNC | O_BINARY, 0666);
-
-	if (handle == -1)
-		Error ("Error opening %s: %s",filename,strerror(errno));
-
-	return handle;
-}
-
-int SafeOpenRead (char *filename)
-{
-	int handle;
-
-	handle = open(filename,O_RDONLY | O_BINARY);
-
-	if (handle == -1)
-		Error ("Error opening %s: %s",filename,strerror(errno));
+	if (handle == NULL)
+		Error ("Error opening %s: %s", filename, strerror (errno));
 
 	return handle;
 }
 
 
-void SafeRead (int handle, void *buffer, long count)
+FILE* SafeOpenWrite (const char *filename)
 {
-	if (read (handle,buffer,count) != count)
+	return SafeOpen (filename, "wb");
+}
+
+
+FILE* SafeOpenRead (const char *filename)
+{
+	return SafeOpen (filename, "rb");
+}
+
+
+void SafeRead (FILE* handle, void *buffer, size_t count)
+{
+	if (fread (buffer, 1, count, handle) != count)
 		Error ("File read failure");
 }
 
 
-void SafeWrite (int handle, void *buffer, long count)
+void SafeWrite (FILE* handle, void *buffer, size_t count)
 {
-	if (write (handle,buffer,count) != count)
+	if (fwrite (buffer, 1, count, handle) != count)
 		Error ("File write failure");
 }
 
@@ -241,16 +350,16 @@ LoadFile
 */
 long LoadFile (char *filename, void **bufferptr)
 {
-	int handle;
+	FILE* handle;
 	long length;
 	void *buffer;
 
 	handle = SafeOpenRead (filename);
-	length = filelength (handle);
+	length = FileLength (handle);
 	buffer = GetMemory (length+1);
 	((byte *)buffer)[length] = 0;
 	SafeRead (handle, buffer, length);
-	close (handle);
+	fclose (handle);
 
 	*bufferptr = buffer;
 	return length;
@@ -303,25 +412,5 @@ float LittleFloat (float l)
 
 	return out.f;
 }
-
-
-#else
-
-
-short LittleShort (short l)
-{
-	return l;
-}
-
-long LittleLong (long l)
-{
-	return l;
-}
-
-float LittleFloat (float l)
-{
-	return l;
-}
-
 
 #endif

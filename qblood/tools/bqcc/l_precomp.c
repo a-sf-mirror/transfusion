@@ -1,4 +1,21 @@
-// Copyright (C) 1999-2000 Id Software, Inc.
+/*
+    Copyright (C) 1999-2000  Id Software, Inc.
+
+    This program is free software; you can redistribute it and/or modify
+    it under the terms of the GNU General Public License as published by
+    the Free Software Foundation; either version 2 of the License, or
+    (at your option) any later version.
+
+    This program is distributed in the hope that it will be useful,
+    but WITHOUT ANY WARRANTY; without even the implied warranty of
+    MERCHANTABILITY or FITNESS FOR A PARTICULAR PURPOSE.  See the
+    GNU General Public License for more details.
+
+    You should have received a copy of the GNU General Public License
+    along with this program; if not, write to the Free Software
+    Foundation, Inc., 59 Temple Place, Suite 330, Boston, MA  02111-1307  USA
+*/
+
 
 //Notes:			fix: PC_StringizeTokens
 
@@ -7,7 +24,6 @@
 #include "qcc.h"
 #include "l_script.h"
 #include "l_precomp.h"
-#include "l_log.h"
 
 
 //#define DEBUG_EVAL
@@ -185,27 +201,18 @@ int PC_ReadSourceToken(source_t *source, token_t *token)
 	PC_FreeToken(t);
 	return true;
 } //end of the function PC_ReadSourceToken
-//============================================================================
-//
-// Parameter:				-
-// Returns:					-
-// Changes Globals:		-
-//============================================================================
-int PC_UnreadSourceToken(source_t *source, token_t *token)
+
+
+void PC_UnreadSourceToken (source_t *source, token_t *token)
 {
 	token_t *t;
 
 	t = PC_CopyToken(token);
 	t->next = source->tokens;
 	source->tokens = t;
-	return true;
-} //end of the function PC_UnreadSourceToken
-//============================================================================
-//
-// Parameter:				-
-// Returns:					-
-// Changes Globals:		-
-//============================================================================
+}
+
+
 int PC_ReadDefineParms(source_t *source, define_t *define, token_t **parms, int maxparms)
 {
 	token_t token, *t, *last;
@@ -216,14 +223,15 @@ int PC_ReadDefineParms(source_t *source, define_t *define, token_t **parms, int 
 		SourceError(source, "define %s missing parms", define->name);
 		return false;
 	} //end if
-	//
+
 	if (define->numparms > maxparms)
 	{
 		SourceError(source, "define with more than %d parameters", maxparms);
 		return false;
 	} //end if
-	//
-	for (i = 0; i < define->numparms; i++) parms[i] = NULL;
+
+	for (i = 0; i < define->numparms; i++)
+		parms[i] = NULL;
 	//if no leading "("
 	if (strcmp(token.string, "("))
 	{
@@ -346,52 +354,7 @@ int PC_MergeTokens(token_t *t1, token_t *t2)
 	//FIXME: merging of two number of the same sub type
 	return false;
 } //end of the function PC_MergeTokens
-//============================================================================
-//
-// Parameter:				-
-// Returns:					-
-// Changes Globals:		-
-//============================================================================
-/*
-void PC_PrintDefine(define_t *define)
-{
-	printf("define->name = %s\n", define->name);
-	printf("define->flags = %d\n", define->flags);
-	printf("define->builtin = %d\n", define->builtin);
-	printf("define->numparms = %d\n", define->numparms);
-//	token_t *parms;					//define parameters
-//	token_t *tokens;					//macro tokens (possibly containing parm tokens)
-//	struct define_s *next;			//next defined macro in a list
-} //end of the function PC_PrintDefine*/
 
-//============================================================================
-//
-// Parameter:				-
-// Returns:					-
-// Changes Globals:		-
-//============================================================================
-void PC_PrintDefineHashTable(define_t **definehash)
-{
-	int i;
-	define_t *d;
-
-	for (i = 0; i < DEFINEHASHSIZE; i++)
-	{
-		Log_Write("%4d:", i);
-		for (d = definehash[i]; d; d = d->hashnext)
-		{
-			Log_Write(" %s", d->name);
-		} //end for
-		Log_Write("\n");
-	} //end for
-} //end of the function PC_PrintDefineHashTable
-//============================================================================
-//
-// Parameter:				-
-// Returns:					-
-// Changes Globals:		-
-//============================================================================
-//char primes[16] = {1, 3, 5, 7, 11, 13, 17, 19, 23, 27, 29, 31, 37, 41, 43, 47};
 
 int PC_NameHash(char *name)
 {
@@ -399,14 +362,13 @@ int PC_NameHash(char *name)
 
 	hash = 0;
 	for (i = 0; name[i] != '\0'; i++)
-	{
 		hash += name[i] * (119 + i);
-		//hash += (name[i] << 7) + i;
-		//hash += (name[i] << (i&15));
-	} //end while
+
 	hash = (hash ^ (hash >> 10) ^ (hash >> 20)) & (DEFINEHASHSIZE-1);
 	return hash;
-} //end of the function PC_NameHash
+}
+
+
 //============================================================================
 //
 // Parameter:				-
@@ -520,7 +482,6 @@ void PC_AddBuiltinDefines(source_t *source)
 		{"__FILE__",	BUILTIN_FILE},
 		{"__DATE__",	BUILTIN_DATE},
 		{"__TIME__",	BUILTIN_TIME},
-//		{"__STDC__", BUILTIN_STDC},
 		{NULL, 0}
 	};
 
@@ -601,12 +562,10 @@ int PC_ExpandBuiltinDefine(source_t *source, token_t *deftoken, define_t *define
 			*lasttoken = token;
 			break;
 		} //end case
-		case BUILTIN_STDC:
 		default:
 		{
 			*firsttoken = NULL;
 			*lasttoken = NULL;
-			break;
 		} //end case
 	} //end switch
 	return true;
@@ -801,7 +760,7 @@ void PC_ConvertPath(char *path)
 	//set OS dependent path seperators
 	for (ptr = path; *ptr;)
 	{
-		if (*ptr == '/' || *ptr == '\\') *ptr = PATHSEPERATOR_CHAR;
+		if (*ptr == '/' || *ptr == '\\') *ptr = PATHSEPARATOR_CHAR;
 		ptr++;
 	} //end while
 } //end of the function PC_ConvertPath
@@ -829,21 +788,17 @@ int PC_Directive_include(source_t *source)
 		SourceError(source, "#include without file name");
 		return false;
 	} //end if
+
 	if (token.type == TT_STRING)
 	{
 		StripDoubleQuotes(token.string);
 		PC_ConvertPath(token.string);
 		script = LoadScriptFile(token.string);
-		if (!script)
-		{
-			strcpy(path, source->includepath);
-			strcat(path, token.string);
-			script = LoadScriptFile(path);
-		} //end if
-	} //end if
+	}
+	// FIXME: what is this case supposed to do exactly?
 	else if (token.type == TT_PUNCTUATION && *token.string == '<')
 	{
-		strcpy(path, source->includepath);
+		path[0] = '\0';
 		while(PC_ReadSourceToken(source, &token))
 		{
 			if (token.linescrossed > 0)
@@ -865,12 +820,12 @@ int PC_Directive_include(source_t *source)
 		} //end if
 		PC_ConvertPath(path);
 		script = LoadScriptFile(path);
-	} //end if
+	}
 	else
 	{
 		SourceError(source, "#include without file name");
 		return false;
-	} //end else
+	}
 
 	if (!script)
 	{
@@ -878,8 +833,9 @@ int PC_Directive_include(source_t *source)
 		return false;
 	} //end if
 	PC_PushScript(source, script);
+
 	return true;
-} //end of the function PC_Directive_include
+}
 
 
 //============================================================================
@@ -904,16 +860,15 @@ int PC_ReadLine(source_t *source, token_t *token)
 	} while(!strcmp(token->string, "\\"));
 	return true;
 } //end of the function PC_ReadLine
-//============================================================================
-//
-// Parameter:				-
-// Returns:					-
-// Changes Globals:		-
-//============================================================================
+
+
+
 int PC_WhiteSpaceBeforeToken(token_t *token)
 {
 	return token->endwhitespace_p - token->whitespace_p > 0;
-} //end of the function PC_WhiteSpaceBeforeToken
+}
+
+
 //============================================================================
 //
 // Parameter:				-
@@ -1426,10 +1381,6 @@ int PC_OperatorPriority(int op)
 	return false;
 } //end of the function PC_OperatorPriority
 
-//#define AllocValue()			GetClearedMemory(sizeof(value_t));
-//#define FreeValue(val)		FreeMemory(val)
-//#define AllocOperator(op)		op = (operator_t *) GetClearedMemory(sizeof(operator_t));
-//#define FreeOperator(op)		FreeMemory(op);
 
 #define MAX_VALUES		64
 #define MAX_OPERATORS	64
@@ -2498,106 +2449,8 @@ int PC_ReadToken(source_t *source, token_t *token)
 		return true;
 	} //end while
 } //end of the function PC_ReadToken
-//============================================================================
-//
-// Parameter:				-
-// Returns:					-
-// Changes Globals:		-
-//============================================================================
-int PC_ExpectTokenString(source_t *source, char *string)
-{
-	token_t token;
 
-	if (!PC_ReadToken(source, &token))
-	{
-		SourceError(source, "couldn't find expected %s", string);
-		return false;
-	} //end if
 
-	if (strcmp(token.string, string))
-	{
-		SourceError(source, "expected %s, found %s", string, token.string);
-		return false;
-	} //end if
-	return true;
-} //end of the function PC_ExpectTokenString
-//============================================================================
-//
-// Parameter:				-
-// Returns:					-
-// Changes Globals:		-
-//============================================================================
-int PC_ExpectTokenType(source_t *source, int type, int subtype, token_t *token)
-{
-	char str[MAX_TOKEN];
-
-	if (!PC_ReadToken(source, token))
-	{
-		SourceError(source, "couldn't read expected token");
-		return false;
-	} //end if
-
-	if (token->type != type)
-	{
-		strcpy(str, "");
-		if (type == TT_STRING) strcpy(str, "string");
-		if (type == TT_LITERAL) strcpy(str, "literal");
-		if (type == TT_NUMBER) strcpy(str, "number");
-		if (type == TT_NAME) strcpy(str, "name");
-		if (type == TT_PUNCTUATION) strcpy(str, "punctuation");
-		SourceError(source, "expected a %s, found %s", str, token->string);
-		return false;
-	} //end if
-	if (token->type == TT_NUMBER)
-	{
-		if ((token->subtype & subtype) != subtype)
-		{
-			if (subtype & TT_DECIMAL) strcpy(str, "decimal");
-			if (subtype & TT_HEX) strcpy(str, "hex");
-			if (subtype & TT_OCTAL) strcpy(str, "octal");
-			if (subtype & TT_BINARY) strcpy(str, "binary");
-			if (subtype & TT_LONG) strcat(str, " long");
-			if (subtype & TT_UNSIGNED) strcat(str, " unsigned");
-			if (subtype & TT_FLOAT) strcat(str, " float");
-			if (subtype & TT_INTEGER) strcat(str, " integer");
-			SourceError(source, "expected %s, found %s", str, token->string);
-			return false;
-		} //end if
-	} //end if
-	else if (token->type == TT_PUNCTUATION)
-	{
-		if (token->subtype != subtype)
-		{
-			SourceError(source, "found %s", token->string);
-			return false;
-		} //end if
-	} //end else if
-	return true;
-} //end of the function PC_ExpectTokenType
-//============================================================================
-//
-// Parameter:				-
-// Returns:					-
-// Changes Globals:		-
-//============================================================================
-int PC_ExpectAnyToken(source_t *source, token_t *token)
-{
-	if (!PC_ReadToken(source, token))
-	{
-		SourceError(source, "couldn't read expected token");
-		return false;
-	} //end if
-	else
-	{
-		return true;
-	} //end else
-} //end of the function PC_ExpectAnyToken
-//============================================================================
-//
-// Parameter:				-
-// Returns:					-
-// Changes Globals:		-
-//============================================================================
 int PC_CheckTokenString(source_t *source, char *string)
 {
 	token_t tok;
@@ -2609,96 +2462,8 @@ int PC_CheckTokenString(source_t *source, char *string)
 	PC_UnreadSourceToken(source, &tok);
 	return false;
 } //end of the function PC_CheckTokenString
-//============================================================================
-//
-// Parameter:				-
-// Returns:					-
-// Changes Globals:		-
-//============================================================================
-int PC_CheckTokenType(source_t *source, int type, int subtype, token_t *token)
-{
-	token_t tok;
 
-	if (!PC_ReadToken(source, &tok)) return false;
-	//if the type matches
-	if (tok.type == type &&
-			(tok.subtype & subtype) == subtype)
-	{
-		memcpy(token, &tok, sizeof(token_t));
-		return true;
-	} //end if
-	//
-	PC_UnreadSourceToken(source, &tok);
-	return false;
-} //end of the function PC_CheckTokenType
-//============================================================================
-//
-// Parameter:				-
-// Returns:					-
-// Changes Globals:		-
-//============================================================================
-int PC_SkipUntilString(source_t *source, char *string)
-{
-	token_t token;
 
-	while(PC_ReadToken(source, &token))
-	{
-		if (!strcmp(token.string, string)) return true;
-	} //end while
-	return false;
-} //end of the function PC_SkipUntilString
-//============================================================================
-//
-// Parameter:				-
-// Returns:					-
-// Changes Globals:		-
-//============================================================================
-void PC_UnreadLastToken(source_t *source)
-{
-	PC_UnreadSourceToken(source, &source->token);
-} //end of the function PC_UnreadLastToken
-//============================================================================
-//
-// Parameter:				-
-// Returns:					-
-// Changes Globals:		-
-//============================================================================
-void PC_UnreadToken(source_t *source, token_t *token)
-{
-	PC_UnreadSourceToken(source, token);
-} //end of the function PC_UnreadToken
-//============================================================================
-//
-// Parameter:				-
-// Returns:					-
-// Changes Globals:		-
-//============================================================================
-void PC_SetIncludePath(source_t *source, char *path)
-{
-	strncpy(source->includepath, path, MAX_PATH);
-	//add trailing path seperator
-	if (source->includepath[strlen(source->includepath)-1] != '\\' &&
-		source->includepath[strlen(source->includepath)-1] != '/')
-	{
-		strcat(source->includepath, PATHSEPERATOR_STR);
-	} //end if
-} //end of the function PC_SetIncludePath
-//============================================================================
-//
-// Parameter:				-
-// Returns:					-
-// Changes Globals:		-
-//============================================================================
-void PC_SetPunctuations(source_t *source, punctuation_t *p)
-{
-	source->punctuations = p;
-} //end of the function PC_SetPunctuations
-//============================================================================
-//
-// Parameter:			-
-// Returns:				-
-// Changes Globals:		-
-//============================================================================
 source_t *LoadSourceFile(char *filename )
 {
 	source_t *source;
@@ -2723,41 +2488,8 @@ source_t *LoadSourceFile(char *filename )
 	PC_AddGlobalDefinesToSource(source);
 	return source;
 } //end of the function LoadSourceFile
-//============================================================================
-//
-// Parameter:				-
-// Returns:					-
-// Changes Globals:		-
-//============================================================================
-source_t *LoadSourceMemory(char *ptr, int length, char *name)
-{
-	source_t *source;
-	script_t *script;
 
-	script = LoadScriptMemory(ptr, length, name);
-	if (!script) return NULL;
-	script->next = NULL;
 
-	source = (source_t *) GetMemory(sizeof(source_t));
-	memset(source, 0, sizeof(source_t));
-
-	strncpy(source->filename, name, MAX_PATH);
-	source->scriptstack = script;
-	source->tokens = NULL;
-	source->defines = NULL;
-	source->indentstack = NULL;
-	source->skip = 0;
-
-	source->definehash = GetClearedMemory(DEFINEHASHSIZE * sizeof(define_t *));
-	PC_AddGlobalDefinesToSource(source);
-	return source;
-} //end of the function LoadSourceMemory
-//============================================================================
-//
-// Parameter:				-
-// Returns:					-
-// Changes Globals:		-
-//============================================================================
 void FreeSource(source_t *source)
 {
 	script_t *script;
@@ -2766,7 +2498,6 @@ void FreeSource(source_t *source)
 	indent_t *indent;
 	int i;
 
-	//PC_PrintDefineHashTable(source->definehash);
 	//free all the scripts
 	while(source->scriptstack)
 	{

@@ -1,5 +1,21 @@
-// Copyright (C) 1999-2000 Id Software, Inc.
-//
+/*
+    Copyright (C) 1999-2000  Id Software, Inc.
+
+    This program is free software; you can redistribute it and/or modify
+    it under the terms of the GNU General Public License as published by
+    the Free Software Foundation; either version 2 of the License, or
+    (at your option) any later version.
+
+    This program is distributed in the hope that it will be useful,
+    but WITHOUT ANY WARRANTY; without even the implied warranty of
+    MERCHANTABILITY or FITNESS FOR A PARTICULAR PURPOSE.  See the
+    GNU General Public License for more details.
+
+    You should have received a copy of the GNU General Public License
+    along with this program; if not, write to the Free Software
+    Foundation, Inc., 59 Temple Place, Suite 330, Boston, MA  02111-1307  USA
+*/
+
 
 #include <stdio.h>
 #include <setjmp.h>
@@ -391,51 +407,47 @@ extern   def_t def_ret, def_parms[MAX_PARMS];
 //=============================================================================
 
 #define  MAX_STRINGS    500000
-//MrE: replaced '#define  MAX_GLOBALS    16384' by
 #define  MAX_GLOBALS    100000
-//MrE: replaced '#define  MAX_FIELDS     1024' by
 #define  MAX_FIELDS     2024
-//MrE: replaced '#define  MAX_STATEMENTS 65536' by
 #define  MAX_STATEMENTS 200000
-//MrE: replaced '#define  MAX_FUNCTIONS  8192' by
 #define  MAX_FUNCTIONS  16384
 
 #define  MAX_DATA_PATH  64
 
-extern   char strings[MAX_STRINGS];
-extern   int strofs;
-#define CHECK_STRINGS_BUFFER if                          \
-(strofs > MAX_STRINGS || strofs < 0)                     \
-{                                                        \
-   Error("total string length exceeds buffer");          \
+extern char strings[MAX_STRINGS];
+extern int strofs;
+#define CHECK_STRINGS_BUFFER						\
+if (strofs > MAX_STRINGS || strofs < 0)				\
+{													\
+	Error ("total string length exceeds buffer");	\
 }
 
-extern   dstatement_t   statements[MAX_STATEMENTS];
-extern   int         numstatements;
-extern   int         statement_linenums[MAX_STATEMENTS];
-#define CHECK_STATEMENT_BUFFER if                        \
-(numstatements > MAX_STATEMENTS || numstatements < 0)    \
-{                                                        \
-   Error("number of statements exceeds buffer");         \
+extern dstatement_t statements[MAX_STATEMENTS];
+extern int numstatements;
+extern int statement_linenums[MAX_STATEMENTS];
+#define CHECK_STATEMENT_BUFFER								\
+if (numstatements > MAX_STATEMENTS || numstatements < 0)	\
+{															\
+	Error ("number of statements exceeds buffer");			\
 }
 
 
-extern dfunction_t   functions[MAX_FUNCTIONS];
-extern int           numfunctions;
-#define CHECK_FUNCTIONS_BUFFER if                        \
-(numfunctions > MAX_FUNCTIONS || numfunctions < 0)       \
-{                                                        \
-   Error("number of functions exceeds buffer");          \
+extern dfunction_t functions[MAX_FUNCTIONS];
+extern int numfunctions;
+#define CHECK_FUNCTIONS_BUFFER							\
+if (numfunctions > MAX_FUNCTIONS || numfunctions < 0)	\
+{														\
+	Error ("number of functions exceeds buffer");		\
 }
 
-extern float         pr_globals[MAX_REGS];
-extern int           numpr_globals;
-#define CHECK_PR_GLOBALS_BUFFER if                       \
-(numpr_globals > MAX_REGS || numpr_globals < 0)          \
-{                                                        \
-   Error("number of globals exceeds buffer");            \
+extern float pr_globals[MAX_REGS];
+extern int numpr_globals;
+#define CHECK_PR_GLOBALS_BUFFER						\
+if (numpr_globals > MAX_REGS || numpr_globals < 0)	\
+{													\
+	Error ("number of globals exceeds buffer");		\
 }
 
-extern   char  pr_immediate_string[2048];
+extern char pr_immediate_string[2048];
 
-int CopyString (const char *str);  // Checks for duplicates
+int CopyString (const char *str);

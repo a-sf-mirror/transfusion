@@ -91,10 +91,6 @@ SOURCE=.\cmdlib.c
 # End Source File
 # Begin Source File
 
-SOURCE=.\l_log.c
-# End Source File
-# Begin Source File
-
 SOURCE=.\l_precomp.c
 # End Source File
 # Begin Source File
@@ -120,10 +116,6 @@ SOURCE=.\qcc.c
 # Begin Source File
 
 SOURCE=.\cmdlib.h
-# End Source File
-# Begin Source File
-
-SOURCE=.\l_log.h
 # End Source File
 # Begin Source File
 

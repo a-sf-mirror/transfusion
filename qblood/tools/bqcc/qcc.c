@@ -1,22 +1,28 @@
-// Copyright (C) 1999-2000 Id Software, Inc.
-//
+/*
+    Copyright (C) 1999-2000  Id Software, Inc.
 
-// qcc.c
+    This program is free software; you can redistribute it and/or modify
+    it under the terms of the GNU General Public License as published by
+    the Free Software Foundation; either version 2 of the License, or
+    (at your option) any later version.
 
-#include <time.h>
-#include <stdio.h>
-#if defined (WIN32) || defined (_WIN32)
-# include <direct.h>	// mkdir
-# include <io.h>		// lseek, close, filelength
-#endif
+    This program is distributed in the hope that it will be useful,
+    but WITHOUT ANY WARRANTY; without even the implied warranty of
+    MERCHANTABILITY or FITNESS FOR A PARTICULAR PURPOSE.  See the
+    GNU General Public License for more details.
+
+    You should have received a copy of the GNU General Public License
+    along with this program; if not, write to the Free Software
+    Foundation, Inc., 59 Temple Place, Suite 330, Boston, MA  02111-1307  USA
+*/
+
 
 #include "qcc.h"
-
-#include "l_log.h"
 #include "l_script.h"
 #include "l_precomp.h"
 
-// set these before calling NewCheckParm
+
+// set these before calling CheckParm
 int myargc;
 char **myargv;
 
@@ -44,10 +50,10 @@ int				numfielddefs;
 
 /*
 =================
-NewCheckParm
+CheckParm
 =================
 */
-int NewCheckParm(char *check)
+int CheckParm(char *check)
 {
 	int i;
 
@@ -59,7 +65,8 @@ int NewCheckParm(char *check)
 		} //end if
 	} //end for
 	return 0;
-} //end of the function NewCheckParm
+}
+
 
 /*
 =================
@@ -259,18 +266,13 @@ void WriteData(int crc)
 	def_t *def;
 	ddef_t *dd;
 	dprograms_t progs;
-	int h;
+	FILE* handle;
 	int i;
 
 	//create the fields and globaldefs (ddef_t) out of the def_t
 	for (def = pr.def_head.next; def; def = def->next)
 	{
-		if (def->type->type == ev_function)
-		{
-//			df = &functions[numfunctions];
-//			numfunctions++;
-		} //end if
-		else if (def->type->type == ev_field)
+		if (def->type->type == ev_field)
 		{
 			 dd = &fields[numfielddefs];
 			 numfielddefs++;
@@ -305,15 +307,14 @@ void WriteData(int crc)
 	Log_Print("numfielddefs  = %6i, max = %i\n", numfielddefs, MAX_FIELDS);
 	Log_Print("numpr_globals = %6i, max = %i\n", numpr_globals, MAX_REGS);
 
-	h = SafeOpenWrite (destfile);
-	SafeWrite(h, &progs, sizeof(progs));
+	handle = SafeOpenWrite (destfile);
+	SafeWrite(handle, &progs, sizeof(progs));
 
-	progs.ofs_strings = lseek(h, 0, SEEK_CUR);
+	progs.ofs_strings = ftell (handle);
 	progs.numstrings = strofs;
-	//write out the string heap
-	SafeWrite(h, strings, strofs);
+	SafeWrite (handle, strings, strofs);
 
-	progs.ofs_statements = lseek(h, 0, SEEK_CUR);
+	progs.ofs_statements = ftell (handle);
 	progs.numstatements = numstatements;
 	for (i = 0; i < numstatements; i++)
 	{
@@ -321,10 +322,10 @@ void WriteData(int crc)
 		statements[i].a = LittleShort(statements[i].a);
 		statements[i].b = LittleShort(statements[i].b);
 		statements[i].c = LittleShort(statements[i].c);
-	} //end for
-	SafeWrite (h, statements, numstatements*sizeof(dstatement_t));
+	}
+	SafeWrite (handle, statements, numstatements * sizeof (dstatement_t));
 
-	progs.ofs_functions = lseek(h, 0, SEEK_CUR);
+	progs.ofs_functions = ftell (handle);
 	progs.numfunctions = numfunctions;
 	for (i = 0; i < numfunctions; i++)
 	{
@@ -334,36 +335,36 @@ void WriteData(int crc)
 		functions[i].s_file = LittleLong (functions[i].s_file);
 		functions[i].numparms = LittleLong (functions[i].numparms);
 		functions[i].locals = LittleLong (functions[i].locals);
-	} //end for
-	SafeWrite (h, functions, numfunctions*sizeof(dfunction_t));
+	}
+	SafeWrite (handle, functions, numfunctions * sizeof (dfunction_t));
 
-	progs.ofs_globaldefs = lseek (h, 0, SEEK_CUR);
+	progs.ofs_globaldefs = ftell (handle);
 	progs.numglobaldefs = numglobaldefs;
 	for (i = 0; i < numglobaldefs; i++)
 	{
 		globals[i].type = LittleShort (globals[i].type);
 		globals[i].ofs = LittleShort (globals[i].ofs);
 		globals[i].s_name = LittleLong (globals[i].s_name);
-	} //end for
-	SafeWrite (h, globals, numglobaldefs*sizeof(ddef_t));
+	}
+	SafeWrite (handle, globals, numglobaldefs * sizeof (ddef_t));
 
-	progs.ofs_fielddefs = lseek (h, 0, SEEK_CUR);
+	progs.ofs_fielddefs = ftell (handle);
 	progs.numfielddefs = numfielddefs;
 	for (i = 0; i < numfielddefs; i++)
 	{
 		fields[i].type = LittleShort (fields[i].type);
 		fields[i].ofs = LittleShort (fields[i].ofs);
 		fields[i].s_name = LittleLong (fields[i].s_name);
-	} //end for
-	SafeWrite (h, fields, numfielddefs*sizeof(ddef_t));
+	}
+	SafeWrite (handle, fields, numfielddefs * sizeof (ddef_t));
 
-	progs.ofs_globals = lseek (h, 0, SEEK_CUR);
+	progs.ofs_globals = ftell (handle);
 	progs.numglobals = numpr_globals;
 	for (i=0 ; i<numpr_globals ; i++)
 			((int *)pr_globals)[i] = LittleLong (((int *)pr_globals)[i]);
-	SafeWrite (h, pr_globals, numpr_globals*4);
+	SafeWrite (handle, pr_globals, numpr_globals * 4);
 
-	Log_Print("total size    = %6i\n", (int) lseek(h, 0, SEEK_CUR));
+	Log_Print("total size    = %6lu\n", (unsigned long) ftell (handle));
 	Log_Print("-------------------------------------------------\n");
 
 	progs.entityfields = pr.size_fields;
@@ -374,10 +375,10 @@ void WriteData(int crc)
 	//byte swap the header and write it out
 	for (i=0 ; i<sizeof(progs)/4 ; i++)
 	  ((int *)&progs)[i] = LittleLong ( ((int *)&progs)[i] );
-	lseek (h, 0, SEEK_SET);
-	SafeWrite (h, &progs, sizeof(progs));
-	close (h);
-} //end of the function WriteData
+	fseek (handle, 0, SEEK_SET);
+	SafeWrite (handle, &progs, sizeof(progs));
+	fclose (handle);
+}
 
 /*
 ===============
@@ -846,30 +847,6 @@ void PrintFunction(char *name)
 	} //end while
 } //end of the function PrintFuncion
 
-/*
-==============================================================================
-
-DIRECTORY COPYING / PACKFILE CREATION
-
-==============================================================================
-*/
-
-typedef struct
-{
-	char name[56];
-	int filepos, filelen;
-} packfile_t;
-
-typedef struct
-{
-	char id[4];
-	int dirofs;
-	int dirlen;
-} packheader_t;
-
-packfile_t	pfiles[4096], *pf;
-int			packhandle;
-int			packbytes;
 
 /*
 =================
@@ -917,7 +894,7 @@ int main (int argc, char **argv)
 	Log_Print("This compiler is not supported by id Software.\n");
 	Log_Print("bqcc -help for info.\n\n");
 
-	if (NewCheckParm ("?") || NewCheckParm ("help") || NewCheckParm("h"))
+	if (CheckParm ("?") || CheckParm ("help") || CheckParm ("h"))
 	{
 		Log_Print("bqcc looks for a progs.src in the current directory.\n");
 		Log_Print("Command line options:\n");
@@ -933,7 +910,7 @@ int main (int argc, char **argv)
 
 	CMDPrecompilerDefinitions();
 
-	p = NewCheckParm("src");
+	p = CheckParm ("src");
 	if (p && p < argc-1 )
 	{
 		strcpy(sourcedir, argv[p+1]);
@@ -954,7 +931,7 @@ int main (int argc, char **argv)
 	InitData ();
 
 	// QuakeWorld mode
-	if (NewCheckParm("qw"))
+	if (CheckParm ("qw"))
 	{
 		PC_AddGlobalDefine ("QUAKEWORLD");
 		sprintf(filename, "%sqwprogs.src", sourcedir);
@@ -992,8 +969,8 @@ int main (int argc, char **argv)
 
 	Log_Print("compilation time was %1.2f seconds\n\n", ((double) clock() - start_time) / CLOCKS_PER_SEC);
 
-	//check if a function is to be dumped in asm code
-	p = NewCheckParm("asm");
+	// Check if a function is to be dumped in asm code
+	p = CheckParm ("asm");
 	if (p)
 	{
 		for (p++ ; p<argc ; p++)

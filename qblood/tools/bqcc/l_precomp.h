@@ -1,22 +1,30 @@
-// Copyright (C) 1999-2000 Id Software, Inc.
+/*
+    Copyright (C) 1999-2000  Id Software, Inc.
+
+    This program is free software; you can redistribute it and/or modify
+    it under the terms of the GNU General Public License as published by
+    the Free Software Foundation; either version 2 of the License, or
+    (at your option) any later version.
+
+    This program is distributed in the hope that it will be useful,
+    but WITHOUT ANY WARRANTY; without even the implied warranty of
+    MERCHANTABILITY or FITNESS FOR A PARTICULAR PURPOSE.  See the
+    GNU General Public License for more details.
+
+    You should have received a copy of the GNU General Public License
+    along with this program; if not, write to the Free Software
+    Foundation, Inc., 59 Temple Place, Suite 330, Boston, MA  02111-1307  USA
+*/
+
 
 #ifndef MAX_PATH
 	#define MAX_PATH			MAX_QPATH
 #endif
 
-#ifndef PATH_SEPERATORSTR
-	#ifdef WIN32
-		#define PATHSEPERATOR_STR		"\\"
-	#else
-		#define PATHSEPERATOR_STR		"/"
-	#endif
-#endif
-#ifndef PATH_SEPERATORCHAR
-	#ifdef WIN32
-		#define PATHSEPERATOR_CHAR		'\\'
-	#else
-		#define PATHSEPERATOR_CHAR		'/'
-	#endif
+#ifdef WIN32
+	#define PATHSEPARATOR_CHAR	'\\'
+#else
+	#define PATHSEPARATOR_CHAR	'/'
 #endif
 
 
@@ -62,7 +70,6 @@ typedef struct indent_s
 typedef struct source_s
 {
 	char filename[1024];					//file name of the script
-	char includepath[1024];					//path to include files
 	punctuation_t *punctuations;			//punctuations to use
 	script_t *scriptstack;					//stack with scripts of the source
 	token_t *tokens;						//tokens to read first
@@ -76,22 +83,10 @@ typedef struct source_s
 
 //read a token from the source
 int PC_ReadToken(source_t *source, token_t *token);
-//expect a certain token
-int PC_ExpectTokenString(source_t *source, char *string);
-//expect a certain token type
-int PC_ExpectTokenType(source_t *source, int type, int subtype, token_t *token);
-//expect a token
-int PC_ExpectAnyToken(source_t *source, token_t *token);
 //returns true when the token is available
 int PC_CheckTokenString(source_t *source, char *string);
-//returns true an reads the token when a token with the given type is available
-int PC_CheckTokenType(source_t *source, int type, int subtype, token_t *token);
-//skip tokens until the given token string is read
-int PC_SkipUntilString(source_t *source, char *string);
-//unread the last token read from the script
-void PC_UnreadLastToken(source_t *source);
 //unread the given token
-void PC_UnreadToken(source_t *source, token_t *token);
+void PC_UnreadSourceToken(source_t *source, token_t *token);
 //read a token only if on the same line, lines are concatenated with a slash
 int PC_ReadLine(source_t *source, token_t *token);
 //returns true if there was a white space in front of the token
@@ -106,8 +101,6 @@ int PC_RemoveGlobalDefine(char *name);
 void PC_RemoveAllGlobalDefines(void);
 //add builtin defines
 void PC_AddBuiltinDefines(source_t *source);
-//set the source include path
-void PC_SetIncludePath(source_t *source, char *path);
 //set the punction set
 void PC_SetPunctuations(source_t *source, punctuation_t *p);
 //load a source file

@@ -1,31 +1,25 @@
-// Copyright (C) 1999-2000 Id Software, Inc.
-//
+/*
+    Copyright (C) 1999-2000  Id Software, Inc.
 
-/*****************************************************************************
- * name:		l_script.h
- *
- * desc:		lexicographical parser
- *
- * $Archive: /source/code/botlib/l_script.h $
- * $Author$
- * $Revision$
- * $Modtime: 10/05/99 3:32p $
- * $Date$
- *
- *****************************************************************************/
+    This program is free software; you can redistribute it and/or modify
+    it under the terms of the GNU General Public License as published by
+    the Free Software Foundation; either version 2 of the License, or
+    (at your option) any later version.
+
+    This program is distributed in the hope that it will be useful,
+    but WITHOUT ANY WARRANTY; without even the implied warranty of
+    MERCHANTABILITY or FITNESS FOR A PARTICULAR PURPOSE.  See the
+    GNU General Public License for more details.
+
+    You should have received a copy of the GNU General Public License
+    along with this program; if not, write to the Free Software
+    Foundation, Inc., 59 Temple Place, Suite 330, Boston, MA  02111-1307  USA
+*/
+
 
 //maximum token length
 #define MAX_TOKEN					1024
 
-
-//script flags
-#define SCFL_NOERRORS				0x0001
-#define SCFL_NOWARNINGS				0x0002
-#define SCFL_NOSTRINGWHITESPACES	0x0004
-#define SCFL_NOSTRINGESCAPECHARS	0x0008
-#define SCFL_PRIMITIVE				0x0010
-#define SCFL_NOBINARYNUMBERS		0x0020
-#define SCFL_NONUMBERVALUES		0x0040
 
 //token types
 #define TT_STRING					1			// string
@@ -154,7 +148,6 @@ typedef struct script_s
 	int line;						//current line in script
 	int lastline;					//line before reading token
 	int tokenavailable;				//set by UnreadLastToken
-	int flags;						//several script flags
 	punctuation_t *punctuations;	//the punctuations used in the script
 	punctuation_t **punctuationtable;
 	token_t token;					//available token
@@ -163,38 +156,14 @@ typedef struct script_s
 
 //read a token from the script
 int PS_ReadToken(script_t *script, token_t *token);
-//expect a certain token
-int PS_ExpectTokenString(script_t *script, char *string);
-//expect a certain token type
-int PS_ExpectTokenType(script_t *script, int type, int subtype, token_t *token);
-//expect a token
-int PS_ExpectAnyToken(script_t *script, token_t *token);
-//returns true when the token is available
-int PS_CheckTokenString(script_t *script, char *string);
-//returns true an reads the token when a token with the given type is available
-int PS_CheckTokenType(script_t *script, int type, int subtype, token_t *token);
-//skip tokens until the given token string is read
-int PS_SkipUntilString(script_t *script, char *string);
-//unread the last token read from the script
-void PS_UnreadLastToken(script_t *script);
-//unread the given token
-void PS_UnreadToken(script_t *script, token_t *token);
 //returns the next character of the read white space, returns NULL if none
 char PS_NextWhiteSpaceChar(script_t *script);
 //remove any leading and trailing double quotes from the token
 void StripDoubleQuotes(char *string);
-//remove any leading and trailing single quotes from the token
-void StripSingleQuotes(char *string);
-//read a possible signed integer
-signed long int ReadSignedInt(script_t *script);
 //read a possible signed floating point number
 double ReadSignedFloat(script_t *script);
-//set an array with punctuations, NULL restores default C/C++ set
-void SetScriptPunctuations(script_t *script, punctuation_t *p);
-//set script flags
-void SetScriptFlags(script_t *script, int flags);
-//get script flags
-int GetScriptFlags(script_t *script);
+//set an array with punctuations (default C/C++ set)
+void SetScriptPunctuations(script_t *script);
 //reset a script
 void ResetScript(script_t *script);
 //returns true if at the end of the script
@@ -202,9 +171,9 @@ int EndOfScript(script_t *script);
 //returns a pointer to the punctuation with the given number
 char *PunctuationFromNum(script_t *script, int num);
 //load a script from the given file at the given offset with the given length
-script_t *LoadScriptFile(char *filename);
+script_t *LoadScriptFile (const char *filename);
 //load a script from the given memory with the given length
-script_t *LoadScriptMemory(char *ptr, int length, char *name);
+script_t *LoadScriptMemory (const char *ptr, size_t length, const char *name);
 //free a script
 void FreeScript(script_t *script);
 //print a script error with filename and line number
