@@ -16,7 +16,7 @@
 <div class="section">
 	<h2 id="about-section" class="section">About this page</h2>
 	This website is the home of the Transfusion Project development. Please, go to
-	<a href="http://www.planetblood.com/qblood/">our main website</a> for
+	<a href="http://transfusion.deathmask.net/">our main website</a> for
 	general informations about the project.<br />
 </div>
 
@@ -24,6 +24,15 @@
 <div class="section">
 	<h2 id="news-section" class="section">News</h2>
 	<ul>
+		<li>
+			<span class="title">August 12, 2004:</span> (by Elric)<br />
+			The Transfusion official website has moved! Willis very kindly offered us a webspace on
+			his <a href="http://www.deathmask.net/">deathmask</a>. New forums are online and I used that
+			opportunity to rewrite the website layout from scratch, so you shouldn't see layout problems
+			anymore (holes in borders for example). The new pages are written in PHP, which will allow
+			me to make the website evolve quickly hopefully. Go breathe the smell of the napalm in the
+			morning at <?php ExplicitURL ("http://transfusion.deathmask.net/"); ?>.<p />
+		</li>
 		<li>
 			<span class="title">August 5, 2004:</span> (by Elric)<br />
 			Since the PlanetBlood.com forums are down for the moment, Luke "Kazashi" Ashdown activated
@@ -38,7 +47,7 @@
 	<h2 id="links-section" class="section">Useful links</h2>
 	<ul>
 		<li>
-			Home page: <?php ExplicitURL ("http://www.planetblood.com/qblood/"); ?><p />
+			Home page: <?php ExplicitURL ("http://transfusion.deathmask.net/"); ?><p />
 		</li>
 		<li>
 			SourceForge page: <?php ExplicitURL ("http://sourceforge.net/projects/blood/"); ?><p />
@@ -48,9 +57,6 @@
 		</li>
 		<li>
 			CVS repository: <?php ExplicitURL ("http://sourceforge.net/cvs/?group_id=22136"); ?><p />
-		</li>
-		<li>
-			SF.net forums: <?php ExplicitURL ("http://sourceforge.net/forum/?group_id=22136"); ?><p />
 		</li>
 		<li>
 			DarkPlaces home page: <?php ExplicitURL ("http://icculus.org/twilight/darkplaces/"); ?><p />
