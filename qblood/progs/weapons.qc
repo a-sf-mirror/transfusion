@@ -1177,7 +1177,7 @@ void(float big) W_FireLightning =
         // We have already started the sound
 
         self.ammo_cells = self.ammo_cells - 35;
-        mspeed = 2500;
+        mspeed = 2000;
     }
     else
     {
@@ -1679,11 +1679,11 @@ void() W_FireSpikes =
 
     // set the bullet direction according to the weapon real direction
     dir = aim (self, 1000);
-    if (self.weaponframe == 8 || self.weaponframe == 10)
+    if (self.weaponframe == 9 || self.weaponframe == 11)
         dir = dir - v_right * (1 / 10);
-    else if (self.weaponframe == 9)
+    else if (self.weaponframe == 10)
         dir = dir - v_right * (1 / 5);
-    else if (self.weaponframe == 12)
+    else if (self.weaponframe == 13)
         dir = dir + v_right * (1 / 10);
 
     launch_spike (self.origin + '0 0 16' + v_right * 8 + v_forward * 4, dir);
