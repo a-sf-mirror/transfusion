@@ -281,7 +281,8 @@ void() item_lure =
 MISCELLANEOUS OBJECTS
 
 ==========================================================
-*
+*/
+
 // misc. objects that exist in maps as decorations. some are breakable
 // dturner 6/30/2001
 
@@ -315,18 +316,6 @@ void() obj_mboost =
     {
     precache_model("progs/a_mboost.mdl");
     setmodel(self, "progs/a_mboost.mdl");
-
-    setsize (self, '0 0 0', '32 32 56');
-    StartItem ();
-    };
-
-
-// huge statue of praying angel
-
-void() obj_anglstat =
-    {
-    precache_model("progs/anglstat.mdl");
-    setmodel(self, "progs/anglstat.mdl");
 
     setsize (self, '0 0 0', '32 32 56');
     StartItem ();
@@ -409,90 +398,12 @@ void() obj_cflmtrch =
     StartItem ();
     };
 
-// a locked chest, with 2 skins
-
-void() obj_chest1 =
-    {
-    precache_model("progs/chest1.mdl");
-    setmodel(self, "progs/chest1.mdl");
-
-    setsize (self, '0 0 0', '32 32 56');
-    StartItem ();
-    };
-
-// a locked chest, round, with 3 skins
-
-void() obj_chest2 =
-    {
-    precache_model("progs/chest2.mdl");
-    setmodel(self, "progs/chest2.mdl");
-
-    setsize (self, '0 0 0', '32 32 56');
-    StartItem ();
-    };
-
-// square chest
-
-void() obj_chest3 =
-    {
-    precache_model("progs/chest3.mdl");
-    setmodel(self, "progs/chest3.mdl");
-
-    setsize (self, '0 0 0', '32 32 56');
-    StartItem ();
-    };
-
-// corpse lying on stomach, 4 skins
-
-void() obj_corps1 =
-    {
-    precache_model("progs/corps1.mdl");
-    setmodel(self, "progs/corps1.mdl");
-
-    setsize (self, '0 0 0', '32 32 56');
-    StartItem ();
-    };
-
-// clue book
-
-void() obj_clueb =
-    {
-    precache_model("progs/clueb.mdl");
-    setmodel(self, "progs/clueb.mdl");
-
-    setsize (self, '0 0 0', '32 32 56');
-    StartItem ();
-    };
-
-// a corpse lying face up with 5 skins
-// skin4 is encased in webs
-void() obj_corps2 =
-    {
-    precache_model("progs/corps2.mdl");
-    setmodel(self, "progs/corps2.mdl");
-
-    setsize (self, '0 0 0', '32 32 56');
-    StartItem ();
-    };
-
-
 // a rusty metal cross with a tilted cross beam
 
 void() obj_cross =
     {
     precache_model("progs/cross.mdl");
     setmodel(self, "progs/cross.mdl");
-
-    setsize (self, '0 0 0', '32 32 56');
-    StartItem ();
-    };
-
-// a chrome skeleton key
-
-void() obj_cskey =
-    {
-    precache_model("progs/cskey.mdl");
-    setmodel(self, "progs/cskey.mdl");
 
     setsize (self, '0 0 0', '32 32 56');
     StartItem ();
@@ -520,18 +431,6 @@ void() obj_egtorch =
     StartItem ();
     };
 
-// iron fence gateway
-
-void() obj_fence =
-    {
-    precache_model("progs/fence.mdl");
-    setmodel(self, "progs/fence.mdl");
-
-    setsize (self, '0 0 0', '32 32 56');
-    StartItem ();
-    };
-*/
-
 // large 2 tier fountain
 void() obj_fountain =
 {
@@ -551,18 +450,6 @@ void() obj_goal =
     setsize (self, '0 0 0', '32 32 56');
     StartItem ();
 };
-
-/*
-// head of a fallen angel
-
-void() obj_hfangel =
-    {
-    precache_model("progs/h_fangel.mdl");
-    setmodel(self, "progs/h_fangel.mdl");
-
-    setsize (self, '0 0 0', '32 32 56');
-    StartItem ();
-    };
 
 // tall triangular hedge
 
@@ -603,17 +490,6 @@ void() obj_holycrss =
     {
     precache_model("progs/holycrss.mdl");
     setmodel(self, "progs/holycrss.mdl");
-
-    setsize (self, '0 0 0', '32 32 56');
-    StartItem ();
-    };
-
-// huge moving spider web
-
-void() obj_megaweb =
-    {
-    precache_model("progs/megaweb.mdl");
-    setmodel(self, "progs/megaweb.mdl");
 
     setsize (self, '0 0 0', '32 32 56');
     StartItem ();
@@ -662,7 +538,6 @@ void() obj_pot1 =
     setsize (self, '0 0 0', '32 32 56');
     StartItem ();
     };
-*/
 
 // large vase, 4 skins
 
@@ -786,6 +661,93 @@ void() obj_webs =
     StartItem ();
     };
 
+// skull
+
+void() obj_skull =
+    {
+    precache_model("progs/skull.mdl");
+    setmodel(self, "progs/skull.mdl");
+
+    setsize (self, '0 0 0', '32 32 56');
+    StartItem ();
+    };
+
+// book with skull on it
+
+void() obj_skulbook =
+    {
+    precache_model("progs/skulbook.mdl");
+    setmodel(self, "progs/skulbook.mdl");
+
+    setsize (self, '0 0 0', '32 32 56');
+    StartItem ();
+    };
+
+// bar stool
+
+void() obj_stool =
+    {
+    precache_model("progs/stool.mdl");
+    setmodel(self, "progs/stool.mdl");
+
+    setsize (self, '0 0 0', '32 32 56');
+    StartItem ();
+    };
+
+// another scroll
+
+void() obj_h-book =
+    {
+    precache_model("progs/h-book.mdl");
+    setmodel(self, "progs/h-book.mdl");
+
+    setsize (self, '0 0 0', '32 32 56');
+    StartItem ();
+    };
+
+// skull
+
+void() obj_m2 =
+    {
+    precache_model("progs/m2.mdl");
+    setmodel(self, "progs/m2.mdl");
+
+    setsize (self, '0 0 0', '32 32 56');
+    StartItem ();
+    };
+
+// skull
+
+void() obj_m3 =
+    {
+    precache_model("progs/m3.mdl");
+    setmodel(self, "progs/m3.mdl");
+
+    setsize (self, '0 0 0', '32 32 56');
+    StartItem ();
+    };
+
+// another book
+
+void() obj_mage =
+    {
+    precache_model("progs/mage.mdl");
+    setmodel(self, "progs/mage.mdl");
+
+    setsize (self, '0 0 0', '32 32 56');
+    StartItem ();
+    };
+
+// shovel
+
+void() obj_shovel =
+    {
+    precache_model("progs/shovel.mdl");
+    setmodel(self, "progs/shovel.mdl");
+
+    setsize (self, '0 0 0', '32 32 56');
+    StartItem ();
+    };
 
 /*
 ===================================
