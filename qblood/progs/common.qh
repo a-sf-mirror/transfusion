@@ -196,9 +196,10 @@
 #define IT_ROCKETS          16384    // 15 - gasoline can
 #define IT_CELLS            32768    // 16 - tesla charge
 
-#define IT_ARMOR1           65536    // 17 - body armor
-#define IT_ARMOR2           131072   // 18 - fire armor
-#define IT_ARMOR3           262144   // 19 - spirit armor
+#define IT_ARMOR_BODY       65536    // 17 - body armor
+#define IT_ARMOR_FIRE       131072   // 18 - fire armor
+#define IT_ARMOR_SPIRIT     262144   // 19 - spirit armor
+#define IT_ARMOR_ALL (IT_ARMOR_BODY | IT_ARMOR_FIRE | IT_ARMOR_SPIRIT)
 
 #define IT_INVISIBILITY     524288   // 20 - cloak
 #define IT_INVULNERABILITY  1048576  // 21 - deathmask

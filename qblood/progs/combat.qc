@@ -281,12 +281,12 @@ void(entity targ, entity inflictor, entity attacker, float damage, float dflags,
             if (targ.armor_fire <= 0)
             {
                 targ.armorvalue = targ.armor_fire = 0;
-                targ.items = targ.items - (targ.items & IT_ARMOR2);
+                targ.items = targ.items - (targ.items & IT_ARMOR_FIRE);
             }
             else
             {
                 targ.armorvalue = targ.armor_fire;
-                targ.items = targ.items - (targ.items & (IT_ARMOR1 | IT_ARMOR2 | IT_ARMOR3)) + IT_ARMOR2;
+                targ.items = targ.items - (targ.items & IT_ARMOR_ALL) + IT_ARMOR_FIRE;
             }
         }
         else if (dflags & DF_BODY)
@@ -295,12 +295,12 @@ void(entity targ, entity inflictor, entity attacker, float damage, float dflags,
             if (targ.armor_body <= 0)
             {
                 targ.armorvalue = targ.armor_body = 0;
-                targ.items = targ.items - (targ.items & IT_ARMOR1);
+                targ.items = targ.items - (targ.items & IT_ARMOR_BODY);
             }
             else
             {
                 targ.armorvalue = targ.armor_body;
-                targ.items = targ.items - (targ.items & (IT_ARMOR1 | IT_ARMOR2 | IT_ARMOR3)) + IT_ARMOR1;
+                targ.items = targ.items - (targ.items & IT_ARMOR_ALL) + IT_ARMOR_BODY;
             }
         }
         else if (dflags & DF_MIND)
@@ -309,12 +309,12 @@ void(entity targ, entity inflictor, entity attacker, float damage, float dflags,
             if (targ.armor_mind <= 0)
             {
                 targ.armorvalue = targ.armor_mind = 0;
-                targ.items = targ.items - (targ.items & IT_ARMOR3);
+                targ.items = targ.items - (targ.items & IT_ARMOR_SPIRIT);
             }
             else
             {
                 targ.armorvalue = targ.armor_mind;
-                targ.items = targ.items - (targ.items & (IT_ARMOR1 | IT_ARMOR2 | IT_ARMOR3)) + IT_ARMOR3;
+                targ.items = targ.items - (targ.items & IT_ARMOR_ALL) + IT_ARMOR_SPIRIT;
             }
         }
     }

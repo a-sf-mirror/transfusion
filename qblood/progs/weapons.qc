@@ -1005,43 +1005,43 @@ void() Cheat_Akimbo =
 // PM:  Let's player change the armor shown if he has more than one armor.
 void() ArmorTest =
 {
-    if (self.items & IT_ARMOR2)
+    if (self.items & IT_ARMOR_FIRE)
     {
         if (self.armor_body)
         {
             self.armorvalue = self.armor_body;
-            self.items = self.items - (self.items & (IT_ARMOR1 | IT_ARMOR2 | IT_ARMOR3)) + IT_ARMOR1;
+            self.items = self.items - (self.items & IT_ARMOR_ALL) + IT_ARMOR_BODY;
         }
         else if (self.armor_mind)
         {
             self.armorvalue = self.armor_mind;
-            self.items = self.items - (self.items & (IT_ARMOR1 | IT_ARMOR2 | IT_ARMOR3)) + IT_ARMOR3;
+            self.items = self.items - (self.items & IT_ARMOR_ALL) + IT_ARMOR_SPIRIT;
         }
     }
-    else if (self.items & IT_ARMOR1)
+    else if (self.items & IT_ARMOR_BODY)
     {
         if (self.armor_mind)
         {
             self.armorvalue = self.armor_mind;
-            self.items = self.items - (self.items & (IT_ARMOR1 | IT_ARMOR2 | IT_ARMOR3)) + IT_ARMOR3;
+            self.items = self.items - (self.items & IT_ARMOR_ALL) + IT_ARMOR_SPIRIT;
         }
         else if (self.armor_fire)
         {
             self.armorvalue = self.armor_fire;
-            self.items = self.items - (self.items & (IT_ARMOR1 | IT_ARMOR2 | IT_ARMOR3)) + IT_ARMOR2;
+            self.items = self.items - (self.items & IT_ARMOR_ALL) + IT_ARMOR_FIRE;
         }
     }
-    else if (self.items & IT_ARMOR3)
+    else if (self.items & IT_ARMOR_SPIRIT)
     {
         if (self.armor_fire)
         {
             self.armorvalue = self.armor_fire;
-            self.items = self.items - (self.items & (IT_ARMOR1 | IT_ARMOR2 | IT_ARMOR3)) + IT_ARMOR2;
+            self.items = self.items - (self.items & IT_ARMOR_ALL) + IT_ARMOR_FIRE;
         }
         else if (self.armor_body)
         {
             self.armorvalue = self.armor_body;
-            self.items = self.items - (self.items & (IT_ARMOR1 | IT_ARMOR2 | IT_ARMOR3)) + IT_ARMOR1;
+            self.items = self.items - (self.items & IT_ARMOR_ALL) + IT_ARMOR_BODY;
         }
     }
 };

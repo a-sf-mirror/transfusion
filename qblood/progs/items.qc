@@ -935,7 +935,7 @@ void() armor_touch =
         if (other.armor_body >= 100)
             return;
         value = other.armor_body = 100;
-        bit = IT_ARMOR1;
+        bit = IT_ARMOR_BODY;
     }
     else if (self.classname == "item_armor_fire")
     {
@@ -943,7 +943,7 @@ void() armor_touch =
         if (other.armor_fire >= 100)
             return;
         value = other.armor_fire = 100;
-        bit = IT_ARMOR2;
+        bit = IT_ARMOR_FIRE;
     }
     else if (self.classname == "item_armor_super")
     {
@@ -955,14 +955,14 @@ void() armor_touch =
 
         other.armor_body = other.armor_fire = other.armor_mind = 200;
 
-        bit = other.items & (IT_ARMOR1 | IT_ARMOR2 | IT_ARMOR3);
-        if (bit == IT_ARMOR1)
+        bit = other.items & IT_ARMOR_ALL;
+        if (bit == IT_ARMOR_BODY)
             value = other.armor_body;
-        else if (bit == IT_ARMOR2)
+        else if (bit == IT_ARMOR_FIRE)
             value = other.armor_fire;
         else
         {
-            bit = IT_ARMOR3;
+            bit = IT_ARMOR_SPIRIT;
             value = other.armor_mind;
         }
     }
@@ -984,14 +984,14 @@ void() armor_touch =
         if (other.armor_mind > 100)
             other.armor_mind = 100;
 
-        bit = other.items & (IT_ARMOR1 | IT_ARMOR2 | IT_ARMOR3);
-        if (bit == IT_ARMOR3)
+        bit = other.items & IT_ARMOR_ALL;
+        if (bit == IT_ARMOR_SPIRIT)
             value = other.armor_mind;
-        else if (bit == IT_ARMOR2)
+        else if (bit == IT_ARMOR_FIRE)
             value = other.armor_fire;
         else
         {
-            bit = IT_ARMOR1;
+            bit = IT_ARMOR_BODY;
             value = other.armor_body;
         }
     }
@@ -1001,14 +1001,14 @@ void() armor_touch =
         if (other.armor_mind >= 100)
             return;
         value = other.armor_mind = 100;
-        bit = IT_ARMOR3;
+        bit = IT_ARMOR_SPIRIT;
     }
     else
         sprint(other, "Tried to pickup illegal armor.\n");
 
     other.armorvalue = value;
     if (bit)
-        other.items = other.items - (other.items & (IT_ARMOR1 | IT_ARMOR2 | IT_ARMOR3)) + bit;
+        other.items = other.items - (other.items & IT_ARMOR_ALL) + bit;
 
     self.solid = SOLID_NOT;
     self.model = string_null;

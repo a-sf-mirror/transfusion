@@ -84,7 +84,7 @@ void() InitPlayerCharacteristics =
     // If the warmup is not over, let's give him some extra stuff  :)
     if (! warmup_done)
     {
-        self.items = self.items | available_weapons | IT_ARMOR1;
+        self.items = self.items | available_weapons | IT_ARMOR_BODY;
         self.armor_body = 50;
         self.armor_fire = 50;
         self.armor_mind = 50;
@@ -1230,7 +1230,7 @@ void(float isAlive) Impulses_Player =
             {
                 sprint (self, "griswold -- You have full armor.\n");
                 self.armor_fire = self.armor_body = self.armor_mind = self.armorvalue = 200;
-                self.items = self.items - (self.items & (IT_ARMOR1 | IT_ARMOR2 | IT_ARMOR3)) + IT_ARMOR2;
+                self.items = self.items - (self.items & IT_ARMOR_ALL) + IT_ARMOR_FIRE;
             }
             else if (self.impulse == IMP_CHEAT_IN_FIRE)
             {
