@@ -163,6 +163,7 @@ void() Spray_Fire =
     newmis.owner = self;
     newmis.movetype = MOVETYPE_FLYMISSILE;
     newmis.solid = SOLID_BBOX;
+    newmis.alpha = 0.7;
 
     newmis.angles = vectoangles(dir);
 
