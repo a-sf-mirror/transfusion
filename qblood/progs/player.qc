@@ -274,33 +274,41 @@ void() player_light =
     if ((!self.button0 && !self.button1 && self.impulse != 12) || intermission_running || self.ammo_cells < 1)
     {
         player_run ();
+        self.weaponframe = 1;
         return;
     }
     self.weaponframe = self.weaponframe + 1;
-    if (self.weaponframe == 5)
-        self.weaponframe = 1;
+    if (self.weaponframe == 6)
+        self.weaponframe = 3;
 };
 
-void() player_light1 = [$light1, player_light2] { player_light (); };
-void() player_light2 = [$light2, player_light1] { player_light (); };
+void() player_light1 = [$light1, player_light2] {player_light (); };
+void() player_light2 = [$light2, player_light1] {player_light (); };
 
-// FIXME: add animation into the following code (for both the player and the weapon)
 void()  player_altlight1  = [$shotatt1, player_altlight2 ]
 {
     sound (self, CHAN_WEAPON, "weapons/tesla/tessuper.wav", 1, ATTN_NORM);
-    self.weaponframe=1;
+    self.weaponframe=7;
 };
-void()  player_altlight2  = [$shotatt1, player_altlight3 ] {};
-void()  player_altlight3  = [$shotatt1, player_altlight4 ] {};
-void()  player_altlight4  = [$shotatt1, player_altlight5 ] {};
-void()  player_altlight5  = [$shotatt1, player_altlight6 ] {};
-void()  player_altlight6  = [$shotatt1, player_altlight7 ] {};
-void()  player_altlight7  = [$shotatt1, player_altlight8 ] {};
-void()  player_altlight8  = [$shotatt1, player_altlight9 ] {};
-void()  player_altlight9  = [$shotatt1, player_altlight10] {};
-void()  player_altlight10 = [$shotatt1, player_altlight11] {};
-void()  player_altlight11 = [$shotatt1, player_altlight12] {};
-void()  player_altlight12 = [$shotatt1, player_run       ] { W_FireLightning (TRUE); };
+void()  player_altlight2  = [$shotatt1, player_altlight3 ] {self.weaponframe = 8;};
+void()  player_altlight3  = [$shotatt1, player_altlight4 ] {self.weaponframe = 9;};
+void()  player_altlight4  = [$shotatt1, player_altlight5 ] {self.weaponframe = 10;};
+void()  player_altlight5  = [$shotatt1, player_altlight6 ] {self.weaponframe = 11;};
+void()  player_altlight6  = [$shotatt1, player_altlight7 ] {self.weaponframe = 12;};
+void()  player_altlight7  = [$shotatt1, player_altlight8 ] {self.weaponframe = 13;};
+void()  player_altlight8  = [$shotatt1, player_altlight9 ] {self.weaponframe = 14;};
+void()  player_altlight9  = [$shotatt1, player_altlight10] {self.weaponframe = 15;};
+void()  player_altlight10 = [$shotatt1, player_altlight11] {self.weaponframe = 16;};
+void()  player_altlight11 = [$shotatt1, player_altlight12] {self.weaponframe = 17;};
+void()  player_altlight12 = [$shotatt1, player_altlight13] {self.weaponframe = 18;};
+void()  player_altlight13 = [$shotatt1, player_altlight14] {self.weaponframe = 19;};
+void()  player_altlight14 = [$shotatt1, player_altlight15] {self.weaponframe = 20;};
+void()  player_altlight15 = [$shotatt1, player_altlight16] {self.weaponframe = 21;W_FireLightning (TRUE); };
+void()  player_altlight16 = [$shotatt1, player_altlight17] {self.weaponframe = 22;};
+void()  player_altlight17 = [$shotatt1, player_altlight18] {self.weaponframe = 23;};
+void()  player_altlight18 = [$shotatt1, player_altlight19] {self.weaponframe = 24;};
+void()  player_altlight19 = [$shotatt1, player_altlight20] {self.weaponframe = 25;};
+void()  player_altlight20 = [$shotatt1, player_run       ] {};
 
 //============================================================================
 
