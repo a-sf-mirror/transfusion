@@ -593,7 +593,19 @@
 // Monsters
 //
 
-@baseclass color(220 0 0) = Monster []
+@baseclass color(220 0 0) = Monster 
+[
+    items2(choices) : "Key to drop" : 0 =
+	[
+		0 : "No key drop"
+        1 : "Skull key"
+		2 : "Eye key"
+		4 : "Fire key"
+        8 : "Dagger key"
+        16: "Spider key"
+        32: "Moon key"
+	]
+]
 
 @PointClass base(Monster) size(-4 -4 -5, 5 3 7) = monster_bat : "Bat" []
 @PointClass base(Monster) size(-6 -14 0, 34 14 62) = monster_blackcultist : "Black Cultist" []
@@ -627,6 +639,7 @@
 		16: "Spider Key" : 0
 		32: "Moon Key" : 0
 	]
+    noise(string) : "Sound when picked up"
 ]
 
 @PointClass base(Targetname)= sound_player : "Triggered sound player"
@@ -701,9 +714,16 @@
 @SolidClass = func_transparent : "Transparent wall"
 [
       alpha(integer) : "Opacity rate 0.0 to 1.0"
-      style(choices) : "Solid / Non-solid" : 1 =
+      solid(choices) : "Solid / Non-solid" : 1 =
       [
           0 : "Non-solid"
           1 : "Solid"
-	]
+	  ]
+      style(choices) : "Show up in SP / DM / CTF" : 0 =
+      [
+          0 : "Show up in all game modes"
+          1 : "Show up in Single player only"
+          2 : "Show up in Deathmatch only"
+          3 : "Show up in CTF only"
+	  ]
 ]

@@ -648,7 +648,6 @@ void() func_wall =
 A simple entity that looks solid but lets you walk through it.
 */
 void() func_illusionary =
-
 {
     self.angles = '0 0 0';
     self.movetype = MOVETYPE_NONE;
@@ -658,21 +657,40 @@ void() func_illusionary =
 };
 
 
-
 void() func_transparent =
-
 {
+    // If it's a single player wall, and it's not coop or SP, get rid of it!
+    if (self.style == 1 && gametype != GT_SINGLE_PLAYER && gametype != GT_COOPERATIVE)
+    {
+        remove(self);
+        return;
+    }
+
+    // If it's a bloodbath wall, and it's not BB or team BB, get rid of it!
+    else if (self.style == 2 && gametype != GT_BLOODBATH && gametype != GT_TEAM_BLOODBATH)
+    {
+        remove(self);
+        return;
+    }
+
+    // If it's a CTF wall, and it's not CTF, get rid of it!
+    else if (self.style == 3 && gametype != GT_CAPTURE_THE_FLAG)
+    {
+        remove(self);
+        return;
+    }
+
    	if (!self.alpha)
 	    self.alpha = 0.5;
 
 	self.angles = '0 0 0';
     self.movetype = MOVETYPE_NONE;
 
-    if (!self.style)
+    if (self.solid)
         self.solid = SOLID_BSP;
 	else
         self.solid = SOLID_NOT;
-		
+	
     setmodel (self, self.model);
     makestatic (self);	
 };
