@@ -12,11 +12,11 @@
 <!-- Introduction -->
 <div class="section">
 	<h2 id="introduction-section" class="section">Introduction</h2>
-	Transfusion II: Caleb's Awakening is our next project. Its development has just started so you
-	shouldn't expect a nice playable version until months.<br />
-	Unlike Transfusion, Caleb's Awakening is based on the Quake 2 engine, and our priority is to remake
-	the single player part of Blood this time. Don't worry though, we will also provide the same
-	multiplayer modes than those available in Transfusion.<br />
+	Transfusion II: Caleb's Awakening should be our next project. Its development is currently
+	frozen because of a lack of coders.<br />
+	Unlike Transfusion, Caleb's Awakening is based on the Quake 2 engine. The main goal is to remake
+	the single player part of Blood, althought we will surely provide the same multiplayer modes than
+	those available in Transfusion.<br />
 </div>
 
 <br />

@@ -25,7 +25,15 @@
 	<h2 id="news-section" class="section">News</h2>
 	<ul>
 		<li>
-			<span class="title">February 11, 2002:</span> (by Elric)<br />
+			<span class="title">April 2, 2003:</span> (by Elric)<br />
+			Because of a lack of coders, Awakening is set aside for some time. We now focus on improving
+			Transfusion 1. We won't support QuakeWorld anymore, neither the standard Quake engine. We will
+			use DarkPlaces exclusively, which should allow us to create a much better and polished game than
+			before. And yes, single player campaigns are planned.<br />
+			The website will be updated with fresh informations soon. Stay tuned.<p />
+		</li>
+		<li>
+			<span class="title">February 11, 2003:</span> (by Elric)<br />
 			I'm happy to announce you the official opening of the <?php ViewCvsURL ("awakening", "Awakening tree"); ?>
 			on the CVS repository! I will also upload this website to the repository; so in case someone would
 			be interested in getting the couple of PHP files I use, go visit the CVS module
@@ -39,13 +47,6 @@
 		<li>
 			<span class="title">January 13, 2003:</span> (by Elric)<br />
 			The 1.01 patch for Transfusion is out! Follow the "Files" link above to get it.<p />
-		</li>
-		<li>
-			<span class="title">December 12, 2002:</span> (by Elric)<br />
-			The Linux users who experience a segmentation fault when launching the game, right after the
-			console initialization, would be glad to know that this problem should now be fixed (thanks to
-			Tom for his help). Download the latest version of the binaries, including the engine, from the
-			snapshots directory (see link above, timestamp: 021211).<p />
 		</li>
 	</ul>
 </div>
@@ -104,16 +105,16 @@
 	topic, you may want to send a mail directly to one of the 3 project leaders:<br />
 	<ul>
 		<li>
-			<a href="mailto:darth_linux@planetblood.com">Dave "Darth Linux" Turner</a>
+			<a href="mailto:iliveagain@planetblood.com">Joe "ILiveAgain" Volante</a>
 			(Project Coordinator): any question not purely about art or programming
 		</li>
 		<li>
-			<a href="mailto:frightfan@planetblood.com">Greg "\Frightfan/" Enright</a>
-			(Lead Artist): any art / design topic and our main website
+			<a href="mailto:kazashi@users.sourceforge.net">Luke "Kazashi" Ashdown</a>
+			(Lead Artist): any art / design topic
 		</li>
 		<li>
-			<a href="mailto:elric@planetblood.com">Mathieu "Elric" Olivier</a>
-			(Lead Programmer): any programming topic and this website
+			<a href="mailto:molivier@users.sourceforge.net">Mathieu "Elric" Olivier</a>
+			(Lead Programmer): any programming topic and the websites
 		</li>
 	</ul>
 	The Transfusion Project has also a mailing list:

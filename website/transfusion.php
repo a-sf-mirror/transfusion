@@ -20,31 +20,24 @@
 	the Quake 2 engine in december 2001 and to make our Quake 1 game multiplayer-only.
 	The game name has changed a second time to "Transfusion" after we talked with Infogrames
 	about the Blood trademark and copyrights.<br />
-	Transfusion is both a mod for Quake and a standalone game. You can use it as any
-	Quake mod, or you can use the binaries provided with our releases to launch the
-	game from a completely separate directory. You just don't need Quake to play
-	Transfusion.<br /> In fact, a lot of versions of the Quake engine will allow you
-	to run it like a Quake mod, even without the Quake data since we don't use any
-	file from the original game. So if you don't like our customized engine, chances are
-	that you can use your favorite one without any major problem. This is not the case of
-	id Software official binaries though.<br />
+	Transfusion is a standalone game, but it can also be played as a Quake 1 / QW mod
+	until version 1.01 included. If you have one of these old versions and wants to do so,
+	please take a look at the manual provided with each release for the detailed
+	instructions.<br />
 </div>
 
 <!-- The game code -->
 <div class="section">
 	<h2 id="gamecode-section" class="section">The game code</h2>
-	Quake 1 uses either "progs.dat" for NQ or "qwprogs.dat" for QW as the
-	bytecode for storing the game behaviour. Each of them can be created with
-	BQCC and our source code, which can be found in the "progs" directory. It is
-	composed of plain text files with a ".qc" or ".qh" suffix. The whole source is
-	indented at 4 columns with spaces (no tabs) and quite well commented.<br />
+	Quake 1 uses "progs.dat" as the	bytecode for storing the game behaviour. This file is
+	created thanks to BQCC and our source code, which can be found in the "progs" directory.
+	The code is composed of plain text files with a ".qc" or ".qh" suffix. The whole source
+	is indented at 4 columns with spaces (no tabs) and quite well commented.<br />
 	It incorporates code from <a href="http://www.inside3d.com/frikbot/">FrikBotX</a>.
 	You can disable bot support at compile time with the NO_FRIKBOT preprocessor define
-	(add "-d NO_FRIKBOT" at the BQCC command line). We provide this option because of
-	stability problems we had previously with the bot code: the game code tended to crash
-	easily when players entered the game after bots. This problem is now fixed, but if you
-	want a bot-free game code for some reason, and probably also gain a few FPS in the
-	process, you can build it very easily.<br />
+	(add "-d NO_FRIKBOT" at the BQCC command line). If you want a bot-free game code for
+	some reason, and probably also gain a few FPS in the process, you can rebuild it very
+	easily.<br />
 </div>
 
 <!-- BQCC -->
@@ -52,9 +45,10 @@
 	<h2 id="bqcc-section" class="section">BQCC (Bloody QuakeC Compiler)</h2>
 	BQCC is our own QuakeC compiler. Its source code is based on MrElusive's
 	QuakeC Compiler v1.4. We choosed MEQCC because of its C-style
-	preprocessor which allows us to build both our NQ game code and our
-	QW game code from the same source files. By default, BQCC compiles
-	for NQ. Use the command line switch "-qw" to make it compile for QW.
+	preprocessor which allowed us to build both our NQ game code and our
+	QW game code from the same source files. Transfusion no longer supports
+	QW, but this feature has survived. By default, BQCC compiles for NQ, but
+	the command line switch "-qw" makes it compile for QW, using "qwprogs.src".
 	For more details and the list of the other features, take a look at
 	the files "readme.txt" and "meqcc.txt" in the bqcc directory.<br />
 	There aren't many more things to say about it. It works fine for us,
@@ -72,16 +66,10 @@
 <!-- The engine -->
 <div class="section">
 	<h2 id="engine-section" class="section">The engine</h2>
-	Since the qBlood Project has decided to switched to Quake 2 engine,
-	Transfusion won't really have its own engine. We will provide a customized
-	version of the NQ engine though, with a modified key binding menu,
-	a updated map list, "bb" as the default game folder, and a few other features.<br />
-	Initially, we planned to use the very promising
-	<a href="http://twilight.sourceforge.net/">Project Twilight</a> engine as our
-	code base. Unfortunately, this project is still under development and hasn't
-	yet achieved the stable and mature state that is necessary for us to work
-	with it. It is the reason why we finally deciced to set our choice on
-	DarkPlaces. LordHavoc, its creator, offered us to merge the necessary changes
+	As mentioned above, Transfusion supported any Quake 1 / QuakeWorld compatible
+	engine, up to version 1.01. We have now decided to focus on what a lot of
+	people consider to be the best Quake1-based engine out there: DarkPlaces.<br />
+	LordHavoc, its creator, offered us to merge the necessary changes
 	for Transfusion into DarkPlaces main code, and we accepted. Its source code is
 	maintained on the Project Twilight CVS repository at
 	<a href="http://icculus.org/">icculus.org</a>, although DarkPlaces has its own
