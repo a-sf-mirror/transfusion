@@ -378,8 +378,11 @@ void() W_ChargeNormal =
             W_Attack ();
             return;
         }
-        if (altfire && self.weapon == IT_TNT)
+        if (altfire)
         {
+            if (self.weapon == IT_SPRAY_CAN)
+                self.tnt_type = TNT_TYPE_ALTFIRE;
+
             self.charge = 0;    // Make sure it's dropped, not thrown
             W_Attack ();
             return;
@@ -923,8 +926,10 @@ void() Bomb_Fire =
             newmis.dmg       = DMG_SPRAY_CAN;
             newmis.model     = "progs/grd_aero.mdl";
             newmis.angles    = '0 -300 0';
-            newmis.avelocity = '150 150 150';
-            //setorigin (newmis, self.origin + v_forward * 35 + '0 0 20' + v_right * 8);
+            if (newmis.style == TNT_TYPE_NORMAL)
+                newmis.avelocity = '150 150 150';
+            else
+                newmis.avelocity = '0 150 150';
 
             self.weaponframe = 0;  // reset the weapon view
         }
