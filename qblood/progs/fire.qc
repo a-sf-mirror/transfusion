@@ -206,14 +206,6 @@ void(entity ent) KillBurner =
 };
 
 //------------------------------------------------------------------------//
-//  This checks if 'ent' is on fire and burning.
-//------------------------------------------------------------------------//
-float(entity ent) IsBurning =
-{
-    return ent.burner;
-};
-
-//------------------------------------------------------------------------//
 //  These animate the embers that rise from a burning entity.
 //------------------------------------------------------------------------//
 void()  m_ember1 =[   $ember1,    m_ember2] {};
@@ -534,36 +526,4 @@ void() BecomeOldExplosion =
 
     self.nextthink  = time + 0.1;
     self.think      = OldExThink;
-};
-
-
-//==========================================================================
-//  Burn Trigger
-
-void() burn_touch =
-{
-    if (other.burn_time <= time)
-    {
-        other.burn_time = time + 0.1;
-        if (other.takedamage)
-            FireDamage (other, self, self, DF_FIRE);
-    }
-
-    // Once an object moves into the field, make sure it takes more hits
-    // if it stops moving inside the field.
-    force_retouch = 2;
-};
-
-/*QUAKED trigger_burn (.5 .5 .5) ?
-This variable-sized trigger is similar to 'trigger_hurt'.
-Any object touching this will suffer burn damage for each
-frame the object stays in the triggers.  Fire-resistant
-monsters like stone gargoyles are immune to this effect.
-This should be placed above stoves, grills, and the like.
-(e.g., the rat burgers stand in e1m4 -- Dark Carnival.)
-*/
-void() trigger_burn =
-{
-    InitTrigger ();
-    self.touch = burn_touch;
 };

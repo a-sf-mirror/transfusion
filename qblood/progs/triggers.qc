@@ -466,7 +466,7 @@ void() info_teleport_destination =
     // this does nothing, just serves as a target spot
     self.mangle = self.angles;
     self.angles = '0 0 0';
-    self.model = "";
+    self.model = string_null;
     self.origin = self.origin + '0 0 27';
     if (!self.targetname)
         objerror ("no targetname");

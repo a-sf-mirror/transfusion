@@ -64,19 +64,6 @@ void(vector org, vector vel, float damage) NQ_SpawnBlood =
 };
 #endif
 
-/*
-================
-spawn_touchblood
-================
-*/
-void(float damage) spawn_touchblood =
-{
-    local vector    vel;
-
-    vel = wall_velocity () * 0.2;
-    SpawnBlood (self.origin + vel*0.01, vel, damage);
-};
-
 
 /*
 ================
@@ -596,26 +583,6 @@ void(entity from, float damage) LightningHit =
     T_Damage (trace_ent, from, from, damage, DF_FIRE, string_null);
 };
 
-/*
-=================
-LightningDamage
-=================
-*/
-void(vector p1, vector p2, entity from, float damage) LightningDamage =
-{
-//  PM:  Function mostly rewritten.
-//
-//  What did the old code suppose to do?  Hit three different targets
-//  in row ala railgun?  Make the beam wider?  Whatever it was supposed
-//  to do, it didn't work.  Therefore, I simplified the code.
-//  Also, the +400 up vector to 'other' code in player vs. player
-//  Thunderbolt battles doesn't work either, so I removed it.
-
-    traceline (p1, p2, FALSE, self);
-    if (trace_ent.takedamage)
-        LightningHit (from, damage);
-};
-
 
 //=============================================================================
 
@@ -849,7 +816,7 @@ void() W_SetCurrentAmmo =
     else
     {
         self.currentammo = 0;
-        self.weaponmodel = "";
+        self.weaponmodel = string_null;
     }
 };
 

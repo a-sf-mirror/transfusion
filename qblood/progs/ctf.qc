@@ -176,7 +176,7 @@ void() CTF_FlagTouch =
         self.owner.effects = self.owner.effects | EF_FLAG1;
     else // must be other team
         self.owner.effects = self.owner.effects | EF_FLAG2;
-    setmodel(self, "");  // Make the flag desappear. The EF_FLAG? effect will show it on the client nevertheless
+    setmodel (self, string_null);  // Make the flag desappear. The EF_FLAG? effect will show it on the client
     #endif
 
     p = find(world, classname, "player");

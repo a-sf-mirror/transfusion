@@ -578,6 +578,7 @@
 	noise(string) : "Sound file"
 ]
 
+@PointClass = proximity_mine : "Invisible Proximity Mine" []
 @PointClass size(-16 -16 0, 16 16 32) base(Targetname) = misc_explobox2 : "TNT Barrel"
 [
 	dmg(integer) : "Damage" : 240

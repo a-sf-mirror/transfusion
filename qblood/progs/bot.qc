@@ -1095,12 +1095,12 @@ void(entity bot) BotDisconnect =
         // must remove it's entry in the rankings
         // Quake engine sets all fields to 0, can only do the most important here
         self.b_frags = self.frags = 0;
-        self.netname = "";
-        self.classname = "";
+        self.netname = string_null;
+        self.classname = string_null;
         self.health = 0;
         self.items = 0;
         self.armorvalue = 0;
-        self.weaponmodel = "";
+        self.weaponmodel = string_null;
         self.b_pants = 0;
         self.b_shirt = 0;
         self.ammo_shells = self.ammo_nails = self.ammo_rockets = self.ammo_cells = 0;

@@ -175,20 +175,6 @@ void(entity who, float itype, float fuel) InvenSet =
     }
 };
 
-// This recharges all items in inventory except first-aid back to 100.
-// Should be used after level change.
-void() InvenRecharge =
-{
-    if (InvenFuel (S_DIVING_SUIT))
-        InvenSet (self, S_DIVING_SUIT, 100);
-    if (InvenFuel (S_CRYSTAL_BALL))
-        InvenSet (self, S_CRYSTAL_BALL, 100);
-    if (InvenFuel (S_BEAST_VISION))
-        InvenSet (self, S_BEAST_VISION, 100);
-    if (InvenFuel (S_JUMP_BOOTS))
-        InvenSet (self, S_JUMP_BOOTS, 100);
-};
-
 
 //========================================================================
 //  Item Usage

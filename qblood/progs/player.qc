@@ -180,7 +180,7 @@ void(entity player, entity attacker) Player_BrinkOfDeath =
     self = player;
     player_bod1 ();
     self = oself;
-    player.weaponmodel = "";
+    player.weaponmodel = string_null;
 
     player.t_length = time + 15;  // the effect will last 15 sec
     sound (player, CHAN_VOICE, "thevoice/vo15.wav", 1, ATTN_NONE);
@@ -724,7 +724,7 @@ void() PlayerDie =
     self.radsuit_finished = 0;
     self.modelindex = modelindex_player;    // don't use eyes
 
-    self.weaponmodel="";
+    self.weaponmodel = string_null;
     self.view_ofs = '0 0 -8';
     self.deadflag = DEAD_DYING;
     self.solid = SOLID_NOT;

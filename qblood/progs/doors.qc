@@ -175,9 +175,9 @@ void() door_use =
     //dprint ("door_use\n");
     local entity oself;
 
-    self.message = "";          // door message are for touch only
-    self.owner.message = "";
-    self.enemy.message = "";
+    self.message = string_null;          // door message are for touch only
+    self.owner.message = string_null;
+    self.enemy.message = string_null;
 
     oself = self;
     self = self.owner;
@@ -232,7 +232,7 @@ void() door_touch =
 
     self.owner.attack_finished = time + 2;
 
-    if (self.owner.message != "")
+    if (self.owner.message != string_null)
     {
         centerprint (other, self.owner.message);
         sound (other, CHAN_VOICE, "bludbath/message.wav", 1, ATTN_NORM);
@@ -353,7 +353,7 @@ void() LinkDoors =
             starte.health = self.health;
         if (self.targetname)
             starte.targetname = self.targetname;
-        if (self.message != "")
+        if (self.message != string_null)
             starte.message = self.message;
 
         t = find (t, classname, self.classname);

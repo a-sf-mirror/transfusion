@@ -281,7 +281,7 @@ void(entity player) BecomeObserver =
     setmodel (player, "progs/eyes.mdl");
     setsize (player, '-10 -10 -20', '10 10 28');
 
-    player.weaponmodel = "";
+    player.weaponmodel = string_null;
     player.weaponframe = 0;
     player.weapon      = 0;
     player.currentammo = 0;

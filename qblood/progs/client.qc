@@ -164,12 +164,12 @@ void() GotoNextMap =
     // QW supports a configurable map list
     // see if the current map exists as a serverinfo / localinfo var
     newmap = infokey(world, mapname);
-    if (newmap != "")
+    if (newmap != string_null)
         changelevel (newmap);
     else
     #endif
     {
-        if (nextmap == string_null || nextmap == "")
+        if (nextmap == string_null)
             nextmap = mapname;
         changelevel (nextmap);
     }
@@ -981,7 +981,7 @@ void() PlayerPreThink =
 
     makevectors (self.v_angle);     // is this still used
 
-    self.deathtype = "";
+    self.deathtype = string_null;
 
     CheckRules ();
     WaterMove ();

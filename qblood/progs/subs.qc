@@ -84,7 +84,7 @@ void() InitTrigger =
     setmodel (self, self.model);    // set size and link into world
     self.movetype = MOVETYPE_NONE;
     self.modelindex = 0;
-    self.model = "";
+    self.model = string_null;
 };
 
 /*
@@ -95,16 +95,6 @@ calculate self.velocity and self.nextthink to reach dest from
 self.origin traveling at speed
 ===============
 */
-void(entity ent, vector tdest, float tspeed, void() func) SUB_CalcMoveEnt =
-{
-local entity    stemp;
-    stemp = self;
-    self = ent;
-
-    SUB_CalcMove (tdest, tspeed, func);
-    self = stemp;
-};
-
 void(vector tdest, float tspeed, void() func) SUB_CalcMove =
 {
 local vector    vdestdelta;
@@ -210,15 +200,6 @@ local float     len, traveltime;
     self.think = SUB_CalcAngleMoveDone;
 };
 
-void(entity ent, vector destangle, float tspeed, void() func) SUB_CalcAngleMoveEnt =
-{
-local entity        stemp;
-    stemp = self;
-    self = ent;
-    SUB_CalcAngleMove (destangle, tspeed, func);
-    self = stemp;
-};
-
 
 //=============================================================================
 
@@ -275,7 +256,7 @@ void() SUB_UseTargets =
 //
 // print the message
 //
-    if (activator.classname == "player" && self.message != "")
+    if (activator.classname == "player" && self.message != string_null)
     {
         centerprint (activator, self.message);
         if (!self.noise)

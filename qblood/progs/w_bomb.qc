@@ -301,7 +301,7 @@ void() ShowThrowMeter =
     else if (self.charge == 1)
         text = "ž                   ";
     else
-        text = "";
+        text = string_null;
 
     centerprint (self, text);
 };

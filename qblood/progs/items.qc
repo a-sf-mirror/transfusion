@@ -845,7 +845,7 @@ void() powerup_touch =
 
 void() item_powerup =
 {
-    if (self.noise == "" || self.noise == string_null)
+    if (self.noise == string_null)
         self.noise = "items/pickup.wav";
 
     self.touch = powerup_touch;
@@ -1498,8 +1498,8 @@ void() weapon_grenadelauncher =
 {
     self.model = "progs/g_rock.mdl";
     self.netname = "Case of TNT";
-    setsize (self, '-16 -16 0', '16 16 56');
     item_tnt_common ();
+    setsize (self, '-16 -16 0', '16 16 56');
 };
 
 // TNT Bundle
@@ -1507,8 +1507,8 @@ void() item_tnt =
 {
     self.model = "progs/i_tnt.mdl";
     self.netname = "Bundle of TNT";
-    setsize (self, '-8 -8 0', '8 8 32');
     item_tnt_common ();
+    setsize (self, '-8 -8 0', '8 8 32');
 };
 
 // Proximity bombs
