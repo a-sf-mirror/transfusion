@@ -533,11 +533,9 @@ $origin 0 0 0
 $base base
 $skin skin
 $framegroupstart
-$frame  frame1 0.10
-$frame  frame2 0.10
-$frame  frame3 0.10
-$frame  frame4 0.10
-$frame  frame5 0.10
+$frame  frame1 0.33
+$frame  frame2 0.33
+$frame  frame3 0.33
 $framegroupend
 
 $modelname bolt //tesla cannon single fire shot
