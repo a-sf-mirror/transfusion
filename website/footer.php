@@ -1,7 +1,7 @@
 				<!-- Acknowledgments -->
 				<div class="section">
 					<span id="ack" class="footnotes-title">Acknowledgments:</span><br />
-					Blood is a trademark of Infogrames.<br />
+					Blood is a trademark of Atari (formerly Infogrames).<br />
 					This page is generously hosted by:<br />
 					<a href="http://sourceforge.net/">
 						<img style="border:0" src="http://sourceforge.net/sflogo.php?group_id=22136"

@@ -19,7 +19,7 @@
 	just "qBlood", it has been renamed to "BloodBath" when we decided to switch to
 	the Quake 2 engine in december 2001 and to make our Quake 1 game multiplayer-only.
 	The game name has changed a second time to "Transfusion" after we talked with Infogrames
-	about the Blood trademark and copyrights.<br />
+	(now Atari) about the Blood trademark and copyrights.<br />
 	Transfusion is a standalone game, but it can also be played as a Quake 1 / QW mod
 	until version 1.01 included. If you have one of these old versions and wants to do so,
 	please take a look at the manual provided with each release for the detailed

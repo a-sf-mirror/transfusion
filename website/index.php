@@ -25,6 +25,12 @@
 	<h2 id="news-section" class="section">News</h2>
 	<ul>
 		<li>
+			<span class="title">August 13, 2003:</span> (by Elric)<br />
+			We are not dead yet! Some recent snapshots have been uploaded and the work on the single player
+			modes reintegration continue. The monsters may be back soon, and nearly all models are in MD3
+			format now. The project seems to be back on tracks, so let's roll!<p />
+		</li>
+		<li>
 			<span class="title">April 2, 2003:</span> (by Elric)<br />
 			Because of a lack of coders, Awakening is set aside for some time. We now focus on improving
 			Transfusion 1. We won't support QuakeWorld anymore, neither the standard Quake engine. We will
@@ -43,10 +49,6 @@
 			<span class="title">January 21, 2003:</span> (by Elric)<br />
 			The SDK for Transfusion 1.01 has finally been uploaded. It is available in 2 formats:
 			a Win32 installer and a Linux ZIP archive. You can get it from the "Files" page, as usual.<p />
-		</li>
-		<li>
-			<span class="title">January 13, 2003:</span> (by Elric)<br />
-			The 1.01 patch for Transfusion is out! Follow the "Files" link above to get it.<p />
 		</li>
 	</ul>
 </div>
