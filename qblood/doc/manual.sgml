@@ -6,7 +6,7 @@
    <title> Transfusion manual
    <author> Mathieu Olivier and Dave Turner
       <tt>&lt;{elric,darth_linux}@planetblood.com&gt;</tt>
-   <date>v1.1cvs, August 22, 2003
+   <date>v1.1cvs, August 23, 2003
    <abstract>
       This manual covers installation and usage of the
       <ref id="links" name="Transfusion"> game.
@@ -129,7 +129,7 @@
          <itemize>
             <item> impulses 1 to 10: select a weapon
             <item> impulses 21 and 22: cycle to next/previous weapon
-            <item> impulses 23 and 24: select previous/next item
+            <item> impulses 23 and 24: select next/previous item
             <item> impulse 25: use the currently selected item
             <item> impulse 26: view the current value of the next armor type
             <item> impulse 27: identify the player you're aiming at
@@ -161,10 +161,10 @@
             <item> impulse 254: Give <ref id="akimbo" name="Guns Akimbo">
             <item> impulse 255: Dump all entities stats to console (for debugging)
          </itemize>
-         
+
          Lastly, the DarkPlaces engine provides us with a few extra commands,
          that you use the same way you use impulses (at the console, or by
-         binding them to keys). In Transfusion, we use the following ones: 
+         binding them to keys). In Transfusion, we use the following ones:
          <itemize>
             <item> +button3: secondary fire
             <item> +button4: use object (you must be close enough)
@@ -464,7 +464,7 @@
          is then: "transfusion +map bb3 +set g_warmup 15 +restart". With the
          addition of this last command, you'll restart the map immediately, and
          so you'll have a warmup.
-         
+
          With the engine we provide with Transfusion, it's even more
          complicated (yes, it's possible). To put it in a nutshell, DarkPlaces
          doesn't launch a map when it executes the "map" command. Instead, it

@@ -28,6 +28,10 @@
 //
 @baseclass = Targetname [ targetname(target_source) : "Name" ]
 @baseclass = Target [ target(target_destination) : "Target" ]
+@baseclass = Usable
+[
+	spawnflags(flags) = [ 1024 : "Usable by player" : 1 ]
+]
 
 
 //
@@ -211,9 +215,8 @@
 //
 // Moving things
 //
-@baseclass base(Targetname) = Door
+@baseclass base(Targetname, Usable) = Door
 [
-	speed(integer) : "Speed" : 100
 	sounds(choices) : "Sound" : 1 =
 	[
 		1: "Stone"
@@ -225,14 +228,15 @@
 	[
 		-1 : "Stays open"
 	]
-	lip(integer) : "Lip"
-	dmg(integer) : "Damage inflicted when blocked" : 0
+	dmg(integer) : "Damage inflicted when blocked"
 	message(string) : "Message if triggered"
-	health(integer) : "Health (shoot open)" : 0
 ]
 
 @SolidClass base(Door) = func_door : "Basic door"
 [
+	speed(integer) : "Speed"
+	lip(integer) : "Lip"
+	health(integer) : "Health (shoot open)" : 0
 	spawnflags(flags) =
 	[
 		1 : "Starts Open" : 0
@@ -384,11 +388,7 @@
 @PointClass base(Weapon) = weapon_tommygun : "Tommy Gun" []
 @PointClass base(Weapon) = weapon_tnt : "TNT"
 [
-	spawnflags(choices) : "Type" : 0 =
-	[
-		0: "Bundle of TNT"
-		1: "Case of TNT"
-	]
+	spawnflags(flags) = [ 1: "Case of TNT" : 0 ]
 ]
 @PointClass base(Weapon) = weapon_napalmlauncher : "Napalm Launcher" []
 @PointClass base(Weapon) = weapon_teslacannon : "Tesla Cannon" []
@@ -408,19 +408,11 @@
 @PointClass base(Ammo) = ammo_flares : "Box of Flares" []
 @PointClass base(Ammo) size(-16 -16 0, 16 16 56) = ammo_shell : "Shotgun Shells"
 [
-	spawnflags(choices) : "Type" : 0 =
-	[
-		0: "4 shotgun shells"
-		1: "Box of shotgun shells"
-	]
+	spawnflags(flags) = [ 1: "Box of shotgun shells" : 1 ]
 ]
 @PointClass base(Ammo) = ammo_bullets : "Bullets"
 [
-	spawnflags(choices) : "Type" : 0 =
-	[
-		0: "A few bullets"
-		1: "Full drum of bullets"
-	]
+	spawnflags(flags) = [ 1: "Full drum of bullets" : 1 ]
 ]
 @PointClass base(Ammo) = ammo_gas : "Gasoline Can" []
 @PointClass base(Ammo) = ammo_batteries : "Battery" []
@@ -557,16 +549,16 @@
 // Misc
 //
 
-@PointClass size(-16 -16 -24, 16 16 32) = Key
+@PointClass size(-16 -16 -24, 16 16 32) = item_key : "Key"
 [
-	spawnflags(choices) : "Type" : 1 =
+	spawnflags(flags) =
 	[
-		1: "Skull Key"
-		2: "Eye Key"
-		4: "Fire Key"
-		8: "Dagger Key"
-		16: "Spider Key"
-		32: "Moon Key"
+		1: "Skull Key" : 1
+		2: "Eye Key" : 0
+		4: "Fire Key" : 0
+		8: "Dagger Key" : 0
+		16: "Spider Key" : 0
+		32: "Moon Key" : 0
 	]
 ]
 
@@ -583,11 +575,10 @@
 
 @PointClass size(-16 -16 0, 16 16 56) = item_health : "Health pak"
 [
-	spawnflags(choices) : "Type" : 1 =
+	spawnflags(flags) =
 	[
-		1 : "Life Essence"
-		2 : "Life Seed"
-		0 : "Medicine Patch"
+		1 : "Life Essence" : 1
+		2 : "Life Seed" : 0
 	]
 ]
 

@@ -203,12 +203,32 @@ void() player_remotehalfdraw1 = [$attack2, player_remotehalfdraw2] { self.weapon
 void() player_remotehalfdraw2 = [$attack2, player_remotehalfdraw3] { self.weaponframe = $remote_drawhlf2; };
 void() player_remotehalfdraw3 = [$attack2, player_run            ] { self.weaponframe = $remote_drawhlf3; };
 
+// Remote detonator 2nd half draw (just the remote, no bomb)
+// WARNING: currently, we don't have the frames in the model, so this is a hack;
+// in fact, we use the remote holster animation, but played in reverse order
+void() player_remotedrawremo1 = [$attack2, player_remotedrawremo2] { self.weaponframe = $remote_hlsthlf3; };
+void() player_remotedrawremo2 = [$attack2, player_remotedrawremo3] { self.weaponframe = $remote_hlsthlf2; };
+void() player_remotedrawremo3 = [$attack2, player_remotedrawremo4] { self.weaponframe = $remote_hlsthlf1; };
+void() player_remotedrawremo4 =
+{
+    self.weaponframe = $remote_throw7;
+    self.player_state = PS_HOLD_FIRE;
+
+    player_run ();
+};
+
 // Remote detonator normal draw
 void() player_remotedraw1 = [$attack2, player_remotedraw2] { self.weaponframe = $remote_draw1; };
 void() player_remotedraw2 = [$attack2, player_remotedraw3] { self.weaponframe = $remote_draw2; };
 void() player_remotedraw3 = [$attack2, player_run        ] { self.weaponframe = $remote_draw3; };
 
-// Remote detonator holster
+// Remote detonator half holster
+void() player_remotehlsthlf1 = [$attack2, player_remotehlsthlf2] { self.weaponframe = $remote_hlsthlf1; };
+void() player_remotehlsthlf2 = [$attack2, player_remotehlsthlf3] { self.weaponframe = $remote_hlsthlf2; };
+void() player_remotehlsthlf3 = [$attack2, player_remotehlsthlf4] { self.weaponframe = $remote_hlsthlf3; };
+void() player_remotehlsthlf4 = [$attack2, player_run           ] { W_DrawWeapon (self.newweapon); };
+
+// Remote detonator normal holster
 void() player_remoteholster1 = [$attack2, player_remoteholster2] { self.weaponframe = $remote_holster1; };
 void() player_remoteholster2 = [$attack2, player_remoteholster3] { self.weaponframe = $remote_holster2; };
 void() player_remoteholster3 = [$attack2, player_remoteholster4] { self.weaponframe = $remote_holster3; };
@@ -346,16 +366,6 @@ void() BuildThrowMeter =
 void() player_lightcan1;
 void() W_ChargeNormal =
 {
-    local   float   altfire;
-
-    if (self.button3)
-    {
-        altfire = TRUE;
-        self.impulse = IMP_NONE;
-    }
-    else
-        altfire = FALSE;
-
     // Check if player is holding lit dynamite or spray can
     if (self.tnt_time)
     {
@@ -381,7 +391,7 @@ void() W_ChargeNormal =
             W_Attack ();
             return;
         }
-        if (altfire)
+        if (self.button3)
         {
             if (self.weapon == IT_SPRAY_CAN)
                 self.tnt_type = TNT_TYPE_ALTFIRE;
@@ -412,15 +422,15 @@ void() W_ChargeNormal =
 
     // Dynamite is not lit, so check for ignition.  If either button is
     // held, start the fuse
-    if ((self.button0 && self.weapon == IT_TNT) || altfire)
+    if ((self.button0 && self.weapon == IT_TNT) || self.button3)
     {
-        if (self.button0)
+        if (self.button0 && self.weapon == IT_TNT)
         {
             BuildThrowMeter ();
             self.tnt_type = TNT_TYPE_NORMAL;
             player_lighttnt1 ();
         }
-        else // if (altfire)
+        else // if (self.button3)
         {
             self.player_state = PS_HOLD_FIRE;
 
@@ -446,16 +456,6 @@ void() W_ChargeNormal =
 // This controls charging and firing of the dynamite variants
 void() W_ChargeBomb =
 {
-    local   float   altfire;
-
-    if (self.button3)
-    {
-        altfire = TRUE;
-        self.impulse = IMP_NONE;
-    }
-    else
-        altfire = FALSE;
-
     if (self.button0)
     {
         BuildThrowMeter ();
@@ -467,7 +467,7 @@ void() W_ChargeBomb =
     }
 
     // Altfire -> drop the bomb at the current position
-    if (altfire)
+    if (self.button3)
     {
         sprint (self, "Bomb dropped\n");
         self.charge = 0;    // Make sure it's dropped, not thrown
@@ -1118,6 +1118,9 @@ void() Remote_Draw =
         self.player_state = PS_DRAW;  // we didn't pass through W_DrawWeapon
         player_remotehalfdraw1 ();
     }
+    // If we just have the remote (no more bombs)
+    else if (!self.currentammo)
+        player_remotedrawremo1 ();
     else
         player_remotedraw1 ();
 };
@@ -1133,7 +1136,12 @@ Holster code for the remote detonator
 void() Remote_Holster =
 {
     self.attack_finished = time + 0.4;
-    player_remoteholster1 ();
+
+    // If we have just the remote in hand
+    if (self.player_state == PS_HOLD_FIRE)
+        player_remotehlsthlf1 ();
+    else
+        player_remoteholster1 ();
 };
 
 
