@@ -51,46 +51,46 @@ $frame leech_holster1 leech_holster2 leech_holster3
 // ------------ Player related code ---------- //
 
 // Normal fire
-void() player_leech1  = [$shotatt1, player_leech2 ]
+void() player_leech1  = [$attack1, player_leech2 ]
 {
     sound (self, CHAN_WEAPON, "weapons/lifelech/laltfr1.wav", 1, ATTN_NORM);
     self.weaponframe = $leech_fire1;
 };
-void() player_leech2  = [$rockatt2, player_leech3 ] { self.weaponframe = $leech_fire2;  };
-void() player_leech3  = [$rockatt3, player_leech4 ] { self.weaponframe = $leech_fire3;  };
-void() player_leech4  = [$rockatt4, player_leech5 ] { self.weaponframe = $leech_fire4;  };
-void() player_leech5  = [$rockatt5, player_leech6 ] { self.weaponframe = $leech_fire5;  Leech_BallFire (); };
-void() player_leech6  = [$rockatt1, player_leech7 ] { self.weaponframe = $leech_fire6;  };
-void() player_leech7  = [$rockatt2, player_leech8 ] { self.weaponframe = $leech_fire7;  };
-void() player_leech8  = [$rockatt3, player_leech9 ] { self.weaponframe = $leech_fire8;  Leech_BallFire (); };
-void() player_leech9  = [$rockatt4, player_leech10] { self.weaponframe = $leech_fire9;  };
-void() player_leech10 = [$rockatt5, player_leech11] { self.weaponframe = $leech_fire10; };
-void() player_leech11 = [$rockatt1, player_leech12] { self.weaponframe = $leech_fire11; Leech_BallFire (); };
-void() player_leech12 = [$rockatt2, player_leech13] { self.weaponframe = $leech_fire12; };
-void() player_leech13 = [$rockatt3, player_leech14] { self.weaponframe = $leech_fire13; };
-void() player_leech14 = [$rockatt4, player_leech15] { self.weaponframe = $leech_fire14; Leech_BallFire (); };
-void() player_leech15 = [$rockatt5, player_leech16] { self.weaponframe = $leech_fire15; };
-void() player_leech16 = [$rockatt1, player_leech17] { self.weaponframe = $leech_fire16; Leech_BallFire (); };
-void() player_leech17 = [$rockatt2, player_leech18] { self.weaponframe = $leech_fire17; };
-void() player_leech18 = [$rockatt3, player_leech19] { self.weaponframe = $leech_fire18; };
-void() player_leech19 = [$rockatt4, player_leech20] { self.weaponframe = $leech_fire19; Leech_BallFire (); };
-void() player_leech20 = [$rockatt5, player_leech21] { self.weaponframe = $leech_fire20; };
-void() player_leech21 = [$rockatt1, player_leech22] { self.weaponframe = $leech_fire21; };
-void() player_leech22 = [$rockatt2, player_leech23] { self.weaponframe = $leech_fire22; Leech_BallFire (); };
-void() player_leech23 = [$rockatt3, player_leech24] { self.weaponframe = $leech_fire23; };
-void() player_leech24 = [$rockatt4, player_leech25] { self.weaponframe = $leech_fire24; };
-void() player_leech25 = [$rockatt5, player_run    ] { self.weaponframe = $leech_fire25; };
+void() player_leech2  = [$attack1, player_leech3 ] { self.weaponframe = $leech_fire2;  };
+void() player_leech3  = [$attack1, player_leech4 ] { self.weaponframe = $leech_fire3;  };
+void() player_leech4  = [$attack1, player_leech5 ] { self.weaponframe = $leech_fire4;  };
+void() player_leech5  = [$attack2, player_leech6 ] { self.weaponframe = $leech_fire5;  Leech_BallFire (); };
+void() player_leech6  = [$attack2, player_leech7 ] { self.weaponframe = $leech_fire6;  };
+void() player_leech7  = [$attack2, player_leech8 ] { self.weaponframe = $leech_fire7;  };
+void() player_leech8  = [$attack1, player_leech9 ] { self.weaponframe = $leech_fire8;  Leech_BallFire (); };
+void() player_leech9  = [$attack1, player_leech10] { self.weaponframe = $leech_fire9;  };
+void() player_leech10 = [$attack1, player_leech11] { self.weaponframe = $leech_fire10; };
+void() player_leech11 = [$attack2, player_leech12] { self.weaponframe = $leech_fire11; Leech_BallFire (); };
+void() player_leech12 = [$attack2, player_leech13] { self.weaponframe = $leech_fire12; };
+void() player_leech13 = [$attack2, player_leech14] { self.weaponframe = $leech_fire13; };
+void() player_leech14 = [$attack1, player_leech15] { self.weaponframe = $leech_fire14; Leech_BallFire (); };
+void() player_leech15 = [$attack1, player_leech16] { self.weaponframe = $leech_fire15; };
+void() player_leech16 = [$attack2, player_leech17] { self.weaponframe = $leech_fire16; Leech_BallFire (); };
+void() player_leech17 = [$attack2, player_leech18] { self.weaponframe = $leech_fire17; };
+void() player_leech18 = [$attack2, player_leech19] { self.weaponframe = $leech_fire18; };
+void() player_leech19 = [$attack1, player_leech20] { self.weaponframe = $leech_fire19; Leech_BallFire (); };
+void() player_leech20 = [$attack1, player_leech21] { self.weaponframe = $leech_fire20; };
+void() player_leech21 = [$attack1, player_leech22] { self.weaponframe = $leech_fire21; };
+void() player_leech22 = [$attack2, player_leech23] { self.weaponframe = $leech_fire22; Leech_BallFire (); };
+void() player_leech23 = [$attack2, player_leech24] { self.weaponframe = $leech_fire23; };
+void() player_leech24 = [$attack2, player_leech25] { self.weaponframe = $leech_fire24; };
+void() player_leech25 = [$attack2, player_run    ] { self.weaponframe = $leech_fire25; };
 
 // Normal draw
-void() player_leechdraw1 = [$rockatt1, player_leechdraw2] { self.weaponframe = $leech_draw1; };
-void() player_leechdraw2 = [$rockatt1, player_leechdraw3] { self.weaponframe = $leech_draw2; };
-void() player_leechdraw3 = [$rockatt1, player_run       ] { self.weaponframe = $leech_draw3; };
+void() player_leechdraw1 = [$attack1, player_leechdraw2] { self.weaponframe = $leech_draw1; };
+void() player_leechdraw2 = [$attack1, player_leechdraw3] { self.weaponframe = $leech_draw2; };
+void() player_leechdraw3 = [$attack1, player_run       ] { self.weaponframe = $leech_draw3; };
 
 // Normal holster
-void() player_leechholster1 = [$rockatt1, player_leechholster2] { self.weaponframe = $leech_holster1; };
-void() player_leechholster2 = [$rockatt1, player_leechholster3] { self.weaponframe = $leech_holster2; };
-void() player_leechholster3 = [$rockatt1, player_leechholster4] { self.weaponframe = $leech_holster3; };
-void() player_leechholster4 = [$rockatt1, player_run          ] { W_DrawWeapon (self.newweapon); };
+void() player_leechholster1 = [$attack1, player_leechholster2] { self.weaponframe = $leech_holster1; };
+void() player_leechholster2 = [$attack1, player_leechholster3] { self.weaponframe = $leech_holster2; };
+void() player_leechholster3 = [$attack1, player_leechholster4] { self.weaponframe = $leech_holster3; };
+void() player_leechholster4 = [$attack1, player_run          ] { W_DrawWeapon (self.newweapon); };
 
 
 //=================================================================

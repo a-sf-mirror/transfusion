@@ -73,19 +73,19 @@ $frame anapalm_holstr1 anapalm_holstr2 anapalm_holstr3
 // ----- Player related code ----- //
 
 // Normal fire
-void() player_napalm1 = [$rockatt1, player_napalm2] { self.weaponframe = $napalm_fire2; muzzleflash (); };
-void() player_napalm2 = [$rockatt2, player_napalm3] { self.weaponframe = $napalm_fire3; };
-void() player_napalm3 = [$rockatt3, player_napalm4] { self.weaponframe = $napalm_fire4; };
-void() player_napalm4 = [$rockatt4, player_napalm5] { self.weaponframe = $napalm_fire5; };
-void() player_napalm5 = [$rockatt5, player_run    ] { self.weaponframe = $napalm_fire6; };
+void() player_napalm1 = [$attack1, player_napalm2] { self.weaponframe = $napalm_fire2; muzzleflash (); };
+void() player_napalm2 = [$attack1, player_napalm3] { self.weaponframe = $napalm_fire3; };
+void() player_napalm3 = [$attack1, player_napalm4] { self.weaponframe = $napalm_fire4; };
+void() player_napalm4 = [$attack2, player_napalm5] { self.weaponframe = $napalm_fire5; };
+void() player_napalm5 = [$attack2, player_run    ] { self.weaponframe = $napalm_fire6; };
 
 // Akimbo fire
-void() player_aknapalm1 = [$rockatt1, player_aknapalm2] { self.weaponframe = $anapalm_fire2; muzzleflash (); };
-void() player_aknapalm2 = [$rockatt2, player_aknapalm3] { self.weaponframe = $anapalm_fire3; };
-void() player_aknapalm3 = [$rockatt1, player_aknapalm4] { self.weaponframe = $anapalm_fire4; Napalm_Fire (); };
-void() player_aknapalm4 = [$rockatt2, player_aknapalm5] { self.weaponframe = $anapalm_fire5; };
-void() player_aknapalm5 = [$rockatt3, player_aknapalm6] { self.weaponframe = $anapalm_fire6; };
-void() player_aknapalm6 = [$rockatt5, player_run      ]
+void() player_aknapalm1 = [$attack1, player_aknapalm2] { self.weaponframe = $anapalm_fire2; muzzleflash (); };
+void() player_aknapalm2 = [$attack2, player_aknapalm3] { self.weaponframe = $anapalm_fire3; };
+void() player_aknapalm3 = [$attack1, player_aknapalm4] { self.weaponframe = $anapalm_fire4; muzzleflash ();  Napalm_Fire (); };
+void() player_aknapalm4 = [$attack1, player_aknapalm5] { self.weaponframe = $anapalm_fire5; };
+void() player_aknapalm5 = [$attack2, player_aknapalm6] { self.weaponframe = $anapalm_fire6; };
+void() player_aknapalm6 = [$attack2, player_run      ]
 {
     // If we don't have enough ammo anymore, drop the guns akimbo
     if ((self.items & IT_GUNS_AKIMBO) && self.currentammo < 2)
@@ -98,28 +98,28 @@ void() player_aknapalm6 = [$rockatt5, player_run      ]
 };
 
 // Normal draw
-void() player_napalmdraw1 = [$rockatt1, player_napalmdraw2] { self.weaponframe = $napalm_draw1; };
-void() player_napalmdraw2 = [$rockatt1, player_napalmdraw3] { self.weaponframe = $napalm_draw2; };
-void() player_napalmdraw3 = [$rockatt1, player_napalmdraw4] { self.weaponframe = $napalm_draw3; };
-void() player_napalmdraw4 = [$rockatt1, player_run        ] { self.weaponframe = $napalm_draw4; };
+void() player_napalmdraw1 = [$attack1, player_napalmdraw2] { self.weaponframe = $napalm_draw1; };
+void() player_napalmdraw2 = [$attack1, player_napalmdraw3] { self.weaponframe = $napalm_draw2; };
+void() player_napalmdraw3 = [$attack1, player_napalmdraw4] { self.weaponframe = $napalm_draw3; };
+void() player_napalmdraw4 = [$attack1, player_run        ] { self.weaponframe = $napalm_draw4; };
 
 // Normal holster
-void() player_napalmholst1 = [$shotatt1, player_napalmholst2] { self.weaponframe = $napalm_holster1; };
-void() player_napalmholst2 = [$shotatt1, player_napalmholst3] { self.weaponframe = $napalm_holster2; };
-void() player_napalmholst3 = [$shotatt1, player_napalmholst4] { self.weaponframe = $napalm_holster3; };
-void() player_napalmholst4 = [$shotatt1, player_napalmholst5] { self.weaponframe = $napalm_holster4; };
-void() player_napalmholst5 = [$shotatt1, player_run         ] { W_DrawWeapon (self.newweapon); };
+void() player_napalmholst1 = [$attack1, player_napalmholst2] { self.weaponframe = $napalm_holster1; };
+void() player_napalmholst2 = [$attack1, player_napalmholst3] { self.weaponframe = $napalm_holster2; };
+void() player_napalmholst3 = [$attack1, player_napalmholst4] { self.weaponframe = $napalm_holster3; };
+void() player_napalmholst4 = [$attack1, player_napalmholst5] { self.weaponframe = $napalm_holster4; };
+void() player_napalmholst5 = [$attack1, player_run         ] { W_DrawWeapon (self.newweapon); };
 
 // Akimbo draw
-void() player_aknapalmdraw1 = [$rockatt1, player_aknapalmdraw2] { self.weaponframe = $anapalm_draw1; };
-void() player_aknapalmdraw2 = [$rockatt1, player_aknapalmdraw3] { self.weaponframe = $anapalm_draw2; };
-void() player_aknapalmdraw3 = [$rockatt1, player_run          ] { self.weaponframe = $anapalm_draw3; };
+void() player_aknapalmdraw1 = [$attack1, player_aknapalmdraw2] { self.weaponframe = $anapalm_draw1; };
+void() player_aknapalmdraw2 = [$attack1, player_aknapalmdraw3] { self.weaponframe = $anapalm_draw2; };
+void() player_aknapalmdraw3 = [$attack1, player_run          ] { self.weaponframe = $anapalm_draw3; };
 
 // Akimbo holster
-void() player_aknapalmholst1 = [$rockatt1, player_aknapalmholst2] { self.weaponframe = $anapalm_holstr1; };
-void() player_aknapalmholst2 = [$rockatt1, player_aknapalmholst3] { self.weaponframe = $anapalm_holstr2; };
-void() player_aknapalmholst3 = [$rockatt1, player_aknapalmholst4] { self.weaponframe = $anapalm_holstr3; };
-void() player_aknapalmholst4 = [$rockatt1, player_run           ] { W_DrawWeapon (self.newweapon); };
+void() player_aknapalmholst1 = [$attack1, player_aknapalmholst2] { self.weaponframe = $anapalm_holstr1; };
+void() player_aknapalmholst2 = [$attack1, player_aknapalmholst3] { self.weaponframe = $anapalm_holstr2; };
+void() player_aknapalmholst3 = [$attack1, player_aknapalmholst4] { self.weaponframe = $anapalm_holstr3; };
+void() player_aknapalmholst4 = [$attack1, player_run           ] { W_DrawWeapon (self.newweapon); };
 
 
 //============================================================================

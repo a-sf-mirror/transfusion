@@ -53,16 +53,16 @@ $frame aflare_holster6
 // ----- Player related code ----- //
 
 // Normal fire
-void() player_flare1 = [$shotatt1, player_flare2] { self.weaponframe = $flare_fire1; muzzleflash(); };
-void() player_flare2 = [$shotatt2, player_flare3] { self.weaponframe = $flare_fire2; };
-void() player_flare3 = [$shotatt3, player_flare4] { self.weaponframe = $flare_fire3; };
-void() player_flare4 = [$shotatt4, player_run   ] { self.weaponframe = $flare_fire4; };
+void() player_flare1 = [$attack1, player_flare2] { self.weaponframe = $flare_fire1; muzzleflash(); };
+void() player_flare2 = [$attack1, player_flare3] { self.weaponframe = $flare_fire2; };
+void() player_flare3 = [$attack2, player_flare4] { self.weaponframe = $flare_fire3; };
+void() player_flare4 = [$attack2, player_run   ] { self.weaponframe = $flare_fire4; };
 
 // Akimbo fire
-void() player_akflare1 = [$shotatt1, player_akflare2] { self.weaponframe = $aflare_fire2; muzzleflash (); };
-void() player_akflare2 = [$shotatt2, player_akflare3] { self.weaponframe = $aflare_fire3; };
-void() player_akflare3 = [$shotatt1, player_akflare4] { self.weaponframe = $aflare_fire4; Flare_Fire (); };
-void() player_akflare4 = [$shotatt4, player_run     ]
+void() player_akflare1 = [$attack1, player_akflare2] { self.weaponframe = $aflare_fire2; muzzleflash (); };
+void() player_akflare2 = [$attack2, player_akflare3] { self.weaponframe = $aflare_fire3; };
+void() player_akflare3 = [$attack1, player_akflare4] { self.weaponframe = $aflare_fire4; muzzleflash (); Flare_Fire (); };
+void() player_akflare4 = [$attack2, player_run     ]
 {
     // If we don't have enough ammo anymore, drop the guns akimbo
     if ((self.items & IT_GUNS_AKIMBO) && self.currentammo < 2)
@@ -76,22 +76,22 @@ void() player_akflare4 = [$shotatt4, player_run     ]
 
 // Normal draw
 // NOTE: no animation to play for now
-void() player_flaredraw1 = [$shotatt1, player_run] { self.weaponframe = 0; };
+void() player_flaredraw1 = [$attack1, player_run] { self.weaponframe = 0; };
 
 // Normal holster
 // NOTE: no animation to play for now
-void() player_flareholster1 = [$shotatt1, player_run] { W_DrawWeapon (self.newweapon); };
+void() player_flareholster1 = [$attack1, player_run] { W_DrawWeapon (self.newweapon); };
 
 // Akimbo draw
-void() player_akflaredraw1 = [$shotatt1, player_akflaredraw2] { self.weaponframe = $aflare_draw1; };
-void() player_akflaredraw2 = [$shotatt1, player_akflaredraw3] { self.weaponframe = $aflare_draw3; };
-void() player_akflaredraw3 = [$shotatt1, player_run         ] { self.weaponframe = $aflare_draw5; };
+void() player_akflaredraw1 = [$attack1, player_akflaredraw2] { self.weaponframe = $aflare_draw1; };
+void() player_akflaredraw2 = [$attack1, player_akflaredraw3] { self.weaponframe = $aflare_draw3; };
+void() player_akflaredraw3 = [$attack1, player_run         ] { self.weaponframe = $aflare_draw5; };
 
 // Akimbo holster
-void() player_akflareholst1 = [$shotatt1, player_akflareholst2] { self.weaponframe = $aflare_holster1; };
-void() player_akflareholst2 = [$shotatt1, player_akflareholst3] { self.weaponframe = $aflare_holster3; };
-void() player_akflareholst3 = [$shotatt1, player_akflareholst4] { self.weaponframe = $aflare_holster5; };
-void() player_akflareholst4 = [$shotatt1, player_run          ] { W_DrawWeapon (self.newweapon); };
+void() player_akflareholst1 = [$attack1, player_akflareholst2] { self.weaponframe = $aflare_holster1; };
+void() player_akflareholst2 = [$attack1, player_akflareholst3] { self.weaponframe = $aflare_holster3; };
+void() player_akflareholst3 = [$attack1, player_akflareholst4] { self.weaponframe = $aflare_holster5; };
+void() player_akflareholst4 = [$attack1, player_run          ] { W_DrawWeapon (self.newweapon); };
 
 
 //============================================================================

@@ -82,17 +82,17 @@ void() player_fork1 =
 };
 
 // Normal draw
-void() player_forkdraw1 = [$axstnd1, player_forkdraw2] { self.weaponframe = $fork_draw1; };
-void() player_forkdraw2 = [$axstnd1, player_forkdraw3] { self.weaponframe = $fork_draw2; };
-void() player_forkdraw3 = [$axstnd1, player_forkdraw4] { self.weaponframe = $fork_draw3; };
-void() player_forkdraw4 = [$axstnd1, player_run      ] { self.weaponframe = $fork_draw4; };
+void() player_forkdraw1 = [$pitchstand1, player_forkdraw2] { self.weaponframe = $fork_draw1; };
+void() player_forkdraw2 = [$pitchstand1, player_forkdraw3] { self.weaponframe = $fork_draw2; };
+void() player_forkdraw3 = [$pitchstand1, player_forkdraw4] { self.weaponframe = $fork_draw3; };
+void() player_forkdraw4 = [$pitchstand1, player_run      ] { self.weaponframe = $fork_draw4; };
 
 // Normal holster
-void() player_forkholster1 = [$axstnd1, player_forkholster2] { self.weaponframe = $fork_holster1; };
-void() player_forkholster2 = [$axstnd1, player_forkholster3] { self.weaponframe = $fork_holster2; };
-void() player_forkholster3 = [$axstnd1, player_forkholster4] { self.weaponframe = $fork_holster3; };
-void() player_forkholster4 = [$axstnd1, player_forkholster5] { self.weaponframe = $fork_holster4; };
-void() player_forkholster5 = [$axstnd1, player_run         ] { W_DrawWeapon (self.newweapon); };
+void() player_forkholster1 = [$pitchstand1, player_forkholster2] { self.weaponframe = $fork_holster1; };
+void() player_forkholster2 = [$pitchstand1, player_forkholster3] { self.weaponframe = $fork_holster2; };
+void() player_forkholster3 = [$pitchstand1, player_forkholster4] { self.weaponframe = $fork_holster3; };
+void() player_forkholster4 = [$pitchstand1, player_forkholster5] { self.weaponframe = $fork_holster4; };
+void() player_forkholster5 = [$pitchstand1, player_run         ] { W_DrawWeapon (self.newweapon); };
 
 
 //============================================================================
@@ -203,15 +203,7 @@ void() Fork_Attack =
 {
     local float r;
 
-    r = random ();
-    if (r < 0.25)
-        self.frame = $axatt1;
-    else if (r < 0.5)
-        self.frame = $axattb1;
-    else if (r < 0.75)
-        self.frame = $axattc1;
-    else
-        self.frame = $axattd1;
+    self.frame = $pitchattack1;
 
     player_fork1 ();
     self.attack_finished = time + 0.5;

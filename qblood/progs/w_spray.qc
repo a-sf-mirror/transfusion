@@ -84,53 +84,53 @@ void() player_supernail =
     self.attack_finished = time + 0.2;
 };
 
-void() player_supernail1 = [$nailatt1, player_supernail2] { player_supernail (); };
-void() player_supernail2 = [$nailatt2, player_supernail1] { player_supernail (); };
+void() player_supernail1 = [$attack1, player_supernail2] { player_supernail (); };
+void() player_supernail2 = [$attack2, player_supernail1] { player_supernail (); };
 
-void() player_lightcan1 = [$shotatt1, player_lightcan2] { self.weaponframe = $spray_alt1; };
-void() player_lightcan2 = [$shotatt1, player_lightcan3] { self.weaponframe = $spray_alt2; };
-void() player_lightcan3 = [$shotatt1, player_lightcan4] { self.weaponframe = $spray_alt3; };
-void() player_lightcan4 = [$shotatt1, player_lightcan5] { self.weaponframe = $spray_alt4; };
-void() player_lightcan5 = [$shotatt1, player_lightcan6] { self.weaponframe = $spray_alt5; };
-void() player_lightcan6 = [$shotatt1, player_lightcan4] { self.weaponframe = $spray_alt6; };
+void() player_lightcan1 = [$attack1, player_lightcan2] { self.weaponframe = $spray_alt1; };
+void() player_lightcan2 = [$attack1, player_lightcan3] { self.weaponframe = $spray_alt2; };
+void() player_lightcan3 = [$attack1, player_lightcan4] { self.weaponframe = $spray_alt3; };
+void() player_lightcan4 = [$attack1, player_lightcan5] { self.weaponframe = $spray_alt4; };
+void() player_lightcan5 = [$attack1, player_lightcan6] { self.weaponframe = $spray_alt5; };
+void() player_lightcan6 = [$attack1, player_lightcan4] { self.weaponframe = $spray_alt6; };
 
-void() player_altsupernail1 = [$shotatt1, player_altsupernail2] { self.weaponframe = $spray_alt7; };
-void() player_altsupernail2 = [$shotatt1, player_altsupernail3] { self.weaponframe = $spray_alt8; };
-void() player_altsupernail3 = [$shotatt1, player_altsupernail4] { self.weaponframe = $spray_alt9; };
-void() player_altsupernail4 = [$shotatt1, player_altsupernail5]
+void() player_altsupernail1 = [$attack1, player_altsupernail2] { self.weaponframe = $spray_alt7; };
+void() player_altsupernail2 = [$attack1, player_altsupernail3] { self.weaponframe = $spray_alt8; };
+void() player_altsupernail3 = [$attack1, player_altsupernail4] { self.weaponframe = $spray_alt9; };
+void() player_altsupernail4 = [$attack1, player_altsupernail5]
 {
     self.weaponframe = $spray_alt10;
     Bomb_Fire ();
     Bomb_Uncharge ();
     ShowThrowMeter ();
 };
-void() player_altsupernail5 = [$shotatt1, player_run] { self.weaponframe = $spray_alt11; };
+void() player_altsupernail5 = [$attack1, player_run] { self.weaponframe = $spray_alt11; };
 
 // Half draw
-void() player_sprayhalfdraw1 = [$shotatt1, player_sprayhalfdraw2] { self.weaponframe = $spray_drawhlf1; };
-void() player_sprayhalfdraw2 = [$shotatt1, player_sprayhalfdraw3] { self.weaponframe = $spray_drawhlf2; };
-void() player_sprayhalfdraw3 = [$shotatt1, player_sprayhalfdraw4] { self.weaponframe = $spray_drawhlf3; };
-void() player_sprayhalfdraw4 = [$shotatt1, player_run           ] { self.weaponframe = $spray_drawhlf4; };
+void() player_sprayhalfdraw1 = [$attack1, player_sprayhalfdraw2] { self.weaponframe = $spray_drawhlf1; };
+void() player_sprayhalfdraw2 = [$attack1, player_sprayhalfdraw3] { self.weaponframe = $spray_drawhlf2; };
+void() player_sprayhalfdraw3 = [$attack1, player_sprayhalfdraw4] { self.weaponframe = $spray_drawhlf3; };
+void() player_sprayhalfdraw4 = [$attack1, player_run           ] { self.weaponframe = $spray_drawhlf4; };
 
 // Normal draw
-void() player_spraydraw1 = [$shotatt1, player_spraydraw2] { self.weaponframe = $spray_draw1; };
-void() player_spraydraw2 = [$shotatt1, player_spraydraw3] { self.weaponframe = $spray_draw2; };
-void() player_spraydraw3 = [$shotatt1, player_spraydraw4] { self.weaponframe = $spray_draw3; };
-void() player_spraydraw4 = [$shotatt1, player_run       ] { self.weaponframe = $spray_draw4; };
+void() player_spraydraw1 = [$attack1, player_spraydraw2] { self.weaponframe = $spray_draw1; };
+void() player_spraydraw2 = [$attack1, player_spraydraw3] { self.weaponframe = $spray_draw2; };
+void() player_spraydraw3 = [$attack1, player_spraydraw4] { self.weaponframe = $spray_draw3; };
+void() player_spraydraw4 = [$attack1, player_run       ] { self.weaponframe = $spray_draw4; };
 
 // Half holster
-void() player_sprayhalfholster1 = [$shotatt1, player_sprayhalfholster2] { self.weaponframe = $spray_holsthlf1; };
-void() player_sprayhalfholster2 = [$shotatt1, player_sprayhalfholster3] { self.weaponframe = $spray_holsthlf2; };
-void() player_sprayhalfholster3 = [$shotatt1, player_sprayhalfholster4] { self.weaponframe = $spray_holsthlf3; };
-void() player_sprayhalfholster4 = [$shotatt1, player_sprayhalfholster5] { self.weaponframe = $spray_holsthlf4; };
-void() player_sprayhalfholster5 = [$shotatt1, player_run              ] { W_DrawWeapon (self.newweapon); };
+void() player_sprayhalfholster1 = [$attack1, player_sprayhalfholster2] { self.weaponframe = $spray_holsthlf1; };
+void() player_sprayhalfholster2 = [$attack1, player_sprayhalfholster3] { self.weaponframe = $spray_holsthlf2; };
+void() player_sprayhalfholster3 = [$attack1, player_sprayhalfholster4] { self.weaponframe = $spray_holsthlf3; };
+void() player_sprayhalfholster4 = [$attack1, player_sprayhalfholster5] { self.weaponframe = $spray_holsthlf4; };
+void() player_sprayhalfholster5 = [$attack1, player_run              ] { W_DrawWeapon (self.newweapon); };
 
 // Normal holster
-void() player_sprayholster1 = [$shotatt1, player_sprayholster2] { self.weaponframe = $spray_holster1; };
-void() player_sprayholster2 = [$shotatt1, player_sprayholster3] { self.weaponframe = $spray_holster2; };
-void() player_sprayholster3 = [$shotatt1, player_sprayholster4] { self.weaponframe = $spray_holster3; };
-void() player_sprayholster4 = [$shotatt1, player_sprayholster5] { self.weaponframe = $spray_holster4; };
-void() player_sprayholster5 = [$shotatt1, player_run          ] { W_DrawWeapon (self.newweapon); };
+void() player_sprayholster1 = [$attack1, player_sprayholster2] { self.weaponframe = $spray_holster1; };
+void() player_sprayholster2 = [$attack1, player_sprayholster3] { self.weaponframe = $spray_holster2; };
+void() player_sprayholster3 = [$attack1, player_sprayholster4] { self.weaponframe = $spray_holster3; };
+void() player_sprayholster4 = [$attack1, player_sprayholster5] { self.weaponframe = $spray_holster4; };
+void() player_sprayholster5 = [$attack1, player_run          ] { W_DrawWeapon (self.newweapon); };
 
 
 //============================================================================

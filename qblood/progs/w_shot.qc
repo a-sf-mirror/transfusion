@@ -68,27 +68,27 @@ $frame ashot_holster6 ashot_holster7
 // ----- Player related code ----- //
 
 // Normal shot
-void() player_shot1 = [$supatt1, player_shot2] { self.weaponframe = $shot_fire1; muzzleflash (); };
-void() player_shot2 = [$supatt2, player_run  ] { self.weaponframe = $shot_fire2; Shot_SpawnShell (); };
+void() player_shot1 = [$attack1, player_shot2] { self.weaponframe = $shot_fire1; muzzleflash (); };
+void() player_shot2 = [$attack2, player_run  ] { self.weaponframe = $shot_fire2; Shot_SpawnShell (); };
 
 // Altfire shot
-void() player_altshot1 = [$supatt1, player_altshot2] { self.weaponframe = $shot_alt1; muzzleflash (); };
-void() player_altshot2 = [$supatt2, player_altshot3] { self.weaponframe = $shot_alt2; };
-void() player_altshot3 = [$supatt2, player_run     ] { self.weaponframe = $shot_alt3; Shot_SpawnShell (); };
+void() player_altshot1 = [$attack1, player_altshot2] { self.weaponframe = $shot_alt1; muzzleflash (); };
+void() player_altshot2 = [$attack1, player_altshot3] { self.weaponframe = $shot_alt2; };
+void() player_altshot3 = [$attack2, player_run     ] { self.weaponframe = $shot_alt3; Shot_SpawnShell (); };
 
 // Reload
-void() player_reloadshot1  = [$supatt1, player_reloadshot2 ] { self.weaponframe = $shot_reload1; };
-void() player_reloadshot2  = [$supatt1, player_reloadshot3 ] { self.weaponframe = $shot_reload2; };
-void() player_reloadshot3  = [$supatt1, player_reloadshot4 ] { self.weaponframe = $shot_reload3; };
-void() player_reloadshot4  = [$supatt1, player_reloadshot5 ] { self.weaponframe = $shot_reload4; };
-void() player_reloadshot5  = [$supatt1, player_run         ] { self.weaponframe = $shot_reload5; };
+void() player_reloadshot1  = [$attack1, player_reloadshot2 ] { self.weaponframe = $shot_reload1; };
+void() player_reloadshot2  = [$attack1, player_reloadshot3 ] { self.weaponframe = $shot_reload2; };
+void() player_reloadshot3  = [$attack1, player_reloadshot4 ] { self.weaponframe = $shot_reload3; };
+void() player_reloadshot4  = [$attack1, player_reloadshot5 ] { self.weaponframe = $shot_reload4; };
+void() player_reloadshot5  = [$attack1, player_run         ] { self.weaponframe = $shot_reload5; };
 
 // Akimbo shot
-void() player_akshot1 = [$supatt1, player_akshot2] { self.weaponframe = $ashot_fire1; };
-void() player_akshot2 = [$supatt2, player_akshot3] { self.weaponframe = $ashot_fire2; muzzleflash (); Shot_Fire (); };
-void() player_akshot3 = [$supatt1, player_akshot4] { self.weaponframe = $ashot_fire3; };
-void() player_akshot4 = [$supatt2, player_akshot5] { self.weaponframe = $ashot_fire4; muzzleflash (); Shot_Fire (); };
-void() player_akshot5 = [$supatt1, player_run    ]
+void() player_akshot1 = [$attack1, player_akshot2] { self.weaponframe = $ashot_fire1; };
+void() player_akshot2 = [$attack1, player_akshot3] { self.weaponframe = $ashot_fire2; muzzleflash (); Shot_Fire (); };
+void() player_akshot3 = [$attack2, player_akshot4] { self.weaponframe = $ashot_fire3; };
+void() player_akshot4 = [$attack2, player_akshot5] { self.weaponframe = $ashot_fire4; muzzleflash (); Shot_Fire (); };
+void() player_akshot5 = [$attack1, player_run    ]
 {
     // If we don't have enough ammo anymore, drop the akimbo mode for now
     if (self.ammo_shells < 2)
@@ -101,33 +101,33 @@ void() player_akshot5 = [$supatt1, player_run    ]
 };
 
 // Normal draw
-void() player_shotdraw1 = [$supatt1, player_shotdraw2] { self.weaponframe = $shot_draw1; };
-void() player_shotdraw2 = [$supatt1, player_shotdraw3] { self.weaponframe = $shot_draw2; };
-void() player_shotdraw3 = [$supatt1, player_shotdraw4] { self.weaponframe = $shot_draw3; };
-void() player_shotdraw4 = [$supatt1, player_run      ] { self.weaponframe = $shot_draw4; };
+void() player_shotdraw1 = [$attack1, player_shotdraw2] { self.weaponframe = $shot_draw1; };
+void() player_shotdraw2 = [$attack1, player_shotdraw3] { self.weaponframe = $shot_draw2; };
+void() player_shotdraw3 = [$attack1, player_shotdraw4] { self.weaponframe = $shot_draw3; };
+void() player_shotdraw4 = [$attack1, player_run      ] { self.weaponframe = $shot_draw4; };
 
 // Normal holster
-void() player_shotholster1 = [$supatt1, player_shotholster2] { self.weaponframe = $shot_holster1; };
-void() player_shotholster2 = [$supatt1, player_shotholster3] { self.weaponframe = $shot_holster2; };
-void() player_shotholster3 = [$supatt1, player_shotholster4] { self.weaponframe = $shot_holster3; };
-void() player_shotholster4 = [$supatt1, player_shotholster5] { self.weaponframe = $shot_holster4; };
-void() player_shotholster5 = [$supatt1, player_run         ] { W_DrawWeapon (self.newweapon); };
+void() player_shotholster1 = [$attack1, player_shotholster2] { self.weaponframe = $shot_holster1; };
+void() player_shotholster2 = [$attack1, player_shotholster3] { self.weaponframe = $shot_holster2; };
+void() player_shotholster3 = [$attack1, player_shotholster4] { self.weaponframe = $shot_holster3; };
+void() player_shotholster4 = [$attack1, player_shotholster5] { self.weaponframe = $shot_holster4; };
+void() player_shotholster5 = [$attack1, player_run         ] { W_DrawWeapon (self.newweapon); };
 
 // Akimbo draw
-void() player_akshotdraw1 = [$supatt1, player_akshotdraw2] { self.weaponframe = $ashot_draw1; };
-void() player_akshotdraw2 = [$supatt1, player_akshotdraw3] { self.weaponframe = $ashot_draw2; };
-void() player_akshotdraw3 = [$supatt1, player_akshotdraw4] { self.weaponframe = $ashot_draw3; };
-void() player_akshotdraw4 = [$supatt1, player_run        ] { self.weaponframe = $ashot_draw4; };
+void() player_akshotdraw1 = [$attack1, player_akshotdraw2] { self.weaponframe = $ashot_draw1; };
+void() player_akshotdraw2 = [$attack1, player_akshotdraw3] { self.weaponframe = $ashot_draw2; };
+void() player_akshotdraw3 = [$attack1, player_akshotdraw4] { self.weaponframe = $ashot_draw3; };
+void() player_akshotdraw4 = [$attack1, player_run        ] { self.weaponframe = $ashot_draw4; };
 
 // Akimbo holster
-void() player_akshotholster1 = [$supatt1, player_akshotholster2] { self.weaponframe = $ashot_holster1; };
-void() player_akshotholster2 = [$supatt1, player_akshotholster3] { self.weaponframe = $ashot_holster2; };
-void() player_akshotholster3 = [$supatt1, player_akshotholster4] { self.weaponframe = $ashot_holster3; };
-void() player_akshotholster4 = [$supatt1, player_akshotholster5] { self.weaponframe = $ashot_holster4; };
-void() player_akshotholster5 = [$supatt1, player_akshotholster6] { self.weaponframe = $ashot_holster5; };
-void() player_akshotholster6 = [$supatt1, player_akshotholster7] { self.weaponframe = $ashot_holster6; };
-void() player_akshotholster7 = [$supatt1, player_akshotholster8] { self.weaponframe = $ashot_holster7; };
-void() player_akshotholster8 = [$supatt1, player_run           ] { W_DrawWeapon (self.newweapon); };
+void() player_akshotholster1 = [$attack1, player_akshotholster2] { self.weaponframe = $ashot_holster1; };
+void() player_akshotholster2 = [$attack1, player_akshotholster3] { self.weaponframe = $ashot_holster2; };
+void() player_akshotholster3 = [$attack1, player_akshotholster4] { self.weaponframe = $ashot_holster3; };
+void() player_akshotholster4 = [$attack1, player_akshotholster5] { self.weaponframe = $ashot_holster4; };
+void() player_akshotholster5 = [$attack1, player_akshotholster6] { self.weaponframe = $ashot_holster5; };
+void() player_akshotholster6 = [$attack1, player_akshotholster7] { self.weaponframe = $ashot_holster6; };
+void() player_akshotholster7 = [$attack1, player_akshotholster8] { self.weaponframe = $ashot_holster7; };
+void() player_akshotholster8 = [$attack1, player_run           ] { W_DrawWeapon (self.newweapon); };
 
 
 //============================================================================

@@ -891,7 +891,6 @@ WaterMove
 */
 void() WaterMove =
 {
-//dprint (ftos(self.waterlevel));
     if (self.movetype == MOVETYPE_NOCLIP)
         return;
     if (self.health < 0)
@@ -926,7 +925,7 @@ void() WaterMove =
             if (!self.dive_on)
                 Use_DivingSuit ();
 
-    if (!self.waterlevel)
+    if (!self.waterlevel || self.watertype == CONTENT_EMPTY)
     {
         if (self.flags & FL_INWATER)
         {

@@ -65,14 +65,14 @@ void() player_voodoo =
     }
 };
 
-void() player_voodoo1 = [$light1, player_voodoo2] { player_voodoo (); };
-void() player_voodoo2 = [$light2, player_voodoo1] { player_voodoo (); };
+void() player_voodoo1 = [$attack1, player_voodoo2] { player_voodoo (); };
+void() player_voodoo2 = [$attack2, player_voodoo1] { player_voodoo (); };
 
-void() player_altvoodoo1 = [$light1, player_altvoodoo2] { self.weaponframe = $voodoo_altfire1; };
-void() player_altvoodoo2 = [$light2, player_altvoodoo3] { self.weaponframe = $voodoo_altfire2; };
-void() player_altvoodoo3 = [$light1, player_altvoodoo4] { self.weaponframe = $voodoo_altfire3; };
-void() player_altvoodoo4 = [$light2, player_altvoodoo5] { self.weaponframe = $voodoo_altfire4; };
-void() player_altvoodoo5 = [$light1, player_altvoodoo6]
+void() player_altvoodoo1 = [$attack1, player_altvoodoo2] { self.weaponframe = $voodoo_altfire1; };
+void() player_altvoodoo2 = [$attack1, player_altvoodoo3] { self.weaponframe = $voodoo_altfire2; };
+void() player_altvoodoo3 = [$attack1, player_altvoodoo4] { self.weaponframe = $voodoo_altfire3; };
+void() player_altvoodoo4 = [$attack1, player_altvoodoo5] { self.weaponframe = $voodoo_altfire4; };
+void() player_altvoodoo5 = [$attack1, player_altvoodoo6]
 {
     local float damage;
 
@@ -80,17 +80,17 @@ void() player_altvoodoo5 = [$light1, player_altvoodoo6]
     damage = self.ammo_voodoo;
     Voodoo_ApplyDamage (damage);
 };
-void() player_altvoodoo6 = [$light2, player_altvoodoo7] { self.weaponframe = $voodoo_altfire6; };
-void() player_altvoodoo7 = [$light1, player_altvoodoo8] { self.weaponframe = $voodoo_altfire7; };
-void() player_altvoodoo8 = [$light2, player_run       ] { self.weaponframe = $voodoo_altfire8; };
+void() player_altvoodoo6 = [$attack1, player_altvoodoo7] { self.weaponframe = $voodoo_altfire6; };
+void() player_altvoodoo7 = [$attack1, player_altvoodoo8] { self.weaponframe = $voodoo_altfire7; };
+void() player_altvoodoo8 = [$attack1, player_run       ] { self.weaponframe = $voodoo_altfire8; };
 
 // Normal draw
 // NOTE: no animation to play for now
-void() player_voodoodraw1 = [$light1, player_run] { self.weaponframe = 0; };
+void() player_voodoodraw1 = [$attack1, player_run] { self.weaponframe = 0; };
 
 // Normal holster
 // NOTE: no animation to play for now
-void() player_voodooholster1 = [$light1, player_run] { W_DrawWeapon (self.newweapon); };
+void() player_voodooholster1 = [$attack1, player_run] { W_DrawWeapon (self.newweapon); };
 
 
 //============================================================================

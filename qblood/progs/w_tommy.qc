@@ -94,8 +94,8 @@ void() player_tommy =
     self.impulse = 0;
 };
 
-void() player_tommy1 = [$nailatt1, player_tommy2] { player_tommy (); self.weaponframe = $tommy_fire1; };
-void() player_tommy2 = [$nailatt2, player_tommy1] { player_tommy (); self.weaponframe = $tommy_fire2; };
+void() player_tommy1 = [$attack1, player_tommy2] { player_tommy (); self.weaponframe = $tommy_fire1; };
+void() player_tommy2 = [$attack2, player_tommy1] { player_tommy (); self.weaponframe = $tommy_fire2; };
 
 void() player_alttommy =
 {
@@ -116,19 +116,19 @@ void() player_alttommy =
 
     self.impulse = 0;
 };
-void() player_alttommy1 = [$nailatt1, player_alttommy2] { player_alttommy (); };
-void() player_alttommy2 = [$nailatt2, player_alttommy1] { player_alttommy (); };
+void() player_alttommy1 = [$attack1, player_alttommy2] { player_alttommy (); };
+void() player_alttommy2 = [$attack2, player_alttommy1] { player_alttommy (); };
 
 // Normal draw
-void() player_tommydraw1 = [$nailatt1, player_tommydraw2] { self.weaponframe = $tommy_draw1; };
-void() player_tommydraw2 = [$nailatt1, player_tommydraw3] { self.weaponframe = $tommy_draw2; };
-void() player_tommydraw3 = [$nailatt1, player_run       ] { self.weaponframe = $tommy_draw3; };
+void() player_tommydraw1 = [$attack1, player_tommydraw2] { self.weaponframe = $tommy_draw1; };
+void() player_tommydraw2 = [$attack1, player_tommydraw3] { self.weaponframe = $tommy_draw2; };
+void() player_tommydraw3 = [$attack1, player_run       ] { self.weaponframe = $tommy_draw3; };
 
 // Normal holster
-void() player_tommyholster1 = [$nailatt1, player_tommyholster2] { self.weaponframe = $tommy_holster1; };
-void() player_tommyholster2 = [$nailatt1, player_tommyholster3] { self.weaponframe = $tommy_holster2; };
-void() player_tommyholster3 = [$nailatt1, player_tommyholster4] { self.weaponframe = $tommy_holster3; };
-void() player_tommyholster4 = [$nailatt1, player_run          ] { W_DrawWeapon (self.newweapon); };
+void() player_tommyholster1 = [$attack1, player_tommyholster2] { self.weaponframe = $tommy_holster1; };
+void() player_tommyholster2 = [$attack1, player_tommyholster3] { self.weaponframe = $tommy_holster2; };
+void() player_tommyholster3 = [$attack1, player_tommyholster4] { self.weaponframe = $tommy_holster3; };
+void() player_tommyholster4 = [$attack1, player_run          ] { W_DrawWeapon (self.newweapon); };
 
 
 //============================================================================

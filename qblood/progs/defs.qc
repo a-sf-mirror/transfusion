@@ -401,8 +401,6 @@ float team2score;
 .float      observer;
 .float      do_observer;
 
-.float      walkframe;
-
 .float      items2;
 
 #ifdef QUAKEWORLD
