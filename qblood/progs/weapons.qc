@@ -838,7 +838,7 @@ void(vector org, vector dir) launch_spike =
     setsize (newmis, VEC_ORIGIN, VEC_ORIGIN);
     setorigin (newmis, org);
 
-    newmis.velocity = dir * 1000;
+    newmis.velocity = dir * 2000;
 };
 
 void() W_FireSuperSpikes =
@@ -863,7 +863,7 @@ void() W_FireSuperSpikes =
     #endif
 };
 
-void(float ox) W_FireSpikes =
+void() W_FireSpikes =
 {
     local vector    dir;
     local entity    old;
@@ -887,7 +887,7 @@ void(float ox) W_FireSpikes =
     self.attack_finished = time + 0.2;
     self.currentammo = self.ammo_nails = self.ammo_nails - 1;
     dir = aim (self, 1000);
-    launch_spike (self.origin + '0 0 16' + v_right*ox, dir);
+    launch_spike (self.origin + '0 0 16' + v_right * 8, dir);
 
     #ifdef QUAKEWORLD
     msg_entity = self;

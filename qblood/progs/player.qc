@@ -177,12 +177,12 @@ void()muzzleflash =
 };
 
 
-void()  player_shot1 =  [$shotatt1, player_shot2        ] {self.weaponframe=1;muzzleflash();};
+void()  player_shot1 =  [$shotatt1, player_shot2    ] {self.weaponframe=1;muzzleflash();};
 void()  player_shot2 =  [$shotatt2, player_shot3    ] {self.weaponframe=2;};
 void()  player_shot3 =  [$shotatt3, player_shot4    ] {self.weaponframe=3;};
 void()  player_shot4 =  [$shotatt4, player_shot5    ] {self.weaponframe=4;};
 void()  player_shot5 =  [$shotatt5, player_shot6    ] {self.weaponframe=5;};
-void()  player_shot6 =  [$shotatt6, player_run  ] {self.weaponframe=6;};
+void()  player_shot6 =  [$shotatt6, player_run      ] {self.weaponframe=6;};
 
 void()  player_axe1 =   [$axatt1, player_axe2   ] {self.weaponframe=1;};
 void()  player_axe2 =   [$axatt2, player_axe3   ] {self.weaponframe=2;};
@@ -207,61 +207,47 @@ void()  player_axed4 =  [$axattd4, player_run   ] {self.weaponframe=8;};
 
 //============================================================================
 
-void() player_nail1   =[$nailatt1, player_nail2  ]
+void() player_nail =
 {
-    muzzleflash();
+    muzzleflash ();
 
     if (!self.button0 || intermission_running || self.impulse)
-        {player_run ();return;}
+    {
+        player_run ();
+        return;
+    }
     self.weaponframe = self.weaponframe + 1;
     if (self.weaponframe == 9)
         self.weaponframe = 1;
-    SuperDamageSound();
-    W_FireSpikes (4);
+    SuperDamageSound ();
+    W_FireSpikes ();
     self.attack_finished = time + 0.2;
 };
-void() player_nail2   =[$nailatt2, player_nail1  ]
-{
-    muzzleflash();
 
-    if (!self.button0 || intermission_running || self.impulse)
-        {player_run ();return;}
-    self.weaponframe = self.weaponframe + 1;
-    if (self.weaponframe == 9)
-        self.weaponframe = 1;
-    SuperDamageSound();
-    W_FireSpikes (-4);
-    self.attack_finished = time + 0.2;
-};
+void() player_nail1 = [$nailatt1, player_nail2] { player_nail (); };
+void() player_nail2 = [$nailatt2, player_nail1] { player_nail (); };
 
 //============================================================================
 
-void() player_light1   =[$light1, player_light2  ]
+void() player_light =
 {
-    muzzleflash();
+    muzzleflash ();
 
     if (!self.button0 || intermission_running)
-        {player_run ();return;}
+    {
+        player_run ();
+        return;
+    }
     self.weaponframe = self.weaponframe + 1;
     if (self.weaponframe == 5)
         self.weaponframe = 1;
-    SuperDamageSound();
-    W_FireLightning();
+    SuperDamageSound ();
+    W_FireLightning ();
     self.attack_finished = time + 0.2;
 };
-void() player_light2   =[$light2, player_light1  ]
-{
-    muzzleflash();
 
-    if (!self.button0 || intermission_running)
-        {player_run ();return;}
-    self.weaponframe = self.weaponframe + 1;
-    if (self.weaponframe == 5)
-        self.weaponframe = 1;
-    SuperDamageSound();
-    W_FireLightning();
-    self.attack_finished = time + 0.2;
-};
+void() player_light1 = [$light1, player_light2] { player_light (); };
+void() player_light2 = [$light2, player_light1] { player_light (); };
 
 //============================================================================
 
