@@ -1,0 +1,829 @@
+<?xml version="1.0"?>
+<!DOCTYPE article PUBLIC  "-//OASIS//DTD DocBook XML V4.1.2//EN"
+    "http://docbook.org/xml/4.1.2/docbookx.dtd">
+
+<!--
+* This is a DocBook-XML document. If you don't know DocBook, take a look at the
+  following pages:
+	- DocBook Demystification HOWTO:
+	  http://www.tldp.org/HOWTO/DocBook-Demystification-HOWTO/index.html
+	- Nice tutorial: http://opensource.bureau-cornavin.com/crash-course/
+	- http://docbook.sourceforge.net/
+	- http://www.docbook.org/
+
+* I recommend using the Linux Documentation Project style sheets for creating
+  the final XHTML and TXT outputs.
+
+	http://my.core.com/~dhorton/docbook/tldp-xsl/doc/tldp-xsl-howto.html
+
+  To make an HTML version with Xmlto on Linux:
+  "xmlto -x /usr/share/sgml/docbook/stylesheet/xsl/ldp/ldp-html.xsl
+  xhtml-nochunks manual.xml"
+
+  To make a TXT version with Xmlto on Linux:
+  "xmlto -x /usr/share/sgml/docbook/stylesheet/xsl/ldp/ldp-html.xsl txt
+  manual.xml"
+-->
+
+
+<article>
+<articleinfo>
+	<title>Transfusion manual</title>
+
+	<author>
+		<firstname>Mathieu</firstname>
+		<surname>Olivier</surname>
+		<affiliation>
+			<address>
+				<email>elric@planetblood.com</email>
+			</address>
+		</affiliation>
+	</author>
+
+	<author>
+		<firstname>Dave</firstname>
+		<surname>Turner</surname>
+		<affiliation>
+			<address>
+				<email>darth_linux@planetblood.com</email>
+			</address>
+		</affiliation>
+	</author>
+
+	<releaseinfo>v1.1cvs (November 12 2004)</releaseinfo>
+
+	<abstract><para>
+	This manual covers installation and usage of the
+	<link linkend="links">Transfusion</link> game.
+	</para></abstract>
+
+</articleinfo>
+
+
+<!-- Introduction -->
+
+<sect1><title>Introduction</title>
+ 
+<para>The Transfusion Project aims to recreate an old DOS game from Monolith
+Productions called Blood, using the Quake engine.</para>
+
+<para>You may think it's a simple <emphasis>mod</emphasis>, but actually, you
+don't need any Quake data to run it. In fact, Transfusion is a complete total
+conversion of the multiplayer aspect of Blood. The original Blood is a
+remarkable game, and the Transfusion team hopes you'll have as much fun playing
+it as we had playing Blood.</para>
+
+<para>Obviously, you'll be more at ease if you already know Blood and/or Quake.
+Even if it's not the case, don't worry: you should be able to find in this
+manual all you need to know about Transfusion.</para>
+
+</sect1>
+
+
+<!-- Installation -->
+
+<sect1><title>Installation</title>
+
+<para>If you read this manual, chances are that you have already installed
+Transfusion on your machine. If it's not the case though, don't worry, it's
+extremely easy. If you are lucky enough to use a Transfusion installer program,
+just follow the steps as with any other installer program. If you have an
+archive file, such as a ZIP file for instance, extract its contents in a new,
+clean directory. That's it. You can launch the game now.</para>
+
+
+	<sect2><title>Using Transfusion as a Quake mod</title>
+
+	<para>Unfortunately, there are a few cases where people will have to use
+	another Quake engine instead of the one we provide, because of a low-end
+	machine, or a poor network connection, or because of drivers with no OpenGL
+	support or even a video card with no 3D acceleration.</para>
+
+	<para>If you are in this case, you will be happy to know that old versions
+	of Transfusion, up to version 1.01 included, can actually be run using any
+	Quake compatible engine, as a simple mod. Theorically, all you have to do
+	is to copy the "transfusion" subdirectory (the one which contains the PAK
+	files) into your Quake directory. Or copy a Quake binary in the Transfusion
+	installation directory, for that matters.</para>
+
+	<para>Be aware that most Quake 1 compatible engines will requier the Quake
+	original data, despite the fact that Transfusion doesn't need them. So you
+	may also want to have the "id1" directory by the side of the "transfusion"
+	data directory.</para>
+
+	<para>To launch Quake using Transfusion as a mod, type the following command
+	line: "winquake -game transfusion", if your Quake engine is named "winquake"
+	of course. You may encounter a few minor bugs (Quake engines with a software
+	renderer have a few visual bugs, in particular), but the gameplay should be
+	very similar to the one we intended to create.</para>
+
+	</sect2>
+
+
+	<sect2><title>Transfusion and QuakeWorld</title>
+
+	<para>If you want to play on the internet and that your computer can't run
+	our engine, then you will have to use a QuakeWorld based engine. Bad
+	news...</para>
+
+	<para>First, make sure you <emphasis>really</emphasis> want to play Transfusion on the
+	internet and that there's <emphasis>no way</emphasis> to use our engine on your
+	machine. I insist because 1- it's not easy to install and use
+	Transfusion with QuakeWorld, and 2- the gameplay is significantly
+	different and some features are missing.</para>
+
+	<para>Now that you are sure you want to give it a try, start by getting a
+	copy of a good QuakeWorld based engine (<link linkend="links">ZQuake</link>
+	is the best choice in my opinion). Then, (re)install Transfusion
+	version 1.0 or 1.01 (later versions don't support QuakeWorld) with
+	the QuakeWorld support if you haven't done it previously. You will get
+	a "qw" directory in your install directory. This "qw" directory
+	contains 2 PAK files. The first one, "pak0.pak", will stay in this
+	directory. The other one must be moved to the "transfusion"
+	subdirectory when you play Transfusion with QuakeWorld, <emphasis>but only
+	during that period of time</emphasis>. If this second PAK stays in
+	"transfusion" while playing the game with a non-QuakeWorld engine, you
+	will surely get at least visual bugs. Also, you may have the same kind
+	of problems than those mentioned in the previous paragraph (Quake data
+	needed, software renderer bugs, ...).</para>
+
+	<para>If you have enough luck or skills to make all things work correctly,
+	the greatest challenge still remains: finding a server and some other
+	QuakeWorld players... Good luck. You will need it.</para>
+
+	</sect2>
+
+</sect1>
+
+
+<!-- Basic usage -->
+
+<sect1><title>Basic usage</title>
+
+	<sect2><title>Game types</title>
+
+	<para>Transfusion supports 3 game types:</para>
+
+	<itemizedlist>
+		<listitem><para>BloodBath (deathmatch = 0 or 1, and teamplay = 0): This
+        is standard Free For All Deathmatch play. Everyone is your enemy -
+        kill them all.</para></listitem>
+
+		<listitem><para>Team BloodBath (deathmatch = 0 or 1, and teamplay = 1 or 2):
+		Divides the game into two teams who are pitted against each other.
+		When setting Teamplay to 1, team members are impervious to Friendly
+		Fire, while setting Teamplay to 2 leaves you vulnerable to shots
+		from your team mates.</para></listitem>
+
+		<listitem><para>Capture The Flag (deathmatch = 2). Capture the opposing
+		Teams flag and bring it your base. As with TBB, setting teamplay
+		to 2 activates friendly fire.</para></listitem>
+	</itemizedlist>
+	
+	</sect2>
+
+
+	<sect2 id="impulses"><title>Impulses and extra commands</title>
+
+	<para>Impulses are command numbers. You can bind them to keys, or type them
+	directly at console. For example, typing "impulse 10" at console will
+	make you switch to your next weapon; you could achieve the
+	same effect by binding a key to "impulse 10" and pressing it.</para>
+
+	<para>Here is the complete impulse list:</para>
+
+	<itemizedlist>
+		<listitem><para>impulses 1 to 10: select a weapon</para></listitem>
+		<listitem><para>impulses 21 and 22: cycle to next/previous weapon</para></listitem>
+		<listitem><para>impulses 23 and 24: select next/previous item</para></listitem>
+		<listitem><para>impulse 25: use the currently selected item</para></listitem>
+		<listitem><para>impulse 26: view the current value of the next armor type</para></listitem>
+		<listitem><para>impulse 27: identify the player you're aiming at</para></listitem>
+		<listitem><para>impulse 35: select the proximity bombs</para></listitem>
+		<listitem><para>impulse 36: select the remote detonators</para></listitem>
+		<listitem><para>impulse 40: select the <link linkend="dr_bag">Dr.'s Bag</link></para></listitem>
+		<listitem><para>impulse 41: select the Crystal Ball</para></listitem>
+		<listitem><para>impulse 42: select the Beast Vision</para></listitem>
+		<listitem><para>impulse 43: select the <link linkend="boots">Jump Boots</link></para></listitem>
+		<listitem><para>impulse 50: add a <link linkend="bots">bot</link> (to the red team if available)</para></listitem>
+		<listitem><para>impulse 51: add a <link linkend="bots">bot</link> (to the blue team if available)</para></listitem>
+		<listitem><para>impulse 52: kick a <link linkend="bots">bot</link></para></listitem>
+		<listitem><para>impulse 55: enter the <link linkend="menu">voting menu</link></para></listitem>
+		<listitem><para>impulse 56: go back to the observer mode (only allowed when dead)</para></listitem>
+	</itemizedlist>
+
+	<para>All those impulses are considered cheats (not available in multiplayer
+	games, except if the server has the "sv_cheats" cvar set to a
+	non-zero value). <emphasis>WARNING</emphasis>: although it's very unlikely, it may
+	be possible that some of them <emphasis>crash the game</emphasis> under certain
+	conditions. Be fully aware of that if you allow cheats on your server.</para>
+
+	<itemizedlist>
+		<listitem><para>impulse 53: botcam mode (unavailable in QuakeWorld)</para></listitem>
+		<listitem><para>impulse 54: waypoint edit mode (unavailable in QuakeWorld)</para></listitem>
+		<listitem><para>impulse 250: Put you on the <link linkend="BOD">Brink Of Death</link></para></listitem>
+		<listitem><para>impulse 251: Give full armor</para></listitem>
+		<listitem><para>impulse 252: Burn yourself !</para></listitem>
+		<listitem><para>impulse 253: Give all inventory items</para></listitem>
+		<listitem><para>impulse 254: Give <link linkend="akimbo">Guns Akimbo</link></para></listitem>
+		<listitem><para>impulse 255: Dump all entities stats to console (for debugging)</para></listitem>
+	</itemizedlist>
+
+	<para>Lastly, the DarkPlaces engine provides us with a few extra commands,
+	that you use the same way you use impulses (at the console, or by
+	binding them to keys). In Transfusion, we use the following ones:</para>
+
+	<itemizedlist>
+		<listitem><para>+button3: secondary fire</para></listitem>
+		<listitem><para>+button4: use object (you must be close enough)</para></listitem>
+	</itemizedlist>
+
+	</sect2>
+
+
+	<sect2><title>Game play notes</title>
+
+	<variablelist>
+
+		<varlistentry>
+			<term>Sending messages</term>
+			<listitem><para>To communicate with other players
+            during a multiplayer game, press "T" and type your message. Press
+            [ENTER] to send it or [Esc] to abort.</para></listitem>
+		</varlistentry>
+
+		<varlistentry>
+            <term>Teleporters</term>
+			<listitem><para>Some Transfusion levels feature teleporters.
+            Learn to use these teleporters to get around levels quickly.
+            Teleporter destinations generally appear as animated markers on
+            the floor. Stay away from these in a crowded game - someone might
+            teleport right into you, killing you instantly.</para></listitem>
+		</varlistentry>
+
+	</variablelist>
+
+	</sect2>
+
+
+	<sect2 id="bots"><title>Bots</title>
+
+	<para>Bots are fake players controled by a simple AI code. Transfusion bots
+	are heavily based on FrikBotX source code, a Quake mod that provides
+	its bot system as a separate piece of code.</para>
+
+	<para>The bots are easy to use. Take a look at the <link linkend="impulses">impulse
+	list</link> to see the few ones you'll have to use to
+	spawn and remove bots.</para>
+
+	<para>Bots count as normal players, so if you can't spawn bots (message:
+	"server is full") or if nobody can join your server, you have probably
+	reached the current maximum number of players on the server, or you may
+	have forgotten to put "-listen 8" or more in Quake's command line
+	("-dedicated 8" for a dedicated server). By default, Quake allows only
+	1 client into the game. That's why you must explicitly start a
+	multiplayer game with the menu or add a "-listen" or "-dedicated"
+	argument to your command line to tell Quake you want more clients.</para>
+
+	<para>You can't fill a server with bots. Transfusion will always let one slot
+	free so that a new human player can come into the game. If a new player
+	comes and takes the last free slot, a bot will be kicked automatically
+	to free another slot if possible.</para>
+
+	</sect2>
+
+
+	<sect2 id="BOD"><title>Brink Of Death</title>
+
+	<para>Sometimes you'll knock opponents to their knees instead of
+	killing them outright. The victim spends several moments swaying,
+	poised between life and death. If no one reacts, the victim will slump
+	over and die, earning you a point. Of course, because your victim is
+	helpless, you'll have a moment or two to gloat. You may end the
+	torture swiftly by blowing the victim's head off. You may also draw it
+	out by tossing a lit bundle of dynamite on the ground nearby. Be
+	careful, though. Victims bring themselves back from the brink of death
+	after a dozen secondes.</para>
+
+	<para>You'll recognize the brink of death by the sudden inability to move
+	and the removal of your weapons.</para>
+
+	<para>Also, note that BOD doesn't apply to someone who's on fire, and does
+	<emphasis>NOT</emphasis> exist in QuakeWorld.</para>
+
+	</sect2>
+
+</sect1>
+
+
+<!-- Bloody stuff -->
+
+<sect1><title>Bloody stuff</title>
+
+	<sect2><title>Weapons</title>
+
+	<para>You have 12 differents weapons at your disposal in Transfusion. Aside
+	from the Pitchfork, each of them has a normal fire and a secondary
+	fire, also known as altfire. Most of the time, it's a deadlier mode
+	that consumes more ammo.</para>
+
+	<variablelist>
+
+		<varlistentry>
+			<term>Pitch Fork</term>
+			<listitem>
+			<para>This handy tool can be very effective if you
+            can get close enough to your foes to use it on them. It doesn't
+            need ammo, so you'll always have it to fall back on if you need it.</para>
+
+			<para>Ammo: None. No altfire mode.</para>
+			</listitem>
+		</varlistentry>
+
+		<varlistentry>
+			<term>Flare Gun</term>
+			<listitem><para>Fires burning projectiles that lodge easily in
+            flesh and continue to burn for a short period of time. Unless you
+            dive into water, you'll take damage until the flare burns itself
+            out, by which time it may be too late. The alternative fire
+            launches a starburst flare that douses a large area with flames.
+            Can provide effective crowd control.</para>
+
+			<para>Powered up by Guns Akimbo. Ammo: Flares.</para>
+			</listitem>
+		</varlistentry>
+
+		<varlistentry>
+			<term>Sawed-off Shotgun</term>
+			<listitem><para>A trusty companion if ever there was
+            one. It doesn't have great range, but it packs a hell of a wallop
+            up close. Can be fired either a barrel at a time or both at once
+            for extra damage.</para>
+
+			<para>Powered up by Guns Akimbo. Ammo: Shotgun shells.</para>
+			</listitem>
+		</varlistentry>
+
+		<varlistentry>
+			<term>Thompson's Machine Gun</term>
+			<listitem><para>The Tommy Gun is a favorite of
+            the Cabal for its rapid rate of fire and impressive accuracy. On
+            the down side, it chews up ammo quickly. The alternative mode is a
+            strafing attack that covers a wider area with twice as many
+            bullets, which is an effective way to clear out a room.</para>
+
+			<para>Powered up by Guns Akimbo. Ammo: Bullet drums.</para>
+			</listitem>
+		</varlistentry>
+
+		<varlistentry>
+			<term>Incinerator</term>
+			<listitem><para>This monstrous weapon launches a huge ball
+            of flaming napalm at an extremely high velocity. If the initial
+            explosion doesn't kill your enemy, the burning probably will. Best
+            used with extreme caution, especially in tight areas. The alt-fire
+            launches several napalm projectiles, covering a wider area but also
+            chewing up a lot more ammo.</para>
+
+			<para>Powered up by Guns Akimbo. Ammo: Gasoline cans.</para>
+			</listitem>
+		</varlistentry>
+
+		<varlistentry>
+			<term>Dynamite Bundle</term>
+			<listitem><para>Light one up and chuck it at a group of
+            zombies and you'll be rewarded with red rain and chunks of rotted
+            flesh on the brim of your hat. The longer you hold down the fire
+            button, the farther you'll throw the bundle. Watch the meter on the
+            status bar to gauge the distance. The primary mode explodes on
+            impact, while the alternative mode will burn all the way down
+            before it explodes, making for some interesting traps.</para>
+
+			<para>Ammo: Dynamite bundle.</para>
+			</listitem>
+		</varlistentry>
+
+		<varlistentry>
+			<term>Remote Detonator</term>
+			<listitem><para>Remotes work like dynamite bundles,
+            except that you can detonate them at will. You can bounce them off
+            walls or ceilings if you're afraid to peek around a corner. The
+            alternative fire drops a remote at your feet, and you can hit the
+            alt-fire key again to place additional remotes without detonating
+            those you've already placed.</para>
+
+			<para>Ammo: Remote detonator.</para>
+			</listitem>
+		</varlistentry>
+
+		<varlistentry>
+			<term>Proximity Detonator</term>
+			<listitem><para>These are by far the nastiest
+            explosives you'll come across. You can scatter them around and
+            concern yourself with other matters. As soon as someone steps near
+            one, you'll hear a far-off boom and accompanying shrieks of agony.
+            Use the alt-fire to drop them at your feet. Also, remember where
+            you've dropped proximities or you may fall prey to your own trap.</para>
+
+			<para>Ammo: Proximity detonator.</para>
+			</listitem>
+		</varlistentry>
+
+		<varlistentry>
+			<term>Aerosol Can</term>
+			<listitem><para>Hairspray may not seem like the most
+            daunting weapon, but apply it to a cigarette lighter and you've got
+            an instant flamethrower (don't try this at home). While its range
+            is rather limited, its effectiveness is quite impressive. You can
+            also light one up like a Molotov cocktail and toss it into a group
+            of adversaries. Hit alt-fire a second time after igniting a can to
+            drop it at your feet-it will explode once it burns down.</para>
+
+			<para>Ammo: Aerosol Can.</para>
+			</listitem>
+		</varlistentry>
+
+		<varlistentry>
+			<term>Tesla Cannon</term>
+			<listitem><para>This powerful prototype weapon packs a
+            mighty load of amperage. Nikola Tesla would be proud. Press
+            alt-fire and the Tesla cannon charges up, and releases a powerful
+            electrical blast.</para>
+
+			<para>Powered up by Guns Akimbo. Ammo: Batteries.</para>
+			</listitem>
+		</varlistentry>
+
+		<varlistentry>
+			<term>Life Leech</term>
+			<listitem><para>This artifact draws its power from the life
+            energy of your foes. Run out of ammo and it saps your own strength!
+            Press alt-fire to set the Life Leech down. It will automatically
+            fire at anything that comes into its sights.</para>
+
+			<para>Ammo: Trapped Souls.</para>
+			</listitem>
+		</varlistentry>
+
+		<varlistentry>
+			<term>Voodoo Doll</term>
+			<listitem><para>The power of the voodoo doll is immense, but
+            far subtler than that of a firearm. Hit alt-fire to unlease a more
+            powerful supernatural attack at the expense using up the entire
+            doll).</para>
+
+			<para>Ammo: Voodoo doll.</para>
+			</listitem>
+		</varlistentry>
+
+	</variablelist>
+
+	</sect2>
+
+
+	<sect2><title>Health &amp; Armor</title>
+
+	<para>You have 12 differents weapons at your disposal in Transfusion. Aside
+	from the Pitchfork, each of them has a normal fire and a secondary
+	fire, also known as altfire. Most of the time, it's a deadlier mode
+	that consumes more ammo.</para>
+
+	<variablelist>
+
+		<varlistentry>
+			<term>Life Essence</term>
+			<listitem><para>Boosts your health by 20 points, up to 100.</para></listitem>
+		</varlistentry>
+
+		<varlistentry>
+			<term>Medicine Patch</term>
+			<listitem><para>Boosts your health by 50 points, up to 100.</para></listitem>
+		</varlistentry>
+
+		<varlistentry>
+			<term>Life Seed</term>
+			<listitem><para>Adds 100 points to your health, up to 200 total.</para></listitem>
+		</varlistentry>
+
+		<varlistentry>
+			<term>Body Armor</term>
+			<listitem><para>Adds 100 body armor. Protects from bullets,
+			shells, and concussion effects from explosives.</para></listitem>
+		</varlistentry>
+
+		<varlistentry>
+			<term>Fire Armor</term>
+			<listitem><para>Adds 100 fire resistant armor, which is
+			useful against flares, flaming aerosol, and the residual effects of
+			dynamite and napalm.</para></listitem>
+		</varlistentry>
+
+		<varlistentry>
+			<term>Spirit Armor</term>
+			<listitem><para>Adds 100 spiritual armor, which will absorb
+			damage from the Voodoo Doll and Life Leech.</para></listitem>
+		</varlistentry>
+
+		<varlistentry>
+			<term>Super Armor</term>
+			<listitem><para>Adds 200 points of body, fire, and spirit armor.</para></listitem>
+		</varlistentry>
+
+		<varlistentry>
+			<term>Basic Armor</term>
+			<listitem><para>Adds 50 of each type of armor.</para></listitem>
+		</varlistentry>
+
+	</variablelist>
+
+	</sect2>
+
+
+	<sect2><title>Items &amp; Powerups</title>
+
+	<variablelist>
+
+		<varlistentry>
+			<term>Death Mask</term>
+			<listitem><para>Provides temporary invulnerability to all
+			attacks. Note that you are still susceptible to physics, which means
+			a dynamite blast may hurl you off a cliff.</para></listitem>
+		</varlistentry>
+
+		<varlistentry id="boots">
+			<term>Jump Boots</term>
+			<listitem><para>Enable you to jump much higher than normal.
+			Useful for those hard to reach places or crossing chasms the easy
+			way.</para></listitem>
+		</varlistentry>
+
+		<varlistentry>
+			<term>Cloak of Invisibility</term>
+			<listitem><para>The cloak will hide you from your
+			enemies. That is, until you decide to attack them, even then they
+			will have a hard time attacking you. Definately, one of the more
+			useful power-ups in the game.</para></listitem>
+		</varlistentry>
+
+		<varlistentry id="dr_bag">
+			<term>Dr.'s Bag</term>
+			<listitem><para>Will restore up to 100 points of health when
+			activated. The unused medicine will remain in your inventory until
+			used up. Keep this item handy!</para></listitem>
+		</varlistentry>
+
+		<varlistentry id="akimbo">
+			<term>Guns akimbo</term>
+			<listitem><para>Gives you double-fisted
+			killing power with one-handed weapons, such as the shotgun, flare
+			gun, and Tommy gun. Lasts 30 seconds.</para></listitem>
+		</varlistentry>
+
+		<varlistentry>
+			<term>Reflective Shots</term>
+			<listitem><para>This powerup causes bullets to bounce
+			back at your attacker. You are still susceptible to flares and
+			explosives, so be careful.</para></listitem>
+		</varlistentry>
+
+	</variablelist>
+
+	</sect2>
+
+</sect1>
+
+
+<!-- Advanced usage -->
+
+<sect1><title>Advanced usage</title>
+
+	<sect2 id="warmup"><title>Warmup</title>
+
+	<para>The warmup is a short period of time before the fight actually begins.
+	The idea behind this system is to make sure all players start at the
+	same time so that no guy gets all the stuff before someone else even
+	enters play. Also it lets the time to players who don't know the map
+	yet to explore it a little bit.</para>
+
+	<para>You control the amount of time dedicated to the warmup by setting the
+	<link linkend="g_warmup">g_warmup</link> cvar to a value in secondes. A
+	server will wait after at least 2 players (of different teams if any)
+	have entered the game to start the countdown. It will then reset the
+	map and respawn all players. Be sure to set it to a non-zero value
+	before starting the map, or you won't have any warmup at all.</para>
+
+	<para>Of course, no frag can be taken during the warmup.</para>
+
+	</sect2>
+
+
+	<sect2 id="menu"><title>Voting menu</title>
+
+	<para>The voting menu is a mecanism that allows players to change server
+	settings via votes. For the moment, the available settings are: map,
+	game type, frag limit, time limit, warmup duration, and options.</para>
+
+	<para>To enter the menu, you must use "impulse 50" while idle. The menu is
+	entirely based on impulse commands. To enter into a submenu or vote
+	for something, just send the impulse number corresponding to your
+	choice. Once you have voted, you will be exited from the menu
+	automatically, but until you vote or you explicitely exit the menu,
+	all your impulses will be handled by it.</para>
+
+	<para>Observers don't have access to the menu.</para>
+
+	</sect2>
+
+
+	<sect2><title>Cvars</title>
+
+	<para>You'll find in Transfusion quite a lot of the usual cvars from Quake
+	(be careful though, "samelevel" hasn't the same use as in Quake, see
+	the <link linkend="map_cycling">map cycling</link> section for more
+	informations). We have already talked about "deathmatch", "teamplay",
+	"fraglimit" and "timelimit"; but you'll also find "skill" for setting
+	the bots skill.</para>
+
+	<para>Transfusion has a few specific cvars that you may want to use if you
+	host a server:</para>
+
+	<itemizedlist>
+		<listitem><para>"g_flashyEffects": turn on/off some flashy effects. Some of
+		them may actually be changed only after restarting the map.</para></listitem>
+		<listitem><para>"g_lockTeams": if set during a teamplay, the end of the
+		<link linkend="warmup">warmup</link> locks the teams so that no new
+		player can join them until the end of the match.</para></listitem>
+		<listitem id="g_warmup"><para>"g_warmup": if set to a non-zero value,
+		it indicates the duration of the <link linkend="warmup">warmup</link>
+		in secondes. If set to 0, the warmup is disabled.</para></listitem>
+		<listitem><para>"g_weaponStay": if set, weapons don't disappear when taken,
+		but you can't take a weapon more than once (equivalent to "Doom Old
+		DeathMatch" and "Quake DM 3").</para></listitem>
+		<listitem><para>"sv_cheats": enable a few client impulses which may be used
+		to cheat one way or another.</para></listitem>
+		<listitem><para>"sv_disable": a set of flags that allow a server
+		administrator to keep his server under control despite the voting
+		system. Its value must be set by adding the following numbers: 1 to
+		disable bots, 2 to disable map voting, 4 to disable game type
+		voting, 8 to disable frag limit voting, 16 to disable time limit
+		voting, 32 to disable warmup duration voting, and 64 to disable
+		options voting. For example, setting "sv_disable" to 5 (1+4) will
+		ensure your server won't have bots and won't change its initial
+		game type.</para></listitem>
+	</itemizedlist>
+
+	<para>Your server must have a "set" command or an automatic cvar creation
+	at progs request to allow you to use the new cvars though. It's not
+	the case of the original Quake binaries and of quite a lot of more
+	modern versions of the Quake engine. Be sure to check that.</para>
+
+	<para>In general you won't have problems with Transfusion specific cvars.
+	The <link linkend="menu">voting menu</link> allows the players to set most
+	of them manually as needed, so you shouldn't have to worry about that.
+	That said, there's one particular case that is indeed problematic: when
+	you want to set a Transfusion specific cvar right at server start,
+	using the command line or some config file. At this time, the
+	Transfusion cvars won't be created yet and the program will tell you
+	that it doesn't know this command. This is due to the fact that they
+	are created by the game code the first time you start a map.</para>
+
+	<para>For instance, if you run "transfusion +set g_warmup 15 +map bb3", the
+	<link linkend="g_warmup">g_warmup</link> value will be 0 because the map
+	is launched after the "set" command. The right way to do it is:
+	"transfusion +map bb3 +set g_warmup 15". Actually, this example is
+	even trickier than that, because you will probably want to have a
+	warmup at once. Unfortunately, the value is set after you start the
+	map, so you won't get a warmup the first time. The best way to do it
+	is then: "transfusion +map bb3 +set g_warmup 15 +restart". With the
+	addition of this last command, you'll restart the map immediately, and
+	so you'll have a warmup.</para>
+
+	<para>With the engine we provide with Transfusion, it's even more
+	complicated (yes, it's possible). To put it in a nutshell, DarkPlaces
+	doesn't launch a map when it executes the "map" command. Instead, it
+	waits until all parts of the engine are initialized to do so. This
+	means that you'll have to make your commands waiting too. How to do
+	that? With the "wait" command. The previous example becomes
+	"transfusion +map bb3 +wait +wait +wait +wait +wait +set g_warmup 15
+	+restart". Yes, the 5 "wait" are necessary, because the engine has the
+	time to execute the command buffer 4 times before the map is actually
+	launched.</para>
+	
+	</sect2>
+
+
+	<sect2 id="map_cycling"><title>Map cycling</title>
+
+	<para>Transfusion supports a map cycling mecanism which is very similar to
+	the system used by several popular Quake mods, including FrikBotX and
+	Omicron bots. It is based on a script file ("maps.cfg"), a cvar
+	("samelevel"), and a few console aliases. Basically, you have to write
+	a "maps.cfg" in your "basetf" subdirectory so that it sets
+	"samelevel" to the number of maps in your list, and that it defines an
+	alias for each of those maps, named "map1", "map2", "map3", ... you get
+	the idea. Each alias must contain the command line to launch the map.</para>
+
+	<para>Here's a sample "maps.cfg" file to help you understand the system. It
+	cycles through 4 maps (bb3, bb7, cpbb01, and crypt):</para>
+
+	<screen>
+	samelevel "4"
+	alias map1 "changelevel bb3"
+	alias map2 "changelevel bb7"
+	alias map3 "changelevel cpbb01"
+	alias map4 "changelevel crypt"
+	</screen>
+
+	<para>This file is reloaded each time the server starts a map, so you can
+	safely modify it without having to restart your server. Also, this
+	means you don't have to execute it manually: the game code will do it
+	for you when needed. All you have to do is putting the file in the
+	right place.</para>
+
+	<para>Note that the <link linkend="menu">voting system</link> still works
+	correctly even if the server administrator defines a map cycling list.
+	The map will change according to the vote, and the cycle will resume
+	afterwards.</para>
+
+	</sect2>
+
+</sect1>
+
+
+<!-- FAQ -->
+
+<sect1><title>Frequently Asked Questions</title>
+
+<variablelist>
+
+	<varlistentry>
+		<term>I just replaced a PAK file and some of the objects look all
+		messed up</term>
+		<listitem><para>Delete the "glquake" directory inside all of your Quake directories
+		and run Transfusion again.</para></listitem>
+	</varlistentry>
+
+	<varlistentry>
+		<term>Why didn't you use another engine to make Transfusion?</term>
+		<listitem><para>Because in order to make the necessary AI, physic and logic changes to
+		the game so that it feels and behaves like Blood, we need direct access
+		to the engine source code, not just the "game.dll" or game code, or
+		whatever you want to refer to it as. Making a "game.dll" only lets you
+		change some things, and they aren't enough things to do a total
+		conversion correctly (in our opinion). Therefore, we chose the Quake 1
+		engine, since we have complete control over every aspect of the game.
+		We felt it outweighed the other limitations of the Quake engine (low
+		count polys, lower resolution, lack of things like colored lights,
+		etc). Also, the Quake engine is licensed under the GNU GPL - which
+		means we are free to change it without paying anyone a dime... To use
+		the Quake 3 engine or the Unreal engine would have required us to
+		purchase a license, something we don't have the money to do.</para></listitem>
+	</varlistentry>
+
+	<varlistentry>
+		<term>Transfusion exits with: <emphasis>Z_Malloc: failed on allocation of XXX
+		bytes</emphasis></term>
+		<listitem><para>The engine hasn't allocated enough "zone" memory. You can change this
+		with the "-zone" command line argument. With most engines, "-zone 256"
+		will be enough, but some of them may require more (try 512).</para></listitem>
+	</varlistentry>
+
+	<varlistentry>
+		<term>I want to contribute to the Transfusion Project</term>
+		<listitem><para>It's very simple. Start doing a quick tour through our 2 websites to
+		be sure to know all the basic informations you may need. Then, contact
+		the Project Coordinator and either the Lead Artist or the Lead
+		Programmer, depending on what you want to contribute.</para></listitem>
+	</varlistentry>
+
+</variablelist>
+
+</sect1>
+
+
+<!-- Links -->
+
+<sect1 id="links"><title>Links</title>
+
+<itemizedlist>
+
+	<listitem><para><ulink url="http://transfusion.deathmask.net/">The
+	Transfusion Project</ulink>: our home page</para></listitem>
+
+	<listitem><para><ulink url="http://blood.sourceforge.net/">Transfusion
+	on SourceForge.net</ulink>: our development page</para></listitem>
+
+	<listitem><para><ulink url="http://icculus.org/twilight/darkplaces/">The
+	DarkPlaces engine</ulink>: the engine we recommend and provide</para></listitem>
+
+	<listitem><para><ulink url="http://www.inside3d.com/frikbot/">FrikBotX</ulink>:
+	where our bots come from</para></listitem>
+
+	<listitem><para><ulink url="http://zquake.frag.ru/">ZQuake</ulink>: arguably
+	the best QuakeWorld based engine</para></listitem>
+
+</itemizedlist>
+
+</sect1>
+
+</article>
