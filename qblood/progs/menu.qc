@@ -184,16 +184,16 @@ float(.float vote_field, float value) Vote_IsPassed =
     player = nextent (world);
     while (player != world)
     {
-        // If it's a real client (not a bot)
+        // If it's a (real) player
+        #ifdef FRIKBOT
         if (player.ishuman == TRUE && player.b_clientno != -1)
+        #else
+        if (player.classname == "player" || player.classname == "observer")
+        #endif
         {
-            // If it's not an observer
-            if (! player.observer)
-            {
-                VoteTotal = VoteTotal + 1;
-                if (player.vote_field == value)
-                    VoteCount = VoteCount + 1;
-            }
+            VoteTotal = VoteTotal + 1;
+            if (player.vote_field == value)
+                VoteCount = VoteCount + 1;
         }
 
         player = nextent (player);

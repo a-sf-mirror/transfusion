@@ -1037,8 +1037,10 @@ void() PlayerPreThink =
     local   float   mspeed, aspeed;
     local   float   r;
 
-    if (BotPreFrame()) // FrikBot
+    #ifdef FRIKBOT
+    if (BotPreFrame())
         return;
+    #endif
 
     if (intermission_running)
     {
@@ -1249,6 +1251,7 @@ void() Impulses_Player =
     else if (self.impulse == 50)
         Menu_Start ();
 
+    #ifdef FRIKBOT
     // Bot management
     else if (self.impulse == 100 || self.impulse == 101)
     {
@@ -1266,6 +1269,7 @@ void() Impulses_Player =
     }
     else if (self.impulse == 102)
         KickABot();
+    #endif
 
     else if (self.impulse == 141)
         identify_player ();
@@ -1273,7 +1277,7 @@ void() Impulses_Player =
     // These ones are considered cheats and are only allowed when the "sv_allowCheat" cvar is set
     else if (cvar ("sv_allowCheat"))
     {
-        #ifndef QUAKEWORLD
+        #if defined(FRIKBOT) && !defined (QUAKEWORLD)
         if (self.impulse == 103)
             botcam_u ();
         else if (self.impulse == 104)
@@ -1333,6 +1337,7 @@ void() Impulses_Dead =
     else if (self.impulse == 50)
         Menu_Start ();
 
+    #ifdef FRIKBOT
     // Bot management
     else if (self.impulse == 100 || self.impulse == 101)
     {
@@ -1350,6 +1355,7 @@ void() Impulses_Dead =
     }
     else if (self.impulse == 102)
         KickABot();
+    #endif
 
     else if (self.impulse == 141)
         identify_player ();
@@ -1370,8 +1376,10 @@ void() PlayerPostThink =
     local   float   mspeed, aspeed;
     local   float   r;
 
-    if (BotPostFrame()) // FrikBot
+    #ifdef FRIKBOT
+    if (BotPostFrame())
         return;
+    #endif
 
     // Check for menu commands
     if (self.player_state == PS_MENU)
@@ -1435,7 +1443,9 @@ called when a player connects to a server
 */
 void() ClientConnect =
 {
-    ClientInRankings(); // FrikBot
+    #ifdef FRIKBOT
+    ClientInRankings();
+    #endif
 
     Bprint (PRINT_HIGH, self.netname);
     Bprint (PRINT_HIGH, " lives again!\n"); // entered the game
@@ -1460,7 +1470,9 @@ void() ClientDisconnect =
 {
     local string finalscore;
 
-    ClientDisconnected(); // FrikBot
+    #ifdef FRIKBOT
+    ClientDisconnected();
+    #endif
 
     // if the level end trigger has been activated, just return
     // since they aren't *really* leaving

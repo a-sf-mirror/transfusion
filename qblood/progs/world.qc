@@ -222,8 +222,10 @@ void() worldspawn =
 
     lastspawn = world;
 
+    #ifdef FRIKBOT
     // FrikBot X initialization
     BotInit();
+    #endif
 
     // Compute the game type
     #ifdef QUAKEWORLD
@@ -358,7 +360,9 @@ void() StartFrame =
     fraglimit = cvar("fraglimit");
     skill     = cvar("skill");
 
-    BotFrame(); // FrikBot
+    #ifdef FRIKBOT
+    BotFrame();
+    #endif
 };
 
 
@@ -392,7 +396,10 @@ void(float corpseHealth, void() corpseToGib) BecomeCorpse =
     self.targetname = string_null;
     self.th_pain = SUB_Null;
     self.deadflag = DEAD_DEAD;
+
+    #ifdef FRIKBOT
     self.ishuman = 0;
+    #endif
 
     // Corpse will turn into gibs if destroyed
     self.health = corpseHealth;

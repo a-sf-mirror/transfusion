@@ -273,7 +273,7 @@ void(vector org, vector dir, float mspeed) Tesla_LaunchJolt =
         jolt.model  = "progs/bolt.mdl";
         jolt.style  = TESLA_NORMALJOLT;
         jolt.angles = jolt.angles + '0 90 0';
-        setorigin (jolt, org + '0 0 8');
+        setorigin (jolt, org + '0 0 4');
     }
     jolt.touch      = Tesla_JoltTouch;
     jolt.nextthink  = time + (8000 / mspeed);

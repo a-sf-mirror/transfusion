@@ -1,4 +1,4 @@
-/*  Copyright (C) 2001  Mathieu Olivier
+/*  Copyright (C) 2001-2002  Mathieu Olivier
 
     This program is free software; you can redistribute it and/or modify
     it under the terms of the GNU General Public License as published by
@@ -25,6 +25,8 @@
  * Special Thanks to: Asdf, Frog, Alan "Strider" Kivlin
  */
 
+
+#ifdef FRIKBOT
 
 #include "common.qh"
 
@@ -658,3 +660,4 @@ void() SV_Physics_Client =
 };
 
 
+#endif  // #ifdef FRIKBOT

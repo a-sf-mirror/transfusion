@@ -30,7 +30,9 @@ called when a spectator connects to a server
 */
 void() SpectatorConnect =
 {
-    ClientFixRankings(); // FrikBot
+    #ifdef FRIKBOT
+    ClientFixRankings();
+    #endif
 
     bprint (PRINT_MEDIUM, "Spectator ");
     bprint (PRINT_MEDIUM, self.netname);
@@ -94,5 +96,3 @@ void() SpectatorThink =
     if (self.impulse)
         SpectatorImpulseCommand();
 };
-
-
