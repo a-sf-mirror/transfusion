@@ -52,6 +52,29 @@ $frame tommy_draw1 tommy_draw2 tommy_draw3
 $frame tommy_holster1 tommy_holster2 tommy_holster3
 
 
+// Akimbo model
+$modelname v_anail
+
+// idle
+$frame atommy_idle1
+
+// fire
+$frame atommy_fire1 atommy_fire2
+
+// altfire
+// atommy_alt1 = atommy_alt5 = center
+// atommy_alt2 = atommy_alt4 = near left
+// atommy_alt6 = atommy_alt8 = near right
+$frame atommy_alt1 atommy_alt2 atommy_alt3 atommy_alt4 atommy_alt5
+$frame atommy_alt6 atommy_alt7 atommy_alt8
+
+// draw
+$frame atommy_draw1 atommy_draw2 atommy_draw3
+
+// holster
+$frame atommy_holster1 atommy_holster2 atommy_holster3
+
+
 #else
 // Normal model
 $modelname v_tommy
@@ -74,14 +97,16 @@ $frame tommy_alt6 tommy_alt7 tommy_alt8
 
 // holster
 $frame tommy_holster1 tommy_holster2 tommy_holster3
-#endif
 
 
 // Akimbo model
-$modelname v_anail
+$modelname ga_tommy
 
 // idle
 $frame atommy_idle1
+
+// draw
+$frame atommy_draw1 atommy_draw2 atommy_draw3
 
 // fire
 $frame atommy_fire1 atommy_fire2
@@ -93,11 +118,9 @@ $frame atommy_fire1 atommy_fire2
 $frame atommy_alt1 atommy_alt2 atommy_alt3 atommy_alt4 atommy_alt5
 $frame atommy_alt6 atommy_alt7 atommy_alt8
 
-// draw
-$frame atommy_draw1 atommy_draw2 atommy_draw3
-
 // holster
 $frame atommy_holster1 atommy_holster2 atommy_holster3
+#endif
 
 
 // ----- Player related code ----- //
@@ -334,7 +357,11 @@ void() Tommy_UpdateView =
 {
     if (self.akimbo_finished > time && self.currentammo >= 2)
     {
+        #ifndef NEW_MODELS
         self.weaponmodel = "progs/v_anail.mdl";
+        #else
+        self.weaponmodel = "models/weapons/ga_tommy.md3";
+        #endif
         self.items = self.items | IT_GUNS_AKIMBO;
     }
     else

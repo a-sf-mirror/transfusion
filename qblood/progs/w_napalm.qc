@@ -50,25 +50,6 @@ $frame napalm_draw1 napalm_draw2 napalm_draw3 napalm_draw4
 $frame napalm_holster1 napalm_holster2 napalm_holster3 napalm_holster4
 
 
-#else
-// Normal model
-$modelname v_napalm
-
-// idle
-$frame napalm_idle1
-
-// draw
-$frame napalm_draw1 napalm_draw2 napalm_draw3
-
-// fire & altfire
-$frame napalm_fire1 napalm_fire2 napalm_fire3 napalm_fire4 napalm_fire5
-$frame napalm_fire6
-
-// holster
-$frame napalm_holster1 napalm_holster2 napalm_holster3
-#endif
-
-
 // Akimbo model
 $modelname v_arock2
 
@@ -90,31 +71,72 @@ $frame anapalm_draw1 anapalm_draw2 anapalm_draw3
 $frame anapalm_holstr1 anapalm_holstr2 anapalm_holstr3
 
 
+#else
+// Normal model
+$modelname v_napalm
+
+// idle
+$frame napalm_idle1
+
+// draw
+$frame napalm_draw1 napalm_draw2 napalm_draw3
+
+// fire & altfire
+$frame napalm_fire1 napalm_fire2 napalm_fire3 napalm_fire4 napalm_fire5
+$frame napalm_fire6
+
+// holster
+$frame napalm_holster1 napalm_holster2 napalm_holster3
+
+
+// Akimbo model
+$modelname ga_napalm
+
+// idle
+$frame anapalm_idle1
+
+// draw
+$frame anapalm_draw1 anapalm_draw2 anapalm_draw3
+
+// fire
+$frame anapalm_fire1 anapalm_fire2 anapalm_fire3 anapalm_fire4 anapalm_fire5
+$frame anapalm_fire6
+
+// holster
+$frame anapalm_holstr1 anapalm_holstr2 anapalm_holstr3
+#endif
+
+
 // ----- Player related code ----- //
 
 // Normal fire
-void() player_napalm1 = [$attack1, player_napalm2] { self.weaponframe = $napalm_fire2; muzzleflash (); };
-void() player_napalm2 = [$attack1, player_napalm3] { self.weaponframe = $napalm_fire3; };
-void() player_napalm3 = [$attack1, player_napalm4] { self.weaponframe = $napalm_fire4; };
-void() player_napalm4 = [$attack2, player_napalm5] { self.weaponframe = $napalm_fire5; };
-void() player_napalm5 = [$attack2, player_run    ] { self.weaponframe = $napalm_fire6; };
+void() player_napalm1 = [$attack1, player_napalm2] { self.weaponframe = $napalm_fire1; muzzleflash (); };
+void() player_napalm2 = [$attack1, player_napalm3] { self.weaponframe = $napalm_fire2; };
+void() player_napalm3 = [$attack1, player_napalm4] { self.weaponframe = $napalm_fire3; };
+void() player_napalm4 = [$attack1, player_napalm5] { self.weaponframe = $napalm_fire4; };
+void() player_napalm5 = [$attack2, player_napalm6] { self.weaponframe = $napalm_fire5; };
+void() player_napalm6 = [$attack2, player_run    ] { self.weaponframe = $napalm_fire6; };
 
 // Akimbo fire
-void() player_aknapalm1 = [$attack1, player_aknapalm2] { self.weaponframe = $anapalm_fire2; muzzleflash (); };
-void() player_aknapalm2 = [$attack2, player_aknapalm3] { self.weaponframe = $anapalm_fire3; };
-void() player_aknapalm3 = [$attack1, player_aknapalm4] { self.weaponframe = $anapalm_fire4; muzzleflash ();  Napalm_Fire (); };
-void() player_aknapalm4 = [$attack1, player_aknapalm5] { self.weaponframe = $anapalm_fire5; };
-void() player_aknapalm5 = [$attack2, player_aknapalm6] { self.weaponframe = $anapalm_fire6; };
-void() player_aknapalm6 = [$attack2, player_run      ]
+void() player_aknapalm1 = [$attack1, player_aknapalm2] { self.weaponframe = $anapalm_fire1; muzzleflash (); };
+void() player_aknapalm2 = [$attack2, player_aknapalm3] { self.weaponframe = $anapalm_fire2; };
+void() player_aknapalm3 = [$attack1, player_aknapalm4] { self.weaponframe = $anapalm_fire3; muzzleflash ();  Napalm_Fire (); };
+void() player_aknapalm4 = [$attack1, player_aknapalm5] { self.weaponframe = $anapalm_fire4; };
+void() player_aknapalm5 = [$attack2, player_aknapalm6] { self.weaponframe = $anapalm_fire5; };
+void() player_aknapalm6 = [$attack2, player_aknapalm7] { self.weaponframe = $anapalm_fire6; };
+#ifndef NEW_MODELS
+void() player_aknapalm7 = [$attack2, player_aknapalm8] { self.weaponframe = $anapalm_fire7; };
+void() player_aknapalm8 = [$attack2, player_aknapalm9] { self.weaponframe = $anapalm_fire8; };
+void() player_aknapalm9 =
+#else
+void() player_aknapalm7 =
+#endif
 {
     // If we don't have enough ammo anymore, drop the guns akimbo
     if ((self.items & IT_GUNS_AKIMBO) && self.currentammo < 2)
-    {
         Napalm_UpdateView ();
-        self.weaponframe = $anapalm_fire1;
-    }
-    else
-        self.weaponframe = $anapalm_fire7;
+
+    player_run ();
 };
 
 // Normal draw
@@ -364,12 +386,16 @@ void() Napalm_Attack =
     if (self.items & IT_GUNS_AKIMBO)
     {
         player_aknapalm1 ();
+        #ifndef NEW_MODELS
+        self.attack_finished = time + 0.8;
+        #else
         self.attack_finished = time + 0.6;
+        #endif
     }
     else
     {
         player_napalm1 ();
-        self.attack_finished = time + 0.5;
+        self.attack_finished = time + 0.6;
     }
 
     Napalm_Fire ();
@@ -445,7 +471,11 @@ void() Napalm_UpdateView =
 {
     if (self.akimbo_finished > time && self.currentammo >= 2)
     {
+        #ifndef NEW_MODELS
         self.weaponmodel = "progs/v_arock2.mdl";
+        #else
+        self.weaponmodel = "models/weapons/ga_napalm.md3";
+        #endif
         self.items = self.items | IT_GUNS_AKIMBO;
     }
     else

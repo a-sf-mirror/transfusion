@@ -52,6 +52,25 @@ $frame shot_draw1 shot_draw2 shot_draw3 shot_draw4
 $frame shot_holster1 shot_holster2 shot_holster3 shot_holster4
 
 
+// Akimbo model
+$modelname v_ashot2
+
+// idle
+$frame ashot_idle1
+
+// fire
+$frame ashot_fire1 ashot_fire2 ashot_fire3
+
+// altfire
+$frame ashot_alt1 ashot_alt2 ashot_alt3 ashot_alt4
+
+// draw
+$frame ashot_draw1 ashot_draw2 ashot_draw3 ashot_draw4
+
+// holster
+$frame ashot_holster1 ashot_holster2 ashot_holster3 ashot_holster4
+
+
 #else
 // Normal model
 $modelname v_shot
@@ -73,14 +92,16 @@ $frame shot_reload1 shot_reload2 shot_reload3 shot_reload4 shot_reload5
 
 // holster
 $frame shot_holster1 shot_holster2 shot_holster3
-#endif
 
 
 // Akimbo model
-$modelname v_ashot2
+$modelname ga_shot
 
 // idle
 $frame ashot_idle1
+
+// draw
+$frame ashot_draw1 ashot_draw2 ashot_draw3
 
 // fire
 $frame ashot_fire1 ashot_fire2 ashot_fire3
@@ -88,11 +109,9 @@ $frame ashot_fire1 ashot_fire2 ashot_fire3
 // altfire
 $frame ashot_alt1 ashot_alt2 ashot_alt3 ashot_alt4
 
-// draw
-$frame ashot_draw1 ashot_draw2 ashot_draw3 ashot_draw4
-
 // holster
-$frame ashot_holster1 ashot_holster2 ashot_holster3 ashot_holster4
+$frame ashot_holster1 ashot_holster2 ashot_holster3
+#endif
 
 
 // ----- Player related code ----- //
@@ -188,15 +207,23 @@ void() player_shotholster4 = [$attack2, player_run         ] { W_DrawWeapon (sel
 // Akimbo draw
 void() player_akshotdraw1 = [$attack2, player_akshotdraw2] { self.weaponframe = $ashot_draw1; };
 void() player_akshotdraw2 = [$attack2, player_akshotdraw3] { self.weaponframe = $ashot_draw2; };
+#ifndef NEW_MODELS
 void() player_akshotdraw3 = [$attack2, player_akshotdraw4] { self.weaponframe = $ashot_draw3; };
 void() player_akshotdraw4 = [$attack2, player_run        ] { self.weaponframe = $ashot_draw4; };
+#else
+void() player_akshotdraw3 = [$attack2, player_run        ] { self.weaponframe = $ashot_draw3; };
+#endif
 
 // Akimbo holster
 void() player_akshotholster1 = [$attack2, player_akshotholster2] { self.weaponframe = $ashot_holster1; };
 void() player_akshotholster2 = [$attack2, player_akshotholster3] { self.weaponframe = $ashot_holster2; };
 void() player_akshotholster3 = [$attack2, player_akshotholster4] { self.weaponframe = $ashot_holster3; };
+#ifndef NEW_MODELS
 void() player_akshotholster4 = [$attack2, player_akshotholster5] { self.weaponframe = $ashot_holster4; };
 void() player_akshotholster5 = [$attack2, player_run           ] { W_DrawWeapon (self.newweapon); };
+#else
+void() player_akshotholster4 = [$attack2, player_run           ] { W_DrawWeapon (self.newweapon); };
+#endif
 
 
 //============================================================================
@@ -372,7 +399,11 @@ void() Shot_UpdateView =
 {
     if (self.akimbo_finished > time && self.currentammo >= 2)
     {
+        #ifndef NEW_MODELS
         self.weaponmodel = "progs/v_ashot2.mdl";
+        #else
+        self.weaponmodel = "models/weapons/ga_shot.md3";
+        #endif
         self.items = self.items | IT_GUNS_AKIMBO;
     }
     else
