@@ -665,6 +665,7 @@ void() RandomHumanGibs;
 void() GibPlayerCorpse =
 {
     RandomHumanGibs ();
+    KillBurner (self);
     sound (self, CHAN_ITEM, "misc/gibsq.wav", 1, ATTN_NORM);
 
     remove (self);
