@@ -1107,7 +1107,9 @@ void(entity attacker, vector org, vector dir, float sped, float damage,
         fire.voided     = 0;
         #endif
         fire.movetype   = MOVETYPE_FLYMISSILE;
-        fire.solid      = SOLID_BBOX;
+        fire.skin       = 1;
+	fire.effects    = fire.effects | EF_DIMLIGHT;
+	fire.solid      = SOLID_BBOX;
         fire.angles     = vectoangles(dir) + '90 0 0';
         fire.velocity   = dir * sped;
         fire.touch      = PM_AltFlareTouch;
