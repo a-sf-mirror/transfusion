@@ -956,16 +956,13 @@ void() BotAI =
        status bars, and the mod probably already compensated for that
 	*/
 	
-	if (self.health < 1)
+	if (self.health < 1 && self.player_state != PS_BRINK_OF_DEATH)
     {	
         // Fire randomly until I respawn - doesn't always work, workaround below - Tim
         self.button0 = floor(random() * 2);
 		
 		// Set buttons to null
-        self.button1 = FALSE;
-        self.button2 = FALSE;
-		self.button3 = FALSE;
-		self.button4 = FALSE;
+        self.button1 = self.button2 = self.button3 = self.button4 = FALSE;
 		
         self.keys = 0;
         self.b_aiflags = 0;

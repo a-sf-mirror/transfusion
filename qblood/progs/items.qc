@@ -17,7 +17,6 @@
     See file, 'COPYING', for details.
 */
 
-
 #include "common.qh"
 
 
@@ -89,7 +88,7 @@ void() Akimbo_Touch =
     bprint4 (other.netname, " picked up a guns akimbo with ", s, " seconds remaining!\n");
 
     activator = other;
-    SUB_UseTargets();                               // fire all targets / killtargets
+    SUB_UseTargets();   // fire all targets / killtargets
 };
 
 void(float timeleft) Akimbo_Drop =
@@ -215,7 +214,7 @@ void(float isAnObject) PlaceItemOrObject =
         // the object has virtually no cost from the server point of view)
         if (!self.spawnflags && !self.think1)
         {
-			makestatic (self);
+            makestatic (self);
             return;
         }
 
@@ -476,10 +475,11 @@ void() obj_world_draven =
 // Fire Extinguisher (tile0658)
 void() obj_world_extngsh =
 {
-    // TESTME:
 	self.health = 1;
+    self.takedamage = DAMAGE_YES;
 	self.dmg = DMG_TNT;
 	self.th_die = Bomb_Explode;
+    self.spawnflags = 1;
     StartObject ("models/world/extngsh.md3", '-4 -12 16', '4 13 61');
 };
 
@@ -1898,46 +1898,48 @@ void() item_key =
 
     if (self.spawnflags & 1)
     {
-        self.model      = "progs/w_s_key.mdl";
+        self.skin       = 0;
         self.netname    = "Skull Key";
         self.items2     = IT2_KEY1;
     }
     else if (self.spawnflags & 2)
     {
-        self.model      = "progs/w_g_key.mdl";
+        self.skin       = 1;
         self.netname    = "Eye Key";
         self.items2     = IT2_KEY2;
     }
     else if (self.spawnflags & 4)
     {
-        self.model      = "progs/m_s_key.mdl";
+        self.skin       = 2;
         self.netname    = "Fire Key";
         self.items2     = IT2_KEY3;
     }
     else if (self.spawnflags & 8)
     {
-        self.model      = "progs/m_g_key.mdl";
+        self.skin       = 3;
         self.netname    = "Dagger Key";
         self.items2     = IT2_KEY4;
     }
     else if (self.spawnflags & 16)
     {
-        self.model      = "progs/b_s_key.mdl";
+        self.skin       = 4;
         self.netname    = "Spider Key";
         self.items2     = IT2_KEY5;
     }
     else if (self.spawnflags & 32)
     {
-        self.model      = "progs/b_g_key.mdl";
+        self.skin       = 5;
         self.netname    = "Moon Key";
         self.items2     = IT2_KEY6;
     }
 
-    precache_model (self.model);
-    setmodel (self, self.model);
+    precache_model ("models/items/i_key.md3");
+    setmodel (self, "models/items/i_key.md3");
     setsize (self, '-16 -16 -24', '16 16 32');
 
-    self.noise  = "items/pickkey.wav";
+    if (!self.noise)
+        self.noise  = "items/pickkey.wav";
+
     precache_sound (self.noise);
 
     self.touch  = key_touch;

@@ -259,6 +259,12 @@ void() func_changelevel =
     if (!self.map)
         objerror ("changelevel func doesn't have map");
 
+    if (gametype != GT_SINGLE_PLAYER && gametype != GT_COOPERATIVE)
+    {
+        remove(self);
+        return;
+    }
+
     self.spawnflags = self.spawnflags | SF_USABLE;
     self.solid = SOLID_BSP;
     self.movetype = MOVETYPE_PUSH;

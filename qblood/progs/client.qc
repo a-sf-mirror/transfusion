@@ -28,16 +28,7 @@ void () player_pain;
 void () player_stand;
 void (vector org) spawn_tfog;
 void (vector org, entity death_owner) spawn_tdeath;
-void () Taunt0;
-void () Taunt1;
-void () Taunt2;
-void () Taunt3;
-void () Taunt4;
-void () Taunt5;
-void () Taunt6;
-void () Taunt7;
-void () Taunt8;
-void () Taunt9;
+void (float snd) Taunt;
 void () FadePlayerDisplay;
 void () ResetPlayerDisplay;
 void () shake_start;
@@ -1343,35 +1334,34 @@ void(float isAlive) Impulses_Player =
             ArmorTest ();
 
         else if (self.impulse == IMP_TAUNT_0)
-            Taunt0();
+            Taunt(0);
 
         else if (self.impulse == IMP_TAUNT_1)
-            Taunt1();
+            Taunt(1);
 
         else if (self.impulse == IMP_TAUNT_2)
-            Taunt2();
+            Taunt(2);
 
         else if (self.impulse == IMP_TAUNT_3)
-            Taunt3();
+            Taunt(3);
 
         else if (self.impulse == IMP_TAUNT_4)
-            Taunt4();
+            Taunt(4);
 
         else if (self.impulse == IMP_TAUNT_5)
-            Taunt5();
+            Taunt(5);
 
         else if (self.impulse == IMP_TAUNT_6)
-            Taunt6();
+            Taunt(6);
 
         else if (self.impulse == IMP_TAUNT_7)
-            Taunt7();
+            Taunt(7);
 
         else if (self.impulse == IMP_TAUNT_8)
-            Taunt8();
+            Taunt(8);
 
         else if (self.impulse == IMP_TAUNT_9)
-            Taunt9();
-        
+            Taunt(9);
 
 		else if (self.impulse == 80)
 		    shake_start();
@@ -2141,13 +2131,59 @@ void() ResetPlayerDisplay =
 };
 
 // Player taunts
-void () Taunt0 = {sound (self, CHAN_AUTO, "player/taunts/taunt0.wav", 1, ATTN_NORM);};
-void () Taunt1 = {sound (self, CHAN_AUTO, "player/taunts/taunt1.wav", 1, ATTN_NORM);};
-void () Taunt2 = {sound (self, CHAN_AUTO, "player/taunts/taunt2.wav", 1, ATTN_NORM);};
-void () Taunt3 = {sound (self, CHAN_AUTO, "player/taunts/taunt3.wav", 1, ATTN_NORM);};
-void () Taunt4 = {sound (self, CHAN_AUTO, "player/taunts/taunt4.wav", 1, ATTN_NORM);};
-void () Taunt5 = {sound (self, CHAN_AUTO, "player/taunts/taunt5.wav", 1, ATTN_NORM);};
-void () Taunt6 = {sound (self, CHAN_AUTO, "player/taunts/taunt6.wav", 1, ATTN_NORM);};
-void () Taunt7 = {sound (self, CHAN_AUTO, "player/taunts/taunt7.wav", 1, ATTN_NORM);};
-void () Taunt8 = {sound (self, CHAN_AUTO, "player/taunts/taunt8.wav", 1, ATTN_NORM);};
-void () Taunt9 = {sound (self, CHAN_AUTO, "player/taunts/taunt9.wav", 1, ATTN_NORM);};
+void (float snd) Taunt = 
+{
+    if (self.voice_finished < time)
+    {
+        if (snd == 0)
+        {
+            sound (self, CHAN_AUTO, "player/taunts/taunt0.wav", 1, ATTN_NORM);
+            self.voice_finished = time + 3.11;
+        }
+        else if (snd == 1)
+        {
+            sound (self, CHAN_AUTO, "player/taunts/taunt1.wav", 1, ATTN_NORM);
+            self.voice_finished = time + 2.38;
+        }
+        else if (snd == 2)
+        {
+            sound (self, CHAN_AUTO, "player/taunts/taunt2.wav", 1, ATTN_NORM);
+            self.voice_finished = time + 0.83;
+        }
+        else if (snd == 3)
+        {
+            sound (self, CHAN_AUTO, "player/taunts/taunt3.wav", 1, ATTN_NORM);
+            self.voice_finished = time + 2.56;
+        }
+        else if (snd == 4)
+        {
+            sound (self, CHAN_AUTO, "player/taunts/taunt4.wav", 1, ATTN_NORM);
+            self.voice_finished = time + 2.14;
+        }
+        else if (snd == 5)
+        {
+            sound (self, CHAN_AUTO, "player/taunts/taunt5.wav", 1, ATTN_NORM);
+            self.voice_finished = time + 3.16;
+        }
+        else if (snd == 6)
+        {
+            sound (self, CHAN_AUTO, "player/taunts/taunt6.wav", 1, ATTN_NORM);
+            self.voice_finished = time + 0.64;
+        }
+        else if (snd == 7)
+        {
+            sound (self, CHAN_AUTO, "player/taunts/taunt7.wav", 1, ATTN_NORM);
+            self.voice_finished = time + 2;
+        }
+        else if (snd == 8)
+        {
+            sound (self, CHAN_AUTO, "player/taunts/taunt8.wav", 1, ATTN_NORM);
+            self.voice_finished = time + 0.95;
+        }
+        else// if (snd == 9)
+        {
+            sound (self, CHAN_AUTO, "player/taunts/taunt9.wav", 1, ATTN_NORM);
+            self.voice_finished = time + 2.19;
+        }
+    }
+};

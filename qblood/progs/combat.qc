@@ -84,6 +84,16 @@ void(entity targ, entity attacker) Killed =
     if (self.health < -99)
         self.health = -99;      // don't let sbar look bad if a player
 
+#ifndef NO_FRIKBOT
+
+    if (!self.ishuman && self.classname == "player")
+    {
+        bot_start_topic(6);
+        self.b_chattime = time - 0.1;
+        bot_chat();
+    }
+#endif
+
     // doors, triggers, etc
     if (self.movetype == MOVETYPE_PUSH || self.movetype == MOVETYPE_NONE)
     {

@@ -189,6 +189,8 @@ void() T_MissileTouch =
     }
 
     self.deathtype = "missile";  // Done for the fire code.
+    self.effects = 0;
+
     if (other.health)
     {
         other.deathtype = "missile";

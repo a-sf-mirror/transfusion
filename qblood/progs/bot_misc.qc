@@ -28,16 +28,7 @@
 
 #include "common.qh"
 
-void () Taunt0;
-void () Taunt1;
-void () Taunt2;
-void () Taunt3;
-void () Taunt4;
-void () Taunt5;
-void () Taunt6;
-void () Taunt7;
-void () Taunt8;
-void () Taunt9;
+void (float snd) Taunt;
 
 /*
 -=-=-=-=-=-=-=-=-=-=-=-=-=-=-=-=-=-=-=-=-=-=-=
@@ -205,12 +196,12 @@ void() bot_chat =
                 if (r == 1)
                 {
                     BotSay(": I have something for you...\n");
-					Taunt4();
+					Taunt(4);
                 }
                 else if (r == 2)
                 {
                     BotSay(": Fool - You're already dead\n");                    
-					Taunt9();
+					Taunt(9);
                 }                
 				else if (r == 3)
 				{
@@ -279,12 +270,12 @@ void() bot_chat =
 				    if (random() <= 0.5)
 					{
 					    BotSay(": I love the smell of napalm in the morning\n");
-						Taunt0();
+						Taunt(0);
 					}	
 					else
 					{
 					    BotSay(": Hmmm... is that gasoline I smell?\n");
-						Taunt1();
+						Taunt(1);
 					}                
 				}
 				else if (random() <= 0.5 && self.weapon == IT_SAWED_OFF)
@@ -295,12 +286,12 @@ void() bot_chat =
                 else if (r == 1)
 				{
                     BotSay(": Tada!\n");
-					Taunt2();
+					Taunt(2);
 				}
                 else if (r == 2)
 				{
                     BotSay(": Who wants some HUH? Who's next?\n");
-					Taunt3();
+					Taunt(3);
 				}                
                 else if (r == 3)
                 {
@@ -375,7 +366,7 @@ void() bot_chat =
                 if (r == 1)
                 {
                     BotSay(": Oh, that wasn't a bit nice!\n");
-					Taunt7();                    
+					Taunt(7);                    
                 }
                 else if (r == 2)
                 {
@@ -469,17 +460,17 @@ void() bot_chat =
                 if (r == 1)
 				{
                     BotSay(": Amateurs\n");
-					Taunt8();					
+					Taunt(8);					
 				}
 				else if (r == 2)
 				{
                     BotSay(": Are you just gonna stand there and bleed?\n");
-					Taunt5();
+					Taunt(5);
 				}
                 else if (r == 3)
 				{
                     BotSay(": That'll teach ya\n");
-					Taunt6();
+					Taunt(6);
 				}
 				else if (r == 4)
 				{
