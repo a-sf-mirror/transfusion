@@ -70,11 +70,11 @@ void() W_Precache =
 
     // voodoo doll
     precache_sound ("weapons/voodoodl/vooburn.wav");
-    precache_sound ("weapons/voodoodl/voochant.wav");
 */
 
     // REMOVEME as soon as we have voodoo items directly in maps
     // because the sound is also precached in item_voodoo
+    precache_sound ("weapons/voodoodl/voochant.wav");
     precache_sound ("weapons/voodoodl/voolaugh.wav");
     precache_sound ("weapons/voodoodl/voostab.wav");
 
@@ -927,8 +927,6 @@ VOODOO DOLL
 ===============================================================================
 */
 
-#define DMG_VOODOO_DOLL 25 //per Matt Saettler
-
 /*
 ================
 W_UseVoodooDoll
@@ -947,10 +945,12 @@ void() W_UseVoodooDoll =
     muzzleflash ();
 
     // Alt-fire mode
-    if ((self.impulse == 12 || self.button1) && self.ammo_cells >= 10)
+    if ((self.impulse == 12 || self.button1) && self.ammo_cells >= 1)
     {
-        damage = 60;
+        damage = self.ammo_cells;
+        self.ammo_cells = 0;
         self.weaponframe = 19;
+        sound (self, CHAN_WEAPON, "weapons/voodoodl/voochant.wav", 1, ATTN_NORM);
     }
 
     // Normal fire mode
@@ -981,16 +981,16 @@ void() W_UseVoodooDoll =
         else
             Sprint (self, PRINT_MEDIUM, "There's a problem with the voodoo doll code\n");
 
+        // Play the appropriate sound
+        if (stab_type >= 3)  // Stab Groin
+            sound (self, CHAN_WEAPON, "weapons/voodoodl/voolaugh.wav", 1, ATTN_NORM);
+        else
+            sound (self, CHAN_WEAPON, "weapons/voodoodl/voostab.wav", 1, ATTN_NORM);
+
+        self.ammo_cells = self.ammo_cells - damage / 4;
     }
 
-    self.ammo_cells = self.ammo_cells - damage / 4;
     self.currentammo = self.ammo_cells;
-
-    // Play the appropriate sound
-    if (stab_type >= 3)  // Stab Groin
-        sound (self, CHAN_WEAPON, "weapons/voodoodl/voolaugh.wav", 1, ATTN_NORM);
-    else
-        sound (self, CHAN_WEAPON, "weapons/voodoodl/voostab.wav", 1, ATTN_NORM);
 
     dir = aim (self, 100000);
 
@@ -1023,15 +1023,15 @@ void() W_UseVoodooDoll =
         WriteCoord (MSG_MULTICAST, org_z);
         multicast (puff_org, MULTICAST_PVS);
         #else
-        SpawnBlood (org, vel*0.2, DMG_VOODOO_DOLL);
+        SpawnBlood (org, vel*0.2, damage);
         #endif
 
-        T_Damage (trace_ent, self, self, DMG_VOODOO_DOLL);
+        T_Damage (trace_ent, self, self, damage);
     }
 
     // Else, WE take the damage
     else
-        T_Damage (self, self, self, DMG_VOODOO_DOLL);
+        T_Damage (self, self, self, damage);
 };
 
 
