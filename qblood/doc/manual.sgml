@@ -6,7 +6,7 @@
    <title> Transfusion manual
    <author> Mathieu Olivier <tt>&lt;elric@planetblood.com&gt;</tt> and
    Dave Turner <tt>&lt;darth_linux@planetblood.com&gt;</tt>
-   <date>v0.0.1, August 10, 2002
+   <date>v0.0.2, August 28, 2002
    <abstract>
       This manual covers installation and usage of the
       <url url="http://www.planetblood.com/qblood/" name="Transfusion"> game.
@@ -319,8 +319,10 @@
       </sect1>
 
       <sect1><heading>Cvars<p>
-         You'll find in Transfusion quite a lot of the usual cvars from Quake. We
-         have already talked about "deathmatch", "teamplay", "fraglimit" and
+         You'll find in Transfusion quite a lot of the usual cvars from Quake
+         (be careful though, "samelevel" hasn't the same use as in Quake, see the
+         <ref id="map cycling" name="map cycling"> section for more informations).
+         We have already talked about "deathmatch", "teamplay", "fraglimit" and
          "timelimit"; but you'll also find "skill" for setting the bots skill.
 
          Transfusion has a few specific cvars that you may want to use if you host
@@ -352,6 +354,30 @@
          at progs request, to allow you to use the new cvars though. It's not
          the case of the original Quake binaries and of quite a lot of more
          modern versions of the Quake engine. Be sure to check that.
+      </sect1>
+
+      <sect1><heading>Map cycling<label id="map cycling"><p>
+         Transfusion supports the same map cycling mecanism than FrikBot and some
+         other Quake mods. It is based on a script file ("maps.cfg"), a cvar
+         ("samelevel"), and a few console aliases. Basically, you have to write
+         a "maps.cfg" in your "transfusion" subdirectory so that it sets
+         "samelevel" to the number of maps in your list, and that it defines an
+         alias for each of those maps, named "map1", "map2", "map3", ... you get
+         the idea. Each alias must contain the command line to launch the map.
+
+         Here's a sample "maps.cfg" file to help you understand the system. It
+         cycles through 4 maps (bb3, bb7, cpbb01, and crypt):
+         <verb>
+         samelevel "4"
+         alias map1 "changelevel bb3"
+         alias map2 "changelevel bb7"
+         alias map3 "changelevel cpbb01"
+         alias map4 "changelevel crypt"
+         </verb>
+
+         Note that the voting system still works correctly even if the server
+         administrator defines a map cycling list. The map will switch
+         according to the vote, and the cycle will resume afterwards.
       </sect1>
    </sect>
 
