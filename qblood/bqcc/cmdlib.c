@@ -132,14 +132,14 @@ skipwhite:
 
 
 
-
+#if defined(UNIX) || defined(unix)
 /*
 ================
 filelength
 ================
 */
 // MrE:
-long int filelength (int handle)
+int filelength (int handle)
 {
 	/*
 	struct stat fileinfo;
@@ -162,10 +162,11 @@ long int filelength (int handle)
 	return end;
 }
 
-long int tell (int handle)
+int tell (int handle)
 {
    return lseek (handle, 0, SEEK_CUR);
 }
+#endif  // #if defined(UNIX) || defined(unix)
 
 char *strupr (char *start)
 {

@@ -586,12 +586,12 @@ void PC_AddBuiltinDefines(source_t *source)
 		char *string;
 		int builtin;
 	} builtin[] = {
-		"__LINE__",	BUILTIN_LINE,
-		"__FILE__",	BUILTIN_FILE,
-		"__DATE__",	BUILTIN_DATE,
-		"__TIME__",	BUILTIN_TIME,
-//		"__STDC__", BUILTIN_STDC,
-		NULL, 0
+		{"__LINE__",	BUILTIN_LINE},
+		{"__FILE__",	BUILTIN_FILE},
+		{"__DATE__",	BUILTIN_DATE},
+		{"__TIME__",	BUILTIN_TIME},
+//		{"__STDC__", BUILTIN_STDC},
+		{NULL, 0}
 	};
 
 	for (i = 0; builtin[i].string; i++)

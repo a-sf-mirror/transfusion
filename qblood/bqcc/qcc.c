@@ -862,7 +862,7 @@ char *PR_GlobalStringNoContents (gofs_t ofs)
 	def = pr_global_defs[ofs];
 	if (!def)
 //		Error ("PR_GlobalString: no def for %i", ofs);
-		sprintf (line,"%i(???)", ofs);
+		sprintf (line,"%i(\??\?)", ofs);  // \??\? removes a trigraph warning
 	else
 		sprintf (line,"%i(%s)", ofs, def->name);
 
@@ -1507,7 +1507,7 @@ void CMDPrecompilerDefinitions(void)
 main
 =================
 */
-void main (int argc, char **argv)
+int main (int argc, char **argv)
 {
 	char *src;
 	char filename[1024];
@@ -1538,7 +1538,7 @@ void main (int argc, char **argv)
 		Log_Print("-?                display command line options\n");
 		Log_Print("-h                \"\n");
 		Log_Print("-help             \"\n");
-		return;
+		return EXIT_FAILURE;
 	} //end if
 
 	CMDPrecompilerDefinitions();
@@ -1625,4 +1625,6 @@ void main (int argc, char **argv)
 	BspModels();
 	//report / copy the data files
 	CopyFiles();
+	
+	return EXIT_SUCCESS;
 } //end of the function main

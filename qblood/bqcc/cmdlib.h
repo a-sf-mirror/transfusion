@@ -20,6 +20,10 @@
 
 #if defined(UNIX) || defined(unix)
 #include <unistd.h>
+
+int filelength (int handle);
+int tell (int handle);
+
 #define stricmp strcasecmp
 #define strcmpi strcasecmp
 #endif
@@ -50,11 +54,6 @@ extern char **myargv;
 
 char *strupr (char *in);
 char *strlower (char *in);
-/* MrE:   can't use these prototypes, they are inconsistant with
-               prototypes in original header files
-int filelength (int handle);
-int tell (int handle);
-*/
 
 double I_FloatTime (void);
 

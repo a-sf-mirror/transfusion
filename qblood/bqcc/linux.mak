@@ -1,6 +1,6 @@
 # for Linux/DJGPP
 CFLAGS = -g -O2 -Wall
-
+CC = gcc
 EXES = bqcc
 
 all: $(EXES)
@@ -21,8 +21,8 @@ profile:
 clean:
 	rm -f *.o *~ $(EXES)
 
-.c.o: ; gcc -c $(CFLAGS) -o $@ $*.c
+.c.o: ; $(CC) -c $(CFLAGS) -o $@ $*.c
 
 QCCFILES = qcc.o pr_lex.o pr_comp.o cmdlib.o l_log.o l_memory.o l_script.o l_precomp.o
 bqcc : $(QCCFILES)
-	gcc -o bqcc $(QCCFILES)
+	$(CC) -o bqcc $(QCCFILES)
