@@ -267,9 +267,11 @@ local float     rs;
     if (self.health < 0)
         return;
 
+    // FIXME: telefragging generates two sounds - the 'squish' of the telefragged, and the evil laugh of the one telerfragging - how do we do both?
+    // below is the evil laugh - need to put in squish still - 5.2.2001 dturner
     if (damage_attacker.classname == "teledeath")
     {
-        sound (self, CHAN_VOICE, "firepod/fpodcol2.wav", 1, ATTN_NONE);
+        sound (self, CHAN_VOICE, "player/play1115.wav", 1, ATTN_NONE);
         return;
     }
 
@@ -322,10 +324,8 @@ local float     rs;
         return;
     }
 
-
     rs = rint((random() * 8) + 1);
 
-    self.noise = "";  // FIXME: do we really need this ?
     if (rs == 1)
         self.noise = "player/pain/play1100.wav";
     else if (rs == 2)
@@ -342,7 +342,7 @@ local float     rs;
         self.noise = "player/pain/play1106.wav";
     else if (rs == 8)
         self.noise = "player/pain/play1107.wav";
-    else
+    else  // if (rs == 9)
         self.noise = "player/pain/play1108.wav";
 
     sound (self, CHAN_VOICE, self.noise, 1, ATTN_NORM);

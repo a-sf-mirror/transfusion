@@ -77,7 +77,7 @@ local string    s;
     s=ftos(rint(other.super_damage_finished - time));
 
     Bprint (PRINT_LOW, other.netname);
-    Bprint (PRINT_LOW, " recovered a Guns Akimbo with ");
+    Bprint (PRINT_LOW, " picked up a guns akimbo with ");
     Bprint (PRINT_LOW, s);
     Bprint (PRINT_LOW, " seconds remaining!\n");
 
@@ -132,7 +132,7 @@ local string    s;
     other.invisible_finished = self.cnt;
     s=ftos(rint(other.invisible_finished - time));
     Bprint (PRINT_LOW, other.netname);
-    Bprint (PRINT_LOW, " recovered a Cloak with ");
+    Bprint (PRINT_LOW, " picked up a cloak with ");
     Bprint (PRINT_LOW, s);
     Bprint (PRINT_LOW, " seconds remaining!\n");
 
@@ -309,7 +309,7 @@ void() health_touch =
     Sprint(other, PRINT_LOW, "Picked up ");
     s = ftos(self.healamount);
     Sprint(other, PRINT_LOW, s);
-    Sprint(other, PRINT_LOW, " life essence\n"); // need a different string for Doctors Bag
+    Sprint(other, PRINT_LOW, " life essence\n");  // FIXME need different strings for Doctors Bag, Life Seed, Medicine Pouch
 
 // health touch sound
     sound(other, CHAN_ITEM, self.noise, 1, ATTN_NORM);
@@ -409,7 +409,7 @@ void() armor_touch =
         self.nextthink = time + 20;
     self.think = SUB_regen;
 
-    Sprint(other, PRINT_LOW, "Picked up armor\n");
+    Sprint(other, PRINT_LOW, "Picked up basic armor\n"); // FIXME need also Body, Fire, Spirit, Super
     sound(other, CHAN_ITEM, "items/pickarmr.wav", 1, ATTN_NORM);
     stuffcmd (other, "bf\n");
 
@@ -486,7 +486,7 @@ float(float w) RankForWeapon =
         return 2;
     if (w == IT_SUPER_NAILGUN)
         return 3;
-    if (w == IT_GRENADE_LAUNCHER || w == IT_PROXIMITY_GRENADE)
+    if (w == IT_GRENADE_LAUNCHER || w == IT_PROXIMITY_BOMB)
         return 4;
     if (w == IT_SUPER_SHOTGUN)
         return 5;
@@ -503,7 +503,7 @@ float (float w) WeaponCode =
         return 4;
     if (w == IT_SUPER_NAILGUN)
         return 5;
-    if (w == IT_GRENADE_LAUNCHER || w == IT_PROXIMITY_GRENADE)
+    if (w == IT_GRENADE_LAUNCHER || w == IT_PROXIMITY_BOMB)
         return 6;
     if (w == IT_ROCKET_LAUNCHER)
         return 7;
@@ -692,7 +692,7 @@ void() weapon_supershotgun =
     precache_model ("progs/g_shot.mdl");
     setmodel (self, "progs/g_shot.mdl");
     self.weapon = IT_SUPER_SHOTGUN;
-    self.netname = "Sawed Off";
+    self.netname = "Sawed-off";
     self.touch = weapon_touch;
     setsize (self, '-16 -16 0', '16 16 56');
     StartItem ();
@@ -866,8 +866,6 @@ local float     best;
 };
 
 
-
-
 float WEAPON_BIG2 = 1;
 
 /*QUAKED item_shells (0 .5 .8) (0 0 0) (32 32 32) big
@@ -890,7 +888,7 @@ void() item_shells =
         self.aflag = 20;
     }
     self.weapon = 1;
-    self.netname = "shells";
+    self.netname = "box of shotgun shells";  // other choice is "%n shotgun shells"
     setsize (self, '0 0 0', '32 32 56');
     StartItem ();
 };
@@ -915,7 +913,7 @@ void() item_spikes =
         self.aflag = 25;
     }
     self.weapon = 2;
-    self.netname = "nails";
+    self.netname = "full drum of bullets";  // other choice is "A few bullets"
     setsize (self, '0 0 0', '32 32 56');
     StartItem ();
 };
@@ -940,7 +938,7 @@ void() item_rockets =
         self.aflag = 5;
     }
     self.weapon = 3;
-    self.netname = "rockets";
+    self.netname = "gasoline cans";
     setsize (self, '0 0 0', '32 32 56');
     StartItem ();
 };
@@ -966,7 +964,7 @@ void() item_cells =
         self.aflag = 6;
     }
     self.weapon = 4;
-    self.netname = "cells";
+    self.netname = "tesla charges";
     setsize (self, '0 0 0', '32 32 56');
     StartItem ();
 };
@@ -999,7 +997,7 @@ void() item_weapon =
             self.aflag = 20;
         }
         self.weapon = 1;
-        self.netname = "shells";
+        self.netname = "box of shotgun shells";
     }
 
     if (self.spawnflags & WEAPON_SPIKES)
@@ -1017,7 +1015,7 @@ void() item_weapon =
             self.aflag = 20;
         }
         self.weapon = 2;
-        self.netname = "spikes";
+        self.netname = "full drum of bullets";
     }
 
     if (self.spawnflags & WEAPON_ROCKET)
@@ -1035,7 +1033,7 @@ void() item_weapon =
             self.aflag = 5;
         }
         self.weapon = 3;
-        self.netname = "rockets";
+        self.netname = "gasoline can";
     }
 
     setsize (self, '0 0 0', '32 32 56');
@@ -1114,6 +1112,10 @@ following:
 0: medieval
 1: metal
 2: base
+
+the following keys need to exist in single player qBlood:
+Skull, Eye, Fire, Dagger, Spider, Moon
+
 */
 
 void() item_key1 =
@@ -1343,7 +1345,7 @@ void() item_artifact_invulnerability =
     precache_sound ("bludbath/powerup.wav");
     self.noise = "bludbath/powerup.wav";
     setmodel (self, "progs/invulner.mdl");
-    self.netname = "Death Mask";
+    self.netname = "Death mask";
     #ifdef QUAKEWORLD
     self.effects = self.effects | EF_RED;
     #endif
@@ -1570,8 +1572,8 @@ void() DropBackpack =
     item = spawn();
     item.origin = self.origin - '0 0 24';
 
-    // If the proximity grenades were selected, switch to grenade launcher
-    if (self.weapon == IT_PROXIMITY_GRENADE)
+    // If the proximity bombs were selected, switch to grenade launcher
+    if (self.weapon == IT_PROXIMITY_BOMB)
         self.weapon = IT_GRENADE_LAUNCHER;
 
     item.items = self.weapon;
@@ -1580,7 +1582,7 @@ void() DropBackpack =
     else if (item.items == IT_SHOTGUN)
         item.netname = "Flare Gun";
     else if (item.items == IT_SUPER_SHOTGUN)
-        item.netname = "Sawed Off";
+        item.netname = "Sawed-off";
     else if (item.items == IT_NAILGUN)
         item.netname = "Tommy Gun";
     else if (item.items == IT_SUPER_NAILGUN)

@@ -256,6 +256,7 @@ void() monster_shalrath =
     precache_sound2 ("shalrath/idle.wav");
     precache_sound2 ("shalrath/pain.wav");
     precache_sound2 ("shalrath/sight.wav");
+    precache_sound ("weapons/napalm/explodfl.wav");
 
     self.solid = SOLID_SLIDEBOX;
     self.movetype = MOVETYPE_STEP;

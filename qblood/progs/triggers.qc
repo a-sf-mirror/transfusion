@@ -130,18 +130,15 @@ void() trigger_multiple =
 {
     if (self.sounds == 1)
     {
-        precache_sound ("misc/secret.wav");
-        self.noise = "misc/secret.wav";
+        precache_sound ("bludbath/powerup.wav");  // was misc/secret.wav
+        self.noise = "bludbath/powerup.wav";
     }
     else if (self.sounds == 2)
-    {
-        precache_sound ("misc/talk.wav");
-        self.noise = "misc/talk.wav";
-    }
+        self.noise = "bludbath/message.wav";
     else if (self.sounds == 3)
     {
-        precache_sound ("misc/trigger1.wav");
-        self.noise = "misc/trigger1.wav";
+        precache_sound ("locks/baseuse.wav");  // was misc/trigger1.wav
+        self.noise = "locks/baseuse.wav";
     }
 
     if (!self.wait)
@@ -222,14 +219,11 @@ void() trigger_secret =
 
     if (self.sounds == 1)
     {
-        precache_sound ("misc/secret.wav");
-        self.noise = "misc/secret.wav";
+        precache_sound ("bludbath/powerup.wav");
+        self.noise = "bludbath/powerup.wav";
     }
     else if (self.sounds == 2)
-    {
-        precache_sound ("misc/talk.wav");
-        self.noise = "misc/talk.wav";
-    }
+        self.noise = "bludbath/message.wav";
 
     trigger_multiple ();
 };
@@ -570,7 +564,7 @@ void() trigger_onlyregistered_touch =
         if (self.message != "")
         {
             centerprint (other, self.message);
-            sound (other, CHAN_BODY, "misc/talk.wav", 1, ATTN_NORM);
+            sound (other, CHAN_BODY, "bludbath/message.wav", 1, ATTN_NORM);
         }
     }
 };
@@ -580,7 +574,6 @@ Only fires if playing the registered version, otherwise prints the message
 */
 void() trigger_onlyregistered =
 {
-    precache_sound ("misc/talk.wav");
     InitTrigger ();
     self.touch = trigger_onlyregistered_touch;
 };
@@ -635,7 +628,7 @@ void() trigger_push_touch =
             if (other.fly_sound < time)
             {
                 other.fly_sound = time + 1.5;
-                sound (other, CHAN_AUTO, "ambience/windfly.wav", 1, ATTN_NORM);
+                sound (other, CHAN_AUTO, "ambience/qwindfly.wav", 1, ATTN_NORM);
             }
         }
     }
@@ -650,7 +643,7 @@ Pushes the player
 void() trigger_push =
 {
     InitTrigger ();
-    precache_sound ("ambience/windfly.wav");
+    precache_sound ("ambience/qwindfly.wav");
     self.touch = trigger_push_touch;
     if (!self.speed)
         self.speed = 1000;

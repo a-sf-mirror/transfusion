@@ -32,9 +32,9 @@ void() main =
     precache_file ("end1.bin");
     precache_file2 ("end2.bin");
 
-    precache_file ("demo1.dem");
-    precache_file ("demo2.dem");
-    precache_file ("demo3.dem");
+    precache_file ("qblood1.dem");
+    precache_file ("qblood2.dem");
+    precache_file ("qblood3.dem");
 
 //
 // these are all of the lumps from the cached.ls files
@@ -230,7 +230,10 @@ void() worldspawn =
     precache_sound ("items/pickarmr.wav");          // armor up
     precache_sound ("weapons/tesla/teslaz~1.wav");  // lightning start
 
-    precache_sound ("misc/power.wav");          //lightning for boss
+    precache_sound ("misc/power.wav");              // lightning for boss
+
+    precache_sound ("weapons/napalm/burn.wav");  // burning on lava
+    precache_sound ("ambience/sizzle.wav");      // smelt on slime
 
 // player gib sounds
     precache_sound ("butcher/fzomdie2.wav");    // player gib sound
@@ -249,13 +252,42 @@ void() worldspawn =
     precache_sound ("player/pain/play1106.wav");
     precache_sound ("player/pain/play1107.wav");
     precache_sound ("player/pain/play1108.wav");
+    precache_sound ("player/play1115.wav");
 
-// player death sounds
+    // player death sounds
     precache_sound ("player/die1.wav");
     precache_sound ("player/die2.wav");
     precache_sound ("player/die3.wav");
     precache_sound ("butcher/fzomdie2.wav");
     precache_sound ("butcher/fzomdie3.wav");
+
+    // The Voice
+    precache_sound ("thevoice/creamed.wav");
+    precache_sound ("thevoice/destro.wav");
+    precache_sound ("thevoice/diced.wav");
+    precache_sound ("thevoice/disembo.wav");
+    precache_sound ("thevoice/killed.wav");
+    precache_sound ("thevoice/mincmeat.wav");
+    precache_sound ("thevoice/mutila.wav");
+    precache_sound ("thevoice/reamed.wav");
+    #ifdef QUAKEWORLD
+    precache_sound ("thevoice/ripped.wav");
+    #endif
+    precache_sound ("thevoice/slaught.wav");
+    precache_sound ("thevoice/smashed.wav");
+    precache_sound ("thevoice/sodomiz.wav");
+    precache_sound ("thevoice/splatt.wav");
+    precache_sound ("thevoice/squash.wav");
+    precache_sound ("thevoice/throttl.wav");
+    precache_sound ("thevoice/vo1.wav");
+    precache_sound ("thevoice/vo10.wav");
+    precache_sound ("thevoice/vo12.wav");
+    precache_sound ("thevoice/vo17.wav");
+    precache_sound ("thevoice/vo2.wav");
+    precache_sound ("thevoice/vo5.wav");
+    precache_sound ("thevoice/vo7.wav");
+    precache_sound ("thevoice/vo8.wav");
+    precache_sound ("thevoice/wasted.wav");
 
 // ax sounds
     precache_sound ("zombie/claw.wav");              // ax swoosh

@@ -164,9 +164,8 @@ Set "sounds" to one of the following:
 
 
 void() func_plat =
-
 {
-local entity t;
+    local entity t;
 
     if (!self.t_length)
         self.t_length = 80;
@@ -174,8 +173,7 @@ local entity t;
         self.t_width = 10;
 
     if (self.sounds == 0)
-        self.sounds = 2;
-// FIX THIS TO LOAD A GENERIC PLAT SOUND
+        self.sounds = 2;  // not a very clean solution...
 
     if (self.sounds == 1)
     {
@@ -187,12 +185,11 @@ local entity t;
 
     if (self.sounds == 2)
     {
-        precache_sound ("plats/medplat1.wav");
-        precache_sound ("plats/medplat2.wav");
-        self.noise = "plats/medplat1.wav";
-        self.noise1 = "plats/medplat2.wav";
+        precache_sound ("doors/qdoormv1.wav");
+        precache_sound ("doors/qdrclos4.wav");
+        self.noise = "doors/qdoormv1.wav";
+        self.noise1 = "doors/qdrclos4.wav";
     }
-
 
     self.mangle = self.angles;
     self.angles = '0 0 0';
@@ -326,10 +323,10 @@ void() func_train =
 
     if (self.sounds == 1)
     {
-        self.noise = ("plats/train2.wav");
-        precache_sound ("plats/train2.wav");
-        self.noise1 = ("plats/train1.wav");
-        precache_sound ("plats/train1.wav");
+        self.noise = ("ambience/gearhalt.wav");
+        precache_sound ("ambience/gearhalt.wav");
+        self.noise1 = ("ambience/gearstar.wav");
+        precache_sound ("ambience/gearstar.wav");
     }
 
     self.cnt = 1;

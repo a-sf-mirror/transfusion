@@ -47,8 +47,8 @@ void() W_Precache =
     precache_sound ("weapons/spraycan/sprayfir.wav");  // spraycan fire
     precache_sound ("weapons/tink1.wav");              // spikes tink (used in c code)
     precache_sound ("weapons/tnt/tntfuse.wav");        // grenade launcher
-    precache_sound ("weapons/tnt/proxarm.wav");        // proximity grenade armed
-    precache_sound ("weapons/tnt/proxdet.wav");        // proximity grenade triggered
+    precache_sound ("weapons/tnt/proxarm.wav");        // proximity bomb armed
+    precache_sound ("weapons/tnt/proxdet.wav");        // proximity bomb triggered
     precache_sound ("weapons/tnt/tnttoss.wav");        // bounce sound
     precache_sound ("weapons/shotgun/shotfire.wav");   // shotgun fired
     precache_sound ("weapons/tesla/tessnght.wav");     // Tesla hit
@@ -710,8 +710,8 @@ void() W_FireLightning =
 
 //=============================================================================
 
-float   DMG_NORM_GRENADE    = 120;
-float   DMG_PROXIM_GRENADE  = 150;
+float   DMG_GRENADE        = 120;
+float   DMG_PROXIMITY_BOMB = 150;
 
 void() GrenadeExplode =
 {
@@ -746,12 +746,12 @@ void() GrenadeExplode =
 
 /*
 ================
-ProximGrenadeCheck
+ProximBombCheck
 
-The proximity grenade checks its neighborhood and explodes if a living being is nearby
+The proximity bomb checks its neighborhood and explodes if a living being is nearby
 ================
 */
-void() ProximGrenadeCheck =
+void() ProximBombCheck =
 {
     local entity thing;
 
@@ -780,18 +780,18 @@ void() ProximGrenadeCheck =
 
 /*
 ================
-ProximGrenadeArmed
+ProximBombArmed
 
-The proximity grenade becomes armed, ready to explode as soon as someone is nearby
+The proximity bomb becomes armed, ready to explode as soon as someone is nearby
 ================
 */
-void() ProximGrenadeArmed =
+void() ProximBombArmed =
 {
     sound (self, CHAN_WEAPON, "weapons/tnt/proxarm.wav", 1, ATTN_NORM);
 
     // Check its neighborhood every 1/4 sec
     self.nextthink = time + 0.25;
-    self.think = ProximGrenadeCheck;
+    self.think = ProximBombCheck;
 };
 
 
@@ -805,7 +805,7 @@ GrenadeTouch
 void() GrenadeTouch =
 {
     // Normal grenades are the only ones which can explode on touch
-    if (self.dmg = DMG_NORM_GRENADE)
+    if (self.dmg = DMG_GRENADE)
     {
         if (other == self.owner)
             return;     // don't explode on owner
@@ -873,19 +873,19 @@ void() W_FireGrenade =
     // set missile duration
     newmis.nextthink = time + 2.5;
 
-    // If we fire a proximity grenade
-    if (self.weapon == IT_PROXIMITY_GRENADE)
+    // If we fire a proximity bomb
+    if (self.weapon == IT_PROXIMITY_BOMB)
     {
-        newmis.think = ProximGrenadeArmed;
-        newmis.netname = "proximity grenade";
-        newmis.dmg = DMG_PROXIM_GRENADE;
+        newmis.think = ProximBombArmed;
+        newmis.netname = "proximity bomb";
+        newmis.dmg = DMG_PROXIMITY_BOMB;
     }
     // Else, it's a normal grenade
     else
     {
         newmis.think = GrenadeExplode;
         newmis.netname = "normal grenade";
-        newmis.dmg = DMG_NORM_GRENADE;
+        newmis.dmg = DMG_GRENADE;
 
         sound (newmis, CHAN_WEAPON, "weapons/tnt/tntfuse.wav", 1, ATTN_NORM);
     }
@@ -1155,7 +1155,7 @@ void() W_SetCurrentAmmo =
         self.weaponframe = 0;
         self.items = self.items | IT_NAILS;
     }
-    else if (self.weapon == IT_GRENADE_LAUNCHER || self.weapon == IT_PROXIMITY_GRENADE)
+    else if (self.weapon == IT_GRENADE_LAUNCHER || self.weapon == IT_PROXIMITY_BOMB)
     {
         self.currentammo = self.ammo_rockets;
         self.weaponmodel = "progs/v_rock.mdl";
@@ -1285,7 +1285,7 @@ void() W_Attack =
     {
         player_nail1 ();
     }
-    else if (self.weapon == IT_GRENADE_LAUNCHER || self.weapon == IT_PROXIMITY_GRENADE)
+    else if (self.weapon == IT_GRENADE_LAUNCHER || self.weapon == IT_PROXIMITY_BOMB)
     {
         player_rocket1();
         self.attack_finished = time + 0.6;
@@ -1382,11 +1382,11 @@ void() W_ChangeWeapon =
     // If the grenade launcher has been selected...
     if (fl == IT_GRENADE_LAUNCHER)
     {
-        // ... and that it was already selected, switch to proximity grenades
+        // ... and that it was already selected, switch to proximity bombs
         if (self.weapon == IT_GRENADE_LAUNCHER)
         {
-            self.weapon = IT_PROXIMITY_GRENADE;
-            Sprint (self, PRINT_MEDIUM, "Promixity grenades selected.\n");
+            self.weapon = IT_PROXIMITY_BOMB;
+            Sprint (self, PRINT_MEDIUM, "Promixity bombs selected.\n");
         }
         else
         {
@@ -1487,7 +1487,7 @@ void() CycleWeaponCommand =
             if (self.ammo_rockets < 1)
                 am = 1;
         }
-        else if (self.weapon == IT_GRENADE_LAUNCHER || self.weapon == IT_PROXIMITY_GRENADE)
+        else if (self.weapon == IT_GRENADE_LAUNCHER || self.weapon == IT_PROXIMITY_BOMB)
         {
             self.weapon = IT_ROCKET_LAUNCHER;
             if (self.ammo_rockets < 1)
@@ -1538,7 +1538,7 @@ void() CycleWeaponReverseCommand =
             if (self.ammo_rockets < 1)
                 am = 1;
         }
-        else if (self.weapon == IT_GRENADE_LAUNCHER || self.weapon == IT_PROXIMITY_GRENADE)
+        else if (self.weapon == IT_GRENADE_LAUNCHER || self.weapon == IT_PROXIMITY_BOMB)
         {
             self.weapon = IT_SUPER_NAILGUN;
             if (self.ammo_nails < 2)

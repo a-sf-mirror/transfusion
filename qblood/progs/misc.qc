@@ -92,8 +92,8 @@ void() light_fluoro =
             lightstyle(self.style, "m");
     }
 
-    precache_sound ("ambience/amb25.wav");
-    ambientsound (self.origin, "ambience/amb25.wav", 0.5, ATTN_STATIC);
+    precache_sound ("ambience/amb2.wav");
+    ambientsound (self.origin, "ambience/amb2.wav", 0.5, ATTN_STATIC);
 };
 
 /*QUAKED light_fluorospark (0 1 0) (-8 -8 -8) (8 8 8)

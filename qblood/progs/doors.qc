@@ -476,30 +476,30 @@ void() func_door =
     if (self.sounds == 1)
     {
         precache_sound ("doors/qdrclos4.wav");
-        precache_sound ("doors/qdoormv1.wav");
+        precache_sound ("doors/qairdoor.wav");
         self.noise1 = "doors/qdrclos4.wav";
-        self.noise2 = "doors/qdoormv1.wav";
+        self.noise2 = "doors/qairdoor.wav";
     }
     if (self.sounds == 2)
     {
-        precache_sound ("ambience/elvstr2.wav");
-        precache_sound ("ambience/elstop3.wav");
-        self.noise2 = "ambience/elstop3.wav";
-        self.noise1 = "ambience/elvstr2.wav";
+        precache_sound ("ambience/qhydro1.wav");
+        precache_sound ("ambience/hydro3.wav");
+        self.noise2 = "ambience/qhydro1.wav";
+        self.noise1 = "ambience/hydro3.wav";
     }
     if (self.sounds == 3)
     {
-        precache_sound ("doors/creakrot.wav");
+        precache_sound ("ambience/qwinch2.wav");
         precache_sound ("doors/qdrclos4.wav");
-        self.noise2 = "doors/qdrclos4.wav";
-        self.noise1 = "doors/creakrot.wav";
+        self.noise2 = "ambience/qwinch2.wav";
+        self.noise1 = "doors/qdrclos4.wav";
     }
     if (self.sounds == 4)
     {
         precache_sound ("doors/doorclos.wav");
         precache_sound ("doors/dooropen.wav");
-        self.noise1 = "doors/doorclos.wav";
-        self.noise2 = "doors/dooropen.wav";
+        self.noise1 = "doors/dooropen.wav";
+        self.noise2 = "doors/doorclos.wav";
     }
 
 
@@ -765,11 +765,12 @@ void () func_door_secret =
     }
     if (self.sounds == 3)
     {
-        precache_sound ("ambience/elvstr2.wav");
-        precache_sound ("ambience/elstop3.wav");
-        self.noise2 = "ambience/elvstr2.wav";
-        self.noise1 = "ambience/elstop3.wav";
-        self.noise3 = "ambience/elstop3.wav";
+        precache_sound ("ambience/qhydro1.wav");
+        precache_sound ("ambience/hydro2.wav");
+        precache_sound ("ambience/hydro3.wav");
+        self.noise2 = "ambience/qhydro1.wav";
+        self.noise1 = "ambience/hydro2.wav";
+        self.noise3 = "ambience/hydro3.wav";
     }
 
     if (!self.dmg)

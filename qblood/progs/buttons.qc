@@ -47,7 +47,7 @@ void() button_return =
 
 
 void() button_blocked =
-{   // do nothing, just don't ome all the way back out
+{   // do nothing, just don't come all the way back out
 };
 
 
@@ -100,6 +100,11 @@ When a button is touched, it moves some distance in the direction of it's angle,
 1) wooden clunk
 2) metallic click
 3) in-out
+
+FIXME 5/2/2001 - dturner - some sort of mapping needs to be made matching above
+descriptions with something appropriate to Blood.  prolly have to make more maps
+and see what the engine chooses to use from current, then make adjustments.
+
 */
 void() func_button =
 {
@@ -122,8 +127,8 @@ local float     gtemp, ftemp;
     }
     if (self.sounds == 3)
     {
-        precache_sound ("locks/runetry2.wav");
-        self.noise = "locks/runetry2.wav";
+        precache_sound ("locks/qlatch2.wav");
+        self.noise = "locks/qlatch2.wav";
     }
 
     SetMovedir ();
