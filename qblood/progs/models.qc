@@ -211,10 +211,30 @@ $frame frame1
 
 $modelname invisibl
 $cd id1/models/invisibl
-$flags 8        // client side rotate
+ 
 $base base
 $skin skin
-$frame frame1
+$framegroupstart
+$frame frame1 0.1
+$frame frame2 0.1
+$frame frame3 0.1
+$frame frame4 0.1
+$frame frame5 0.1
+$frame frame5 0.1
+$frame frame6 0.1
+$frame frame7 0.1
+$frame frame8 0.1
+$frame frame9 0.1
+$frame frame10 0.1
+$frame frame9 0.1
+$frame frame8 0.1
+$frame frame7 0.1
+$frame frame6 0.1
+$frame frame5 0.1
+$frame frame4 0.1
+$frame frame3 0.1
+$frame frame2 0.1
+$framegroupend
 
 $modelname invulner
 $flags 8        // client side rotate
