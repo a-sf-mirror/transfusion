@@ -61,7 +61,7 @@ void() PrecacheSounds =
     // --- A few weapon sounds. Most of them are in weapon spawn functions --- //
 
     // pitchfork
-//    precache_sound ("weapons/pitchfrk/pflesh.wav");
+    precache_sound ("weapons/pitchfrk/pflesh.wav");
 //    precache_sound ("weapons/pitchfrk/pmetal.wav");
     precache_sound ("weapons/pitchfrk/pstone.wav");  // Hit a stone
 //    precache_sound ("weapons/pitchfrk/pwood.wav");

@@ -258,8 +258,19 @@ void() player_supernail =
 {
     if ((!self.button0 && !self.button1 && self.impulse != 12)  || intermission_running || self.ammo_spray < 1)
     {
+        // Stop the fire sound
+        sound (self, CHAN_WEAPON, "misc/null.wav", 0, ATTN_NORM);
+        self.t_width = 0;
+
         player_run ();
         return;
+    }
+
+    // Start the fire sound if necessary
+    if (self.t_width <= time)
+    {
+        sound (self, CHAN_WEAPON, "weapons/spraycan/sprayfir.wav", 0.5, ATTN_NORM);
+        self.t_width = time + 2.5;
     }
 
     muzzleflash ();
@@ -277,6 +288,18 @@ void() player_lightcan1 = [$shotatt1, player_lightcan2] {self.weaponframe = 2;};
 void() player_lightcan2 = [$shotatt1, player_lightcan3] {self.weaponframe = 3;};
 void() player_lightcan3 = [$shotatt1, player_lightcan4] {self.weaponframe = 4;};
 void() player_lightcan4 = [$shotatt1, player_run      ] {self.weaponframe = 5;};
+
+void() player_altsupernail1 = [$shotatt1, player_altsupernail2] { self.weaponframe = 6; };
+void() player_altsupernail2 = [$shotatt1, player_altsupernail3] { self.weaponframe = 7; };
+void() player_altsupernail3 = [$shotatt1, player_altsupernail4] { self.weaponframe = 8; };
+void() player_altsupernail4 = [$shotatt1, player_altsupernail5]
+{
+    self.weaponframe = 9;
+    W_FireGrenade ();
+    W_Uncharge ();
+    ShowThrowMeter ();
+};
+void() player_altsupernail5 = [$shotatt1, player_run          ] { self.weaponframe = 10; };
 
 //============================================================================
 
@@ -329,7 +352,11 @@ void() player_light7 = [$light1, player_light6] {player_light (); };
 
 void()  player_altlight1  = [$shotatt1, player_altlight2 ]
 {
-    sound (self, CHAN_WEAPON, "weapons/tesla/tessuper.wav", 1, ATTN_NORM);
+    if (self.items & IT_GUNS_AKIMBO)
+        sound (self, CHAN_WEAPON, "weapons/tesla/tesakima.wav", 1, ATTN_NORM);
+    else
+        sound (self, CHAN_WEAPON, "weapons/tesla/tessuper.wav", 1, ATTN_NORM);
+
     self.weaponframe=6;
 };
 void()  player_altlight2  = [$shotatt1, player_altlight3 ] {self.weaponframe = 7;};

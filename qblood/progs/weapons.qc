@@ -194,7 +194,7 @@ void(entity targ, vector org, float damage) TineHit =
         SpawnBlood (org, '0 0 0', damage);
         AddMultiDamage (targ, damage);
         SpawnBloodSpray (trace_ent, org);
-	sound (self, CHAN_WEAPON, "weapons/pitchfrk/pflesh.wav", 1, ATTN_NORM);
+        sound (self, CHAN_WEAPON, "weapons/pitchfrk/pflesh.wav", 1, ATTN_NORM);
     }
     else
     {   // hit wall
@@ -1142,13 +1142,12 @@ void(float big) W_FireLightning =
     local   vector  dir;
     local   float   mspeed;
     local   float   akimboFactor;  // 1 if normal shot / 2 if akimbo
-    
+
     if (self.items & IT_GUNS_AKIMBO)
-	     akimboFactor = 2;
-	     
+        akimboFactor = 2;
     else
         akimboFactor = 1;
-	
+
     // If we don't have enough ammo
     if (self.ammo_cells < akimboFactor)
         return;
@@ -1534,7 +1533,7 @@ void() DynaThink =
     if (self.t_width <= time)
     {
         self.t_width    = time + 3;
-        sound (self, CHAN_BODY, "weapons/tnt/tntfuse.wav", 1, ATTN_NORM);
+        sound (self, CHAN_BODY, "weapons/tnt/tntfuse.wav", 0.5, ATTN_NORM);
     }
     self.dest = normalize (self.velocity);
 
@@ -1793,7 +1792,6 @@ void() W_FireSuperSpikes =
     if (self.ammo_spray < 1)
         return;
 
-    sound (self, CHAN_WEAPON, "weapons/spraycan/spraycan.wav", 1, ATTN_NORM);
     self.attack_finished = time + 0.2;
     self.currentammo = self.ammo_spray = self.ammo_spray - 1;
     dir = aim (self, 1000);
@@ -2167,6 +2165,7 @@ void()  player_shot1;
 void()  player_nail1;
 void()  player_altnail1;
 void()  player_supernail1;
+void()  player_altsupernail1;
 void()  player_lightcan1;
 void()  player_light1;
 void()  player_altlight1;
@@ -2233,10 +2232,10 @@ void() W_Attack =
         if (self.tnt_time)
         {
             self.attack_finished = time + 0.6;
-    	    W_FireGrenade();
+            player_altsupernail1 ();
         }
         else
-        player_supernail1 ();
+            player_supernail1 ();
     }
     else if (self.weapon == IT_GRENADE_LAUNCHER ||
              self.weapon == IT_PROXIMITY_BOMB   ||
@@ -2263,7 +2262,8 @@ void() W_Attack =
     }
     else if (self.weapon == IT_LIGHTNING)
     {
-        if (self.button0 || self.ammo_cells < 35)
+        if (self.button0 || self.ammo_cells < 35 ||
+            ((self.items & IT_GUNS_AKIMBO) && self.ammo_cells < 70))
         {
             player_light1();
             self.attack_finished = time + 1;
@@ -2713,6 +2713,9 @@ void() ShowThrowMeter =
 
 void() W_Uncharge =
 {
+    // Stop the fuse sound if any
+    sound (self, CHAN_WEAPON, "misc/null.wav", 0, ATTN_NORM);
+
     self.charge     = 0;
     self.powertime  = 0;
     self.tnt_time   = 0;
@@ -2785,7 +2788,10 @@ void() W_ChargeNormal =
         }
         else if (self.charge)
         {
-            ThrowBomb ();
+            if (self.weapon == IT_SUPER_NAILGUN)
+                W_Attack ();
+            else
+                ThrowBomb ();
             return;
         }
         if (altfire && self.weapon == IT_GRENADE_LAUNCHER)
@@ -2799,8 +2805,16 @@ void() W_ChargeNormal =
         if (self.t_width <= time)
         {
             // Fuse sound not playing, so play it again
-            sound (self, CHAN_WEAPON, "weapons/tnt/tntfuse.wav", 1, ATTN_NORM);
-            self.t_width = time + 3;
+            if (self.weapon == IT_SUPER_NAILGUN)
+            {
+                sound (self, CHAN_WEAPON, "weapons/spraycan/spraycan.wav", 0.5, ATTN_NORM);
+                self.t_width = time + 2.6;
+            }
+            else
+            {
+                sound (self, CHAN_WEAPON, "weapons/tnt/tntfuse.wav", 0.5, ATTN_NORM);
+                self.t_width = time + 3.2;
+            }
         }
 
         return;
@@ -2823,21 +2837,17 @@ void() W_ChargeNormal =
                 self.attack_finished = time + 0.3;  // avoid the light-and-drop bug with +use
             }
             else  // if (self.weapon == IT_SUPER_NAILGUN)
+            {
                 self.tnt_type = TNT_TYPE_NORMAL;
+                self.attack_finished = time + 0.6;  // let the animation play
+                player_lightcan1 ();
+            }
         }
 
         self.tnt_time = time + FUSE_TIME;
         Sprint (self, PRINT_LOW, "WARNING: you've just lit up the TNT fuse (5 sec)...\n");
 
-        // The spray can doesn't fuse
-        if (self.weapon == IT_SUPER_NAILGUN)
-        {
-            self.t_width = time + FUSE_TIME;  // So the fuse wav never starts
-            self.attack_finished = time + 0.4;
-            player_lightcan1 ();
-        }
-        else
-            self.t_width = 0;  // So the fuse wav starts at the next frame
+        self.t_width = 0;  // So the fuse wav starts at the next frame
     }
 };
 

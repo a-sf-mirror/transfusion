@@ -1547,7 +1547,8 @@ void() weapon_supernailgun =
 
     // Precache the necessary sounds
 //    precache_sound ("weapons/spraycan/burstflm.wav");
-//    precache_sound ("weapons/spraycan/spraycan.wav");
+    precache_sound ("misc/null.wav");                  // null WAV to stop fire sound
+    precache_sound ("weapons/spraycan/spraycan.wav");  // lighted spray can
     precache_sound ("weapons/spraycan/sprayfir.wav");  // fire
     precache_sound ("weapons/tnt/lighter.wav");  // = zipopen.wav + ziplight.wav
     precache_sound ("weapons/tnt/zipclose.wav");
@@ -1711,6 +1712,7 @@ void() weapon_lightning =
     precache_sound ("weapons/tesla/tesaltht.wav");  // altfire hit
 //    precache_sound ("weapons/tesla/tesla1.wav"); // alt charge up
     precache_sound ("weapons/tesla/tessuper.wav"); // alt fire charge up + fire
+    precache_sound ("weapons/tesla/tesakima.wav"); // alt fire charge up + fire (Akimbo)
 
     StartItem ();
 };
