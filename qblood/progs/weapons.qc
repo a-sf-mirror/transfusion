@@ -70,9 +70,12 @@ void() W_Precache =
 
     // napalm launcher
     precache_sound ("weapons/napalm/blaster.wav");  // Napalm launcher
+    precache_sound ("weapons/napalm/explodcs.wav");
+    precache_sound ("weapons/napalm/explodfl.wav");
+
 /*
     precache_sound ("weapons/napalm/burn.wav");
-    precache_sound ("weapons/napalm/explodfl.wav");
+
     precache_sound ("weapons/napalm/explodul.wav");
     precache_sound ("weapons/napalm/explodus.wav");
     precache_sound ("weapons/napalm/naplmex2.wav");
