@@ -167,4 +167,3 @@ void Log_Flush(void)
 {
 	if (logfile.fp) fflush(logfile.fp);
 } //end of the function Log_Flush
-

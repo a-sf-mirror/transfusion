@@ -26,4 +26,3 @@ void Log_WriteTimeStamped(char *fmt, ...);
 FILE *Log_FileStruct(void);
 //flush log file
 void Log_Flush(void);
-

@@ -2802,4 +2802,3 @@ void FreeSource(source_t *source)
 	//free the source itself
 	FreeMemory(source);
 } //end of the function FreeSource
-

@@ -211,6 +211,3 @@ void FreeScript(script_t *script);
 void ScriptError(script_t *script, char *str, ...);
 //print a script warning with filename and line number
 void ScriptWarning(script_t *script, char *str, ...);
-
-
-

@@ -120,4 +120,3 @@ void FreeSource(source_t *source);
 void SourceError(source_t *source, char *str, ...);
 //print a source warning
 void SourceWarning(source_t *source, char *str, ...);
-

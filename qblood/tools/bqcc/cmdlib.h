@@ -43,24 +43,24 @@ void *GetClearedMemory(size_t size);
 void *GetMemory(size_t size);
 void FreeMemory(void *ptr);
 
-void  Error (char *error, ...);
+void Error (char *error, ...);
 
-int   SafeOpenWrite (char *filename);
-int   SafeOpenRead (char *filename);
-void  SafeRead (int handle, void *buffer, long count);
-void  SafeWrite (int handle, void *buffer, long count);
+int SafeOpenWrite (char *filename);
+int SafeOpenRead (char *filename);
+void SafeRead (int handle, void *buffer, long count);
+void SafeWrite (int handle, void *buffer, long count);
 
-long  LoadFile (char *filename, void **bufferptr);
+long LoadFile (char *filename, void **bufferptr);
 
 short LittleShort (short l);
-long  LittleLong (long l);
+long LittleLong (long l);
 float LittleFloat (float l);
 
 
 char *COM_Parse (char *data);
 
-extern   char  com_token[1024];
-extern   int      com_eof;
+extern char com_token[1024];
+extern int com_eof;
 
 
 

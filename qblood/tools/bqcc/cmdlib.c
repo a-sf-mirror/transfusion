@@ -7,8 +7,8 @@
 
 #define PATHSEPERATOR   '/'
 
-char  com_token[1024];
-int      com_eof;
+char com_token[1024];
+int com_eof;
 
 
 /*
@@ -20,75 +20,75 @@ Parse a token out of a string
 */
 char *COM_Parse (char *data)
 {
-   int      c;
-   int      len;
+	int c;
+	int len;
 
-   len = 0;
-   com_token[0] = 0;
+	len = 0;
+	com_token[0] = 0;
 
-   if (!data)
-      return NULL;
+	if (!data)
+		return NULL;
 
 // skip whitespace
 skipwhite:
-   while ( (c = *data) <= ' ')
-   {
-      if (c == 0)
-      {
-         com_eof = true;
-         return NULL;         // end of file;
-      }
-      data++;
-   }
+	while ( (c = *data) <= ' ')
+	{
+		if (c == 0)
+		{
+			com_eof = true;
+			return NULL;  // end of file;
+		}
+		data++;
+	}
 
 // skip // comments
-   if (c=='/' && data[1] == '/')
-   {
-      while (*data && *data != '\n')
-         data++;
-      goto skipwhite;
-   }
+	if (c=='/' && data[1] == '/')
+	{
+		while (*data && *data != '\n')
+			data++;
+		goto skipwhite;
+	}
 
 
 // handle quoted strings specially
-   if (c == '\"')
-   {
-      data++;
-      do
-      {
-         c = *data++;
-         if (c=='\"')
-         {
-            com_token[len] = 0;
-            return data;
-         }
-         com_token[len] = c;
-         len++;
-      } while (1);
-   }
+	if (c == '\"')
+	{
+		data++;
+		do
+		{
+			c = *data++;
+			if (c=='\"')
+			{
+				com_token[len] = 0;
+				return data;
+			}
+			com_token[len] = c;
+			len++;
+		} while (1);
+	}
 
 // parse single characters
-   if (c=='{' || c=='}'|| c==')'|| c=='(' || c=='\'' || c==':')
-   {
-      com_token[len] = c;
-      len++;
-      com_token[len] = 0;
-      return data+1;
-   }
+	if (c=='{' || c=='}'|| c==')'|| c=='(' || c=='\'' || c==':')
+	{
+		com_token[len] = c;
+		len++;
+		com_token[len] = 0;
+		return data+1;
+	}
 
 // parse a regular word
-   do
-   {
-      com_token[len] = c;
-      data++;
-      len++;
-      c = *data;
-   if (c=='{' || c=='}'|| c==')'|| c=='(' || c=='\'' || c==':')
-         break;
-   } while (c>32);
+	do
+	{
+		com_token[len] = c;
+		data++;
+		len++;
+		c = *data;
+	if (c=='{' || c=='}'|| c==')'|| c=='(' || c=='\'' || c==':')
+			break;
+	} while (c>32);
 
-   com_token[len] = 0;
-   return data;
+	com_token[len] = 0;
+	return data;
 }
 
 
@@ -157,7 +157,7 @@ int filelength (int handle)
 
 int tell (int handle)
 {
-   return lseek (handle, 0, SEEK_CUR);
+	return lseek (handle, 0, SEEK_CUR);
 }
 #endif  // #if defined(__unix__)
 
@@ -165,7 +165,7 @@ int tell (int handle)
 /*
 =============================================================================
 
-                  MISC FUNCTIONS
+						MISC FUNCTIONS
 
 =============================================================================
 */
@@ -179,15 +179,15 @@ For abnormal program terminations
 */
 void Error (char *error, ...)
 {
-   va_list argptr;
+	va_list argptr;
 
-   printf ("\n************ ERROR ************\n");
+	printf ("\n************ ERROR ************\n");
 
-   va_start (argptr,error);
-   vprintf (error,argptr);
-   va_end (argptr);
-   printf ("\n");
-   exit (1);
+	va_start (argptr,error);
+	vprintf (error,argptr);
+	va_end (argptr);
+	printf ("\n");
+	exit (1);
 }
 
 
@@ -197,40 +197,40 @@ void Error (char *error, ...)
 
 int SafeOpenWrite (char *filename)
 {
-   int     handle;
+	int handle;
 
-   handle = open(filename,O_WRONLY | O_CREAT | O_TRUNC | O_BINARY, 0666);
+	handle = open(filename,O_WRONLY | O_CREAT | O_TRUNC | O_BINARY, 0666);
 
-   if (handle == -1)
-      Error ("Error opening %s: %s",filename,strerror(errno));
+	if (handle == -1)
+		Error ("Error opening %s: %s",filename,strerror(errno));
 
-   return handle;
+	return handle;
 }
 
 int SafeOpenRead (char *filename)
 {
-   int     handle;
+	int handle;
 
-   handle = open(filename,O_RDONLY | O_BINARY);
+	handle = open(filename,O_RDONLY | O_BINARY);
 
-   if (handle == -1)
-      Error ("Error opening %s: %s",filename,strerror(errno));
+	if (handle == -1)
+		Error ("Error opening %s: %s",filename,strerror(errno));
 
-   return handle;
+	return handle;
 }
 
 
 void SafeRead (int handle, void *buffer, long count)
 {
-   if (read (handle,buffer,count) != count)
-      Error ("File read failure");
+	if (read (handle,buffer,count) != count)
+		Error ("File read failure");
 }
 
 
 void SafeWrite (int handle, void *buffer, long count)
 {
-   if (write (handle,buffer,count) != count)
-      Error ("File write failure");
+	if (write (handle,buffer,count) != count)
+		Error ("File write failure");
 }
 
 
@@ -239,90 +239,89 @@ void SafeWrite (int handle, void *buffer, long count)
 LoadFile
 ==============
 */
-long    LoadFile (char *filename, void **bufferptr)
+long LoadFile (char *filename, void **bufferptr)
 {
-   int             handle;
-   long    length;
-   void    *buffer;
+	int handle;
+	long length;
+	void *buffer;
 
-   handle = SafeOpenRead (filename);
-   length = filelength (handle);
-   buffer = GetMemory (length+1);
-   ((byte *)buffer)[length] = 0;
-   SafeRead (handle, buffer, length);
-   close (handle);
+	handle = SafeOpenRead (filename);
+	length = filelength (handle);
+	buffer = GetMemory (length+1);
+	((byte *)buffer)[length] = 0;
+	SafeRead (handle, buffer, length);
+	close (handle);
 
-   *bufferptr = buffer;
-   return length;
+	*bufferptr = buffer;
+	return length;
 }
 
 
 /*
 ============================================================================
 
-               BYTE ORDER FUNCTIONS
+					BYTE ORDER FUNCTIONS
 
 ============================================================================
 */
 
 #ifdef __BIG_ENDIAN__
 
-short   LittleShort (short l)
+short LittleShort (short l)
 {
-   byte    b1,b2;
+	byte b1,b2;
 
-   b1 = l&255;
-   b2 = (l>>8)&255;
+	b1 = l&255;
+	b2 = (l>>8)&255;
 
-   return (b1<<8) + b2;
+	return (b1<<8) + b2;
 }
 
 
-long    LittleLong (long l)
+long LittleLong (long l)
 {
-   byte    b1,b2,b3,b4;
+	byte b1,b2,b3,b4;
 
-   b1 = l&255;
-   b2 = (l>>8)&255;
-   b3 = (l>>16)&255;
-   b4 = (l>>24)&255;
+	b1 = l&255;
+	b2 = (l>>8)&255;
+	b3 = (l>>16)&255;
+	b4 = (l>>24)&255;
 
-   return ((long)b1<<24) + ((long)b2<<16) + ((long)b3<<8) + b4;
+	return ((long)b1<<24) + ((long)b2<<16) + ((long)b3<<8) + b4;
 }
 
 
 float LittleFloat (float l)
 {
-   union {byte b[4]; float f;} in, out;
+	union {byte b[4]; float f;} in, out;
 
-   in.f = l;
-   out.b[0] = in.b[3];
-   out.b[1] = in.b[2];
-   out.b[2] = in.b[1];
-   out.b[3] = in.b[0];
+	in.f = l;
+	out.b[0] = in.b[3];
+	out.b[1] = in.b[2];
+	out.b[2] = in.b[1];
+	out.b[3] = in.b[0];
 
-   return out.f;
+	return out.f;
 }
 
 
 #else
 
 
-short   LittleShort (short l)
+short LittleShort (short l)
 {
-   return l;
+	return l;
 }
 
-long    LittleLong (long l)
+long LittleLong (long l)
 {
-   return l;
+	return l;
 }
 
 float LittleFloat (float l)
 {
-   return l;
+	return l;
 }
 
 
 #endif
-
