@@ -150,6 +150,8 @@ void() Spray_Fire =
     if (self.ammo_spray < 1)
         return;
 
+    makevectors (self.v_angle);
+
     self.attack_finished = time + 0.2;
     self.currentammo = self.ammo_spray = self.ammo_spray - 1;
     dir = aim (self, 1000);

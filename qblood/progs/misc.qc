@@ -296,6 +296,8 @@ Napalm Trap - shoots one napalm shot every 5 seconds until switched off
 void() trap_tommygun_think =
 {
     sound (self, CHAN_WEAPON, "weapons/tommygun/_tom.wav", 1, ATTN_NORM);
+
+    makevectors (self.v_angle);
     FireBullets (self.origin, aim (self, 1000), 1, 5, '0.05 0.02 0');
 
     // Continue until we have shot all our bullets
@@ -321,6 +323,10 @@ void() trap_tommygun_use =
 
 void() trap_tommygun =
 {
+    precache_sound ("weapons/tommygun/_tom.wav");
+
+    self.v_angle = self.angles;
+
     self.use = trap_tommygun_use;
 };
 
@@ -358,8 +364,14 @@ void() trap_flame_use =
 
 void() trap_flame =
 {
+    precache_sound ("weapons/spraycan/sprayfir.wav");
+    precache_model ("progs/sprayfir.spr");
+
+    self.v_angle = self.angles;
+
     // a little hack so it will shot from its origin...
-    self.origin = self.origin - '0 0 10';
+    makevectors (self.v_angle);
+    self.origin = self.origin - '0 0 10' - v_forward * 50 - v_right * 8;
 
     self.player_state = PS_FIRE;
 
@@ -390,8 +402,13 @@ void() trap_napalm_use =
 
 void() trap_napalm =
 {
+    precache_sound ("weapons/napalm/blaster.wav");
+    precache_model ("progs/missile.mdl");
+
     // a little hack so it will shot from its origin...
     self.origin = self.origin - '0 0 16';
+
+    self.v_angle = self.angles;
 
     self.player_state = PS_FIRE;
     self.ammo_rockets = 999;
