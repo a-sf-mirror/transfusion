@@ -1547,7 +1547,6 @@ void() weapon_supernailgun =
 
     // Precache the necessary sounds
 //    precache_sound ("weapons/spraycan/burstflm.wav");
-    precache_sound ("misc/null.wav");                  // null WAV to stop fire sound
     precache_sound ("weapons/spraycan/spraycan.wav");  // lighted spray can
     precache_sound ("weapons/spraycan/sprayfir.wav");  // fire
     precache_sound ("weapons/tnt/lighter.wav");  // = zipopen.wav + ziplight.wav
@@ -1575,7 +1574,6 @@ void() weapon_grenadelauncher =
 
     // Precache the necessary sounds
     PsychoCaleb_Precache ();
-    precache_sound ("misc/null.wav");            // null WAV to stop fuse
     precache_sound ("weapons/tnt/lighter.wav");  // = zipopen.wav + ziplight.wav
     precache_sound ("weapons/tnt/tntfuse.wav");  // tnt lit
     precache_sound ("weapons/tnt/tnttoss.wav");  // throw sound
@@ -1602,7 +1600,6 @@ void() item_tnt =
 
     // Precache the necessary sounds
     PsychoCaleb_Precache ();
-    precache_sound ("misc/null.wav");            // null WAV to stop fuse
     precache_sound ("weapons/tnt/lighter.wav");  // = zipopen.wav + ziplight.wav
     precache_sound ("weapons/tnt/tntfuse.wav");  // tnt lit
     precache_sound ("weapons/tnt/tnttoss.wav");  // throw sound

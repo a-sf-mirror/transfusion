@@ -1846,7 +1846,11 @@ void() W_FireSpikes =
     else if (self.weaponframe == 13)
         dir = dir + v_right * (1 / 10);
 
-    FireBullets (7, dir, '0.04 0.04 0'); 
+    // If we use the altfire mode
+    if (self.weaponframe >= 8 && self.weaponframe <= 13)
+        FireBullets (20, dir, '0.04 0.04 0');
+    else
+        FireBullets (7, dir, '0.04 0.04 0');
 
     #ifdef QUAKEWORLD
     msg_entity = self;
@@ -2245,7 +2249,7 @@ void() W_Attack =
              self.weapon == IT_REMOTE_DETONATOR )
     {
         player_rocket1();
-        self.attack_finished = time + 0.6;
+        self.attack_finished = time + 0.5;
         W_FireGrenade();
     }
     else if (self.weapon == IT_ROCKET_LAUNCHER)
@@ -2955,10 +2959,8 @@ float() W_FireCharge =
         }
     }
 
-    // FIXME:  Add alt-fire spray can
-
     // Player can rapid-fire the weapon
-    W_Uncharge ();
+    //W_Uncharge ();
     return FALSE;
 };
 

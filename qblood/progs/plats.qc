@@ -327,10 +327,8 @@ void() func_train =
 
     if (self.sounds == 0)
     {
-        self.noise = ("misc/null.wav");
-        precache_sound ("misc/null.wav");
-        self.noise1 = ("misc/null.wav");
-        precache_sound ("misc/null.wav");
+        self.noise = "misc/null.wav";
+        self.noise1 = "misc/null.wav";
     }
 
     if (self.sounds == 1)
@@ -377,10 +375,8 @@ void() misc_teleporttrain =
 
     precache_sound ("thevoice/squash.wav");
 
-    self.noise = ("misc/null.wav");
-    precache_sound ("misc/null.wav");
-    self.noise1 = ("misc/null.wav");
-    precache_sound ("misc/null.wav");
+    self.noise = "misc/null.wav";
+    self.noise1 = "misc/null.wav";
 
     precache_model2 ("progs/teleport.mdl");
     setmodel (self, "progs/teleport.mdl");

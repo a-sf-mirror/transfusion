@@ -458,7 +458,6 @@ void() func_door =
 
     if (self.sounds == 0)
     {
-        precache_sound ("misc/null.wav");
         self.noise1 = "misc/null.wav";
         self.noise2 = "misc/null.wav";
     }
