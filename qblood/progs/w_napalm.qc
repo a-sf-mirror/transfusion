@@ -211,14 +211,13 @@ void() T_MissileTouch =
     if (other.health)
     {
         other.deathtype = "missile";
-        BurnDamage (other, self, self.dmg*0.75, DF_FIRE, self.dmg*0.25);
+        BurnDamage (other, self, self.dmg * 0.75, DF_FIRE, 10, (self.dmg * 0.25) / 10);
     }
 
-    // don't do radius damage to the other, because all the damage
+    // don't do radius damage to "other", because all the damage
     // was done in the impact
-    BurnRadius (self, 90, 30, other);
+    BurnRadius (self, 160, self.dmg * 0.75, self.dmg * 0.5, other);
 
-    MakeBlastDamage (self, 160, 20, 10);
     PsychoCaleb (self.owner);
 
     self.origin = self.origin - 8 * normalize (self.velocity);

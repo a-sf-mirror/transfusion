@@ -555,7 +555,6 @@ void(float dm) ThrowHead =
 
     self.movetype = MOVETYPE_BOUNCE;
     self.velocity = VelocityForDamage (dm);
-    self.origin_z = self.origin_z - 24;
     self.avelocity_x = crandom() * 600;
     self.avelocity_y = crandom() * 600;
     self.avelocity_z = crandom() * 600;
@@ -773,6 +772,7 @@ void() PlayerDie =
             player_bod_die1 ();
 
             self = player_head;
+            self.deadflag = DEAD_DEAD;
             ThrowHead (self.health);
         }
         else

@@ -494,10 +494,10 @@ void() Bomb_Explode =
         radius = self.dmg + 40;
         damage = self.dmg / 6;
         burn   = self.dmg / 12;
-        MakeBlastDamage (self, radius, damage, burn);
+        BurnRadius (self, radius, damage, burn, world);
     }
     else if (self.netname == "Lit Spray Can")
-        MakeBlastDamage (self, 250, 20, 15);
+        BurnRadius (self, 250, 20, 80, world);
 
     PsychoCaleb (self.owner);
 

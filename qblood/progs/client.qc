@@ -1270,7 +1270,7 @@ void() Impulses_Player =
         else if (self.impulse == 252)
         {
             Sprint (self, PRINT_MEDIUM, "mcgee -- You're fired!\n");
-            Ignite (self, self, 200, DF_FIRE);
+            Ignite (self, self, DF_FIRE, 10, 20);
         }
         else if (self.impulse == 253)
             Cheat_Inventory ();

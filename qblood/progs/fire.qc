@@ -58,27 +58,26 @@ float(vector vec) VecInWater =
 //==========================================================================
 //  Fire Damage
 
-void(entity victim, entity attacker, float burn, float dmgtype) Ignite;
+void(entity victim, entity attacker, float dmgtype, float burn, float burntime) Ignite;
 
-void(entity ent) RemoveFlares;
 void() muzzleflash;
 
 //------------------------------------------------------------------------//
 //  This inflicts standard fire damage like in Blood.
 //------------------------------------------------------------------------//
-void(entity targ, entity inflictor, entity attacker, float dmgtype) FireDamage =
+void(entity targ, entity inflictor, entity attacker, float dmgtype, float damage) FireDamage =
 {
-    T_Damage (targ, inflictor, attacker, 0.75, dmgtype | DF_MIN_PAIN, "fire");
+    T_Damage (targ, inflictor, attacker, damage, dmgtype | DF_MIN_PAIN, "fire");
 };
 
 //------------------------------------------------------------------------//
 //  This damages a single entity and possibly sets it on fire.
 //------------------------------------------------------------------------//
-void(entity victim, entity fire, float damage, float dmgtype, float burn) BurnDamage =
+void(entity victim, entity fire, float damage, float dmgtype, float burn, float burntime) BurnDamage =
 {
     // Set victim on fire first.
     if (burn > 0)
-        Ignite (victim, fire.owner, burn, dmgtype);
+        Ignite (victim, fire.owner, dmgtype, burn, burntime);
 
     // Apply damage next immediately.
     if (damage > 0)
@@ -93,14 +92,12 @@ void(entity victim, entity fire, float damage, float dmgtype, float burn) BurnDa
 //         point of fire's origin, damage is 100%.  At maximum
 //         distance (i.e, equal to radius), damage is 0%.
 //------------------------------------------------------------------------//
-void(entity fire, float damage, float burn, entity ignore) BurnRadius =
+void(entity fire, float radius, float damage, float burn, entity ignore) BurnRadius =
 {
     local   float   fade;       // Distance multiplier.
-    local   float   radius;
 
-    if (fire.height > 0)
+    if (radius > 0)
     {
-        radius = fire.height;
         fade = 1 - fire.distance;
         if (fade < 0)
             fade = 0;   // Do constant damage.
@@ -132,7 +129,7 @@ void(entity fire, float damage, float burn, entity ignore) BurnRadius =
                 org = head.origin + (head.mins + head.maxs)*0.5;
                 dist = vlen (fire.origin - org);
                 dist = 1 - (dist * fade / radius);
-                BurnDamage (head, fire, damage * dist, DF_FIRE, burn * dist);
+                BurnDamage (head, fire, damage * dist, DF_FIRE, 10, burn * dist / 10);  // 10 points per sec
             }
 
         head = head.chain;
@@ -186,9 +183,6 @@ void(entity ent) KillBurner =
         remove (ent.burner);
         ent.burner = world;
     }
-
-    // Remove the flares too.
-    RemoveFlares (ent);
 };
 
 
@@ -250,21 +244,13 @@ void() MakeEmbers =
 void() Burn =
 {
     // Check for removal.
-    if (self.dmg <= 0)
+    if (time > self.dmgtime)
     {
         // Fuel is all gone.
         self.enemy.burner = world;
         remove (self);
         return;
     }
-    if (self.enemy.think == SUB_Remove)
-        if (self.enemy.nextthink + 1 < time)
-        {
-            // Enemy will be removed from the game.
-            self.enemy.burner = world;
-            remove (self);
-            return;
-        }
 
     // Check if victim is deep enough in water.
     local   vector  spot;
@@ -286,15 +272,10 @@ void() Burn =
         return;
     }
 
-    // Don't let victim burn for more than 10 seconds (default).
-    if (self.dmg > 100)
-        self.dmg = 100;
-
     // Keep on burning.
     MakeEmbers ();
 
-    self.dmg = self.dmg - 1;    // Update the burn damage limit.
-    FireDamage (self.enemy, self, self.owner, self.style);
+    FireDamage (self.enemy, self, self.owner, self.style, self.dmg);
 
     self.nextthink  = time + 0.1;
 };
@@ -302,11 +283,11 @@ void() Burn =
 //------------------------------------------------------------------------//
 //  This sets the victim on fire.
 //------------------------------------------------------------------------//
-void(entity victim, entity attacker, float burn, float dmgtype) Ignite =
+void(entity victim, entity attacker, float dmgtype, float burn, float burntime) Ignite =
 {
     // Check for fire immunity.
     if (!victim.takedamage)
-        return;     // Immune to damage.
+        return;
 
     // If it's a door, a plat or a wall, don't burn
     if (victim.classname == "door")
@@ -319,9 +300,22 @@ void(entity victim, entity attacker, float burn, float dmgtype) Ignite =
     // Check if the entity is linked to a burning flame.
     if (victim.burner)
     {
-        // Add fuel to fire.  Yes, fire can be stolen by another attacker.
-        victim.burner.dmg   = victim.burner.dmg + burn;
-        victim.burner.owner = attacker;
+        local entity victim_burner;
+        local float oldburn;
+
+        victim_burner = victim.burner;
+
+        // How much damage remains to be apply by the current burner?
+        oldburn = victim_burner.dmg * 10 * (victim_burner.dmgtime - time);
+
+        // The damage per 1/10th sec is set to the new value
+        victim_burner.dmg = burn / 10;
+
+        // We add some time to the new burn time to make sure the remaining points
+        // will be apply nevertheless. Warning: the burner is always owned by
+        // the last attacker; he always "steals the fire" from its former owner
+        victim_burner.dmgtime = time + burntime + (oldburn / burn);
+        victim_burner.owner   = attacker;
         return;
     }
 
@@ -339,39 +333,14 @@ void(entity victim, entity attacker, float burn, float dmgtype) Ignite =
     fire.enemy      = victim;
     fire.classname  = "burner";
     fire.deathtype  = "fire";
-    fire.wait       = time;
-    fire.dmg        = burn;
-    fire.style      = dmgtype;  // DF_FIRE or DF_MIND
-    fire.nextthink  = 0.1;      // ASAP
+    fire.dmg        = burn / 10;        // points of damage per 1/10th sec
+    fire.dmgtime    = time + burntime;
+    fire.style      = dmgtype;          // DF_FIRE or DF_MIND
+    fire.nextthink  = 0.1;
     fire.think      = Burn;
     fire.reset      = SUB_Remove;
 
     victim.burner   = fire;     // Link entity to fire.
-};
-
-
-//==========================================================================
-//  Standard Flares
-
-//------------------------------------------------------------------------//
-//  This removes all flares from a single entity.
-//  This should be called when a player disconnects from the server.
-//------------------------------------------------------------------------//
-void(entity ent) RemoveFlares =
-{
-    local   entity  head;
-
-    head = find (world, classname, "flare");
-    while (head)
-    {
-        if (head.enemy == ent)
-        {
-            // Can't remove now, we need head for finding more flares.
-            head.nextthink  = time + 0.1;
-            head.think      = SUB_Remove;
-        }
-        head = find (head, classname, "flare");
-    }
 };
 
 

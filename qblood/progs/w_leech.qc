@@ -124,7 +124,7 @@ void() Leech_BallTouch =
     if (other.takedamage)
     {
         other.deathtype = "leech";
-        BurnDamage (other, self, self.dmg, DF_MIND, self.dmg * 0.5);
+        BurnDamage (other, self, self.dmg, DF_MIND, self.dmg * 0.1, 5);
     }
 
     PsychoCaleb (self.owner);

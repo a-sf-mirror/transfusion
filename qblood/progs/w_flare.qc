@@ -141,7 +141,7 @@ Called when flare impacts.
 void() FlareTouch =
 {
     if (other.solid == SOLID_TRIGGER)
-        return; // trigger field, do nothing
+        return;
 
     #ifdef QUAKEWORLD
     if (self.voided)
@@ -157,7 +157,7 @@ void() FlareTouch =
 
     // hit something that bleeds
     if (other.takedamage)
-        BurnDamage (other, self, 5, DF_FIRE, self.dmg);
+        BurnDamage (other, self, self.dmg, DF_FIRE, self.charge, self.dmgtime);
 
     FlareSpark ();   // Throw a few sparks.
     remove (self);
@@ -213,7 +213,16 @@ Called when flare impacts
 void() AltFlareTouch =
 {
     if (other.solid == SOLID_TRIGGER)
-        return; // trigger field, do nothing
+        return;
+
+    // If the flare hasn't been splitted yet, act as a big normal flare
+    if (self.think != SUB_Remove)
+    {
+        self.dmg = 1;
+        self.charge = 18;
+        self.dmgtime = 5;
+        FlareTouch ();
+    }
 
     #ifdef QUAKEWORLD
     if (self.voided)
@@ -231,11 +240,10 @@ void() AltFlareTouch =
     muzzleflash ();
 
     // Do the damage.
-    self.height = 120;
-    BurnRadius (self, self.dmg, self.cnt, other);
+    BurnRadius (self, 120, self.dmg, self.cnt, other);
     self.origin = self.origin - 8*normalize(self.velocity);
     if (other.takedamage)
-        BurnDamage (other, self, self.dmg, DF_FIRE, self.cnt);
+        BurnDamage (other, self, self.dmg, DF_FIRE, self.cnt, self.dmgtime);
 
     // Make some fire.
     self.solid = SOLID_NOT;     // So embers can't touch 'self'.
@@ -297,6 +305,7 @@ void() AltFlareSplit =
         fire.think      = SUB_Remove;
         fire.cnt        = self.cnt;
         fire.dmg        = self.dmg;
+        fire.dmgtime    = self.dmgtime;
         fire.speed      = self.speed;
         fire.distance   = self.distance;
 
@@ -315,7 +324,7 @@ FireAltFlares
 Create and launch a small fireball
 ================
 */
-void(entity attacker, vector org, vector dir, float sped, float damage, float burn) FireAltFlares =
+void(entity attacker, vector org, vector dir, float sped, float damage, float burn, float burntime) FireAltFlares =
 {
     local   entity  fire;
 
@@ -327,6 +336,7 @@ void(entity attacker, vector org, vector dir, float sped, float damage, float bu
     fire.think      = AltFlareSplit;
     fire.pausetime  = time + (8000 / sped);
     fire.cnt        = burn;
+    fire.dmgtime    = burntime;
     fire.dmg        = damage;
     fire.speed      = sped;
     fire.distance   = 0.8;  // Damage is 80% at max radius.
@@ -350,7 +360,9 @@ void(entity attacker, vector org, vector dir, float sped) FireFlare =
     fire.touch      = FlareTouch;
     fire.nextthink  = time + (8000 / sped);
     fire.think      = SUB_Remove;
-    fire.dmg        = 50;       // Flares last five seconds.
+    fire.dmg        = 1;        // So players can use it to trigger things
+    fire.charge     = 15;       // 15 points of damage per second
+    fire.dmgtime    = 4;        // ... for 4 seconds
 };
 
 
@@ -387,7 +399,7 @@ void() Flare_Fire =
     if (self.player_state == PS_ALTFIRE && self.ammo_flares >= 8)
     {
         self.currentammo = self.ammo_flares = self.ammo_flares - 8;
-        FireAltFlares (self, orig, dir, mspeed, 10, 50);
+        FireAltFlares (self, orig, dir, mspeed, 1, 20, 3);
         return;
     }
 

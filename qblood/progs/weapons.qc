@@ -478,57 +478,6 @@ void(entity client) PsychoCaleb =
     sound (client, CHAN_VOICE, playit, 1, ATTN_NORM);
 };
 
-// This creates a blank entity that inflicts burn damage for several
-// frames.  Refers to code in 'fire.qc'
-
-void() BlastDamageThink =
-{
-    BurnRadius (self, self.dmg, self.cnt, world);
-
-    // Damage decreases each frame to a minimum of 5.
-    if (self.dmg > 5)
-    {
-        if (self.dmg < 15)
-            self.dmg = 5;
-        else
-            self.dmg = self.dmg - 10;
-    }
-    self.cnt = 5;   // Burn up to a half second per frame.
-
-    self.delay = self.delay - 1;
-    if (self.delay <= 0)
-    {
-        remove (self);
-        return;
-    }
-
-    self.nextthink = time + 0.1;
-};
-
-void(entity inflictor, float radius, float damage, float burn) MakeBlastDamage =
-{
-    local   entity  blast;
-
-    blast = spawn();
-
-    setorigin (blast, inflictor.origin);
-    setmodel (blast, string_null);
-    setsize (blast, VEC_ORIGIN, VEC_ORIGIN);
-
-    blast.solid     = SOLID_NOT;
-    blast.movetype  = MOVETYPE_NONE;
-    blast.velocity  = '0 0 0';
-    blast.touch     = SUB_Null;
-
-    blast.owner     = inflictor.owner;
-    blast.height    = radius;
-    blast.dmg       = damage;
-    blast.cnt       = burn;
-    blast.delay     = 7;    // Damage for seven frames.
-
-    blast.nextthink = time + 0.1;
-    blast.think     = BlastDamageThink;
-};
 
 #ifndef QUAKEWORLD
 // 13 frames for Blood's explosion
@@ -559,32 +508,6 @@ void() BecomeExplosion =
 #endif
 
 
-/*
-===============================================================================
-
-LIGHTNING
-
-===============================================================================
-*/
-
-void(entity from, float damage) LightningHit =
-{
-    #ifdef QUAKEWORLD
-    WriteByte (MSG_MULTICAST, SVC_TEMPENTITY);
-    WriteByte (MSG_MULTICAST, TE_LIGHTNINGBLOOD);
-    WriteCoord (MSG_MULTICAST, trace_endpos_x);
-    WriteCoord (MSG_MULTICAST, trace_endpos_y);
-    WriteCoord (MSG_MULTICAST, trace_endpos_z);
-    multicast (trace_endpos, MULTICAST_PVS);
-
-    #else
-    particle (trace_endpos, '0 0 100', 225, damage*4);
-    #endif
-
-    T_Damage (trace_ent, from, from, damage, DF_FIRE, string_null);
-};
-
-
 //=============================================================================
 
 void() flame_touch =
@@ -612,7 +535,7 @@ void() flame_touch =
 
     // hit something that bleeds
     if (other.takedamage)
-        BurnDamage (other, self, 5, DF_FIRE, 30);
+        BurnDamage (other, self, 5, DF_FIRE, 10, 3);
 
     remove(self);
 

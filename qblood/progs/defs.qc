@@ -378,9 +378,7 @@ float map_cycle;
 //
 // Fire
 //
-.float      burn_time;
 .entity     burner;         // The flame generator linked on an entity
-.float      flare_time;     // Used so only one flare can burn per frame
 
 
 //
