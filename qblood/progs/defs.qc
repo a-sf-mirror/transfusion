@@ -456,7 +456,6 @@ float team2score;
 // monsters
 //
 .float      pausetime;
-.entity     movetarget;
 
 
 //

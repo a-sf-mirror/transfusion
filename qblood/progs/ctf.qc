@@ -322,6 +322,12 @@ void() place_flag = {
     self.cnt = FLAG_AT_BASE;
     self.mangle = self.angles;
     self.effects = self.effects | EF_DIMLIGHT;
+    #ifndef QUAKEWORLD
+    if (self.team == TEAM_COLOR1)
+        self.effects = self.effects | EF_RED;
+    else
+        self.effects = self.effects | EF_BLUE;
+    #endif
     if (!droptofloor()) {
         dprint ("Flag fell out of level at ");
         dprint (vtos(self.origin));

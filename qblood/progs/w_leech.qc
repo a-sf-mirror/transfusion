@@ -237,7 +237,7 @@ void() Leech_AltBallTouch =
     #endif
 
     // Switch ownership from the Life Leech itself to the LL owner
-    self.owner = self.owner.enemy;
+    self.owner = self.owner.leech_sentry;
 
     if (pointcontents(self.origin) == CONTENT_SKY)
     {
@@ -282,7 +282,7 @@ void() Leech_Think =
         {
             // If he's closer than our current choice
             diff = vlen (ent.origin - ballorigin);
-            if (diff < bestdiff && ent != self.enemy)
+            if (diff < bestdiff && ent != self.leech_sentry)
             {
                 // If he's visible
                 traceline (ballorigin, ent.origin, FALSE, self);
@@ -329,7 +329,7 @@ Die function for a LL sentry
 */
 void() Leech_Die =
 {
-    self.enemy.leech_sentry = world;
+    self.leech_sentry.leech_sentry = world;
     remove (self);
 };
 
@@ -344,7 +344,7 @@ Touch function for a LL sentry
 void() Leech_Touch =
 {
     // If it's the owner, he takes back his Life Leech
-    if (self.enemy == other)
+    if (self.leech_sentry == other)
     {
         other.items = other.items + IT_LIFE_LEECH;
         other.leech_sentry = world;
@@ -375,7 +375,7 @@ void() Leech_Drop =
     setsize (item, '-5 -5 0', '5 7 41');
 
     item.owner = self;             // we don't want to trigger the touch function yet
-    item.enemy = self;             // we can't use "owner" because the owner of an entity is never clipped against it
+    item.leech_sentry = self;      // we can't use "owner" because the owner of an entity is never clipped against it
     item.solid = SOLID_BBOX;
     item.takedamage = DAMAGE_AIM;
     item.health = 300;

@@ -483,7 +483,7 @@ void() sentry_detect_switch1 =
 // BloodBath 'CLUE' entity for The Crypt
 void() sentry_detect_crypt =
 {
-     sentry_detect_init ("misc/b2_crypt.wav");
+    sentry_detect_init ("misc/b2_crypt.wav");
 };
 
 

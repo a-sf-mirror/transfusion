@@ -166,11 +166,8 @@
 #define STATE_DOWN      3
 
 #define VEC_ORIGIN      '0 0 0'
-#define VEC_HULL_MIN    '-16 -16 -24'
+#define VEC_HULL_MIN    '-16 -16 -20'
 #define VEC_HULL_MAX    '16 16 32'
-
-#define VEC_HULL2_MIN   '-32 -32 -24'
-#define VEC_HULL2_MAX   '32 32 64'
 
 // protocol bytes
 #define SVC_TEMPENTITY      23
