@@ -423,7 +423,7 @@ void() World_EndWarmup =
 
     local entity ent, tempEnt;
 
-    Bprint (PRINT_HIGH, "Resetting level...\n");
+    Bcenterprint ("Resetting level...\n");
     warmup_done = TRUE;
     warmup_counttime = 0;
 
@@ -436,8 +436,12 @@ void() World_EndWarmup =
         // If the entity has a reset function, call it
         if (ent.reset)
         {
-            self = ent;
-            ent.reset ();
+            // Players respawn after the whole world has been reset
+            if (ent.classname != "player")
+            {
+                self = ent;
+                self.reset ();
+            }
         }
         ent = nextent (ent);
     }
@@ -447,19 +451,8 @@ void() World_EndWarmup =
     while (ent != world)
     {
         self = ent;
-        respawn (FALSE);
+        self.reset ();
         ent = find (ent, classname, "player");
-    }
-    ent = find (world, classname, "head");
-    while (ent != world)
-    {
-        // If the head is actually a gibbed player that hasn't yet respawn
-        if (!ent.takedamage)
-        {
-            self = ent;
-            respawn (FALSE);
-        }
-        ent = find (ent, classname, "head");
     }
 
     self = tempEnt;
@@ -498,7 +491,7 @@ void() World_WarmupCountdown =
         if (warmup_counttime <= time)
         {
             warmup_counttime = warmup_counttime + 10;
-            Bprint (PRINT_HIGH, "¾¾ Waiting for opponents to begin the warmup ¼¼\n");
+            Bcenterprint ("¾¾ Waiting for opponents ¼¼\n");
         }
         return;
     }
@@ -521,9 +514,7 @@ void() World_WarmupCountdown =
             warmup_counttime = warmup_counttime + 5;
 
         remaining = ftos (rint (warmup_endtime - time));
-        Bprint (PRINT_HIGH, "×ÁÒÍÕÐº ");  // "WARMUP: "
-        Bprint (PRINT_HIGH, remaining);
-        Bprint (PRINT_HIGH, " sec\n");
+        Bcenterprint3 ("×ÁÒÍÕÐº ", remaining, " sec\n");  // "WARMUP: ... sec"
     }
 };
 
@@ -605,18 +596,6 @@ void() World_CheckWarmup =
             count2 = count2 + 1;
         ent = find (ent, classname, "player");
     }
-    ent = find (world, classname, "head");
-    while (ent != world)
-    {
-        if (! ent.takedamage)
-        {
-            if (ent.team != TEAM_COLOR2)
-                count1 = count1 + 1;
-            else
-                count2 = count2 + 1;
-        }
-        ent = find (ent, classname, "head");
-    }
 
     // At least 2 players in BloodBath mode, and at least 1 player in each team for teamplay
     if (gametype == GT_BLOODBATH)
@@ -653,19 +632,6 @@ Modify entity properties to change it to a destroyable corpse
 */
 void(float corpseHealth, void() corpseToGib) BecomeCorpse =
 {
-    // Clean all
-    // if a monsters death sets off a trigger then dont let the corpses death do the same
-    self.use = SUB_Null;
-    self.target = string_null;
-    self.killtarget = string_null;
-    self.targetname = string_null;
-    self.th_pain = SUB_Null;
-    self.deadflag = DEAD_DEAD;
-
-    #ifndef NO_FRIKBOT
-    self.ishuman = 0;
-    #endif
-
     // Corpse will turn into gibs if destroyed
     self.health = corpseHealth;
     self.th_die = corpseToGib;
@@ -677,22 +643,8 @@ void(float corpseHealth, void() corpseToGib) BecomeCorpse =
     self.reset = SUB_Remove;
 
     // Allow some interactions (so the corpses can be destroyed by explosions)
+    self.solid = SOLID_BBOX;
     self.takedamage = DAMAGE_AIM;
-
-    // The following fields have already been set correctly for heads
-    if (self.classname != "head")
-    {
-        local vector minBbox, maxBbox;
-
-        minBbox = VEC_HULL_MIN;
-        maxBbox = VEC_HULL_MAX;
-        maxBbox_z = minBbox_z + 5;
-        setsize (self, minBbox, maxBbox);
-
-        self.touch = SUB_SolidTouch;
-        self.solid = SOLID_BBOX;
-        self.classname = "corpse";
-    }
 };
 
 
@@ -727,7 +679,6 @@ void(entity ent) CloneCorpse =
 
     // Copy the entity characteristics
     clone = spawn ();
-    clone.classname = ent.classname;
     clone.netname = ent.netname;
     clone.angles = ent.angles;
     clone.model = ent.model;
@@ -737,9 +688,6 @@ void(entity ent) CloneCorpse =
     clone.colormap = ent.colormap;
     clone.movetype = ent.movetype;
     clone.velocity = ent.velocity;
-    clone.takedamage = ent.takedamage;
-    clone.touch = ent.touch;
-    clone.solid = ent.solid;
     setorigin (clone, ent.origin);
     setsize (clone, ent.mins, ent.maxs);
 
@@ -747,11 +695,27 @@ void(entity ent) CloneCorpse =
     self = clone;
 
     // If the entity is a head, we just need to call HeadDie when it's destroyed
-    if (clone.classname == "head")
+    if (clone.model == "progs/h_player.mdl")
+    {
+        self.classname = "head";
+        self.touch = HeadTouch;
         BecomeCorpse (80, HeadDie);
+    }
     // Corpse will turn into gibs if destroyed
     else
+    {
+        local vector minBbox, maxBbox;
+
+        self.classname = "corpse";
+
+        minBbox = VEC_HULL_MIN;
+        maxBbox = VEC_HULL_MAX;
+        maxBbox_z = minBbox_z + 5;
+        setsize (self, minBbox, maxBbox);
+        self.touch = SUB_SolidTouch;
+
         BecomeCorpse (100, GibPlayerCorpse);
+    }
 
     self = tempEnt;
 };

@@ -270,8 +270,9 @@ void(vector org, vector dir, float mspeed) Tesla_LaunchJolt =
     else
     {
         jolt.dmg    = 24;
-        jolt.model  = "progs/bolt.mdl";
+        jolt.model  = "progs/teslaball.spr";
         jolt.style  = TESLA_NORMALJOLT;
+        jolt.alpha  = 0.5;
         setorigin (jolt, org + '0 0 4');
     }
     jolt.touch      = Tesla_JoltTouch;
@@ -340,8 +341,8 @@ void() Tesla_Fire =
     // Akimbo mode
     if (akimboFactor == 2)
     {
-        Tesla_LaunchJolt (org + v_right * 8, dir, mspeed);
-        Tesla_LaunchJolt (org - v_right * 8, dir, mspeed);
+        Tesla_LaunchJolt (org + v_right * 14, dir, mspeed);
+        Tesla_LaunchJolt (org - v_right * 14, dir, mspeed);
 
         // If we don't have enough ammo anymore, drop the akimbo mode for now
         if (self.ammo_cells < 2)

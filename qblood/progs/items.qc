@@ -1590,7 +1590,7 @@ void() weapon_lightning =
     precache_model ("progs/v_light.mdl");
     precache_model ("progs/g_light.mdl");
     precache_model ("progs/v_alight.mdl");  // Akimbo model
-    precache_model ("progs/bolt.mdl");
+    precache_model ("progs/teslaball.spr");
     precache_model ("progs/bolt2.mdl");
 
     setmodel (self, "progs/g_light.mdl");

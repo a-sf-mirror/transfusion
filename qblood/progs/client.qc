@@ -257,9 +257,7 @@ void() execute_changelevel =
         #ifndef NO_FRIKBOT
         if (other.ishuman == TRUE && other.b_clientno != -1)
         #else
-        if (other.classname == "player" ||
-            other.classname == "observer" ||
-            (other.classname == "head" && !other.takedamage))
+        if (other.classname == "player" || other.classname == "observer")
         #endif
         {
             KillBurner (other);
@@ -375,7 +373,9 @@ void() ClientKill =
     if (self.observer)
         return;
 
-    Bprint (PRINT_MEDIUM, "Kevorkian approves!\n");
+    Bprint (PRINT_MEDIUM, "Kevorkian approves ");
+    Bprint (PRINT_MEDIUM, self.netname);
+    Bprint (PRINT_MEDIUM, "!\n");
     sound (self, CHAN_AUTO, "thevoice/vo5.wav", 1, ATTN_NORM);
     CTF_PlayerDropFlag ();
     set_suicide_frame ();
@@ -402,8 +402,9 @@ float(entity spot) Cl_IsSpawnSpotFree =
     thing = findradius (spot.origin, 32);
     while (thing)
     {
-        if (thing.classname == "player")
-            return FALSE;
+        if (thing.takedamage)
+            if (thing.classname == "player")
+                return FALSE;
         thing = thing.chain;
     }
 
@@ -553,6 +554,7 @@ void() PutClientInServer =
     self.th_pain = player_pain;
     self.th_die = PlayerDie;
     self.touch = SUB_Null;  // remove the "HeadTouch" binding (if any)
+    self.reset = Player_Reset;
 
     self.deadflag = DEAD_NO;
     self.player_state = PS_IDLE;
@@ -1398,8 +1400,9 @@ void() ClientConnect =
     ClientInRankings();
     #endif
 
+    Bprint (PRINT_HIGH, "Player ");
     Bprint (PRINT_HIGH, self.netname);
-    Bprint (PRINT_HIGH, " lives again!\n"); // entered the game
+    Bprint (PRINT_HIGH, " entered the game\n");
 
     sound (self, CHAN_AUTO, "thevoice/vo1.wav", 1, ATTN_NORM); // Let the Bloodbath Begin!
     self.do_observer = 1;
@@ -1460,6 +1463,7 @@ void() ClientDisconnect =
     set_suicide_frame ();
 
     World_CheckWarmup ();
+    self.classname = string_null;  // just to be sure he won't appear while searching for players
 };
 
 /*
@@ -1477,7 +1481,7 @@ void(entity attacker) ClientObituary =
     rnum = random();
 
     if (self.classname != "player")
-        return;  // Maybe we should print an error message
+        return;
 
     if (attacker.classname == "teledeath")
     {
@@ -1498,7 +1502,9 @@ void(entity attacker) ClientObituary =
     {
         Bprint (PRINT_MEDIUM,"Tchernobog's Death Mask deflects ");
         Bprint (PRINT_MEDIUM,self.netname);
-        Bprint (PRINT_MEDIUM,"'s telefrag\n");
+        Bprint (PRINT_MEDIUM,"'s telefrag on ");
+        Bprint (PRINT_MEDIUM,attacker.owner.netname);
+        Bprint (PRINT_MEDIUM,"\n");
         self.noise1 = "thevoice/splatt.wav";
         #ifdef QUAKEWORLD
         logfrag (self, self);
@@ -1512,7 +1518,7 @@ void(entity attacker) ClientObituary =
     if (attacker.classname == "teledeath3")
     {
         Bprint (PRINT_MEDIUM,self.netname);
-        Bprint (PRINT_MEDIUM," was overcome by  ");
+        Bprint (PRINT_MEDIUM," was overcome by ");
         Bprint (PRINT_MEDIUM,attacker.owner.netname);
         Bprint (PRINT_MEDIUM, "'s Death Mask power\n");
         Cl_UpdatePlayerFrags (self, -1);
@@ -1548,12 +1554,12 @@ void(entity attacker) ClientObituary =
 
             if (rnum < 0.33)
             {
-                deathstring = " receives the Darwin Award.\n";
+                deathstring = " receives the Darwin Award\n";
                 self.noise1 = "thevoice/vo16.wav";
             }
             else if (rnum < 0.66)
             {
-                deathstring = " exercises Population control.\n";
+                deathstring = " exercises Population control\n";
                 self.noise1 = "thevoice/vo12.wav";
             }
             else
@@ -1568,15 +1574,17 @@ void(entity attacker) ClientObituary =
         else if (friendlyfire && self.team > 0 && self.team == attacker.team)
         {
             if (rnum < 0.25)
-                deathstring = " mows down a teammate\n";
+                deathstring = " mows down his teammate ";
             else if (rnum < 0.50)
-                deathstring = " checks his glasses\n";
+                deathstring = " checks his glasses in memory of ";
             else if (rnum < 0.75)
-                deathstring = " gets a frag for the other team\n";
+                deathstring = " gets a frag for the other team on ";
             else
-                deathstring = " loses another friend\n";
+                deathstring = " loses his friend ";
             Bprint (PRINT_MEDIUM, attacker.netname);
             Bprint (PRINT_MEDIUM, deathstring);
+            Bprint (PRINT_MEDIUM, self.netname);
+            Bprint (PRINT_MEDIUM, "\n");
 
             Cl_UpdatePlayerFrags (attacker, -1);
 

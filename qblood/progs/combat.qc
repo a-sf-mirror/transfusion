@@ -319,8 +319,6 @@ void(entity targ, entity inflictor, entity attacker, float damage, float dflags,
                 targ.items = targ.items - (targ.items & (IT_ARMOR1 | IT_ARMOR2 | IT_ARMOR3)) + IT_ARMOR3;
             }
         }
-//        else
-//            Bprint (PRINT_MEDIUM, "Unknown armor\n");
     }
 
     // Do the damage.

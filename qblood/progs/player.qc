@@ -23,6 +23,7 @@
 
 void() CTF_PlayerDropFlag;
 void() PlayerDead;
+void(float cloneCorpse) respawn;
 
 
 /*
@@ -128,6 +129,19 @@ void() muzzleflash =
     #else
     self.effects = self.effects | EF_MUZZLEFLASH;
     #endif
+};
+
+
+/*
+====================
+Player_Reset
+
+Called at the end of the warmup
+====================
+*/
+void() Player_Reset =
+{
+    respawn (FALSE);
 };
 
 
@@ -531,51 +545,22 @@ void() HeadTouch =
 };
 
 
-void(string gibname, float dm) ThrowHead =
+void(float dm) ThrowHead =
 {
-    setmodel (self, gibname);
     self.frame = 0;
     self.skin = 0;
-    self.movetype = MOVETYPE_BOUNCE;
-
-    // A player's head is invulnerable until this player respawns
-    if (self.classname != "player")
-    {
-        self.takedamage = DAMAGE_AIM;
-        self.health = 80;
-
-        // Get rid of it in 2 minutes anyway (to avoid too many entities)
-        self.nextthink = time + 120;
-        self.think = SUB_Remove;
-        self.reset = SUB_Remove;
-    }
-    else
-    {
-        self.takedamage = DAMAGE_NO;
-        self.nextthink = -1;
-    }
-
-    // Clean all
-    // if a monsters death sets off a trigger then dont let the corpses death do the same
-    self.use = SUB_Null;
-    self.target = string_null;
-    self.killtarget = string_null;
-    self.targetname = string_null;
-    self.th_pain = SUB_Null;
-    self.flags = self.flags - (self.flags & (FL_MONSTER | FL_ONGROUND));
-
-    self.th_die = HeadDie;
-    self.touch = HeadTouch;
-
-    self.classname = "head";
-    self.solid = SOLID_BBOX;
-    self.view_ofs = '0 0 8';
+    setmodel (self, "progs/h_player.mdl");
     setsize (self, '-10 -13 -3', '12 6 18');
+    self.view_ofs = '0 0 8';
+
+    self.movetype = MOVETYPE_BOUNCE;
     self.velocity = VelocityForDamage (dm);
     self.origin_z = self.origin_z - 24;
     self.avelocity_x = crandom() * 600;
     self.avelocity_y = crandom() * 600;
     self.avelocity_z = crandom() * 600;
+
+    self.flags = self.flags - (self.flags & FL_ONGROUND);
 };
 
 
@@ -657,7 +642,7 @@ void() RandomHumanGibs =
 
 void() GibPlayer =
 {
-    ThrowHead ("progs/h_player.mdl", self.health);
+    ThrowHead (self.health);
     RandomHumanGibs ();
 
     self.deadflag = DEAD_DEAD;
@@ -773,7 +758,7 @@ void() PlayerDie =
         // If the head is removed in the process
         if (self.health < -20)
         {
-            ThrowHead ("progs/h_player.mdl", self.health);
+            ThrowHead (self.health);
             player_bod_die1 ();
         }
         else

@@ -33,7 +33,50 @@ float() crandom =
 
 void() SUB_Null = {};
 
-void() SUB_Remove = {remove(self);};
+void() SUB_Remove =
+{
+    remove (self);
+};
+
+
+/*
+====================
+Bcenterprint
+
+Send a centerprint to all players
+====================
+*/
+void(string text) Bcenterprint =
+{
+    local entity ent;
+
+    ent = find (world, classname, "player");
+    while (ent != world)
+    {
+        centerprint (ent, text);
+        ent = find (ent, classname, "player");
+    }
+};
+
+
+/*
+====================
+Bcenterprint3
+
+Send a centerprint2 to all players
+====================
+*/
+void(string text1, string text2, string text3) Bcenterprint3 =
+{
+    local entity ent;
+
+    ent = find (world, classname, "player");
+    while (ent != world)
+    {
+        centerprint3 (ent, text1, text2, text3);
+        ent = find (ent, classname, "player");
+    }
+};
 
 
 /*

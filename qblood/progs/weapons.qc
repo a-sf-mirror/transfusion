@@ -388,7 +388,7 @@ void(entity client) BoredCaleb =
 
     if (client.health <= 0 || client.deadflag)
         return;
-    if (client.classname != "player")
+    if (client.classname != "player" || !client.takedamage)
         return;
 
     local   float   rs;

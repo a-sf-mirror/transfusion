@@ -205,6 +205,13 @@ void() Impulses_Observer =
         }
     }
 
+    // If the player has just spawned into the arena
+    if (!self.observer)
+    {
+        Bprint (PRINT_HIGH, self.netname);
+        Bprint (PRINT_HIGH, " lives again!\n");
+    }
+
     if (self.impulse == 141)
         identify_player ();
 
@@ -290,5 +297,6 @@ void(entity player) BecomeObserver =
     player.do_observer = 0;
 
     player.classname = "observer";
+    player.reset     = SUB_Null;
 };
 

@@ -630,6 +630,7 @@ void(string var, string val) cvar_set = #72;    // sets cvar.value
 // The various versions of centerprint (sprint, but in middle)
 void(entity client, string s) centerprint = #73;
 void(entity client, string s1, string s2) centerprint2 = #73;
+void(entity client, string s1, string s2, string s3) centerprint3 = #73;
 #endif
 
 void(vector pos, string samp, float vol, float atten) ambientsound = #74;

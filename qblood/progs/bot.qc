@@ -154,9 +154,9 @@ void()              SetNewParms;
 
 // rankings
 float(float clientno)       ClientBitFlag;
+float()                     ClientNextAvailable;
 void(float whichteam, float whatbot, float whatskill) BotConnect;
 void(entity bot)            BotDisconnect;
-void(float clientno)        BotInvalidClientNo;
 void(entity who)            UpdateClient;
 
 // waypointing
@@ -215,9 +215,10 @@ void(entity client, string s)   frik_sprint = #24;
 #else
 void(entity client, float level, string s)  frik_sprint = #24;
 #endif
-vector(entity e, float sped)              frik_aim = #44;
-void(entity client, string s)             frik_centerprint = #73;
-void(entity client, string s1, string s2) frik_centerprint2 = #73;
+vector(entity e, float sped)                         frik_aim = #44;
+void(entity client, string s)                        frik_centerprint = #73;
+void(entity client, string s1, string s2)            frik_centerprint2 = #73;
+void(entity client, string s1, string s2, string s3) frik_centerprint3 = #73;
 void(entity e)          frik_setspawnparms = #78;
 void(float to, float f)     frik_WriteByte = #52;
 void(float to, float f)     frik_WriteChar = #53;
@@ -346,6 +347,24 @@ void(entity client, string s1, string s2) centerprint2 =
         {
             if ((b_temp1.enemy == client) && b_temp1.ishuman)
                 frik_centerprint2(b_temp1, s1, s2);
+        }
+        b_temp1 = b_temp1._next;
+    }
+    #endif
+};
+void(entity client, string s1, string s2, string s3) centerprint3 =
+{
+    if (client.ishuman == 1)
+        frik_centerprint3(client, s1, s2, s3);
+    #ifndef QUAKEWORLD
+    b_temp1 = player_head;
+
+    while(b_temp1)
+    {
+        if (b_temp1.classname == "botcam")
+        {
+            if ((b_temp1.enemy == client) && b_temp1.ishuman)
+                frik_centerprint3(b_temp1, s1, s2, s3);
         }
         b_temp1 = b_temp1._next;
     }
@@ -525,34 +544,6 @@ it just links the bot into the mod
 -=-=-=-=-=-=-=-=-=-=-=-=-=-=-=-=-=-=-=-=-=-=-=
 */
 
-void() FixPlayerList =
-{
-    local entity fromHead, fromTail;
-
-    // Search for the first _next that points on "self"
-    if (player_head != self)
-    {
-        fromHead = player_head;
-        while (fromHead._next != self)
-            fromHead = fromHead._next;
-    }
-    else
-        fromHead = world;
-
-    // Search for the first _last that points on "self"
-    if (player_tail != self)
-    {
-        fromTail = player_tail;
-        while (fromTail._last != self)
-            fromTail = fromTail._last;
-    }
-    else
-        fromTail = world;
-
-    self._last = fromHead;
-    self._next = fromTail;
-};
-
 void() ClientFixRankings =
 {
     local float cno;
@@ -578,12 +569,17 @@ void() ClientInRankings =
 
     cno = self.colormap - 1;
 
-    // If it's a real new player, he may have taken the entity of a running bot
-    // In this case, we need to fix the linked list of players
+    // If it's a real new player
     if (self.ishuman == 0)
     {
+        // If there's no free spot left for another player, we kick a bot
+        if (ClientNextAvailable () == -1)
+            if (bot_count)
+                KickABot ();
+
+        // Sanity check: make sure the new player hasn't taken the entity of an existing bot
         if (ClientIsActive (cno))
-            FixPlayerList ();
+            error ("ClientInRankings: new human player entity was used by a bot");
     }
 
     if (player_head)
@@ -607,12 +603,12 @@ void() ClientInRankings =
         self.phys_obj = b_temp2;
     }
 
+    // If it's a bot
     if (self.ishuman == 2)
     {
         self.ishuman = FALSE;
         return;
     }
-    BotInvalidClientNo (cno);
     active_clients = active_clients | ClientBitFlag (cno);
 
     self.b_clientno = cno;
@@ -952,15 +948,21 @@ float(float clientno) ClientBitFlag =
 float() ClientNextAvailable =
 {
     local float clientno;
+    local float found;
 
-    // Note: FrikaC want to do this top down, but QW won't let him
-    clientno = 0;
-    while(clientno < max_clients)
+    found = -1;
+    clientno = max_clients - 1;
+    while (clientno >= 0)
     {
-        if(!ClientIsActive(clientno))
-            return clientno;
+        if (!ClientIsActive (clientno))
+        {
+            // We make sure to leave one free spot for a real player
+            if (found != -1)
+                return found;
+            found = clientno;
+        }
 
-        clientno = clientno + 1;
+        clientno = clientno - 1;
     }
 
     return -1;
@@ -1017,7 +1019,7 @@ void(float whichteam, float whatbot, float whatskill) BotConnect =
     uself = self;
     if(f == -1)
     {
-        Bprint (PRINT_HIGH, "Unable to connect a bot, server is full.\n");
+        Bprint (PRINT_HIGH, "Unable to connect a bot (no more room)\n");
         return;
     }
 
@@ -1089,53 +1091,25 @@ void(entity bot) BotDisconnect =
 
     ClientDisconnect();
 
-    if (self.b_clientno != -1)
-    {
-        // the bot's client number is not in use by a real player so we
-        // must remove it's entry in the rankings
-        // Quake engine sets all fields to 0, can only do the most important here
-        self.b_frags = self.frags = 0;
-        self.netname = string_null;
-        self.classname = string_null;
-        self.health = 0;
-        self.items = 0;
-        self.armorvalue = 0;
-        self.weaponmodel = string_null;
-        self.b_pants = 0;
-        self.b_shirt = 0;
-        self.ammo_shells = self.ammo_nails = self.ammo_rockets = self.ammo_cells = 0;
-        UpdateClient(self);
-        active_clients = active_clients - (active_clients & ClientBitFlag (self.b_clientno));
-        self.b_clientno = -1;
-    }
+    // We must remove The bot's client number entry in the rankings
+    // Quake engine sets all fields to 0, can only do the most important here
+    self.b_frags = self.frags = 0;
+    self.netname = string_null;
+    self.classname = string_null;
+    self.health = 0;
+    self.items = 0;
+    self.armorvalue = 0;
+    self.weaponmodel = string_null;
+    self.b_pants = 0;
+    self.b_shirt = 0;
+    self.ammo_shells = self.ammo_nails = self.ammo_rockets = self.ammo_cells = 0;
+    UpdateClient(self);
+    active_clients = active_clients - (active_clients & ClientBitFlag (self.b_clientno));
+    self.b_clientno = -1;
+
     self = uself;
 };
-/*
--=-=-=-=-=-=-=-=-=-=-=-=-=-=-=-=-=-=-=-=-=-=-=
 
-BotInvalidClientNo
-kicks a bot if a player connects and takes the bot's space
-
--=-=-=-=-=-=-=-=-=-=-=-=-=-=-=-=-=-=-=-=-=-=-=
-*/
-
-void(float clientno) BotInvalidClientNo =
-{
-    local entity bot;
-
-    bot = GetClientEntity(clientno);
-    if(bot.b_clientno > 0)
-    {
-        if (!bot.ishuman)
-        {
-            bot.b_clientno = -1;
-            BotDisconnect(bot);
-            active_clients = active_clients | ClientBitFlag (self.b_clientno);
-            BotConnect(0, bot.b_num, bot.b_skill);
-            return;
-        }
-    }
-};
 
 #ifndef QUAKEWORLD
 /*

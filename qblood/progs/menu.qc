@@ -210,7 +210,7 @@ float(.float vote_field, float bitmask, float value) Vote_IsPassed =
         #ifndef NO_FRIKBOT
         if (player.ishuman == TRUE && player.b_clientno != -1)
         #else
-        if (player.classname == "player" || (player.classname == "head" && ! player.takedamage))
+        if (player.classname == "player")
         #endif
         {
             VoteTotal = VoteTotal + 1;
