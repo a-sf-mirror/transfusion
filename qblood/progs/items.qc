@@ -178,6 +178,13 @@ void() PlaceItem =
         remove(self);
         return;
     }
+
+    // If the item has an animation loop
+    if (self.think1)
+    {
+        self.nextthink = time + 0.1;
+        self.think = self.think1;
+    }
 };
 
 /*
@@ -1467,10 +1474,18 @@ void() weapon_nailgun =
 void() weapon_supernailgun =
 {
     precache_model ("progs/v_nail2.mdl");
+    #ifndef NEW_MODELS
     precache_model ("progs/g_nail2.mdl");
+    #else
+    precache_model ("models/ammo/g_aerosol.md3");
+    #endif
     precache_model ("progs/grd_aero.mdl");
 
+    #ifndef NEW_MODELS
     setmodel (self, "progs/g_nail2.mdl");
+    #else
+    setmodel (self, "models/ammo/g_aerosol.md3");
+    #endif
     self.weapon = IT_SPRAY_CAN;
     self.netname = "Spray Can";
     self.touch = weapon_touch;
@@ -1530,7 +1545,11 @@ void() weapon_grenadelauncher =
 // TNT Bundle
 void() item_tnt =
 {
+    #ifndef NEW_MODELS
     self.model = "progs/i_tnt.mdl";
+    #else
+    self.model = "models/ammo/a_tnt.md3";
+    #endif
     self.netname = "Bundle of TNT";
     item_tnt_common ();
     setsize (self, '-8 -8 0', '8 8 32');
@@ -1865,8 +1884,13 @@ void() item_flares =
 {
     self.touch = ammo_touch;
 
-    precache_model ("progs/i_flares.mdl");
-    setmodel (self, "progs/i_flares.mdl");
+    #ifndef NEW_MODELS
+    self.model = "progs/i_flares.mdl";
+    #else
+    self.model = "models/ammo/a_flares.md3";
+    #endif
+    precache_model (self.model);
+    setmodel (self, self.model);
 
     self.netname = "box of flares";
     self.aflag = 8;
@@ -1883,18 +1907,26 @@ void() item_shells =
 
     if (self.spawnflags & AMMO_BIG)
     {
-        precache_model ("progs/i_boxshl.mdl");
-        setmodel (self, "progs/i_boxshl.mdl");
+        #ifndef NEW_MODELS
+        self.model = "progs/i_boxshl.mdl";
+        #else
+        self.model = "models/ammo/a_boxshell.md3";
+        #endif
         self.netname = "box of shotgun shells";
         self.aflag = 15;
     }
     else
     {
-        precache_model ("progs/i_fewshl.mdl");
-        setmodel (self, "progs/i_fewshl.mdl");
+        #ifndef NEW_MODELS
+        self.model = "progs/i_fewshl.mdl";
+        #else
+        self.model = "models/ammo/a_fewshell.md3";
+        #endif
         self.netname = "4 shotgun shells";
         self.aflag = 4;
     }
+    precache_model (self.model);
+    setmodel (self, self.model);
     self.weapon = 1;
     setsize (self, '-16 -16 0', '16 16 56');
     StartItem ();
@@ -1907,18 +1939,26 @@ void() item_spikes =
 
     if (self.spawnflags & AMMO_BIG)
     {
-        precache_model ("progs/i_drum.mdl");
-        setmodel (self, "progs/i_drum.mdl");
+        #ifndef NEW_MODELS
+        self.model = "progs/i_drum.mdl";
+        #else
+        self.model = "models/ammo/a_boxbullet.md3";
+        #endif
         self.netname = "full drum of bullets";
         self.aflag = 100;
     }
     else
     {
-        precache_model ("progs/i_fewblt.mdl");
-        setmodel (self, "progs/i_fewblt.mdl");
+        #ifndef NEW_MODELS
+        self.model = "progs/i_fewblt.mdl";
+        #else
+        self.model = "models/ammo/a_fewbullet.md3";
+        #endif
         self.netname = "a few bullets";
         self.aflag = 15;
     }
+    precache_model (self.model);
+    setmodel (self, self.model);
     self.weapon = 2;
     setsize (self, '0 0 0', '32 32 56');
     StartItem ();
@@ -1929,8 +1969,13 @@ void() item_rockets =
 {
     self.touch = ammo_touch;
 
-    precache_model ("progs/i_gascan.mdl");
-    setmodel (self, "progs/i_gascan.mdl");
+    #ifndef NEW_MODELS
+    self.model = "progs/i_gascan.mdl";
+    #else
+    self.model = "models/ammo/a_gascan.md3";
+    #endif
+    precache_model (self.model);
+    setmodel (self, self.model);
     self.aflag = 6;
 
     self.weapon = 3;
@@ -1944,8 +1989,13 @@ void() item_cells =
 {
     self.touch = ammo_touch;
 
-    precache_model ("progs/i_teschg.mdl");
-    setmodel (self, "progs/i_teschg.mdl");
+    #ifndef NEW_MODELS
+    self.model = "progs/i_teschg.mdl";
+    #else
+    self.model = "models/ammo/a_battery.md3";
+    #endif
+    precache_model (self.model);
+    setmodel (self, self.model);
     self.aflag = 32;
 
     self.weapon = 4;
@@ -1954,19 +2004,41 @@ void() item_cells =
     StartItem ();
 };
 
+// 12 frames for the soul animation
+void() soul_anim1  = [0,  soul_anim2 ] {};
+void() soul_anim2  = [1,  soul_anim3 ] {};
+void() soul_anim3  = [2,  soul_anim4 ] {};
+void() soul_anim4  = [3,  soul_anim5 ] {};
+void() soul_anim5  = [4,  soul_anim6 ] {};
+void() soul_anim6  = [5,  soul_anim7 ] {};
+void() soul_anim7  = [6,  soul_anim8 ] {};
+void() soul_anim8  = [7,  soul_anim9 ] {};
+void() soul_anim9  = [8,  soul_anim10] {};
+void() soul_anim10 = [9,  soul_anim11] {};
+void() soul_anim11 = [10, soul_anim12] {};
+void() soul_anim12 = [11, soul_anim1 ] {};
+
 // Trapped soul
 void() item_soul =
 {
     self.touch = ammo_touch;
 
-    precache_model ("progs/soul.mdl");
-    setmodel (self, "progs/soul.mdl");
+    #ifndef NEW_MODELS
+    self.model = "progs/soul.mdl";
+    #else
+    self.model = "models/ammo/a_soul.md3";
+    #endif
+    precache_model (self.model);
+    setmodel (self, self.model);
     self.aflag = 10;
 
     self.weapon = 11;
     self.netname = "trapped soul";
     setsize (self, '0 0 0', '32 32 56');
     StartItem ();
+
+    // Set animation loop
+    self.think1 = soul_anim1;
 };
 
 

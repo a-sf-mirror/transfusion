@@ -288,7 +288,7 @@ void(vector org, vector dir, float mspeed) Tesla_LaunchJolt =
         jolt.model = "progs/teslaball.spr";
         jolt.style = TESLA_NORMALJOLT;
         jolt.effects = EF_ADDITIVE;
-        jolt.alpha = 0.5;
+        jolt.alpha = 0.6;
         setorigin (jolt, org + '0 0 4');
     }
     jolt.touch = Tesla_JoltTouch;

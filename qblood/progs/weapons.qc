@@ -419,7 +419,6 @@ void() BecomeExplosion =
     setmodel (self, "progs/s_explod.spr");
     self.solid = SOLID_NOT;
     self.alpha = 0.9;
-    self.effects = EF_ADDITIVE;
     self.reset = SUB_Remove;
     s_explode1 ();
 };
