@@ -294,6 +294,8 @@ void(entity victim, entity attacker, float dmgtype, float burn, float burntime) 
         return;
     if (victim.classname == "plat")
         return;
+    if (victim.classname == "func_button")
+        return;
     if (victim.classname == "exploding_wall")  // the other types of walls can't burn anyway
         return;
 
