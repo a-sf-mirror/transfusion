@@ -869,7 +869,7 @@ void() obj_brainjar =
 {
     precache_model("progs/jar.mdl");
     setmodel(self, "progs/jar.mdl");
-    
+
     setsize (self, '-11 -7 -1', '14 8 28');
     StartObject ();
 };
@@ -1842,7 +1842,8 @@ void() weapon_lifeleech =
 
     // precache the necessary sounds
     precache_sound ("weapons/lifelech/laltfr1.wav");
-    precache_sound ("weapons/napalm/explodfs.wav");  // altfire missile touch
+    precache_sound ("weapons/lifelech/llaltht.wav");    // LL sentry destroyed
+    precache_sound ("weapons/napalm/explodfs.wav");     // altfire missile touch
     StartItem ();
 };
 

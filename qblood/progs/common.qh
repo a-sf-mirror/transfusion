@@ -239,11 +239,12 @@
 #define EF_BRIGHTLIGHT  4
 #define EF_DIMLIGHT     8
 #ifdef QUAKEWORLD
-# define EF_FLAG1       16  // EF_FLAG? flags make the client render a flag automatically
-# define EF_FLAG2       32  // attached to the client entity (i.e. it's a *really* evil hack)
+# define EF_FLAG1       16      // EF_FLAG? flags make the client render a flag automatically
+# define EF_FLAG2       32      // attached to the client entity (i.e. it's a *really* evil hack)
 #endif
-#define EF_BLUE         64   // Blue Globe effect for Quad
-#define EF_RED          128  // Red Globe effect for Pentagram
+#define EF_BLUE         64      // Blue Globe effect for Quad
+#define EF_RED          128     // Red Globe effect for Pentagram
+#define EF_FLAME        1024    // Entity is surrounded by fire (WARNING: only available on DarkPlaces)
 
 // messages
 #define MSG_BROADCAST   0  // unreliable to all
