@@ -14,41 +14,6 @@ char **myargv;
 char  com_token[1024];
 int      com_eof;
 
-/*
-================
-I_FloatTime
-================
-*/
-double I_FloatTime (void)
-{
-	time_t	t;
-
-	time (&t);
-
-	return t;
-}
-
-/*
-================
-I_FloatTime
-================
-double I_FloatTime (void)
-{
-   struct timeval tp;
-   struct timezone tzp;
-   static int     secbase;
-
-   gettimeofday(&tp, &tzp);
-
-   if (!secbase)
-   {
-      secbase = tp.tv_sec;
-      return tp.tv_usec/1000000.0;
-   }
-
-   return (tp.tv_sec - secbase) + tp.tv_usec/1000000.0;
-}*/
-
 
 /*
 ==============
@@ -167,30 +132,6 @@ int tell (int handle)
    return lseek (handle, 0, SEEK_CUR);
 }
 #endif  // #if defined(UNIX) || defined(unix)
-
-char *strupr (char *start)
-{
-   char  *in;
-   in = start;
-   while (*in)
-   {
-      *in = toupper(*in);
-      in++;
-   }
-   return start;
-}
-
-char *strlower (char *start)
-{
-   char  *in;
-   in = start;
-   while (*in)
-   {
-      *in = tolower(*in);
-      in++;
-   }
-   return start;
-}
 
 
 /*
@@ -523,11 +464,6 @@ short   LittleShort (short l)
    return (b1<<8) + b2;
 }
 
-short   BigShort (short l)
-{
-   return l;
-}
-
 
 long    LittleLong (long l)
 {
@@ -539,11 +475,6 @@ long    LittleLong (long l)
    b4 = (l>>24)&255;
 
    return ((long)b1<<24) + ((long)b2<<16) + ((long)b3<<8) + b4;
-}
-
-long    BigLong (long l)
-{
-   return l;
 }
 
 
@@ -558,43 +489,15 @@ float LittleFloat (float l)
    out.b[3] = in.b[0];
 
    return out.f;
-}
-
-float BigFloat (float l)
-{
-   return l;
 }
 
 
 #else
 
 
-short   BigShort (short l)
-{
-   byte    b1,b2;
-
-   b1 = l&255;
-   b2 = (l>>8)&255;
-
-   return (b1<<8) + b2;
-}
-
 short   LittleShort (short l)
 {
    return l;
-}
-
-
-long    BigLong (long l)
-{
-   byte    b1,b2,b3,b4;
-
-   b1 = l&255;
-   b2 = (l>>8)&255;
-   b3 = (l>>16)&255;
-   b4 = (l>>24)&255;
-
-   return ((long)b1<<24) + ((long)b2<<16) + ((long)b3<<8) + b4;
 }
 
 long    LittleLong (long l)
@@ -602,24 +505,10 @@ long    LittleLong (long l)
    return l;
 }
 
-float BigFloat (float l)
-{
-   union {byte b[4]; float f;} in, out;
-
-   in.f = l;
-   out.b[0] = in.b[3];
-   out.b[1] = in.b[2];
-   out.b[2] = in.b[1];
-   out.b[3] = in.b[0];
-
-   return out.f;
-}
-
 float LittleFloat (float l)
 {
    return l;
 }
-
 
 
 #endif

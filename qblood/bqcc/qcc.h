@@ -8,8 +8,6 @@
 #include "l_memory.h"
 #include "pr_comp.h"
 
-#define PRECOMP
-#define QDECL
 #define MAX_QPATH		144
 
 /*

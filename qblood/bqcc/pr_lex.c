@@ -5,11 +5,9 @@
 
 #include "qcc.h"
 
-#ifdef PRECOMP
 #include "l_script.h"
 #include "l_precomp.h"
 #include "l_log.h"
-#endif //PRECOMP
 
 int pr_source_line;					//current source line
 char *pr_file_buf;					//buffer with the file
@@ -58,9 +56,7 @@ def_t *def_for_type[8] = {&def_void, &def_string, &def_float, &def_vector, &def_
 
 void PR_LexWhitespace (void);
 
-#ifdef PRECOMP
 source_t *pr_source;
-#endif //PRECOMP
 
 
 /*
@@ -114,15 +110,9 @@ PR_LoadSource
 void PR_LoadSource(char *filename)
 {
 	pr_source_line = 0;
-#ifdef PRECOMP
 	pr_source = LoadSourceFile(filename);
 	if (!pr_source)
 		Error("couldn't load the file %s\n", filename);
-#else
-	LoadFile(filename, (void *)&pr_file_buf);
-	pr_file_p = pr_file_buf;
-	PR_NewLine();
-#endif //PRECOMP
 } //end of the function PR_LoadSource
 
 /*
@@ -132,13 +122,8 @@ PR_FreeSource
 */
 void PR_FreeSource(void)
 {
-#ifdef PRECOMP
 	if (pr_source)
 		FreeSource(pr_source);
-#else //PRECOMP
-	if (pr_file_buf)
-		free(pr_file_buf);
-#endif //PRECOMP
 } //end of the function PR_FreeSource
 
 /*
@@ -414,7 +399,6 @@ PR_SimpeGetToken
   just parses text, returning false if an eol is reached
 ============
 */
-#ifdef PRECOMP
 
 boolean PR_SimpleGetToken(void)
 {
@@ -427,34 +411,6 @@ boolean PR_SimpleGetToken(void)
 	strcpy(pr_token, token.string);
 	return true;
 } //end of the function PR_SimpeGetToken
-
-#else //PRECOMP
-
-boolean PR_SimpleGetToken (void)
-{
-   int      c;
-   int      i;
-   
-// skip whitespace
-   while ( (c = *pr_file_p) <= ' ')
-   {
-      if (c=='\n' || c == 0)
-         return false;
-      pr_file_p++;
-   }
-   
-   i = 0;
-   while ( (c = *pr_file_p) > ' ' && c != ',' && c != ';')
-   {
-      pr_token[i] = c;
-      i++;
-      pr_file_p++;
-   }
-   pr_token[i] = 0;
-   return true;
-}
-
-#endif //PRECOMP
 
 /*
 ============
@@ -515,7 +471,6 @@ PR_Lex
 Sets pr_token, pr_token_type, and possibly pr_immediate and pr_immediate_type
 ==============
 */
-#ifdef PRECOMP
 
 void PR_Lex(void)
 {
@@ -603,71 +558,6 @@ void PR_Lex(void)
 		} //end case
 	} //end switch
 } //end of the function PR_Lex
-
-#else
-
-void PR_Lex (void)
-{
-   int      c;
-
-   pr_token[0] = 0;
-   
-   if (!pr_file_p)
-   {
-      pr_token_type = tt_eof;
-      return;
-   }
-
-   PR_LexWhitespace ();
-
-   c = *pr_file_p;
-      
-   if (!c)
-   {
-      pr_token_type = tt_eof;
-      return;
-   }
-
-// handle quoted strings as a unit
-   if (c == '\"')
-   {
-      PR_LexString ();
-      return;
-   }
-
-// handle quoted vectors as a unit
-   if (c == '\'')
-   {
-      PR_LexVector ();
-      return;
-   }
-
-// if the first character is a valid identifier, parse until a non-id
-// character is reached
-   if ( (c >= '0' && c <= '9') || ( c=='-' && pr_file_p[1]>='0' && pr_file_p[1] <='9') )
-   {
-      pr_token_type = tt_immediate;
-      pr_immediate_type = &type_float;
-      pr_immediate._float = PR_LexNumber ();
-      return;
-   }
-   
-   if ( (c >= 'a' && c <= 'z') || (c >= 'A' && c <= 'Z') || c == '_' )
-   {
-      PR_LexName ();
-      return;
-   }
-   
-   if (c == '$')
-   {
-      PR_LexGrab ();
-      return;
-   }
-   
-// parse symbol strings until a non-symbol is found
-   PR_LexPunctuation ();
-}
-#endif
 
 //=============================================================================
 

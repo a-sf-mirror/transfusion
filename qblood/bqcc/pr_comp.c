@@ -194,10 +194,6 @@ void PrintOpcodeHashValues(void)
 
 #endif //OPCODEHACK
 
-#define HASHING
-
-#ifdef HASHING
-
 #define DEFHASHSIZE		2048
 def_t *defvaluehash[DEFHASHSIZE];
 def_t *defnamehash[DEFHASHSIZE];
@@ -272,8 +268,6 @@ void AddDefToHash(def_t *def)
 	defnamehash[hash] = def;
 } //end of the function AddDefToHash
 
-#endif //HASHING
-
 /*
 ============
 PR_Statement
@@ -309,9 +303,7 @@ def_t *PR_Statement ( opcode_t *op, def_t *var_a, def_t *var_b)
 		statement->c = numpr_globals;
 		numpr_globals += type_size[op->type_c->type->type];
 		CHECK_PR_GLOBALS_BUFFER;
-//#ifdef HASHING
 //		AddDefToHash(var_c);
-//#endif //HASHING
 	}
 
 	if (op->right_associative)
@@ -335,7 +327,6 @@ def_t *PR_ParseImmediate (void)
    def_t *cn;
 
 	// check for a constant with the same value
-#ifdef HASHING
 	int hash;
 
 	if (pr_immediate_type == &type_string)
@@ -343,9 +334,6 @@ def_t *PR_ParseImmediate (void)
 	else
 		hash = DefValueHash(pr_immediate_type, (char *) &pr_immediate._float);
 	for (cn = defvaluehash[hash]; cn; cn = cn->valuehashnext)
-#else
-	for (cn = pr.def_head.next; cn; cn = cn->next)
-#endif
 	{
 		if (!cn->initialized)
 			continue;
@@ -407,9 +395,7 @@ def_t *PR_ParseImmediate (void)
 	} //end if
 	memcpy (pr_globals + cn->ofs, &pr_immediate, 4*type_size[pr_immediate_type->type]);
 
-#ifdef HASHING
 	AddDefToHash(cn);
-#endif //HASHING
 
 	PR_Lex ();
 
@@ -958,14 +944,10 @@ def_t *PR_GetDef (type_t *type, char *name, def_t *scope, boolean allocate)
 	char element[MAX_NAME];
 
 	//see if the name is already in use
-#ifdef HASHING
 	int hash;
 
 	hash = NameHash(name);
 	for (def = defnamehash[hash]; def; def = def->namehashnext)
-#else //HASHING
-	for (def = pr.def_head.next; def; def = def->next)
-#endif //HASHING
 	{
 		//if global or in the same function
 		if (!def->scope || def->scope == scope)
@@ -998,9 +980,7 @@ def_t *PR_GetDef (type_t *type, char *name, def_t *scope, boolean allocate)
 	def->ofs = numpr_globals;
 	pr_global_defs[numpr_globals] = def;
 
-#ifdef HASHING
 	AddDefToHash(def);
-#endif //HASHING
 	//
 	// make automatic defs for the vectors elements
 	// .origin can be accessed as .origin_x, .origin_y, and .origin_z

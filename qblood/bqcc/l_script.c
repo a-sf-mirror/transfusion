@@ -14,37 +14,6 @@
  *
  *****************************************************************************/
 
-//#define SCREWUP
-//#define BOTLIB
-#define MEQCC
-//#define BSPC
-
-#ifdef SCREWUP
-#include <stdio.h>
-#include <stdlib.h>
-#include <limits.h>
-#include <string.h>
-#include <stdarg.h>
-#include "l_memory.h"
-#include "l_script.h"
-
-typedef enum {qfalse, qtrue}	qboolean;
-
-#endif //SCREWUP
-
-#ifdef BOTLIB
-//include files for usage in the bot library
-#include "../game/q_shared.h"
-#include "../game/botlib.h"
-#include "be_interface.h"
-#include "l_script.h"
-#include "l_memory.h"
-#include "l_log.h"
-#include "l_libvar.h"
-#endif //BOTLIB
-
-#ifdef MEQCC
-//include files for usage in MrElusive's QuakeC Compiler
 #include "qcc.h"
 #include "l_script.h"
 #include "l_memory.h"
@@ -52,17 +21,6 @@ typedef enum {qfalse, qtrue}	qboolean;
 
 #define qtrue	true
 #define qfalse	false
-#endif //MEQCC
-
-#ifdef BSPC
-//include files for usage in the BSP Converter
-#include "../bspc/qbsp.h"
-#include "../bspc/l_log.h"
-#include "../bspc/l_mem.h"
-
-#define qtrue	true
-#define qfalse	false
-#endif //BSPC
 
 
 #define PUNCTABLE
@@ -139,9 +97,7 @@ punctuation_t default_punctuations[] =
 	{"\\",P_BACKSLASH, NULL},
 	//precompiler operator
 	{"#",P_PRECOMP, NULL},
-#ifdef DOLLAR
 	{"$",P_DOLLAR, NULL},
-#endif //DOLLAR
 	{NULL, 0}
 };
 
@@ -207,7 +163,7 @@ char *PunctuationFromNum(script_t *script, int num)
 // Returns:					-
 // Changes Globals:		-
 //===========================================================================
-void QDECL ScriptError(script_t *script, char *str, ...)
+void ScriptError(script_t *script, char *str, ...)
 {
 	char text[1024];
 	va_list ap;
@@ -217,15 +173,7 @@ void QDECL ScriptError(script_t *script, char *str, ...)
 	va_start(ap, str);
 	vsprintf(text, str, ap);
 	va_end(ap);
-#ifdef BOTLIB
-	botimport.Print(PRT_ERROR, "file %s, line %d: %s\n", script->filename, script->line, text);
-#endif //BOTLIB
-#ifdef MEQCC
 	printf("error: file %s, line %d: %s\n", script->filename, script->line, text);
-#endif //MEQCC
-#ifdef BSPC
-	Log_Print("error: file %s, line %d: %s\n", script->filename, script->line, text);
-#endif //BSPC
 } //end of the function ScriptError
 //===========================================================================
 //
@@ -233,7 +181,7 @@ void QDECL ScriptError(script_t *script, char *str, ...)
 // Returns:					-
 // Changes Globals:		-
 //===========================================================================
-void QDECL ScriptWarning(script_t *script, char *str, ...)
+void ScriptWarning(script_t *script, char *str, ...)
 {
 	char text[1024];
 	va_list ap;
@@ -243,15 +191,7 @@ void QDECL ScriptWarning(script_t *script, char *str, ...)
 	va_start(ap, str);
 	vsprintf(text, str, ap);
 	va_end(ap);
-#ifdef BOTLIB
-	botimport.Print(PRT_WARNING, "file %s, line %d: %s\n", script->filename, script->line, text);
-#endif //BOTLIB
-#ifdef MEQCC
 	printf("warning: file %s, line %d: %s\n", script->filename, script->line, text);
-#endif //MEQCC
-#ifdef BSPC
-	Log_Print("warning: file %s, line %d: %s\n", script->filename, script->line, text);
-#endif //BSPC
 } //end of the function ScriptWarning
 //===========================================================================
 //
@@ -479,7 +419,7 @@ int PS_ReadString(script_t *script, token_t *token, int quote)
 				ScriptError(script, "missing trailing quote");
 				return 0;
 			} //end if
-	      if (*script->script_p == '\n')
+			if (*script->script_p == '\n')
 			{
 				token->string[len] = 0;
 				ScriptError(script, "newline inside string %s", token->string);
@@ -1256,7 +1196,7 @@ int ScriptSkipTo(script_t *script, char *value)
 		script->script_p++;
 	} while(1);
 } //end of the function ScriptSkipTo
-#ifndef BOTLIB
+
 //============================================================================
 //
 // Parameter:				-
@@ -1275,7 +1215,7 @@ int FileLength(FILE *fp)
 
 	return end;
 } //end of the function FileLength
-#endif
+
 //============================================================================
 //
 // Parameter:				-
@@ -1284,26 +1224,16 @@ int FileLength(FILE *fp)
 //============================================================================
 script_t *LoadScriptFile(char *filename)
 {
-#ifdef BOTLIB
-	fileHandle_t fp;
-	char pathname[MAX_QPATH];
-#else
 	FILE *fp;
-#endif
+
 	int length;
 	void *buffer;
 	script_t *script;
 
-#ifdef BOTLIB
-	Com_sprintf(pathname, MAX_QPATH, "botfiles/%s", filename);
-	length = botimport.FS_FOpenFile( pathname, &fp, FS_READ );
-	if (!fp) return NULL;
-#else
 	fp = fopen(filename, "rb");
 	if (!fp) return NULL;
 
 	length = FileLength(fp);
-#endif
 
 	buffer = GetClearedMemory(sizeof(script_t) + length + 1);
 	script = (script_t *) buffer;
@@ -1326,17 +1256,12 @@ script_t *LoadScriptFile(char *filename)
 	//
 	SetScriptPunctuations(script, NULL);
 	//
-#ifdef BOTLIB
-	botimport.FS_Read(script->buffer, length, fp);
-	botimport.FS_FCloseFile(fp);
-#else
 	if (fread(script->buffer, length, 1, fp) != 1)
 	{
 		FreeMemory(buffer);
 		script = NULL;
 	} //end if
 	fclose(fp);
-#endif
 	//
 	return script;
 } //end of the function LoadScriptFile

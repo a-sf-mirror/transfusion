@@ -18,15 +18,9 @@
 #define BINARYNUMBERS
 //undef if not using the token.intvalue and token.floatvalue
 #define NUMBERVALUE
-//use dollar sign also as punctuation
-#define DOLLAR
 
 //maximum token length
 #define MAX_TOKEN					1024
-
-#if defined(BSPC) && !defined(QDECL)
-#define QDECL
-#endif
 
 
 //script flags
@@ -223,9 +217,9 @@ script_t *LoadScriptMemory(char *ptr, int length, char *name);
 //free a script
 void FreeScript(script_t *script);
 //print a script error with filename and line number
-void QDECL ScriptError(script_t *script, char *str, ...);
+void ScriptError(script_t *script, char *str, ...);
 //print a script warning with filename and line number
-void QDECL ScriptWarning(script_t *script, char *str, ...);
+void ScriptWarning(script_t *script, char *str, ...);
 
 
 

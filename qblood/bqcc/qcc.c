@@ -13,10 +13,8 @@
 #endif
 
 #include "l_log.h"
-#ifdef PRECOMP
 #include "l_script.h"
 #include "l_precomp.h"
-#endif //PRECOMP
 
 char			destfile[1024];
 
@@ -76,41 +74,6 @@ int NewCheckParm(char *check)
 	} //end for
 	return 0;
 } //end of the function NewCheckParm
-
-/*
-=================
-BspModels
-
-Runs qbsp and light on all of the models with a .bsp extension
-=================
-*/
-void BspModels (void)
-{
-	int		p;
-	char	*gamedir;
-	int		i;
-	char	*m;
-	char	cmd[1024];
-	char	name[256];
-
-	p = NewCheckParm("bspmodels");
-	if (!p)
-		return;
-	if (p == myargc-1)
-		Error ("-bspmodels must preceed a game directory");
-	gamedir = myargv[p+1];
-
-	for (i=0 ; i<nummodels ; i++)
-	{
-		m = precache_models[i];
-		if (strcmp(m+strlen(m)-4, ".bsp"))
-			continue;
-		strcpy (name, m);
-		name[strlen(m)-4] = 0;
-		sprintf (cmd, "qbsp %s/%s ; light -extra %s/%s", gamedir, name, gamedir, name);
-		system (cmd);
-	} //end for
-} //end of the function BspModels
 
 /*
 =================
@@ -1243,241 +1206,6 @@ int         packhandle;
 int         packbytes;
 
 /*
-============
-Sys_mkdir
-============
-*/
-void Sys_mkdir (char *path)
-{
-#if defined(WIN32)|defined(_WIN32)|defined(__NT__)|defined(__WINDOWS__)|defined(__WINDOWS_386__)
-	if (mkdir (path) != -1)
-		return;
-#else
-	if (mkdir (path, 0777) != -1)
-		return;
-#endif
-	if (errno != EEXIST)
-		Error ("mkdir %s: %s",path, strerror(errno));
-}
-
-/*
-============
-CreatePath
-============
-*/
-void  CreatePath (char *path)
-{
-	char  *ofs;
-
-	for (ofs = path+1 ; *ofs ; ofs++)
-	{
-		if (*ofs == '/')
-		{  // create the directory
-			*ofs = 0;
-			Sys_mkdir (path);
-			*ofs = '/';
-		}
-	}
-}
-
-/*
-===========
-PackFile
-
-Copy a file into the pak file
-===========
-*/
-void PackFile (char *src, char *name)
-{
-	int      in;
-	int      remaining, count;
-	char  buf[4096];
-
-	if ( (byte *)pf - (byte *)pfiles > sizeof(pfiles) )
-		Error ("Too many files in pak file");
-
-	in = SafeOpenRead (src);
-	remaining = filelength (in);
-
-	pf->filepos = LittleLong (lseek (packhandle, 0, SEEK_CUR));
-	pf->filelen = LittleLong (remaining);
-	strcpy (pf->name, name);
-	printf ("%64s : %7i\n", pf->name, remaining);
-
-	packbytes += remaining;
-
-	while (remaining)
-	{
-		if (remaining < sizeof(buf))
-			count = remaining;
-		else
-			count = sizeof(buf);
-		SafeRead (in, buf, count);
-		SafeWrite (packhandle, buf, count);
-		remaining -= count;
-	}
-
-	close (in);
-	pf++;
-}
-
-
-/*
-===========
-CopyFile
-
-Copies a file, creating any directories needed
-===========
-*/
-void CopyFile (char *src, char *dest)
-{
-	int      in, out;
-	int      remaining, count;
-	char  buf[4096];
-
-	printf ("%s to %s\n", src, dest);
-
-	in = SafeOpenRead (src);
-	remaining = filelength (in);
-
-	CreatePath (dest);
-	out = SafeOpenWrite (dest);
-
-	while (remaining)
-	{
-		if (remaining < sizeof(buf))
-			count = remaining;
-		else
-			count = sizeof(buf);
-		SafeRead (in, buf, count);
-		SafeWrite (out, buf, count);
-		remaining -= count;
-	}
-
-	close (in);
-	close (out);
-}
-
-/*
-===========
-CopyFiles
-===========
-*/
-void CopyFiles (void)
-{
-	int      i, p;
-	char  srcdir[1024], destdir[1024];
-	char  srcfile[1024], destfile[1024];
-	int      copytype;
-	char  name[1024];
-	packheader_t   header;
-	int      dirlen;
-	int      blocknum;
-	unsigned short    crc;
-
-	copytype = 0;
-
-	p = NewCheckParm("copy");
-	if (p && p < myargc-2)
-	{  // create a new directory tree
-		copytype = 1;
-
-		strcpy (srcdir, myargv[p+1]);
-		strcpy (destdir, myargv[p+2]);
-		if (srcdir[strlen(srcdir)-1] != '/')
-			strcat (srcdir, "/");
-		if (destdir[strlen(destdir)-1] != '/')
-			strcat (destdir, "/");
-	}
-
-	blocknum = 1;
-	p = NewCheckParm("pak2");
-	if (p && p <myargc-2)
-		blocknum = 2;
-	else
-		p = NewCheckParm("pak");
-	if (p && p < myargc-2)
-	{  // create a pak file
-		strcpy (srcdir, myargv[p+1]);
-		strcpy (destdir, myargv[p+2]);
-		if (srcdir[strlen(srcdir)-1] != '/')
-		 strcat (srcdir, "/");
-		DefaultExtension (destdir, ".pak");
-
-		pf = pfiles;
-		packhandle = SafeOpenWrite (destdir);
-		SafeWrite (packhandle, &header, sizeof(header));
-		copytype = 2;
-	}
-
-	if (!copytype)
-		return;
-
-	printf ("%3i unique precache_sounds\n", numsounds);
-	printf ("%3i unique precache_models\n", nummodels);
-
-	for (i=0 ; i<numsounds ; i++)
-	{
-		if (precache_sounds_block[i] != blocknum)
-			continue;
-		sprintf (name, "sound/%s", precache_sounds[i]);
-		sprintf (srcfile,"%s%s",srcdir, name);
-		sprintf (destfile,"%s%s",destdir, name);
-		if (copytype == 1)
-			CopyFile (srcfile, destfile);
-		else
-			PackFile (srcfile, name);
-	}
-	for (i=0 ; i<nummodels ; i++)
-	{
-		if (precache_models_block[i] != blocknum)
-			continue;
-		sprintf (srcfile,"%s%s",srcdir, precache_models[i]);
-		sprintf (destfile,"%s%s",destdir, precache_models[i]);
-		if (copytype == 1)
-			CopyFile (srcfile, destfile);
-		else
-		PackFile (srcfile, precache_models[i]);
-	}
-	for (i=0 ; i<numfiles ; i++)
-	{
-		if (precache_files_block[i] != blocknum)
-			continue;
-		sprintf (srcfile,"%s%s",srcdir, precache_files[i]);
-		sprintf (destfile,"%s%s",destdir, precache_files[i]);
-		if (copytype == 1)
-			CopyFile (srcfile, destfile);
-		else
-			PackFile (srcfile, precache_files[i]);
-	}
-
-	if (copytype == 2)
-	{
-		header.id[0] = 'P';
-		header.id[1] = 'A';
-		header.id[2] = 'C';
-		header.id[3] = 'K';
-		dirlen = (byte *)pf - (byte *)pfiles;
-		header.dirofs = LittleLong(lseek (packhandle, 0, SEEK_CUR));
-		header.dirlen = LittleLong(dirlen);
-
-		SafeWrite (packhandle, pfiles, dirlen);
-
-		lseek (packhandle, 0, SEEK_SET);
-		SafeWrite (packhandle, &header, sizeof(header));
-		close (packhandle);
-
-		// do a crc of the file
-		CRC_Init (&crc);
-		for (i=0 ; i<dirlen ; i++)
-			CRC_ProcessByte (&crc, ((byte *)pfiles)[i]);
-
-		i = pf - pfiles;
-		printf ("%i files packed in %i bytes (%i crc)\n",i, packbytes, crc);
-	}
-}
-
-/*
 =================
 CMDPrecompilerDefinitions
 =================
@@ -1493,10 +1221,8 @@ void CMDPrecompilerDefinitions(void)
 			//if there's a next parameter and it isn't a command line option
 			if (i + 1 < myargc && myargv[i+1][0] != '-' && myargv[i+1][0] != '/')
 			{
-#ifdef PRECOMP
 				Log_Write("#define %s\n", myargv[i+1]);
 				PC_AddGlobalDefine(myargv[i+1]);
-#endif //PRECOMP
 			} //end if
 		} //end if
 	} //end for
@@ -1621,10 +1347,6 @@ int main (int argc, char **argv)
 	crc = PR_WriteProgdefs("progdefs.h");
 	//write data file: progs.dat
 	WriteData(crc);
-	//regenerate bmodels if -bspmodels
-	BspModels();
-	//report / copy the data files
-	CopyFiles();
 	
 	return EXIT_SUCCESS;
 } //end of the function main

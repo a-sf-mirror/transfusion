@@ -80,11 +80,8 @@ void  ExtractFileExtension (char *path, char *dest);
 
 long  ParseNum (char *str);
 
-short BigShort (short l);
 short LittleShort (short l);
-long  BigLong (long l);
 long  LittleLong (long l);
-float BigFloat (float l);
 float LittleFloat (float l);
 
 

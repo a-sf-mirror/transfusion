@@ -33,10 +33,6 @@
 	#endif
 #endif
 
-#if defined(BSPC) && !defined(QDECL)
-#define QDECL
-#endif
-
 
 #define DEFINE_FIXED			0x0001
 
@@ -135,7 +131,7 @@ source_t *LoadSourceMemory(char *ptr, int length, char *name);
 //free the given source
 void FreeSource(source_t *source);
 //print a source error
-void QDECL SourceError(source_t *source, char *str, ...);
+void SourceError(source_t *source, char *str, ...);
 //print a source warning
-void QDECL SourceWarning(source_t *source, char *str, ...);
+void SourceWarning(source_t *source, char *str, ...);
 
