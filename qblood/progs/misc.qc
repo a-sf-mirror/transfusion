@@ -819,7 +819,7 @@ void(string gibname, float dm) ThrowRubble=
     new.avelocity_z = random()*600;
     new.think = SUB_Remove;
     new.ltime = time;
-    new.nextthink = time + 10 + random()*10;
+    new.nextthink = time + 3 + random()*2;
     new.frame = 0;
     new.flags = 0;
 };
@@ -959,9 +959,9 @@ void() exploding_wall =
 
         if (self.skin > 4)
         {
-            self.noise = "ambience/glashit2.wav";
-            self.noise1 = "ambience/glashit3.wav";
-            self.noise2 = "ambience/glashit4.wav";
+            self.noise = "misc/glashit2.wav";
+            self.noise1 = "misc/glashit3.wav";
+            self.noise2 = "misc/glashit4.wav";
         }
 
         else if(self.skin == 3)
