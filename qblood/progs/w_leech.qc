@@ -282,16 +282,20 @@ void() Leech_Think =
         // If it's a player
         if (ent.classname == "player")
         {
-            // If he's closer than our current choice
-            diff = vlen (ent.origin - ballorigin);
-            if (diff < bestdiff && ent != self.leech_sentry)
+            // If he's a valid target (not the owner or a player from the same team)
+            if (ent != self.leech_sentry && (gametype == GT_BLOODBATH || ent.team != self.team))
             {
-                // If he's visible
-                traceline (ballorigin, ent.origin, FALSE, self);
-                if (trace_ent == ent)
+                // If he's closer than our current choice
+                diff = vlen (ent.origin - ballorigin);
+                if (diff < bestdiff)
                 {
-                    bestent = ent;
-                    bestdiff = diff;
+                    // If he's visible
+                    traceline (ballorigin, ent.origin, FALSE, self);
+                    if (trace_ent == ent)
+                    {
+                        bestent = ent;
+                        bestdiff = diff;
+                    }
                 }
             }
         }
@@ -432,6 +436,7 @@ void() Leech_Drop =
 
     item.owner = self;             // we don't want to trigger the touch function yet
     item.leech_sentry = self;      // we can't use "owner" because the owner of an entity is never clipped against it
+    item.team = self.team;
     item.solid = SOLID_BBOX;
     item.takedamage = DAMAGE_AIM;
     item.health = 300;
