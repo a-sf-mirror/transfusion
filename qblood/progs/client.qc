@@ -555,24 +555,26 @@ entity() SelectSpawnPoint =
 {
     local entity spawnpoint;
 
-    // choose a info_player_deathmatch point
+    // If it's a cooperative game, choose a cooperative spawn point,
+    // and fall back to a single player spawn point if necessary
+    // TODO: add single player support here
 	if (gametype == GT_COOPERATIVE)
 	{
 		spawnpoint = Cl_GetRandomSpawnPoint("info_player_coop");
-		
+
 		if (spawnpoint == world)
 			spawnpoint = Cl_GetRandomSpawnPoint ("info_player_start");
 
 		if (spawnpoint != world)
 			return spawnpoint;
-			
+
 		bprint("Coop mode set, but no info_player_coop or info_player_start entities in the map\n");
-	}	
+	}
 	// If it's a team based game, try to spawn on one of the team's points
-    else if ((gametype == GT_TEAM_BLOODBATH || gametype == GT_CAPTURE_THE_FLAG))
+    else if (gametype == GT_TEAM_BLOODBATH || gametype == GT_CAPTURE_THE_FLAG)
     {
         if (self.team == TEAM_COLOR1)
-        {            
+        {
             spawnpoint = Cl_FindBestSpawn ("info_player_team1");
             if (spawnpoint)
                 return spawnpoint;
@@ -586,20 +588,18 @@ entity() SelectSpawnPoint =
         else
             bprint("No team spawns found, looking for deathmatch spawns\n");
     }
-    
-	
+    else
+        spawnpoint = world;
+
+
     if (!spawnpoint)
         spawnpoint = Cl_FindBestSpawn ("info_player_deathmatch");
 
-// FIXME: Disabled until the mappers put coops / starts in the maps
-//	else
-//        spawnpoint = Cl_GetRandomSpawnPoint ("info_player_start");
-
-    if (spawnpoint)
-        return spawnpoint;
-
     // We haven't found a suitable spawn point
-    error ("SelectSpawnPoint: no spawn point on level");
+    if (!spawnpoint)
+        error ("SelectSpawnPoint: no spawn point on level");
+
+    return spawnpoint;
 };
 
 
