@@ -180,6 +180,14 @@
 	dmg(integer) : "Damage" : 240
 ]
 
+//
+// Traps
+//
+
+@PointClass base(Appearflags, Targetname) = trap_flame : "Flame thrower trap" []
+@PointClass base(Appearflags, Targetname) = trap_napalm : "Napalm launcher trap" []
+@PointClass base(Appearflags, Targetname) = trap_tommygun : "Tommygun trap" []
+
 // 
 // ambient sounds
 //
