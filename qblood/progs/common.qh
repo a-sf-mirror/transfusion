@@ -1,4 +1,4 @@
-/*  Copyright (C) 2001-2002  Mathieu Olivier
+/*  Copyright (C) 2001-2003  Mathieu Olivier
 
     This program is free software; you can redistribute it and/or modify
     it under the terms of the GNU General Public License as published by
@@ -50,7 +50,7 @@
 #define FL_JUMPRELEASED     4096 // for jump debouncing
 
 // edict.spawnflags
-// let flags 1->32 free for each entity type
+// let 6 flags (1 -> 32) free for each entity type
 #define SF_USABLE           64   // Can be triggered manually by a client
 
 
@@ -216,20 +216,15 @@
 #define ATTN_IDLE   2
 #define ATTN_STATIC 3
 
-// update types
-#define UPDATE_GENERAL  0
-#define UPDATE_STATIC   1
-#define UPDATE_BINARY   2
-#define UPDATE_TEMP     3
-
 // entity effects
 #define EF_BRIGHTFIELD  1
 #define EF_MUZZLEFLASH  2
 #define EF_BRIGHTLIGHT  4
 #define EF_DIMLIGHT     8
-#define EF_BLUE         64      // Blue Globe effect for Quad
-#define EF_RED          128     // Red Globe effect for Pentagram
 // ... using QuakeC extensions
+#define EF_ADDITIVE     32      // Additive blending when this object is rendered; DP_EF_ADDITIVE extension
+#define EF_BLUE         64      // Entity emits blue light; DP_EF_BLUE extension
+#define EF_RED          128     // Entity emits red light; DP_EF_RED extension
 #define EF_FLAME        1024    // Entity is surrounded by fire; DP_EF_FLAME extension
 #define EF_LOWPRECISION 4194304 // Entity uses integer coordinates to save network bandwidth; DP_ENT_LOWPRECISION extension
 

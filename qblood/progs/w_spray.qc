@@ -1,4 +1,4 @@
-/*  Copyright (C) 2001-2002  Mathieu Olivier
+/*  Copyright (C) 2001-2003  Mathieu Olivier
 
     This program is free software; you can redistribute it and/or modify
     it under the terms of the GNU General Public License as published by
@@ -160,7 +160,8 @@ void() Spray_Fire =
     newmis.owner = self;
     newmis.movetype = MOVETYPE_FLYMISSILE;
     newmis.solid = SOLID_BBOX;
-    newmis.alpha = 0.7;
+    newmis.alpha = 0.6;
+    newmis.effects = EF_ADDITIVE;
 
     newmis.angles = vectoangles(dir);
 

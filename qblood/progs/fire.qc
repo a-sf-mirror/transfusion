@@ -17,14 +17,11 @@
     See file, 'COPYING', for details.
 */
 
-//==========================================================================
-//  fire.qc -- by Patrick Martin                Last updated:  8-20-2001
-//--------------------------------------------------------------------------
-//  Fire acts like poison.  When a target is infected, it burns.
-//  The target loses one hit point for each frame it burns.
-//  The flames can be snuffed by diving under the surface of
-//  water or other liquid.
-//==========================================================================
+// Fire acts like poison.  When a target is infected, it burns.
+// The target loses one hit point for each frame it burns.
+// The flames can be snuffed by diving under the surface of
+// water or other liquid.
+
 
 #include "common.qh"
 
@@ -228,11 +225,12 @@ void() MakeEmbers =
     fire.owner      = self.enemy;
     fire.movetype   = MOVETYPE_FLY;
     fire.velocity   = '0 0 100';
-    fire.effects    = EF_LOWPRECISION;
+    fire.effects    = EF_ADDITIVE | EF_LOWPRECISION;
+    fire.reset      = SUB_Remove;
 
-    // Animate the flame.
+    // Animate the flame
     fire.alpha      = 0.9 - (0.4 * random ());
-    fire.scale      = 0.5 + (0.5 * random ());
+    fire.scale      = 0.4 + (0.6 * random ());
     fire.think      = FlameThink;
     fire.nextthink  = time + 0.1;
 };

@@ -1621,7 +1621,11 @@ void() weapon_lightning =
 // Voodoo Doll
 void() weapon_voodoodoll =
 {
+    #ifndef NEW_MODELS
     precache_model ("progs/v_voodoo.mdl");
+    #else
+    precache_model ("models/weapons/v_voodoo.md3");
+    #endif
     precache_model ("progs/g_voodoo.mdl");
 
     setmodel (self, "progs/g_voodoo.mdl");

@@ -1,4 +1,4 @@
-/*  Copyright (C) 2001-2002  Mathieu Olivier
+/*  Copyright (C) 2001-2003  Mathieu Olivier
 
     This program is free software; you can redistribute it and/or modify
     it under the terms of the GNU General Public License as published by
@@ -33,24 +33,25 @@ $modelname v_voodoo
 // idle
 $frame voodoo_idle1
 
-// stab stomach (0 -> 3)
+#ifndef NEW_MODELS
+// stab stomach
 $frame voodoo_stomach1 voodoo_stomach2 voodoo_stomach3 voodoo_stomach4
 
-// stab eye (4 -> 7)
+// stab eye
 $frame voodoo_eye1 voodoo_eye2 voodoo_eye3 voodoo_eye4
 
-// stab shoulder (8 -> 11)
+// stab shoulder
 $frame voodoo_shlder1 voodoo_shlder2 voodoo_shlder3 voodoo_shlder4
 
-// stab groin (12 -> 15)
+// stab groin
 $frame voodoo_groin1 voodoo_groin2 voodoo_groin3 voodoo_groin4
 
-// sit-up animation (16 -> 18)
+// sit-up animation
 $frame voodoo_situp1 voodoo_situp2 voodoo_situp3
 
-// alt-fire mode (19 -> 26)
-$frame voodoo_altfire1 voodoo_altfire2 voodoo_altfire3 voodoo_altfire4 voodoo_altfire5
-$frame voodoo_altfire6 voodoo_altfire7 voodoo_altfire8
+// alt-fire mode
+$frame voodoo_alt1 voodoo_alt2 voodoo_alt3 voodoo_alt4 voodoo_alt5
+$frame voodoo_alt6 voodoo_alt7 voodoo_alt8
 
 // draw
 $frame voodoo_draw1 voodoo_draw2 voodoo_draw3 voodoo_draw4
@@ -59,52 +60,114 @@ $frame voodoo_draw1 voodoo_draw2 voodoo_draw3 voodoo_draw4
 $frame voodoo_holster1 voodoo_holster2 voodoo_holster3 voodoo_holster4
 
 
+#else
+// draw
+$frame voodoo_draw1 voodoo_draw2 voodoo_draw3
+
+// stab stomach
+$frame voodoo_stomach1 voodoo_stomach2 voodoo_stomach3 voodoo_stomach4
+
+// stab eye
+$frame voodoo_eye1 voodoo_eye2 voodoo_eye3 voodoo_eye4
+
+// stab shoulder
+$frame voodoo_shlder1 voodoo_shlder2 voodoo_shlder3 voodoo_shlder4
+
+// stab groin
+$frame voodoo_groin1 voodoo_groin2 voodoo_groin3 voodoo_groin4 voodoo_groin5
+$frame voodoo_groin6
+
+// miss stab
+$frame voodoo_thumb1 voodoo_thumb2 voodoo_thumb3 voodoo_thumb4
+
+// sit-up animation
+$frame voodoo_situp1 voodoo_situp2
+
+// alt-fire mode
+$frame voodoo_alt1 voodoo_alt2 voodoo_alt3 voodoo_alt4 voodoo_alt5
+$frame voodoo_alt6 voodoo_alt7 voodoo_alt8 voodoo_alt9 voodoo_alt10
+
+// holster
+$frame voodoo_holster1 voodoo_holster2 voodoo_holster3
+#endif
+
+
 // ----- Player related code ----- //
 
 void() player_voodoo =
 {
     self.weaponframe = self.weaponframe + 1;
+#ifndef NEW_MODELS
     if (self.weaponframe == $voodoo_situp1 ||
+#else
+    if (self.weaponframe == $voodoo_thumb1 ||
+#endif
         self.weaponframe == $voodoo_groin1 ||
         self.weaponframe == $voodoo_eye1   ||
         self.weaponframe == $voodoo_shlder1 )
     {
         player_run ();
-        self.weaponframe = $voodoo_stomach1;
+        self.weaponframe = $voodoo_idle1;
     }
 };
 
 void() player_voodoo1 = [$attack1, player_voodoo2] { player_voodoo (); };
 void() player_voodoo2 = [$attack2, player_voodoo1] { player_voodoo (); };
 
-void() player_altvoodoo1 = [$attack2, player_altvoodoo2] { self.weaponframe = $voodoo_altfire1; };
-void() player_altvoodoo2 = [$attack2, player_altvoodoo3] { self.weaponframe = $voodoo_altfire2; };
-void() player_altvoodoo3 = [$attack2, player_altvoodoo4] { self.weaponframe = $voodoo_altfire3; };
-void() player_altvoodoo4 = [$attack2, player_altvoodoo5] { self.weaponframe = $voodoo_altfire4; };
+void() player_altvoodoo1 = [$attack2, player_altvoodoo2] { self.weaponframe = $voodoo_alt1; };
+void() player_altvoodoo2 = [$attack2, player_altvoodoo3] { self.weaponframe = $voodoo_alt2; };
+void() player_altvoodoo3 = [$attack2, player_altvoodoo4] { self.weaponframe = $voodoo_alt3; };
+void() player_altvoodoo4 = [$attack2, player_altvoodoo5] { self.weaponframe = $voodoo_alt4; };
+#ifndef NEW_MODELS
 void() player_altvoodoo5 = [$attack1, player_altvoodoo6]
 {
     local float damage;
 
-    self.weaponframe = $voodoo_altfire5;
+    self.weaponframe = $voodoo_alt5;
     damage = self.ammo_voodoo;
     Voodoo_ApplyDamage (damage);
 };
-void() player_altvoodoo6 = [$attack1, player_altvoodoo7] { self.weaponframe = $voodoo_altfire6; };
-void() player_altvoodoo7 = [$attack2, player_altvoodoo8] { self.weaponframe = $voodoo_altfire7; };
-void() player_altvoodoo8 = [$attack2, player_run       ] { self.weaponframe = $voodoo_altfire8; };
+void() player_altvoodoo6 = [$attack1, player_altvoodoo7] { self.weaponframe = $voodoo_alt6; };
+void() player_altvoodoo7 = [$attack2, player_altvoodoo8] { self.weaponframe = $voodoo_alt7; };
+void() player_altvoodoo8 = [$attack2, player_altvoodoo9] { self.weaponframe = $voodoo_alt8; };
+void() player_altvoodoo9 = { W_DrawWeapon (W_BestWeapon ()); };
+#else
+void() player_altvoodoo5  = [$attack1, player_altvoodoo6 ] { self.weaponframe = $voodoo_alt5;  };
+void() player_altvoodoo6  = [$attack1, player_altvoodoo7 ] { self.weaponframe = $voodoo_alt6;  };
+void() player_altvoodoo7  = [$attack2, player_altvoodoo8 ]
+{
+    local float damage;
 
-// Normal draw
+    self.weaponframe = $voodoo_alt7;
+    damage = self.ammo_voodoo;
+    Voodoo_ApplyDamage (damage);
+};
+void() player_altvoodoo8  = [$attack2, player_altvoodoo9 ] { self.weaponframe = $voodoo_alt8;  };
+void() player_altvoodoo9  = [$attack2, player_altvoodoo10] { self.weaponframe = $voodoo_alt9;  };
+void() player_altvoodoo10 = [$attack2, player_altvoodoo11] { self.weaponframe = $voodoo_alt10; };
+void() player_altvoodoo11 = { W_DrawWeapon (W_BestWeapon ()); };
+#endif
+
+// Draw
 void() player_voodoodraw1 = [$attack2, player_voodoodraw2] { self.weaponframe = $voodoo_draw1; };
 void() player_voodoodraw2 = [$attack2, player_voodoodraw3] { self.weaponframe = $voodoo_draw2; };
+#ifndef NEW_MODELS
 void() player_voodoodraw3 = [$attack2, player_voodoodraw4] { self.weaponframe = $voodoo_draw3; };
 void() player_voodoodraw4 = [$attack2, player_run        ] { self.weaponframe = $voodoo_draw4; };
+#else
+void() player_voodoodraw3 = [$attack2, player_run        ] { self.weaponframe = $voodoo_draw3; };
+#endif
 
-// Normal holster
+// Holster
 void() player_voodooholster1 = [$attack2, player_voodooholster2] { self.weaponframe = $voodoo_holster1; };
 void() player_voodooholster2 = [$attack2, player_voodooholster3] { self.weaponframe = $voodoo_holster2; };
 void() player_voodooholster3 = [$attack2, player_voodooholster4] { self.weaponframe = $voodoo_holster3; };
+#ifndef NEW_MODELS
 void() player_voodooholster4 = [$attack2, player_voodooholster5] { self.weaponframe = $voodoo_holster4; };
 void() player_voodooholster5 = [$attack2, player_run           ] { W_DrawWeapon (self.newweapon); };
+#else
+void() player_voodooholster4 = [$attack2, player_run           ] { W_DrawWeapon (self.newweapon); };
+#endif
 
 
 //============================================================================
@@ -222,7 +285,8 @@ void() Voodoo_Attack =
         self.player_state = PS_FIRE;
 
         damage = Voodoo_Stab ();
-        player_voodoo1 ();
+        self.nextthink = time + 0.1;
+        self.think = player_voodoo1;
         Voodoo_ApplyDamage (damage);
 
         self.attack_finished = time + 0.5;
@@ -245,7 +309,11 @@ void() Voodoo_Draw =
 
     Voodoo_UpdateView ();
 
-    self.attack_finished = time + 0.5;
+    #ifndef NEW_MODELS
+    self.attack_finished = time + 0.4;
+    #else
+    self.attack_finished = time + 0.3;
+    #endif
     player_voodoodraw1 ();
 };
 
@@ -259,7 +327,11 @@ Holster code for the voodoo doll
 */
 void() Voodoo_Holster =
 {
-    self.attack_finished = time + 0.5;
+    #ifndef NEW_MODELS
+    self.attack_finished = time + 0.4;
+    #else
+    self.attack_finished = time + 0.3;
+    #endif
     player_voodooholster1 ();
 };
 
@@ -273,6 +345,10 @@ Choose the right voodoo doll model to display
 */
 void() Voodoo_UpdateView =
 {
+    #ifndef NEW_MODELS
     self.weaponmodel = "progs/v_voodoo.mdl";
+    #else
+    self.weaponmodel = "models/weapons/v_voodoo.md3";
+    #endif
     self.items = self.items - (self.items & IT_GUNS_AKIMBO);
 };
