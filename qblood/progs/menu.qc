@@ -285,8 +285,8 @@ void() Menu_Draw =
     {
         Sprint (self, PRINT_HIGH,
                 "Choose a map group:\n"
-                "1) Blood maps\n"
-                "2) Blood packs maps\n"
+                "1) Blood Episode maps\n"
+                "2) Blood Add-on Mission maps\n"
                 "3) Blood 2 maps\n"
                 "4) BloodBath maps\n"
                 "\n"
@@ -296,9 +296,9 @@ void() Menu_Draw =
     {
         Sprint (self, PRINT_HIGH,
                 "Vote for a game type:\n"
-                "1) Blood Bath\n"
-                "2) Team Blood Bath\n"
-                "3) Team Blood Bath with friendly fire\n"
+                "1) BloodBath\n"
+                "2) Team BloodBath\n"
+                "3) Team BloodBath with friendly fire\n"
                 "4) Capture The Flag\n"
                 "5) Capture The Flag with friendly fire\n"
                 "\n"
@@ -350,7 +350,7 @@ void() Menu_Draw =
                 "Vote for a map:\n"
                 "1) bb1  The Stronghold  | 2) bb2  Winter Wonderland\n"
                 "3) bb3  Bodies          | 4) bb4  The Tower\n"
-                "5) bb5  Click!          | 6) bb6  Twin Fortress\n"
+                "5) bb5  Click!\n" // - not working-DKT | 6) bb6  Twin Fortress\n"
                 "7) bb7  Midgard         | 8) bb8  Fun With Heads\n"
                 "\n"
                 "10) Go back to map menu\n");
@@ -359,7 +359,7 @@ void() Menu_Draw =
     {
         Sprint (self, PRINT_HIGH,
                 "Vote for a map:\n"
-                "1) dm1     Monolith Building 11  | 2) dm2     Power!\n"
+                "1) dm1     Monolith Building #11 | 2) dm2     Power!\n"
                 "3) dm3     Area 15\n"
                 "5) cpbb01  Crypt of Despair      | 6) cpbb03  Unholy Cathedral\n"
                 "\n"
@@ -371,7 +371,7 @@ void() Menu_Draw =
                 "Vote for a map:\n"
                 "1) b2a15  A15        | 2) bkeep  Blood Keep\n"
                 "3) bstar  Brownstar  | 4) crypt  The Crypt\n"
-                "\n"
+                "5) barena Blood Arena\n"
                 "10) Go back to map menu\n");
     }
     else if (self.menu_index == MENU_VOTE_MAP_BLOODBATH)
@@ -583,8 +583,8 @@ void() Menu_HandleVoteMapBlood =
         newmap = "bb4";
     else if (self.impulse == 5)
         newmap = "bb5";
-    else if (self.impulse == 6)
-        newmap = "bb6";
+//    else if (self.impulse == 6)
+//        newmap = "bb6";
     else if (self.impulse == 7)
         newmap = "bb7";
     else if (self.impulse == 8)
@@ -675,6 +675,8 @@ void() Menu_HandleVoteMapBlood2 =
         newmap = "bstar";
     else if (self.impulse == 4)
         newmap = "crypt";
+    else if (self.impulse == 5)
+        newmap = "barena";
     else
     {
         Sprint (self, PRINT_HIGH, "\n===== INVALID COMMAND =====\n\n");
