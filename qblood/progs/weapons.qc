@@ -701,7 +701,7 @@ void(entity client) PM_BoredCaleb =
     else if (rs == 10)
         playit = "player/songs/vo3035.wav";   // "i get no kick from champagne...."
     else
-        playit = "player/songs/vo3039.wav";   // "i've got you under my skin"	
+        playit = "player/songs/vo3039.wav";   // "i've got you under my skin"
 
     sound (client, CHAN_VOICE, playit, 1, ATTN_NORM);
 };
@@ -1138,10 +1138,10 @@ void(entity attacker, vector org, vector dir, float mspeed, float big) PM_Launch
         jolt.model      = "progs/bolt2.mdl";
     }
     else
-	{
+    {
         jolt.dmg        = 25; // note, altfire = 170;
         jolt.model      = "progs/bolt.mdl";
-	}
+    }
     jolt.style      = big;
     jolt.touch      = PM_TeslaTouch;
     jolt.nextthink  = time + (8000 / mspeed);
@@ -1180,7 +1180,7 @@ void() W_FireLightning =
     {
         // FIXME:  Is the sound needed?
         if (self.t_width < time)
-	{
+        {
             sound (self, CHAN_WEAPON, "weapons/tesla/tessngfr.wav", 1, ATTN_NORM);
             self.t_width = time + 0.3;
         }
@@ -1194,7 +1194,10 @@ void() W_FireLightning =
     local   vector  dir;
     local   float   mspeed;
 
-    mspeed = 1000;
+    if (big)
+        mspeed = 2500;
+    else
+        mspeed = 1000;
     makevectors (self.v_angle);
     dir = aim(self, mspeed);
 
