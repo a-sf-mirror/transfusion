@@ -478,6 +478,12 @@ T_RadiusDamage
 */
 void(entity inflictor, entity attacker, float damage, entity ignore, string dtype) T_RadiusDamage =
 {
+    local   float   dflags;
+    if (dtype == "telsa")
+        dflags = DF_RADIUS | DF_BODY;
+    else
+        dflags = DF_RADIUS | DF_FIRE;
+
     local   float   points;
     local   entity  head;
     local   vector  org;
@@ -500,7 +506,7 @@ void(entity inflictor, entity attacker, float damage, entity ignore, string dtyp
                 {
                     if (CanDamage (head, inflictor))
                     {
-                        T_NewDamage (head, inflictor, attacker, points, DF_RADIUS | DF_FIRE, dtype);
+                        T_NewDamage (head, inflictor, attacker, points, dflags, dtype);
                     }
                 }
             }

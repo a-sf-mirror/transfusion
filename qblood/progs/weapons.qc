@@ -1072,43 +1072,40 @@ void() PM_TeslaTouch =
     if (other.takedamage)
         T_NewDamage (other, self, self.owner, self.dmg, DF_BODY, "tesla");
 
-    sound (self, CHAN_AUTO, "weapons/tesla/tessnght.wav", 1, ATTN_NORM);
+    if (self.style)
+    {
+        // Alt-fire touch.
+        T_RadiusDamage (self, self.owner, self.dmg, other, "telsa");
 
-    self.origin = self.origin - 8*normalize(self.velocity);
+        self.origin = self.origin - 8*normalize(self.velocity);
+
+        sound (self, CHAN_AUTO, "weapons/tesla/tesaltht.wav", 1, ATTN_NORM);
+
+        // FIXME:  Remove later.
+        #ifndef QUAKEWORLD
+        WriteByte (MSG_BROADCAST, SVC_TEMPENTITY);
+        WriteByte (MSG_BROADCAST, 12);
+        WriteCoord (MSG_BROADCAST, self.origin_x);
+        WriteCoord (MSG_BROADCAST, self.origin_y);
+        WriteCoord (MSG_BROADCAST, self.origin_z);
+        WriteByte (MSG_BROADCAST, 244);
+        WriteByte (MSG_BROADCAST, 3);
+        #endif
+    }
+    else
+    {
+        // Normal touch
+        self.origin = self.origin - 8*normalize(self.velocity);
+        sound (self, CHAN_AUTO, "weapons/tesla/tessnght.wav", 1, ATTN_NORM);
+    }
 
     remove (self);
 };
 
-void() W_FireLightning =
+void(entity attacker, vector org, vector dir, float mspeed, float big) PM_LaunchJolt =
 {
-    local   vector  org;
-    local   entity  jolt;
-    local   vector  dir;
-    local   float   mspeed;
-
-    if (self.ammo_cells < 1)
-        return;
-
-// FIXME:  Add alt-tesla mode.
-    if (self.t_width < time)
-    {
-        sound (self, CHAN_WEAPON, "weapons/tesla/tessngfr.wav", 1, ATTN_NORM);
-        self.t_width = time + 0.6;
-    }
-    #ifndef QUAKEWORLD
-    self.punchangle_x = -2;
-    #else
-    msg_entity = self;
-    WriteByte (MSG_ONE, SVC_SMALLKICK);
-    #endif
-
-    self.currentammo = self.ammo_cells = self.ammo_cells - 1;
-
     // PM:  This is for the plasma gun-wannabe mode.
-    mspeed = 1000;
-    makevectors (self.v_angle);
-    dir = aim(self, mspeed);
-    org = self.origin + '0 0 4';
+    local   entity  jolt;
 
     jolt = spawn();
 
@@ -1124,6 +1121,9 @@ void() W_FireLightning =
     jolt.avelocity  = '300 300 300';
     jolt.angles     = vectoangles(dir);
     jolt.dmg        = 25; // note, altfire = 170
+    if (big)
+        jolt.dmg        = 170;
+    jolt.style      = big;
 
     jolt.touch      = PM_TeslaTouch;
     jolt.nextthink  = time + (8000 / mspeed);
@@ -1132,6 +1132,55 @@ void() W_FireLightning =
     setmodel (jolt, "progs/bolt2.mdl");
     setsize (jolt, '0 0 0', '0 0 0');
     setorigin (jolt, org);
+};
+
+void() W_FireLightning =
+{
+    local   vector      org;
+    local   float       cells;
+
+    if (self.ammo_cells < 1)
+        return;
+
+    #ifndef QUAKEWORLD
+    self.punchangle_x = -2;
+    #else
+    msg_entity = self;
+    WriteByte (MSG_ONE, SVC_SMALLKICK);
+    #endif
+
+    local   float   big;
+
+    big = FALSE;
+    if ((self.impulse == 12 || self.button1) && self.ammo_cells >= 10)
+    {
+        sound (self, CHAN_WEAPON, "weapons/tesla/tesaltfr.wav", 1, ATTN_NORM);
+        big = TRUE;
+        self.ammo_cells = self.ammo_cells - 10;
+    }
+    else
+    {
+        // FIXME:  Is the sound needed?
+        if (self.t_width < time)
+        {
+            sound (self, CHAN_WEAPON, "weapons/tesla/tessngfr.wav", 1, ATTN_NORM);
+            self.t_width = time + 0.6;
+        }
+        self.ammo_cells = self.ammo_cells - 1;
+    }
+    self.currentammo = self.ammo_cells;
+
+    org = self.origin + '0 0 4';
+
+    // PM:  This is for the plasma gun-wannabe mode.
+    local   vector  dir;
+    local   float   mspeed;
+
+    mspeed = 1000;
+    makevectors (self.v_angle);
+    dir = aim(self, mspeed);
+
+    PM_LaunchJolt (self, org, dir, mspeed, big);
 };
 
 
@@ -1949,7 +1998,6 @@ void() W_Attack =
     else if (self.weapon == IT_LIGHTNING)
     {
         self.attack_finished = time + 0.1;
-        //sound (self, CHAN_AUTO, "weapons/tesla/tessngfr.wav", 1, ATTN_NORM);
         player_light1();
     }
     else if (self.weapon == IT_VOODOO_DOLL)

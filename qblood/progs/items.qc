@@ -764,13 +764,62 @@ POWERUPS
 */
 void() powerup_touch =
 {
-local entity    stemp;
-local float     best;
-
     if (other.classname != "player")
         return;
     if (other.health <= 0)
         return;
+
+// do the apropriate action
+// PM:  Listed in alphabetical order.
+    if (self.classname == "item_artifact_bag")
+    {
+        if (InvenMax (other, S_FIRST_AID))
+            return;
+        InvenSet (other, S_FIRST_AID, 100);
+    }
+    else if (self.classname == "item_artifact_boots")
+    {
+        if (InvenMax (other, S_JUMP_BOOTS))
+            return;
+        InvenSet (other, S_JUMP_BOOTS, 100);
+    }
+    else if (self.classname == "item_artifact_crystal")
+    {
+        if (InvenMax (other, S_CRYSTAL_BALL))
+            return;
+        InvenSet (other, S_CRYSTAL_BALL, 100);
+    }
+    else if (self.classname == "item_artifact_envirosuit")
+    {
+        if (InvenMax (other, S_DIVING_SUIT))
+            return;
+        InvenSet (other, S_DIVING_SUIT, 100);
+    }
+    else if (self.classname == "item_artifact_invisibility")
+    {
+        other.invisible_time = 1;
+        other.invisible_finished = time + 30;
+    }
+    else if (self.classname == "item_artifact_invulnerability")
+    {
+        other.invincible_time = 1;
+        other.invincible_finished = time + 30;
+    }
+    else if (self.classname == "item_artifact_reflect")
+    {
+        other.reflect_finished = time + 30;
+    }
+    else if (self.classname == "item_artifact_super_damage")
+    {
+        other.super_time = 1;
+        other.super_damage_finished = time + 30;
+    }
+    else if (self.classname == "item_artifact_vision")
+    {
+        if (InvenMax (other, S_BEAST_VISION))
+            return;
+        InvenSet (other, S_BEAST_VISION, 100);
+    }
 
     Sprint (other, PRINT_LOW, "Picked up ");
     Sprint (other, PRINT_LOW,  self.netname);
@@ -798,48 +847,6 @@ local float     best;
     self.solid = SOLID_NOT;
     other.items = other.items | self.items;
     self.model = string_null;
-
-// do the apropriate action
-// PM:  Listed in alphabetical order.
-    if (self.classname == "item_artifact_bag")
-    {
-        InvenSet (other, S_FIRST_AID, 100);
-    }
-    else if (self.classname == "item_artifact_boots")
-    {
-        InvenSet (other, S_JUMP_BOOTS, 100);
-    }
-    else if (self.classname == "item_artifact_crystal")
-    {
-        InvenSet (other, S_CRYSTAL_BALL, 100);
-    }
-    else if (self.classname == "item_artifact_envirosuit")
-    {
-        InvenSet (other, S_DIVING_SUIT, 100);
-    }
-    else if (self.classname == "item_artifact_invisibility")
-    {
-        other.invisible_time = 1;
-        other.invisible_finished = time + 30;
-    }
-    else if (self.classname == "item_artifact_invulnerability")
-    {
-        other.invincible_time = 1;
-        other.invincible_finished = time + 30;
-    }
-    else if (self.classname == "item_artifact_reflect")
-    {
-        other.reflect_finished = time + 30;
-    }
-    else if (self.classname == "item_artifact_super_damage")
-    {
-        other.super_time = 1;
-        other.super_damage_finished = time + 30;
-    }
-    else if (self.classname == "item_artifact_vision")
-    {
-        InvenSet (other, S_BEAST_VISION, 100);
-    }
 
     activator = other;
     SUB_UseTargets();               // fire all targets / killtargets
@@ -2242,7 +2249,8 @@ void() item_artifact_envirosuit =
     precache_model ("progs/suit.mdl");
     precache_sound ("foley/frbreath.wav");
     precache_sound ("foley/uwbreath.wav");
-    self.noise = "foley/frbreath.wav";
+    precache_sound ("items/pickup.wav");
+    self.noise = "items/pickup.wav";
     setmodel (self, "progs/suit.mdl");
     self.netname = "Diving Suit";
 // PM:  Diving suit/IT_SUIT controlled by inventory.

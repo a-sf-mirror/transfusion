@@ -73,25 +73,23 @@ void() SetChangeParms =
     InvenRecharge ();
 
 // cap super health
-    if (self.health > 100)
+    if (self.health > 200)
+        self.health = 200;
+    if (self.health < 1)
         self.health = 100;
-    if (self.health < 50)
-        self.health = 50;
     parm1 = self.items;
     parm2 = self.health;
-    parm3 = self.armorvalue;
-    if (self.ammo_shells < 25)
-        parm4 = 25;
-    else
-        parm4 = self.ammo_shells;
-    parm5 = self.ammo_nails;
-    parm6 = self.ammo_rockets;
-    parm7 = self.ammo_cells;
-    parm8 = self.weapon;
-    parm9 = self.armortype * 100;
-    // PM:  Remember inventory.
-    parm10 = self.items3;
-    parm11 = self.items4;
+    parm3 = self.ammo_shells;
+    parm4 = self.ammo_nails;
+    parm5 = self.ammo_rockets;
+    parm6 = self.ammo_cells;
+    parm7 = self.weapon;
+    parm8 = self.armor_fire;
+    parm9 = self.armor_body;
+    parm10 = self.armor_mind;
+    parm11 = self.inven1;
+    parm12 = self.inven2;
+    parm13 = self.it_select;
 };
 
 void() SetNewParms =
@@ -99,15 +97,16 @@ void() SetNewParms =
     parm1 = IT_AXE;
     parm2 = 100;
     parm3 = 0;
-    parm4 = 25;
+    parm4 = 0;
     parm5 = 0;
     parm6 = 0;
-    parm7 = 0;
-    parm8 = 1;
+    parm7 = IT_AXE;
+    parm8 = 0;
     parm9 = 0;
-    // PM:  Player starts with no inventory.
     parm10 = 0;
     parm11 = 0;
+    parm12 = 0;
+    parm13 = 0;
 };
 
 void() DecodeLevelParms =
@@ -118,18 +117,28 @@ void() DecodeLevelParms =
             SetNewParms ();     // take away all stuff on starting new episode
     }
 
-    self.items = parm1;
-    self.health = parm2;
-    self.armorvalue = parm3;
-    self.ammo_shells = parm4;
-    self.ammo_nails = parm5;
-    self.ammo_rockets = parm6;
-    self.ammo_cells = parm7;
-    self.weapon = parm8;
-    self.armortype = parm9 * 0.01;
-    // PM:  Restore inventory.
-    self.items3 = parm10;
-    self.items4 = parm11;
+    self.items          = parm1;
+    self.health         = parm2;
+    self.ammo_shells    = parm3;
+    self.ammo_nails     = parm4;
+    self.ammo_rockets   = parm5;
+    self.ammo_cells     = parm6;
+    self.weapon         = parm7;
+    self.armor_fire     = parm8;
+    self.armor_body     = parm9;
+    self.armor_mind     = parm10;
+    self.inven1         = parm11;
+    self.inven2         = parm12;
+    self.it_select      = parm13;
+
+    if (self.items & IT_ARMOR1)
+        self.armorvalue = self.armor_body;
+    else if (self.items & IT_ARMOR2)
+        self.armorvalue = self.armor_fire;
+    else if (self.items & IT_ARMOR3)
+        self.armorvalue = self.armor_mind;
+    else
+        self.armorvalue = 0;
 };
 
 /*

@@ -1,5 +1,5 @@
 //==========================================================================
-//  fire.qc -- by Patrick Martin                Last updated:  8-17-2001
+//  fire.qc -- by Patrick Martin                Last updated:  8-20-2001
 //--------------------------------------------------------------------------
 //  Fire acts like poison.  When a target is infected, it burns.
 //  The target loses one hit point for each frame it burns.
@@ -466,7 +466,7 @@ void(vector spot) PM_MakeExplosion =
 
     e = spawn();
     setmodel (e, "progs/s_explod.spr");
-    setsize (e, '0 0 0', '0 0 0');        
+    setsize (e, '0 0 0', '0 0 0');
     setorigin (e, spot);
 
     PM_Think (e, PM_BecomeOldExplosion);
@@ -837,11 +837,13 @@ void() PM_FlareThink =
 {
     if (self.dmg <= 0)
     {
+        // Flare burnt out.
         remove (self);
         return;
     }
-    if (self.enemy.health <= 0)
+    if ((self.enemy.health <= 0) || (self.enemy.deadflag))
     {
+        // Dead.
         remove (self);
         return;
     }
@@ -849,6 +851,7 @@ void() PM_FlareThink =
     // Make the flame stick to its target.
     PM_FlareStick ();
     PM_FlareSpark ();
+    self.dmg = self.dmg - 1;    // Update the burn damage limit.
 
     local   float   nextframe;
 

@@ -1,5 +1,5 @@
 //==========================================================================
-//  inven.qc -- by Patrick Martin               Last updated:  8-17-2001
+//  inven.qc -- by Patrick Martin               Last updated:  8-18-2001
 //--------------------------------------------------------------------------
 //  This controls a player's inventory of items.
 //
@@ -13,11 +13,11 @@
 //  NEW EDICT FIELDS  //
 //--------------------//
 
-// The new item* fields are used to store inventory items.  Unlike
+// The new inven* fields are used to store inventory items.  Unlike
 // '.item' and '.item2', each item uses seven bits per item since
 // each item has a fuel gauge.
-.float      items3;
-.float      items4;
+.float      inven1;
+.float      inven2;
 
 .float      it_select;      // Current item selected from inventory.
 .float      it_on;          // If > time, inventory should be on screen.
@@ -57,17 +57,31 @@ float(float itype) InvenFuel =
     local   float   fuel;
 
     if (itype == S_FIRST_AID)
-        return (self.items3 & (SEVEN_BITS * IT3_FIRST_AID)) / IT3_FIRST_AID;
+        return (self.inven1 & (SEVEN_BITS * IT3_FIRST_AID)) / IT3_FIRST_AID;
     if (itype == S_DIVING_SUIT)
-        return (self.items3 & (SEVEN_BITS * IT3_DIVING_SUIT)) / IT3_DIVING_SUIT;
+        return (self.inven1 & (SEVEN_BITS * IT3_DIVING_SUIT)) / IT3_DIVING_SUIT;
     if (itype == S_CRYSTAL_BALL)
-        return (self.items4 & (SEVEN_BITS * IT4_CRYSTAL_BALL)) / IT4_CRYSTAL_BALL;
+        return (self.inven2 & (SEVEN_BITS * IT4_CRYSTAL_BALL)) / IT4_CRYSTAL_BALL;
     if (itype == S_BEAST_VISION)
-        return (self.items4 & (SEVEN_BITS * IT4_BEAST_VISION)) / IT4_BEAST_VISION;
+        return (self.inven2 & (SEVEN_BITS * IT4_BEAST_VISION)) / IT4_BEAST_VISION;
     if (itype == S_JUMP_BOOTS)
-        return (self.items3 & (SEVEN_BITS * IT3_JUMP_BOOTS)) / IT3_JUMP_BOOTS;
+        return (self.inven1 & (SEVEN_BITS * IT3_JUMP_BOOTS)) / IT3_JUMP_BOOTS;
 
     return 0;
+};
+
+// This checks if item is maxed.  Returns TRUE if power >= 100.
+float(entity who, float itype) InvenMax =
+{
+    local   entity  oself;
+    local   float   fuel;
+
+    oself = self;
+    self = who;
+    fuel = InvenFuel (itype);
+    self = oself;
+
+    return (fuel >= 100);
 };
 
 // This sets the power level of an item.
@@ -76,8 +90,8 @@ void(entity who, float itype, float fuel) InvenSet =
     local   float   noitems;
 
     noitems = FALSE;
-    if (!who.items3)
-        if (!who.items4)
+    if (!who.inven1)
+        if (!who.inven2)
             noitems = TRUE;
 
     // Make sure the power setting is legal.
@@ -92,16 +106,16 @@ void(entity who, float itype, float fuel) InvenSet =
     {
         if (noitems)
             who.it_select = itype;
-        who.items3 = who.items3 - (who.items3 & (SEVEN_BITS * IT3_FIRST_AID));
-        who.items3 = who.items3 + (fuel * IT3_FIRST_AID);
+        who.inven1 = who.inven1 - (who.inven1 & (SEVEN_BITS * IT3_FIRST_AID));
+        who.inven1 = who.inven1 + (fuel * IT3_FIRST_AID);
         return;
     }
     if (itype == S_DIVING_SUIT)
     {
         if (noitems)
             who.it_select = itype;
-        who.items3 = who.items3 - (who.items3 & (SEVEN_BITS * IT3_DIVING_SUIT));
-        who.items3 = who.items3 + (fuel * IT3_DIVING_SUIT);
+        who.inven1 = who.inven1 - (who.inven1 & (SEVEN_BITS * IT3_DIVING_SUIT));
+        who.inven1 = who.inven1 + (fuel * IT3_DIVING_SUIT);
         who.dive_time = 0;
         return;
     }
@@ -109,8 +123,8 @@ void(entity who, float itype, float fuel) InvenSet =
     {
         if (noitems)
             who.it_select = itype;
-        who.items4 = who.items4 - (who.items4 & (SEVEN_BITS * IT4_CRYSTAL_BALL));
-        who.items4 = who.items4 + (fuel * IT4_CRYSTAL_BALL);
+        who.inven2 = who.inven2 - (who.inven2 & (SEVEN_BITS * IT4_CRYSTAL_BALL));
+        who.inven2 = who.inven2 + (fuel * IT4_CRYSTAL_BALL);
         who.xray_time = 0;
         return;
     }
@@ -118,8 +132,8 @@ void(entity who, float itype, float fuel) InvenSet =
     {
         if (noitems)
             who.it_select = itype;
-        who.items4 = who.items4 - (who.items4 & (SEVEN_BITS * IT4_BEAST_VISION));
-        who.items4 = who.items4 + (fuel * IT4_BEAST_VISION);
+        who.inven2 = who.inven2 - (who.inven2 & (SEVEN_BITS * IT4_BEAST_VISION));
+        who.inven2 = who.inven2 + (fuel * IT4_BEAST_VISION);
         who.beast_time = 0;
         return;
     }
@@ -127,8 +141,8 @@ void(entity who, float itype, float fuel) InvenSet =
     {
         if (noitems)
             who.it_select = itype;
-        who.items3 = who.items3 - (who.items3 & (SEVEN_BITS * IT3_JUMP_BOOTS));
-        who.items3 = who.items3 + (fuel * IT3_JUMP_BOOTS);
+        who.inven1 = who.inven1 - (who.inven1 & (SEVEN_BITS * IT3_JUMP_BOOTS));
+        who.inven1 = who.inven1 + (fuel * IT3_JUMP_BOOTS);
         who.boots_time = 0;
         return;
     }
@@ -376,8 +390,8 @@ void(float chosen) InvenList =
 // This lets a player select another item in the inventory.
 void(float add) InvenSelect =
 {
-    if (!self.items3)
-        if (!self.items4)
+    if (!self.inven1)
+        if (!self.inven2)
         {
             // No items.
             self.it_select = 0;
