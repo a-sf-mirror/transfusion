@@ -525,7 +525,7 @@ void() W_ActivateRemoteBombs =
     grenadeEnt = find (world, classname, "grenade");
     while (grenadeEnt)
     {
-        if (grenadeEnt.owner == self)
+        if (grenadeEnt.enemy == self)
             if (grenadeEnt.netname == "Remote Detonator")
             {
                 sound (grenadeEnt, CHAN_BODY, "weapons/tnt/remdet.wav", 1, ATTN_NORM);
