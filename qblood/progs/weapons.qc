@@ -39,7 +39,7 @@ void() W_Precache =
 {
     precache_sound ("weapons/r_exp3.wav");  // new rocket explosion
     precache_sound ("weapons/rocket1i.wav");    // spike gun
-    precache_sound ("weapons/sgun1.wav");
+    precache_sound ("weapons/napalm/blaster.wav");
     precache_sound ("weapons/guncock.wav"); // player shotgun
     precache_sound ("weapons/ric1.wav");    // ricochet (used in c code)
     precache_sound ("weapons/ric2.wav");    // ricochet (used in c code)
@@ -48,7 +48,7 @@ void() W_Precache =
     precache_sound ("weapons/tink1.wav");   // spikes tink (used in c code)
     precache_sound ("weapons/grenade.wav"); // grenade launcher
     precache_sound ("weapons/bounce.wav");      // grenade bounce
-    precache_sound ("weapons/shotgn2.wav"); // super shotgun
+    precache_sound ("weapons/shotgun/shotfire.wav"); // shotgun fired
 };
 
 float() crandom =
@@ -87,7 +87,7 @@ void() W_FireAxe =
     }
     else
     {   // hit wall
-        sound (self, CHAN_WEAPON, "player/axhit2.wav", 1, ATTN_NORM);
+        sound (self, CHAN_WEAPON, "weapons/pitchfrk/pstone.wav", 1, ATTN_NORM);
         #ifdef QUAKEWORLD
         WriteByte (MSG_MULTICAST, SVC_TEMPENTITY);
         WriteByte (MSG_MULTICAST, TE_GUNSHOT);
@@ -418,7 +418,7 @@ void() W_FireSuperShotgun =
         return;
     }
 
-    sound (self ,CHAN_WEAPON, "weapons/shotgn2.wav", 1, ATTN_NORM);
+    sound (self ,CHAN_WEAPON, "weapons/shotgun/shotfire.wav", 1, ATTN_NORM);
 
     #ifndef QUAKEWORLD
     self.punchangle_x = -4;
@@ -530,7 +530,7 @@ void() W_FireRocket =
 {
     self.currentammo = self.ammo_rockets = self.ammo_rockets - 1;
 
-    sound (self, CHAN_WEAPON, "weapons/sgun1.wav", 1, ATTN_NORM);
+    sound (self, CHAN_WEAPON, "weapons/napalm/blaster.wav", 1, ATTN_NORM);
 
     #ifdef QUAKEWORLD
     msg_entity = self;
@@ -1162,7 +1162,7 @@ void() W_Attack =
     if (self.weapon == IT_AXE)
     {
         self.attack_finished = time + 0.5;
-        sound (self, CHAN_WEAPON, "weapons/ax1.wav", 1, ATTN_NORM);
+        sound (self, CHAN_WEAPON, "zombie/azomswip.wav", 1, ATTN_NORM); // dturner: pf woosh
         r = random();
         if (r < 0.25)
             player_axe1 ();
@@ -1278,13 +1278,13 @@ void() W_ChangeWeapon =
 
     if (!(self.items & fl))
     {   // don't have the weapon or the ammo
-        Sprint (self, PRINT_LOW, "no weapon.\n");
+        Sprint (self, PRINT_LOW, "You don't have that weapon.\n");
         return;
     }
 
     if (am)
     {   // don't have the ammo
-        Sprint (self, PRINT_LOW, "not enough ammo.\n");
+        Sprint (self, PRINT_LOW, "You have no ammo.\n");
         return;
     }
 

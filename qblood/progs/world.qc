@@ -201,7 +201,8 @@ void() worldspawn =
     W_Precache ();          // get weapon precaches
 
 // sounds used from C physics code
-    precache_sound ("zombie/z_miss.wav");       // used by kickable heads
+    precache_sound ("zombie/z_miss.wav");       // used by destroyable corpses
+    precache_sound ("misc/gibsq.wav");          // used by when a head is destroyed
     precache_sound ("zombie/z_hit.wav");        // used by kickable heads
     precache_sound ("demon/dland2.wav");        // landing thud
     precache_sound ("misc/h2ohit1.wav");        // landing splash
@@ -255,9 +256,9 @@ void() worldspawn =
     precache_sound ("player/death5.wav");
 
 // ax sounds
-    precache_sound ("weapons/ax1.wav");         // ax swoosh
-    precache_sound ("player/axhit1.wav");       // ax hit meat
-    precache_sound ("player/axhit2.wav");       // ax hit world
+    precache_sound ("zombie/azomswip.wav");          // ax swoosh
+    precache_sound ("player/axhit1.wav");            // ax hit meat
+    precache_sound ("weapons/pitchfrk/pstone.wav");  // ax hit world
 
     precache_sound ("player/h2ojump.wav");      // player jumping into water
     precache_sound ("player/slimbrn2.wav");     // player enter slime
