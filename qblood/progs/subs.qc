@@ -329,66 +329,78 @@ void() SUB_UseTargets =
 
 };
 
+
 /*
 =======================
-identify_player
+SUB_GetPointedPlayer
 
-Identify the player you are pointed towards
+Returns the player you are pointed towards
 
 Copyright (C) 1997  Nat Friedman
 By Suck (Nat Friedman); hacked by Zoid for CTF4
 =======================
 */
-entity() identify_player =
+entity(float closeness) SUB_GetPointedPlayer =
 {
     // e is a temp entity; guy is our current best guess
     // as to at whom the player is pointing
     local entity e, guy;
-
-    // The best "closeness" heuristic so far.
-    local float closeness = -1;
 
     // Temp vars.
     local vector diff, point;
     local float currclose;
     local string s1, s2, s3;
 
+    // Normalize self.angles so we can do a length-independent
+    // consideration
+    makevectors (self.v_angle);
+    point = normalize (v_forward);  // FIXME: is v_forward already normalized?
+
     // Walk the list of players...
-    e=find(world, classname, "player");
-    while (e!=world)
+    e = find(world, classname, "player");
+    while (e != world)
     {
         // Get a vector pointing from the viewer to the current
         // player under consideration
-        diff=e.origin - self.origin;
+        diff = e.origin - self.origin;
 
         // Normalize it since we only care where he's pointing,
         // not how far away the guy is.
-        diff=normalize(diff);
-
-        // Normalize self.angles so we can do a length-independent
-        // consideration
-        point=normalize(self.angles);
+        diff = normalize (diff);
 
         // Find the different between the current player's angle
         // and the viewer's vision angle
-        diff=diff - point;
+        diff = diff - point;
 
         // The length is going to be our definition of closeness
-        currclose=vlen(diff);
-        traceline(self.origin, e.origin, FALSE, self);
+        currclose = vlen (diff);
+        traceline (self.origin, e.origin, FALSE, self);
         if (trace_ent == e && (closeness == -1 || currclose < closeness)) {
             closeness = currclose;
             guy = e;
         }
-        e=find(e, classname, "player");
+        e = find (e, classname, "player");
     }
 
-    // Now we display.
-    if (guy == world)
-    {
-        centerprint (self, "You're not looking at anyone!");
-        return world;
-    }
-    centerprint2 (self, "You are looking at ", guy.netname);
     return guy;
+};
+
+
+/*
+=======================
+identify_player
+
+Identify the player you are pointed towards
+=======================
+*/
+void() identify_player =
+{
+    local entity guy;
+
+    guy = SUB_GetPointedPlayer (-1);
+
+    if (guy == world)
+        centerprint (self, "You're not looking at anyone!");
+    else
+        centerprint2 (self, "You are looking at ", guy.netname);
 };

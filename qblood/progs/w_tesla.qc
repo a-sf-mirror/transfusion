@@ -281,7 +281,7 @@ void(vector org, vector dir, float mspeed) Tesla_LaunchJolt =
     jolt.think      = SUB_Remove;
 
     setmodel (jolt, jolt.model);
-    setsize (jolt, '-2 -2 -2', '2 2 2');
+    setsize (jolt, '0 0 0', '0 0 0');
     setorigin (jolt, org);
 };
 
@@ -337,21 +337,20 @@ void() Tesla_Fire =
 
     makevectors (self.v_angle);
     dir = aim(self, mspeed);
+    org = self.origin + v_forward * 8 + '0 0 16';
 
-    // 1st shot
-    org = self.origin + v_forward * 50 + '0 0 12' + v_right * 12;
-    Tesla_LaunchJolt (org, dir, mspeed);
-
-    // 2nd shot in akimbo mode
+    // Akimbo mode
     if (akimboFactor == 2)
     {
-        org = org - v_right * 24;  // Shot from the left side this time
-        Tesla_LaunchJolt (org, dir, mspeed);
+        Tesla_LaunchJolt (org + v_right * 8, dir, mspeed);
+        Tesla_LaunchJolt (org - v_right * 8, dir, mspeed);
 
         // If we don't have enough ammo anymore, drop the akimbo mode for now
         if (self.ammo_cells < 2)
             W_SetCurrentAmmo ();
     }
+    else
+        Tesla_LaunchJolt (org, dir, mspeed);
 };
 
 

@@ -23,7 +23,7 @@
 
 void () player_run;
 void(entity bomb, entity attacker, float rad, entity ignore, string dtype) T_RadiusDamage;
-entity() identify_player;
+void() identify_player;
 
 
 //============================================================================

@@ -78,7 +78,6 @@ void() player_altvoodoo5 = [$light1, player_altvoodoo6]
 
     self.weaponframe = $voodoo_altfire5;
     damage = self.ammo_voodoo;
-    self.ammo_voodoo = 0;
     Voodoo_ApplyDamage (damage);
 };
 void() player_altvoodoo6 = [$light2, player_altvoodoo7] { self.weaponframe = $voodoo_altfire6; };
@@ -105,48 +104,35 @@ Apply the spiritual damage of the voodoo doll
 */
 void(float damage) Voodoo_ApplyDamage =
 {
-    local vector dir;
-    local vector src;
-    local vector vel, org;
     local entity targ;
 
-    self.currentammo = self.ammo_voodoo;
-
-    dir = aim (self, 100000);
-
-    makevectors(self.v_angle);
-
-    src = self.origin + v_forward * 10;
-    src_z = self.absmin_z + self.size_z * 0.7;
-
-    traceline (src, src + dir * 2048, FALSE, self);
+    targ = SUB_GetPointedPlayer (0.15);
 
     // If we had a target that can be damaged and seems alive
-    if (trace_fraction != 1.0 && trace_ent.takedamage && trace_ent.classname == "player")
+    if (targ != world && targ.takedamage)
     {
-        org = trace_endpos - dir*4;
-
-        vel = normalize (dir + v_up * crandom() + v_right * crandom ());
-        vel = vel + 2 * trace_plane_normal;
-        vel = vel * 200;
-
         #ifdef QUAKEWORLD
         WriteByte (MSG_MULTICAST, SVC_TEMPENTITY);
         WriteByte (MSG_MULTICAST, TE_BLOOD);
         WriteByte (MSG_MULTICAST, 1);
-        WriteCoord (MSG_MULTICAST, org_x);
-        WriteCoord (MSG_MULTICAST, org_y);
-        WriteCoord (MSG_MULTICAST, org_z);
+        WriteCoord (MSG_MULTICAST, targ.origin_x);
+        WriteCoord (MSG_MULTICAST, targ.origin_y);
+        WriteCoord (MSG_MULTICAST, targ.origin_z);
         multicast (puff_org, MULTICAST_PVS);
         #else
-        SpawnBlood (org, vel * 0.2, damage);
+        SpawnBlood (targ.origin, '0 0 0', damage);
         #endif
-
-        targ = trace_ent;
     }
     // Else, WE take the damage
     else
         targ = self;
+
+    // We don't consume ammo if we don't hit a target (except for altfire)
+    if (self.player_state == PS_ALTFIRE)
+        self.ammo_voodoo = 0;
+    else if (targ != self)
+        self.ammo_voodoo = self.ammo_voodoo - damage / 4;
+    self.currentammo = self.ammo_voodoo;
 
     T_Damage (targ, self, self, damage, DF_MIND, "voodoo");
 };
@@ -194,8 +180,6 @@ float() Voodoo_Stab =
         sound (self, CHAN_WEAPON, "weapons/voodoodl/voolaugh.wav", 1, ATTN_NORM);
     else
         sound (self, CHAN_WEAPON, "weapons/voodoodl/voostab.wav", 1, ATTN_NORM);
-
-    self.ammo_voodoo = self.ammo_voodoo - damage / 4;
 
     return damage;
 };
