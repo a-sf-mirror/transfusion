@@ -812,6 +812,11 @@ int PC_ExpandDefine(source_t *source, token_t *deftoken, define_t *define,
 		} //end if
 		t = t->next;
 	} //end for
+
+	// Copy the deftoken infos about whitespaces into the first token
+	first->endwhitespace_p = deftoken->endwhitespace_p;
+	first->whitespace_p = deftoken->whitespace_p;
+
 	//store the first and last token of the list
 	*firsttoken = first;
 	*lasttoken = last;
