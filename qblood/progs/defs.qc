@@ -258,8 +258,6 @@ entity  activator;          // the entity that activated a trigger or brush
 entity  damage_attacker;    // set by T_Damage
 entity  damage_inflictor;
 
-float   qcextensions;       // Does the engine support QC extensions?
-
 float   warmup_done;        // set to TRUE when the warmup has been done
 float   warmup_counttime;   // used by the warmup countdown
 float   warmup_endtime;     // set to 0 before AND after the warmup
@@ -354,10 +352,16 @@ float map_cycle;
 
 // QuakeC extensions
 .float      button3;        // altfire; DP_INPUTBUTTONS extension
+.float      button4;        // use; DP_INPUTBUTTONS extension
+//.float      button5;      // UNUSED; DP_INPUTBUTTONS extension
+//.float      button6;      // UNUSED; DP_INPUTBUTTONS extension
+//.float      button7;      // UNUSED; DP_INPUTBUTTONS extension
+//.float      button8;      // UNUSED; DP_INPUTBUTTONS extension
 .float      alpha;          // controls opacity of the entity (0.0 or 1.0 is solid, -1 is invisible); DP_ENT_ALPHA extension
 .float      glow_color;     // Glowing light effect, paletted color (note: 0 and 254 are white); DP_ENT_GLOW extension
 .float      glow_size;      // 0 or higher (Darkplaces imposes a 1020 limit); DP_ENT_GLOW extension
 .float      glow_trail;     // If true, leave a trail of particles of the same color as the light; DP_ENT_GLOW extension
+.float      scale;          // Rendering scale of the object (0 is forced to 1); DP_ENT_SCALE extension
 
 
 //
@@ -493,18 +497,19 @@ float map_cycle;
 // builtin functions
 //
 
-void(vector ang)    makevectors     = #1;       // sets v_forward, etc globals
-void(entity e, vector o) setorigin  = #2;
-void(entity e, string m) setmodel   = #3;       // set movetype and solid first
-void(entity e, vector min, vector max) setsize = #4;
+void(vector ang)  makevectors                   = #1;  // sets v_forward, etc globals
+void(entity e, vector o) setorigin              = #2;
+void(entity e, string m) setmodel               = #3;  // set movetype and solid first
+void(entity e, vector min, vector max) setsize  = #4;
 // #5 was removed
-void() break                        = #6;
-float() random                      = #7;       // returns 0 - 1
+void() break                                    = #6;
+float() random                                  = #7;  // returns 0 - 1
 #ifdef NO_FRIKBOT
 void(entity e, float chan, string samp, float vol, float atten) sound = #8;
 #endif
 vector(vector v) normalize          = #9;
 void(string e) error                = #10;
+void(string e1, string e2) error2   = #10;
 void(string e) objerror             = #11;
 float(vector v) vlen                = #12;
 float(vector v) vectoyaw            = #13;
@@ -518,54 +523,53 @@ void(entity e) remove               = #15;
 // a forent of world is ignored
 void(vector v1, vector v2, float nomonsters, entity forent) traceline = #16;
 
-entity() checkclient                = #17;  // returns a client to look for
-entity(entity start, .string fld, string match) find = #18;
-string(string s) precache_sound     = #19;
-string(string s) precache_model     = #20;
+entity() checkclient                                                = #17;  // returns a client to look for
+entity(entity start, .string fld, string match) find                = #18;
+string(string s) precache_sound                                     = #19;
+string(string s) precache_model                                     = #20;
 #ifdef NO_FRIKBOT
-void(entity client, string s)stuffcmd = #21;
+void(entity client, string s)stuffcmd                               = #21;
 #endif
-entity(vector org, float rad) findradius = #22;
+entity(vector org, float rad) findradius                            = #22;
 void(string s) bprint                                               = #23;
 void(string s1, string s2) bprint2                                  = #23;
 void(string s1, string s2, string s3) bprint3                       = #23;
 void(string s1, string s2, string s3, string s4) bprint4            = #23;
 void(string s1, string s2, string s3, string s4, string s5) bprint5 = #23;
 #ifdef NO_FRIKBOT
-void(entity client, string s) sprint                            = #24;
-void(entity client, string s1, string s2) sprint2               = #24;
-void(entity client, string s1, string s2, string s3) sprint3    = #24;
+void(entity client, string s) sprint                                = #24;
+void(entity client, string s1, string s2) sprint2                   = #24;
+void(entity client, string s1, string s2, string s3) sprint3        = #24;
 #endif
-void(string s) dprint               = #25;
-string(float f) ftos                = #26;
-string(vector v) vtos               = #27;
-void() coredump                     = #28;      // prints all edicts
-void() traceon                      = #29;      // turns statment trace on
-void() traceoff                     = #30;
-void(entity e) eprint               = #31;      // prints an entire edict
-float(float yaw, float dist) walkmove   = #32;  // returns TRUE or FALSE
+void(string s) dprint                                               = #25;
+string(float f) ftos                                                = #26;
+string(vector v) vtos                                               = #27;
+void() coredump                                                     = #28;  // prints all edicts
+void() traceon                                                      = #29;  // turns statment trace on
+void() traceoff                                                     = #30;
+void(entity e) eprint                                               = #31;  // prints an entire edict
+float(float yaw, float dist) walkmove                               = #32;  // returns TRUE or FALSE
 // #33 was removed
-float() droptofloor= #34;   // TRUE if landed on floor
-void(float style, string value) lightstyle = #35;
-float(float v) rint                 = #36;      // round to nearest int
-float(float v) floor                = #37;      // largest integer <= v
-float(float v) ceil                 = #38;      // smallest integer >= v
+float() droptofloor                                                 = #34;  // TRUE if landed on floor
+void(float style, string value) lightstyle                          = #35;
+float(float v) rint                                                 = #36;  // round to nearest int
+float(float v) floor                                                = #37;  // largest integer <= v
+float(float v) ceil                                                 = #38;  // smallest integer >= v
 // #39 was removed
-float(entity e) checkbottom         = #40;      // true if self is on ground
-float(vector v) pointcontents       = #41;      // returns a CONTENT_*
+float(entity e) checkbottom                                         = #40;  // true if self is on ground
+float(vector v) pointcontents                                       = #41;  // returns a CONTENT_*
 // #42 was removed
-float(float f) fabs = #43;
+float(float f) fabs                                                 = #43;
 #ifdef NO_FRIKBOT
-vector(entity e, float speed) aim = #44;        // returns the shooting vector
+vector(entity e, float speed) aim                                   = #44;  // returns the shooting vector
 #endif
-float(string s) cvar = #45;                     // return cvar.value
-void(string s) localcmd = #46;                  // put string into local que
-entity(entity e) nextent = #47;                 // for looping through all ents
-void(vector o, vector d, float color, float count) particle = #48;// start a particle effect
-void() ChangeYaw = #49;                     // turn towards self.ideal_yaw
-                                            // at self.yaw_speed
+float(string s) cvar                                                = #45;  // return cvar.value
+void(string s) localcmd                                             = #46;  // put string into local que
+entity(entity e) nextent                                            = #47;  // for looping through all ents
+void(vector o, vector d, float color, float count) particle         = #48;  // start a particle effect
+void() ChangeYaw                                                    = #49;  // turn towards self.ideal_yaw at self.yaw_speed
 // #50 was removed
-vector(vector v) vectoangles            = #51;
+vector(vector v) vectoangles                                        = #51;
 
 #ifdef NO_FRIKBOT
 //
@@ -581,48 +585,31 @@ void(float to, string s) WriteString    = #58;
 void(float to, entity s) WriteEntity    = #59;
 #endif
 
-//
-// broadcast client message generation - REMOVED
-//
-
-// void(float f) bWriteByte     = #59;
-// void(float f) bWriteChar     = #60;
-// void(float f) bWriteShort        = #61;
-// void(float f) bWriteLong     = #62;
-// void(float f) bWriteCoord        = #63;
-// void(float f) bWriteAngle        = #64;
-// void(string s) bWriteString  = #65;
-// void(entity e) bWriteEntity = #66;
-
 void(float step) movetogoal             = #67;
-
-string(string s) precache_file      = #68;  // no effect except for -copy
-void(entity e) makestatic       = #69;
-void(string s) changelevel = #70;
-
-//#71 was removed
-
-void(string var, string val) cvar_set = #72;    // sets cvar.value
+string(string s) precache_file          = #68;  // no effect except for -copy
+void(entity e) makestatic               = #69;
+void(string s) changelevel              = #70;
+// #71 was removed
+void(string var, string val) cvar_set   = #72;  // sets cvar.value
 
 #ifdef NO_FRIKBOT
 // The various versions of centerprint (sprint, but in middle)
-void(entity client, string s) centerprint = #73;
-void(entity client, string s1, string s2) centerprint2 = #73;
-void(entity client, string s1, string s2, string s3) centerprint3 = #73;
+void(entity client, string s) centerprint                           = #73;
+void(entity client, string s1, string s2) centerprint2              = #73;
+void(entity client, string s1, string s2, string s3) centerprint3   = #73;
 #endif
 
-void(vector pos, string samp, float vol, float atten) ambientsound = #74;
+void(vector pos, string samp, float vol, float atten) ambientsound  = #74;
 
-string(string s) precache_model2    = #75;      // registered version only
-string(string s) precache_sound2    = #76;      // registered version only
-string(string s) precache_file2     = #77;      // registered version only
+// Use precache_model, precache_sound and precache_file instead
+//string(string s) precache_model2    = #75;  // registered version only
+//string(string s) precache_sound2    = #76;  // registered version only
+//string(string s) precache_file2     = #77;  // registered version only
 
 #ifdef NO_FRIKBOT
-void(entity e) setspawnparms        = #78;      // set parm1... to the
-                                                // values at level start
-                                                // for coop respawn
+void(entity e) setspawnparms = #78;  // set parm1... to the values at level start for coop respawn
 #endif
 
 // QC extensions
-float(string name, string value) registercvar = #93;
-float(string s) checkextension = #99;
+float(string name, string value) registercvar   = #93;
+float(string s) checkextension                  = #99;

@@ -955,14 +955,6 @@ void() PlayerPreThink =
     // so we must restore it every turn to avoid cheaters
     self.team = self.team_save;
 
-    // "impulse 12" and "+use" are aliases for "+button3"
-    self.button3 = (self.button3 & 1) | (self.button1 * 2);
-    if (self.impulse == 12)
-    {
-        self.button3 = self.button3 | 2;
-        self.impulse = 0;
-    }
-
     #ifndef NO_FRIKBOT
     if (BotPreFrame())
         return;
@@ -1017,7 +1009,7 @@ void() PlayerPreThink =
     else
         self.flags = self.flags | FL_JUMPRELEASED;
 
-// teleporters can force a non-moving pause time
+    // teleporters can force a non-moving pause time
     if (time < self.pausetime)
         self.velocity = '0 0 0';
 };
@@ -1034,10 +1026,10 @@ void() CheckPowerups =
     if (self.health <= 0)
         return;
 
-// invisibility
+    // invisibility
     if (self.invisible_finished)
     {
-// sound and screen flash when items starts to run out
+        // sound and screen flash when items starts to run out
         if (self.invisible_sound < time)
         {
             sound (self, CHAN_AUTO, "bludbath/powerup.wav", 0.5, ATTN_IDLE);
@@ -1069,17 +1061,17 @@ void() CheckPowerups =
             self.invisible_time = 0;
         }
 
-    // use the eyes
+        // use the eyes
         self.frame = 0;
         self.modelindex = modelindex_eyes;
     }
     else
         self.modelindex = modelindex_player;    // don't use eyes
 
-// invincibility
+    // invincibility
     if (self.invincible_finished)
     {
-// sound and screen flash when items starts to run out
+        // sound and screen flash when items starts to run out
         if (self.invincible_finished < time + 3)
         {
             if (self.invincible_time == 1)
@@ -1295,6 +1287,55 @@ void() Impulses_Dead =
 
 
 /*
+====================
+Cl_Use
+
+Look for a usable entity in front of and below the player,
+and use it if it's possible.
+====================
+*/
+void() Cl_Use =
+{
+    local vector start_point;
+
+    makevectors (self.v_angle);
+
+    // Look for a usable entity in front of the player
+    start_point = self.origin + self.view_ofs;
+    traceline (start_point, start_point + v_forward * 64, FALSE, self);
+    if (trace_fraction < 1)
+        if (trace_ent.spawnflags & SF_USABLE)
+            if (trace_ent.use)
+            {
+                local entity stemp;
+
+                activator = self;
+                other = self;
+                stemp = self;
+                self = trace_ent;
+                trace_ent.use ();
+                self = stemp;
+            }
+
+    // Look for a usable entity below too
+    traceline (start_point, start_point - v_up * 256, FALSE, self);
+    if (trace_fraction < 1)
+        if (trace_ent.spawnflags & SF_USABLE)
+            if (trace_ent.use)
+            {
+                local entity stemp;
+
+                activator = self;
+                other = self;
+                stemp = self;
+                self = trace_ent;
+                trace_ent.use ();
+                self = stemp;
+            }
+};
+
+
+/*
 ================
 PlayerPostThink
 
@@ -1360,6 +1401,9 @@ void() PlayerPostThink =
         return;
     }
 
+    if (self.button4)
+        Cl_Use ();
+
     W_WeaponFrame ();
 
     // Check for boredom.
@@ -1383,7 +1427,7 @@ called when a player connects to a server
 void() ClientConnect =
 {
     #ifndef NO_FRIKBOT
-    ClientInRankings();
+    Bot_ClientConnect ();
     #endif
 
     bprint2 (self.netname, " entered the game\n");
@@ -1428,7 +1472,7 @@ void() ClientDisconnect =
     }
 
     #ifndef NO_FRIKBOT
-    ClientDisconnected();
+    Bot_ClientDisconnect ();
     #endif
 
     // if the level end trigger has been activated, just return

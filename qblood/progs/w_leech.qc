@@ -338,24 +338,21 @@ void() Leech_Die =
     KillBurner (self);
 
     // If the engine supports the QC extension DP_ENT_ALPHA, make it fade out
-    if (qcextensions)
-        if (checkextension ("DP_ENT_ALPHA"))
-        {
-            self.solid = SOLID_NOT;
-            self.takedamage = DAMAGE_NO;
-            self.movetype = MOVETYPE_NONE;
-            self.effects = 0;
-            self.alpha = 1;
+    if (checkextension ("DP_ENT_ALPHA"))
+    {
+        self.solid = SOLID_NOT;
+        self.takedamage = DAMAGE_NO;
+        self.movetype = MOVETYPE_NONE;
+        self.effects = 0;
+        self.alpha = 1;
 
-            self.touch = SUB_Null;
-            self.th_die = SUB_Remove;
-            self.think = Leech_FadeOut;
-            self.nextthink = time + 0.1;
-
-            return;
-        }
-
-    remove (self);
+        self.touch = SUB_Null;
+        self.th_die = SUB_Remove;
+        self.think = Leech_FadeOut;
+        self.nextthink = time + 0.1;
+    }
+    else
+        remove (self);
 };
 
 

@@ -37,20 +37,7 @@ Precache all necessary sounds
 */
 void() PrecacheSounds =
 {
-    // The following sounds are referenced by the engine code - DON'T TOUCH !!
-    precache_sound ("ambience/water1.wav");
-    precache_sound ("ambience/wind2.wav");
-    precache_sound ("misc/menu1.wav");       // menu sound
-    precache_sound ("misc/menu2.wav");       // menu sound
-    precache_sound ("misc/menu3.wav");       // menu sound
-    precache_sound ("misc/talk.wav");        // message
-    precache_sound ("hknight/hit.wav");      // used by the TE_KNIGHTSPIKE event
-    precache_sound ("wizard/hit.wav");       // used by the TE_WIZSPIKE event
-    precache_sound ("weapons/tink1.wav");    // spikes tink
-    precache_sound ("weapons/ric1.wav");     // ricochet
-    precache_sound ("weapons/ric2.wav");     // ricochet
-    precache_sound ("weapons/ric3.wav");     // ricochet
-    precache_sound ("weapons/r_exp3.wav");   // explosion
+    // DON'T TOUCH !! - The following sounds are useed by the engine code
     precache_sound ("misc/h2ohit1.wav");     // object entering water
     precache_sound ("demon/dland2.wav");     // landing thud
 
@@ -58,9 +45,9 @@ void() PrecacheSounds =
 
     // pitchfork
     precache_sound ("weapons/pitchfrk/pflesh.wav");
-//    precache_sound ("weapons/pitchfrk/pmetal.wav");
+    //precache_sound ("weapons/pitchfrk/pmetal.wav");
     precache_sound ("weapons/pitchfrk/pstone.wav");  // Hit a stone
-//    precache_sound ("weapons/pitchfrk/pwood.wav");
+    //precache_sound ("weapons/pitchfrk/pwood.wav");
 
     // ----- Player pain sounds ----- //
 
@@ -187,7 +174,7 @@ void() PrecacheSounds =
     // Miscellaneous sounds
     precache_sound ("ambience/bubrise.wav");       // bubble sound
     precache_sound ("ambience/sizzle.wav");        // smelt on slime
-    precache_sound ("bludbath/reappear.wav");  // item respawn sound
+    precache_sound ("bludbath/reappear.wav");      // item respawn sound
     precache_sound ("bludbath/message.wav");       // Messages  (TODO: not always used...)
     precache_sound ("items/ammo.wav");             // ammo pick up
     precache_sound ("items/pickarmr.wav");         // armor pick up
@@ -199,7 +186,19 @@ void() PrecacheSounds =
 };
 
 
-entity  lastspawn;
+/*
+================
+MandatoryExtension
+
+Check the availability of a QuakeC extension we absolutely need
+================
+*/
+void(string ext) MandatoryExtension =
+{
+    if (!checkextension (ext))
+        error2 ("A mandatory QuakeC extension is missing: ", ext);
+};
+
 
 //=======================
 /*QUAKED worldspawn (0 0 0) ?
@@ -215,35 +214,22 @@ World Types:
 //=======================
 void() worldspawn =
 {
-    local float doWarmup;
-
-    lastspawn = world;
-
     // Check for QC extensions
-    qcextensions = cvar ("pr_checkextension");
+    if (!cvar ("pr_checkextension"))
+        error ("QuakeC extensions are not supported by this engine");
+    MandatoryExtension ("DP_INPUTBUTTONS");
+    MandatoryExtension ("DP_REGISTERCVAR");
 
-    // Try to create our own cvars as soon as possible
-    if (qcextensions)
-        if (checkextension ("DP_REGISTERCVAR"))
-        {
-            registercvar ("g_flashyEffects", "0");
-            registercvar ("g_lockTeams", "0");
-            registercvar ("g_warmup", "0");
-            registercvar ("g_weaponStay", "0");
-            registercvar ("sv_cheats", "0");
-            registercvar ("sv_disable", "0");
-        }
-
-    // Some engines create them on the fly
-    cvar ("g_flashyEffects");
-    cvar ("g_lockTeams");
-    doWarmup = cvar ("g_warmup");
-    cvar ("g_weaponStay");
-    cvar ("sv_cheats");
-    cvar ("sv_disable");
+    // Create our own cvars as soon as possible
+    registercvar ("g_flashyEffects", "0");
+    registercvar ("g_lockTeams", "0");
+    registercvar ("g_warmup", "0");
+    registercvar ("g_weaponStay", "0");
+    registercvar ("sv_cheats", "0");
+    registercvar ("sv_disable", "0");
 
     // Warmup initialization
-    warmup_done = (! doWarmup);
+    warmup_done = (! cvar ("g_warmup"));
     warmup_endtime = 0;
     warmup_counttime = 0;
 
@@ -257,7 +243,7 @@ void() worldspawn =
 
     #ifndef NO_FRIKBOT
     // FrikBot X initialization
-    BotInit();
+    Bot_Init();
     #endif
 
     // Compute the game type
@@ -298,17 +284,13 @@ void() worldspawn =
     // Some CTF variables need an initialization
     team1score = team2score = 0;
 
-    // It's time to precache...
+    // It's time to precache some sounds...
     PrecacheSounds ();
 
     precache_model ("progs/flame.spr");     // Used for people on fire
     precache_model ("progs/s_oldexp.spr");
-
-    // WARNING: these models are referenced by the engine itself
-    precache_model ("progs/player.mdl");
+    precache_model ("progs/player.mdl");    // Warning: this model is also referenced by the engine itself
     precache_model ("progs/eyes.mdl");
-    //precache_model ("progs/spike.mdl");
-    //precache_model ("progs/s_spike.mdl");
 
     // Gibs and other stuff
     precache_model ("progs/bitogore.mdl");
@@ -388,7 +370,7 @@ void() StartFrame =
     World_WarmupCountdown ();
 
     #ifndef NO_FRIKBOT
-    BotFrame();
+    Bot_Frame ();
     #endif
 };
 
@@ -406,7 +388,6 @@ WARMUP
 World_EndWarmup
 
 Ends the warmup and resets/respawns all entities.
-If "startPlay" is TRUE, the game begins; else it restarts the whole warmup process
 ====================
 */
 void(float cloneCorpse) respawn;
@@ -417,7 +398,7 @@ void() World_EndWarmup =
 
     local entity ent, tempEnt;
 
-    Bcenterprint ("Resetting level...\n");
+    bcenterprint ("Resetting level...\n");
     warmup_done = TRUE;
     warmup_counttime = 0;
 
@@ -487,7 +468,7 @@ void() World_WarmupCountdown =
         if (warmup_counttime <= time)
         {
             warmup_counttime = warmup_counttime + 10;
-            Bcenterprint ("¾¾ Waiting for opponents ¼¼\n");
+            bcenterprint ("¾¾ Waiting for opponents ¼¼\n");
         }
         return;
     }
@@ -510,7 +491,7 @@ void() World_WarmupCountdown =
             warmup_counttime = warmup_counttime + 5;
 
         remaining = ftos (rint (warmup_endtime - time));
-        Bcenterprint3 ("×ÁÒÍÕÐº ", remaining, " sec\n");  // "WARMUP: ... sec"
+        bcenterprint3 ("×ÁÒÍÕÐº ", remaining, " sec\n");  // "WARMUP: ... sec"
     }
 };
 

@@ -31,7 +31,7 @@
 
 // Game types
 // Some tests depend on the ordering of this list. Be very careful if you modify it.
-#define GT_BLOODBATH          0  // player VS player
+#define GT_BLOODBATH          0  // free for all
 #define GT_TEAM_BLOODBATH     1  // 1 team VS 1 team  (NOTE: should we add support for more than 2 teams ?)
 #define GT_CAPTURE_THE_FLAG   2  // 1 team VS 1 team
 
@@ -48,6 +48,11 @@
 #define FL_PARTIALGROUND    1024 // not all corners are valid
 #define FL_WATERJUMP        2048 // player jumping out of water
 #define FL_JUMPRELEASED     4096 // for jump debouncing
+
+// edict.spawnflags
+// let flags 1->32 free for each entity type
+#define SF_USABLE           64   // Can be triggered manually by a client
+
 
 // edict.movetype values
 #define MOVETYPE_NONE           0    // never moves
@@ -139,11 +144,11 @@
 #define IT2_ENEMY_FLAG      64       // 7 - CTF enemy flag
 
 // Inventory items
-#define S_FIRST_AID     0
-#define S_DIVING_SUIT   1
-#define S_CRYSTAL_BALL  2
-#define S_BEAST_VISION  3
-#define S_JUMP_BOOTS    4
+#define INV_FIRST_AID       0
+#define INV_DIVING_SUIT     1
+#define INV_CRYSTAL_BALL    2
+#define INV_BEAST_VISION    3
+#define INV_JUMP_BOOTS      4
 
 // Flags for the "sv_disable" cvar
 #define SV_DISABLE_BOTS         1
@@ -224,8 +229,9 @@
 #define EF_DIMLIGHT     8
 #define EF_BLUE         64      // Blue Globe effect for Quad
 #define EF_RED          128     // Red Globe effect for Pentagram
-#define EF_FLAME        1024    // Entity is surrounded by fire (WARNING: only available on DarkPlaces)
-#define EF_LOWPRECISION 4194304 // Entity uses integer coordinates to save network bandwidth (WARNING: only on DP)
+// ... using QuakeC extensions
+#define EF_FLAME        1024    // Entity is surrounded by fire; DP_EF_FLAME extension
+#define EF_LOWPRECISION 4194304 // Entity uses integer coordinates to save network bandwidth; DP_ENT_LOWPRECISION extension
 
 // messages
 #define MSG_BROADCAST   0  // unreliable to all

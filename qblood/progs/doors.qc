@@ -238,11 +238,11 @@ void() door_touch =
         sound (other, CHAN_VOICE, "bludbath/message.wav", 1, ATTN_NORM);
     }
 
-// key door stuff
+    // key door stuff
     if (!self.items2)
         return;
 
-// FIXME: blink key on player's status bar
+    // FIXME: blink key on player's status bar
     if ((self.items2 & other.items2) != self.items2)
     {
         if (self.owner.items2 == IT2_KEY1)
@@ -266,8 +266,8 @@ void() door_touch =
         return;
     }
 
-// PM:  Keys aren't used up.
-//    other.items2 = other.items2 - self.items2;
+    // PM:  Keys aren't used up.
+    //    other.items2 = other.items2 - self.items2;
     self.touch = SUB_Null;
     if (self.enemy)
         self.enemy.touch = SUB_Null;    // get paired door
@@ -372,6 +372,8 @@ void() LinkDoors =
                 return;
             if (self.items2)
                 return;
+            if (self.spawnflags & SF_USABLE)
+                return;
 
             self.owner.trigger_field = spawn_field(cmins, cmaxs);
 
@@ -434,6 +436,11 @@ void() func_door =
     local string sound1, sound2;
 
     precache_sound ("thevoice/squash.wav");
+
+    // REMOVEME: temporary hack
+    // shootable, fired, or key doors can't ge triggered manually
+    if (!self.health && !self.targetname && !self.items2)
+        self.spawnflags = self.spawnflags | SF_USABLE;
 
     // All key doors make Caleb say "I need a key!"
     precache_sound ("player/hunt4.wav");
@@ -519,8 +526,8 @@ void() func_door =
     self.pos1 = self.origin;
     self.pos2 = self.pos1 + self.movedir*(fabs(self.movedir*self.size) - self.lip);
 
-// DOOR_START_OPEN is to allow an entity to be lighted in the closed position
-// but spawn in the open position
+    // DOOR_START_OPEN is to allow an entity to be lighted in the closed position
+    // but spawn in the open position
     if (self.spawnflags & DOOR_START_OPEN)
     {
         setorigin (self, self.pos2);
@@ -539,10 +546,12 @@ void() func_door =
     if (self.items2)
         self.wait = -1;
 
-    self.touch = door_touch;
+    // If the door can't be opened manually, it can be opened by touch
+    if (! (self.spawnflags & SF_USABLE))
+        self.touch = door_touch;
 
-// LinkDoors can't be done until all of the doors have been spawned, so
-// the sizes can be detected properly.
+    // LinkDoors can't be done until all of the doors have been spawned, so
+    // the sizes can be detected properly.
     self.think = LinkDoors;
     self.nextthink = self.ltime + 0.1;
 };

@@ -556,7 +556,7 @@ void() ClientFixRankings =
     }
 };
 
-void() ClientInRankings =
+void() Bot_ClientConnect =
 {
     local float cno;
 
@@ -606,7 +606,7 @@ void() ClientInRankings =
 };
 
 
-void() ClientDisconnected =
+void() Bot_ClientDisconnect =
 {
     if (player_head == self)
         player_head = self._next;
@@ -735,7 +735,7 @@ BotInit
 */
 
 
-void() BotInit =
+void() Bot_Init =
 {
     local entity ent, fisent;
     local float numents;
@@ -1004,7 +1004,7 @@ void() LoadWaypoint =
     tep.b_frags = cvar("scratch4");
 };
 
-void() bot_return =
+void() Bot_Return =
 {
     // Don't return bots if they've been disabled
     if (cvar ("sv_disable") & SV_DISABLE_BOTS)
@@ -1068,7 +1068,7 @@ void() WaypointWatch =
     }
 };
 
-void() BotFrame =
+void() Bot_Frame =
 {
     if (intermission_running)
         return;
@@ -1106,7 +1106,7 @@ void() BotFrame =
     if (saved_bots)
         // Don't respawn bots until at least 1 player has entered the game
         if (active_clients)
-            bot_return();
+            Bot_Return();
 };
 
 

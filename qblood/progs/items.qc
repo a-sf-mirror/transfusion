@@ -760,27 +760,27 @@ void() powerup_touch =
     // do the appropriate action (listed in alphabetical order)
     if (self.classname == "item_artifact_bag")
     {
-        if (InvenMax (other, S_FIRST_AID))
+        if (InvenMax (other, INV_FIRST_AID))
             return;
-        InvenSet (other, S_FIRST_AID, 100);
+        InvenSet (other, INV_FIRST_AID, 100);
     }
     else if (self.classname == "item_artifact_boots")
     {
-        if (InvenMax (other, S_JUMP_BOOTS))
+        if (InvenMax (other, INV_JUMP_BOOTS))
             return;
-        InvenSet (other, S_JUMP_BOOTS, 100);
+        InvenSet (other, INV_JUMP_BOOTS, 100);
     }
     else if (self.classname == "item_artifact_crystal")
     {
-        if (InvenMax (other, S_CRYSTAL_BALL))
+        if (InvenMax (other, INV_CRYSTAL_BALL))
             return;
-        InvenSet (other, S_CRYSTAL_BALL, 100);
+        InvenSet (other, INV_CRYSTAL_BALL, 100);
     }
     else if (self.classname == "item_artifact_envirosuit")
     {
-        if (InvenMax (other, S_DIVING_SUIT))
+        if (InvenMax (other, INV_DIVING_SUIT))
             return;
-        InvenSet (other, S_DIVING_SUIT, 100);
+        InvenSet (other, INV_DIVING_SUIT, 100);
     }
     else if (self.classname == "item_artifact_invisibility")
     {
@@ -809,9 +809,9 @@ void() powerup_touch =
     }
     else if (self.classname == "item_artifact_vision")
     {
-        if (InvenMax (other, S_BEAST_VISION))
+        if (InvenMax (other, INV_BEAST_VISION))
             return;
-        InvenSet (other, S_BEAST_VISION, 100);
+        InvenSet (other, INV_BEAST_VISION, 100);
     }
 
     sprint3 (other, "Picked up ", self.netname, "\n");
@@ -946,12 +946,11 @@ void() item_health =
         if (cvar ("g_flashyEffects"))
         {
             // Only available if the engine supports the DP_ENT_GLOW extension
-            if (qcextensions)
-                if (checkextension ("DP_ENT_GLOW"))
-                {
-                    self.glow_color = 250;  // 250 = red in Quake palette
-                    self.glow_size = 50;
-                }
+            if (checkextension ("DP_ENT_GLOW"))
+            {
+                self.glow_color = 250;  // 250 = red in Quake palette
+                self.glow_size = 50;
+            }
         }
     }
     else if (self.spawnflags & H_LIFE_SEED)

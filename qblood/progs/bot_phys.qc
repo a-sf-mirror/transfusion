@@ -345,9 +345,9 @@ float() SV_RunThink  =
     return TRUE;
 };
 
-void(float scale) SV_AddGravity =
+void(float gscale) SV_AddGravity =
 {
-    self.velocity_z = self.velocity_z - (scale * sv_gravity * real_frametime);
+    self.velocity_z = self.velocity_z - (gscale * sv_gravity * real_frametime);
 };
 
 float() SV_CheckWater =

@@ -215,8 +215,7 @@ void() MakeEmbers =
     spot_x = spot_x * (random() - 0.5);
     spot_y = spot_y * (random() - 0.5);
     spot_z = spot_z * (random() - 0.5);
-    spot   = spot + self.enemy.origin +
-        (self.enemy.mins + self.enemy.maxs) * 0.5;
+    spot   = spot + self.enemy.origin + (self.enemy.mins + self.enemy.maxs) * 0.5;
 
     // Create the fire.
     fire = spawn();
@@ -229,9 +228,11 @@ void() MakeEmbers =
     fire.owner      = self.enemy;
     fire.movetype   = MOVETYPE_FLY;
     fire.velocity   = '0 0 100';
+    fire.effects    = EF_LOWPRECISION;
 
     // Animate the flame.
-    fire.alpha      = 0.9 - rint (0.4 * random ());
+    fire.alpha      = 0.9 - (0.4 * random ());
+    fire.scale      = 0.5 + (0.5 * random ());
     fire.think      = FlameThink;
     fire.nextthink  = time + 0.1;
 };
