@@ -522,7 +522,7 @@ void() ogre_melee =
 */
 void() monster_ogre =
 {
-    if (deathmatch)
+    if (gametype > GAMETYPE_COOPERATIVE)
     {
         remove(self);
         return;
@@ -538,6 +538,9 @@ void() monster_ogre =
     precache_sound ("ogre/ogpain1.wav");
     precache_sound ("ogre/ogsawatk.wav");
     precache_sound ("ogre/ogwake.wav");
+    precache_sound ("weapons/napalm/explodcs.wav");
+    precache_sound ("weapons/tnt/tntfuse.wav");  // tnt lit
+    precache_sound ("weapons/tnt/tnttoss.wav");  // bounce sound
 
     self.solid = SOLID_SLIDEBOX;
     self.movetype = MOVETYPE_STEP;

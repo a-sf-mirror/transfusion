@@ -396,7 +396,7 @@ float() DogCheckAttack =
 */
 void() monster_dog =
 {
-    if (deathmatch)
+    if (gametype > GAMETYPE_COOPERATIVE)
     {
         remove(self);
         return;

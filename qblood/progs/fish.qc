@@ -178,7 +178,7 @@ void(entity attacker, float damage) fish_pain =
 */
 void() monster_fish =
 {
-    if (deathmatch)
+    if (gametype > GAMETYPE_COOPERATIVE)
     {
         remove(self);
         return;

@@ -286,7 +286,7 @@ void() boss_awake =
 */
 void() monster_boss =
 {
-    if (deathmatch)
+    if (gametype > GAMETYPE_COOPERATIVE)
     {
         remove(self);
         return;

@@ -179,6 +179,8 @@ void() func_plat =
     if (!self.t_width)
         self.t_width = 10;
 
+    precache_sound ("thevoice/squash.wav");
+
     if (self.sounds == 0)
         self.sounds = 2;  // not a very clean solution...
 
@@ -321,6 +323,8 @@ void() func_train =
     if (!self.dmg)
         self.dmg = 2;
 
+    precache_sound ("thevoice/squash.wav");
+
     if (self.sounds == 0)
     {
         self.noise = ("misc/null.wav");
@@ -370,6 +374,8 @@ void() misc_teleporttrain =
     self.blocked = train_blocked;
     self.use = train_use;
     self.avelocity = '100 200 300';
+
+    precache_sound ("thevoice/squash.wav");
 
     self.noise = ("misc/null.wav");
     precache_sound ("misc/null.wav");

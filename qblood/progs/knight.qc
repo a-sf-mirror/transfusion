@@ -297,7 +297,7 @@ void() knight_die =
 */
 void() monster_knight =
 {
-    if (deathmatch)
+    if (gametype > GAMETYPE_COOPERATIVE)
     {
         remove(self);
         return;

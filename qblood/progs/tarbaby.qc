@@ -223,7 +223,7 @@ void()  tbaby_die2  =[  $exp,       tbaby_run1  ]
 */
 void() monster_tarbaby =
 {
-    if (deathmatch)
+    if (gametype > GAMETYPE_COOPERATIVE)
     {
         remove(self);
         return;

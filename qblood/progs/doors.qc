@@ -429,6 +429,7 @@ Key doors are allways wait -1.
 void() func_door =
 
 {
+    precache_sound ("thevoice/squash.wav");
 
     // All key doors make Caleb say "I need a key!"
     precache_sound ("player/hunt4.wav");
@@ -457,7 +458,6 @@ void() func_door =
 
     if (self.sounds == 0)
     {
-        precache_sound ("misc/null.wav");
         precache_sound ("misc/null.wav");
         self.noise1 = "misc/null.wav";
         self.noise2 = "misc/null.wav";
@@ -690,7 +690,7 @@ void () secret_blocked =
     if (time < self.attack_finished)
         return;
     self.attack_finished = time + 0.5;
-    other.deathtype = "squish";
+    other.deathtype = "squish";  // FIXME: is it still useful (T_NewDamage is here now) ?
 // PM:  In Blood, squished by door is instant death.  Armor offers
 //      no protection either.
     // Used to do self.dmg for damage.
@@ -740,6 +740,8 @@ If a secret door has a targetname, it will only be opened by it's botton or trig
 
 void () func_door_secret =
 {
+    precache_sound ("thevoice/squash.wav");
+
     if (self.sounds == 0)
         self.sounds = 3;
     if (self.sounds == 1)

@@ -422,7 +422,7 @@ void() Wiz_Missile =
 */
 void() monster_wizard =
 {
-    if (deathmatch)
+    if (gametype > GAMETYPE_COOPERATIVE)
     {
         remove(self);
         return;

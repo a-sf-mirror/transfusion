@@ -383,9 +383,6 @@ void(vector org, vector vec) LaunchLaser =
 {
     local   vector  vec;
 
-    if (self.classname == "monster_enforcer")
-        sound (self, CHAN_WEAPON, "weapons/tesla/tessngfr.wav", 1, ATTN_NORM);
-
     vec = normalize(vec);
 
     newmis = spawn();
@@ -445,8 +442,8 @@ void() trap_spikeshooter =
     {
         precache_model2 ("progs/laser.mdl");
 
-        precache_sound2 ("weapons/tesla/tessngfr.wav");
-        precache_sound2 ("ambience/spark.wav");
+        precache_sound ("weapons/tesla/tessngfr.wav");
+        precache_sound ("ambience/spark.wav");
     }
     else
         precache_sound ("weapons/tommygun/_tom.wav");
@@ -551,7 +548,7 @@ testing air bubbles
 void() air_bubbles =
 
 {
-    if (deathmatch)
+    if (gametype > GAMETYPE_COOPERATIVE)
     {
         remove (self);
         return;

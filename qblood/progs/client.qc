@@ -23,7 +23,6 @@
 
 // prototypes
 void () W_WeaponFrame;
-void(float weaponHasChanged) W_SetCurrentAmmo;
 void() player_pain;
 void() player_stand1;
 void (vector org) spawn_tfog;
@@ -232,8 +231,8 @@ void() GotoNextMap =
 
 void() ExitIntermission =
 {
-// skip any text in deathmatch
-    if (deathmatch)
+    // skip any text in deathmatch
+    if (gametype > GAMETYPE_COOPERATIVE)
     {
         GotoNextMap ();
         return;
@@ -242,9 +241,9 @@ void() ExitIntermission =
     intermission_exittime = time + 1;
     intermission_running = intermission_running + 1;
 
-//
-// run some text if at the end of an episode
-//
+    //
+    // run some text if at the end of an episode
+    //
     if (intermission_running == 2)
     {
         if (world.model == "maps/e1m7.bsp")
@@ -418,8 +417,8 @@ void() execute_changelevel =
 
     intermission_running = 1;
 
-// enforce a wait time before allowing changelevel
-    if (! deathmatch)
+    // enforce a wait time before allowing changelevel
+    if (gametype <= GAMETYPE_COOPERATIVE)
         intermission_exittime = time + 2;
     else
         intermission_exittime = time + 5;
@@ -484,7 +483,7 @@ void() changelevel_touch =
         return;
     }
 
-    if (coop || deathmatch)
+    if (gametype != GAMETYPE_SINGLE_PLAYER)
     {
         Bprint (PRINT_HIGH, other.netname);
         Bprint (PRINT_HIGH," checked out for good\n");
@@ -494,7 +493,7 @@ void() changelevel_touch =
 
     SUB_UseTargets ();
 
-    if ( (self.spawnflags & 1) && (deathmatch == 0) )
+    if ((self.spawnflags & 1) && gametype <= GAMETYPE_COOPERATIVE)
     {   // NO_INTERMISSION
         GotoNextMap();
         return;
@@ -534,7 +533,7 @@ void() set_suicide_frame;
 // called by ClientKill and DeadThink
 void() respawn =
 {
-    if (coop)
+    if (gametype == GAMETYPE_COOPERATIVE)
     {
         // make a copy of the dead body for appearances sake
         CloneCorpse (self);
@@ -543,7 +542,7 @@ void() respawn =
         // respawn
         PutClientInServer ();
     }
-    else if (deathmatch)
+    else if (gametype != GAMETYPE_SINGLE_PLAYER)
     {
         // make a copy of the dead body for appearances sake
         CloneCorpse (self);
@@ -603,12 +602,12 @@ entity() SelectSpawnPoint =
         return lastspawn;
 
     // If we're in a deathmatch
-    if (deathmatch)
+    if (gametype > GAMETYPE_COOPERATIVE)
     {
         local float totalspots;
 
         // If it's a CTF game, try to spawn on one of the team's points
-        if (deathmatch == 2)
+        if (gametype == GAMETYPE_CAPTURE_THE_FLAG)
         {
             lastspawn = CTF_Spawn ();
             if (lastspawn != world)
@@ -638,7 +637,7 @@ entity() SelectSpawnPoint =
     }
 
     // If we're in a SP coop game
-    else if (coop)
+    else if (gametype == GAMETYPE_COOPERATIVE)
     {
         lastspawn = find (lastspawn, classname, "info_player_coop");
         if (lastspawn == world)
@@ -648,7 +647,7 @@ entity() SelectSpawnPoint =
     }
 
     // If we have a least one rune in a SP game
-    if (serverflags && !deathmatch)
+    if (serverflags && gametype <= GAMETYPE_COOPERATIVE)
     {
         lastspawn = find (world, classname, "info_player_start2");
         if (lastspawn)
@@ -658,7 +657,7 @@ entity() SelectSpawnPoint =
     // We haven't found a suitable spawn point, so we take the SP one
     lastspawn = find (world, classname, "info_player_start");
     if (! lastspawn)
-        error ("PutClientInServer: no info_player_start on level");
+        error ("SelectSpawnPoint: no info_player_start on level");
 
     return lastspawn;
 };
@@ -708,7 +707,9 @@ void() PutClientInServer =
 
     DecodeLevelParms ();
 
-    self.attack_finished = time;
+    // You surely don't want to toss your brand new TNT *right now*...
+    self.attack_finished = time + 0.3;
+
     self.th_pain = player_pain;
     self.th_die = PlayerDie;
 
@@ -740,7 +741,7 @@ void() PutClientInServer =
         return;
     }
 
-    if (deathmatch || coop)
+    if (gametype != GAMETYPE_SINGLE_PLAYER)
     {
         makevectors(self.angles);
         spawn_tfog (self.origin + v_forward*20);
@@ -750,7 +751,7 @@ void() PutClientInServer =
 
     // Let's start with our best weapon
     self.weapon = W_BestWeapon ();
-    W_SetCurrentAmmo (TRUE);
+    W_SetCurrentAmmo (TRUE, 0);
 };
 
 
@@ -1066,7 +1067,7 @@ void() WaterMove =
             else
                 self.dmgtime = time + 0.2;
 
-            // PM:  Fire-based damage.
+            // Fire-based damage
             T_NewDamage (self, world, world, 10*self.waterlevel, DF_FIRE, "fire");
         }
     }
@@ -1380,17 +1381,17 @@ void() PlayerPostThink =
         return;
 
     // check to see if player landed and play landing sound
-    // no damage taken if not > 300 units high
-    if ((self.jump_flag < -300) && (self.flags & FL_ONGROUND) && (self.health > 0))
+    // no damage taken if not > 350 units high
+    if ((self.jump_flag < -350) && (self.flags & FL_ONGROUND) && (self.health > 0))
     {
         if (self.watertype == CONTENT_WATER)
             sound (self, CHAN_BODY, "foley/lndwater.wav", 1, ATTN_NORM);
 
-        // if higher than 300 units, do 5 damage, and set the falling death flag if player is killed
-        else if (self.jump_flag < -750)     // was -650
+        // if higher than 700 units
+        else if (self.jump_flag < -700)
         {
             // Armor does not protect against falling.
-            aspeed = (-700 - self.jump_flag) * 0.2;
+            aspeed = (-650 - self.jump_flag) * 0.3;
             T_NewDamage (self, world, world, aspeed, 0, "falling");
         }
         else
@@ -1430,7 +1431,7 @@ void() ClientConnect =
     Bprint (PRINT_HIGH, self.netname);
     Bprint (PRINT_HIGH, " lives again!\n"); // entered the game
 
-    if (deathmatch)
+    if (gametype > GAMETYPE_COOPERATIVE)
     {
         sound (self, CHAN_AUTO, "thevoice/vo1.wav", 1, ATTN_NORM); // Let the Bloodbath Begin!
         self.do_observer = 1;
@@ -1581,11 +1582,10 @@ void(entity attacker) ClientObituary =
             return;
         }
         #ifndef QUAKEWORLD
-        else if ((teamplay == 2 && self.team > 0      && self.team == attacker.team) ||
+        else if (friendlyfire && self.team > 0      && self.team == attacker.team)
         #else
-        else if ((teamplay == 2 && attackerteam != "" && targteam == attackerteam) ||
+        else if (friendlyfire && attackerteam != "" && targteam == attackerteam)
         #endif
-                 (deathmatch == 2 && self.team == attacker.team))
         {
             if (rnum < 0.25)
                 deathstring = " mows down a teammate\n";

@@ -220,7 +220,7 @@ void() Demon_MeleeAttack =
 */
 void() monster_demon1 =
 {
-    if (deathmatch)
+    if (gametype > GAMETYPE_COOPERATIVE)
     {
         remove(self);
         return;

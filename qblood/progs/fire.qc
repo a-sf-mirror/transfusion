@@ -54,26 +54,13 @@ $frame  ember1 ember2 ember3 ember4 ember5 ember6
 //==========================================================================
 //  General Fire Code
 
-//----------------------------------------------------/ New Code /--------//
-//  This precaches the fire-related files used by the fire code.
-//------------------------------------------------------------------------//
-void() PM_PrecacheFire =
-{
-    precache_model ("progs/flame2.mdl");
-
-    // FIXME:  Maybe place elsewhere with flaregun item code.
-    precache_model ("progs/s_oldexp.spr");
-    precache_sound2 ("weapons/flaregun/burstflm.wav");
-};
-
-
 //==========================================================================
 //  ???
 
 void(entity targ, entity inflictor, entity attacker, float damage,
     float dflags, string dtype) T_NewDamage;
 
-//----------------------------------------------------/ New Code /--------//
+//------------------------------------------------------------------------//
 //  This makes an entity do a think function right now.
 //------------------------------------------------------------------------//
 void(entity ent, void() thinkst) PM_Think =
@@ -86,7 +73,7 @@ void(entity ent, void() thinkst) PM_Think =
     self = oself;
 };
 
-//----------------------------------------------------/ New Code /--------//
+//------------------------------------------------------------------------//
 //  This checks if a given point in space is in water.
 //------------------------------------------------------------------------//
 float(vector vec) PM_VecInWater =
@@ -305,7 +292,7 @@ void() PM_MakeEmbers =
     local   vector  spot;       // The spot where the new fire will appear.
     local   float   loop, r;
 
-    if (deathmatch || coop)
+    if (gametype != GAMETYPE_SINGLE_PLAYER)
     {
         // In netgames, keep flames down to a minimum.
         if ((floor(time * 10) & 3) == 0)
@@ -712,7 +699,7 @@ void(float ents) PM_ThrowEmbers =
     local   float   loop;
 
     // Make fewer embers in netgames.
-    if (deathmatch || coop)
+    if (gametype != GAMETYPE_SINGLE_PLAYER)
         ents = floor(ents * 0.5);
 
     loop = ents * 6;
@@ -743,7 +730,7 @@ void(float ents) PM_ThrowEmbers =
             fire.angles = vectoangles(dir) + '90 0 0';
 
             // Make embers disappear faster in netgames.
-            if (deathmatch || coop)
+            if (gametype != GAMETYPE_SINGLE_PLAYER)
                 fire.pausetime = time + random();
             else
                 fire.pausetime = time + 3 + random() * 2;

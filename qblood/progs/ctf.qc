@@ -325,7 +325,7 @@ void() place_flag = {
 void() item_flag_team1 =
 {
     // If CTF is not the current mode
-    if (deathmatch != 2)
+    if (gametype != GAMETYPE_CAPTURE_THE_FLAG)
     {
         remove(self);
         return;
@@ -333,7 +333,7 @@ void() item_flag_team1 =
 
     precache_model ("progs/flag.mdl");
 
-    precache_sound ("thevoice/8000.wav");  // "Red captures the flag"
+    precache_sound ("thevoice/8001.wav");  // "Blue captures the flag"
     precache_sound ("thevoice/8002.wav");  // "Red returns the flag"
     precache_sound ("thevoice/8006.wav");  // "Red flag stolen"
 
@@ -352,7 +352,7 @@ void() item_flag_team1 =
 void() item_flag_team2 =
 {
     // If CTF is not the current mode
-    if (deathmatch != 2)
+    if (gametype != GAMETYPE_CAPTURE_THE_FLAG)
     {
         remove(self);
         return;
@@ -360,7 +360,7 @@ void() item_flag_team2 =
 
     precache_model ("progs/flag.mdl");
 
-    precache_sound ("thevoice/8001.wav");  // "Blue captures the flag"
+    precache_sound ("thevoice/8000.wav");  // "Red captures the flag"
     precache_sound ("thevoice/8003.wav");  // "Blue returns the flag"
     precache_sound ("thevoice/8007.wav");  // "Blue flag stolen"
 
@@ -417,7 +417,7 @@ Only appears in CTF teamplay
 */
 void() func_ctf_wall =
 {
-    if (deathmatch != 2)
+    if (gametype != GAMETYPE_CAPTURE_THE_FLAG)
     {
         remove(self);
         return;

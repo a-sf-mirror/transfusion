@@ -31,6 +31,15 @@
 #define FALSE   0
 #define TRUE    1
 
+// Gametypes.
+// The 2 first gametypes are the non-deathmatch ones
+// Some tests may depend on the ordering of this list. Be careful if you modify it.
+#define GAMETYPE_SINGLE_PLAYER      0  // 1 player VS monsters
+#define GAMETYPE_COOPERATIVE        1  // 1 team   VS monsters
+#define GAMETYPE_BLOODBATH          2  // player   VS player
+#define GAMETYPE_TEAM_BLOODBATH     3  // 1 team   VS 1 team  (NOTE: should we add support for more than 2 teams ?)
+#define GAMETYPE_CAPTURE_THE_FLAG   4  // 1 team   VS 1 team
+
 // edict.flags
 #define FL_FLY              1
 #define FL_SWIM             2

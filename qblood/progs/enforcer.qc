@@ -79,6 +79,7 @@ void() enforcer_fire =
 
     org = self.origin + v_forward * 30 + v_right * 8.5 + '0 0 16';
 
+    sound (self, CHAN_WEAPON, "weapons/tesla/tessngfr.wav", 1, ATTN_NORM);
     LaunchLaser(org, self.enemy.origin - self.origin);
 };
 
@@ -326,7 +327,7 @@ void() enf_die =
 */
 void() monster_enforcer =
 {
-    if (deathmatch)
+    if (gametype > GAMETYPE_COOPERATIVE)
     {
         remove(self);
         return;
@@ -335,16 +336,16 @@ void() monster_enforcer =
     precache_model2 ("progs/h_mega.mdl");
     precache_model2 ("progs/laser.mdl");
 
-    precache_sound2 ("enforcer/death1.wav");
-    precache_sound2 ("weapons/tesla/tessngfr.wav");
-    precache_sound2 ("ambience/spark.wav");
-    precache_sound2 ("enforcer/idle1.wav");
-    precache_sound2 ("enforcer/pain1.wav");
-    precache_sound2 ("enforcer/pain2.wav");
-    precache_sound2 ("enforcer/sight1.wav");
-    precache_sound2 ("enforcer/sight2.wav");
-    precache_sound2 ("enforcer/sight3.wav");
-    precache_sound2 ("enforcer/sight4.wav");
+    precache_sound ("enforcer/death1.wav");
+    precache_sound ("enforcer/idle1.wav");
+    precache_sound ("enforcer/pain1.wav");
+    precache_sound ("enforcer/pain2.wav");
+    precache_sound ("enforcer/sight1.wav");
+    precache_sound ("enforcer/sight2.wav");
+    precache_sound ("enforcer/sight3.wav");
+    precache_sound ("enforcer/sight4.wav");
+    precache_sound ("weapons/tesla/tessngfr.wav");
+    precache_sound ("ambience/spark.wav");
 
     self.solid = SOLID_SLIDEBOX;
     self.movetype = MOVETYPE_STEP;

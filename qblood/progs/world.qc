@@ -21,159 +21,203 @@
 #include "common.qh"
 
 
+// This function is both needed (by the compiler and
+// maybe by the game), and unused (because never called)
 void() main =
 {
-    dprint ("main function\n");
+};
 
-    // Initialize the recursion counter
-    recursioncount = 0;
 
-    // these are just commands to the prog compiler to copy these files
+/*
+================
+PrecacheSounds
 
-    precache_file ("progs.dat");
-    precache_file ("gfx.wad");
-    precache_file ("quake.rc");
-    precache_file ("default.cfg");
+Precache all necessary sounds
+================
+*/
+void() PrecacheSounds =
+{
+    // The area based ambient sounds MUST be the first precache_sounds
+    // NOTE (elric): I've checked the engine code and it doesn't seem
+    //               to care about this. It should be tested.
 
-    precache_file ("end1.bin");
-    precache_file2 ("end2.bin");
-
-    precache_file ("qblood1.dem");
-    precache_file ("qblood2.dem");
-    precache_file ("qblood3.dem");
-
-//
-// these are all of the lumps from the cached.ls files
-//
-    precache_file ("gfx/palette.lmp");
-    precache_file ("gfx/colormap.lmp");
-
-    precache_file2 ("gfx/pop.lmp");
-
-    precache_file ("gfx/complete.lmp");
-    precache_file ("gfx/inter.lmp");
-
-    precache_file ("gfx/ranking.lmp");
-    precache_file ("gfx/vidmodes.lmp");
-    precache_file ("gfx/finale.lmp");
-    precache_file ("gfx/conback.lmp");
-    precache_file ("gfx/qplaque.lmp");
-
-    precache_file ("gfx/menudot1.lmp");
-    precache_file ("gfx/menudot2.lmp");
-    precache_file ("gfx/menudot3.lmp");
-    precache_file ("gfx/menudot4.lmp");
-    precache_file ("gfx/menudot5.lmp");
-    precache_file ("gfx/menudot6.lmp");
-
-    precache_file ("gfx/menuplyr.lmp");
-    precache_file ("gfx/bigbox.lmp");
-    precache_file ("gfx/dim_modm.lmp");
-    precache_file ("gfx/dim_drct.lmp");
-    precache_file ("gfx/dim_ipx.lmp");
-    precache_file ("gfx/dim_tcp.lmp");
-    precache_file ("gfx/dim_mult.lmp");
-    precache_file ("gfx/mainmenu.lmp");
-
-    precache_file ("gfx/box_tl.lmp");
-    precache_file ("gfx/box_tm.lmp");
-    precache_file ("gfx/box_tr.lmp");
-
-    precache_file ("gfx/box_ml.lmp");
-    precache_file ("gfx/box_mm.lmp");
-    precache_file ("gfx/box_mm2.lmp");
-    precache_file ("gfx/box_mr.lmp");
-
-    precache_file ("gfx/box_bl.lmp");
-    precache_file ("gfx/box_bm.lmp");
-    precache_file ("gfx/box_br.lmp");
-
-    precache_file ("gfx/sp_menu.lmp");
-    precache_file ("gfx/ttl_sgl.lmp");
-    precache_file ("gfx/ttl_main.lmp");
-    precache_file ("gfx/ttl_cstm.lmp");
-
-    precache_file ("gfx/mp_menu.lmp");
-
-    precache_file ("gfx/netmen1.lmp");
-    precache_file ("gfx/netmen2.lmp");
-    precache_file ("gfx/netmen3.lmp");
-    precache_file ("gfx/netmen4.lmp");
-    precache_file ("gfx/netmen5.lmp");
-
-    precache_file ("gfx/sell.lmp");
-
-    precache_file ("gfx/help0.lmp");
-    precache_file ("gfx/help1.lmp");
-    precache_file ("gfx/help2.lmp");
-    precache_file ("gfx/help3.lmp");
-    precache_file ("gfx/help4.lmp");
-    precache_file ("gfx/help5.lmp");
-
-    precache_file ("gfx/pause.lmp");
-    precache_file ("gfx/loading.lmp");
-
-    precache_file ("gfx/p_option.lmp");
-    precache_file ("gfx/p_load.lmp");
-    precache_file ("gfx/p_save.lmp");
-    precache_file ("gfx/p_multi.lmp");
-
-    // These sounds are used by the engine code - DON'T TOUCH !!
-    precache_sound ("misc/menu1.wav");
-    precache_sound ("misc/menu2.wav");
-    precache_sound ("misc/menu3.wav");
-
+    // The following sounds are referenced by the engine code - DON'T TOUCH !!
     precache_sound ("ambience/water1.wav");
     precache_sound ("ambience/wind2.wav");
+    precache_sound ("misc/menu1.wav");       // menu sound
+    precache_sound ("misc/menu2.wav");       // menu sound
+    precache_sound ("misc/menu3.wav");       // menu sound
+    precache_sound ("misc/talk.wav");        // message
+    precache_sound ("hknight/hit.wav");      // used for the TE_KNIGHTSPIKE event
+    precache_sound ("wizard/hit.wav");       // used for the TE_WIZSPIKE event
+    precache_sound ("weapons/tink1.wav");    // spikes tink
+    precache_sound ("weapons/ric1.wav");     // ricochet
+    precache_sound ("weapons/ric2.wav");     // ricochet
+    precache_sound ("weapons/ric3.wav");     // ricochet
+    precache_sound ("weapons/r_exp3.wav");   // explosion
+    precache_sound ("misc/h2ohit1.wav");     // object entering water
+    precache_sound ("demon/dland2.wav");     // landing thud
 
-// shareware
-    precache_file ("maps/start.bsp");
+    // --- A few weapon sounds. Most of them are in weapon spawn functions --- //
 
-    precache_file ("maps/e1m1.bsp");
-    precache_file ("maps/e1m2.bsp");
-    precache_file ("maps/e1m3.bsp");
-    precache_file ("maps/e1m4.bsp");
-    precache_file ("maps/e1m5.bsp");
-    precache_file ("maps/e1m6.bsp");
-    precache_file ("maps/e1m7.bsp");
-    precache_file ("maps/e1m8.bsp");
+    // pitchfork
+//    precache_sound ("weapons/pitchfrk/pflesh.wav");
+//    precache_sound ("weapons/pitchfrk/pmetal.wav");
+    precache_sound ("weapons/pitchfrk/pstone.wav");  // Hit a stone
+//    precache_sound ("weapons/pitchfrk/pwood.wav");
 
-// registered
-    precache_file2 ("gfx/pop.lmp");
+    // lifeleech
+//    precache_sound ("weapons/lifelech/laltfr1.wav");
+//    precache_sound ("weapons/lifelech/llaltfr2.wav");
+//    precache_sound ("weapons/lifelech/llaltht.wav");
+//    precache_sound ("weapons/lifelech/llcharge.wav");
+//    precache_sound ("weapons/lifelech/llsngfr3.wav");
+//    precache_sound ("weapons/lifelech/llsnght2.wav");
+//    precache_sound ("weapons/lifelech/skulair4.wav");
 
-    precache_file2 ("maps/e2m1.bsp");
-    precache_file2 ("maps/e2m2.bsp");
-    precache_file2 ("maps/e2m3.bsp");
-    precache_file2 ("maps/e2m4.bsp");
-    precache_file2 ("maps/e2m5.bsp");
-    precache_file2 ("maps/e2m6.bsp");
-    precache_file2 ("maps/e2m7.bsp");
 
-    precache_file2 ("maps/e3m1.bsp");
-    precache_file2 ("maps/e3m2.bsp");
-    precache_file2 ("maps/e3m3.bsp");
-    precache_file2 ("maps/e3m4.bsp");
-    precache_file2 ("maps/e3m5.bsp");
-    precache_file2 ("maps/e3m6.bsp");
-    precache_file2 ("maps/e3m7.bsp");
+    // ----- Player pain sounds ----- //
 
-    precache_file2 ("maps/e4m1.bsp");
-    precache_file2 ("maps/e4m2.bsp");
-    precache_file2 ("maps/e4m3.bsp");
-    precache_file2 ("maps/e4m4.bsp");
-    precache_file2 ("maps/e4m5.bsp");
-    precache_file2 ("maps/e4m6.bsp");
-    precache_file2 ("maps/e4m7.bsp");
-    precache_file2 ("maps/e4m8.bsp");
+    precache_sound ("player/pain/play1105.wav");
+    precache_sound ("player/pain/play1106.wav");
+    precache_sound ("player/pain/play1107.wav");
+    precache_sound ("player/pain/play1108.wav");
 
-    precache_file2 ("maps/end.bsp");
+    // It burns !!!
+    precache_sound ("player/pain/play1118.wav");
+    precache_sound ("player/pain/play1119.wav");
+    precache_sound ("player/pain/play1120.wav");
 
-    precache_file2 ("maps/dm1.bsp");
-    precache_file2 ("maps/dm2.bsp");
-    precache_file2 ("maps/dm3.bsp");
-    precache_file2 ("maps/dm4.bsp");
-    precache_file2 ("maps/dm5.bsp");
-    precache_file2 ("maps/dm6.bsp");
+    // ----- Player songs (when idle for too long) ----- //
+
+    precache_sound ("player/songs/1093.wav");
+    precache_sound ("player/songs/1094.wav");
+    precache_sound ("player/songs/1095.wav");
+    precache_sound ("player/songs/1097.wav");
+    precache_sound ("player/songs/vo3011.wav");
+    precache_sound ("player/songs/vo3024.wav");
+    precache_sound ("player/songs/vo3026.wav");
+    precache_sound ("player/songs/vo3030.wav");
+    precache_sound ("player/songs/vo3033.wav");
+    precache_sound ("player/songs/vo3034.wav");
+    precache_sound ("player/songs/vo3035.wav");
+    precache_sound ("player/songs/vo3039.wav");
+
+    // ----- The Voice ----- //
+
+    if (gametype > GAMETYPE_COOPERATIVE)
+        precache_sound ("thevoice/vo1.wav");  // Let the bloodbath begins !
+    precache_sound ("thevoice/vo2.wav");
+    precache_sound ("thevoice/vo5.wav");
+    precache_sound ("thevoice/splatt.wav");
+
+    // Multiplayer obituary sounds
+    if (gametype != GAMETYPE_SINGLE_PLAYER)
+    {
+        precache_sound ("thevoice/boned.wav");
+        precache_sound ("thevoice/castra.wav");
+        precache_sound ("thevoice/creamed.wav");
+        precache_sound ("thevoice/decimat.wav");
+        precache_sound ("thevoice/destro.wav");
+        precache_sound ("thevoice/diced.wav");
+        precache_sound ("thevoice/disembo.wav");
+        precache_sound ("thevoice/flatte.wav");
+        precache_sound ("thevoice/justice.wav");
+        precache_sound ("thevoice/killed.wav");
+        precache_sound ("thevoice/madness.wav");
+        precache_sound ("thevoice/massacr.wav");
+        precache_sound ("thevoice/mincmeat.wav");
+        precache_sound ("thevoice/mutila.wav");
+        precache_sound ("thevoice/reamed.wav");
+        precache_sound ("thevoice/ripped.wav");
+        precache_sound ("thevoice/slaught.wav");
+        precache_sound ("thevoice/sliced.wav");
+        precache_sound ("thevoice/smashed.wav");
+        precache_sound ("thevoice/sodomiz.wav");
+        precache_sound ("thevoice/throttl.wav");
+        precache_sound ("thevoice/wasted.wav");
+        precache_sound ("thevoice/vo10.wav");
+        precache_sound ("thevoice/vo12.wav");  // Population control
+        precache_sound ("thevoice/vo13.wav");  // Unassisted death
+        precache_sound ("thevoice/vo14.wav");
+        precache_sound ("thevoice/vo16.wav");  // Darwin Award
+        precache_sound ("thevoice/vo19.wav");
+        precache_sound ("thevoice/vo20.wav");
+        precache_sound ("thevoice/vo21.wav");
+        precache_sound ("thevoice/vo22.wav");
+        precache_sound ("thevoice/vo23.wav");
+        precache_sound ("thevoice/vo24.wav");
+        precache_sound ("thevoice/vo25.wav");
+        precache_sound ("thevoice/vo26.wav");
+        precache_sound ("thevoice/vo27.wav");
+        precache_sound ("thevoice/vo28.wav");
+        precache_sound ("thevoice/vo29.wav");
+        precache_sound ("thevoice/vo30.wav");
+        precache_sound ("thevoice/vo31.wav");
+        precache_sound ("thevoice/vo32.wav");
+        precache_sound ("thevoice/vo33.wav");
+        precache_sound ("thevoice/vo34.wav");
+        precache_sound ("thevoice/vo35.wav");
+        precache_sound ("thevoice/vo36.wav");
+        precache_sound ("thevoice/vo38.wav");
+        precache_sound ("thevoice/vo39.wav");
+        precache_sound ("thevoice/vo40.wav");
+        precache_sound ("thevoice/vo41.wav");
+        precache_sound ("thevoice/vo42.wav");
+        precache_sound ("thevoice/vo43.wav");
+        precache_sound ("thevoice/vo44.wav");
+        precache_sound ("thevoice/vo7.wav");
+        precache_sound ("thevoice/vo8.wav");  // Hamburger
+        precache_sound ("thevoice/vo9.wav");
+    }
+
+    // ----- Various game sounds ----- //
+
+    // Fire
+    if (gametype <= GAMETYPE_COOPERATIVE)
+        precache_sound ("weapons/flaregun/burstflm.wav");  // when a monster is in fire
+    precache_sound ("weapons/napalm/burn.wav");  // burning on lava
+
+    // Death and gib sounds
+    precache_sound ("butcher/fzomdie2.wav");
+    precache_sound ("butcher/fzomdie3.wav");
+    precache_sound ("firepod/fpodcol2.wav");  // telefragged player
+    precache_sound ("misc/gibsq.wav");        // used when gibbing a corpse/head
+    precache_sound ("player/die1.wav");
+    precache_sound ("player/die2.wav");
+    precache_sound ("player/die3.wav");
+    if (gametype <= GAMETYPE_COOPERATIVE)
+        precache_sound ("player/udeath.wav");  // monsters gib sound
+
+    // Moving, swimming, jumping, ...
+    precache_sound ("foley/emerge.wav");    // leaving water sound
+    precache_sound ("foley/gasp.wav");      // gasping for air
+    precache_sound ("foley/jump.wav");      // player jump
+    precache_sound ("foley/land.wav");      // player landing
+    precache_sound ("foley/lndwater.wav");  // player jumping into water
+    precache_sound ("foley/punt.wav");      // used by kickable heads
+    precache_sound ("foley/submerge.wav");  // swimming
+    precache_sound ("foley/swim.wav");      // swimming
+    precache_sound ("foley/undchoke.wav");  // drowning pain
+
+    // Teleport sounds
+    precache_sound ("misc/r_tele1.wav");
+    precache_sound ("misc/r_tele2.wav");
+    precache_sound ("misc/r_tele3.wav");
+    precache_sound ("misc/r_tele4.wav");
+    precache_sound ("misc/r_tele5.wav");
+
+    // Miscellaneous sounds
+    precache_sound ("ambience/bubrise.wav");       // bubble sound
+    precache_sound ("ambience/sizzle.wav");        // smelt on slime
+    if (gametype > GAMETYPE_COOPERATIVE)
+        precache_sound ("bludbath/reappear.wav");  // item respawn sound
+    precache_sound ("bludbath/message.wav");       // Messages  (TODO: not always used...)
+    precache_sound ("items/ammo.wav");             // ammo pick up
+    precache_sound ("items/pickarmr.wav");         // armor pick up
+    precache_sound ("items/weaponup.wav");         // weapon pick up
+    precache_sound ("player/slimbrn2.wav");
+    precache_sound ("player/taunts/t1010.wav");    // "I live ... again !"
 };
 
 
@@ -193,9 +237,41 @@ World Types:
 //=======================
 void() worldspawn =
 {
+    // Initialize the recursion counter
+    recursioncount = 0;
+
     lastspawn = world;
 
-// custom map attributes
+    // Compute the game type
+    #ifdef QUAKEWORLD
+    local float teamplay, deathmatch, coop;
+    #endif
+    teamplay = cvar("teamplay");
+    deathmatch = cvar("deathmatch");
+    coop = cvar("coop");
+    if (! deathmatch)
+    {
+        if (coop)
+            gametype = GAMETYPE_COOPERATIVE;
+        else
+            gametype = GAMETYPE_SINGLE_PLAYER;
+    }
+    // NOTE: CTF play cannot be set with the interface only.
+    // You must use the console
+    else if (deathmatch == 2)
+    {
+        gametype = GAMETYPE_CAPTURE_THE_FLAG;
+    }
+    else
+    {
+        if (! teamplay)
+            gametype = GAMETYPE_BLOODBATH;
+        else
+            gametype = GAMETYPE_TEAM_BLOODBATH;
+    }
+    friendlyfire = (cvar("teamplay") == 2);  // NOTE: should we allow friendlyfire changes during the game ?
+
+    // custom map attributes
     if (self.model == "maps/e1m8.bsp")
         cvar_set ("sv_gravity", "100");
     else
@@ -205,181 +281,14 @@ void() worldspawn =
     team1score = team2score = 0;
     team1_lastspawn = team2_lastspawn = world;
 
-// the area based ambient sounds MUST be the first precache_sounds
+    // It's time to precache...
+    PrecacheSounds ();
 
-// player precaches
-    W_Precache ();          // get weapon precaches
+    precache_model ("progs/flame2.mdl");  // FIXME:  Maybe place elsewhere with flaregun item code.
+    precache_model ("progs/s_oldexp.spr");
 
-// sounds used from C physics code
-    precache_sound ("hknight/hit.wav"); // misc/gibsq.wav
- // ambience/qsuck1.wav
-    precache_sound ("misc/h2ohit.wav"); // foley/lndwater.wav
-    precache_sound ("misc/h2ohit1.wav"); // same as above
-    precache_sound ("misc/outwater.wav"); // foley/emerge.wav
-    precache_sound ("player/gasp1.wav"); // foley/gasp.wav
-    precache_sound ("player/gasp2.wav"); // foley/gasp.wav
-    precache_sound ("player/inh2o.wav"); // foley/submerge.wav
-    precache_sound ("player/inlava.wav"); // foley/??
-    precache_sound ("player/slimbrn2.wav"); // foley/??
-    precache_sound ("shambler/sattck1.wav"); // misc/qbasetry.wav
-    precache_sound ("misc/talk.wav"); // bludbath/message.wav
-    precache_sound ("wizard/hit.wav"); //  foley/??
-
-// setup precaches always needed
-
-    precache_sound ("misc/gibsq.wav");    // used by when a head is destroyed
-    precache_sound ("foley/punt.wav");    // used by kickable heads
-    precache_sound ("demon/dland2.wav");  // landing thud -  foley/lnddirt.wav
-    precache_sound ("bludbath/reappear.wav");     // item respawn sound
-    precache_sound ("foley/jump.wav");            // player jump
-    precache_sound ("foley/land.wav");            // player landing
-    precache_sound ("ambience/bubrise.wav");      // drowning pain
-    precache_sound ("foley/undchoke.wav");        // drowning pain
-    precache_sound ("foley/gasp.wav");            // gasping for air
-    precache_sound ("foley/undchoke.wav");        // taking breath
-    precache_sound ("bludbath/message.wav");    // talk
-//    precache_sound ("player/play1115.wav");    // telefrag - evil laugh
-    precache_sound ("firepod/fpodcol2.wav");    // telefrag sound
-    precache_sound ("misc/r_tele1.wav");        // teleport sounds
-    precache_sound ("misc/r_tele2.wav");    // these are all qbasetry.wav
-    precache_sound ("misc/r_tele3.wav");
-    precache_sound ("misc/r_tele4.wav");
-    precache_sound ("misc/r_tele5.wav");
-    precache_sound ("items/ammo.wav");              // ammo pick up
-    precache_sound ("items/weaponup.wav");          // weapon up
-    precache_sound ("items/pickarmr.wav");          // armor up
-    precache_sound ("weapons/napalm/burn.wav");  // burning on lava
-    precache_sound ("ambience/sizzle.wav");      // smelt on slime
-    precache_sound ("foley/swimuw.wav"); // diving suit engage sound
-
-    precache_sound ("player/taunts/t1010.wav");  // "I live ... again !"
-
-// player gib sounds
-    precache_sound ("butcher/fzomdie1.wav");
-    precache_sound ("butcher/fzomdie2.wav");
-    precache_sound ("butcher/fzomdie3.wav");
-    precache_sound ("player/udeath.wav");  // extreme gib sound
-
-// player pain sounds
-
-    precache_sound ("player/pain/play1100.wav");
-    precache_sound ("player/pain/play1101.wav");
-    precache_sound ("player/pain/play1102.wav");
-    precache_sound ("player/pain/play1103.wav");
-    precache_sound ("player/pain/play1104.wav");
-    precache_sound ("player/pain/play1105.wav");
-    precache_sound ("player/pain/play1106.wav");
-    precache_sound ("player/pain/play1107.wav");
-    precache_sound ("player/pain/play1108.wav");
-// PM:  Pain while onfire.
-    precache_sound ("player/pain/play1118.wav");
-    precache_sound ("player/pain/play1119.wav");
-    precache_sound ("player/pain/play1120.wav");
-
-    // Player quips (when playing with explosives).
-    precache_sound ("player/play1109.wav");
-    precache_sound ("player/play1110.wav");
-    precache_sound ("player/play1111.wav");
-    precache_sound ("player/play1112.wav");
-    precache_sound ("player/play1113.wav");
-    precache_sound ("player/play1114.wav");
-    precache_sound ("player/play1115.wav");
-    precache_sound ("player/play1116.wav");
-    precache_sound ("player/quips/1039.wav");   // "SOB must pay!"
-    precache_sound ("player/quips/1050.wav");   // "That's all folks!"
-    precache_sound ("player/quips/1057.wav");   //  "rest in pieces"
-
-    // Player songs (when idle for too long).
-    precache_sound ("player/songs/1093.wav");
-    precache_sound ("player/songs/1094.wav");
-    precache_sound ("player/songs/1095.wav");
-    precache_sound ("player/songs/1097.wav");
-    precache_sound ("player/songs/vo3011.wav");
-    precache_sound ("player/songs/vo3024.wav");
-    precache_sound ("player/songs/vo3026.wav");
-    precache_sound ("player/songs/vo3030.wav");
-    precache_sound ("player/songs/vo3033.wav");
-    precache_sound ("player/songs/vo3034.wav");
-    precache_sound ("player/songs/vo3035.wav");
-    precache_sound ("player/songs/vo3039.wav");
-
-    // player death sounds
-    precache_sound ("player/die1.wav");
-    precache_sound ("player/die2.wav");
-    precache_sound ("player/die3.wav");
-
-    // The Voice
-    precache_sound ("thevoice/boned.wav");
-    precache_sound ("thevoice/castra.wav");
-    precache_sound ("thevoice/creamed.wav");
-    precache_sound ("thevoice/decimat.wav");
-    precache_sound ("thevoice/destro.wav");
-    precache_sound ("thevoice/diced.wav");
-    precache_sound ("thevoice/disembo.wav");
-    precache_sound ("thevoice/flatte.wav");
-    precache_sound ("thevoice/justice.wav");
-    precache_sound ("thevoice/madness.wav");
-    precache_sound ("thevoice/killed.wav");
-    precache_sound ("thevoice/massacr.wav");
-    precache_sound ("thevoice/mincmeat.wav");
-    precache_sound ("thevoice/mutila.wav");
-    precache_sound ("thevoice/reamed.wav");
-    precache_sound ("thevoice/ripped.wav");
-    precache_sound ("thevoice/slaught.wav");
-    precache_sound ("thevoice/sliced.wav");
-    precache_sound ("thevoice/smashed.wav");
-    precache_sound ("thevoice/sodomiz.wav");
-    precache_sound ("thevoice/splatt.wav");
-    precache_sound ("thevoice/squash.wav");
-    precache_sound ("thevoice/throttl.wav");
-    precache_sound ("thevoice/vo1.wav");
-    precache_sound ("thevoice/vo10.wav");
-    precache_sound ("thevoice/vo12.wav");
-    precache_sound ("thevoice/vo13.wav");
-    precache_sound ("thevoice/vo14.wav");
-    precache_sound ("thevoice/vo16.wav");
-    precache_sound ("thevoice/vo17.wav");
-    precache_sound ("thevoice/vo19.wav");
-    precache_sound ("thevoice/vo2.wav");
-    precache_sound ("thevoice/vo20.wav");
-    precache_sound ("thevoice/vo21.wav");
-    precache_sound ("thevoice/vo22.wav");
-    precache_sound ("thevoice/vo23.wav");
-    precache_sound ("thevoice/vo24.wav");
-    precache_sound ("thevoice/vo25.wav");
-    precache_sound ("thevoice/vo26.wav");
-    precache_sound ("thevoice/vo27.wav");
-    precache_sound ("thevoice/vo28.wav");
-    precache_sound ("thevoice/vo29.wav");
-    precache_sound ("thevoice/vo30.wav");
-    precache_sound ("thevoice/vo31.wav");
-    precache_sound ("thevoice/vo32.wav");
-    precache_sound ("thevoice/vo33.wav");
-    precache_sound ("thevoice/vo34.wav");
-    precache_sound ("thevoice/vo35.wav");
-    precache_sound ("thevoice/vo36.wav");
-    precache_sound ("thevoice/vo38.wav");
-    precache_sound ("thevoice/vo39.wav");
-    precache_sound ("thevoice/vo40.wav");
-    precache_sound ("thevoice/vo41.wav");
-    precache_sound ("thevoice/vo42.wav");
-    precache_sound ("thevoice/vo43.wav");
-    precache_sound ("thevoice/vo44.wav");
-    precache_sound ("thevoice/vo5.wav");
-    precache_sound ("thevoice/vo7.wav");
-    precache_sound ("thevoice/vo8.wav");     // hamburger
-    precache_sound ("thevoice/vo9.wav");
-    precache_sound ("thevoice/wasted.wav");
-
-    // some foley sounds
-    precache_sound ("foley/lndwater.wav");      // player jumping into water
-    precache_sound ("foley/emerge.wav");        // leaving water sound
-    precache_sound ("butcher/acidhit1.wav");      // slime burn
-    precache_sound ("butcher/acidhit2.wav");      // slime burn
-    precache_sound ("player/pain/play1120.wav");  // lava burn
-    precache_sound ("player/pain/play1119.wav");  // lava burn
-    precache_sound ("foley/swim.wav");          // swimming
-    precache_sound ("foley/submerge.wav");      // swimming
+    // REMOVEME: Here so alt-napalm won't crash in levels without incinerator
+    precache_model ("progs/naltball.mdl");
 
     // models and stuff
     precache_model ("progs/player.mdl");
@@ -420,7 +329,6 @@ void() worldspawn =
     precache_model ("progs/bolt.mdl");      // for lightning gun
     precache_model ("progs/bolt2.mdl");     // for lightning gun
     precache_model ("progs/bolt3.mdl");     // for boss shock
-    precache_model ("progs/lavaball.mdl");  // for testing
 
     precache_model ("progs/missile.mdl");  // napalm regular fire
     precache_model ("progs/grenade.mdl");
@@ -480,12 +388,9 @@ void() worldspawn =
 
 void() StartFrame =
 {
-    teamplay = cvar("teamplay");
     timelimit = cvar("timelimit") * 60;
     fraglimit = cvar("fraglimit");
-    deathmatch = cvar("deathmatch");
-    coop = cvar("coop");
-    skill = cvar("skill");
+    skill     = cvar("skill");
 
     framecount = framecount + 1;
 };
@@ -576,17 +481,13 @@ GibPlayerCorpse
 Remove a player's corpse and throw gibs
 ====================
 */
+void() RandomHumanGibs;
 void() GibPlayerCorpse =
 {
-    ThrowGib ("progs/gib1.mdl", self.health);
-    ThrowGib ("progs/gib2.mdl", self.health);
-    ThrowGib ("progs/gib3.mdl", self.health);
-    ThrowGib ("progs/larm.mdl", self.health);
-    ThrowGib ("progs/leg.mdl", self.health);
-
+    RandomHumanGibs ();
     sound (self, CHAN_ITEM, "misc/gibsq.wav", 1, ATTN_NORM);
 
-    if (deathmatch)
+    if (gametype != GAMETYPE_SINGLE_PLAYER)
     {
         Bprint (PRINT_MEDIUM, self.enemy.netname);
         Bprint (PRINT_MEDIUM, " desecrated ");

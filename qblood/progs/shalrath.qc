@@ -295,7 +295,7 @@ void() ShalMissileTouch =
 */
 void() monster_shalrath =
 {
-    if (deathmatch)
+    if (gametype > GAMETYPE_COOPERATIVE)
     {
         remove(self);
         return;
@@ -304,12 +304,12 @@ void() monster_shalrath =
     precache_model2 ("progs/h_shal.mdl");
     precache_model2 ("progs/v_spike.mdl");
 
-    precache_sound2 ("shalrath/attack.wav");
-    precache_sound2 ("shalrath/attack2.wav");
-    precache_sound2 ("shalrath/death.wav");
-    precache_sound2 ("shalrath/idle.wav");
-    precache_sound2 ("shalrath/pain.wav");
-    precache_sound2 ("shalrath/sight.wav");
+    precache_sound ("shalrath/attack.wav");
+    precache_sound ("shalrath/attack2.wav");
+    precache_sound ("shalrath/death.wav");
+    precache_sound ("shalrath/idle.wav");
+    precache_sound ("shalrath/pain.wav");
+    precache_sound ("shalrath/sight.wav");
     precache_sound ("weapons/napalm/explodfl.wav");
 
     self.solid = SOLID_SLIDEBOX;

@@ -395,7 +395,7 @@ void() sham_die =
 */
 void() monster_shambler =
 {
-    if (deathmatch)
+    if (gametype > GAMETYPE_COOPERATIVE)
     {
         remove(self);
         return;

@@ -245,7 +245,7 @@ void(entity targ, entity inflictor, entity attacker, float damage, float dflags,
     }
 
     // Players take more damage at higher skill levels.
-    if (!deathmatch)
+    if (gametype <= GAMETYPE_COOPERATIVE)
         if (targ.classname == "player")
             damage = damage * (1 + (cvar("skill") * 0.4));
 
@@ -306,7 +306,7 @@ void(entity targ, entity inflictor, entity attacker, float damage, float dflags,
             #else
             if (targ.team == attacker.team &&
             #endif
-            (teamplay == 1 || (teamplay == 3 && targ != attacker)) &&
+            !friendlyfire && targ != attacker &&
             attacker.classname == "player" && inflictor.classname !="door")
                 protected = TRUE;
         }

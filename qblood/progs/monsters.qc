@@ -207,7 +207,7 @@ void() flymonster_start =
 
 void() swimmonster_start_go =
 {
-    if (deathmatch)
+    if (gametype > GAMETYPE_COOPERATIVE)
     {
         remove(self);
         return;

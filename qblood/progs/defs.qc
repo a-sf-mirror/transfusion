@@ -55,6 +55,7 @@ float       force_retouch;      // force all entities to touch triggers
 string      mapname;
 
 #ifndef QUAKEWORLD
+// WARNING: don't use them directly. Use gametype (cf below)
 float       deathmatch;
 float       coop;
 float       teamplay;
@@ -293,14 +294,16 @@ entity team2_lastspawn;
 //
 // cvars checked each frame
 //
-#ifdef QUAKEWORLD
-float       teamplay;
-float       deathmatch;
-float       coop;
-#endif
 float       timelimit;
 float       fraglimit;
 float       skill;
+
+float friendlyfire;
+
+// USE THIS VARIABLE TO KNOW THE CURRENT GAME TYPE. The other ones are considered obsolete
+// Set once for the entire game (when the world is spawned). cf GAMETYPE_* values in common.qh
+float gametype;
+
 
 //================================================
 

@@ -130,7 +130,20 @@ $cd id1/models/v_nail2
 $origin 0 0 54
 $base base
 $skin skin
-$frame shot1 shot2 shot3 shot4 shot5 shot6 shot7 shot8 shot9
+// idle (0 -> 2)
+$frame idle1 idle2 idle3
+// fire (3)
+$frame fire1
+// draw (4 -> 11)
+$frame draw1 draw2 draw3 draw4 draw5 draw6 draw7 draw8
+// draw_half (12 -> 15)
+$frame draw_half1 draw_half2 draw_half3 draw_half4
+// alt (16 -> 19: lit; 20 -> 22: thrown; 23 - 24: reload)
+$frame alt1 alt2 alt3 alt4 alt5 alt6 alt7 alt8 alt9
+// holster
+$frame holster1 holster2 holster3 holster4
+// holster_half
+$frame holster_half1 holster_half2 holster_half3 holster_half4
 
 
 $modelname v_nail
@@ -149,7 +162,16 @@ $cd id1/models/v_light
 $origin 0 0 54
 $base base
 $skin skin
-$frame shot1 shot2 shot3 shot4 shot5
+// idle
+$frame idle1 idle2
+// fire
+$frame fire1 fire2 fire3 fire4
+// alt
+$frame alt1 alt2 alt3 alt4 alt5 alt6 alt7 alt8 alt9 alt10 alt11 alt12 alt13 alt14 alt15 alt16 alt17 alt18 alt19 alt20
+// draw
+$frame draw1 draw2 draw3
+// holster
+$frame holster1 holster2 holster3
 
 
 $modelname v_voodoo

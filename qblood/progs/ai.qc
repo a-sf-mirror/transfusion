@@ -731,8 +731,8 @@ void(float dist) ai_run =
     if (enemy_vis)
         self.search_time = time + 5;
 
-// look for other coop players
-    if (coop && self.search_time < time)
+    // look for other coop players
+    if (gametype == GAMETYPE_COOPERATIVE && self.search_time < time)
     {
         if (FindTarget ())
             return;

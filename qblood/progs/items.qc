@@ -40,7 +40,7 @@
 //    ammo_cells   -> telsa cannon
 
 
-void(float weaponHasChanged) W_SetCurrentAmmo;
+void(float weaponHasChanged, float oldWeapon) W_SetCurrentAmmo;
 /* ALL LIGHTS SHOULD BE 0 1 0 IN COLOR ALL OTHER ITEMS SHOULD
 BE .8 .3 .4 IN COLOR */
 
@@ -240,7 +240,7 @@ void() lure_touch =
 
     self.solid = SOLID_NOT;
     self.model = string_null;
-    if (deathmatch)
+    if (gametype > GAMETYPE_COOPERATIVE)
         self.nextthink = time + 20;
     self.think = SUB_regen;
 
@@ -844,7 +844,7 @@ void() powerup_touch =
     Sprint (other, PRINT_LOW,  self.netname);
     Sprint (other, PRINT_LOW, "\n");
 
-    if (deathmatch)
+    if (gametype > GAMETYPE_COOPERATIVE)
     {
         self.mdl = self.model;
 
@@ -1029,7 +1029,7 @@ void() health_touch =
     self.solid = SOLID_NOT;
 
     // Do NOT rot health after taking life seed.
-    if (deathmatch)
+    if (gametype > GAMETYPE_COOPERATIVE)
     {
         self.nextthink = time + 20;
         self.think = SUB_regen;
@@ -1188,7 +1188,7 @@ void() armor_touch =
 
     self.solid = SOLID_NOT;
     self.model = string_null;
-    if (deathmatch)
+    if (gametype > GAMETYPE_COOPERATIVE)
         self.nextthink = time + 20;
     self.think = SUB_regen;
 
@@ -1275,6 +1275,24 @@ WEAPONS
 ===============================================================================
 */
 
+void() PsychoCaleb_Precache =
+{
+    // Player quips (when playing with explosives)
+    // Only used by flaregun, napalm laucher, and any grenade type
+    precache_sound ("player/play1109.wav");
+    precache_sound ("player/play1110.wav");
+    precache_sound ("player/play1111.wav");
+    precache_sound ("player/play1112.wav");
+    precache_sound ("player/play1113.wav");
+    precache_sound ("player/play1114.wav");
+    precache_sound ("player/play1115.wav");
+    precache_sound ("player/play1116.wav");
+    precache_sound ("player/quips/1039.wav");   // SOB must pay !
+    precache_sound ("player/quips/1050.wav");   // That's all folks !
+    precache_sound ("player/quips/1057.wav");   // Rest in pieces
+};
+
+
 void() bound_other_ammo =
 {
     if (other.ammo_shells > MAX_SHELLS)
@@ -1316,11 +1334,12 @@ void() weapon_touch =
 {
     local   float   new;
     local   float   leave;
+    local   entity  temp;
 
     if (!(other.flags & FL_CLIENT))
         return;
 
-    if (cvar ("g_weaponStay") || (!deathmatch && coop))  // Always leave weapons on SP coop
+    if (cvar ("g_weaponStay") || gametype == GAMETYPE_COOPERATIVE)  // Always leave weapons on SP coop
         leave = 1;
     else
         leave = 0;
@@ -1402,6 +1421,8 @@ void() weapon_touch =
     else
         objerror ("weapon_touch: unknown classname");
 
+    bound_other_ammo ();
+
     Sprint (other, PRINT_LOW, "Picked up ");
     Sprint (other, PRINT_LOW, self.netname);
     Sprint (other, PRINT_LOW, "\n");
@@ -1410,7 +1431,10 @@ void() weapon_touch =
     sound (other, CHAN_ITEM, "items/weaponup.wav", 1, ATTN_NORM);
     stuffcmd (other, "bf\n");
 
-    bound_other_ammo ();
+    temp = self;
+    self = other;
+    W_SetCurrentAmmo (FALSE, 0);
+    self = temp;
 
     // add the weapon to the player's equipment
     other.items = other.items | new;
@@ -1421,7 +1445,7 @@ void() weapon_touch =
     // remove it in single player, or setup for respawning in deathmatch
     self.model = string_null;
     self.solid = SOLID_NOT;
-    if (deathmatch)
+    if (gametype > GAMETYPE_COOPERATIVE)
         self.nextthink = time + 30;
     self.think = SUB_regen;
 
@@ -1443,9 +1467,12 @@ void() weapon_flaregun =
     setsize (self, '-16 -16 0', '16 16 56');
 
     // precache the necessary sounds
+    PsychoCaleb_Precache ();
     precache_sound ("weapons/flaregun/flaref.wav");
-// PM:  For alt-flares.
-    precache_sound ("weapons/napalm/explodfs.wav");
+    precache_sound ("weapons/napalm/explodfs.wav");  // For alt-flares
+//    precache_sound ("weapons/flaregun/flar_wat.wav");
+//    precache_sound ("weapons/flaregun/flarair2.wav");
+//    precache_sound ("weapons/flaregun/flarefuw.wav");
 
     StartItem ();
 };
@@ -1463,13 +1490,11 @@ void() weapon_supershotgun =
     setsize (self, '-16 -16 0', '16 16 56');
 
     // Precache the necessary sounds
-//    precache_sound ("weapons/shotgun/sawcock1.wav"); //same as shotcock.wav
-    precache_sound ("weapons/shotgun/shotcock.wav");
-    precache_sound ("weapons/shotgun/shotfir2.wav");  //shotgun alt-fire
+    precache_sound ("weapons/shotgun/shotcock.wav");  // shell ejection
+    precache_sound ("weapons/shotgun/shotfir2.wav");  // shotgun alt-fire
     precache_sound ("weapons/shotgun/shotfire.wav");  // shotgun fired
-//    precache_sound ("weapons/shotgun/shotload.wav");
+//    precache_sound ("weapons/shotgun/shotload.wav");  // reload sound
     precache_sound ("weapons/shtshl2.wav");  // shell hitting ground
-//    precache_sound ("weapons/shtshl4.wav");  // same as shtshl2.wav
 
     StartItem ();
 };
@@ -1487,10 +1512,10 @@ void() weapon_nailgun =
     setsize (self, '-16 -16 0', '16 16 56');
 
     // Precache the necessary sounds
-    precache_sound ("weapons/tommygun/_tom.wav");  // Fire
-//    precache_sound ("weapons/tommygun/tomcock.wav");  // Out of bullet noise
-    precache_sound ("weapons/shtshl.wav");   // shell hitting ground
-    precache_sound ("weapons/shtshl3.wav");  // shell hitting ground (2nd)
+    precache_sound ("weapons/tommygun/_tom.wav");     // Fire
+    precache_sound ("weapons/tommygun/tomcock.wav");  // Out of bullet noise
+    precache_sound ("weapons/shtshl.wav");            // shell hitting ground
+    precache_sound ("weapons/shtshl3.wav");           // shell hitting ground (2nd)
 
     StartItem ();
 };
@@ -1511,6 +1536,8 @@ void() weapon_supernailgun =
 //    precache_sound ("weapons/spraycan/burstflm.wav");
 //    precache_sound ("weapons/spraycan/spraycan.wav");
     precache_sound ("weapons/spraycan/sprayfir.wav");  // fire
+    precache_sound ("weapons/tnt/lighter.wav");  // = zipopen.wav + ziplight.wav
+    precache_sound ("weapons/tnt/zipclose.wav");
 
     StartItem ();
 };
@@ -1526,8 +1553,20 @@ void() weapon_grenadelauncher =
     self.netname = "Dynamite";
     self.touch = weapon_touch;
     setsize (self, '-16 -16 0', '16 16 56');
+
+    // Precache the necessary sounds
+    PsychoCaleb_Precache ();
+    precache_sound ("misc/null.wav");            // null WAV to stop fuse
+    precache_sound ("weapons/tnt/lighter.wav");  // = zipopen.wav + ziplight.wav
+    precache_sound ("weapons/tnt/tntfuse.wav");  // tnt lit
+    precache_sound ("weapons/tnt/tnttoss.wav");  // throw sound
+    precache_sound ("weapons/tnt/zipclose.wav");
+
     StartItem ();
 };
+
+// FIXME: weapon_grenadelauncher & item_tnt have a lot of
+//        things in common. We should merge them in some way
 
 //  TNT Bundle model
 void() item_tnt =
@@ -1538,6 +1577,15 @@ void() item_tnt =
     self.netname = "Dynamite";
     self.touch = weapon_touch;
     setsize (self, '0 0 0', '32 32 32');
+
+    // Precache the necessary sounds
+    PsychoCaleb_Precache ();
+    precache_sound ("misc/null.wav");            // null WAV to stop fuse
+    precache_sound ("weapons/tnt/lighter.wav");  // = zipopen.wav + ziplight.wav
+    precache_sound ("weapons/tnt/tntfuse.wav");  // tnt lit
+    precache_sound ("weapons/tnt/tnttoss.wav");  // throw sound
+    precache_sound ("weapons/tnt/zipclose.wav");
+
     StartItem ();
 };
 
@@ -1551,6 +1599,13 @@ void() weapon_proximity =
     self.netname = "Proximity Bomb";
     self.touch = weapon_touch;
     setsize (self, '0 0 0', '32 32 32');
+
+    // Precache the necessary sounds
+    PsychoCaleb_Precache ();
+    precache_sound ("weapons/tnt/proxarm.wav");  // proximity bomb armed
+    precache_sound ("weapons/tnt/proxdet.wav");  // proximity bomb triggered
+    precache_sound ("weapons/tnt/tnttoss.wav");  // throw sound
+
     StartItem ();
 };
 
@@ -1563,6 +1618,12 @@ void() weapon_remote =
     self.netname = "Remote Detonator";
     self.touch = weapon_touch;
     setsize (self, '0 0 0', '32 32 32');
+
+    // Precache the necessary sounds
+    PsychoCaleb_Precache ();
+    precache_sound ("weapons/tnt/remfire.wav");  // remote triggered
+    precache_sound ("weapons/tnt/tnttoss.wav");  // throw sound
+
     StartItem ();
 };
 
@@ -1581,15 +1642,13 @@ void() weapon_rocketlauncher =
     precache_model ("progs/naltball.mdl"); // napalm alt fire model
 
     // Precache the necessary sounds
-    precache_sound ("weapons/napalm/blaster.wav");  // Napalm launcher
-/*
-    precache_sound ("weapons/napalm/explodcs.wav");
-    precache_sound ("weapons/napalm/explodfl.wav");
-    precache_sound ("weapons/napalm/burn.wav");
-    precache_sound ("weapons/napalm/explodul.wav");
-    precache_sound ("weapons/napalm/explodus.wav");
-    precache_sound ("weapons/napalm/naplmex2.wav");
-*/
+    PsychoCaleb_Precache ();
+    precache_sound ("weapons/napalm/blaster.wav");  // Shot
+//    precache_sound ("weapons/napalm/explodcs.wav");
+//    precache_sound ("weapons/napalm/explodfl.wav");
+//    precache_sound ("weapons/napalm/explodul.wav");
+//    precache_sound ("weapons/napalm/explodus.wav");
+//    precache_sound ("weapons/napalm/naplmex2.wav");
 
     StartItem ();
 };
@@ -1609,14 +1668,14 @@ void() weapon_lightning =
 
     // Precache the necessary sounds
 
-    precache_sound ("weapons/tesla/taltac3.wav");
+//    precache_sound ("weapons/tesla/taltac3.wav");  // another altfire charge sound
 //    precache_sound ("weapons/tesla/tesaltf2.wav");
-    precache_sound ("weapons/tesla/tessngfr.wav"); //single fire
-    precache_sound ("weapons/tesla/tessnght.wav"); //single hit
-//    precache_sound ("weapons/tesla/tesaltfr.wav"); // alt fire
-    precache_sound ("weapons/tesla/tesaltht.wav"); //alt hit
+    precache_sound ("weapons/tesla/tessngfr.wav");  // normal fire
+    precache_sound ("weapons/tesla/tessnght.wav");  // normal hit
+//    precache_sound ("weapons/tesla/tesaltfr.wav");  // alt fire
+    precache_sound ("weapons/tesla/tesaltht.wav");  // altfire hit
 //    precache_sound ("weapons/tesla/tesla1.wav"); // alt charge up
-    precache_sound ("weapons/tesla/tessuper.wav"); //new alt fire charge up and fire
+    precache_sound ("weapons/tesla/tessuper.wav"); // alt fire charge up + fire
 
     StartItem ();
 };
@@ -1635,6 +1694,7 @@ void() weapon_voodoodoll =
     setsize (self, '-16 -16 0', '16 16 56');
 
     // Precache the necessary sounds
+//    precache_sound ("weapons/voodoodl/vooburn.wav");
     precache_sound ("weapons/voodoodl/voolaugh.wav");
     precache_sound ("weapons/voodoodl/voostab.wav");
     precache_sound ("weapons/voodoodl/voochant.wav");
@@ -1653,6 +1713,8 @@ AMMO
 
 void() ammo_touch =
 {
+    local entity temp;
+
     if (other.classname != "player")
         return;
     if (other.health <= 0)
@@ -1748,12 +1810,15 @@ void() ammo_touch =
     sound (other, CHAN_ITEM, "items/ammo.wav", 1, ATTN_NORM);
     stuffcmd (other, "bf\n");
 
-    W_SetCurrentAmmo (FALSE);
+    temp = self;
+    self = other;
+    W_SetCurrentAmmo (FALSE, 0);
+    self = temp;
 
     // remove it in single player, or setup for respawning in deathmatch
     self.model = string_null;
     self.solid = SOLID_NOT;
-    if (deathmatch)
+    if (gametype > GAMETYPE_COOPERATIVE)
         self.nextthink = time + 30;
 
     self.think = SUB_regen;
@@ -1972,7 +2037,7 @@ local float     best;
     // Changed to .items2 since that is where key bits are stored.
     other.items2 = other.items2 | self.items2;
 
-    if (!coop)
+    if (gametype != GAMETYPE_COOPERATIVE)
     {
         self.solid = SOLID_NOT;
         self.model = string_null;
@@ -2178,9 +2243,12 @@ void() item_artifact_envirosuit =
     self.touch = powerup_touch;
 
     precache_model ("progs/suit.mdl");
-    precache_sound ("foley/frbreath.wav");
-    precache_sound ("foley/uwbreath.wav");
+
+    precache_sound ("foley/swimuw.wav"); // diving suit engage sound
+//    precache_sound ("foley/frbreath.wav");
+//    precache_sound ("foley/uwbreath.wav");
     precache_sound ("items/pickup.wav");
+
     self.noise = "items/pickup.wav";
     setmodel (self, "progs/suit.mdl");
     self.netname = "Diving Suit";
@@ -2398,7 +2466,7 @@ void() BackpackTouch =
     remove(self);
     self = other;
 
-    W_SetCurrentAmmo (FALSE);
+    W_SetCurrentAmmo (FALSE, 0);
 };
 
 /*

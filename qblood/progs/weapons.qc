@@ -28,78 +28,6 @@ void() SuperDamageSound;
 entity() identify_player;
 
 
-// called by worldspawn
-void() W_Precache =
-{
-    // pitchfork
-//    precache_sound ("weapons/pitchfrk/pflesh.wav");
-//    precache_sound ("weapons/pitchfrk/pmetal.wav");
-    precache_sound ("weapons/pitchfrk/pstone.wav");
-/*
-    precache_sound ("weapons/pitchfrk/pwood.wav");
-
-    // flaregun
-    precache_sound ("weapons/flaregun/burstflm.wav");
-    precache_sound ("weapons/napalm/explodfs.wav");
-    precache_sound ("weapons/flaregun/flar_wat.wav");
-    precache_sound ("weapons/flaregun/flarair2.wav");
-*/
-    precache_sound ("weapons/flaregun/flaref.wav");  // Flaregun fire
-//    precache_sound ("weapons/flaregun/flarefuw.wav");
-
-    // dynamite bundles/proximity/remote detonators
-    precache_sound ("misc/null.wav");            // null .wav to stop fuse
-    precache_sound ("weapons/tnt/tntfuse.wav");  // tnt lit
-    precache_sound ("weapons/tnt/proxarm.wav");  // proximity bomb armed
-    precache_sound ("weapons/tnt/proxdet.wav");  // proximity bomb triggered
-    precache_sound ("weapons/tnt/tnttoss.wav");  // bounce sound
-    precache_sound ("weapons/tnt/remfire.wav");  // remote triggered
-    precache_sound ("weapons/tnt/zipclose.wav");
-    //precache_sound ("weapons/tnt/ziplight.wav");
-    //precache_sound ("weapons/tnt/zipopen.wav");
-    precache_sound ("weapons/tnt/lighter.wav");
-
-/*
-    // lifeleech
-    precache_sound ("weapons/lifelech/laltfr1.wav");
-    precache_sound ("weapons/lifelech/llaltfr2.wav");
-    precache_sound ("weapons/lifelech/llaltht.wav");
-    precache_sound ("weapons/lifelech/llcharge.wav");
-    precache_sound ("weapons/lifelech/llsngfr3.wav");
-    precache_sound ("weapons/lifelech/llsnght2.wav");
-    precache_sound ("weapons/lifelech/skulair4.wav");
-
-    // voodoo doll
-    precache_sound ("weapons/voodoodl/vooburn.wav");
-
-    // common sounds - some are in the C code, some aren't
-    precache_sound ("weapons/bflesh.wav");
-    precache_sound ("weapons/bmetal.wav");
-    precache_sound ("weapons/bstone.wav");
-    precache_sound ("weapons/bwater.wav");
-    precache_sound ("weapons/bwood.wav");
-    precache_sound ("weapons/mtshls.wav");
-*/
-    precache_sound ("weapons/r_exp3.wav");  // Explosion (used in c code)
-    precache_sound ("weapons/ric1.wav");    // ricochet (used in c code)
-    precache_sound ("weapons/ric2.wav");    // ricochet (used in c code)
-    precache_sound ("weapons/ric3.wav");    // ricochet (used in c code)
-
-    precache_sound ("weapons/tink1.wav");    // spikes tink (used in c code)
-    precache_sound ("weapons/tommygun/tomcock.wav");  // Out of ammo
-    precache_sound ("ambience/slabmove.wav"); // used in intro.dem
-    precache_sound ("player/taunts/t1010.wav"); // used in intro.dem
-
-//    precache_sound ("weapons/lstart.wav");
-
-    PM_PrecacheFire ();
-
-    precache_sound ("weapons/napalm/explodfs.wav"); // For alt-flares.
-//  PM:  Currently here so alt-napalm won't crash in levels without
-//       incinerator.  Should remove later.
-    precache_model ("progs/naltball.mdl");
-};
-
 float() crandom =
 {
     return 2*(random() - 0.5);
@@ -1219,7 +1147,6 @@ void(float big) W_FireLightning =
 
     muzzleflash ();
     SuperDamageSound ();
-//    sound (self, CHAN_AUTO, "weapons/tesla/taltac3.wav", 1, ATTN_NORM);
 
     #ifndef QUAKEWORLD
     self.punchangle_x = -2;
@@ -1384,6 +1311,7 @@ GRENADES, TNT, BOMBS ...
 #define DMG_TNT              120
 #define DMG_PROXIMITY_BOMB   150
 #define DMG_REMOTE_DETONATOR 120
+#define DMG_SPRAY_CAN        20
 
 void() GrenadeExplode =
 {
@@ -1404,7 +1332,6 @@ void() GrenadeExplode =
     // Don't let grenade explode twice.
     self.takedamage = DAMAGE_NO;
 
-    // Remember who really owns the napalm.
     if (self.netname == "Napalm Ball")
     {
         self.owner = self.oldenemy;
@@ -1415,6 +1342,8 @@ void() GrenadeExplode =
         burn   = self.dmg / 12;
         PM_MakeBlastDamage (self, radius, damage, burn);
     }
+    else if (self.netname == "Lit Spray Can")
+        PM_MakeBlastDamage (self, 200, 20, 15);
 
     PM_PsychoCaleb (self.owner);
 
@@ -1642,8 +1571,19 @@ void() W_FireGrenade =
         self.currentammo = self.ammo_tnt_proxy = self.ammo_tnt_proxy - 1;
     else if (self.weapon == IT_REMOTE_DETONATOR)
         self.currentammo = self.ammo_tnt_remote = self.ammo_tnt_remote - 1;
-    else
+    else if (self.weapon == IT_GRENADE_LAUNCHER)
         self.currentammo = self.ammo_tnt_bundle = self.ammo_tnt_bundle - 1;
+    else  // if (self.weapon == IT_SUPER_NAILGUN)
+    {
+        // If we have at least one full spray can, we use it
+        if (self.currentammo >= 48)
+            self.ammo_spray = self.ammo_spray - 48;
+        // Else, we burns our last one
+        else
+            self.ammo_spray = 0;
+
+        self.currentammo = self.ammo_spray;
+    }
 
     sound (self, CHAN_WEAPON, "weapons/tnt/tnttoss.wav", 1, ATTN_NORM);
 
@@ -1668,6 +1608,8 @@ void() W_FireGrenade =
     local   float   mspeed, mup;
 
     mspeed = 200 + (self.charge * 50);
+    if (mspeed < 300)
+        mspeed = 300;  // don't throw the grenade on our feet !
     mup = mspeed / 2;
 
     if (self.v_angle_x)
@@ -1713,16 +1655,26 @@ void() W_FireGrenade =
         self.weaponmodel = "";  // FIXME: we don't have the remote model / frames yet
         Sprint (self, PRINT_LOW, "You now have the remote in your hands...\n");
     }
-    // Else, it's TNT !
+    // Else, it's TNT or a spray can!
     else
     {
         newmis.style     = self.tnt_type;
         newmis.pausetime = self.tnt_time;
         newmis.think     = DynaThink;
         newmis.touch     = DynaTouch;
-        newmis.netname   = "TNT";
-        newmis.dmg       = DMG_TNT;
         newmis.dest      = normalize (newmis.velocity);
+
+        if (self.weapon == IT_SUPER_NAILGUN)
+        {
+            newmis.netname = "Lit Spray Can";
+            newmis.dmg     = DMG_SPRAY_CAN;
+            self.weaponframe = 0;  // reset the weapon view
+        }
+        else
+        {
+            newmis.netname = "TNT";
+            newmis.dmg     = DMG_TNT;
+        }
     }
 
     setmodel (newmis, "progs/grenade.mdl");
@@ -1733,9 +1685,12 @@ void() W_FireGrenade =
     // (expect for remote detonators: we always have the remote)
     if (self.currentammo == 0 && self.weapon != IT_REMOTE_DETONATOR)
     {
+        local float oldWeapon;
+
+        oldWeapon = self.weapon;
         self.items = self.items - self.weapon;
         self.weapon = W_BestWeapon();
-        W_SetCurrentAmmo (TRUE);
+        W_SetCurrentAmmo (TRUE, oldWeapon);
     }
 };
 
@@ -1961,7 +1916,7 @@ PLAYER WEAPON USE
 ===============================================================================
 */
 
-void(float weaponHasChanged) W_SetCurrentAmmo =
+void(float weaponHasChanged, float oldWeapon) W_SetCurrentAmmo =
 {
     // If the player is not alive, exit so that we don't
     // reset his current frame with "player_run ()"
@@ -1974,6 +1929,15 @@ void(float weaponHasChanged) W_SetCurrentAmmo =
 
         self.items = self.items - ( self.items & (IT_SHELLS | IT_NAILS | IT_ROCKETS | IT_CELLS) );
         self.weaponframe = 0;
+
+        // If we need to pop up the lighter
+        if ((self.weapon == IT_GRENADE_LAUNCHER || self.weapon == IT_SUPER_NAILGUN) &&
+            oldWeapon != IT_GRENADE_LAUNCHER && oldWeapon != IT_SUPER_NAILGUN)
+            sound (self, CHAN_WEAPON, "weapons/tnt/lighter.wav", 1, ATTN_NORM);
+        // Else, if we need to close the lighter
+        else if (self.weapon != IT_GRENADE_LAUNCHER && self.weapon != IT_SUPER_NAILGUN &&
+                 (oldWeapon == IT_GRENADE_LAUNCHER || oldWeapon == IT_SUPER_NAILGUN))
+            sound (self, CHAN_WEAPON, "weapons/tnt/zipclose.wav", 1, ATTN_NORM);
     }
 
     if (self.weapon == IT_AXE)
@@ -2003,8 +1967,7 @@ void(float weaponHasChanged) W_SetCurrentAmmo =
     {
         self.currentammo = self.ammo_spray;
         self.weaponmodel = "progs/v_nail2.mdl";
-        sound (self, CHAN_WEAPON, "weapons/tnt/lighter.wav", 1, ATTN_NORM);
-        
+
 //        self.items = self.items | IT_NAILS;
     }
     else if (self.weapon == IT_GRENADE_LAUNCHER)
@@ -2013,7 +1976,6 @@ void(float weaponHasChanged) W_SetCurrentAmmo =
         self.weaponmodel = "progs/v_rock.mdl";
 //        self.items = self.items | IT_ROCKETS;
         Sprint (self, PRINT_MEDIUM, "TNT Bundle selected\n");
-        sound (self, CHAN_WEAPON, "weapons/tnt/lighter.wav", 1, ATTN_NORM); 
     }
     else if (self.weapon == IT_PROXIMITY_BOMB)
     {
@@ -2037,7 +1999,7 @@ void(float weaponHasChanged) W_SetCurrentAmmo =
             if (!self.currentammo)
             {
                 self.weaponmodel = "";  // FIXME: we don't have the remote model / frames yet
-                Sprint (self, PRINT_MEDIUM, "Remote Detonator selected\n");
+                Sprint (self, PRINT_MEDIUM, "Remote selected\n");
             }
             else
             {
@@ -2121,6 +2083,8 @@ void()  player_axed1;
 void()  player_shot1;
 void()  player_nail1;
 void()  player_altnail1;
+void()  player_supernail1;
+void()  player_lightcan1;
 void()  player_light1;
 void()  player_altlight1;
 void()  player_rocket1;
@@ -2132,10 +2096,7 @@ void() W_Attack =
 
     if (! W_AmmoAvailable ())
     {
-        // Check to see which weapon player is holding
-        if (self.weapon == IT_SUPER_SHOTGUN)
-            sound (self, CHAN_WEAPON, "weapons/shotgun/shotcock.wav", 1, ATTN_NORM);
-        else if (self.weapon == IT_NAILGUN)
+        if (self.weapon == IT_NAILGUN)
             sound (self, CHAN_WEAPON, "weapons/tommygun/tomcock.wav", 1, ATTN_NORM);
 
         self.attack_finished = time + 0.5;
@@ -2171,16 +2132,27 @@ void() W_Attack =
         self.attack_finished = time + 0.7;
         W_FireSuperShotgun ();
     }
-    else if (self.weapon == IT_NAILGUN || self.weapon == IT_SUPER_NAILGUN)
+    else if (self.weapon == IT_NAILGUN)
     {
         // If it's a tommy gun altfire start
-        if (self.weapon == IT_NAILGUN && (self.impulse == 12 || self.button1))
+        if (self.impulse == 12 || self.button1)
         {
             player_altnail1 ();
             self.attack_finished = time + 0.2;
         }
         else
             player_nail1 ();
+    }
+    else if (self.weapon == IT_SUPER_NAILGUN)
+    {
+        // Altfire
+        if (self.tnt_time)
+        {
+            self.attack_finished = time + 0.6;
+            W_FireGrenade();
+        }
+        else
+            player_supernail1 ();
     }
     else if (self.weapon == IT_GRENADE_LAUNCHER ||
              self.weapon == IT_PROXIMITY_BOMB   ||
@@ -2230,42 +2202,42 @@ W_ChangeWeapon
 */
 void() W_ChangeWeapon =
 {
-    local   float   old, am, fl;
+    local   float   old, am, new;
 
     old = self.weapon;
     am = 0;
 
     if (self.impulse == 1)
     {
-        fl = IT_AXE;
+        new = IT_AXE;
     }
     else if (self.impulse == 2)
     {
-        fl = IT_SHOTGUN;
+        new = IT_SHOTGUN;
         if (self.ammo_flares < 1)
             am = 1;
     }
     else if (self.impulse == 3)
     {
-        fl = IT_SUPER_SHOTGUN;
+        new = IT_SUPER_SHOTGUN;
         if (self.ammo_shells < 1)
             am = 1;
     }
     else if (self.impulse == 4)
     {
-        fl = IT_NAILGUN;
+        new = IT_NAILGUN;
         if (self.ammo_nails < 1)
             am = 1;
     }
     else if (self.impulse == 5)
     {
-        fl = IT_ROCKET_LAUNCHER;
+        new = IT_ROCKET_LAUNCHER;
         if (self.ammo_rockets < 1)
             am = 1;
     }
     else if (self.impulse == 6)
     {
-        fl = 0;
+        new = 0;
 
         // If we don't have any type of dynamite
         if (self.ammo_tnt_bundle < 1 &&
@@ -2278,53 +2250,52 @@ void() W_ChangeWeapon =
             // If the TNT was already selected
             if (self.weapon == IT_GRENADE_LAUNCHER)
             {
-                sound (self, CHAN_WEAPON, "weapons/tnt/zipclose.wav", 1, ATTN_NORM);
                 if (self.ammo_tnt_proxy > 0)
-                    fl = IT_PROXIMITY_BOMB;
+                    new = IT_PROXIMITY_BOMB;
                 else if (self.items & IT_REMOTE_DETONATOR)
-                    fl = IT_REMOTE_DETONATOR;
+                    new = IT_REMOTE_DETONATOR;
                 else
-                    fl = IT_GRENADE_LAUNCHER;
-                }
+                    new = IT_GRENADE_LAUNCHER;
+            }
 
             // Else, if the proximity bombs were already selected
             else if (self.weapon == IT_PROXIMITY_BOMB)
             {
                 if (self.items & IT_REMOTE_DETONATOR)
-                    fl = IT_REMOTE_DETONATOR;
+                    new = IT_REMOTE_DETONATOR;
                 else if (self.ammo_tnt_bundle > 0)
-                    fl = IT_GRENADE_LAUNCHER;
+                    new = IT_GRENADE_LAUNCHER;
                 else
-                    fl = IT_PROXIMITY_BOMB;
+                    new = IT_PROXIMITY_BOMB;
             }
 
             // Else (if the previous weapon was the remote detonators or a non-dynamite weapon)
             else
             {
                 if (self.ammo_tnt_bundle > 0)
-                    fl = IT_GRENADE_LAUNCHER;
+                    new = IT_GRENADE_LAUNCHER;
                 else if (self.ammo_tnt_proxy > 0)
-                    fl = IT_PROXIMITY_BOMB;
+                    new = IT_PROXIMITY_BOMB;
                 else
-                    fl = IT_REMOTE_DETONATOR;
+                    new = IT_REMOTE_DETONATOR;
             }
         }
     }
     else if (self.impulse == 7)
     {
-        fl = IT_SUPER_NAILGUN;
+        new = IT_SUPER_NAILGUN;
         if (self.ammo_spray < 1)
             am = 1;
     }
     else if (self.impulse == 8)
     {
-        fl = IT_LIGHTNING;
+        new = IT_LIGHTNING;
         if (self.ammo_cells < 1)
             am = 1;
     }
     else if (self.impulse == 9)
     {
-        fl = IT_VOODOO_DOLL;
+        new = IT_VOODOO_DOLL;
         if (self.ammo_voodoo < 1)
             am = 1;
     }
@@ -2334,7 +2305,7 @@ void() W_ChangeWeapon =
     // Don't let player change weapons while holding lit dynamite.
     if (self.tnt_time)
         return;
-    if (!(self.items & fl))
+    if (!(self.items & new))
     {
         // don't have the weapon
         Sprint (self, PRINT_MEDIUM, "You don't have that weapon.\n");
@@ -2348,10 +2319,10 @@ void() W_ChangeWeapon =
     }
 
     // If the weapon has really changed
-    if (fl != old)
+    if (new != old)
     {
-        self.weapon = fl;
-        W_SetCurrentAmmo (TRUE);
+        self.weapon = new;
+        W_SetCurrentAmmo (TRUE, old);
     }
 };
 
@@ -2392,9 +2363,11 @@ void() CheatCommand =
 
     // FIXME: we should precache all the weapons sounds
 
+    local float oldWeapon;
+    oldWeapon = self.weapon;
     self.weapon = IT_ROCKET_LAUNCHER;
+    W_SetCurrentAmmo (TRUE, oldWeapon);
     self.impulse = 0;
-    W_SetCurrentAmmo (TRUE);
 };
 
 
@@ -2407,9 +2380,10 @@ Go to the next weapon with ammo
 */
 void() CycleWeaponCommand =
 {
-    local   float   am;
+    local   float   am, oldWeapon;
 
     self.impulse = 0;
+    oldWeapon = self.weapon;
 
     // Don't let player change weapons while holding lit dynamite.
     if (self.tnt_time)
@@ -2483,7 +2457,7 @@ void() CycleWeaponCommand =
 
         if ( (self.items & self.weapon) && am == 0)
         {
-            W_SetCurrentAmmo (TRUE);
+            W_SetCurrentAmmo (self.weapon != oldWeapon, oldWeapon);
             return;
         }
     }
@@ -2499,9 +2473,10 @@ Go to the prev weapon with ammo
 */
 void() CycleWeaponReverseCommand =
 {
-    local   float   am;
+    local   float   am, oldWeapon;
 
     self.impulse = 0;
+    oldWeapon = self.weapon;
 
     // Don't let player change weapons while holding lit dynamite.
     if (self.tnt_time)
@@ -2575,7 +2550,7 @@ void() CycleWeaponReverseCommand =
 
         if ( (self.items & self.weapon) && am == 0)
         {
-            W_SetCurrentAmmo (TRUE);
+            W_SetCurrentAmmo (self.weapon != oldWeapon, oldWeapon);
             return;
         }
     }
@@ -2681,7 +2656,8 @@ void() BuildThrowMeter =
     ShowThrowMeter ();
 };
 
-// This controls charging and firing of normal dynamite
+
+// This controls charging and firing of normal dynamite and spray can
 void() W_ChargeNormal =
 {
     local   float   altfire;
@@ -2694,7 +2670,7 @@ void() W_ChargeNormal =
     else
         altfire = FALSE;
 
-    // Check if player is holding lit dynamite
+    // Check if player is holding lit dynamite or spray can
     if (self.tnt_time)
     {
         // We have lit dynamite
@@ -2702,7 +2678,7 @@ void() W_ChargeNormal =
         // If the fuse is burned up, the TNT explodes in our hands...
         if (self.tnt_time && self.tnt_time <= time)
         {
-            Sprint (self, PRINT_LOW, "Sorry, the fuse has run out . . .\n");
+            Sprint (self, PRINT_LOW, "Sorry. . . Timed out . . .\n");
 
             // Indeed, we use a little trick: we drop the dynamite with a zero match time
             self.charge = 0;    // Make sure it's dropped, not thrown
@@ -2721,7 +2697,7 @@ void() W_ChargeNormal =
             ThrowBomb ();
             return;
         }
-        if (altfire)
+        if (altfire && self.weapon == IT_GRENADE_LAUNCHER)
         {
             self.charge = 0;    // Make sure it's dropped, not thrown
             ThrowBomb ();
@@ -2741,7 +2717,7 @@ void() W_ChargeNormal =
 
     // Dynamite is not lit, so check for ignition.  If either button is
     // held, start the fuse
-    if (self.button0 || altfire)
+    if ((self.button0 && self.weapon == IT_GRENADE_LAUNCHER) || altfire)
     {
         if (self.button0)
         {
@@ -2750,13 +2726,27 @@ void() W_ChargeNormal =
         }
         else // if (altfire)
         {
-            self.tnt_type = TNT_TYPE_ALTFIRE;
-            self.attack_finished = time + 0.3;  // avoid the light-and-drop bug with +use
+            if (self.weapon == IT_GRENADE_LAUNCHER)
+            {
+                self.tnt_type = TNT_TYPE_ALTFIRE;
+                self.attack_finished = time + 0.3;  // avoid the light-and-drop bug with +use
+            }
+            else  // if (self.weapon == IT_SUPER_NAILGUN)
+                self.tnt_type = TNT_TYPE_NORMAL;
         }
 
         self.tnt_time = time + FUSE_TIME;
-        self.t_width  = 0;  // So the fuse wav starts at the next frame
         Sprint (self, PRINT_LOW, "WARNING: you've just lit up the TNT fuse (5 sec)...\n");
+
+        // The spray can doesn't fuse
+        if (self.weapon == IT_SUPER_NAILGUN)
+        {
+            self.t_width = time + FUSE_TIME;  // So the fuse wav never starts
+            self.attack_finished = time + 0.4;
+            player_lightcan1 ();
+        }
+        else
+            self.t_width = 0;  // So the fuse wav starts at the next frame
     }
 };
 
@@ -2811,7 +2801,7 @@ float() W_CheckRemote =
             {
                 self.items = self.items - self.weapon;
                 self.weapon = W_BestWeapon();
-                W_SetCurrentAmmo (TRUE);
+                W_SetCurrentAmmo (TRUE, IT_REMOTE_DETONATOR);
             }
             else
                 self.weaponmodel = "progs/v_rock.mdl";
@@ -2839,12 +2829,17 @@ float() W_CheckRemote =
 float() W_FireCharge =
 {
     // Check if we are using dynamite
-    if ((self.weapon == IT_GRENADE_LAUNCHER) && (self.ammo_tnt_bundle >= 1))
+    if (self.weapon == IT_GRENADE_LAUNCHER || (self.weapon == IT_SUPER_NAILGUN && self.ammo_spray >= 1))
     {
         W_ChargeNormal ();
+
+        // If the spray can isn't lit
+        if (self.weapon == IT_SUPER_NAILGUN && !self.tnt_time)
+            return FALSE;
+
         return TRUE;
     }
-    if ((self.weapon == IT_PROXIMITY_BOMB) && (self.ammo_tnt_proxy >= 1))
+    if (self.weapon == IT_PROXIMITY_BOMB)
     {
         W_ChargeBomb ();
         return TRUE;
@@ -2935,7 +2930,7 @@ void() ImpulseCommands =
         // Altfire (will be treated later; just return)
         else if (self.impulse == 12)
             return;
-        
+
         // Inventory selection/usage.
         else if (self.impulse == 13)
             InvenUse ();
@@ -2949,7 +2944,7 @@ void() ImpulseCommands =
             PM_ArmorTest ();
 
         // Cheat codes are not allowed in multiplayer games (except when the "sv_allowCheat" cvar is set)
-        else if ((!deathmatch && !coop) || cvar ("sv_allowCheat"))
+        else if (gametype == GAMETYPE_SINGLE_PLAYER || cvar ("sv_allowCheat"))
         {
             if (self.impulse == 251)
             {
