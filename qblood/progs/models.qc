@@ -527,8 +527,7 @@ $scale 4
 $skin skin
 $frame  light
 
-$modelname bolt2
- // tesla cannon alt-fire
+$modelname bolt2 // tesla cannon alt-fire
 $cd id1/models/bolt2
 $origin 0 0 0
 $base base

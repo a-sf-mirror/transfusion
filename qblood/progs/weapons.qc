@@ -88,8 +88,7 @@ void() W_Precache =
     precache_sound ("weapons/tommygun/tomcock.wav");  // Out of ammo
 //    precache_sound ("weapons/lstart.wav");
 
-    PM_PrecacheFire ();
- // why is this *here* and what does it do? D_L
+    PM_PrecacheFire ();  // why is this *here* and what does it do? D_L
     
     precache_sound ("weapons/napalm/explodfs.wav"); // For alt-flares.
 //  PM:  Currently here so alt-napalm won't crash in levels without
@@ -687,26 +686,19 @@ void(entity client) PM_BoredCaleb =
         playit = "player/songs/1095.wav";   // "I did it... my way!"
     else if (rs == 3)
         playit = "player/songs/1097.wav";   // "...putting on the Ritz."
-    else
- if (rs == 4)
+    else if (rs == 4)
         playit = "player/songs/vo3011.wav";   // "sun will come out . . ."
-    else
- if (rs == 5)
+    else if (rs == 5)
         playit = "player/songs/vo3024.wav";   // "row row row your boat"
-    else
- if (rs == 6)
+    else if (rs == 6)
         playit = "player/songs/vo3026.wav";   // "it's a long way ..."
-    else
- if (rs == 7)
+    else if (rs == 7)
         playit = "player/songs/vo3030.wav";   // "somewhere over the rainbow."
-    else
- if (rs == 8)
+    else if (rs == 8)
         playit = "player/songs/vo3033.wav";   // "sailing sailing ..."
-    else
- if (rs == 9)
+    else if (rs == 9)
         playit = "player/songs/vo3034.wav";   // "on the good ship lollipop."
-    else
- if (rs == 10)
+    else if (rs == 10)
         playit = "player/songs/vo3035.wav";   // "i get no kick from champagne...."
     else
         playit = "player/songs/vo3039.wav";   // "i've got you under my skin"	
@@ -761,7 +753,6 @@ void(entity client) PM_PsychoCaleb =
         else
             playit = "player/play1116.wav";
     }
-
     sound (client, CHAN_VOICE, playit, 1, ATTN_NONE);
 };
 
@@ -1086,7 +1077,6 @@ void() PM_TeslaTouch =
     #endif
 
     if (pointcontents(self.origin) == CONTENT_SKY)
-
     {
         remove(self);
         return;
@@ -1142,15 +1132,17 @@ void(entity attacker, vector org, vector dir, float mspeed, float big) PM_Launch
     jolt.velocity   = dir * mspeed;
     jolt.avelocity  = '300 300 300';
     jolt.angles     = vectoangles(dir);
-    jolt.dmg        = 25; // note, altfire = 170;
-    jolt.model      = "progs/bolt.mdl";
-    {
     if (big)
-    jolt.dmg        = 170;
-    jolt.model      = "progs/bolt2.mdl";
-    
-    jolt.style      = big;
+    {
+        jolt.dmg        = 170;
+        jolt.model      = "progs/bolt2.mdl";
     }
+    else
+	{
+        jolt.dmg        = 25; // note, altfire = 170;
+        jolt.model      = "progs/bolt.mdl";
+	}
+    jolt.style      = big;
     jolt.touch      = PM_TeslaTouch;
     jolt.nextthink  = time + (8000 / mspeed);
     jolt.think      = SUB_Remove;
@@ -1188,7 +1180,6 @@ void() W_FireLightning =
     {
         // FIXME:  Is the sound needed?
         if (self.t_width < time)
-        
 	{
             sound (self, CHAN_WEAPON, "weapons/tesla/tessngfr.wav", 1, ATTN_NORM);
             self.t_width = time + 0.3;
