@@ -791,6 +791,70 @@ void() exploding_wall =
 };
 
 
+/*
+==============================================================================
+
+DECALS
+
+The initial code was shamelessly borrowed from the DarkPlaces mod
+
+==============================================================================
+*/
+
+void() decal_custom =
+{
+    local vector dir, org, dirangles;
+
+    // The model must be set by the mapper
+    if (self.model == "")
+        objerror ("A decal must have a sprite model");
+
+    // Look backward to see if we can stick to a wall nearby
+    makevectors (self.angles);
+    dir = normalize (v_forward) * -100;
+    traceline (self.origin, self.origin + dir, TRUE, world);
+
+    // If we can't find any wall behind the decal
+    if (trace_fraction >= 1 || trace_ent.solid != SOLID_BSP)
+        objerror ("Can't attach to a wall");
+
+    // Push the decal origin off the surface
+    dir = normalize (trace_plane_normal);
+    org = trace_endpos + dir;
+
+    // Orient the bullet hole properly
+    // NOTE: due to a bug in the Quake engine, it has to be done that way
+    dirangles = vectoangles ('0 0 0' - dir);
+    dirangles_x = 0 - dirangles_x;
+
+    // Finally, we initialize the entity
+    precache_model (self.model);
+    setmodel (self, self.model);
+    self.angles = dirangles;
+    setorigin (self, org);
+    setsize (self, '0 0 0', '0 0 0');
+
+    // If the surface may move, we must follow it
+    if (trace_ent != world)
+    {
+        if (!checkextension ("DP_MOVETYPEFOLLOW"))
+            error ("The engine doesn't support the DP_MOVETYPEFOLLOW extension.\n"
+                   "You can't put decals on non-static walls.");
+
+        self.solid = SOLID_NOT;
+        self.movetype = MOVETYPE_FOLLOW;
+
+        // MOVETYPE_FOLLOW needs a few more informations
+        self.aiment = trace_ent;
+        self.view_ofs = self.origin - trace_ent.origin;
+        self.punchangle = trace_ent.angles;
+        self.v_angle = self.angles - trace_ent.angles;
+    }
+    else
+        makestatic (self);
+};
+
+
 //============================================================================
 
 void() sound_player_use =

@@ -621,3 +621,5 @@
 		32 : "Explosive only" : 0
 	]
 ]
+
+@PointClass = decal_custom : "Decal" [ model(string) : "Sprite model" ]

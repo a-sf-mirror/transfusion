@@ -67,6 +67,7 @@
 #define MOVETYPE_FLYMISSILE     9    // fly with extra size against monsters
 #define MOVETYPE_BOUNCE         10
 #define MOVETYPE_BOUNCEMISSILE  11   // bounce with extra size
+#define MOVETYPE_FOLLOW         12   // follow entity "aiment"; DP_MOVETYPEFOLLOW extension
 
 // edict.solid values
 #define SOLID_NOT       0    // no interaction with other objects
