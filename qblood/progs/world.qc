@@ -389,6 +389,7 @@ void(float corpseHealth, void() corpseToGib) BecomeCorpse =
     self.targetname = string_null;
     self.th_pain = SUB_Null;
     self.deadflag = DEAD_DEAD;
+    self.ishuman = 0;
 
     // Corpse will turn into gibs if destroyed
     self.health = corpseHealth;
@@ -460,6 +461,7 @@ void(entity ent) CloneCorpse =
     clone.model = ent.model;
     clone.modelindex = ent.modelindex;
     clone.frame = ent.frame;
+    clone.skin = ent.skin;
     clone.colormap = ent.colormap;
     clone.movetype = ent.movetype;
     clone.velocity = ent.velocity;

@@ -163,22 +163,36 @@ float(.float vote_field, float value) Vote_IsPassed =
 
     VoteCount = 0;
     VoteTotal = 0;
-    player = find (world, classname, "player");
+
+    player = nextent (world);
     while (player != world)
     {
-        // If it's a real player (not a bot)
-        if (player.ishuman == 1)
+        // If it's a real client (not a bot), but not an observer
+        if (player.ishuman == 1 && !player.observer)
         {
             VoteTotal = VoteTotal + 1;
             if (player.vote_field == value)
                 VoteCount = VoteCount + 1;
         }
 
-        player = find (player, classname, "player");
+        player = nextent (player);
     }
 
     // more than 50% is requiered to pass a vote
-    return (VoteCount >= ceil ((VoteTotal + 1) / 2));
+    VoteCount = ceil ((VoteTotal + 1) / 2) - VoteCount;
+    if (VoteCount > 0)
+    {
+        local string tmpString;
+
+        Bprint (PRINT_HIGH, "Û ");  // "[ "
+        tmpString = ftos (VoteCount);
+        Bprint (PRINT_HIGH, tmpString);
+        Bprint (PRINT_HIGH, " votes missing Ý\n");  // " ]\n"
+
+        return FALSE;
+    }
+    else
+        return TRUE;
 };
 
 

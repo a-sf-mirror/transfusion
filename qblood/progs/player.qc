@@ -61,7 +61,7 @@ void()  player_stand1 =[    $axstnd1,   player_stand1   ]
 
 void()  player_run =[   $rockrun1,  player_run  ]
 {
-    if (self.player_state != PS_HOLD_FIRE)
+    if (self.player_state != PS_HOLD_FIRE && self.player_state != PS_MENU)
     {
         self.weaponframe = 0;
         self.player_state = PS_IDLE;
@@ -247,7 +247,8 @@ void() PlayerDead =
 
     // allow respawn after a certain time
     self.deadflag = DEAD_DEAD;
-    self.player_state = PS_IDLE;  // so that he can enter the menu
+    if (self.player_state != PS_MENU)
+        self.player_state = PS_IDLE;  // so that he can enter the menu
 };
 
 vector(float dm) VelocityForDamage =
