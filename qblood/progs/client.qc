@@ -62,7 +62,7 @@ void() InitPlayerCharacteristics =
     self.items           = IT_PITCHFORK;
     self.items2          = 0;
     self.health          = 100;
-    self.ammo_flares     = 0;
+    self.ammo_flare      = 0;
     self.ammo_shells     = 0;
     self.ammo_nails      = 0;
     self.ammo_rockets    = 0;
@@ -89,7 +89,7 @@ void() InitPlayerCharacteristics =
         self.armor_fire = 50;
         self.armor_mind = 50;
         if (available_weapons & IT_FLAREGUN)
-            self.ammo_flares = self.ammo_flares + 10;
+            self.ammo_flare = self.ammo_flare + 10;
         if (available_weapons & IT_SAWED_OFF)
             self.ammo_shells = self.ammo_shells + 15;
         if (available_weapons & IT_TOMMYGUN)

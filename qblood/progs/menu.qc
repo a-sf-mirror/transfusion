@@ -124,11 +124,6 @@ void(string newDuration) Vote_ChangeWarmup =
     bprint3 ("ш Vote passed. New warmup duration: ", newDuration, " secondes щ\n");
 
     cvar_set ("g_warmup", newDuration);
-
-    // Test if the engine support creation of new cvars by progs
-    if (newDuration != "0")
-        if (cvar ("g_warmup") == 0)
-            bprint ("варнинг╨ the engine doesn't support dynamic cvar creation. Can't change warmup duration\n");  // "WARNING ..."
 };
 
 
@@ -145,14 +140,9 @@ void(string cvarName) Vote_ChangeOption =
 
     newValue = ftos (! cvar (cvarName));
     cvar_set (cvarName, newValue);
-    
+
     // "[ Vote passed ... ]\n"
     bprint5 ("ш Vote passed. New option: \"", cvarName, "\" = ", newValue, " щ\n");
-
-    // Test if the engine support creation of new cvars by progs
-    if (newValue == "1")
-        if (cvar (cvarName) != 1)
-            bprint ("варнинг╨ the engine doesn't support dynamic cvar creation. Can't change option\n");  // "WARNING ..."
 };
 
 

@@ -12037,7 +12037,7 @@
 {
 "origin" "542 -1102 -151"
 "angle" "-360"
-"classname" "weapon_supershotgun"
+"classname" "weapon_sawedoff"
 }
 // entity 39
 {
@@ -12084,7 +12084,7 @@
 "origin" "-626 -694 -113"
 "angle" "-360"
 "spawnflags" "1"
-"classname" "item_spikes"
+"classname" "ammo_bullets"
 }
 // entity 46
 {
@@ -12126,7 +12126,7 @@
 "origin" "622 -670 -107"
 "angle" "-360"
 "spawnflags" "1"
-"classname" "item_shells"
+"classname" "ammo_shell"
 }
 // entity 52
 {
@@ -12145,14 +12145,14 @@
 {
 "origin" "214 1002 -13"
 "angle" "-360"
-"classname" "weapon_nailgun"
+"classname" "weapon_tommygun"
 }
 // entity 55
 {
 "origin" "182 1394 -13"
 "angle" "-360"
 "spawnflags" "1"
-"classname" "weapon_grenadelauncher"
+"classname" "weapon_tnt"
 }
 // entity 56
 {
@@ -12165,7 +12165,7 @@
 {
 "origin" "-42 850 3"
 "angle" "-360"
-"classname" "item_armor1"
+"classname" "item_armor_body"
 }
 // entity 58
 {
@@ -12183,25 +12183,25 @@
 {
 "origin" "-666 1050 -61"
 "angle" "-360"
-"classname" "weapon_supershotgun"
+"classname" "weapon_sawedoff"
 }
 // entity 61
 {
 "origin" "-826 602 -61"
 "angle" "-360"
-"classname" "item_tnt"
+"classname" "weapon_tnt"
 }
 // entity 62
 {
 "origin" "-810 578 -61"
 "angle" "-360"
-"classname" "item_tnt"
+"classname" "weapon_tnt"
 }
 // entity 63
 {
 "origin" "-786 618 -61"
 "angle" "-360"
-"classname" "item_tnt"
+"classname" "weapon_tnt"
 }
 // entity 64
 {
@@ -12213,26 +12213,26 @@
 {
 "origin" "-658 1818 -150"
 "angle" "-360"
-"classname" "item_flares"
+"classname" "ammo_flares"
 }
 // entity 66
 {
 "origin" "-522 1314 -40"
 "angle" "-360"
-"classname" "item_soul"
+"classname" "ammo_soul"
 }
 // entity 67
 {
 "origin" "-482 1314 -42"
 "angle" "-360"
-"classname" "item_armor2"
+"classname" "item_armor_fire"
 }
 // entity 68
 {
 "origin" "-258 994 -13"
 "angle" "-269"
 "spawnflags" "1"
-"classname" "item_shells"
+"classname" "ammo_shell"
 }
 // entity 69
 {
@@ -12246,14 +12246,14 @@
 "origin" "-514 354 -365"
 "angle" "-360"
 "spawnflags" "1"
-"classname" "item_shells"
+"classname" "ammo_shell"
 }
 // entity 71
 {
 "origin" "246 -94 -365"
 "angle" "-360"
 "spawnflags" "1"
-"classname" "item_spikes"
+"classname" "ammo_bullets"
 }
 // entity 72
 {
@@ -12266,19 +12266,19 @@
 {
 "origin" "-658 130 -165"
 "angle" "-360"
-"classname" "weapon_rocketlauncher"
+"classname" "weapon_napalmlauncher"
 }
 // entity 74
 {
 "origin" "374 122 -164"
 "angle" "-360"
-"classname" "weapon_lightning"
+"classname" "weapon_teslacannon"
 }
 // entity 75
 {
 "origin" "702 -22 -589"
 "angle" "-360"
-"classname" "item_artifact_super_damage"
+"classname" "item_artifact_akimbo"
 }
 // entity 76
 {
@@ -12290,25 +12290,25 @@
 {
 "origin" "-914 290 -589"
 "angle" "-360"
-"classname" "weapon_supernailgun"
+"classname" "weapon_spraycan"
 }
 // entity 78
 {
 "origin" "-954 290 -589"
 "angle" "-360"
-"classname" "item_armorInv"
+"classname" "item_armor_super"
 }
 // entity 79
 {
 "origin" "141 873 -589"
 "angle" "-360"
-"classname" "weapon_supershotgun"
+"classname" "weapon_sawedoff"
 }
 // entity 80
 {
 "origin" "-395 -631 -589"
 "angle" "-360"
-"classname" "weapon_nailgun"
+"classname" "weapon_tommygun"
 }
 // entity 81
 {
@@ -12339,7 +12339,7 @@
 "origin" "-1155 881 -589"
 "angle" "-360"
 "spawnflags" "1"
-"classname" "weapon_grenadelauncher"
+"classname" "weapon_tnt"
 }
 // entity 86
 {
@@ -12352,7 +12352,7 @@
 {
 "origin" "-531 105 -589"
 "angle" "-360"
-"classname" "item_armor1"
+"classname" "item_armor_body"
 }
 // entity 88
 {
@@ -12376,19 +12376,19 @@
 {
 "origin" "925 -655 -589"
 "angle" "-360"
-"classname" "item_tnt"
+"classname" "weapon_tnt"
 }
 // entity 92
 {
 "origin" "885 -615 -589"
 "angle" "-360"
-"classname" "item_tnt"
+"classname" "weapon_tnt"
 }
 // entity 93
 {
 "origin" "869 -639 -589"
 "angle" "-360"
-"classname" "item_tnt"
+"classname" "weapon_tnt"
 }
 // entity 94
 {
@@ -12401,26 +12401,26 @@
 {
 "origin" "-298 -918 -47"
 "angle" "-89"
-"classname" "item_rockets"
+"classname" "ammo_gas"
 }
 // entity 96
 {
 "origin" "-330 -902 -47"
 "angle" "-89"
-"classname" "item_rockets"
+"classname" "ammo_gas"
 }
 // entity 97
 {
 "origin" "-266 -902 -47"
 "angle" "-89"
-"classname" "item_rockets"
+"classname" "ammo_gas"
 }
 // entity 98
 {
 "origin" "182 -774 -13"
 "angle" "-360"
 "spawnflags" "1"
-"classname" "item_shells"
+"classname" "ammo_shell"
 }
 // entity 99
 {
@@ -12450,13 +12450,13 @@
 {
 "origin" "886 130 -154"
 "angle" "-360"
-"classname" "item_armor2"
+"classname" "item_armor_fire"
 }
 // entity 104
 {
 "origin" "-1154 130 -173"
 "angle" "-360"
-"classname" "item_artifact_invulnerability"
+"classname" "item_artifact_deathmask"
 }
 // entity 105
 {

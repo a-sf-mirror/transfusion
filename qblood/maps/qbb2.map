@@ -5858,22 +5858,22 @@
 }
 {
  "origin" "112 0 -48"
- "classname" "weapon_supershotgun"
+ "classname" "weapon_sawedoff"
 }
 {
  "spawnflags" "1"
  "origin" "736 -64 -304"
- "classname" "item_shells"
+ "classname" "ammo_shell"
 }
 {
  "spawnflags" "1"
  "origin" "736 -16 -304"
- "classname" "item_shells"
+ "classname" "ammo_shell"
 }
 {
  "spawnflags" "1"
  "origin" "736 -112 -304"
- "classname" "item_shells"
+ "classname" "ammo_shell"
 }
 {
  "_color" "220 220 250"
@@ -6003,7 +6003,7 @@
 }
 {
  "origin" "552 -400 -80"
- "classname" "weapon_nailgun"
+ "classname" "weapon_tommygun"
 }
 {
  "origin" "392 -240 -48"
@@ -6020,7 +6020,7 @@
 }
 {
  "origin" "-120 -16 -320"
- "classname" "weapon_lightning"
+ "classname" "weapon_teslacannon"
 }
 {
  "angle" "360"
@@ -6163,7 +6163,7 @@
 }
 {
  "origin" "466 90 -184"
- "classname" "item_armor2"
+ "classname" "item_armor_fire"
 }
 {
  "light" "300"
@@ -6226,11 +6226,11 @@
 }
 {
  "origin" "208 8 96"
- "classname" "weapon_rocketlauncher"
+ "classname" "weapon_napalmlauncher"
 }
 {
  "origin" "-224 -8 -448"
- "classname" "item_artifact_super_damage"
+ "classname" "item_artifact_akimbo"
 }
 {
  "spawnflags" "1"
@@ -6267,15 +6267,15 @@
 {
  "spawnflags" "0"
  "origin" "344 568 -56"
- "classname" "item_shells"
+ "classname" "ammo_shell"
 }
 {
  "spawnflags" "0"
  "origin" "376 568 -56"
- "classname" "item_shells"
+ "classname" "ammo_shell"
 }
 {
  "spawnflags" "0"
  "origin" "408 568 -56"
- "classname" "item_shells"
+ "classname" "ammo_shell"
 }

@@ -582,7 +582,7 @@ void() W_SetCurrentAmmo =
     }
     else if (self.weapon == IT_FLAREGUN)
     {
-        self.currentammo = self.ammo_flares;
+        self.currentammo = self.ammo_flare;
         Flare_UpdateView ();
         //self.items = self.items | IT_SHELLS;
     }
@@ -679,7 +679,7 @@ float() W_BestWeapon =
         return IT_TOMMYGUN;
 
     // 3- Flare Gun
-    if (self.ammo_flares >= 1 && (it & IT_FLAREGUN))
+    if (self.ammo_flare >= 1 && (it & IT_FLAREGUN))
         return IT_FLAREGUN;
 
     // 4- Tesla Cannon
@@ -776,7 +776,7 @@ void() W_ChangeWeapon =
     else if (self.impulse == 2)
     {
         new = IT_FLAREGUN;
-        if (self.ammo_flares < 1)
+        if (self.ammo_flare < 1)
             am = 1;
     }
     else if (self.impulse == 3)
@@ -927,7 +927,7 @@ void() CycleWeaponCommand =
         else if (newWeapon == IT_PITCHFORK)
         {
             newWeapon = IT_FLAREGUN;
-            if (self.ammo_flares < 1)
+            if (self.ammo_flare < 1)
                 am = 1;
         }
         else if (newWeapon == IT_FLAREGUN)
@@ -1076,7 +1076,7 @@ void() CycleWeaponReverseCommand =
         else if (newWeapon == IT_SAWED_OFF)
         {
             newWeapon = IT_FLAREGUN;
-            if (self.ammo_flares < 1)
+            if (self.ammo_flare < 1)
                 am = 1;
         }
         else if (newWeapon == IT_FLAREGUN)

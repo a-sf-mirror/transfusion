@@ -143,7 +143,7 @@ void(float timeleft) Invisibility_Drop =
     item.solid = SOLID_TRIGGER;
     item.movetype = MOVETYPE_TOSS;
     item.noise = "bludbath/powerup.wav";
-    setmodel (item, "progs/invisibl.mdl");
+    setmodel (item, "models/items/i_invisible.md3");
     setsize (item, '-3 -6 -2', '6 7 23');
     item.cnt = time + timeleft;
     item.touch = Invisibility_Touch;
@@ -274,60 +274,16 @@ void(string objmodel, vector bbox_min, vector bbox_max) StartObject =
 };
 
 
-// small tome or book, closed
-void() obj_tome =
-{
-    StartObject ("progs/a_tome.mdl", '-10 -4 -10', '10 4 11');
-};
-
-// small potion vial
-void() obj_boost =
-{
-    StartObject ("progs/a_boost.mdl", '-5 -6 -9', '5 6 10');
-};
-
-// large potion goblet
-
-void() obj_mboost =
-{
-    StartObject ("progs/a_mboost.mdl", '-9 -10 -9', '9 10 10');
-};
-
-// a slab of beef, found in restaraunt freezers
-void() obj_beefslab =
-{
-    StartObject ("progs/beefslab.mdl", '-14 -14 1', '22 14 89');
-};
-
 // pile of bones
 void() obj_bonepile =
 {
     StartObject ("progs/bonepile.mdl", '-16 -15 -3', '16 16 14');
 };
 
-// another book, closed
-void() obj_bookclos =
-{
-    StartObject ("progs/bookclos.mdl", '-9 -7 -1', '9 7 6');
-};
-
-// another book, open
-void() obj_bookopen =
-{
-    StartObject ("progs/bookopen.mdl", '-8 -14 -1', '9 14 5');
-};
-
 // small bush
 void() obj_bush1 =
 {
     StartObject ("progs/bush1.mdl", '-31 -34 -1', '31 32 39');
-};
-
-// chrome flaming torch
-void() obj_cflmtrch =
-{
-    FireAmbient ();
-    StartObject ("progs/cflmtrch.mdl", '-9 -6 -29', '8 6 27');
 };
 
 // Corpse, Face up
@@ -340,25 +296,6 @@ void() obj_corps2 =
 void() obj_cross =
 {
     StartObject ("progs/cross.mdl", '-3 -12 -19', '3 12 21');
-};
-
-// an egyptian looking torch
-void() obj_eflmtrch =
-{
-    FireAmbient ();
-    StartObject ("progs/eflmtrch.mdl", '-12 -5 -21', '14 5 34');
-};
-
-// egytpian torch, unlit
-void() obj_egtorch =
-{
-    StartObject ("progs/egtorch.mdl", '-12 -5 -21', '12 5 9');
-};
-
-// Iron Fence Gateway
-void() obj_fence =
-{
-    StartObject ("progs/fence.mdl", '-3 -25 0', '3 29 53');
 };
 
 // large 2 tier fountain
@@ -378,24 +315,6 @@ void() obj_goal =
 void() obj_hedge1 =
 {
     StartObject ("progs/hedge1.mdl", '-27 -27 -1', '26 26 92');
-};
-
-// tall square hedge
-void() obj_hedge2 =
-{
-    StartObject ("progs/hedge2.mdl", '-19 -28 0', '18 29 89');
-};
-
-// tall rounded hedge
-void() obj_hedge3 =
-{
-    StartObject ("progs/hedge3.mdl", '-27 -27 -1', '27 27 127');
-};
-
-// cross with fluer de lis
-void() obj_holycrss =
-{
-    StartObject ("progs/holycrss.mdl", '-6 -13 -19', '6 13 21');
 };
 
 // small plant
@@ -426,19 +345,6 @@ void() obj_pot1 =
 void() obj_pot2 =
 {
     StartObject ("progs/pot2.mdl", '-12 -14 0', '12 14 42');
-};
-
-// large vase, 4 skins
-void() obj_pot3 =
-{
-    StartObject ("progs/pot3.mdl", '-17 -19 -1', '17 20 48');
-};
-
-// roman style flaming torch
-void() obj_rflmtrch =
-{
-    FireAmbient ();
-    StartObject ("progs/rflmtrch.mdl", '-10 -10 -15', '2 10 27');
 };
 
 // seaweed
@@ -489,36 +395,16 @@ void() obj_tree2 =
     StartObject ("progs/tree2.mdl", '-16 -16 0', '16 16 32');
 };
 
-// small spider webs
-// TODO: Accept a spawn flag differentiating between the skins
-void() obj_webs =
-{
-    StartObject ("progs/webs.mdl", '-1 -23 -28', '4 23 26');
-    // TODO: set skin ...
-};
-
 // Brown skull
 void() obj_skull =
 {
     StartObject ("progs/skull.mdl", '-6 -4 0', '6 4 11');
 };
 
-// book with skull on it
-void() obj_skulbook =
-{
-    StartObject ("progs/skulbook.mdl", '-7 -6 -1', '7 6 2');
-};
-
 // bar stool
 void() obj_stool =
 {
     StartObject ("progs/stool.mdl", '-7 -7 0', '7 7 18');
-};
-
-// another scroll
-void() obj_hbook =
-{
-    StartObject ("progs/h-book.mdl", '-5 -9 -13', '5 9 14');
 };
 
 // White skull
@@ -533,30 +419,10 @@ void() obj_m3 =
     StartObject ("progs/m3.mdl", '-12 -8 -11', '12 8 11');
 };
 
-// another book
-void() obj_mage =
-{
-    StartObject ("progs/mage.mdl", '-8 -11 -11', '7 11 12');
-};
-
 // shovel
 void() obj_shovel =
 {
     StartObject ("progs/shovl.mdl", '-16 -16 -16', '16 16 16');
-};
-
-// a boiling cauldron
-void() obj_cauldron =
-{
-    StartObject ("progs/cauldron.mdl", '-32 -21 0', '24 20 34');
-};
-
-// barrels -
-// skin0 = tnt (don't use), skin1 = wine barrel,
-// skin2 = zombie head barrel, skin3 = "waste" barrel
-void() obj_barrel =
-{
-    StartObject ("progs/barrel.mdl", '-16 -16 -14', '16 16 42');
 };
 
 // jar with a brain in it
@@ -899,7 +765,7 @@ void() powerup_touch =
             return;
         InvenSet (other, INV_CRYSTAL_BALL, 100);
     }
-    else if (self.classname == "item_artifact_envirosuit")
+    else if (self.classname == "item_artifact_divingsuit")
     {
         if (InvenMax (other, INV_DIVING_SUIT))
             return;
@@ -910,7 +776,7 @@ void() powerup_touch =
         other.invisible_time = 1;
         other.invisible_finished = time + 30;
     }
-    else if (self.classname == "item_artifact_invulnerability")
+    else if (self.classname == "item_artifact_deathmask")
     {
         other.invincible_time = 1;
         other.invincible_finished = time + 30;
@@ -919,7 +785,7 @@ void() powerup_touch =
     {
         other.reflect_finished = time + 30;
     }
-    else if (self.classname == "item_artifact_super_damage")
+    else if (self.classname == "item_artifact_akimbo")
     {
         local entity stemp;
 
@@ -940,7 +806,7 @@ void() powerup_touch =
     sprint3 (other, "Picked up ", self.netname, "\n");
 
     self.mdl = self.model;
-    if ((self.classname == "item_artifact_invulnerability") ||
+    if ((self.classname == "item_artifact_deathmask") ||
         (self.classname == "item_artifact_invisibility"))
         self.nextthink = time + 60*5;
     else
@@ -1123,7 +989,7 @@ void() armor_touch =
     if (other.classname != "player")
         return;
 
-    if (self.classname == "item_armor1")
+    if (self.classname == "item_armor_body")
     {
         // Body armor
         if (other.armor_body >= 100)
@@ -1131,7 +997,7 @@ void() armor_touch =
         value = other.armor_body = 100;
         bit = IT_ARMOR1;
     }
-    else if (self.classname == "item_armor2")
+    else if (self.classname == "item_armor_fire")
     {
         // Fire armor
         if (other.armor_fire >= 100)
@@ -1139,7 +1005,7 @@ void() armor_touch =
         value = other.armor_fire = 100;
         bit = IT_ARMOR2;
     }
-    else if (self.classname == "item_armorInv")
+    else if (self.classname == "item_armor_super")
     {
         // Super armor (200 of all three armors).
         if (other.armor_body >= 200)
@@ -1160,7 +1026,7 @@ void() armor_touch =
             value = other.armor_mind;
         }
     }
-    else if (self.classname == "item_armor0")
+    else if (self.classname == "item_armor_basic")
     {
         // Basic armor
         if (other.armor_body >= 100)
@@ -1189,7 +1055,7 @@ void() armor_touch =
             value = other.armor_body;
         }
     }
-    else if (self.classname == "item_armor4")
+    else if (self.classname == "item_armor_spirit")
     {
         // Spirit armor
         if (other.armor_mind >= 100)
@@ -1219,7 +1085,7 @@ void() armor_touch =
 };
 
 // Basic Armor
-void() item_armor0 =
+void() item_armor_basic =
 {
     self.touch = armor_touch;
     self.model = "models/items/armour/i_arm_basic.md3";
@@ -1232,7 +1098,7 @@ void() item_armor0 =
 };
 
 // Spirit Armor
-void() item_armor4 =
+void() item_armor_spirit =
 {
     self.touch = armor_touch;
     self.model = "models/items/armour/i_arm_spirit.md3";
@@ -1245,7 +1111,7 @@ void() item_armor4 =
 };
 
 // Body Armor
-void() item_armor1 =
+void() item_armor_body =
 {
     self.touch = armor_touch;
     self.model = "models/items/armour/i_arm_body.md3";
@@ -1258,7 +1124,7 @@ void() item_armor1 =
 };
 
 // Fire Armor
-void() item_armor2 =
+void() item_armor_fire =
 {
     self.touch = armor_touch;
     self.model = "models/items/armour/i_arm_fire.md3";
@@ -1271,7 +1137,7 @@ void() item_armor2 =
 };
 
 // Super Armor
-void() item_armorInv =
+void() item_armor_super =
 {
     self.touch = armor_touch;
     self.model = "models/items/armour/i_arm_super.md3";
@@ -1322,8 +1188,8 @@ void() bound_other_ammo =
         other.ammo_cells = MAX_CELLS;
 
     // Custom ammo.
-    if (other.ammo_flares > MAX_FLARES)
-        other.ammo_flares = MAX_FLARES;
+    if (other.ammo_flare > MAX_FLARES)
+        other.ammo_flare = MAX_FLARES;
     if (other.ammo_tnt_bundle > MAX_TNT)
         other.ammo_tnt_bundle = MAX_TNT;
     if (other.ammo_tnt_proxy > MAX_PROXY)
@@ -1369,48 +1235,47 @@ void() weapon_touch =
         if (leave && (other.items & IT_FLAREGUN) )
             return;
         new = IT_FLAREGUN;
-        other.ammo_flares = other.ammo_flares + 9;
+        other.ammo_flare = other.ammo_flare + 9;
     }
-    else if (self.classname == "weapon_nailgun")
+    else if (self.classname == "weapon_tommygun")
     {
         if (leave && (other.items & IT_TOMMYGUN) )
             return;
         new = IT_TOMMYGUN;
         other.ammo_nails = other.ammo_nails + 50;
     }
-    else if (self.classname == "weapon_supernailgun")
+    else if (self.classname == "weapon_spraycan")
     {
         if (leave && (other.items & IT_SPRAY_CAN) )
             return;
         new = IT_SPRAY_CAN;
         other.ammo_spray = other.ammo_spray + 48;
     }
-    else if (self.classname == "weapon_supershotgun")
+    else if (self.classname == "weapon_sawedoff")
     {
         if (leave && (other.items & IT_SAWED_OFF) )
             return;
         new = IT_SAWED_OFF;
         other.ammo_shells = other.ammo_shells + 8;
     }
-    else if (self.classname == "weapon_rocketlauncher")
+    else if (self.classname == "weapon_napalmlauncher")
     {
         if (leave && (other.items & IT_NAPALM_LAUNCHER) )
             return;
         new = IT_NAPALM_LAUNCHER;
         other.ammo_rockets = other.ammo_rockets + 6;
     }
-    else if (self.classname == "weapon_grenadelauncher")
+    else if (self.classname == "weapon_tnt")
     {
-        if (leave && (other.items & IT_TNT) )
+        if (leave && (other.items & IT_TNT))
             return;
         new = IT_TNT;
-        other.ammo_tnt_bundle = other.ammo_tnt_bundle + 5;
-    }
-    else if (self.classname == "item_tnt")
-    {
-        new = IT_TNT;
-        other.ammo_tnt_bundle = other.ammo_tnt_bundle + 1;
-        leave = 0;
+
+        // Is it a full case of TNT?
+        if (self.spawnflags)
+            other.ammo_tnt_bundle = other.ammo_tnt_bundle + 5;
+        else
+            other.ammo_tnt_bundle = other.ammo_tnt_bundle + 1;
     }
     else if (self.classname == "weapon_proximity")
     {
@@ -1424,7 +1289,7 @@ void() weapon_touch =
         other.ammo_tnt_remote = other.ammo_tnt_remote + 1;
         leave = 0;
     }
-    else if (self.classname == "weapon_lightning")
+    else if (self.classname == "weapon_teslacannon")
     {
         if (leave && (other.items & IT_TESLA_CANNON) )
             return;
@@ -1520,7 +1385,7 @@ void() weapon_flaregun =
 };
 
 // Sawed-off
-void() weapon_supershotgun =
+void() weapon_sawedoff =
 {
     precache_model ("models/weapons/v_shot.md3");
     precache_model ("models/weapons/ga_shot.md3");  // akimbo model
@@ -1546,7 +1411,7 @@ void() weapon_supershotgun =
 };
 
 // Tommy Gun
-void() weapon_nailgun =
+void() weapon_tommygun =
 {
     precache_model ("models/weapons/v_tommy.md3");
     precache_model ("models/weapons/ga_tommy.md3");  // akimbo model
@@ -1571,7 +1436,7 @@ void() weapon_nailgun =
 };
 
 // Spray Can
-void() weapon_supernailgun =
+void() weapon_spraycan =
 {
     precache_model ("models/weapons/v_aerosol.md3");
     precache_model ("models/ammo/g_aerosol.md3");
@@ -1597,14 +1462,33 @@ void() weapon_supernailgun =
 };
 
 
-// TNT (case & bundle)
-void() item_tnt_common =
+// TNT (bundle or case)
+void() weapon_tnt =
 {
+    local vector minSize, maxSize;
+
+    // If we want a case of TNT instead of a bundle
+    if (self.spawnflags)
+    {
+        self.model = "models/weapons/g_tnt.md3";
+        self.netname = "Case of TNT";
+        minSize = '-16 -16 0';
+        maxSize = '16 16 56';
+    }
+    else
+    {
+        self.model = "models/ammo/a_tnt.md3";
+        self.netname = "Bundle of TNT";
+        minSize = '-8 -8 0';
+        maxSize = '8 8 32';
+    }
+
     precache_model ("models/weapons/v_tnt.md3");
     precache_model ("models/weapons/grenades/gr_tnt.md3");
 
     precache_model (self.model);
     setmodel (self, self.model);
+    setsize (self, minSize, maxSize);
 
     self.weapon = IT_TNT;
     self.touch = weapon_touch;
@@ -1621,23 +1505,6 @@ void() item_tnt_common =
     StartItem ();
 };
 
-// Case of TNT
-void() weapon_grenadelauncher =
-{
-    self.model = "models/weapons/g_tnt.md3";
-    self.netname = "Case of TNT";
-    item_tnt_common ();
-    setsize (self, '-16 -16 0', '16 16 56');
-};
-
-// TNT Bundle
-void() item_tnt =
-{
-    self.model = "models/ammo/a_tnt.md3";
-    self.netname = "Bundle of TNT";
-    item_tnt_common ();
-    setsize (self, '-8 -8 0', '8 8 32');
-};
 
 // Proximity bombs
 void() weapon_proximity =
@@ -1688,7 +1555,7 @@ void() weapon_remote =
 };
 
 // Napalm Launcher
-void() weapon_rocketlauncher =
+void() weapon_napalmlauncher =
 {
     precache_model ("models/weapons/v_napalm.md3");
     precache_model ("models/weapons/ga_napalm.md3");
@@ -1712,8 +1579,8 @@ void() weapon_rocketlauncher =
     StartItem ();
 };
 
-// Telsa Cannon
-void() weapon_lightning =
+// Tesla Cannon
+void() weapon_teslacannon =
 {
     precache_model ("models/weapons/v_tesla.md3");
     precache_model ("models/weapons/ga_tesla.md3");  // Akimbo model
@@ -1836,9 +1703,9 @@ void() ammo_touch =
     // flares
     else if (self.weapon == 5)
     {
-        if (other.ammo_flares >= MAX_FLARES)
+        if (other.ammo_flare >= MAX_FLARES)
             return;
-        other.ammo_flares = other.ammo_flares + self.aflag;
+        other.ammo_flare = other.ammo_flare + self.aflag;
     }
     // tnt bundle
     else if (self.weapon == 6)
@@ -1912,7 +1779,7 @@ void() ammo_touch =
 #define AMMO_BIG 1
 
 // Flares
-void() item_flares =
+void() ammo_flares =
 {
     self.touch = ammo_touch;
 
@@ -1929,7 +1796,7 @@ void() item_flares =
 };
 
 // Shells
-void() item_shells =
+void() ammo_shell =
 {
     self.touch = ammo_touch;
 
@@ -1953,7 +1820,7 @@ void() item_shells =
 };
 
 // Bullets
-void() item_spikes =
+void() ammo_bullets =
 {
     self.touch = ammo_touch;
 
@@ -1977,7 +1844,7 @@ void() item_spikes =
 };
 
 // Gasoline cans
-void() item_rockets =
+void() ammo_gas =
 {
     self.touch = ammo_touch;
 
@@ -1993,7 +1860,7 @@ void() item_rockets =
 };
 
 // Batteries
-void() item_cells =
+void() ammo_batteries =
 {
     self.touch = ammo_touch;
 
@@ -2010,7 +1877,7 @@ void() item_cells =
 
 
 // Trapped soul
-void() item_soul =
+void() ammo_soul =
 {
     self.touch = ammo_touch;
 
@@ -2132,24 +1999,6 @@ void() item_key =
     StartItem ();
 };
 
-// Skull Key
-void() item_key1 = { self.spawnflags = 1; item_key (); };
-
-// Eye Key
-void() item_key2 = { self.spawnflags = 2; item_key (); };
-
-// Fire Key
-void() item_key3 = { self.spawnflags = 4; item_key (); };
-
-// Dagger Key
-void() item_key4 = { self.spawnflags = 8; item_key (); };
-
-// Spider Key
-void() item_key5 = { self.spawnflags = 16; item_key (); };
-
-// Moon Key
-void() item_key6 = { self.spawnflags = 32; item_key (); };
-
 
 /*
 ===============================================================================
@@ -2191,7 +2040,7 @@ void() item_artifact_crystal =
 };
 
 // Diving Suit
-void() item_artifact_envirosuit =
+void() item_artifact_divingsuit =
 {
     precache_sound ("foley/swimuw.wav"); // diving suit engage sound
 
@@ -2218,7 +2067,7 @@ void() item_artifact_invisibility =
 };
 
 // Death Mask
-void() item_artifact_invulnerability =
+void() item_artifact_deathmask =
 {
     self.effects = self.effects | EF_RED;
     self.items = IT_INVULNERABILITY;
@@ -2247,7 +2096,7 @@ void() item_artifact_reflect =
 };
 
 // Guns Akimbo
-void() item_artifact_super_damage =
+void() item_artifact_akimbo =
 {
     self.netname = "Guns Akimbo";
     self.model   = "models/items/i_akimbo.md3";

@@ -152,7 +152,7 @@ void() barrel_reset =
 {
     self.solid = SOLID_BBOX;
     self.takedamage = DAMAGE_AIM;
-    self.classname = "misc_explobox2";
+    self.classname = "exploding_barrel";
     self.model = "progs/barrel.mdl";
     self.health = self.max_health;
 };
@@ -198,18 +198,14 @@ void() barrel_explode =
 };
 
 
-/*QUAKED misc_explobox2 (0 .5 .8) (0 0 0) (32 32 64)
-Smaller exploding box, REGISTERED ONLY
-*/
-
-void() misc_explobox2 =
+void() exploding_barrel =
 {
     local float oldz;
 
     self.solid = SOLID_BBOX;
     self.movetype = MOVETYPE_NONE;
-    precache_model ("progs/barrel.mdl"); // maps/b_exbox2.bsp
-    setmodel (self, "progs/barrel.mdl"); // maps/b_exbox2.bsp");
+    precache_model ("progs/barrel.mdl");
+    setmodel (self, "progs/barrel.mdl");
     setsize (self, '-16 -16 0', '16 16 32');
     precache_sound ("weapons/napalm/explodfl.wav");
     if (!self.dmg)
@@ -992,11 +988,9 @@ void() ambient_sngair2      = { ambient_generic ("ambience/sngair2.wav");   };
 void() ambient_suck_wind    = { ambient_generic ("ambience/amb1.wav");      };
 void() ambient_swamp1       = { ambient_generic ("ambience/swamp.wav");     };
 void() ambient_swamp2       = { ambient_generic ("ambience/amb19.wav");     };
-void() ambient_thunder      = { ambient_amb18 ();                           };  // FIXME: should be removed
 void() ambient_torch        = { ambient_generic ("ambience/torch.wav");     };
 void() ambient_train1       = { ambient_generic ("ambience/train1.wav");    };
 void() ambient_underwat     = { ambient_generic ("ambience/underwat.wav");  };
 void() ambient_water        = { ambient_generic ("ambience/water.wav");     };
 void() ambient_waterlap     = { ambient_generic ("ambience/waterlap.wav");  };
 void() ambient_wind2        = { ambient_generic ("ambience/wind2.wav");     };
-void() light_office         = { ambient_buzz2 ();                           };  // FIXME: should be removed(?)

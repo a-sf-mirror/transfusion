@@ -946,19 +946,19 @@
 // entity 2
 {
 "origin" "1024 -16 8"
-"classname" "item_cells"
+"classname" "ammo_batteries"
 }
 // entity 3
 {
 "origin" "672 864 8"
 "spawnflags" "1"
-"classname" "item_spikes"
+"classname" "ammo_bullets"
 }
 // entity 4
 {
 "origin" "640 -864 8"
 "spawnflags" "1"
-"classname" "item_shells"
+"classname" "ammo_shell"
 }
 // entity 5
 {
@@ -968,21 +968,21 @@
 // entity 6
 {
 "origin" "-848 880 8"
-"classname" "weapon_rocketlauncher"
+"classname" "weapon_napalmlauncher"
 }
 // entity 7
 {
-"classname" "weapon_supershotgun"
+"classname" "weapon_sawedoff"
 "origin" "-848 -880 21"
 }
 // entity 8
 {
-"classname" "weapon_nailgun"
+"classname" "weapon_tommygun"
 "origin" "1040 -880 8"
 }
 // entity 9
 {
-"classname" "weapon_lightning"
+"classname" "weapon_teslacannon"
 "origin" "1040 880 8"
 }
 // entity 10
@@ -1013,7 +1013,7 @@
 }
 // entity 12
 {
-"classname" "weapon_lightning"
+"classname" "weapon_teslacannon"
 "origin" "384 320 20"
 }
 // entity 13
@@ -1024,12 +1024,12 @@
 }
 // entity 14
 {
-"classname" "weapon_rocketlauncher"
+"classname" "weapon_napalmlauncher"
 "origin" "-128 320 20"
 }
 // entity 15
 {
-"classname" "weapon_nailgun"
+"classname" "weapon_tommygun"
 "origin" "384 -320 20"
 }
 // entity 16
@@ -1046,23 +1046,23 @@
 }
 // entity 18
 {
-"classname" "weapon_grenadelauncher"
+"classname" "weapon_tnt"
 "spawnflags" "1"
 "origin" "-48 64 48"
 }
 // entity 19
 {
-"classname" "item_cells"
+"classname" "ammo_batteries"
 "origin" "112 -128 8"
 }
 // entity 20
 {
-"classname" "item_rockets"
+"classname" "ammo_gas"
 "origin" "288 -16 8"
 }
 // entity 21
 {
-"classname" "item_spikes"
+"classname" "ammo_bullets"
 "spawnflags" "1"
 "origin" "112 224 8"
 }
@@ -1126,12 +1126,12 @@
 }
 // entity 32
 {
-"classname" "item_artifact_super_damage"
+"classname" "item_artifact_akimbo"
 "origin" "736 416 34"
 }
 // entity 33
 {
-"classname" "weapon_supershotgun"
+"classname" "weapon_sawedoff"
 "origin" "800 128 45"
 }
 // entity 34
@@ -1146,7 +1146,7 @@
 }
 // entity 36
 {
-"classname" "item_soul"
+"classname" "ammo_soul"
 "origin" "-1120 928 46"
 }
 // entity 37
@@ -1156,7 +1156,7 @@
 }
 // entity 38
 {
-"classname" "item_shells"
+"classname" "ammo_shell"
 "spawnflags" "1"
 "origin" "-384 864 8"
 }
@@ -1168,7 +1168,7 @@
 }
 // entity 40
 {
-"classname" "item_spikes"
+"classname" "ammo_bullets"
 "spawnflags" "1"
 "origin" "-448 -864 8"
 }
@@ -1180,7 +1180,7 @@
 }
 // entity 42
 {
-"classname" "item_armorInv"
+"classname" "item_armor_super"
 "origin" "-836 -320 6"
 }
 // entity 43
@@ -1231,21 +1231,21 @@
 }
 // entity 51
 {
-"classname" "item_cells"
+"classname" "ammo_batteries"
 "origin" "112 -864 8"
 }
 // entity 52
 {
 "origin" "-832 -16 8"
-"classname" "item_cells"
+"classname" "ammo_batteries"
 }
 // entity 53
 {
-"classname" "item_cells"
+"classname" "ammo_batteries"
 "origin" "112 864 8"
 }
 // entity 54
 {
 "origin" "288 112 8"
-"classname" "item_rockets"
+"classname" "ammo_gas"
 }

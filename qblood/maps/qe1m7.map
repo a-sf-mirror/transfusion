@@ -8063,15 +8063,15 @@
 "origin" "256 64 448"
 }
 {
-"classname" "weapon_supershotgun"
+"classname" "weapon_sawedoff"
 "origin" "-160 64 232"
 }
 {
-"classname" "item_flares"
+"classname" "ammo_flares"
 "origin" "-296 -280 232"
 }
 {
-"classname" "item_flares"
+"classname" "ammo_flares"
 "origin" "-296 -232 232"
 }
 {
@@ -8115,46 +8115,46 @@
 "origin" "1048 -312 216"
 }
 {
-"classname" "item_shells"
+"classname" "ammo_shell"
 "origin" "48 432 72"
 }
 {
-"classname" "item_cells"
+"classname" "ammo_batteries"
 "origin" "752 432 72"
 }
 {
-"classname" "item_shells"
+"classname" "ammo_shell"
 "spawnflags" "1"
 "origin" "48 -336 64"
 }
 {
-"classname" "item_shells"
+"classname" "ammo_shell"
 "spawnflags" "1"
 "origin" "752 -336 64"
 }
 {
-"classname" "item_rockets"
+"classname" "ammo_gas"
 "origin" "1008 -272 224"
 }
 {
-"classname" "item_rockets"
+"classname" "ammo_gas"
 "origin" "1008 368 224"
 }
 {
-"classname" "weapon_supernailgun"
+"classname" "weapon_spraycan"
 "origin" "1120 64 -8"
 }
 {
-"classname" "item_spikes"
+"classname" "ammo_bullets"
 "spawnflags" "1"
 "origin" "408 432 64"
 }
 {
-"classname" "item_cells"
+"classname" "ammo_batteries"
 "origin" "344 -296 64"
 }
 {
-"classname" "weapon_lightning"
+"classname" "weapon_teslacannon"
 "origin" "-392 64 56"
 }
 {
@@ -9189,7 +9189,7 @@
 }
 }
 {
-"classname" "item_spikes"
+"classname" "ammo_bullets"
 "spawnflags" "1"
 "origin" "296 432 64"
 }
@@ -9300,11 +9300,12 @@
 }
 }
 {
-"classname" "weapon_rocketlauncher"
+"classname" "weapon_napalmlauncher"
 "origin" "984 -328 208"
 }
 {
-"classname" "weapon_grenadelauncher"
+"classname" "weapon_tnt"
+"spawnflags" "1"
 "origin" "976 440 208"
 }
 {
@@ -9316,11 +9317,11 @@
 "origin" "-216 -288 232"
 }
 {
-"classname" "weapon_nailgun"
+"classname" "weapon_tommygun"
 "origin" "352 456 48"
 }
 {
-"classname" "item_artifact_super_damage"
+"classname" "item_artifact_akimbo"
 "angle" "271"
 "origin" "0 64 48"
 }
@@ -9376,7 +9377,7 @@
 }
 }
 {
-"classname" "item_armorInv"
+"classname" "item_armor_super"
 "origin" "824 64 24"
 }
 {

@@ -6404,7 +6404,7 @@
 "origin" "764 -784 -752"
 }
 {
-"classname" "weapon_rocketlauncher"
+"classname" "weapon_napalmlauncher"
 "origin" "-432 944 -644"
 }
 {
@@ -7601,35 +7601,35 @@
 "origin" "1132 -1044 -624"
 }
 {
-"classname" "item_rockets"
+"classname" "ammo_gas"
 "origin" "-272 -476 -684"
 }
 {
-"classname" "item_rockets"
+"classname" "ammo_gas"
 "origin" "-320 -476 -668"
 }
 {
-"classname" "item_rockets"
+"classname" "ammo_gas"
 "origin" "974 542 -666"
 }
 {
-"classname" "item_rockets"
+"classname" "ammo_gas"
 "origin" "974 496 -666"
 }
 {
-"classname" "item_rockets"
+"classname" "ammo_gas"
 "origin" "-720 -366 -666"
 }
 {
-"classname" "item_rockets"
+"classname" "ammo_gas"
 "origin" "-720 -318 -666"
 }
 {
-"classname" "item_rockets"
+"classname" "ammo_gas"
 "origin" "1114 -1166 -666"
 }
 {
-"classname" "item_rockets"
+"classname" "ammo_gas"
 "origin" "1168 -1166 -666"
 }
 {
@@ -7638,103 +7638,100 @@
 "origin" "-784 -574 -666"
 }
 {
-"classname" "weapon_nailgun"
+"classname" "weapon_tommygun"
 "origin" "-514 -830 -686"
 }
 {
-"classname" "item_spikes"
+"classname" "ammo_bullets"
 "spawnflags" "1"
 "origin" "-296 -576 -670"
 }
 {
-"classname" "item_spikes"
+"classname" "ammo_bullets"
 "spawnflags" "1"
 "origin" "-240 -574 -670"
 }
 {
-"classname" "item_shells"
+"classname" "ammo_shell"
 "spawnflags" "1"
 "origin" "-354 -624 -670"
 }
 {
-"classname" "item_shells"
+"classname" "ammo_shell"
 "spawnflags" "1"
 "origin" "-354 -680 -670"
 }
 {
-"classname" "item_tnt"
-"spawnflags" "1"
+"classname" "weapon_tnt"
 "origin" "-806 -922 -684"
 }
 {
-"classname" "item_tnt"
-"spawnflags" "1"
+"classname" "weapon_tnt"
 "origin" "-776 -922 -684"
 }
 {
-"classname" "item_tnt"
-"spawnflags" "1"
+"classname" "weapon_tnt"
 "origin" "-746 -922 -700"
 }
 {
-"classname" "item_cells"
+"classname" "ammo_batteries"
 "spawnflags" "1"
 "origin" "434 -600 -664"
 }
 {
-"classname" "item_cells"
+"classname" "ammo_batteries"
 "spawnflags" "1"
 "origin" "486 -600 -662"
 }
 {
-"classname" "item_cells"
+"classname" "ammo_batteries"
 "spawnflags" "1"
 "origin" "-504 -160 -612"
 }
 {
-"classname" "item_cells"
+"classname" "ammo_batteries"
 "spawnflags" "1"
 "origin" "-462 -200 -612"
 }
 {
-"classname" "item_shells"
+"classname" "ammo_shell"
 "angle" "88"
 "spawnflags" "1"
 "origin" "-218 -372 -666"
 }
 {
-"classname" "item_shells"
+"classname" "ammo_shell"
 "angle" "90"
 "spawnflags" "1"
 "origin" "-270 -372 -666"
 }
 {
-"classname" "item_flares"
+"classname" "ammo_flares"
 "spawnflags" "1"
 "origin" "-310 498 -648"
 }
 {
-"classname" "item_flares"
+"classname" "ammo_flares"
 "spawnflags" "1"
 "origin" "-252 498 -650"
 }
 {
-"classname" "item_shells"
+"classname" "ammo_shell"
 "spawnflags" "1"
 "origin" "-426 464 -650"
 }
 {
-"classname" "item_shells"
+"classname" "ammo_shell"
 "spawnflags" "1"
 "origin" "-424 410 -650"
 }
 {
-"classname" "item_spikes"
+"classname" "ammo_bullets"
 "spawnflags" "1"
 "origin" "-524 228 -650"
 }
 {
-"classname" "item_spikes"
+"classname" "ammo_bullets"
 "spawnflags" "1"
 "origin" "-524 280 -650"
 }
@@ -7764,12 +7761,12 @@
 "origin" "872 766 -666"
 }
 {
-"classname" "item_flares"
+"classname" "ammo_flares"
 "spawnflags" "1"
 "origin" "768 992 -666"
 }
 {
-"classname" "item_flares"
+"classname" "ammo_flares"
 "spawnflags" "1"
 "origin" "768 938 -650"
 }
@@ -7779,42 +7776,42 @@
 "origin" "458 696 -650"
 }
 {
-"classname" "item_cells"
+"classname" "ammo_batteries"
 "spawnflags" "1"
 "origin" "-842 1272 -650"
 }
 {
-"classname" "item_cells"
+"classname" "ammo_batteries"
 "spawnflags" "1"
 "origin" "-780 1272 -650"
 }
 {
-"classname" "weapon_supernailgun"
+"classname" "weapon_spraycan"
 "spawnflags" "1"
 "origin" "-810 166 -650"
 }
 {
-"classname" "weapon_supernailgun"
+"classname" "weapon_spraycan"
 "spawnflags" "1"
 "origin" "-760 166 -650"
 }
 {
-"classname" "weapon_supernailgun"
+"classname" "weapon_spraycan"
 "spawnflags" "1"
 "origin" "-218 212 -650"
 }
 {
-"classname" "weapon_supernailgun"
+"classname" "weapon_spraycan"
 "spawnflags" "1"
 "origin" "-430 214 -666"
 }
 {
-"classname" "weapon_supernailgun"
+"classname" "weapon_spraycan"
 "spawnflags" "1"
 "origin" "550 -1156 -666"
 }
 {
-"classname" "weapon_supernailgun"
+"classname" "weapon_spraycan"
 "spawnflags" "1"
 "origin" "606 -1156 -666"
 }
@@ -7849,7 +7846,7 @@
 "origin" "774 206 -648"
 }
 {
-"classname" "weapon_lightning"
+"classname" "weapon_teslacannon"
 "spawnflags" "1"
 "origin" "956 -242 -652"
 }
@@ -7859,12 +7856,12 @@
 "origin" "388 -236 -388"
 }
 {
-"classname" "weapon_supershotgun"
+"classname" "weapon_sawedoff"
 "spawnflags" "1"
 "origin" "656 362 -488"
 }
 {
-"classname" "weapon_supershotgun"
+"classname" "weapon_sawedoff"
 "spawnflags" "1"
 "origin" "-374 360 -490"
 }
@@ -7874,12 +7871,12 @@
 "origin" "-274 -170 -472"
 }
 {
-"classname" "weapon_nailgun"
+"classname" "weapon_tommygun"
 "spawnflags" "1"
 "origin" "392 922 -644"
 }
 {
-"classname" "item_artifact_super_damage"
+"classname" "item_artifact_akimbo"
 "spawnflags" "1"
 "origin" "272 -250 -462"
 }
@@ -7889,72 +7886,72 @@
 "origin" "-514 -746 -474"
 }
 {
-"classname" "weapon_grenadelauncher"
+"classname" "weapon_tnt"
 "spawnflags" "1"
 "origin" "538 -284 -574"
 }
 {
-"classname" "weapon_grenadelauncher"
+"classname" "weapon_tnt"
 "spawnflags" "1"
 "origin" "540 -340 -574"
 }
 {
-"classname" "item_cells"
+"classname" "ammo_batteries"
 "spawnflags" "1"
 "origin" "960 -342 -650"
 }
 {
-"classname" "item_cells"
+"classname" "ammo_batteries"
 "spawnflags" "1"
 "origin" "960 -142 -636"
 }
 {
-"classname" "item_rockets"
+"classname" "ammo_gas"
 "spawnflags" "1"
 "origin" "-228 -906 -504"
 }
 {
-"classname" "item_rockets"
+"classname" "ammo_gas"
 "spawnflags" "1"
 "origin" "-228 -852 -504"
 }
 {
-"classname" "item_flares"
+"classname" "ammo_flares"
 "spawnflags" "1"
 "origin" "-238 -570 -504"
 }
 {
-"classname" "item_flares"
+"classname" "ammo_flares"
 "spawnflags" "1"
 "origin" "-294 -570 -504"
 }
 {
-"classname" "item_spikes"
+"classname" "ammo_bullets"
 "spawnflags" "1"
 "origin" "-226 -204 -344"
 }
 {
-"classname" "item_spikes"
+"classname" "ammo_bullets"
 "spawnflags" "1"
 "origin" "-226 -160 -344"
 }
 {
-"classname" "weapon_grenadelauncher"
+"classname" "weapon_tnt"
 "spawnflags" "1"
 "origin" "-576 -168 -344"
 }
 {
-"classname" "item_cells"
+"classname" "ammo_batteries"
 "spawnflags" "1"
 "origin" "380 314 -316"
 }
 {
-"classname" "item_cells"
+"classname" "ammo_batteries"
 "spawnflags" "1"
 "origin" "380 362 -316"
 }
 {
-"classname" "weapon_grenadelauncher"
+"classname" "weapon_tnt"
 "spawnflags" "1"
 "origin" "684 336 -316"
 }
@@ -7969,104 +7966,99 @@
 "origin" "898 480 -502"
 }
 {
-"classname" "weapon_nailgun"
+"classname" "weapon_tommygun"
 "spawnflags" "1"
 "origin" "886 -242 -264"
 }
 {
-"classname" "item_flares"
+"classname" "ammo_flares"
 "spawnflags" "1"
 "origin" "-274 -244 -480"
 }
 {
-"classname" "item_flares"
+"classname" "ammo_flares"
 "spawnflags" "1"
 "origin" "-274 -96 -464"
 }
 {
-"classname" "item_spikes"
+"classname" "ammo_bullets"
 "spawnflags" "1"
 "origin" "-638 -362 -464"
 }
 {
-"classname" "item_spikes"
+"classname" "ammo_bullets"
 "spawnflags" "1"
 "origin" "-682 -362 -464"
 }
 {
-"classname" "item_shells"
+"classname" "ammo_shell"
 "angle" "88"
 "spawnflags" "1"
 "origin" "974 1202 -646"
 }
 {
-"classname" "item_shells"
+"classname" "ammo_shell"
 "angle" "88"
 "spawnflags" "1"
 "origin" "916 1202 -638"
 }
 {
-"classname" "item_flares"
+"classname" "ammo_flares"
 "spawnflags" "1"
 "origin" "406 304 -482"
 }
 {
-"classname" "item_flares"
+"classname" "ammo_flares"
 "spawnflags" "1"
 "origin" "408 366 -480"
 }
 {
-"classname" "weapon_supernailgun"
+"classname" "weapon_spraycan"
 "spawnflags" "1"
 "origin" "672 534 -466"
 }
 {
-"classname" "weapon_supernailgun"
+"classname" "weapon_spraycan"
 "spawnflags" "1"
 "origin" "724 534 -482"
 }
 {
-"classname" "weapon_grenadelauncher"
+"classname" "weapon_tnt"
 "spawnflags" "1"
 "origin" "-522 74 -484"
 }
 {
-"classname" "item_cells"
+"classname" "ammo_batteries"
 "spawnflags" "1"
 "origin" "-620 -1010 -686"
 }
 {
-"classname" "item_cells"
+"classname" "ammo_batteries"
 "spawnflags" "1"
 "origin" "-574 -1010 -670"
 }
 {
-"classname" "item_tnt"
-"spawnflags" "1"
+"classname" "weapon_tnt"
 "origin" "-1066 -1138 -656"
 }
 {
-"classname" "item_tnt"
-"spawnflags" "1"
+"classname" "weapon_tnt"
 "origin" "-1066 -1104 -650"
 }
 {
-"classname" "item_tnt"
-"spawnflags" "1"
+"classname" "weapon_tnt"
 "origin" "-1066 -1072 -650"
 }
 {
-"classname" "item_tnt"
-"spawnflags" "1"
+"classname" "weapon_tnt"
 "origin" "-1064 -1038 -650"
 }
 {
-"classname" "item_tnt"
-"spawnflags" "1"
+"classname" "weapon_tnt"
 "origin" "-1064 -1002 -650"
 }
 {
-"classname" "weapon_grenadelauncher"
+"classname" "weapon_tnt"
 "spawnflags" "1"
 "origin" "-1064 516 -650"
 }
@@ -8412,16 +8404,16 @@
 "origin" "1082 -1734 -484"
 }
 {
-"classname" "item_armorInv"
+"classname" "item_armor_super"
 "origin" "-872 -1288 -464"
 }
 {
-"classname" "item_rockets"
+"classname" "ammo_gas"
 "spawnflags" "1"
 "origin" "-384 -1624 -464"
 }
 {
-"classname" "weapon_lightning"
+"classname" "weapon_teslacannon"
 "spawnflags" "1"
 "origin" "-464 -1624 -480"
 }
@@ -8451,33 +8443,33 @@
 "origin" "-248 -1312 -480"
 }
 {
-"classname" "weapon_nailgun"
+"classname" "weapon_tommygun"
 "spawnflags" "1"
 "origin" "-416 -1296 -672"
 }
 {
-"classname" "item_spikes"
+"classname" "ammo_bullets"
 "spawnflags" "1"
 "origin" "-216 -1616 -672"
 }
 {
-"classname" "item_spikes"
+"classname" "ammo_bullets"
 "spawnflags" "1"
 "origin" "-216 -1672 -664"
 }
 {
-"classname" "weapon_supershotgun"
+"classname" "weapon_sawedoff"
 "spawnflags" "1"
 "origin" "1124 -1696 -472"
 }
 {
-"classname" "item_shells"
+"classname" "ammo_shell"
 "angle" "90"
 "spawnflags" "1"
 "origin" "1184 -1520 -664"
 }
 {
-"classname" "item_shells"
+"classname" "ammo_shell"
 "angle" "90"
 "spawnflags" "1"
 "origin" "1184 -1472 -664"
@@ -8489,33 +8481,33 @@
 "origin" "1184 -1352 -520"
 }
 {
-"classname" "weapon_rocketlauncher"
+"classname" "weapon_napalmlauncher"
 "angle" "90"
 "spawnflags" "1"
 "origin" "936 -1560 -616"
 }
 {
-"classname" "item_cells"
+"classname" "ammo_batteries"
 "spawnflags" "1"
 "origin" "1064 -1528 -608"
 }
 {
-"classname" "item_cells"
+"classname" "ammo_batteries"
 "spawnflags" "1"
 "origin" "1064 -1592 -608"
 }
 {
-"classname" "item_armor2"
+"classname" "item_armor_fire"
 "spawnflags" "1"
 "origin" "544 -1560 -656"
 }
 {
-"classname" "item_flares"
+"classname" "ammo_flares"
 "spawnflags" "1"
 "origin" "-576 -1888 -664"
 }
 {
-"classname" "item_flares"
+"classname" "ammo_flares"
 "spawnflags" "1"
 "origin" "-784 -1888 -664"
 }
@@ -8525,17 +8517,17 @@
 "origin" "-688 -1888 -656"
 }
 {
-"classname" "weapon_supernailgun"
+"classname" "weapon_spraycan"
 "spawnflags" "1"
 "origin" "608 -1968 -648"
 }
 {
-"classname" "weapon_supernailgun"
+"classname" "weapon_spraycan"
 "spawnflags" "1"
 "origin" "672 -1968 -664"
 }
 {
-"classname" "weapon_supernailgun"
+"classname" "weapon_spraycan"
 "spawnflags" "1"
 "origin" "736 -1968 -664"
 }
@@ -8550,7 +8542,7 @@
 "origin" "40 -1944 -672"
 }
 {
-"classname" "item_armor0"
+"classname" "item_armor_basic"
 "spawnflags" "1"
 "origin" "540 1248 -660"
 }

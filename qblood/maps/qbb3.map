@@ -1420,35 +1420,35 @@
  }
 }
 {
- "classname" "misc_explobox2"
+ "classname" "exploding_barrel"
  "origin" "1088 288 -144"
 }
 {
- "classname" "misc_explobox2"
+ "classname" "exploding_barrel"
  "origin" "1056 272 -144"
 }
 {
- "classname" "misc_explobox2"
+ "classname" "exploding_barrel"
  "origin" "1088 256 -144"
 }
 {
- "classname" "item_artifact_super_damage"
+ "classname" "item_artifact_akimbo"
  "origin" "1000 184 -120"
 }
 {
- "classname" "weapon_supershotgun"
+ "classname" "weapon_sawedoff"
  "origin" "920 -136 -56"
 }
 {
- "classname" "weapon_nailgun"
+ "classname" "weapon_tommygun"
  "origin" "456 216 -72"
 }
 {
- "classname" "item_shells"
+ "classname" "ammo_shell"
  "origin" "624 -36 -84"
 }
 {
- "classname" "item_shells"
+ "classname" "ammo_shell"
  "origin" "624 0 -84"
 }
 {
@@ -1488,15 +1488,15 @@
  "origin" "756.1 -299.9 -112"
 }
 {
- "classname" "item_shells"
+ "classname" "ammo_shell"
  "origin" "872 8 -96"
 }
 {
- "classname" "item_shells"
+ "classname" "ammo_shell"
  "origin" "912 8 -96"
 }
 {
- "classname" "item_shells"
+ "classname" "ammo_shell"
  "origin" "832 8 -96"
 }
 {
@@ -1504,13 +1504,13 @@
  "origin" "-112 424 0"
 }
 {
- "classname" "item_shells"
+ "classname" "ammo_shell"
  "origin" "-224 80 -112"
  "spawnflags" "1"
  "angle" "45"
 }
 {
- "classname" "item_shells"
+ "classname" "ammo_shell"
  "origin" "24 224 0"
  "spawnflags" "0"
 }
@@ -1535,100 +1535,100 @@
  "spawnflags" "1"
 }
 {
- "classname" "item_armor1"
+ "classname" "item_armor_body"
  "origin" "512 16 -64"
 }
 {
- "classname" "item_armor2"
+ "classname" "item_armor_fire"
  "origin" "-448 576 -64"
 }
 {
- "classname" "item_tnt"
+ "classname" "weapon_tnt"
  "origin" "960 -176 144"
  "spawnflags" "0"
 }
 {
- "classname" "item_shells"
+ "classname" "ammo_shell"
  "origin" "-472 312 -72"
  "spawnflags" "0"
 }
 {
- "classname" "item_shells"
+ "classname" "ammo_shell"
  "origin" "-472 352 -72"
  "spawnflags" "0"
 }
 {
- "classname" "item_shells"
+ "classname" "ammo_shell"
  "origin" "496 528 -144"
  "spawnflags" "1"
 }
 {
- "classname" "item_tnt"
+ "classname" "weapon_tnt"
  "origin" "1008 -176 144"
  "spawnflags" "0"
 }
 {
- "classname" "item_tnt"
+ "classname" "weapon_tnt"
  "origin" "96 240 160"
  "spawnflags" "0"
 }
 {
- "classname" "item_tnt"
+ "classname" "weapon_tnt"
  "origin" "144 240 160"
  "spawnflags" "0"
 }
 {
- "classname" "item_shells"
+ "classname" "ammo_shell"
  "origin" "-288 80 -128"
  "spawnflags" "1"
 }
 {
- "classname" "item_flares"
+ "classname" "ammo_flares"
  "origin" "552 -64 -64"
 }
 {
- "classname" "item_flares"
+ "classname" "ammo_flares"
  "origin" "512 -64 -64"
 }
 {
- "classname" "item_shells"
+ "classname" "ammo_shell"
  "origin" "-24 224 0"
  "spawnflags" "0"
 }
 {
- "classname" "item_shells"
+ "classname" "ammo_shell"
  "origin" "-72 224 0"
  "spawnflags" "0"
 }
 {
- "classname" "item_tnt"
+ "classname" "weapon_tnt"
  "origin" "525.3 320 -128"
- "spawnflags" "1"
+ "spawnflags" "0"
 }
 {
- "classname" "item_tnt"
+ "classname" "weapon_tnt"
  "origin" "696 320 -128"
- "spawnflags" "1"
+ "spawnflags" "0"
 }
 {
- "classname" "item_tnt"
+ "classname" "weapon_tnt"
  "origin" "610.7 320 -128"
- "spawnflags" "1"
+ "spawnflags" "0"
 }
 {
- "classname" "item_tnt"
+ "classname" "weapon_tnt"
  "origin" "440 320 -128"
- "spawnflags" "1"
+ "spawnflags" "0"
 }
 {
- "classname" "item_tnt"
+ "classname" "weapon_tnt"
  "origin" "-162.7 -304 -128"
- "spawnflags" "1"
+ "spawnflags" "0"
 }
 {
- "classname" "item_tnt"
+ "classname" "weapon_tnt"
  "origin" "8 -304 -128"
- "spawnflags" "1"
+ "spawnflags" "0"
 }
 {
  "classname" "weapon_voodoodoll"
@@ -1637,32 +1637,32 @@
  "angle" "180"
 }
 {
- "classname" "item_tnt"
+ "classname" "weapon_tnt"
  "origin" "-77.3 -304 -128"
- "spawnflags" "1"
+ "spawnflags" "0"
 }
 {
- "classname" "weapon_supernailgun"
+ "classname" "weapon_spraycan"
  "origin" "197.3 -224 -128"
  "spawnflags" "1"
 }
 {
- "classname" "weapon_supernailgun"
+ "classname" "weapon_spraycan"
  "origin" "368 -224 -128"
  "spawnflags" "1"
 }
 {
- "classname" "weapon_supernailgun"
+ "classname" "weapon_spraycan"
  "origin" "282.7 -224 -128"
  "spawnflags" "1"
 }
 {
- "classname" "item_tnt"
+ "classname" "weapon_tnt"
  "origin" "-248 -304 -128"
- "spawnflags" "1"
+ "spawnflags" "0"
 }
 {
- "classname" "item_shells"
+ "classname" "ammo_shell"
  "origin" "-120 224 0"
  "spawnflags" "0"
 }
@@ -2117,6 +2117,7 @@
  "origin" "416 48 192"
 }
 {
- "classname" "weapon_grenadelauncher"
+ "classname" "weapon_tnt"
  "origin" "-96 -160 -96"
+ "spawnflags" "1"
 }

@@ -367,14 +367,14 @@ void() Flare_Fire =
     orig = self.origin + v_forward * 8 + '0 0 16';
 
     // If we want to (and can) launch alt-flares
-    if (self.player_state == PS_ALTFIRE && self.ammo_flares >= 8)
+    if (self.player_state == PS_ALTFIRE && self.ammo_flare >= 8)
     {
-        self.currentammo = self.ammo_flares = self.ammo_flares - 8;
+        self.currentammo = self.ammo_flare = self.ammo_flare - 8;
         FireAltFlares (self, orig, dir, mspeed, 1, 20, 3);
         return;
     }
 
-    self.currentammo = self.ammo_flares = self.ammo_flares - 1;
+    self.currentammo = self.ammo_flare = self.ammo_flare - 1;
     FireFlare (self, orig, dir, mspeed);
 };
 
@@ -418,7 +418,7 @@ Draw code for the flaregun
 void() Flare_Draw =
 {
     self.weapon = IT_FLAREGUN;
-    self.currentammo = self.ammo_flares;
+    self.currentammo = self.ammo_flare;
     self.items = self.items - (self.items & (IT_SHELLS | IT_NAILS | IT_CELLS | IT_ROCKETS));
 
     Flare_UpdateView ();

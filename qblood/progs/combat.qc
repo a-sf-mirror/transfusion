@@ -183,9 +183,9 @@ void(entity targ, entity inflictor, entity attacker, float damage, float dflags,
     // FIXME: The damage code should really be rewritten to prevent these kinds of hack
     if (targ.spawnflags & 32)
         if (targ.classname == "exploding_wall")
-            if (inflictor.classname != "misc_explobox2" &&  // TNT barrels
-                inflictor.classname != "grenade"        &&  // All bombs, lighted Spray Can, Napalm Launcher (altfire)
-                inflictor.classname != "missile")           // Napalm Launcher (normal), Life Leech
+            if (inflictor.classname != "exploding_barrel" &&  // TNT barrels
+                inflictor.classname != "grenade"          &&  // All bombs, lighted Spray Can, Napalm Launcher (altfire)
+                inflictor.classname != "missile")             // Napalm Launcher (normal), Life Leech
                 return;
 
     // Used by buttons and triggers to set activator for target firing

@@ -313,8 +313,8 @@ float map_cycle;
 //   ammo_shells  -> sawed-off shotgun
 //   ammo_nails   -> tommy sub-machinegun
 //   ammo_rockets -> napalm launcher (a.k.a. incinerator)
-//   ammo_cells   -> telsa cannon
-.float      ammo_flares;        // flare gun
+//   ammo_cells   -> tesla cannon
+.float      ammo_flare;         // flare gun
 .float      ammo_tnt_bundle;    // standard dynamite
 .float      ammo_tnt_proxy;     // proxy bombs
 .float      ammo_tnt_remote;    // pipebombs
@@ -434,7 +434,7 @@ float map_cycle;
 .float      invisible_time, invisible_sound;
 .float      fly_sound;
 
-.float	    show_hostile;   // set to time+0.2 whenever a client fires a
+.float      show_hostile;   // set to time+0.2 whenever a client fires a
                             // weapon or takes damage.  Used to alert
                             // monsters that otherwise would let the player go
                             // FIXME: check that we set it somewhere and use it

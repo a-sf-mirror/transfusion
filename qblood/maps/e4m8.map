@@ -2058,22 +2058,22 @@
 }
 }
 {
-"classname" "item_armorInv"
+"classname" "item_armor_super"
 "angles" "0 0 0"
 "origin" "-1082 128 35"
 }
 {
-"classname" "item_cells"
+"classname" "ammo_batteries"
 "angles" "0 0 0"
 "origin" "-976 164 47"
 }
 {
-"classname" "item_cells"
+"classname" "ammo_batteries"
 "angles" "0 0 0"
 "origin" "-976 120 47"
 }
 {
-"classname" "item_shells"
+"classname" "ammo_shell"
 "spawnflags" "1"
 "angles" "0 0 0"
 "origin" "-1202 114 35"
@@ -2085,12 +2085,12 @@
 "origin" "6 128 35"
 }
 {
-"classname" "item_soul"
+"classname" "ammo_soul"
 "angles" "0 0 0"
 "origin" "124 98 47"
 }
 {
-"classname" "item_rockets"
+"classname" "ammo_gas"
 "angles" "0 0 0"
 "origin" "-112 100 49"
 }
@@ -2105,24 +2105,24 @@
 "origin" "-264 1408 18"
 }
 {
-"classname" "weapon_rocketlauncher"
+"classname" "weapon_napalmlauncher"
 "angles" "0 0 0"
 "origin" "-538 544 8"
 }
 {
-"classname" "item_cells"
+"classname" "ammo_batteries"
 "angles" "0 0 0"
 "origin" "-250 992 31"
 }
 {
-"classname" "item_shells"
+"classname" "ammo_shell"
 "angle" "272"
 "spawnflags" "1"
 "angles" "0 0 0"
 "origin" "-250 1088 18"
 }
 {
-"classname" "item_spikes"
+"classname" "ammo_bullets"
 "spawnflags" "1"
 "angles" "0 0 0"
 "origin" "-826 1088 18"
@@ -2133,7 +2133,7 @@
 "origin" "-826 992 33"
 }
 {
-"classname" "weapon_nailgun"
+"classname" "weapon_tommygun"
 "angles" "0 0 0"
 "origin" "6 896 18"
 }
@@ -2144,7 +2144,7 @@
 "origin" "-538 -394 -53"
 }
 {
-"classname" "weapon_supershotgun"
+"classname" "weapon_sawedoff"
 "angles" "0 0 0"
 "origin" "-538 -288 -53"
 }
@@ -2172,7 +2172,7 @@
 "origin" "-1198 188 35"
 }
 {
-"classname" "item_flares"
+"classname" "ammo_flares"
 "angles" "0 0 0"
 "origin" "-1200 230 35"
 }
@@ -2199,7 +2199,7 @@
 "origin" "-538 928 18"
 }
 {
-"classname" "weapon_lightning"
+"classname" "weapon_teslacannon"
 "angles" "0 0 0"
 "origin" "-538 1040 27"
 }
@@ -2210,12 +2210,12 @@
 "origin" "116 576 18"
 }
 {
-"classname" "weapon_supershotgun"
+"classname" "weapon_sawedoff"
 "angles" "0 0 0"
 "origin" "26 576 18"
 }
 {
-"classname" "item_shells"
+"classname" "ammo_shell"
 "angle" "182"
 "spawnflags" "1"
 "angles" "0 0 0"
@@ -2239,7 +2239,7 @@
 "origin" "-1082 -14 -52"
 }
 {
-"classname" "item_armor0"
+"classname" "item_armor_basic"
 "angles" "0 0 0"
 "origin" "2 -12 -36"
 }
@@ -2268,19 +2268,19 @@
 "origin" "-538 128 18"
 }
 {
-"classname" "item_soul"
+"classname" "ammo_soul"
 "angles" "0 0 0"
 "origin" "-754 1294 47"
 }
 {
-"classname" "item_shells"
+"classname" "ammo_shell"
 "angle" "182"
 "spawnflags" "1"
 "angles" "0 0 0"
 "origin" "-306 1272 35"
 }
 {
-"classname" "item_artifact_super_damage"
+"classname" "item_artifact_akimbo"
 "angle" "182"
 "angles" "0 89 0"
 "origin" "-540 1488 210"

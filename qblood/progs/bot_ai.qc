@@ -597,9 +597,9 @@ float(entity thing) priority_for_thing =
         // ugly hack
         if (thing._last != self)
             thisp = 20;
-        if (thing.classname == "item_artifact_super_damage")
+        if (thing.classname == "item_artifact_akimbo")
             thisp = 65;
-        else if (thing.classname == "item_artifact_invulnerability")
+        else if (thing.classname == "item_artifact_deathmask")
             thisp = 65;
         else if (thing.classname == "item_health")
         {
@@ -608,31 +608,31 @@ float(entity thing) priority_for_thing =
             if (self.health < 40)
                 thisp = thisp + 50;
         }
-        else if (thing.classname == "item_armorInv")
+        else if (thing.classname == "item_armor_super")
         {
             if (self.armor_body < 200 ||
                 self.armor_fire < 200 ||
                 self.armor_mind < 200 )
                 thisp = 60;
         }
-        else if (thing.classname == "item_armor0")
+        else if (thing.classname == "item_armor_basic")
         {
             if (self.armor_body < 100 ||
                 self.armor_fire < 100 ||
                 self.armor_mind < 100 )
                 thisp = 25;
         }
-        else if (thing.classname == "item_armor1")
+        else if (thing.classname == "item_armor_body")
         {
             if (self.armor_body < 100)
                 thisp = 25;
         }
-        else if (thing.classname == "item_armor2")
+        else if (thing.classname == "item_armor_fire")
         {
             if (self.armor_fire < 100)
                 thisp = 25;
         }
-        else if (thing.classname == "item_armor4")
+        else if (thing.classname == "item_armor_spirit")
         {
             if (self.armor_mind < 100)
                 thisp = 20;
@@ -642,22 +642,22 @@ float(entity thing) priority_for_thing =
             if (!(self.items & IT_FLAREGUN))
                 thisp = 25;
         }
-        else if (thing.classname == "weapon_supershotgun")
+        else if (thing.classname == "weapon_sawedoff")
         {
             if (!(self.items & IT_SAWED_OFF))
                 thisp = 25;
         }
-        else if (thing.classname == "weapon_nailgun")
+        else if (thing.classname == "weapon_tommygun")
         {
             if (!(self.items & IT_TOMMYGUN))
                 thisp = 30;
         }
-        else if (thing.classname == "weapon_supernailgun")
+        else if (thing.classname == "weapon_spraycan")
         {
             if (!(self.items & IT_SPRAY_CAN))
                 thisp = 35;
         }
-        else if (thing.classname == "weapon_grenadelauncher")
+        else if (thing.classname == "weapon_tnt")
         {
             if (!(self.items & IT_TNT))
                 thisp = 30;
@@ -672,12 +672,12 @@ float(entity thing) priority_for_thing =
             if (!(self.items & IT_REMOTE_DETONATOR))
                 thisp = 30;
         }
-        else if (thing.classname == "weapon_rocketlauncher")
+        else if (thing.classname == "weapon_napalmlauncher")
         {
             if (!(self.items & IT_NAPALM_LAUNCHER))
                 thisp = 60;
         }
-        else if (thing.classname == "weapon_lightning")
+        else if (thing.classname == "weapon_teslacannon")
         {
             if (!(self.items & IT_TESLA_CANNON))
                 thisp = 50;
