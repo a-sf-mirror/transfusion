@@ -1257,15 +1257,14 @@ void() Impulses_Player =
     {
         // If bots are disabled
         if (cvar ("sv_disable") & SV_DISABLE_BOTS)
-        {
             Sprint (self, PRINT_HIGH, "Bots are disabled on this server\n");
-            return;
+        else
+        {
+            local float botskill;
+
+            botskill = cvar ("skill");
+            BotConnect (self.impulse - 100, 0, botskill);
         }
-
-        local float botskill;
-
-        botskill = cvar ("skill");
-        BotConnect (self.impulse - 100, 0, botskill);
     }
     else if (self.impulse == 102)
         KickABot();
@@ -1343,15 +1342,14 @@ void() Impulses_Dead =
     {
         // If bots are disabled
         if (cvar ("sv_disable") & SV_DISABLE_BOTS)
-        {
             Sprint (self, PRINT_HIGH, "Bots are disabled on this server\n");
-            return;
+        else
+        {
+            local float botskill;
+
+            botskill = cvar ("skill");
+            BotConnect (self.impulse - 100, 0, botskill);
         }
-
-        local float botskill;
-
-        botskill = cvar ("skill");
-        BotConnect (self.impulse - 100, 0, botskill);
     }
     else if (self.impulse == 102)
         KickABot();
