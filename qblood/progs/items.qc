@@ -155,36 +155,71 @@ void(float timeleft) Invisibility_Drop =
 
 /*
 ============
-PlaceItem
+PlaceItemOrObject
 
-plants the item on the floor
+Plants the item / object on the floor
 ============
 */
-void() PlaceItem =
+void(float isAnObject) PlaceItemOrObject =
 {
-    self.mdl = self.model;      // so it can be restored on respawn
-    self.flags = FL_ITEM;       // make extra wide
-    self.solid = SOLID_TRIGGER;
+    if (!isAnObject)
+    {
+        self.mdl = self.model;      // so it can be restored on respawn
+        self.flags = FL_ITEM;       // make extra wide
+        self.solid = SOLID_TRIGGER;
+    }
+    else
+        self.solid = SOLID_BBOX;
+
     self.movetype = MOVETYPE_TOSS;
     self.velocity = '0 0 0';
     self.origin_z = self.origin_z + 2;
     if (!droptofloor())
     {
-        dprint ("Bonus item \"");
+        if (isAnObject)
+            dprint ("Object \"");
+        else
+            dprint ("Bonus item \"");
         dprint (self.classname);
         dprint ("\" fell out of level at ");
-        dprint (vtos(self.origin));
+        dprint (vtos (self.origin));
         dprint ("\n");
         remove(self);
         return;
     }
 
-    // If the item has an animation loop
+    if (isAnObject)
+    {
+        // If there's no spawn flag and no animation, make the object static
+        // (changes or interactions are then impossible, but as a consequence
+        // the object has virtually no cost from the server point of view)
+        if (!self.spawnflags && !self.think1)
+        {
+            makestatic (self);
+            return;
+        }
+
+        self.touch = SUB_SolidTouch;
+    }
+
+    // If the item/object has an animation loop
     if (self.think1)
     {
         self.nextthink = time + 0.1;
         self.think = self.think1;
     }
+};
+
+/*
+============
+PlaceItem
+
+Plants the item on the floor
+============
+*/
+void() PlaceItem =
+{
+    PlaceItemOrObject (FALSE);
 };
 
 /*
@@ -218,38 +253,7 @@ Plants the object on the floor.
 */
 void() PlaceObject =
 {
-    self.solid = SOLID_BBOX;
-    self.movetype = MOVETYPE_TOSS;
-    self.velocity = '0 0 0';
-    self.origin_z = self.origin_z + 2;
-    if (!droptofloor())
-    {
-        dprint ("Object \"");
-        dprint (self.classname);
-        dprint ("\" fell out of level at ");
-        dprint (vtos(self.origin));
-        dprint ("\n");
-        remove(self);
-        return;
-    }
-
-    // If there's no spawn flag and no animation, make the object static
-    // (changes or interactions are then impossible, but as a consequence
-    // the object has virtually no cost from the server point of view)
-    if (!self.spawnflags && !self.think1)
-    {
-        makestatic (self);
-        return;
-    }
-
-    self.touch = SUB_SolidTouch;
-
-    // If the object has an animation loop
-    if (self.think1)
-    {
-        self.nextthink = time + 0.1;
-        self.think = self.think1;
-    }
+    PlaceItemOrObject (TRUE);
 };
 
 /*
