@@ -28,7 +28,7 @@
 //  Frame Macros for modified 'flame2.mdl'.
 $cd id1/models/flame2
 $origin 0 0 12
-$base base		
+$base base
 $skin skin
 
 // These are grouped scenes.
@@ -924,8 +924,8 @@ void() PM_FlareTouch =
     self.voided = 1;
     #endif
 
-	if (pointcontents(self.origin) == CONTENT_SKY)
-	{
+    if (pointcontents(self.origin) == CONTENT_SKY)
+    {
         remove(self);
         return;
     }
@@ -1044,8 +1044,8 @@ void() PM_AltFlareTouch =
     self.voided = 1;
     #endif
 
-	if (pointcontents(self.origin) == CONTENT_SKY)
-	{
+    if (pointcontents(self.origin) == CONTENT_SKY)
+    {
         remove(self);
         return;
     }
@@ -1108,8 +1108,8 @@ void(entity attacker, vector org, vector dir, float sped, float damage,
         #endif
         fire.movetype   = MOVETYPE_FLYMISSILE;
         fire.skin       = 1;
-	fire.effects    = fire.effects | EF_DIMLIGHT;
-	fire.solid      = SOLID_BBOX;
+        fire.effects    = fire.effects | EF_DIMLIGHT;
+        fire.solid      = SOLID_BBOX;
         fire.angles     = vectoangles(dir) + '90 0 0';
         fire.velocity   = dir * sped;
         fire.touch      = PM_AltFlareTouch;
