@@ -520,7 +520,7 @@ $skin skin
 $frame  frame1 frame2 frame3
 
 $modelname bolt3            // lightning towar bolts
-$cd id1/models/bolt2
+$cd id1/models/bolt3
 $origin 0 0 0
 $base base
 $scale 4
@@ -528,18 +528,25 @@ $skin skin
 $frame  light
 
 $modelname bolt2
+ // tesla cannon alt-fire
 $cd id1/models/bolt2
 $origin 0 0 0
 $base base
 $skin skin
-$frame  light
+$framegroupstart
+$frame  frame1 0.10
+$frame  frame2 0.10
+$frame  frame3 0.10
+$frame  frame4 0.10
+$frame  frame5 0.10
+$framegroupend
 
-$modelname bolt
+$modelname bolt //tesla cannon single fire shot
 $cd id1/models/bolt
 $origin 0 0 0
-$base light
-$skin light
-$frame  light
+$base base
+$skin skin
+$frame  frame
 
 $modelname laser
 $cd id1/models/laser
