@@ -87,10 +87,10 @@ void() W_Precache =
     precache_sound ("weapons/tink1.wav");    // spikes tink (used in c code)
     precache_sound ("weapons/tommygun/tomcock.wav");  // Out of ammo
 //    precache_sound ("weapons/lstart.wav");
-    PM_PrecacheFire ();
 
-// PM:  Temporary -- remove.
-    precache_sound ("weapons/tesla/tessnght.wav");  // Hit
+    PM_PrecacheFire ();
+ // why is this *here* and what does it do? D_L
+    
     precache_sound ("weapons/napalm/explodfs.wav"); // For alt-flares.
 //  PM:  Currently here so alt-napalm won't crash in levels without
 //       incinerator.  Should remove later.
@@ -676,7 +676,7 @@ void(entity client) PM_BoredCaleb =
     local   float   rs;
     local   string  playit;
 
-    rs = random() * 4;
+    rs = random() * 12;
     rs = floor (rs);
 
     if (rs == 0)
@@ -685,8 +685,31 @@ void(entity client) PM_BoredCaleb =
         playit = "player/songs/1094.wav";   // "There's no business like..."
     else if (rs == 2)
         playit = "player/songs/1095.wav";   // "I did it... my way!"
-    else
+    else if (rs == 3)
         playit = "player/songs/1097.wav";   // "...putting on the Ritz."
+    else
+ if (rs == 4)
+        playit = "player/songs/vo3011.wav";   // "sun will come out . . ."
+    else
+ if (rs == 5)
+        playit = "player/songs/vo3024.wav";   // "row row row your boat"
+    else
+ if (rs == 6)
+        playit = "player/songs/vo3026.wav";   // "it's a long way ..."
+    else
+ if (rs == 7)
+        playit = "player/songs/vo3030.wav";   // "somewhere over the rainbow."
+    else
+ if (rs == 8)
+        playit = "player/songs/vo3033.wav";   // "sailing sailing ..."
+    else
+ if (rs == 9)
+        playit = "player/songs/vo3034.wav";   // "on the good ship lollipop."
+    else
+ if (rs == 10)
+        playit = "player/songs/vo3035.wav";   // "i get no kick from champagne...."
+    else
+        playit = "player/songs/vo3039.wav";   // "i've got you under my skin"	
 
     sound (client, CHAN_VOICE, playit, 1, ATTN_NORM);
 };
@@ -713,6 +736,8 @@ void(entity client) PM_PsychoCaleb =
         playit = "player/quips/1039.wav";   // "Son of a bitch must pay!"
     else if (rs == 1)
         playit = "player/quips/1050.wav";   // "Tha, tha, that's all folks!"
+    else if (rs == 2)
+        playit = "player/quips/1057.wav"; // "Rest in pieces"
     else
     {
         // 50% chance of laughing like a psycho.
@@ -737,9 +762,7 @@ void(entity client) PM_PsychoCaleb =
             playit = "player/play1116.wav";
     }
 
-    // To make sure Caleb is loud enough, play sound on multiple channels.
     sound (client, CHAN_VOICE, playit, 1, ATTN_NONE);
-    sound (client, CHAN_BODY, playit, 1, ATTN_NONE);
 };
 
 // This creates a blank entity that inflicts burn damage for several
@@ -1075,10 +1098,9 @@ void() PM_TeslaTouch =
     if (self.style)
     {
         // Alt-fire touch.
-        T_RadiusDamage (self, self.owner, self.dmg, other, "telsa");
+        T_RadiusDamage (self, self.owner, self.dmg, other, "tesla");
 
         self.origin = self.origin - 8*normalize(self.velocity);
-
         sound (self, CHAN_AUTO, "weapons/tesla/tesaltht.wav", 1, ATTN_NORM);
 
         // FIXME:  Remove later.
@@ -1120,16 +1142,20 @@ void(entity attacker, vector org, vector dir, float mspeed, float big) PM_Launch
     jolt.velocity   = dir * mspeed;
     jolt.avelocity  = '300 300 300';
     jolt.angles     = vectoangles(dir);
-    jolt.dmg        = 25; // note, altfire = 170
+    jolt.dmg        = 25; // note, altfire = 170;
+    jolt.model      = "progs/bolt.mdl";
+    {
     if (big)
-        jolt.dmg        = 170;
+    jolt.dmg        = 170;
+    jolt.model      = "progs/bolt2.mdl";
+    
     jolt.style      = big;
-
+    }
     jolt.touch      = PM_TeslaTouch;
     jolt.nextthink  = time + (8000 / mspeed);
     jolt.think      = SUB_Remove;
 
-    setmodel (jolt, "progs/bolt2.mdl");
+    setmodel (jolt, jolt.model);
     setsize (jolt, '0 0 0', '0 0 0');
     setorigin (jolt, org);
 };
@@ -1152,25 +1178,26 @@ void() W_FireLightning =
     local   float   big;
 
     big = FALSE;
-    if ((self.impulse == 12 || self.button1) && self.ammo_cells >= 10)
+    if ((self.impulse == 12 || self.button1) && self.ammo_cells >= 35)
     {
-        sound (self, CHAN_WEAPON, "weapons/tesla/tesaltfr.wav", 1, ATTN_NORM);
+        sound (self, CHAN_WEAPON, "weapons/tesla/tessuper.wav", 1, ATTN_NORM);
         big = TRUE;
-        self.ammo_cells = self.ammo_cells - 10;
+        self.ammo_cells = self.ammo_cells - 35;
     }
     else
     {
         // FIXME:  Is the sound needed?
         if (self.t_width < time)
-        {
+        
+	{
             sound (self, CHAN_WEAPON, "weapons/tesla/tessngfr.wav", 1, ATTN_NORM);
-            self.t_width = time + 0.6;
+            self.t_width = time + 0.3;
         }
         self.ammo_cells = self.ammo_cells - 1;
     }
     self.currentammo = self.ammo_cells;
 
-    org = self.origin + '0 0 4';
+    org = self.origin + '0 0 18'; //FIXME - where is the right origin? D_L
 
     // PM:  This is for the plasma gun-wannabe mode.
     local   vector  dir;
@@ -1652,7 +1679,7 @@ void() W_FireSpikes =
     }
 
     sound (self, CHAN_WEAPON, "weapons/tommygun/_tom.wav", 1, ATTN_NORM);
-    self.attack_finished = time + 0.2;
+    self.attack_finished = time + 0.1; // rate is too slow still D_L
     self.currentammo = self.ammo_nails = self.ammo_nails - 1;
     SpawnShell ();
 
