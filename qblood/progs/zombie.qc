@@ -482,7 +482,7 @@ void() zombie_gib =
     sound (self, CHAN_VOICE, "zombie/z_gib.wav", 1, ATTN_NORM);
     RandomHumanGibs ();
     ThrowHead ("progs/h_zombie.mdl", self.health);
-    self.deadflag = DEAD_DEAD;      // PM:  So death flame goes out.
+    //self.deadflag = DEAD_DEAD;      // So death flame goes out.  // NOTE: (elric) Is it necessary?
 };
 //------------------------------------------------------------------------//
 

@@ -86,7 +86,6 @@ void() player_akshot4 = [$supatt2, player_akshot5] { self.weaponframe = $ashot_f
 void() player_akshot5 = [$supatt1, player_run    ]
 {
     self.weaponframe = $ashot_fire5;
-    self.impulse = 0;
 
     // If we don't have enough ammo anymore, drop the akimbo mode for now
     if (self.ammo_shells < 2)
@@ -151,7 +150,7 @@ void() Shot_Fire =
     local float nbshots;
     local vector dir;
 
-    if ((self.impulse == 12 || self.button1) && (self.currentammo & 1) != 1)
+    if (self.player_state == PS_ALTFIRE && (self.currentammo & 1) != 1)
         nbshots = 2;
     else
         nbshots = 1;
@@ -186,24 +185,18 @@ void() Shot_Attack =
 {
     self.attack_finished = time + 0.7;
 
+    // If it's an altfire shot
+    if (self.button1 || self.impulse == 12)
+        self.player_state = PS_ALTFIRE;
+    else
+        self.player_state = PS_FIRE;
+
     // if we have guns akimbo
     if (self.items & IT_GUNS_AKIMBO)
-    {
-        // If it's an altfire shot and if we have enough ammo
-        if ((self.button1 || self.impulse == 12) && self.ammo_shells >= 3)
-            self.impulse = 12;  // used to keep track of the altfire order
-        else
-        {
-            self.button1 = 0;
-            self.impulse = 0;
-        }
-
         player_akshot1 ();
-    }
     else
     {
         player_shot1 ();
         Shot_Fire ();
-        self.impulse = 0;
     }
 };

@@ -257,6 +257,7 @@ void(entity player) BecomeObserver =
     player.solid            = SOLID_NOT;
     player.movetype         = MOVETYPE_FLY;
     player.deadflag         = DEAD_NO;
+    player.player_state     = PS_IDLE;
 
     setmodel (player, "progs/eyes.mdl");
     setsize (player, '-12 -12 -24', '12 12 32');

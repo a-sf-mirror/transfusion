@@ -1093,41 +1093,6 @@ void() flame_touch =
 
 };
 
-void() W_FireSuperSpikes =
-{
-    local vector    dir;
-    local entity    old;
-
-    if (self.ammo_spray < 1)
-        return;
-
-    self.attack_finished = time + 0.2;
-    self.currentammo = self.ammo_spray = self.ammo_spray - 1;
-    dir = aim (self, 1000);
-
-    newmis = spawn ();
-    #ifdef QUAKEWORLD
-    newmis.voided=0;
-    #endif
-    newmis.owner = self;
-    newmis.movetype = MOVETYPE_FLYMISSILE;  // use MOVETYPE_NOCLIP for free move
-    newmis.solid = SOLID_BBOX;
-
-    newmis.angles = vectoangles(dir);
-
-    newmis.touch = flame_touch;
-    newmis.classname = "spike";
-    newmis.think = SUB_Remove;
-    newmis.nextthink = time + 0.6;
-    setmodel (newmis, "progs/sprayfir.spr");
-    setsize (newmis, '-5 -5 -7', '5 5 7');
-    setorigin (newmis, self.origin + '0 0 10' + v_forward * 50 + v_right * 8);
-
-    newmis.velocity = dir * 550;
-
-    newmis.frame = floor (random () * 3);
-};
-
 
 void() spike_touch =
 {
@@ -1453,9 +1418,7 @@ void() Fork_Attack;
 void() Flare_Attack;
 void() Shot_Attack;
 void() Tommy_Attack;
-void() player_supernail1;
-void() player_altsupernail1;
-void() player_lightcan1;
+void() Spray_Attack;
 void() player_rocket1;
 void() Tesla_Attack;
 void() Napalm_Attack;
@@ -1484,16 +1447,7 @@ void() W_Attack =
     else if (self.weapon == IT_TOMMYGUN)
         Tommy_Attack ();
     else if (self.weapon == IT_SUPER_NAILGUN)
-    {
-        // Altfire
-        if (self.tnt_time)
-        {
-            self.attack_finished = time + 0.6;
-            player_altsupernail1 ();
-        }
-        else
-            player_supernail1 ();
-    }
+        Spray_Attack ();
     else if (self.weapon == IT_GRENADE_LAUNCHER ||
              self.weapon == IT_PROXIMITY_BOMB   ||
              self.weapon == IT_REMOTE_DETONATOR )
@@ -1508,6 +1462,8 @@ void() W_Attack =
         Tesla_Attack ();
     else if (self.weapon == IT_VOODOO_DOLL)
         Voodoo_Attack ();
+
+    self.impulse = 0;
 };
 
 /*
@@ -1960,6 +1916,8 @@ void() BuildThrowMeter =
 {
     ResetIdle (self);  // Don't let Caleb rave
 
+    self.player_state = PS_CHARGE;
+
     if (self.charge >= 20)
     {
         // Maxed out
@@ -1975,6 +1933,7 @@ void() BuildThrowMeter =
 
 
 // This controls charging and firing of normal dynamite and spray can
+void() player_lightcan1;
 void() W_ChargeNormal =
 {
     local   float   altfire;
@@ -1990,8 +1949,6 @@ void() W_ChargeNormal =
     // Check if player is holding lit dynamite or spray can
     if (self.tnt_time)
     {
-        // We have lit dynamite
-
         // If the fuse is burned up, the TNT explodes in our hands...
         if (self.tnt_time && self.tnt_time <= time)
         {

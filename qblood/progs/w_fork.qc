@@ -66,10 +66,13 @@ void() player_fork2 =
 };
 void() player_fork1 =
 {
+    // self.frame has been initialized by Fork_Attack
     self.nextthink = time + 0.1;
     self.think = player_fork2;
 
     self.weaponframe = $fork_fire1;
+
+    self.player_state = PS_FIRE;
 };
 
 
@@ -190,5 +193,4 @@ void() Fork_Attack =
 
     player_fork1 ();
     self.attack_finished = time + 0.5;
-    self.impulse = 0;
 };

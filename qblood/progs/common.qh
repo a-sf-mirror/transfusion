@@ -85,6 +85,15 @@
 #define DEAD_DEAD           2
 #define DEAD_RESPAWNABLE    3
 
+// player_state values
+#define PS_IDLE         0
+#define PS_FIRE         1
+#define PS_ALTFIRE      2   // includes remote/proxy altfire (dropping)
+#define PS_CHARGE       3   // charging the weapon (normal fire with TNT/remote/proxy)
+#define PS_HOLD_FIRE    4   // holding fire (altfire with TNT or spray can)
+#define PS_DRAW         5
+#define PS_HOLSTER      6
+
 // takedamage values
 #define DAMAGE_NO   0
 #define DAMAGE_YES  1

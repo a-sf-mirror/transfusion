@@ -428,11 +428,13 @@ void() Flare_Fire =
     // If we want to (and can) launch alt-flares
     if ((self.impulse == 12 || self.button1) && self.ammo_flares >= 8)
     {
+        self.player_state = PS_ALTFIRE;
         self.currentammo = self.ammo_flares = self.ammo_flares - 8;
         FireAltFlares (self, orig, dir, mspeed, 10, 50);
         return;
     }
 
+    self.player_state = PS_FIRE;
     self.currentammo = self.ammo_flares = self.ammo_flares - 1;
     FireFlare (self, orig, dir, mspeed);
 };
@@ -450,5 +452,4 @@ void() Flare_Attack =
     player_flare1 ();
     Flare_Fire ();
     self.attack_finished = time + 0.5;
-    self.impulse = 0;
 };

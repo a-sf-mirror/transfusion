@@ -100,7 +100,7 @@ Napalm_ThrowBouncingBall
 Activate the split function of a napalm ball
 
 NOTE: we must do that because we spawn them just besides walls,
-      so they explode as soon as they spawn.
+      so they would explode as soon as they spawn.
 ================
 */
 void() Napalm_ActivateBall =
@@ -231,8 +231,6 @@ void() Napalm_BallTouch =
         newmis.cnt = floor (self.cnt / 2);
         self.cnt = self.cnt - newmis.cnt;
         newmis.velocity = v_forward * 500 + v_right * 100;
-/*        newmis.velocity_x = random() * 150 + 150;
-        newmis.velocity_y = random() * 150 + 150;*/
         newmis.velocity_z = random() * 150 + 150;
         Napalm_ThrowBouncingBall (newmis);
         setorigin (newmis, self.origin - 8 * v_forward);
@@ -240,8 +238,6 @@ void() Napalm_BallTouch =
         newball = spawn ();
         newball.cnt = self.cnt;
         newball.velocity = v_forward * 500 - v_right * 100;
-/*        newball.velocity_x = random() * 150 + 150;
-        newball.velocity_y = random() * 150 + 150;*/
         newball.velocity_z = random() * 150 + 150;
         Napalm_ThrowBouncingBall (newball);
         setorigin (newball, self.origin - 8 * v_forward);
@@ -275,7 +271,7 @@ void() Napalm_Fire =
     makevectors (self.v_angle);
     newmis.velocity = aim(self, 1000);
 
-    if (self.impulse == 12 || self.button1)
+    if (self.player_state == PS_ALTFIRE)
     {
         // set the number of bouncing balls
         if (self.ammo_rockets > 12)
@@ -327,6 +323,12 @@ Attack code for the napalm launcher
 */
 void() Napalm_Attack =
 {
+    // Normal fire or altfire?
+    if (self.impulse == 12 || self.button1)
+        self.player_state = PS_ALTFIRE;
+    else
+        self.player_state = PS_FIRE;
+
     // If we have guns akimbo
     if (self.items & IT_GUNS_AKIMBO)
     {
@@ -340,6 +342,4 @@ void() Napalm_Attack =
     }
 
     Napalm_Fire ();
-
-    self.impulse = 0;
 };

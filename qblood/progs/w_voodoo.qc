@@ -209,6 +209,8 @@ void() Voodoo_Attack =
     // Alt-fire mode
     if ((self.impulse == 12 || self.button1) && self.ammo_voodoo >= 1)
     {
+        self.player_state = PS_ALTFIRE;
+
         sound (self, CHAN_WEAPON, "weapons/voodoodl/voochant.wav", 1, ATTN_NORM);
         player_altvoodoo1 ();
 
@@ -218,12 +220,12 @@ void() Voodoo_Attack =
     // Normal fire mode
     else
     {
+        self.player_state = PS_FIRE;
+
         damage = Voodoo_Stab ();
         player_voodoo1 ();
         Voodoo_ApplyDamage (damage);
 
         self.attack_finished = time + 0.5;
     }
-
-    self.impulse = 0;
 };

@@ -35,9 +35,8 @@ void() player_run;
 
 void()  player_stand1 =[    $axstnd1,   player_stand1   ]
 {
-    // Don't reset the weapon frame if we're holding a lit spray can
-    if (self.weapon != IT_SUPER_NAILGUN || self.weaponframe != 5)
-        self.weaponframe=0;
+    self.weaponframe = 0;
+
     if (self.velocity_x || self.velocity_y)
     {
         self.walkframe=0;
@@ -62,9 +61,7 @@ void()  player_stand1 =[    $axstnd1,   player_stand1   ]
 
 void()  player_run =[   $rockrun1,  player_run  ]
 {
-    // Don't reset the weapon frame if we're holding a lit spray can
-    if (self.weapon != IT_SUPER_NAILGUN || self.weaponframe != 5)
-        self.weaponframe = 0;
+    self.weaponframe = 0;
 
     if (!self.velocity_x && !self.velocity_y)
     {
@@ -98,58 +95,6 @@ void() muzzleflash =
     self.effects = self.effects | EF_MUZZLEFLASH;
     #endif
 };
-
-
-//============================================================================
-
-void() player_supernail =
-{
-    if ((!self.button0 && !self.button1 && self.impulse != 12)  || intermission_running || self.ammo_spray < 1)
-    {
-        // Stop the fire sound
-        sound (self, CHAN_WEAPON, "misc/null.wav", 0, ATTN_NORM);
-        self.t_width = 0;
-
-        player_run ();
-        return;
-    }
-
-    // Start the fire sound if necessary
-    if (self.t_width <= time)
-    {
-        sound (self, CHAN_WEAPON, "weapons/spraycan/sprayfir.wav", 0.5, ATTN_NORM);
-        self.t_width = time + 2.5;
-    }
-
-    muzzleflash ();
-
-    self.weaponframe = 1;
-
-    W_FireSuperSpikes ();
-    self.attack_finished = time + 0.2;
-};
-
-void() player_supernail1 = [$nailatt1, player_supernail2] { player_supernail (); };
-void() player_supernail2 = [$nailatt2, player_supernail1] { player_supernail (); };
-
-void() player_lightcan1 = [$shotatt1, player_lightcan2] {self.weaponframe = 2;};
-void() player_lightcan2 = [$shotatt1, player_lightcan3] {self.weaponframe = 3;};
-void() player_lightcan3 = [$shotatt1, player_lightcan4] {self.weaponframe = 4;};
-void() player_lightcan4 = [$shotatt1, player_lightcan5] {self.weaponframe = 5;};
-void() player_lightcan5 = [$shotatt1, player_lightcan6] {self.weaponframe = 6;};
-void() player_lightcan6 = [$shotatt1, player_lightcan4] {self.weaponframe = 7;};
-
-void() player_altsupernail1 = [$shotatt1, player_altsupernail2] { self.weaponframe = 8; };
-void() player_altsupernail2 = [$shotatt1, player_altsupernail3] { self.weaponframe = 9; };
-void() player_altsupernail3 = [$shotatt1, player_altsupernail4] { self.weaponframe = 10; };
-void() player_altsupernail4 = [$shotatt1, player_altsupernail5]
-{
-    self.weaponframe = 11;
-    W_FireGrenade ();
-    W_Uncharge ();
-    ShowThrowMeter ();
-};
-void() player_altsupernail5 = [$shotatt1, player_run          ] { self.weaponframe = 12; };
 
 
 //============================================================================

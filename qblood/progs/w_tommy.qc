@@ -227,7 +227,13 @@ void() Tommy_Attack =
     // If it's a tommy gun altfire start and if we have enough ammo
     if ((self.impulse == 12 || self.button1) &&
         (! (self.items & IT_GUNS_AKIMBO) || self.ammo_cells >= 2))
+    {
+        self.player_state = PS_ALTFIRE;
         player_alttommy1 ();
+    }
     else
+    {
+        self.player_state = PS_FIRE;
         player_tommy1 ();
+    }
 };

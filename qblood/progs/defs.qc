@@ -357,39 +357,40 @@ entity team2_lastspawn;
 .void()     th_run;
 .void()     th_missile;
 .void()     th_melee;
-.void(entity attacker, float damage)        th_pain;
+.void(entity attacker, float damage) th_pain;
 .void()     th_die;
 
 .entity     oldenemy;       // mad at this player before taking damage
 
 .float      speed;
 
-.float  lefty;
+.float      lefty;
 
-.float  search_time;
-.float  attack_state;
+.float      search_time;
+.float      attack_state;
 
 
 //
 // player only fields
 //
 #ifdef QUAKEWORLD
-.float          voided;
+.float      voided;
 #endif
 
 // Observer
-.float observer;
-.float do_observer;
+.float      observer;
+.float      do_observer;
 
 .float      walkframe;
 
 .float      items2;
 
 #ifdef QUAKEWORLD
-// Zoid Additions
 .float      maxspeed;       // Used to set Maxspeed on a player
 .float      gravity;        // Gravity Multiplier (0 to 1.0)
 #endif
+
+.float      player_state;   // cf PS_*
 
 .float      attack_finished;
 .float      pain_finished;

@@ -21,7 +21,7 @@
 #include "player.qh"
 
 
-void(float big) Tesla_Fire;
+void() Tesla_Fire;
 
 
 //============================================================================
@@ -89,20 +89,28 @@ void() player_tesla =
     if (self.weaponframe > $atesla_fire4)
         self.weaponframe = $atesla_fire1;
 
-    Tesla_Fire (FALSE);
+    Tesla_Fire ();
 };
 
-void() player_tesla1 = [$light1, player_tesla2] { self.weaponframe = $tesla_fire1; Tesla_Fire (FALSE); };
-void() player_tesla2 = [$light2, player_tesla3] { self.weaponframe = $tesla_fire2; Tesla_Fire (FALSE); };
-void() player_tesla3 = [$light1, player_tesla4] { self.weaponframe = $tesla_fire3; Tesla_Fire (FALSE); };
-void() player_tesla4 = [$light2, player_tesla5] { self.weaponframe = $tesla_fire4; Tesla_Fire (FALSE); };
-void() player_tesla5 = [$light1, player_tesla6] { self.weaponframe = $tesla_fire1; Tesla_Fire (FALSE); };
+void() player_tesla1 = [$light1, player_tesla2]
+{
+    self.player_state = PS_FIRE;
+
+    self.weaponframe = $tesla_fire1;
+    Tesla_Fire ();
+};
+void() player_tesla2 = [$light2, player_tesla3] { self.weaponframe = $tesla_fire2; Tesla_Fire (); };
+void() player_tesla3 = [$light1, player_tesla4] { self.weaponframe = $tesla_fire3; Tesla_Fire (); };
+void() player_tesla4 = [$light2, player_tesla5] { self.weaponframe = $tesla_fire4; Tesla_Fire (); };
+void() player_tesla5 = [$light1, player_tesla6] { self.weaponframe = $tesla_fire1; Tesla_Fire (); };
 void() player_tesla6 = [$light2, player_tesla7] { player_tesla (); };
 void() player_tesla7 = [$light1, player_tesla6] { player_tesla (); };
 
 // Altfire
 void()  player_alttesla1  = [$shotatt1, player_alttesla2 ]
 {
+    self.player_state = PS_ALTFIRE;
+
     // Select the right sound
     if (self.items & IT_GUNS_AKIMBO)
         sound (self, CHAN_WEAPON, "weapons/tesla/tesakima.wav", 1, ATTN_NORM);
@@ -125,7 +133,7 @@ void()  player_alttesla11 = [$shotatt2, player_alttesla12] { self.weaponframe = 
 void()  player_alttesla12 = [$shotatt1, player_alttesla13] { self.weaponframe = $atesla_alt12; };
 void()  player_alttesla13 = [$shotatt2, player_alttesla14] { self.weaponframe = $atesla_alt13; };
 void()  player_alttesla14 = [$shotatt1, player_alttesla15] { self.weaponframe = $atesla_alt14; };
-void()  player_alttesla15 = [$shotatt2, player_alttesla16] { self.weaponframe = $atesla_alt15; Tesla_Fire (TRUE); };
+void()  player_alttesla15 = [$shotatt2, player_alttesla16] { self.weaponframe = $atesla_alt15; Tesla_Fire (); };
 void()  player_alttesla16 = [$shotatt1, player_alttesla17] { self.weaponframe = $atesla_alt16; };
 void()  player_alttesla17 = [$shotatt2, player_alttesla18] { self.weaponframe = $atesla_alt17; };
 void()  player_alttesla18 = [$shotatt1, player_alttesla19] { self.weaponframe = $atesla_alt18; };
@@ -212,7 +220,7 @@ Tesla_LaunchJolt
 Spawn the tesla projectile
 ============
 */
-void(vector org, vector dir, float mspeed, float big) Tesla_LaunchJolt =
+void(vector org, vector dir, float mspeed) Tesla_LaunchJolt =
 {
     local entity jolt;
 
@@ -228,18 +236,19 @@ void(vector org, vector dir, float mspeed, float big) Tesla_LaunchJolt =
     jolt.classname  = "tesla ball";
     jolt.velocity   = dir * mspeed;
     jolt.angles     = vectoangles(dir);
-    if (big)
+    if (self.player_state == PS_ALTFIRE)
     {
         jolt.dmg    = 170;
         jolt.model  = "progs/bolt2.mdl";
+        jolt.style  = 1;
     }
     else
     {
         jolt.dmg       = 25;
         jolt.model     = "progs/bolt.mdl";
         jolt.avelocity = '300 300 300';
+        jolt.style     = 0;
     }
-    jolt.style      = big;
     jolt.touch      = Tesla_JoltTouch;
     jolt.nextthink  = time + (8000 / mspeed);
     jolt.think      = SUB_Remove;
@@ -257,7 +266,7 @@ Tesla_Fire
 Shot with a tesla cannon
 ============
 */
-void(float big) Tesla_Fire =
+void() Tesla_Fire =
 {
     local   vector  org;
     local   vector  dir;
@@ -282,8 +291,8 @@ void(float big) Tesla_Fire =
     WriteByte (MSG_ONE, SVC_SMALLKICK);
     #endif
 
-    // If we want an altfire shot and that we have enough ammo to proceed
-    if (big && self.ammo_cells >= 35 * akimboFactor)
+    // If we want an altfire shot (we've already checked the ammo count in Tesla_Attack)
+    if (self.player_state == PS_ALTFIRE)
     {
         // NOTE: we have already started the sound in "player_alttesla1"
 
@@ -292,8 +301,6 @@ void(float big) Tesla_Fire =
     }
     else
     {
-        big = FALSE;  // cancel the altfire order
-
         sound (self, CHAN_WEAPON, "weapons/tesla/tessngfr.wav", 1, ATTN_NORM);
 
         self.ammo_cells = self.ammo_cells - akimboFactor;
@@ -306,13 +313,13 @@ void(float big) Tesla_Fire =
 
     // 1st shot
     org = self.origin + v_forward * 50 + '0 0 12' + v_right * 12;
-    Tesla_LaunchJolt (org, dir, mspeed, big);
+    Tesla_LaunchJolt (org, dir, mspeed);
 
     // 2nd shot in akimbo mode
     if (akimboFactor == 2)
     {
         org = org - v_right * 24;  // Shot from the left side this time
-        Tesla_LaunchJolt (org, dir, mspeed, big);
+        Tesla_LaunchJolt (org, dir, mspeed);
 
         // If we don't have enough ammo anymore, drop the akimbo mode for now
         if (self.ammo_cells < 2)
@@ -340,6 +347,4 @@ void() Tesla_Attack =
         player_alttesla1();
         self.attack_finished = time + 2.1;
     }
-
-    self.impulse = 0;
 };

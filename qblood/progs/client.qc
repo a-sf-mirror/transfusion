@@ -712,6 +712,7 @@ void() PutClientInServer =
     self.touch = SUB_Null;  // remove the "HeadTouch" binding (if any)
 
     self.deadflag = DEAD_NO;
+    self.player_state = PS_IDLE;
     // paustime is set by teleporters to keep the player from moving a while
     self.pausetime = 0;
 
