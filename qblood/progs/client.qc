@@ -1389,10 +1389,8 @@ void() PlayerPostThink =
         // if higher than 300 units, do 5 damage, and set the falling death flag if player is killed
         else if (self.jump_flag < -750)     // was -650
         {
-            // PM:  Armor does not protect against falling.
-            // Quake falling damage = 5.
-            aspeed = 0 - self.jump_flag;
-            aspeed = (aspeed - 700) * 0.2;
+            // Armor does not protect against falling.
+            aspeed = (-700 - self.jump_flag) * 0.2;
             T_NewDamage (self, world, world, aspeed, 0, "falling");
         }
         else
@@ -1407,7 +1405,7 @@ void() PlayerPostThink =
 
     W_WeaponFrame ();
 
-// PM:  Check for boredom.
+    // Check for boredom.
     if (self.velocity == '0 0 0')
     {
         if (self.idle_time <= time)
@@ -1438,7 +1436,7 @@ void() ClientConnect =
 
     if (deathmatch)
     {
-        sound (self, CHAN_AUTO, "thevoice/vo1.wav", 1, ATTN_NORM); //Let the Bloodbath Begin!
+        sound (self, CHAN_AUTO, "thevoice/vo1.wav", 1, ATTN_NORM); // Let the Bloodbath Begin!
         self.do_observer = 1;
     }
     else

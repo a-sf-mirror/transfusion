@@ -97,10 +97,10 @@ void() CTF_FlagTouch =
         if (self.cnt == FLAG_AT_BASE)
         {
             // the player doesn't have the enemy flag. Nothing to do...
-            if (! (other.items & IT_ENEMY_FLAG))
+            if (! (other.items2 & IT2_ENEMY_FLAG))
                 return;
 
-            other.items = other.items - IT_ENEMY_FLAG;
+            other.items2 = other.items2 - IT2_ENEMY_FLAG;
 
             if (self.team == TEAM_COLOR1)
                 team1score = team1score + 1;
@@ -154,7 +154,7 @@ void() CTF_FlagTouch =
     centerprint (other, "ыоу гот тхе енемы флаг\n\nретурн то басе");  // == "YOU GOT THE ENEMY FLAG!\n\nRETURN TO BASE!"
     sound (other, CHAN_ITEM, self.noise, 1, ATTN_NORM);
 
-    other.items = other.items + IT_ENEMY_FLAG;
+    other.items2 = other.items2 + IT2_ENEMY_FLAG;
 
     // pick up the flag
     self.cnt = FLAG_CARRIED;
@@ -221,13 +221,13 @@ void() CTF_PlayerDropFlag =
     local string kn;
     local entity e;
 
-    if (!(self.items & IT_ENEMY_FLAG))
+    if (!(self.items2 & IT2_ENEMY_FLAG))
         return;
     if (self.team == TEAM_COLOR1)
         kn = "item_flag_team2";
     else
         kn = "item_flag_team1";
-    self.items = self.items - IT_ENEMY_FLAG;
+    self.items2 = self.items2 - IT2_ENEMY_FLAG;
     e = find(world, classname, kn);
     if (e != world)
         TeamDropFlag (e);

@@ -884,41 +884,11 @@ void() item_powerup =
 
 //various powerups that aren't in other sections already
 
-// Proximity grenade model
-// FIXME: move to weapons when code is complete
-
-void() weapon_proximity =
-{
-    self.model = "progs/g_proxy.mdl";
-    self.noise = "items/weaponup.wav";
-    item_lure ();
-};
-
-// Remote Detonator model
-// FIXME: move to weapons when code is complete
-
-void() weapon_remote =
-{
-    self.model = "progs/g_remote.mdl";
-    self.noise = "items/weaponup.wav";
-    item_lure ();
-};
-
 // Life Leech model
 //  FIXME: move to weapons when code is complete
-
 void() weapon_lifeleech =
 {
     self.model = "progs/g_leech.mdl";
-    self.noise = "items/weaponup.wav";
-    item_lure ();
-};
-
-//  TNT Bundle model
-//  FIXME: move to weapons when code is complete
-void() item_tnt =
-{
-    self.model = "progs/i_tnt.mdl";
     self.noise = "items/weaponup.wav";
     item_lure ();
 };
@@ -1024,11 +994,56 @@ megahealth will add 100 health, then
 rot you down to your maximum health limit,
 one point per second.
 */
+.float  healamount, healtype;
+
+void() health_touch =
+{
+    local   float amount;
+    local   string  s;
+
+    if (other.classname != "player")
+        return;
+
+    if (self.healtype == 2) // Megahealth?  Ignore max_health...
+    {
+        if (other.health >= 200)
+            return;
+        if (!T_Heal(other, self.healamount, 1))
+            return;
+    }
+    else
+    {
+        if (!T_Heal(other, self.healamount, 0))
+            return;
+    }
+
+    Sprint(other, PRINT_LOW, "Picked up ");
+    s = ftos(self.healamount);
+    Sprint(other, PRINT_LOW, self.netname);
+    Sprint(other, PRINT_LOW, " \n");
+
+    // health touch sound
+    sound(other, CHAN_ITEM, self.noise, 1, ATTN_NORM);
+
+    stuffcmd (other, "bf\n");
+
+    self.model = string_null;
+    self.solid = SOLID_NOT;
+
+    // Do NOT rot health after taking life seed.
+    if (deathmatch)
+    {
+        self.nextthink = time + 20;
+        self.think = SUB_regen;
+    }
+
+    activator = other;
+    SUB_UseTargets();       // fire all targets / killtargets
+};
+
 
 #define H_ROTTEN    1
 #define H_MEGA      2
-.float  healamount, healtype;
-void() health_touch;
 
 void() item_health =
 {
@@ -1072,52 +1087,6 @@ void() item_health =
     StartItem ();
 };
 
-
-void() health_touch =
-{
-    local   float amount;
-    local   string  s;
-
-    if (other.classname != "player")
-        return;
-
-    if (self.healtype == 2) // Megahealth?  Ignore max_health...
-    {
-        if (other.health >= 200)
-            return;
-        if (!T_Heal(other, self.healamount, 1))
-            return;
-    }
-    else
-    {
-        if (!T_Heal(other, self.healamount, 0))
-            return;
-    }
-
-    Sprint(other, PRINT_LOW, "Picked up ");
-    s = ftos(self.healamount);
-    Sprint(other, PRINT_LOW, self.netname);
-    Sprint(other, PRINT_LOW, " \n");
-
-// health touch sound
-    sound(other, CHAN_ITEM, self.noise, 1, ATTN_NORM);
-
-    stuffcmd (other, "bf\n");
-
-    self.model = string_null;
-    self.solid = SOLID_NOT;
-
-// PM:  Do NOT rot health after taking life seed.
-    if (deathmatch)
-    {
-        self.nextthink = time + 20;
-        self.think = SUB_regen;
-    }
-
-    activator = other;
-    SUB_UseTargets();               // fire all targets / killtargets
-};
-
 /*
 ===============================================================================
 
@@ -1125,8 +1094,6 @@ ARMOR
 
 ===============================================================================
 */
-
-void() armor_touch;
 
 void() armor_touch =
 {
@@ -1347,7 +1314,7 @@ float(float w) RankForWeapon =
         return 2;
     if (w == IT_SUPER_NAILGUN)
         return 3;
-    if (w == IT_GRENADE_LAUNCHER || w == IT_PROXIMITY_BOMB)
+    if (w == IT_GRENADE_LAUNCHER || w == IT_PROXIMITY_BOMB || w == IT_REMOTE_DETONATOR)
         return 4;
     if (w == IT_SUPER_SHOTGUN)
         return 5;
@@ -1366,7 +1333,7 @@ float (float w) WeaponCode =
         return 4;
     if (w == IT_SUPER_NAILGUN)
         return 5;
-    if (w == IT_GRENADE_LAUNCHER || w == IT_PROXIMITY_BOMB)
+    if (w == IT_GRENADE_LAUNCHER || w == IT_PROXIMITY_BOMB || w == IT_REMOTE_DETONATOR)
         return 6;
     if (w == IT_ROCKET_LAUNCHER)
         return 7;
@@ -1461,6 +1428,24 @@ void() weapon_touch =
         new = IT_GRENADE_LAUNCHER;
         other.ammo_tnt_bundle = other.ammo_tnt_bundle + 5;
     }
+    else if (self.classname == "item_tnt")
+    {
+        new = IT_GRENADE_LAUNCHER;
+        other.ammo_tnt_bundle = other.ammo_tnt_bundle + 1;
+        leave = 0;
+    }
+    else if (self.classname == "weapon_proximity")
+    {
+        new = IT_PROXIMITY_BOMB;
+        other.ammo_tnt_proxy = other.ammo_tnt_proxy + 1;
+        leave = 0;
+    }
+    else if (self.classname == "weapon_remote")
+    {
+        new = IT_REMOTE_DETONATOR;
+        other.ammo_tnt_remote = other.ammo_tnt_remote + 1;
+        leave = 0;
+    }
     else if (self.classname == "weapon_lightning")
     {
         if (leave && (other.items & IT_LIGHTNING) )
@@ -1478,21 +1463,17 @@ void() weapon_touch =
     else
         objerror ("weapon_touch: unknown classname");
 
-    // Remove unnessary msgs
-    if (!deathmatch)
-    {
-        Sprint (other, PRINT_LOW, "Picked up ");
-        Sprint (other, PRINT_LOW, self.netname);
-        Sprint (other, PRINT_LOW, "\n");
-    }
+    Sprint (other, PRINT_LOW, "Picked up ");
+    Sprint (other, PRINT_LOW, self.netname);
+    Sprint (other, PRINT_LOW, "\n");
 
-// weapon touch sound
+    // weapon touch sound
     sound (other, CHAN_ITEM, "items/weaponup.wav", 1, ATTN_NORM);
     stuffcmd (other, "bf\n");
 
     bound_other_ammo ();
 
-// change to the weapon
+    // change to the weapon
     old = other.items;
     other.items = other.items | new;
 
@@ -1619,6 +1600,43 @@ void() weapon_grenadelauncher =
     self.netname = "Dynamite";
     self.touch = weapon_touch;
     setsize (self, '-16 -16 0', '16 16 56');
+    StartItem ();
+};
+
+//  TNT Bundle model
+void() item_tnt =
+{
+    precache_model ("progs/i_tnt.mdl");
+    setmodel (self, "progs/i_tnt.mdl");
+    self.weapon = IT_GRENADE_LAUNCHER;
+    self.netname = "Dynamite";
+    self.touch = weapon_touch;
+    setsize (self, '0 0 0', '32 32 32');
+    StartItem ();
+};
+
+
+// Proximity grenade
+void() weapon_proximity =
+{
+    precache_model ("progs/g_proxy.mdl");
+    setmodel (self, "progs/g_proxy.mdl");
+    self.weapon = IT_PROXIMITY_BOMB;
+    self.netname = "Proximity Bomb";
+    self.touch = weapon_touch;
+    setsize (self, '0 0 0', '32 32 32');
+    StartItem ();
+};
+
+// Remote Detonator model
+void() weapon_remote =
+{
+    precache_model ("progs/g_remote.mdl");
+    setmodel (self, "progs/g_remote.mdl");
+    self.weapon = IT_REMOTE_DETONATOR;
+    self.netname = "Remote Detonator";
+    self.touch = weapon_touch;
+    setsize (self, '0 0 0', '32 32 32');
     StartItem ();
 };
 
@@ -2343,13 +2361,6 @@ void() BackpackTouch =
             Sprint (other, PRINT_LOW, self.netname);
         }
 
-    // if the player was using his best weapon,
-	// change up to the new one if better
-    stemp = self;
-    self = other;
-    best = W_BestWeapon();
-    self = stemp;
-
     // change weapons
     other.ammo_shells = other.ammo_shells + self.ammo_shells;
     other.ammo_nails = other.ammo_nails + self.ammo_nails;
@@ -2425,9 +2436,11 @@ void() BackpackTouch =
         if (acount)
             Sprint(other, PRINT_LOW, ", ");
         acount = 1;
-        s = ftos(self.ammo_flares);
+        s = ftos(self.ammo_tnt_bundle);
         Sprint (other, PRINT_LOW, s);
         Sprint (other, PRINT_LOW, " TNT");
+
+        other.items = other.items | IT_GRENADE_LAUNCHER;
     }
     if (self.ammo_tnt_proxy)
     {
@@ -2437,6 +2450,8 @@ void() BackpackTouch =
         s = ftos(self.ammo_tnt_proxy);
         Sprint (other, PRINT_LOW, s);
         Sprint (other, PRINT_LOW, " proximity bombs");
+
+        other.items = other.items | IT_PROXIMITY_BOMB;
     }
     if (self.ammo_tnt_remote)
     {
@@ -2446,6 +2461,8 @@ void() BackpackTouch =
         s = ftos(self.ammo_tnt_remote);
         Sprint (other, PRINT_LOW, s);
         Sprint (other, PRINT_LOW, " remote detonators");
+
+        other.items = other.items | IT_REMOTE_DETONATOR;
     }
     if (self.ammo_spray)
     {
@@ -2508,32 +2525,37 @@ void() DropBackpack =
     item = spawn();
     item.origin = self.origin - '0 0 24';
 
-    // If the proximity bombs were selected, switch to grenade launcher
-    if (self.weapon == IT_PROXIMITY_BOMB)
-        self.weapon = IT_GRENADE_LAUNCHER;
-
-    item.items = self.weapon;
-    if (item.items == IT_AXE)
-        item.netname = "Pitchfork";
-    else if (item.items == IT_SHOTGUN)
-        item.netname = "Flare Gun";
-    else if (item.items == IT_SUPER_SHOTGUN)
-        item.netname = "Sawed-off";
-    else if (item.items == IT_NAILGUN)
-        item.netname = "Tommy Gun";
-    else if (item.items == IT_SUPER_NAILGUN)
-        item.netname = "Spray Can";
-    else if (item.items == IT_GRENADE_LAUNCHER)
-        item.netname = "Dynamite";
-    else if (item.items == IT_ROCKET_LAUNCHER)
-        item.netname = "Napalm Launcher";
-    else if (item.items == IT_LIGHTNING)
-        item.netname = "Tesla Cannon";
-    else if (item.items == IT_VOODOO_DOLL)
-        item.netname = "Voodoo Doll";
-    else
+    // If the current weapon is dynamite, don't record it (it's just ammo)
+    if (self.weapon = IT_GRENADE_LAUNCHER ||
+        self.weapon == IT_PROXIMITY_BOMB  ||
+        self.weapon == IT_REMOTE_DETONATOR)
+    {
+        item.items = 0;
         item.netname = "";
-    // need voodoo doll, tnt variants, life leech
+    }
+    // else, record the weapon name
+    else
+    {
+        item.items = self.weapon;
+        if (item.items == IT_AXE)
+            item.netname = "Pitchfork";
+        else if (item.items == IT_SHOTGUN)
+            item.netname = "Flare Gun";
+        else if (item.items == IT_SUPER_SHOTGUN)
+            item.netname = "Sawed-off";
+        else if (item.items == IT_NAILGUN)
+            item.netname = "Tommy Gun";
+        else if (item.items == IT_SUPER_NAILGUN)
+            item.netname = "Spray Can";
+        else if (item.items == IT_ROCKET_LAUNCHER)
+            item.netname = "Napalm Launcher";
+        else if (item.items == IT_LIGHTNING)
+            item.netname = "Tesla Cannon";
+        else if (item.items == IT_VOODOO_DOLL)
+            item.netname = "Voodoo Doll";
+        else
+            item.netname = "";
+    }
 
     item.ammo_shells = self.ammo_shells;
     item.ammo_nails = self.ammo_nails;
