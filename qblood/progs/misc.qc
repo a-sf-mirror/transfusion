@@ -801,10 +801,14 @@ void(string gibname, float dm) ThrowRubble=
 
     // set the skin of the piece of rubble/glass
     if (self.skin <= 4)
-        new.skin = self.skin;
-    else
-        new.skin = self.skin - 5;
+        new.skin = self.skin; // rubble models have 4 skins
+    
+    else if (self.skin == 5) //glass model has 2 skins, so if mapper sets skin to "5", use first skin in model
+         new.skin = 0;
 
+    else new.skin = 1; //mapper has chosen skin 6, so use skin1 in the actual model
+    
+    // set the proper noise
     if (self.noise1)
     {
         new.noise1 = self.noise1;  // set noise1 for the rubble
@@ -854,7 +858,7 @@ void () wall_killed =
             self.dest_y = (random() * 100) - 50;
             self.dest_z = (random() * 100);
 
-            if (self.skin > 4)
+            if (self.skin == 5 || self.skin == 6)
             {
                 ThrowRubble ("progs/glass1.mdl", self.health);
                 ThrowRubble ("progs/glass2.mdl", self.health);
@@ -937,7 +941,7 @@ void() exploding_wall =
     // precache rubble models (two models used since red trails on gibs, grey on other rubble)
     if (! (self.spawnflags & 16))  // if rubble is not turned off
     {
-        if (self.skin > 4)  // if skin is set to glass, use the glass shards instead - d.turner
+        if (self.skin == 5 || self.skin == 6)  // if skin is set to glass, use the glass shards instead - d.turner
         {
             precache_model ("progs/glass1.mdl");
             precache_model ("progs/glass2.mdl");
@@ -958,14 +962,14 @@ void() exploding_wall =
         // self.noise1 - rubble bounce 1
         // self.noise2 - rubble bounce 2
 
-        if (self.skin > 4)
+        if (self.skin == 5 || self.skin == 6)
         {
             self.noise = "misc/glashit2.wav";
             self.noise1 = "misc/glashit3.wav";
             self.noise2 = "misc/glashit4.wav";
         }
 
-        else if(self.skin == 3)
+        else if (self.skin == 3)
         {
             self.noise = "misc/wb_metal.wav";
             self.noise1 = "misc/methit1.wav";

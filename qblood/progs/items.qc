@@ -550,7 +550,6 @@ void() obj_pot2 =
     StartItem ();
     };
 
-/*
 // large vase, 4 skins
 
 void() obj_pot3 =
@@ -696,10 +695,10 @@ void() obj_stool =
 
 // another scroll
 
-void() obj_h-book =
+void() obj_hbook =
     {
-    precache_model("progs/h-book.mdl");
-    setmodel(self, "progs/h-book.mdl");
+    precache_model("progs/hbook.mdl");
+    setmodel(self, "progs/hbook.mdl");
 
     setsize (self, '0 0 0', '32 32 56');
     StartItem ();
@@ -742,8 +741,8 @@ void() obj_mage =
 
 void() obj_shovel =
     {
-    precache_model("progs/shovel.mdl");
-    setmodel(self, "progs/shovel.mdl");
+    precache_model("progs/shovl.mdl");
+    setmodel(self, "progs/shovl.mdl");
 
     setsize (self, '0 0 0', '32 32 56');
     StartItem ();

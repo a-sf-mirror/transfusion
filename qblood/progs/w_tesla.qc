@@ -264,11 +264,13 @@ void(vector org, vector dir, float mspeed) Tesla_LaunchJolt =
         jolt.dmg    = 170;
         jolt.model  = "progs/bolt2.mdl";
         jolt.style  = 1;
+	jolt.skin   = 0;
     }
     else
     {
         jolt.dmg       = 25;
         jolt.model     = "progs/bolt.mdl";
+	jolt.skin      = 0; //skin 0 is for tesla, skin 1 is for life leech
         jolt.avelocity = '300 300 300';
         jolt.style     = 0;
     }
@@ -277,6 +279,7 @@ void(vector org, vector dir, float mspeed) Tesla_LaunchJolt =
     jolt.think      = SUB_Remove;
 
     setmodel (jolt, jolt.model);
+    self.skin = jolt.skin;
     setsize (jolt, '-2 -2 -2', '2 2 2');
     setorigin (jolt, org);
 };
