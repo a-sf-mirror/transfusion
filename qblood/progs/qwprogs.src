@@ -1,6 +1,15 @@
 ../qwprogs.dat
 
 defs.qc
+
+bot.qc
+bot_way.qc
+bot_fight.qc
+bot_ai.qc
+bot_misc.qc
+bot_phys.qc
+bot_move.qc
+
 subs.qc
 fight.qc
 ai.qc

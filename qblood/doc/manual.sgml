@@ -1,0 +1,121 @@
+<!doctype linuxdoc system>
+<article>
+
+   <!-- Header and TOC -->
+
+   <title> qBlood manual
+   <author> Mathieu Olivier <tt>&lt;elric@planetblood.com&gt;</tt>
+   <date>v0.0.0 devel, October 25, 2001
+   <abstract>
+      This manual covers <url url="http://www.planetblood.com/qblood/"
+      name="qBlood"> installation and usage.
+   </abstract>
+   <toc>
+
+   <!-- Introduction -->
+
+   <sect> <heading> Introduction <p>
+      The qBlood Project aims to recreate an old DOS game from Monolith
+      Productions called Blood, using the Quake engine. Although qBlood is
+      still just a <it>mod</it>, we plan to make it an independant game. The
+      original Blood is a remarkable game, and the qBlood team hopes you'll
+      have as much fun playing it as you would have playing Blood.
+
+      Obviously, you'll be more at ease if you already know Blood, or Quake.
+      But even if it's not the case, don't worry: this manual will tell you all
+      you have to know about qBlood.
+   </sect>
+
+   <!-- Installation -->
+
+   <sect> <heading> Installation <p>
+      Before you start qBlood installation, you'll need a working Quake
+      installation. Which means a Quake compatible binary, either an official
+      Quake binary or one of the enhanced versions that were created since its 
+      source code release; you will also need the Quake game data, <tt>pak0.pak
+      </tt> and <tt>pak1.pak</tt> in the <tt>id1</tt> subdirectory. Note that
+      qBlood supports both classic Quake (also known as NetQuake or NQ) and
+      QuakeWorld (QW), although NQ is the only way to play single player games.
+   </sect>
+
+   <!-- Basic usage -->
+
+   <sect> <heading> Basic usage <p>
+      <sect1> Game types <p>
+         qBlood supports 5 game types:
+         <itemize>
+            <item> Single player game (deathmatch = 0, and coop = 0)<p>
+            <item> Cooperative game (deathmatch = 0, and coop = 1)<p>
+            <item> BloodBath / DeathMatch (deathmatch = 1, and teamplay = 0)<p>
+            <item> Team BloodBath (deathmatch = 1, and teamplay not 0). If you
+            set teamplay to 2, team members can damage each other.<p>
+            <item> Capture The Flag (deathmatch = 2). This game type can't be
+            set via the interface. You need to use the console. As with TBB,
+            setting teamplay to 2 activates friendly fire.<p>
+         </itemize>
+      </sect1>
+
+      <sect1> Impulses <p>
+         Let's start with the impulse list:
+         <itemize>
+            <item> impulses 1 to 9: select a weapon<p>
+            <item> impulses 10 and 11: cycle to next/previous weapon<p>
+            <item> impulse 12: secondary fire<p>
+            <item> impulse 13: use the currently selected item<p>
+            <item> impulses 14 and 15: select previous/next item<p>
+            <item> impulse 16: view the current value of the next armor type<p>
+            <item> impulse 141: identify the player you're aiming at<p>
+         </itemize>
+
+         All last impulses are considered cheats (not available in multiplayer
+         games, except if the server has the "sv_allowCheat" cvar set to a
+         non-zero value).
+         <itemize>
+            <item> impulse 251: Give full armor<p>
+            <item> impulse 252: Burn yourself !<p>
+            <item> impulse 253: Give all inventory items<p>
+            <item> impulse 254: Give all weapons, ammos, and keys<p>
+            <item> impulse 255: Give Quad damage<p>
+         </itemize>
+      </sect1>
+   </sect>
+
+   <!-- Weapons -->
+
+   <sect><heading>Weapons<p>
+      You have 12 differents weapons at your disposal in qBlood. Each of them
+      but one has a normal fire and a secondary fire, also known as altfire.
+      Most of the time, it's a deadlier mode that consumes more ammo.
+      <descrip>
+         <tag>Pitch Fork</tag> your starting weapon. Deadly. No altfire mode.
+         <tag>Flare Gun</tag> ...
+         <tag>Shotgun</tag> no description needed I think. Altfire makes you
+         fire both shells.
+         <tag>Tommy Gun</tag> the machinegun you've surely already seen in old
+         gangster movies. The altfire moves your gun horizontaly while
+         firing.
+         <tag>Napalm Launcher</tag> a kind of rocket launcher, except that it
+         throws napalm balls. The alftire mode is a surprise...
+         <tag>TNT / Proximity Bombs / Remote Detonators</tag> ...
+         <tag>Spray Can</tag> ...
+         <tag>Tesla Cannon</tag> ...
+         <tag>Voodoo Doll</tag> this magical weapon causes spiritual damage to
+         your opponent. But beware: miss him and you'll be the one who will
+         take the pain! The altfire consumes all your ammo in one powerful
+         spiritual blow.
+         <tag> Life Leech</tag> (not yet implemented)
+      </descrip>
+   </sect>
+
+   <!-- Links -->
+
+   <sect> Links <label id="Links"> <p>
+      <itemize>
+         <item> <url url="http://www.planetblood.com/qblood/"
+            name="The qBlood Project">: our home page<p>
+         <item> <url url="http://blood.sourceforge.net/"
+            name="qBlood on SourceForge.net">: our development page<p>
+      </itemize>
+   </sect>
+
+</article>

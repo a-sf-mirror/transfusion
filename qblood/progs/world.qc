@@ -242,6 +242,8 @@ void() worldspawn =
 
     lastspawn = world;
 
+    BotInit();  // FrikBot
+
     // Compute the game type
     #ifdef QUAKEWORLD
     local float teamplay, deathmatch, coop;
@@ -398,6 +400,8 @@ void() StartFrame =
     timelimit = cvar("timelimit") * 60;
     fraglimit = cvar("fraglimit");
     skill     = cvar("skill");
+
+    BotFrame(); // FrikBot
 
     framecount = framecount + 1;
 };

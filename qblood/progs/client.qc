@@ -1145,6 +1145,9 @@ void() PlayerPreThink =
     local   float   mspeed, aspeed;
     local   float   r;
 
+    if (BotPreFrame()) // FrikBot
+        return;
+
     if (intermission_running)
     {
         IntermissionThink ();   // otherwise a button could be missed between
@@ -1376,6 +1379,9 @@ void() PlayerPostThink =
     local   float   mspeed, aspeed;
     local   float   r;
 
+    if (BotPostFrame()) // FrikBot
+        return;
+
     // if we're not allowed to act (in intermission, or dead, or observer)
     if (self.view_ofs == '0 0 0' || self.deadflag || self.observer)
         return;
@@ -1428,6 +1434,8 @@ called when a player connects to a server
 */
 void() ClientConnect =
 {
+    ClientInRankings(); // FrikBot
+
     Bprint (PRINT_HIGH, self.netname);
     Bprint (PRINT_HIGH, " lives again!\n"); // entered the game
 
@@ -1454,6 +1462,8 @@ called when a player disconnects from a server
 */
 void() ClientDisconnect =
 {
+    ClientDisconnected(); // FrikBot
+
     // if the level end trigger has been activated, just return
     // since they aren't *really* leaving
     if (gameover)

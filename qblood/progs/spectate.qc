@@ -38,6 +38,8 @@ called when a spectator connects to a server
 */
 void() SpectatorConnect =
 {
+    ClientFixRankings(); // FrikBot
+
     bprint (PRINT_MEDIUM, "Spectator ");
     bprint (PRINT_MEDIUM, self.netname);
     bprint (PRINT_MEDIUM, " entered the game\n");
