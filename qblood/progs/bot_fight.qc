@@ -224,9 +224,9 @@ vector(float wep) weapon_range =
     else if (wep == IT_TOMMYGUN)
         return '180 0 3000';
     else if (wep == IT_NAPALM_LAUNCHER)
-        return '180 48 3000';
+        return '360 180 3000';
     else if (wep == IT_TNT)
-        return '180 48 512';
+        return '360 180 512';
     else if (wep == IT_PROXIMITY_BOMB)
         return '180 48 512';
     else if (wep == IT_REMOTE_DETONATOR)
@@ -255,6 +255,9 @@ void(float brange) bot_weapon_switch =
     local   float   it, flag, pulse;
     local vector v;
 
+    // Set up a default in case I can't find a decent weapon - "Should" fix lighter clicking bug
+    pulse = IMP_PITCHFORK;
+
     it = self.items & 127;
 
     while(it)
@@ -264,6 +267,12 @@ void(float brange) bot_weapon_switch =
         {
             flag = IT_VOODOO_DOLL;
             pulse = IMP_VOODOO_DOLL;
+        }
+        // Life Leech
+        else if(self.ammo_leech >= 1 && (it & IT_LIFE_LEECH))
+        {
+            flag = IT_LIFE_LEECH;
+            pulse = IMP_LIFE_LEECH;
         }
 		// Napalm Launcher
         else if ((self.ammo_rockets >= 1) && (it & IT_NAPALM_LAUNCHER))
@@ -276,18 +285,6 @@ void(float brange) bot_weapon_switch =
         {
             flag = IT_TESLA_CANNON;
             pulse = IMP_TESLA_CANNON;
-        }
-        // Life Leech
-        else if(self.ammo_leech >= 1 && (it & IT_LIFE_LEECH))
-        {
-            flag = IT_LIFE_LEECH;
-            pulse = IMP_LIFE_LEECH;
-        }
-        // Spray Can
-        else if(self.ammo_spray >= 1 && (it & IT_SPRAY_CAN))
-        {
-            flag = IT_SPRAY_CAN;
-            pulse = IMP_SPRAY_CAN;
         }
         // Sawed Off
         else if(self.ammo_shells >= 2 && (it & IT_SAWED_OFF))
@@ -306,6 +303,12 @@ void(float brange) bot_weapon_switch =
         {
             flag = IT_FLAREGUN;
             pulse = IMP_FLAREGUN;
+        }
+        // Spray Can
+        else if(self.ammo_spray >= 1 && (it & IT_SPRAY_CAN))
+        {
+            flag = IT_SPRAY_CAN;
+            pulse = IMP_SPRAY_CAN;
         }
         // TNT
         else if ((self.ammo_tnt_bundle >= 1) && (it & IT_TNT))
@@ -353,6 +356,21 @@ void() bot_shoot =
 
     if (fabs(g) > 7 * (4 - self.b_skill))
         return; // not again!
+
+    if (
+        (self.weapon == IT_TNT              ) ||
+		(self.weapon == IT_PROXIMITY_BOMB   ) ||
+		(self.weapon == IT_REMOTE_DETONATOR )
+       )
+    {
+        // Charge how far you want to throw the "grenade" before throwing
+        local float dist, temp;
+        local vector delta;
+        
+        delta = (self.enemy.origin - self.origin);
+        dist = vlen(delta);
+        self.charge = ceil(dist / 50);
+    }
 
 	if (
 	    (self.weapon == IT_FLAREGUN        ) ||
