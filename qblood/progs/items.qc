@@ -874,6 +874,18 @@ void() obj_brainjar =
     StartObject ();
 };
 
+// drum-type barrell
+// skin0 is zombie head with blood,  "Caution Toxic Waste"
+// skin1 is green slime, "Caution - Toxic"
+void() obj_drum =
+{
+    precache_model("progs/drum.mdl");
+    setmodel(self, "progs/drum.mdl");
+    
+    setsize (self, '-14 -14 -1', '14 14 36');
+    StartObject ();
+};
+
 
 /*
 ===================================
