@@ -6,7 +6,7 @@
    <title> Transfusion manual
    <author> Mathieu Olivier and Dave Turner
       <tt>&lt;{elric,darth_linux}@planetblood.com&gt;</tt>
-   <date>v1.0.0, October 22, 2002
+   <date>v1.0.1, October 22, 2002
    <abstract>
       This manual covers installation and usage of the
       <ref id="links" name="Transfusion"> game.
@@ -425,10 +425,42 @@
             ensure your server won't have bots and won't change its initial
             game type.
          </itemize>
-         Your server must have a "set" command, or an automatic cvar creation
-         at progs request, to allow you to use the new cvars though. It's not
+         Your server must have a "set" command or an automatic cvar creation
+         at progs request to allow you to use the new cvars though. It's not
          the case of the original Quake binaries and of quite a lot of more
          modern versions of the Quake engine. Be sure to check that.
+
+         In general you won't have problems with Transfusion specific cvars.
+         The <ref id="menu" name="voting menu"> allows the players to set most
+         of them manually as needed, so you shouldn't have to worry about that.
+         That said, there's one particular case that is indeed problematic: when
+         you want to set a Transfusion specific cvar right at server start,
+         using the command line or some config file. At this time, the
+         Transfusion cvars won't be created yet and the program will tell you
+         that it doesn't know this command. This is due to the fact that they
+         are created by the game code the first time you start a map.
+
+         For instance, if you run "transfusion +set g_warmup 15 +map bb3", the
+         <ref id="g_warmup" name="g_warmup"> value will be 0 because the map
+         is launched after the "set" command. The right way to do it is:
+         "transfusion +map bb3 +set g_warmup 15". Actually, this example is
+         even trickier than that, because you will probably want to have a
+         warmup at once. Unfortunately, the value is set after you start the
+         map, so you won't get a warmup the first time. The best way to do it
+         is then: "transfusion +map bb3 +set g_warmup 15 +restart". With the
+         addition of this last command, you'll restart the map immediately, and
+         so you'll have a warmup.
+         
+         With the engine we provide with Transfusion, it's even more
+         complicated (yes, it's possible). To put it in a nutshell, DarkPlaces
+         doesn't launch a map when it executes the "map" command. Instead, it
+         waits until all parts of the engine are initialized to do so. This
+         means that you'll have to make your commands waiting too. How to do
+         that? With the "wait" command. The previous example becomes
+         "transfusion +map bb3 +wait +wait +wait +wait +wait +set g_warmup 15
+         +restart". Yes, the 5 "wait" are necessary, because the engine has the
+         time to execute the command buffer 4 times before the map is actually
+         launched.
       </sect1>
 
       <sect1><heading>Map cycling<label id="map cycling"><p>
@@ -468,25 +500,6 @@
 
    <sect><heading>Frequently Asked Questions<p>
       <descrip>
-         <tag>I set the cvar &lt;insert_a_cvar_name_here&gt; to
-         &lt;insert_a_value_here&gt; but it doesn't do anything, or the engine
-         says it doesn't know this command</tag>
-         If the cvar you try to set is a Transfusion special cvar, it is created
-         by the game code the first time you start a map. So you need to check 2
-         things: 1) that the engine you use support cvar creation by the game
-         code (the engine we provide with Transfusion does this), 2) that you
-         have run the game code (i.e. launched a map) at least once before
-         trying to set the cvar value.
-
-         For instance, if you run "transfusion +set g_warmup 15 +map bb3", the
-         "g_warmup" value will be 0 because the map is launched after the "set"
-         command. The right way to do it is: "transfusion +map bb3 +set
-         g_warmup 15". Actually, this example is even trickier than that,
-         because you will probably want to have a warmup at once. Unfortunately,
-         the value is set after you start the map, so you won't get a warmup the
-         first time. The best way to do it is then: "transfusion +map bb3 +set
-         g_warmup 15 +restart". With the addition of this last command, you'll
-         restart the map immediately, and so have a warmup.
          <tag>I just replaced a PAK file and some of the objects look all
          messed up</tag>
          Delete the "glquake" directory inside all of your Quake directories
