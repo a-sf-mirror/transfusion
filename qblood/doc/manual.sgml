@@ -5,7 +5,7 @@
 
    <title> BloodBath manual
    <author> Mathieu Olivier <tt>&lt;elric@planetblood.com&gt;</tt>
-   <date>v?.?.? (development), January 13, 2002
+   <date>v?.?.? (development), January 17, 2002
    <abstract>
       This manual covers <url url="http://www.planetblood.com/qblood/"
       name="BloodBath"> installation and usage.
@@ -189,6 +189,13 @@
 
    <sect> <heading> Frequently Asked Questions <p>
       <descrip>
+         <tag>I can't spawn bots (server is full) / nobody can join my NQ server</tag>
+         You may have forgotten to put "-listen 8" or more in Quake's command line
+         ("-dedicated 8" for a dedicated server). By default, Quake allows only 1
+         client into the game. That's why you must explicitely start a multiplayer
+         game with the menu or add a "-listen" or "-dedicated" argument to your
+         command line to tell Quake you want more clients.
+
          <tag>Quake exits with: <em>Z_Malloc: failed on allocation of XXX bytes</em></tag>
          The engine hasn't allocated enough "zone" memory. You can change this
          with the "-zone" command line argument. With most engines, "-zone 256"

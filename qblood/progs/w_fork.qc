@@ -34,7 +34,13 @@ $modelname v_axe
 $frame fork_idle1
 
 // fire
-$frame fork_fire1 fork_fire2 fork_fire3
+$frame fork_fire1 fork_fire2 fork_fire3 fork_fire4
+
+// draw
+$frame fork_draw1 fork_draw2 fork_draw3 fork_draw4
+
+// holster
+$frame fork_holster1 fork_holster2 fork_holster3 fork_holster4
 
 
 // ----- Player related code ----- //
@@ -45,7 +51,7 @@ void() player_fork4 =
     self.nextthink = time + 0.1;
     self.think = player_run;
 
-    self.weaponframe = $fork_idle1;
+    self.weaponframe = $fork_fire4;
 };
 void() player_fork3 =
 {
@@ -76,12 +82,17 @@ void() player_fork1 =
 };
 
 // Normal draw
-// NOTE: no animation to play for now
-void() player_forkdraw1 = [$axstnd1, player_run] { self.weaponframe = 0; };
+void() player_forkdraw1 = [$axstnd1, player_forkdraw2] { self.weaponframe = $fork_draw1; };
+void() player_forkdraw2 = [$axstnd1, player_forkdraw3] { self.weaponframe = $fork_draw2; };
+void() player_forkdraw3 = [$axstnd1, player_forkdraw4] { self.weaponframe = $fork_draw3; };
+void() player_forkdraw4 = [$axstnd1, player_run      ] { self.weaponframe = $fork_draw4; };
 
 // Normal holster
-// NOTE: no animation to play for now
-void() player_forkholster1 = [$axstnd1, player_run] { W_DrawWeapon (self.newweapon); };
+void() player_forkholster1 = [$axstnd1, player_forkholster2] { self.weaponframe = $fork_holster1; };
+void() player_forkholster2 = [$axstnd1, player_forkholster3] { self.weaponframe = $fork_holster2; };
+void() player_forkholster3 = [$axstnd1, player_forkholster4] { self.weaponframe = $fork_holster3; };
+void() player_forkholster4 = [$axstnd1, player_forkholster5] { self.weaponframe = $fork_holster4; };
+void() player_forkholster5 = [$axstnd1, player_run         ] { W_DrawWeapon (self.newweapon); };
 
 
 //============================================================================
@@ -222,7 +233,7 @@ void() Fork_Draw =
 
     Fork_UpdateView ();
 
-    self.attack_finished = time + 0.1;
+    self.attack_finished = time + 0.4;
     player_forkdraw1 ();
 };
 
@@ -236,7 +247,7 @@ Holster code for the pitchfork
 */
 void() Fork_Holster =
 {
-    self.attack_finished = time + 0.1;
+    self.attack_finished = time + 0.4;
     player_forkholster1 ();
 };
 

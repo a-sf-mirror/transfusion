@@ -31,6 +31,9 @@ void() Napalm_Fire;
 // Normal model
 $modelname v_rock2
 
+// idle
+$frame napalm_idle1
+
 // fire
 $frame napalm_fire1 napalm_fire2 napalm_fire3 napalm_fire4 napalm_fire5
 $frame napalm_fire6
@@ -38,6 +41,12 @@ $frame napalm_fire6
 // altfire
 $frame napalm_alt1 napalm_alt2 napalm_alt3 napalm_alt4 napalm_alt5
 $frame napalm_alt6
+
+// draw
+$frame napalm_draw1 napalm_draw2 napalm_draw3 napalm_draw4
+
+// holster
+$frame napalm_holster1 napalm_holster2 napalm_holster3 napalm_holster4
 
 
 // Akimbo model
@@ -89,12 +98,17 @@ void() player_aknapalm6 = [$rockatt5, player_run      ]
 };
 
 // Normal draw
-// NOTE: no animation to play for now
-void() player_napalmdraw1 = [$rockatt1, player_run] { self.weaponframe = 0; };
+void() player_napalmdraw1 = [$rockatt1, player_napalmdraw2] { self.weaponframe = $napalm_draw1; };
+void() player_napalmdraw2 = [$rockatt1, player_napalmdraw3] { self.weaponframe = $napalm_draw2; };
+void() player_napalmdraw3 = [$rockatt1, player_napalmdraw4] { self.weaponframe = $napalm_draw3; };
+void() player_napalmdraw4 = [$rockatt1, player_run        ] { self.weaponframe = $napalm_draw4; };
 
 // Normal holster
-// NOTE: no animation to play for now
-void() player_napalmholst1 = [$rockatt1, player_run] { W_DrawWeapon (self.newweapon); };
+void() player_napalmholst1 = [$shotatt1, player_napalmholst2] { self.weaponframe = $napalm_holster1; };
+void() player_napalmholst2 = [$shotatt1, player_napalmholst3] { self.weaponframe = $napalm_holster2; };
+void() player_napalmholst3 = [$shotatt1, player_napalmholst4] { self.weaponframe = $napalm_holster3; };
+void() player_napalmholst4 = [$shotatt1, player_napalmholst5] { self.weaponframe = $napalm_holster4; };
+void() player_napalmholst5 = [$shotatt1, player_run         ] { W_DrawWeapon (self.newweapon); };
 
 // Akimbo draw
 void() player_aknapalmdraw1 = [$rockatt1, player_aknapalmdraw2] { self.weaponframe = $anapalm_draw1; };
@@ -385,7 +399,7 @@ void() Napalm_Draw =
     }
     else
     {
-        self.attack_finished = time + 0.1;
+        self.attack_finished = time + 0.5;
         player_napalmdraw1 ();
     }
 };
@@ -407,7 +421,7 @@ void() Napalm_Holster =
     }
     else
     {
-        self.attack_finished = time + 0.1;
+        self.attack_finished = time + 0.5;
         player_napalmholst1 ();
     }
 };

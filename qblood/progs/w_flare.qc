@@ -27,11 +27,8 @@
 
 $modelname v_shot
 
-// idle
-$frame flare_idle1
-
 // fire
-$frame flare_fire1 flare_fire2 flare_fire3
+$frame flare_fire1 flare_fire2 flare_fire3 flare_fire4
 
 
 // ----- Player related code ----- //
@@ -39,7 +36,7 @@ $frame flare_fire1 flare_fire2 flare_fire3
 void() player_flare1 = [$shotatt1, player_flare2] { self.weaponframe = $flare_fire1; muzzleflash(); };
 void() player_flare2 = [$shotatt2, player_flare3] { self.weaponframe = $flare_fire2; };
 void() player_flare3 = [$shotatt3, player_flare4] { self.weaponframe = $flare_fire3; };
-void() player_flare4 = [$shotatt4, player_run  ]  { self.weaponframe = $flare_idle1; };
+void() player_flare4 = [$shotatt4, player_run  ]  { self.weaponframe = $flare_fire4; };
 
 // Normal draw
 // NOTE: no animation to play for now
