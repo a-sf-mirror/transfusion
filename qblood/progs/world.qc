@@ -17,8 +17,6 @@
     See file, 'COPYING', for details.
 */
 
-void() InitBodyQue;
-
 
 void() main =
 {
@@ -190,7 +188,6 @@ World Types:
 void() worldspawn =
 {
     lastspawn = world;
-    InitBodyQue ();
 
 // custom map attributes
     if (self.model == "maps/e1m8.bsp")
@@ -368,52 +365,85 @@ void() StartFrame =
     framecount = framecount + 1;
 };
 
+
 /*
 ==============================================================================
 
-BODY QUE
+BODY MANAGEMENT
 
 ==============================================================================
 */
 
-entity  bodyque_head;
+void(string gibname, float dm) ThrowGib;  // In player.qc
 
-void() bodyque =
-{   // just here so spawn functions don't complain after the world
-    // creates bodyques
-};
 
-void() InitBodyQue =
+/*
+====================
+GibCorpse
+
+Remove the corpse and throw gibs
+====================
+*/
+void() GibCorpse =
 {
-    local entity    e;
+    ThrowGib ("progs/gib1.mdl", self.health);
+    ThrowGib ("progs/gib2.mdl", self.health);
+    ThrowGib ("progs/gib3.mdl", self.health);
 
-    bodyque_head = spawn();
-    bodyque_head.classname = "bodyque";
-    bodyque_head.owner = spawn();
-    bodyque_head.owner.classname = "bodyque";
-    bodyque_head.owner.owner = spawn();
-    bodyque_head.owner.owner.classname = "bodyque";
-    bodyque_head.owner.owner.owner = spawn();
-    bodyque_head.owner.owner.owner.classname = "bodyque";
-    bodyque_head.owner.owner.owner.owner = bodyque_head;
+    sound (self, CHAN_VOICE, "player/gib.wav", 1, ATTN_NONE);
+
+    remove (self);
 };
 
 
-// make a body que entry for the given ent so the ent can be
-// respawned elsewhere
-void(entity ent) CopyToBodyQue =
+/*
+====================
+CloneCorpse
+
+Make a clone for the given ent so the ent can be respawned elsewhere
+====================
+*/
+void(entity ent) CloneCorpse =
 {
-    bodyque_head.angles = ent.angles;
-    bodyque_head.model = ent.model;
-    bodyque_head.modelindex = ent.modelindex;
-    bodyque_head.frame = ent.frame;
-    bodyque_head.colormap = ent.colormap;
-    bodyque_head.movetype = ent.movetype;
-    bodyque_head.velocity = ent.velocity;
-    bodyque_head.flags = 0;
-    setorigin (bodyque_head, ent.origin);
-    setsize (bodyque_head, ent.mins, ent.maxs);
-    bodyque_head = bodyque_head.owner;
+    local entity clone;
+
+    // Copy the entity characteristics
+    clone = spawn ();
+    clone.angles = ent.angles;
+    clone.model = ent.model;
+    clone.modelindex = ent.modelindex;
+    clone.frame = ent.frame;
+    clone.colormap = ent.colormap;
+    clone.movetype = ent.movetype;
+    clone.velocity = ent.velocity;
+    clone.takedamage = ent.takedamage;
+    clone.touch = ent.touch;
+    clone.flags = 0;
+    setorigin (clone, ent.origin);
+    setsize (clone, ent.mins, ent.maxs);
+
+    // Get rid of it in 3 minutes anyway (to avoid too many entities)
+    clone.nextthink = time + 180;
+    clone.think = SUB_Remove;
+
+    // Allow some interactions (so the corpses can be
+    // destroyed by explosions, and the heads kicked)
+    clone.takedamage = DAMAGE_YES;
+    clone.solid = SOLID_TRIGGER;
+
+    // If the entity is a head, make it kickable
+    if (ent.classname == "head")
+    {
+        clone.health = 120;
+        clone.th_die = SUB_Remove;
+
+        // TODO: kick stuff
+
+        return;
+    }
+
+    // Corpse will turn into gibs if destroyed
+    clone.classname = "corpse";
+    clone.health = 100;
+    clone.th_die = GibCorpse;
 };
-
-

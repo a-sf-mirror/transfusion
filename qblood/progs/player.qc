@@ -528,6 +528,7 @@ void(string gibname, float dm) ThrowGib =
 void(string gibname, float dm) ThrowHead =
 {
     setmodel (self, gibname);
+    self.classname = "head";
     self.frame = 0;
     self.nextthink = -1;
     self.movetype = MOVETYPE_BOUNCE;
