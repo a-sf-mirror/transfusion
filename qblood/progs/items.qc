@@ -54,6 +54,7 @@ void() SUB_regen =
     // Don't call it back later
     if (self.think == SUB_regen)
         self.nextthink = 0;
+    self.reset = SUB_Null;
 
 	// Add back the animation callback
 	if (self.think1)
