@@ -256,8 +256,14 @@ void() func_plat =
         setorigin (self, self.pos2);
         self.state = STATE_BOTTOM;
 
-        if (self.style)
-            plat_go_up();
+        if (self.style)         // Automated
+            if (!self.wait)
+                plat_go_up();
+            else
+            {   // The mapper has set the automated platform to wait before going
+                self.think = plat_go_up;
+                self.nextthink = time + self.wait;
+            }
     }
 };
 
