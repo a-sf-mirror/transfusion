@@ -864,15 +864,6 @@ void() item_powerup =
 
 //various powerups that aren't in other sections already
 
-// Life Leech model
-//  FIXME: move to weapons when code is complete
-void() weapon_lifeleech =
-{
-    self.model = "progs/g_leech.mdl";
-    self.noise = "items/weaponup.wav";
-    item_lure ();
-};
-
 // Doctor's Bag
 void() item_artifact_bag =
 {
@@ -1315,6 +1306,8 @@ void() weapon_touch =
     else
         leave = 0;
 
+    // tell us how much ammo each weapon has upon picking it up
+
     if (self.classname == "weapon_flaregun")
     {
         if (leave && (other.items & IT_FLAREGUN) )
@@ -1389,6 +1382,15 @@ void() weapon_touch =
         new = IT_VOODOO_DOLL;
         other.ammo_voodoo = other.ammo_voodoo + 100;
     }
+    
+    else if (self.classname == "weapon_lifeleech")
+    {
+	if (leave && (other.items & IT_LIFE_LEECH) )
+	    return;
+	new = IT_LIFE_LEECH;
+	other.ammo_leech = other.ammo_leech + 35;
+    }
+     
     else
         objerror ("weapon_touch: unknown classname");
 
@@ -1583,7 +1585,7 @@ void() item_tnt =
 // Proximity grenade
 void() weapon_proximity =
 {
-    precache_model ("progs/v_rock.mdl");
+    precache_model ("progs/v_proxy.mdl");
     precache_model ("progs/g_proxy.mdl");
     precache_model ("progs/grd_prox.mdl");
 
@@ -1605,7 +1607,7 @@ void() weapon_proximity =
 // Remote Detonator model
 void() weapon_remote =
 {
-    precache_model ("progs/v_rock.mdl");
+    precache_model ("progs/v_remote.mdl");
     precache_model ("progs/g_remote.mdl");
     precache_model ("progs/grd_remo.mdl");
 
@@ -1707,6 +1709,37 @@ void() weapon_voodoodoll =
     precache_sound ("weapons/voodoodl/voochant.wav");
 
     StartItem ();
+};
+
+/*QUAKED weapon_lifeleech (0 .5 .8) (-16 -16 0) (16 16 32)
+*/
+
+void() weapon_lifeleech =
+{
+    precache_model ("progs/g_leech.mdl");
+    //precache_model ("progs/v_leech.mdl");
+    precache_model ("progs/v_rock2.mdl"); //FIXME: use NL until weapon is finished
+    //precache_model ("progs/lechball.mdl");
+    precache_model ("progs/bolt.mdl"); // FIXME: use Tesla shot until missile is finished
+    
+    setmodel (self, "progs/g_leech.mdl");
+    self.weapon = IT_LIFE_LEECH;
+    self.netname = "Life Leech";
+    self.touch = weapon_touch;
+    setsize (self, '-16 -16 0', '16 16 56');
+    
+    // precache the necessary sounds
+    precache_sound ("weapons/lifelech/llaltht.wav");
+    precache_sound ("weapons/lifelech/laltfr1.wav");
+    precache_sound ("weapons/lifelech/llaltfr2.wav");
+    precache_sound ("weapons/lifelech/llaltht.wav");
+    precache_sound ("weapons/lifelech/llcharge.wav");
+    precache_sound ("weapons/lifelech/llsngfr3.wav");
+    precache_sound ("weapons/lifelech/llsnght2.wav");
+    precache_sound ("weapons/lifelech/skulair4.wav");
+
+    StartItem ();
+    
 };
 
 
@@ -2384,7 +2417,7 @@ void() BackpackTouch =
         acount = 1;
         s = ftos(self.ammo_cells);
         Sprint (other, PRINT_LOW, s);
-        Sprint (other, PRINT_LOW, " cells");  // "Tesla Charge"
+        Sprint (other, PRINT_LOW, " batteries");  // "Tesla Charge"
     }
 
     // Custom ammo.
@@ -2437,7 +2470,7 @@ void() BackpackTouch =
         acount = 1;
         s = ftos(self.ammo_spray);
         Sprint (other, PRINT_LOW, s);
-        Sprint (other, PRINT_LOW, " units of spray can");
+        Sprint (other, PRINT_LOW, " spray cans");
     }
     if (self.ammo_voodoo)
     {
@@ -2446,7 +2479,7 @@ void() BackpackTouch =
         acount = 1;
         s = ftos(self.ammo_voodoo);
         Sprint (other, PRINT_LOW, s);
-        Sprint (other, PRINT_LOW, " units of voodoo magic");
+        Sprint (other, PRINT_LOW, " voodoo dolls");
     }
     if (self.ammo_leech)
     {
@@ -2515,7 +2548,9 @@ void() DropBackpack =
             item.netname = "Tesla Cannon";
         else if (item.items == IT_VOODOO_DOLL)
             item.netname = "Voodoo Doll";
-        else
+        else if (item.items == IT_LIFE_LEECH)
+	    item.netname = "Life Leech";
+	else
             item.netname = "";
     }
 

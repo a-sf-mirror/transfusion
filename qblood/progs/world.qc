@@ -66,16 +66,6 @@ void() PrecacheSounds =
     precache_sound ("weapons/pitchfrk/pstone.wav");  // Hit a stone
 //    precache_sound ("weapons/pitchfrk/pwood.wav");
 
-    // lifeleech
-//    precache_sound ("weapons/lifelech/laltfr1.wav");
-//    precache_sound ("weapons/lifelech/llaltfr2.wav");
-//    precache_sound ("weapons/lifelech/llaltht.wav");
-//    precache_sound ("weapons/lifelech/llcharge.wav");
-//    precache_sound ("weapons/lifelech/llsngfr3.wav");
-//    precache_sound ("weapons/lifelech/llsnght2.wav");
-//    precache_sound ("weapons/lifelech/skulair4.wav");
-
-
     // ----- Player pain sounds ----- //
 
     precache_sound ("player/pain/play1105.wav");

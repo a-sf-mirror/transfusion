@@ -197,7 +197,7 @@ void() Shot_Attack =
 
     // or if we have Guns Akimbo and are alt-firing
     else if ((self.items & IT_GUNS_AKIMBO) && self.player_state == PS_ALTFIRE)
-	self.attack_finished = time + 1.4; 
+	self.attack_finished = time + 0.6; 
 
     // or if we are regular firing with Guns Akimbo
     else if (self.items & IT_GUNS_AKIMBO)
@@ -205,7 +205,7 @@ void() Shot_Attack =
 	
     // otherwise we are alt-firing without Guns Akimbo	
     else
-	self.attack_finished = time + 1.2;
+	self.attack_finished = time + 0.5;
 
     // if we have guns akimbo
     if (self.items & IT_GUNS_AKIMBO)

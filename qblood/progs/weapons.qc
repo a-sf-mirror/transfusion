@@ -447,8 +447,8 @@ void(entity client) BoredCaleb =
 // This makes the player laugh or utter one of Caleb's signature one-liners.
 void(entity client) PsychoCaleb =
 {
-    if (random() > 0.10)
-        return;     // Only 10% chance per call.
+    if (random() > 0.15)
+        return;     // Only 15% chance per call.
     if (client.health <= 0)
         return;
     if (client.deadflag)
@@ -773,6 +773,7 @@ void() ProximBombThink =
         {
             GrenadeExplode ();
             return;
+ 
         }
         self.think1 ();
     }
@@ -967,7 +968,8 @@ void() W_FireGrenade =
         newmis.dmg = DMG_PROXIMITY_BOMB;
         newmis.avelocity = '0 300 0';
         newmis.angles = '0 0 0';
-        newmis.model = "progs/grd_prox.mdl";
+        self.weaponmodel = "progs/v_proxy.mdl";
+	newmis.model = "progs/grd_prox.mdl";
     }
     // else if we fire a remote detonator
     else if (self.weapon == IT_REMOTE_DETONATOR)
@@ -979,7 +981,7 @@ void() W_FireGrenade =
         newmis.model = "progs/grd_remo.mdl";
 
         // We switch to the remote model / frames
-        self.weaponmodel = "";  // FIXME: we don't have the remote model / frames yet
+        self.weaponmodel = "progs/v_remote.mdl"; 
         Sprint (self, PRINT_LOW, "You now have the remote in your hands...\n");
     }
     // Else, it's TNT or a spray can!
@@ -1018,6 +1020,7 @@ void() W_FireGrenade =
     {
         local float oldWeapon;
 
+ 
         oldWeapon = self.weapon;
         self.items = self.items - self.weapon;
         self.weapon = W_BestWeapon();
@@ -1295,7 +1298,7 @@ void(float weaponHasChanged, float oldWeapon) W_SetCurrentAmmo =
         self.currentammo = self.ammo_tnt_bundle;
         self.weaponmodel = "progs/v_rock.mdl";
 //        self.items = self.items | IT_ROCKETS;
-        Sprint (self, PRINT_MEDIUM, "TNT Bundle selected\n");
+//        Sprint (self, PRINT_MEDIUM, "TNT Bundle selected\n");
     }
     else if (self.weapon == IT_PROXIMITY_BOMB)
     {
@@ -1304,9 +1307,9 @@ void(float weaponHasChanged, float oldWeapon) W_SetCurrentAmmo =
         // Don't print a message if the current weapon hasn't changed
         if (weaponHasChanged)
         {
-            self.weaponmodel = "progs/v_rock.mdl";
+            self.weaponmodel = "progs/v_proxy.mdl";
 //            self.items = self.items | IT_ROCKETS;
-            Sprint (self, PRINT_MEDIUM, "Promixity Bombs selected\n");
+//            Sprint (self, PRINT_MEDIUM, "Promixity Bombs selected\n");
         }
     }
     else if (self.weapon == IT_REMOTE_DETONATOR)
@@ -1318,13 +1321,13 @@ void(float weaponHasChanged, float oldWeapon) W_SetCurrentAmmo =
         {
             if (!self.currentammo)
             {
-                self.weaponmodel = "";  // FIXME: we don't have the remote model / frames yet
-                Sprint (self, PRINT_MEDIUM, "Remote selected\n");
+                self.weaponmodel = "progs/v_remote.mdl"; 
+//              Sprint (self, PRINT_MEDIUM, "Remote Detonator selected\n");
             }
             else
             {
-                self.weaponmodel = "progs/v_rock.mdl";
-                Sprint (self, PRINT_MEDIUM, "Remote Detonator selected\n");
+                self.weaponmodel = "progs/v_remote.mdl";
+//                Sprint (self, PRINT_MEDIUM, "Remote Detonator selected\n");
             }
 
 //            self.items = self.items | IT_ROCKETS;
@@ -1366,6 +1369,23 @@ void(float weaponHasChanged, float oldWeapon) W_SetCurrentAmmo =
         self.weaponmodel = "progs/v_voodoo.mdl";
 //        self.items = self.items | IT_CELLS;
     }
+    else if (self.weapon == IT_LIFE_LEECH)
+    {
+	self.currentammo = self.ammo_leech;
+	self.weaponmodel = "progs/v_rock2.mdl"; // FIXME: remove if not needed
+	
+	if (self.akimbo_finished > time && self.currentammo >= 14)
+	{	
+	    self.weaponmodel = "progs/v_arock2.mdl"; // FIXME: change to v_aleech.mdl when done
+	    self.items = self.items | IT_GUNS_AKIMBO;
+	}
+	else
+	Sprint (self, PRINT_MEDIUM, "Life Leech selected\n"); //FIXME: remove
+	{
+	    self.weaponmodel = "progs/v_rock2.mdl"; // FIXME: change to v_leech.mdl when done
+	    self.items = self.items - (self.items & IT_GUNS_AKIMBO);
+	}
+    }
     else
     {
         self.currentammo = 0;
@@ -1395,6 +1415,8 @@ float() W_BestWeapon =
         return IT_FLAREGUN;
     if(self.ammo_voodoo >= 1 && (it & IT_VOODOO_DOLL) )
         return IT_VOODOO_DOLL;
+    if(self.ammo_leech >=1 && (it & IT_LIFE_LEECH) )
+	return IT_LIFE_LEECH;	
 
     return IT_PITCHFORK;
 };
@@ -1423,6 +1445,7 @@ void() player_rocket1;
 void() Tesla_Attack;
 void() Napalm_Attack;
 void() Voodoo_Attack;
+void() Leech_Attack;
 
 void() W_Attack =
 {
@@ -1462,6 +1485,8 @@ void() W_Attack =
         Tesla_Attack ();
     else if (self.weapon == IT_VOODOO_DOLL)
         Voodoo_Attack ();
+    else if (self.weapon == IT_LIFE_LEECH)
+	Leech_Attack ();
 
     self.impulse = 0;
 };
@@ -1571,6 +1596,12 @@ void() W_ChangeWeapon =
         if (self.ammo_voodoo < 1)
             am = 1;
     }
+    else if (self.impulse == 17)
+    {
+	new = IT_LIFE_LEECH;
+	if (self.ammo_leech < 1)
+	    am = 1;
+    }
 
     self.impulse = 0;
 
@@ -1629,7 +1660,8 @@ void() CheatCommand =
         IT_REMOTE_DETONATOR |
         IT_NAPALM_LAUNCHER |
         IT_TESLA_CANNON |
-        IT_VOODOO_DOLL;
+        IT_VOODOO_DOLL |
+	IT_LIFE_LEECH;
     self.items2 = self.items2 |
         IT2_KEY1 | IT2_KEY2;
 
@@ -1727,6 +1759,13 @@ void() CycleWeaponCommand =
                 am = 1;
         }
 
+	else if (self.weapon == IT_VOODOO_DOLL)
+	{
+	    self.weapon = IT_LIFE_LEECH;
+	    if (self.ammo_leech < 1)
+		am = 1;
+	}
+	
         if ( (self.items & self.weapon) && am == 0)
         {
             W_SetCurrentAmmo (self.weapon != oldWeapon, oldWeapon);
@@ -1757,7 +1796,14 @@ void() CycleWeaponReverseCommand =
     {
         am = 0;
 
-        if (self.weapon == IT_VOODOO_DOLL)
+	if (self.weapon == IT_LIFE_LEECH)
+	{
+	    self.weapon = IT_VOODOO_DOLL;
+	    if (self.ammo_voodoo < 1)
+		am = 1;
+	}
+
+        else if (self.weapon == IT_VOODOO_DOLL)
         {
             self.weapon = IT_TESLA_CANNON;
             if (self.ammo_cells < 1)
@@ -2085,14 +2131,14 @@ float() W_CheckRemote =
                 W_SetCurrentAmmo (TRUE, IT_REMOTE_DETONATOR);
             }
             else
-                self.weaponmodel = "progs/v_rock.mdl";
+                self.weaponmodel = "progs/v_remote.mdl";
         }
         // Else (altfire: take another bomb in our hands)
         else
         {
             if (self.currentammo != 0)
             {
-                self.weaponmodel = "progs/v_rock.mdl";
+                self.weaponmodel = "progs/v_remote.mdl";
                 self.attack_finished = time + 0.4;
             }
             else
@@ -2201,6 +2247,10 @@ void() ImpulseCommands =
         if (self.impulse >= 1 && self.impulse <= 9)
             W_ChangeWeapon ();
 
+	// select the Life Leech
+	else if (self.impulse == 17)
+	    W_ChangeWeapon ();
+
         else if (self.impulse == 10)
             CycleWeaponCommand ();
         else if (self.impulse == 11)
@@ -2221,6 +2271,8 @@ void() ImpulseCommands =
         // Armor cycle.
         else if (self.impulse == 16)
             PM_ArmorTest ();
+	    
+	
 
         // Cheat codes are not allowed in multiplayer games (except when the "sv_allowCheat" cvar is set)
         else if (gametype == GAME_SINGLE_PLAYER || cvar ("sv_allowCheat"))
