@@ -132,7 +132,7 @@ void() Shot_SpawnShell =
 
         // play the reload scene at the next frame
         self.think = player_reloadshot1;
-        self.attack_finished = time + 1.2;
+        self.attack_finished = time + 1.0;
         sound (shell, CHAN_WEAPON, "weapons/shotgun/shotcock.wav", 1, ATTN_NORM);
     }
 };
@@ -183,13 +183,29 @@ Attack code for the sawed-off
 */
 void() Shot_Attack =
 {
-    self.attack_finished = time + 0.7;
 
-    // If it's an altfire shot
+    // If it's an altfire regular shot
     if (self.button1 || self.impulse == 12)
         self.player_state = PS_ALTFIRE;
+    
     else
         self.player_state = PS_FIRE;
+
+    // if the shotgun has two shells and a single shot is fired
+    if (self.player_state == PS_FIRE)
+	self.attack_finished = time + 0.1; 
+
+    // or if we have Guns Akimbo and are alt-firing
+    else if ((self.items & IT_GUNS_AKIMBO) && self.player_state == PS_ALTFIRE)
+	self.attack_finished = time + 1.4; 
+
+    // or if we are regular firing with Guns Akimbo
+    else if (self.items & IT_GUNS_AKIMBO)
+	self.attack_finished = time + 0.3;
+	
+    // otherwise we are alt-firing without Guns Akimbo	
+    else
+	self.attack_finished = time + 1.2;
 
     // if we have guns akimbo
     if (self.items & IT_GUNS_AKIMBO)
