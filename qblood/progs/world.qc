@@ -206,8 +206,11 @@ void() PrecacheSounds =
     precache_sound ("player/quips/1062.wav");      // "I like my hands bloody" e1m1
     precache_sound ("player/quips/1024.wav");      // "Open for business" e1m1
     precache_sound ("ambience/riff1.wav");         // chapel organ sound for e1m1 secret
-    precache_sound ("ambience/slidstp1.wav");      // for door in cpbb03
 */
+
+// these are needed and in production by RPG    
+    precache_sound ("ambience/qstndr2.wav");       // for door in cpbb03
+    precache_sound ("ambience/slidstp1.wav");      // for door in cpbb03
 };
 
 
