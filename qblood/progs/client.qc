@@ -485,8 +485,9 @@ Player entered the suicide command
 */
 void() ClientKill =
 {
-    Bprint (PRINT_MEDIUM, self.netname);
-    Bprint (PRINT_MEDIUM, " has suicided\n");
+//    Bprint (PRINT_MEDIUM, self.netname);
+ // no netname for suicide message - dturner
+    Bprint (PRINT_MEDIUM, " Kevorkian approves!\n");
     sound (self, CHAN_AUTO, "thevoice/vo5.wav", 1, ATTN_NORM);
     set_suicide_frame ();
     self.modelindex = modelindex_player;
@@ -1022,7 +1023,7 @@ void() PlayerJump =
 
     #ifndef QUAKEWORLD
     self.flags = self.flags - FL_ONGROUND;  // don't stairwalk
-    self.velocity_z = self.velocity_z + 450;  // quake = 270
+    self.velocity_z = self.velocity_z + 370;  // quake = 270
     #endif
 };
 
