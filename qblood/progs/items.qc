@@ -24,6 +24,7 @@
 void() W_SetCurrentAmmo;
 void(float newWeapon) W_SwitchToWeapon;
 void() FireAmbient;
+void() ambient_water1;
 
 /* ALL LIGHTS SHOULD BE 0 1 0 IN COLOR ALL OTHER ITEMS SHOULD
 BE .8 .3 .4 IN COLOR */
@@ -109,6 +110,7 @@ void() Invisibility_Touch =
     if (other.health <= 0)
         return;
 
+    // FIXME: need to set alpha for each weapon instead of totally losing player v_weap
     self.mdl = self.model;
 
     sound (other, CHAN_VOICE, self.noise, 1, ATTN_NORM);
@@ -301,7 +303,9 @@ void() obj_cross =
 // large 2 tier fountain
 void() obj_fountain =
 {
-    // TODO: Water sound here?
+    if (self.sounds > 0)
+        ambient_water1();
+
     StartObject ("progs/fountain.mdl", '-31 -27 -1', '31 27 95');
 };
 
@@ -454,23 +458,6 @@ void() obj_shovel =
 {
     StartObject ("models/world/shovel.md3", '-0 -7 -27', '3 7 26');
 };
-
-// jar with a brain in it
-// skin0 is green fluid
-// skin1 is red fluid
-void() obj_brainjar =
-{
-    StartObject ("progs/jar.mdl", '-11 -7 -1', '14 8 28');
-};
-
-// drum-type barrel
-// skin0 is zombie head with blood,  "Caution Toxic Waste"
-// skin1 is green slime, "Caution - Toxic"
-void() obj_drum =
-{
-    StartObject ("progs/drum.mdl", '-14 -14 -1', '14 14 36');
-};
-
 
 // -------------------- MD3 models -------------------- //
 
@@ -670,7 +657,6 @@ void() obj_world_metbarrel2 =
 {
     StartObject ("models/world/metbarrel2.md3", '-14 -14 0', '14 14 36');
 };
-
 
 /*
 ===================================
@@ -1507,8 +1493,8 @@ void() weapon_napalmlauncher =
     self.touch = weapon_touch;
     setsize (self, '-16 -16 0', '16 16 56');
 
-    precache_model ("progs/missile.mdl");  // napalm regular fire
-    precache_model ("progs/naltball.mdl"); // napalm alt fire model
+    precache_model ("models/weapons/objects/napalm.md3");  // napalm regular fire
+    precache_model ("models/weapons/objects/naltball.md3"); // napalm alt fire model
 
     // Precache the necessary sounds
     PsychoCaleb_Precache ();

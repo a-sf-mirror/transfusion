@@ -399,8 +399,6 @@ void() frik_movetogoal =
 
 float(vector weird) frik_walkmove =
 {
-    // okay so it's not walkmove
-    // sue me
     self.keys = self.keys & 960 + frik_KeysForDir(weird);
 
     frik_dodge_obstruction();

@@ -23,11 +23,21 @@
 
 // prototypes
 void () W_WeaponFrame;
-void() PlayerDie;
-void() player_pain;
-void() player_stand;
+void () PlayerDie;
+void () player_pain;
+void () player_stand;
 void (vector org) spawn_tfog;
 void (vector org, entity death_owner) spawn_tdeath;
+void () Taunt0;
+void () Taunt1;
+void () Taunt2;
+void () Taunt3;
+void () Taunt4;
+void () Taunt5;
+void () Taunt6;
+void () Taunt7;
+void () Taunt8;
+void () Taunt9;
 
 /*
 =============================================================================
@@ -179,7 +189,7 @@ void() GotoNextMap =
             return;
         }
 
-    // Else, we use the map cycle if available, or we go on with the same map
+    // Else, we use the map cycle if available
     maxmap = cvar ("samelevel");
     if (maxmap)
     {
@@ -198,6 +208,10 @@ void() GotoNextMap =
         localcmd (str);
         localcmd ("\n");
     }
+    // if there's a nextmap defined
+    else if (nextmap)
+        changelevel (nextmap);
+    // or we go on with the same map
     else
         changelevel (mapname);
 };
@@ -1215,6 +1229,36 @@ void(float isAlive) Impulses_Player =
         else if (self.impulse == IMP_ARMOR_NEXT)
             ArmorTest ();
 
+        else if (self.impulse == TAUNT_0)
+            Taunt0();
+
+        else if (self.impulse == TAUNT_1)
+            Taunt1();
+
+        else if (self.impulse == TAUNT_2)
+            Taunt2();
+
+        else if (self.impulse == TAUNT_3)
+            Taunt3();
+
+        else if (self.impulse == TAUNT_4)
+            Taunt4();
+
+        else if (self.impulse == TAUNT_5)
+            Taunt5();
+
+        else if (self.impulse == TAUNT_6)
+            Taunt6();
+
+        else if (self.impulse == TAUNT_7)
+            Taunt7();
+
+        else if (self.impulse == TAUNT_8)
+            Taunt8();
+
+        else if (self.impulse == TAUNT_9)
+            Taunt9();
+
         // These ones are considered cheats and are only allowed when the "sv_cheats" cvar is set
         else if (cvar ("sv_cheats"))
         {
@@ -1886,12 +1930,11 @@ void(entity attacker) ClientObituary =
     {
         local string m_name;
 
+        // FIXME: Do you really lose a frag if you die in co-op?
         Cl_UpdatePlayerFrags (self, -1);
 
         if (attacker.classname == "monster_rat")
             m_name = "a rat";
-        else if (attacker.classname == "monster_bat")
-            m_name = "a bat";
         else if (attacker.classname == "monster_eel")
             m_name = "an eel";
         else if (attacker.classname == "monster_zombie")
@@ -1916,6 +1959,8 @@ void(entity attacker) ClientObituary =
             m_name = "a stone gargoyle";
         else if (attacker.classname == "monster_minicaleb")
             m_name = "a mini-caleb";
+        else if (attacker.flags & FL_MONSTER)
+            m_name = "an unknown monster";
         else break; // Wasn't killed by a monster
 
         bprint4 (self.netname, " was killed by ", m_name, "\n");
@@ -1930,3 +1975,15 @@ void(entity attacker) ClientObituary =
         bprint2 (self.netname, " died\n");
     }
 };
+
+// Player taunts
+void () Taunt0 = {sound (self, CHAN_AUTO, "player/taunts/taunt0.wav", 1, ATTN_NORM);};
+void () Taunt1 = {sound (self, CHAN_AUTO, "player/taunts/taunt1.wav", 1, ATTN_NORM);};
+void () Taunt2 = {sound (self, CHAN_AUTO, "player/taunts/taunt2.wav", 1, ATTN_NORM);};
+void () Taunt3 = {sound (self, CHAN_AUTO, "player/taunts/taunt3.wav", 1, ATTN_NORM);};
+void () Taunt4 = {sound (self, CHAN_AUTO, "player/taunts/taunt4.wav", 1, ATTN_NORM);};
+void () Taunt5 = {sound (self, CHAN_AUTO, "player/taunts/taunt5.wav", 1, ATTN_NORM);};
+void () Taunt6 = {sound (self, CHAN_AUTO, "player/taunts/taunt6.wav", 1, ATTN_NORM);};
+void () Taunt7 = {sound (self, CHAN_AUTO, "player/taunts/taunt7.wav", 1, ATTN_NORM);};
+void () Taunt8 = {sound (self, CHAN_AUTO, "player/taunts/taunt8.wav", 1, ATTN_NORM);};
+void () Taunt9 = {sound (self, CHAN_AUTO, "player/taunts/taunt9.wav", 1, ATTN_NORM);};

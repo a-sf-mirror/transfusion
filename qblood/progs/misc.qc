@@ -20,6 +20,10 @@
 
 #include "common.qh"
 
+void() func_wall_go_up;
+void() func_wall_go_down;
+
+void() wall_killed;
 
 // Used as a positional target for spotlights, etc
 void() info_null =
@@ -179,7 +183,9 @@ void() barrel_damage =
     KillBurner (self);
 
     setorigin (self, self.origin + '0 0 32');
-    T_RadiusDamage (self, self, self.dmg, world, string_null);
+
+    if (self.dmg > 0)    // If we only want the flashy effects don't do damahe
+        T_RadiusDamage (self, self, self.dmg, world, string_null);
 
     sound (self, CHAN_VOICE, "weapons/napalm/explodfl.wav", 1, ATTN_NORM);
     particle (self.origin, '0 0 0', 75, 255);
@@ -229,6 +235,93 @@ void() exploding_barrel =
     }
 };
 
+void() hidden_explosion =
+{
+    if (self.dmg > 0)
+        T_RadiusDamage (self, self.owner, self.dmg, world, "hidden");
+
+    sound (self, CHAN_WEAPON, self.noise, 1, ATTN_NORM);
+
+
+
+    if (self.style >= 1 && self.style <= 6)
+    {
+        WriteByte (MSG_BROADCAST, SVC_TEMPENTITY);
+
+        // Use neato opengl explosion splash
+        if (self.style == 1)
+            WriteByte (MSG_BROADCAST, TE_EXPLOSION);
+
+        // Pinkish light, then splash
+        else if (self.style == 2)
+            WriteByte (MSG_BROADCAST, TE_TAREXPLOSION);
+
+        // red circles floating upward
+        else if (self.style == 3)
+        WriteByte (MSG_BROADCAST, TE_LAVASPLASH);
+
+        // white circle
+        else if (self.style == 4)
+            WriteByte (MSG_BROADCAST, TE_TELEPORT);
+
+        // larger than default explosion
+        else if (self.style == 5)
+            WriteByte (MSG_BROADCAST, TE_TEI_BIGEXPLOSION);
+
+        // large particle based explosion
+        else if (self.style == 6)
+            WriteByte (MSG_BROADCAST, TE_EXPLOSION2);
+
+        // default to explosion
+        else
+            WriteByte (MSG_BROADCAST, TE_EXPLOSION);
+
+        WriteCoord (MSG_BROADCAST, self.origin_x);
+        WriteCoord (MSG_BROADCAST, self.origin_y);
+        WriteCoord (MSG_BROADCAST, self.origin_z);
+
+        if (self.style == 6)
+        {
+            WriteByte  (MSG_BROADCAST, self.colormap);
+            WriteByte  (MSG_BROADCAST, 3);
+        }
+
+        remove(self);
+    }
+
+    // or use blood sprite explosion
+    else
+        BecomeExplosion ();
+
+        if (self.target)
+            SUB_UseTargets();
+};
+
+void() hidden_use =
+{
+    if (self.delay > 0)  // If there's a delay
+        {
+          self.nextthink = time + self.delay;
+          self.think = hidden_explosion;
+        }
+
+    else                     // Otherwise blast immediately
+        hidden_explosion();
+};
+
+void() hidden_exploder =
+{
+    self.solid = SOLID_NOT;
+    self.movetype = MOVETYPE_NONE;
+
+    if (!self.noise)
+        self.noise = "weapons/napalm/explodfl.wav";
+    if (!self.colormap)
+        self.colormap = 195;
+
+    precache_sound (self.noise);
+    self.use = hidden_use;
+};
 
 /*
 ===========================================================================
@@ -448,16 +541,63 @@ void() func_wall_use =
     self.frame = 1 - self.frame;
 };
 
+
+void() func_wall_hit_top =
+{
+    self.state = STATE_TOP;
+    func_wall_go_down();
+};
+
+void() func_wall_hit_bottom =
+{
+    self.state = STATE_BOTTOM;
+    func_wall_go_up();
+};
+
+void() func_wall_go_down =
+{
+    self.state = STATE_DOWN;
+    SUB_CalcMove (self.pos1, self.speed, func_wall_hit_bottom);
+};
+
+void() func_wall_go_up =
+{
+    self.state = STATE_UP;
+    SUB_CalcMove (self.pos2, self.speed, func_wall_hit_top);
+};
+
 /*QUAKED func_wall (0 .5 .8) ?
 This is just a solid wall if not inhibitted
 */
+
 void() func_wall =
 {
-    self.angles = '0 0 0';
+    bprint("func_wall\n");
     self.movetype = MOVETYPE_PUSH;  // so it doesn't get pushed by anything
     self.solid = SOLID_BSP;
-    self.use = func_wall_use;
     setmodel (self, self.model);
+
+    if (!self.style)
+    {
+        self.angles = '0 0 0';
+        self.use = func_wall_use;
+    }
+    else
+    {
+
+    SetMovedir ();
+    setorigin (self, self.origin);
+
+    if (!self.speed)
+        self.speed = 100;
+    if (!self.lip)
+        self.lip = 8;
+
+    self.pos1 = self.origin;
+    self.pos2 = self.pos1 + self.movedir*(fabs(self.movedir*self.size) - self.lip);
+
+    func_wall_go_up();
+    }
 };
 
 

@@ -18,9 +18,9 @@
 */
 
 /* Tim's to-do list
-    
+
     tweak corpse explosion
-    corpse explosion model when voodoo dolled alt-fire death? 
+    corpse explosion model when voodoo dolled alt-fire death?
     model - vomit ball (Kazashi and Cruaich)
     need to get real health and damage values
     head - fix use of gargoyle head with ThrowHead().
@@ -31,7 +31,7 @@
 #include "common.qh"
 
 
-$base base        
+$base base
 $skin skin
 
 // idle
@@ -71,11 +71,11 @@ void () gargoyle_walk1 = [$idle1, gargoyle_walk1] {gargoyle_ai (3);};
 
 //--- Decide which idle to do
 
-void () gargoyle_stand = 
+void () gargoyle_stand =
 {
     if (random () < 0.05)
     sound (self, CHAN_WEAPON, "gargoyle/gargroam.wav", 1, ATTN_NORM);
-    
+
     gargoyle_stand1();
 };
 
@@ -93,7 +93,7 @@ void () gargoyle_run =
     gargoyle_walk1 ();
 };
 
-//--- bone Throw 
+//--- bone Throw
 void () gargoyle_attacka1 = [$idle1, gargoyle_run] {gargoyle_launch_Bone (); ai_face ();};
 
 //--- clawing
@@ -103,12 +103,12 @@ void () gargoyle_attackb1 = [$idle1, gargoyle_run] {gargoyle_claw(); ai_face ();
 void () gargoyle_attack =
 {
     local float dist;
-    
+
     dist = vlen(self.enemy.origin - self.origin);
-    
+
     if (dist < 90)
         gargoyle_attackb1 ();
-    else 
+    else
         gargoyle_attacka1 ();
 };
 
@@ -148,16 +148,16 @@ void () gargoyle_BoneTouch =
     {
         remove (self);
         return;
-    }    
-    
+    }
+
     if (other.health) // FIXME: I'll probably have to change this so world objects won't bleed
     {
         damg = (50+ (random () * 20));    // FIXME: I need the "real" values
-        
+
         SpawnBlood (self.origin, '0 0 0', damg);
         SpawnBloodSpray (trace_ent, self.origin);
-        sound (self, CHAN_WEAPON, "weapons/pitchfrk/pflesh.wav", 1, ATTN_NORM);    
-    
+        sound (self, CHAN_WEAPON, "weapons/pitchfrk/pflesh.wav", 1, ATTN_NORM);
+
         T_Damage (other,self,self.owner,damg, DF_BODY, string_null);
     }
 
@@ -172,18 +172,18 @@ void () gargoyle_claw =
 
     if (!self.enemy)
         return;        // removed before stroke
-        
+
     delta = self.enemy.origin - self.origin;
 
     if (vlen(delta) > 90)
         return;
-        
+
     ldmg = (random() + random()) * 3;
     T_Damage (self.enemy, self, self, ldmg, DF_BODY, string_null);
-    
+
     SpawnBlood (self.origin, '0 0 0', ldmg);
     SpawnBloodSpray (trace_ent, self.origin);
-    sound (self, CHAN_WEAPON, "gargoyle/gargclaw.wav", 1, ATTN_NORM);        
+    sound (self, CHAN_WEAPON, "gargoyle/gargclaw.wav", 1, ATTN_NORM);
 };
 
 void () gargoyle_pain =
@@ -191,7 +191,7 @@ void () gargoyle_pain =
     // don't make multiple pain sounds right after each other
     if (self.pain_finished > time)
         return;
-        
+
     sound (self,2,"gargoyle/gargpain.wav",1,1);
 //  gargoyle_pain1 ();  // FIXME: Need more than one frame for true pain
     self.pain_finished = (time + 1.14);
@@ -211,37 +211,37 @@ void () gargoyle_die =
     self.effects = 0;
     if (self.health < -40)
     {
-        sound (self, CHAN_VOICE, "gargoyle/gargdie3.wav", 1, ATTN_NORM);                
+        sound (self, CHAN_VOICE, "gargoyle/gargdie3.wav", 1, ATTN_NORM);
         remove (self);
         return;
     }
-    
+
     droptofloor();
-    
+
     if (random () < 0.5)
         sound (self, CHAN_VOICE, "gargoyle/gargdie1.wav", 1, ATTN_NORM);
     else
         sound (self, CHAN_VOICE, "gargoyle/gargdie2.wav", 1, ATTN_NORM);
 
     self.solid = SOLID_NOT;
-    
+
     gargoyle_death1 ();
 
 };
 
 void () monster_gargoyle =
 {
-// Disable for testing the model
+/* Disable for testing the model
 
     if (deathmatch)
     {
         remove (self);
         return ;
     }
-
+*/
     precache_model ("models/enemies/gargoyle.md3");
     precache_model ("models/world/leg1.md3");
-        
+
     precache_sound ("gargoyle/gargclaw.wav");
     precache_sound ("gargoyle/gargdie1.wav");
     precache_sound ("gargoyle/gargdie2.wav");
@@ -249,18 +249,19 @@ void () monster_gargoyle =
     precache_sound ("gargoyle/gargpain.wav");
     precache_sound ("gargoyle/gargroam.wav");
     precache_sound ("gargoyle/gargspot.wav");
-    precache_sound ("gargoyle/gargthro.wav");    
-    
+    precache_sound ("gargoyle/gargthro.wav");
+
     self.solid = SOLID_SLIDEBOX;
     self.movetype = MOVETYPE_FLY;
     setmodel (self, "models/enemies/gargoyle.md3");
     setsize (self,'-25 -31 0', '18 31 45');
     self.health = 200;
+    self.max_health = self.health;
     self.th_stand = gargoyle_stand;
     self.th_walk = gargoyle_walk;
     self.th_run = gargoyle_run;
     self.th_die = gargoyle_die;
     self.th_pain = gargoyle_pain;
-    self.th_missile = gargoyle_attack;    
+    self.th_missile = gargoyle_attack;
     flymonster_start ();
 };

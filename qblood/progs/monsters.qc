@@ -202,13 +202,6 @@ void() flymonster_start =
 
 void() swimmonster_start_go =
 {
-/* Disabled for testing
-    if (gametype != GT_COOPERATIVE)  // FIXME: and the other SP modes?
-    {
-        remove(self);
-        return;
-    }
-*/
     self.takedamage = DAMAGE_AIM;
     total_monsters = total_monsters + 1;
 

@@ -17,22 +17,22 @@
     See file, 'COPYING', for details.
 */
 
-/* Tim's to-do list    
-            
+/* Tim's to-do list
+
     Shotgun does not hit up close - jump back hack implemented. real fix???
-    Test the idle smack talk    
+    Test the idle smack talk
     Too many sounds at once
     need more than one frame - luke
     need to get real health and damage values
-    head - make use of cultist head with ThrowHead().  Kick cultist head around!    
-    damage to player if you touch cultist - in player.qc, for all monsters?        
+    head - make use of cultist head with ThrowHead().  Kick cultist head around!
+    damage to player if you touch cultist - in player.qc, for all monsters?
 */
 
 
 #include "common.qh"
 
 
-$base base        
+$base base
 $skin skin
 
 // idle
@@ -70,10 +70,10 @@ void () greencultist_walk1 = [$idle1, greencultist_walk1] {greencultist_ai (3);}
 
 //--- stand around and speak gibberish
 
-void () greencultist_stand = 
+void () greencultist_stand =
 {
-    cultist_stand();    
-    greencultist_stand1();    
+    cultist_stand();
+    greencultist_stand1();
 };
 
 //--- Basic idle
@@ -93,7 +93,7 @@ void () greencultist_run =
 };
 
 
-//--- Throwing TNT 
+//--- Throwing TNT
 
 void () greencultist_attack1 = [$idle1, greencultist_attack2] {cultist_throw_TNT (); ai_face ();};
 void () greencultist_attack2 = [$idle1, greencultist_run] {ai_face ();};
@@ -102,27 +102,27 @@ void () greencultist_attack2 = [$idle1, greencultist_run] {ai_face ();};
 void () greencultist_attack =
 {
     local vector delta;
-    
+
     if (!infront(self.enemy)) // If there's something blocking the shot
         return;
-        
+
     cultist_attack();
 
     delta = (self.enemy.origin - self.origin);
 
-    if (vlen (delta) <= 300)      
+    if (vlen (delta) <= 300)
         ai_back(100);
     else
         greencultist_attack1 ();    // Throw TNT at enemy
-    
+
 };
 
 void () greencultist_pain =
 {
     cultist_pain();
-    
+
 //    greencultist_pain1 (); // FIXME: Need pain frames - luke
-    
+
 };
 
 //--- Death sequence
@@ -136,23 +136,23 @@ void () greencultist_death1 = [$idle1, greencultist_death1]
 
 void () greencultist_die =
 {
-    cultist_die();    
+    cultist_die();
     greencultist_death1 ();
 };
 
 void () monster_greencultist =
 {
-// Disable for testing the model
+/* Disable for testing the model
 
     if (deathmatch)
     {
         remove (self);
         return ;
     }
-
+*/
     precache_model ("models/enemies/cultist-green.md3");
     precache_model ("models/weapons/grenades/gr_tnt.md3");
-        
+
     precache_sound ("cultist/cultdie1.wav");
     precache_sound ("cultist/cultdie2.wav");
     precache_sound ("cultist/cultdie3.wav");
@@ -174,12 +174,13 @@ void () monster_greencultist =
     precache_sound ("cultist/cultspt5.wav");
     precache_sound ("cultist/culttoss.wav");
     precache_sound ("weapons/r_exp3.wav");    // TNT explosion sound
-    
+
     self.solid = SOLID_SLIDEBOX;
     self.movetype = MOVETYPE_STEP;
     setmodel (self, "models/enemies/cultist-green.md3");
     setsize (self,'-6 -14 0', '34 14 62');
     self.health = 200;
+    self.max_health = self.health;
     self.th_stand = greencultist_stand;
     self.th_walk = greencultist_walk;
     self.th_run = greencultist_run;

@@ -18,19 +18,19 @@
 */
 
 /* Tim's to-do list
-    
+
     flame looks like it's coming out of neck, needs to come from mouth
     head - Kick hell hounds head around!
     need to get real health and damage values
     immunity to fire attacks - in T_Damage - combat.qc
-    instant death by water    
+    instant death by water
 */
 
 
 #include "common.qh"
 
 
-$base base        
+$base base
 $skin skin
 
 // idle
@@ -98,13 +98,13 @@ void () hellhound_walk11 = [$run11, hellhound_walk12] {hellhound_ai (10);};
 void () hellhound_walk12 = [$run12, hellhound_walk1] {hellhound_ai (10);};
 
 
-void () hellhound_stand = 
+void () hellhound_stand =
 {
     if (random () < 0.05)
         sound (self, CHAN_VOICE, "hellhound/smalwoof.wav", 1, ATTN_IDLE);
-        
+
     self.style = 1;
-    hellhound_stand1();    
+    hellhound_stand1();
 };
 
 // idle
@@ -135,7 +135,7 @@ void () hellhound_run =
 };
 
 // --- Bite sequence
- 
+
 void () hellhound_attacka1 = [$attacka1, hellhound_attacka2] {ai_face ();};
 void () hellhound_attacka2 = [$attacka2, hellhound_attacka3] {ai_face ();};
 void () hellhound_attacka3 = [$attacka3, hellhound_attacka4] {ai_face ();};
@@ -146,10 +146,10 @@ void () hellhound_attacka6 = [$attacka6, hellhound_run] {ai_face ();};
 //--- Flame sequence
 
 void () hellhound_attackb1 = [$attackb1, hellhound_attackb2] {ai_face ();};
-void () hellhound_attackb2 = [$attackb2, hellhound_attackb3] 
+void () hellhound_attackb2 = [$attackb2, hellhound_attackb3]
 {
     self.attack_finished = time + 2;
-    hellhound_breath(); 
+    hellhound_breath();
     ai_face ();
 };
 void () hellhound_attackb3 = [$attackb3, hellhound_run] {ai_face ();};
@@ -162,7 +162,7 @@ void () hellhound_attack =
 
     delta = (self.enemy.origin - self.origin);
 
-    if (vlen (delta) <= 90)      
+    if (vlen (delta) <= 90)
         hellhound_attacka1 ();    // If the player is near bite them
     else if (vlen (delta) <= 340)
         hellhound_attackb1 ();    // Otherwise flame them when in range
@@ -174,10 +174,10 @@ void () hellhound_attack =
 
 void() hellhound_breath =
 {
-    local float     dist;    
-        
+    local float     dist;
+
     dist = vlen(self.enemy.origin - self.origin);        // Get distance from player
-    
+
     if ((self.attack_finished > time) && (dist <=340))  // 340 is approximate max distance of flame
     {
         ai_face();                        // Face player
@@ -188,16 +188,16 @@ void() hellhound_breath =
         self.think = hellhound_run;     // Turn basic "I have an enemy" AI back on
         self.nextthink = time + 0.1;    // Turn that AI back on in 1/10 of a second
     }
-    
+
 };
 
 //--- Launches the flame sprite at player
 
 void() hellhound_flameSpawn =
 {
-    local vector    dir;    
+    local vector    dir;
 
-    makevectors (self.v_angle);    
+    makevectors (self.v_angle);
 
     dir = (self.enemy.origin - self.origin);
     dir = normalize (dir);
@@ -223,9 +223,9 @@ void() hellhound_flameSpawn =
     newmis.velocity = dir * 550;
 
     newmis.frame = floor (random () * 3);
-    
+
     self.think = hellhound_breath;
-    self.nextthink = time + 0.1;        
+    self.nextthink = time + 0.1;
 };
 
 
@@ -250,39 +250,39 @@ void() hellhound_bite =
 
     if (vlen(delta) > 100)
         return;
-        
+
     ldmg = (random() + random() + random()) * 8;
     T_Damage (self.enemy, self, self, ldmg, DF_BODY, string_null);
-    
+
     r = random ();
-    
+
     if (r < 0.33)
         sound (self, CHAN_VOICE, "hellhound/houndbit.wav", 1, ATTN_NORM);
     else if (r < 0.66)
         sound (self, CHAN_VOICE, "hellhound/houndbt2.wav", 1, ATTN_NORM); // Does this sound work?
     else
         sound (self, CHAN_VOICE, "hellhound/houndbt3.wav", 1, ATTN_NORM); // Does this sound work?
-    
+
 };
 
 //--- Pain sequence
 
 void () hellhound_pain1 = [$pain1, hellhound_pain2] {};
 void () hellhound_pain2 = [$pain2, hellhound_pain3] {};
-void () hellhound_pain3 = [$pain3, hellhound_run] {}; 
+void () hellhound_pain3 = [$pain3, hellhound_run] {};
 
 //--- Wimper and show pain
 
 void () hellhound_pain =
-{    
+{
     if (self.pain_finished > time)
         return;
-            
+
     if (random () < 0.5)
         {sound (self, CHAN_VOICE, "hellhound/cerbpain.wav", 1, ATTN_NORM);    self.pain_finished = (time + 0.87);}
     else
         {sound (self, CHAN_VOICE, "hellhound/smalpain.wav", 1, ATTN_NORM);    self.pain_finished = (time + 1.26);}
-                
+
     hellhound_pain1 ();
 
 };
@@ -296,7 +296,7 @@ void () hellhound_death4 = [$death4, hellhound_death5] {};
 void () hellhound_death5 = [$death5, hellhound_death6] {};
 void () hellhound_death6 = [$death6, hellhound_death7] {};
 void () hellhound_death7 = [$death7, hellhound_death8] {};
-void () hellhound_death8 = [$death8, hellhound_death8] 
+void () hellhound_death8 = [$death8, hellhound_death8]
 {
     // In the last frame, remove self 15 seconds after death
     self.nextthink = time + 15;
@@ -311,12 +311,7 @@ void () hellhound_die =
         sound (self, CHAN_VOICE, "hellhound/cerbdie3.wav", 1, ATTN_NORM);
 
         // ThrowHead (self.health);  // FIXME: At some point need to drop hellhound head, and it be kickable
-        ThrowGib ("progs/gib1.mdl", self.health);
-        ThrowGib ("progs/gib1a.mdl", self.health);
-        ThrowGib ("progs/gib2.mdl", self.health);
-        ThrowGib ("progs/gib2a.mdl", self.health);
-        ThrowGib ("progs/gib3.mdl", self.health);
-        ThrowGib ("progs/gib3a.mdl", self.health);
+        // FIXME: ThrowGibs!!!
         remove (self);
         return;
     }
@@ -325,7 +320,7 @@ void () hellhound_die =
         sound (self, CHAN_VOICE, "hellhound/cerbdie1.wav", 1, ATTN_NORM);
     else
         sound (self, CHAN_VOICE, "hellhound/cerbdie2.wav", 1, ATTN_NORM);
-    
+
     hellhound_death1 ();
     self.solid = SOLID_NOT;
 };
@@ -334,22 +329,16 @@ void () hellhound_die =
 
 void () monster_hellhound =
 {
-// Disable for testing the model
+/* Disable for testing the model
 
     if (deathmatch)
     {
         remove (self);
         return ;
     }
-
+*/
     precache_model ("models/enemies/hellhound.md3");
-    precache_model ("progs/gib1.mdl");
-    precache_model ("progs/gib1a.mdl");
-    precache_model ("progs/gib2.mdl");
-    precache_model ("progs/gib2a.mdl");
-    precache_model ("progs/gib3.mdl");
-    precache_model ("progs/gib3a.mdl");
-    precache_model ("progs/sprayfir.spr");    
+    precache_model ("progs/sprayfir.spr");
 
     precache_sound ("hellhound/cerbdie1.wav");
     precache_sound ("hellhound/cerbdie2.wav");
@@ -361,12 +350,13 @@ void () monster_hellhound =
     precache_sound ("hellhound/houndbt3.wav");
     precache_sound ("hellhound/smalpain.wav");
     precache_sound ("hellhound/smalwoof.wav");
-            
+
     self.solid = SOLID_SLIDEBOX;
     self.movetype = MOVETYPE_STEP;
     setmodel (self, "models/enemies/hellhound.md3");
     setsize (self,'-39 -17 0', '38 17 35');
     self.health = 100;
+    self.max_health = self.health;
     self.th_stand = hellhound_stand;
     self.th_walk = hellhound_walk;
     self.th_run = hellhound_run;

@@ -17,22 +17,22 @@
     See file, 'COPYING', for details.
 */
 
-/* Tim's to-do list    
-            
+/* Tim's to-do list
+
     Shotgun does not hit up close - jump back hack implemented. real fix???
-    Test the idle smack talk    
+    Test the idle smack talk
     Too many sounds at once
     need more than one frame - luke
     need to get real health and damage values
-    head - make use of cultist head with ThrowHead().  Kick cultist head around!    
-    damage to player if you touch cultist - in player.qc, for all monsters?        
+    head - make use of cultist head with ThrowHead().  Kick cultist head around!
+    damage to player if you touch cultist - in player.qc, for all monsters?
 */
 
 
 #include "common.qh"
 
 
-$base base        
+$base base
 $skin skin
 
 // idle
@@ -71,10 +71,10 @@ void () redcultist_walk1 = [$idle1, redcultist_walk1] {redcultist_ai (3);};
 
 //--- Decide which idle to do
 
-void () redcultist_stand = 
+void () redcultist_stand =
 {
     cultist_stand();
-    redcultist_stand1();    
+    redcultist_stand1();
 };
 
 //--- Basic idle
@@ -94,7 +94,7 @@ void () redcultist_run =
 };
 
 //--- Shooting gun
- 
+
 void () redcultist_attack1 = [$idle1, redcultist_attack2] {redcultist_fireShotgun (); ai_face ();};
 void () redcultist_attack2 = [$idle1, redcultist_run] {ai_face ();};
 
@@ -102,11 +102,11 @@ void () redcultist_attack =
 {
     if (!infront(self.enemy)) // If there's something blocking the shot
         return;
-    
+
     cultist_attack(); // Talk some smack!
-    
+
     redcultist_attackDecide();
-    
+
 };
 
 void () redcultist_attackDecide =
@@ -114,7 +114,7 @@ void () redcultist_attackDecide =
     if (self.attack_finished > time)
     {
         ai_face();                        // Face player
-        redcultist_attack1 ();    
+        redcultist_attack1 ();
     }
     else
     {
@@ -139,9 +139,9 @@ void () redcultist_fireShotgun =
 void () redcultist_pain =
 {
       cultist_pain();
-      
+
 //    redcultist_pain1 (); // FIXME: Need pain frames - luke
-    
+
 };
 
 //--- Death sequence
@@ -154,10 +154,10 @@ void () redcultist_death1 = [$idle1, redcultist_death1]
 };
 
 void () redcultist_die =
-{    
+{
     redcultist_death1 ();
     sound (self,2,"cultist/cultmorp.wav",1,1);
-    /* 
+    /*
         Need to remove self here, and spawn a beast at same facing / coordinates
     */
 
@@ -167,17 +167,17 @@ void () redcultist_die =
 void () monster_redcultist =
 {
 
-// Disable for testing the model
+/* Disable for testing the model
 
     if (deathmatch)
     {
         remove (self);
         return ;
     }
-
+*/
     precache_model ("models/enemies/cultist-red.md3");
     precache_model ("models/weapons/grenades/gr_tnt.md3");
-        
+
     precache_sound ("cultist/cultatt1.wav");
     precache_sound ("cultist/cultatt2.wav");
     precache_sound ("cultist/cultdie1.wav");
@@ -206,6 +206,7 @@ void () monster_redcultist =
     setmodel (self, "models/enemies/cultist-red.md3");
     setsize (self,'-6 -14 0', '34 14 62');
     self.health = 200;
+    self.max_health = self.health;
     self.th_stand = redcultist_stand;
     self.th_walk = redcultist_walk;
     self.th_run = redcultist_run;

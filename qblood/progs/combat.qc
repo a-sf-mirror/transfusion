@@ -94,7 +94,7 @@ void(entity targ, entity attacker) Killed =
     }
 
     self.enemy = attacker;
-    
+
     // bump the monster counter
     if (self.flags & FL_MONSTER)
     {
@@ -126,14 +126,6 @@ void(entity targ, entity attacker) Killed =
 };
 
 
-/*
-============
-T_Damage
-
-The damage is coming from inflictor, but get mad at attacker
-This should be the only function that ever reduces health.
-============
-*/
 // PM:  Blood's armor damage protection algorithm, or close to it.
 float(entity targ, float armour, float damage) ArmorSave =
 {
@@ -173,6 +165,14 @@ float(entity targ, float armour, float damage) ArmorSave =
 
 
 #define MAX_RECURSION_COUNT 5
+/*
+============
+T_Damage
+
+The damage is coming from inflictor, but get mad at attacker
+This should be the only function that ever reduces health.
+============
+*/
 
 // PM:  Below is the new damage function that replaces 'T_Damage'.
 void(entity targ, entity inflictor, entity attacker, float damage, float dflags, string dtype) T_Damage =
@@ -326,8 +326,13 @@ void(entity targ, entity inflictor, entity attacker, float damage, float dflags,
         }
     }
 
+    // Any damage to glass will shatter it!
+    if (targ.classname == "exploding_wall" && targ.skin > 4)
+        take = 999;
+
     // Do the damage.
     targ.health = targ.health - take;
+
     if (targ.health <= 0)
     {
         // If a player reaches between -1 and 1 HP (Brink Of Death)
@@ -372,7 +377,6 @@ void(entity targ, entity inflictor, entity attacker, float damage, float dflags,
         if (skill == 3)
             self.pain_finished = time + 5;
     }
-
     self = oldself;
 };
 

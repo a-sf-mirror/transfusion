@@ -765,7 +765,6 @@ void() DynaThink =
     BombThink ();
 };
 
-
 /*
 ====================
 proximity_mine

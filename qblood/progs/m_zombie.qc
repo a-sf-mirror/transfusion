@@ -18,7 +18,7 @@
 */
 
 /* Tim's to-do list
-        
+
     need more frames - luke
     Need real attack values
     Need crawling from grave sequence and spawnflag for the two variants
@@ -73,13 +73,13 @@ void () zombie_walk4 = [$run4, zombie_walk5] {zombie_ai (5);};
 void () zombie_walk5 = [$run5, zombie_walk6] {zombie_ai (6);};
 void () zombie_walk6 = [$run6, zombie_walk1] {zombie_ai (4);};
 
-void () zombie_stand = 
+void () zombie_stand =
 {
     if (random () < 0.05)
         sound (self, CHAN_VOICE, "axezombie/azomroam.wav", 1, ATTN_IDLE);
-        
+
     self.style = 1;
-    zombie_stand1();    
+    zombie_stand1();
 };
 
 // idle
@@ -98,8 +98,8 @@ void () zombie_run =
 };
 
 // --- axeAttack sequence
- 
-void () zombie_attack1 = [$attack1, zombie_attack2] 
+
+void () zombie_attack1 = [$attack1, zombie_attack2]
 {
     sound (self, CHAN_VOICE, "axezombie/azomswip.wav", 1, ATTN_NORM);
     ai_face ();
@@ -121,9 +121,9 @@ void () zombie_attack =
 
     delta = (self.enemy.origin - self.origin);
 
-    if (vlen (delta) <= 90)      
+    if (vlen (delta) <= 90)
         zombie_attack1 ();    // If the player is near axeAttack them
-    
+
 };
 
 
@@ -146,12 +146,12 @@ void() zombie_axeAttack =
 
     if (vlen(delta) > 100)
         return;
-        
+
     ldmg = (random() + random() + random()) * 8;
-    
+
     SpawnBlood (self.origin, '0 0 0', ldmg);
        SpawnBloodSpray (trace_ent, self.origin);
-       sound (self, CHAN_WEAPON, "weapons/pitchfrk/pflesh.wav", 1, ATTN_NORM);    
+       sound (self, CHAN_WEAPON, "weapons/pitchfrk/pflesh.wav", 1, ATTN_NORM);
     T_Damage (self.enemy, self, self, ldmg, DF_BODY, string_null);
 };
 
@@ -161,25 +161,25 @@ void () zombie_pain =
 {
 
     local float r;
-    
+
     // don't make multiple pain sounds right after each other
     if (self.pain_finished > time)
-        return;            
-    
+        return;
+
     r = random();
-    
-    if (r < 0.5)    
+
+    if (r < 0.5)
         {sound (self, CHAN_VOICE, "axezombie/azompain.wav", 1, ATTN_NORM); self.pain_finished = (time + 1.17);}
     else
         {sound (self, CHAN_VOICE, "axezombie/azommoan.wav", 1, ATTN_NORM); self.pain_finished = (time + 1.48);}
-                
+
 //    zombie_pain1 (); // FIXME: Needs pain frames please luke 8)
-    
+
 };
 
 // --- Death sequence
 
-void () zombie_death1 = [$idle1, zombie_death1] 
+void () zombie_death1 = [$idle1, zombie_death1]
 {
     // In the last frame, remove self 15 seconds after death
     self.nextthink = time + 15;
@@ -189,12 +189,12 @@ void () zombie_death1 = [$idle1, zombie_death1]
 void () zombie_die =
 {
     self.effects = 0;
-    if (self.health < -40) 
+    if (self.health < -40)
     {
         sound (self, CHAN_VOICE, "axezombie/azomdie3.wav", 1, ATTN_NORM);
 
         RandomHumanGibs();
-        
+
         remove (self);
         return;
     }
@@ -203,7 +203,7 @@ void () zombie_die =
         sound (self, CHAN_VOICE, "axezombie/azomdie1.wav", 1, ATTN_NORM);
     else
         sound (self, CHAN_VOICE, "axezombie/azomdie2.wav", 1, ATTN_NORM);
-    
+
     zombie_death1 ();
     self.solid = SOLID_NOT;
 };
@@ -212,16 +212,16 @@ void () zombie_die =
 
 void () monster_zombie =
 {
-// Disable for testing the model
+/* Disable for testing the model
 
     if (deathmatch)
     {
         remove (self);
         return ;
     }
-
+*/
     precache_model ("models/enemies/zombie.md3");
-    
+
     precache_sound ("axezombie/azomdie1.wav");
     precache_sound ("axezombie/azomdie2.wav");
     precache_sound ("axezombie/azomdie3.wav");
@@ -233,12 +233,13 @@ void () monster_zombie =
     precache_sound ("axezombie/azomstnd.wav");// ADDME - Need rising frames first
     precache_sound ("axezombie/azomswip.wav");
 
-            
+
     self.solid = SOLID_SLIDEBOX;
     self.movetype = MOVETYPE_STEP;
     setmodel (self, "models/enemies/zombie.md3");
     setsize (self,'-5 -15 0', '11 15 62');
     self.health = 100;
+    self.max_health = self.health;
     self.th_stand = zombie_stand;
     self.th_walk = zombie_walk;
     self.th_run = zombie_run;

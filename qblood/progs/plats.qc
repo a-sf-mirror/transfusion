@@ -65,38 +65,54 @@ void() plat_spawn_inside_trigger =
 
 void() plat_hit_top =
 {
-    sound (self, CHAN_VOICE, self.noise1, 1, ATTN_NORM);
+    if (self.sounds > 0)
+        sound (self, CHAN_VOICE, self.noise1, 1, ATTN_NORM);
+
     self.state = STATE_TOP;
-    self.think = plat_go_down;
-    self.nextthink = self.ltime + 3;
+
+    if (self.style > 0) // Automated platform
+        plat_go_down();
+    else
+    {
+        self.think = plat_go_down;
+        self.nextthink = self.ltime + 3;
+    }
 };
 
 void() plat_hit_bottom =
 {
-    sound (self, CHAN_VOICE, self.noise1, 1, ATTN_NORM);
+    if (self.sounds > 0)
+        sound (self, CHAN_VOICE, self.noise1, 1, ATTN_NORM);
+
     self.state = STATE_BOTTOM;
+
+    if (self.style > 0) // Automated platform
+         plat_go_up();
 };
 
 void() plat_go_down =
 {
-    sound (self, CHAN_VOICE, self.noise, 1, ATTN_NORM);
+    if (self.sounds > 0)
+        sound (self, CHAN_VOICE, self.noise, 1, ATTN_NORM);
+
     self.state = STATE_DOWN;
     SUB_CalcMove (self.pos2, self.speed, plat_hit_bottom);
 };
 
 void() plat_go_up =
 {
-    sound (self, CHAN_VOICE, self.noise, 1, ATTN_NORM);
+    if (self.sounds > 0)
+        sound (self, CHAN_VOICE, self.noise, 1, ATTN_NORM);
+
     self.state = STATE_UP;
     SUB_CalcMove (self.pos1, self.speed, plat_hit_top);
 };
 
 void() plat_center_touch =
 {
-    if (other.classname != "player")
-        return;
-
-    if (other.health <= 0)
+    if (other.classname != "player" ||  // Monster
+        other.health <= 0           ||  // Dead player
+        self.style > 0)                 // Automated platform
         return;
 
     self = self.enemy;
@@ -111,13 +127,11 @@ void() plat_center_touch =
 
 void() plat_outside_touch =
 {
-    if (other.classname != "player")
+    if (other.classname != "player" ||  // Monster
+        other.health <= 0           ||  // Dead player
+        self.style > 0)                 // Automated platform
         return;
 
-    if (other.health <= 0)
-        return;
-
-//dprint ("plat_outside_touch\n");
     self = self.enemy;
     if (self.state == STATE_TOP)
         plat_go_down ();
@@ -178,23 +192,24 @@ void() func_plat =
 
     precache_sound ("thevoice/squash.wav");
 
-    if (self.sounds == 0)
-        self.sounds = 2;  // not a very clean solution...
+
+    if (self.noise)
+     if (self.noise1) // If mapper set the sounds manually in the map
+          self.sounds == 3;          // Arbitary, but will work unless we add more sound groups
 
     if (self.sounds == 1)
     {
         precache_sound ("plats/plat1.wav");
         precache_sound ("plats/plat2.wav");
-        self.noise = "plats/plat1.wav";
-        self.noise1 = "plats/plat2.wav";
+        self.noise = "plats/plat1.wav";       // Up
+        self.noise1 = "plats/plat2.wav";      // Down
     }
-
-    if (self.sounds == 2)
+    else if (self.sounds == 2)
     {
         precache_sound ("doors/qdoormv1.wav");
         precache_sound ("doors/qdrclos4.wav");
-        self.noise = "doors/qdoormv1.wav";
-        self.noise1 = "doors/qdrclos4.wav";
+        self.noise = "doors/qdoormv1.wav";    // Up
+        self.noise1 = "doors/qdrclos4.wav";   // Down
     }
 
     self.mangle = self.angles;
@@ -232,6 +247,9 @@ void() func_plat =
     {
         setorigin (self, self.pos2);
         self.state = STATE_BOTTOM;
+
+        if (self.style > 0) //TESTME:
+            plat_go_up();
     }
 };
 

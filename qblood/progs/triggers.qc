@@ -81,7 +81,7 @@ void() multi_trigger =
     }
     else
     {   // we can't just remove (self) here, because this is a touch function
-        // called wheil C code is looping through area links...
+        // called while C code is looping through area links...
         self.touch = SUB_Null;
         self.nextthink = time + 0.1;
         self.think = SUB_Remove;
@@ -566,4 +566,31 @@ void() trigger_push =
     self.touch = trigger_push_touch;
     if (!self.speed)
         self.speed = 1000;
+};
+
+
+void( entity ent, float amount ) hurt_setdamage =
+   {
+   ent.dmg = amount;
+   if ( !amount )
+      {
+      ent.solid = SOLID_NOT;
+      }
+   else
+      {
+      ent.solid = SOLID_TRIGGER;
+      }
+   ent.nextthink = -1;
+   };
+
+/*QUAKED trigger_changelevel (0.5 0.5 0.5) ? NO_INTERMISSION
+When the player touches this, he gets sent to the map listed in the "map" variable.  Unless the NO_INTERMISSION flag is set, the view will go to the info_intermission spot and display stats.
+*/
+void() trigger_changelevel =
+{
+    if (!self.map)
+        objerror ("changelevel trigger doesn't have map");
+
+    InitTrigger ();
+    self.use = changelevel_use;
 };

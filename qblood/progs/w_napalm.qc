@@ -163,7 +163,7 @@ void(entity newball) Napalm_ThrowBouncingBall =
 
     newball.reset = SUB_Remove;
 
-    setmodel (newball, "progs/naltball.mdl");
+    setmodel (newball, "models/weapons/objects/naltball.md3");
     setsize (newball, '0 0 0', '0 0 0');
 };
 
@@ -206,6 +206,7 @@ void() T_MissileTouch =
     WriteCoord (MSG_BROADCAST, self.origin_x);
     WriteCoord (MSG_BROADCAST, self.origin_y);
     WriteCoord (MSG_BROADCAST, self.origin_z);
+
     BecomeExplosion ();
 };
 
@@ -222,12 +223,12 @@ void() Napalm_BallTouch =
     if (self.cnt > 1)
     {
         local entity newball;
-        local vector neworigin;
+        local vector neworig;
 
         // "self.angles" allows us to recover the original direction
         makevectors (self.angles);
 
-        neworigin = self.origin - 8 * normalize (self.velocity);
+        neworig = self.origin - 8 * normalize (self.velocity);
 
         newmis = spawn ();
         newmis.cnt = floor (self.cnt / 2);
@@ -235,14 +236,14 @@ void() Napalm_BallTouch =
         newmis.velocity = v_forward * 300 + v_right * 100;
         newmis.velocity_z = random() * 150 + 350;
         Napalm_ThrowBouncingBall (newmis);
-        setorigin (newmis, neworigin);
+        setorigin (newmis, neworig);
 
         newball = spawn ();
         newball.cnt = self.cnt;
         newball.velocity = v_forward * 300 - v_right * 100;
         newball.velocity_z = random() * 150 + 350;
         Napalm_ThrowBouncingBall (newball);
-        setorigin (newball, neworigin);
+        setorigin (newball, neworig);
     }
 
     T_MissileTouch ();
@@ -291,7 +292,7 @@ void() Napalm_Fire =
         self.ammo_rockets = self.ammo_rockets - 1;
 
         newmis.touch = T_MissileTouch;
-        setmodel (newmis, "progs/missile.mdl");
+        setmodel (newmis, "models/weapons/objects/napalm.md3");
         setsize (newmis, '0 0 0', '0 0 0');
 
         newmis.dmg = 100 + rint (random () * 40);

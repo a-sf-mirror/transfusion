@@ -52,8 +52,10 @@ m_eel.qc
 m_gargoyle.qc
 m_greencultist.qc
 m_hellhound.qc
+m_innocent.qc
 m_minicaleb.qc
 m_rat.qc
 m_redcultist.qc
 m_zombie.qc
 m_stonegargoyle.qc
+rotate.qc

@@ -1042,7 +1042,7 @@ Handles the impulses when the client is in the warmup menu
 */
 void() Menu_HandleVoteWarmup =
 {
-    local string duration;
+    local string warmuptime;
 
     // If we want to go back to main menu
     if (self.impulse == 10)
@@ -1053,23 +1053,23 @@ void() Menu_HandleVoteWarmup =
     }
 
     if (self.impulse == 1)
-        duration = "0";
+        warmuptime = "0";
     else if (self.impulse == 2)
-        duration = "10";
+        warmuptime = "10";
     else if (self.impulse == 3)
-        duration = "20";
+        warmuptime = "20";
     else if (self.impulse == 4)
-        duration = "30";
+        warmuptime = "30";
     else if (self.impulse == 5)
-        duration = "45";
+        warmuptime = "45";
     else if (self.impulse == 6)
-        duration = "60";
+        warmuptime = "60";
     else if (self.impulse == 7)
-        duration = "90";
+        warmuptime = "90";
     else if (self.impulse == 8)
-        duration = "120";
+        warmuptime = "120";
     else if (self.impulse == 9)
-        duration = "180";
+        warmuptime = "180";
     else
     {
         sprint (self, "\n===== INVALID COMMAND =====\n\n");
@@ -1078,11 +1078,11 @@ void() Menu_HandleVoteWarmup =
     }
 
     self.vote_warmup = self.impulse;
-    bprint5 ("Û ", self.netname, " votes for a new warmup duration: ", duration, " secondes Ý\n");  // "[ ... ]\n"
+    bprint5 ("Û ", self.netname, " votes for a new warmup duration: ", warmuptime, " secondes Ý\n");  // "[ ... ]\n"
 
     // If the vote is passed
     if (Vote_IsPassed (vote_warmup, 255, self.impulse))
-        Vote_ChangeWarmup (duration);
+        Vote_ChangeWarmup (warmuptime);
 
     self.player_state = PS_IDLE;  // exit the menu
 };

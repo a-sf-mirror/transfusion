@@ -17,24 +17,18 @@
     See file, 'COPYING', for details.
 */
 
-/* Tim's to-do list    
-            
-    fire until player is dead or unreachable
-    immunity to fire attacks - in T_Damage - combat.qc
-    Shotgun does not hit up close - jump back hack implemented. real fix???
-    Test the idle smack talk    
-    Too many sounds at once
-    need more than one frame - luke
+/* Tim's to-do list
+
+    fire burst of 1 to 3 tesla shots
     need to get real health and damage values
-    head - make use of cultist head with ThrowHead().  Kick cultist head around!    
-    damage to player if you touch cultist - in player.qc, for all monsters?        
+    need to drop head
 */
 
 
 #include "common.qh"
 
 
-$base base        
+$base base
 $skin skin
 
 // idle
@@ -72,12 +66,12 @@ void () bluecultist_walk1 = [$idle1, bluecultist_walk1] {bluecultist_ai (3);};
 
 //--- Decide which idle to do
 
-void () bluecultist_stand = 
+void () bluecultist_stand =
 {
     cultist_stand();
-    
+
     // FIXME: Whenever the model is finished I can probably redo this
-    bluecultist_stand1();    
+    bluecultist_stand1();
 };
 
 //--- Basic idle
@@ -97,7 +91,7 @@ void () bluecultist_run =
 };
 
 //--- Shooting gun
- 
+
 void () bluecultist_attacka1 = [$idle1, bluecultist_attacka2] {bluecultist_fireTesla (); ai_face ();};
 void () bluecultist_attacka2 = [$idle1, bluecultist_run] {ai_face ();};
 
@@ -109,12 +103,12 @@ void () bluecultist_attack =
         return;
 
     cultist_attack(); // Talk some smack!
-    
+
     delta = (self.enemy.origin - self.origin);
 
-    if (vlen (delta) <= 1200)      
-        bluecultist_attacka1 ();    // If the player is near shoot them    
-    
+    if (vlen (delta) <= 1200)
+        bluecultist_attacka1 ();    // If the player is near shoot them
+
     if (vlen (delta) <= 100) // A jump back hack
         ai_back(100);
 };
@@ -122,30 +116,30 @@ void () bluecultist_attack =
 //--- Shoot the player
 
 void () bluecultist_fireTesla =
-{    
+{
     local   vector  org;
     local   vector  dir;
 
     muzzleflash ();
 
     self.punchangle_x = -2;
-    
+
     sound (self, CHAN_WEAPON, "weapons/tesla/tessngfr.wav", 1, ATTN_NORM);
 
     makevectors (self.v_angle);
     dir = (self.enemy.origin - self.origin);
     org = self.origin + v_forward * 8 + '0 0 16';
-   
-    Tesla_LaunchJolt (org, dir, 1500);    
+
+    Tesla_LaunchJolt (org, dir, 1500);
 };
 
 
 void () bluecultist_pain =
 {
-    cultist_pain();    
-    
+    cultist_pain();
+
 //    bluecultist_pain1 (); // FIXME: Need pain frames - luke
-    
+
 };
 
 //--- Death sequence
@@ -160,22 +154,22 @@ void () bluecultist_death1 = [$idle1, bluecultist_death1]
 void () bluecultist_die =
 {
     cultist_die();
-    
+
     bluecultist_death1 ();
 };
 
 void () monster_bluecultist =
 {
-// Disable for testing the model
+/* Disable for testing the model
 
     if (deathmatch)
     {
         remove (self);
         return ;
     }
-
+*/
     precache_model ("models/enemies/cultist-blue.md3");
-        
+
     precache_sound ("weapons/tesla/tessngfr.wav");
     precache_sound ("cultist/cultdie1.wav");
     precache_sound ("cultist/cultdie2.wav");
@@ -196,12 +190,13 @@ void () monster_bluecultist =
     precache_sound ("cultist/cultspt3.wav");
     precache_sound ("cultist/cultspt4.wav");
     precache_sound ("cultist/cultspt5.wav");
-    
+
     self.solid = SOLID_SLIDEBOX;
     self.movetype = MOVETYPE_STEP;
     setmodel (self, "models/enemies/cultist-blue.md3");
     setsize (self,'-6 -14 0', '34 14 62');
     self.health = 200;
+    self.max_health = self.health;
     self.th_stand = bluecultist_stand;
     self.th_walk = bluecultist_walk;
     self.th_run = bluecultist_run;

@@ -27,7 +27,7 @@ void() main =
 {
 };
 
-
+void () FadeAway;
 /*
 ================
 PrecacheSounds
@@ -183,6 +183,16 @@ void() PrecacheSounds =
     precache_sound ("misc/null.wav");              // null sound (used as a placeholder, and to stop sounds)
     precache_sound ("player/slimbrn2.wav");
     precache_sound ("player/taunts/t1010.wav");    // "I live ... again !"
+    precache_sound ("player/taunts/taunt0.wav");   // Player taunts
+    precache_sound ("player/taunts/taunt1.wav");
+    precache_sound ("player/taunts/taunt2.wav");
+    precache_sound ("player/taunts/taunt3.wav");
+    precache_sound ("player/taunts/taunt4.wav");
+    precache_sound ("player/taunts/taunt5.wav");
+    precache_sound ("player/taunts/taunt6.wav");
+    precache_sound ("player/taunts/taunt7.wav");
+    precache_sound ("player/taunts/taunt8.wav");
+    precache_sound ("player/taunts/taunt9.wav");
 };
 
 
@@ -508,7 +518,7 @@ Start the warmup countdown
 */
 void() World_StartWarmup =
 {
-    local float duration;
+    local float warmupduration;
     local string str;
 
     // If the warmup has already begun or has been done
@@ -516,14 +526,14 @@ void() World_StartWarmup =
         return;
 
     // If you must do a warmup, make it last at least 5 secondes
-    duration = cvar ("g_warmup");
-    if (duration < 5)
-        duration = 5;
+    warmupduration = cvar ("g_warmup");
+    if (warmupduration < 5)
+        warmupduration = 5;
 
-    warmup_endtime = time + duration;
-    warmup_counttime = time + duration - (floor (duration / 5) * 5);
+    warmup_endtime = time + warmupduration;
+    warmup_counttime = time + warmupduration - (floor (warmupduration / 5) * 5);
 
-    str = ftos (duration);
+    str = ftos (warmupduration);
     bprint3 ("¾¾ Warmup started (", str, " sec) ¼¼\n");
 };
 
@@ -616,13 +626,16 @@ void(float corpseHealth, void() corpseToGib) BecomeCorpse =
 
     // Get rid of it in 30 sec anyway
     self.nextthink = time + 30;
-    self.think = SUB_Remove;
+    self.think = FadeAway;
 
-    self.reset = SUB_Remove;
+    self.reset = FadeAway;
 
     // Allow some interactions (so the corpses can be destroyed by explosions)
     self.solid = SOLID_BBOX;
     self.takedamage = DAMAGE_AIM;
+
+    // Set up deal for corpse fade
+    self.oldorigin = self.origin;
 };
 
 
@@ -658,18 +671,19 @@ void(entity ent) CloneCorpse =
 
     // Copy the entity characteristics
     clone = spawn ();
-    clone.netname = ent.netname;
     clone.angles = ent.angles;
     clone.model = ent.model;
     clone.modelindex = ent.modelindex;
     clone.frame = ent.frame;
     clone.skin = ent.skin;
     clone.colormap = ent.colormap;
+    clone.netname = ent.netname;
     clone.movetype = ent.movetype;
     clone.velocity = ent.velocity;
+    clone.classname = "corpse";
+
     setorigin (clone, ent.origin);
     setsize (clone, ent.mins, ent.maxs);
-
     tempEnt = self;
     self = clone;
 
@@ -685,10 +699,14 @@ void(entity ent) CloneCorpse =
     {
         local vector minBbox, maxBbox;
 
-        self.classname = "corpse";
+        // FIXME: need to set bounding box based on angular data and size of corpse model
+        minBbox = '-32 -32 -20';
+        maxBbox = '32 32 0';
 
-        minBbox = VEC_HULL_MIN;
-        maxBbox = VEC_HULL_MAX;
+        // FIXME: Is there a smarter way than setting for individual monsters?
+        if (ent.classname == "monster_butcher")
+            minBbox_z = 0;
+
         maxBbox_z = minBbox_z + 5;
         setsize (self, minBbox, maxBbox);
         self.touch = SUB_SolidTouch;
@@ -697,4 +715,22 @@ void(entity ent) CloneCorpse =
     }
 
     self = tempEnt;
+};
+
+// "Fades" a corpse into the ground, like blood
+void () FadeDown =
+{
+  self.origin_z = self.origin_z - 1;
+  FadeAway();
+};
+
+void () FadeAway =
+{
+   if (self.origin_z <= self.oldorigin_z - 32)
+       remove(self);
+   else
+   {
+    self.nextthink = 0.5;
+    self.think = FadeDown;
+   }
 };

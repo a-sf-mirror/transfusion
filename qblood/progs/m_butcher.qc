@@ -18,20 +18,19 @@
 */
 
 /* Tim's to-do list
-    
+
     tweak corpse explosion
-    corpse explosion model when voodoo dolled alt-fire death? 
+    corpse explosion model when voodoo dolled alt-fire death?
     model - vomit ball (Kazashi and Cruaich)
     need to get real health and damage values
-    head - fix use of butcher head with ThrowHead().
-    damage to player if you touch butcher - in player.qc, for all monsters?
+    need to drop head
 */
 
 
 #include "common.qh"
 
 
-$base base        
+$base base
 $skin skin
 
 // idle
@@ -114,15 +113,15 @@ void () butcher_walk12 = [$walk12, butcher_walk1] {butcher_ai (3);};
 
 //--- Decide which idle to do
 
-void () butcher_stand = 
+void () butcher_stand =
 {
     if (random () < 0.1)
     sound (self, CHAN_WEAPON, "butcher/fzomroam.wav", 1, ATTN_NORM);
-    
+
     if (random () < 0.05)
         butcher_standa1();
-    else     
-        butcher_stand1();    
+    else
+        butcher_stand1();
 };
 
 //--- Huff and puff sequence
@@ -191,7 +190,7 @@ void () butcher_run =
 };
 
 //--- Cleaver Throw
- 
+
 void () butcher_attacka1 = [$attacka1, butcher_attacka2] {ai_face ();};
 void () butcher_attacka2 = [$attacka2, butcher_attacka3] {ai_face ();};
 void () butcher_attacka3 = [$attacka3, butcher_attacka4] {ai_face ();};
@@ -205,7 +204,7 @@ void () butcher_attacka10 = [$attacka10, butcher_attacka11] {ai_face ();};
 void () butcher_attacka11 = [$attacka11, butcher_attacka12] {ai_face ();};
 void () butcher_attacka12 = [$attacka12, butcher_run] {ai_face ();};
 
-//--- Vomiting 
+//--- Vomiting
 
 void () butcher_attackb1 = [$attackb1, butcher_attackb2] {ai_face ();};
 void () butcher_attackb2 = [$attackb2, butcher_attackb3] {ai_face ();};
@@ -217,7 +216,7 @@ void () butcher_attackb7 = [$attackb7, butcher_attackb8] {butcher_launch_vomit (
 void () butcher_attackb8 = [$attackb8, butcher_run] {ai_face ();};
 
 //--- Cleaver chop
- 
+
 void () butcher_attackc1 = [$attacka1, butcher_attackc2] {ai_face ();};
 void () butcher_attackc2 = [$attacka2, butcher_attackc3] {ai_face ();};
 void () butcher_attackc3 = [$attacka3, butcher_attackc4] {ai_face ();};
@@ -234,17 +233,25 @@ void () butcher_attackc12 = [$attacka12, butcher_run] {ai_face ();};
 void () butcher_attack =
 {
     local float dist;
-    
+
     dist = vlen(self.enemy.origin - self.origin);
-    
-    if (dist < 90)
+
+    if (dist < 90)// chop player with cleaver
         butcher_attackc1 ();
-        
+
     else if (random () < 0.5)
+    {
+        // Throw cleaver
+        self.attack_state = AS_MISSILE;
         butcher_attacka1 ();
-        
+    }
+
     else
+    {
+        // Vomit acid ball
+        self.attack_state = AS_MISSILE;
         butcher_attackb1 ();
+    }
 };
 
 //--- Throw butcher's cleaver
@@ -283,16 +290,16 @@ void () butcher_CleaverTouch =
     {
         remove (self);
         return;
-    }    
-    
+    }
+
     if (other.health) // FIXME: I'll probably have to change this so world objects won't bleed
     {
         damg = (50+ (random () * 20));    // FIXME: I need the "real" values
-        
+
         SpawnBlood (self.origin, '0 0 0', damg);
         SpawnBloodSpray (trace_ent, self.origin);
-        sound (self, CHAN_WEAPON, "weapons/pitchfrk/pflesh.wav", 1, ATTN_NORM);    
-    
+        sound (self, CHAN_WEAPON, "weapons/pitchfrk/pflesh.wav", 1, ATTN_NORM);
+
         T_Damage (other,self,self.owner,damg, DF_BODY, string_null);
     }
 
@@ -314,9 +321,9 @@ void () butcher_launch_vomit =
     newmis.owner = self;
 
     newmis.solid = SOLID_BBOX;
-    newmis.movetype = MOVETYPE_FLYMISSILE;
-    setmodel (newmis, "progs/naltball.mdl"); // FIXME: Switch to vomit once model is made
-    setsize (newmis, '0 0 0', '0 0 0');    
+    newmis.movetype = MOVETYPE_FLY;
+    setmodel (newmis, "models/weapons/objects/naltball.md3"); // FIXME: Switch to vomit once model is made
+    setsize (newmis, '0 0 0', '0 0 0');
     newmis.origin = self.origin + '0 0 28';
     newmis.velocity = vec * 600;
     newmis.avelocity = '500 500 500';
@@ -332,25 +339,23 @@ void () butcher_VomitTouch =
 
     if (other == self.owner)
         return;
+
     if (pointcontents (self.origin) == CONTENT_SKY)
     {
         remove (self);
         return;
-    }    
-    
-    
+    }
 
     if (other.health)  // If it's a hurtable object (i.e. non-wall)
     {
         damg = (10+ (random () * 40));    // FIXME: I need the "real" values
-    
+
         if (damg > 25)
             sound (self, CHAN_WEAPON, "butcher/acidhit1.wav", 1, ATTN_NORM);
         else
-            sound (self, CHAN_WEAPON, "butcher/acidhit2.wav", 1, ATTN_NORM);    
-    
+            sound (self, CHAN_WEAPON, "butcher/acidhit2.wav", 1, ATTN_NORM);
+
         T_Damage (other,self,self.owner,damg, DF_BODY, string_null);
-        
     }
 
     self.origin = (self.origin - (8* normalize (self.velocity)));
@@ -364,18 +369,18 @@ void () butcher_CleaverChop =
 
     if (!self.enemy)
         return;        // removed before stroke
-        
+
     delta = self.enemy.origin - self.origin;
 
     if (vlen(delta) > 90)
         return;
-        
+
     ldmg = (random() + random()) * 3;
     T_Damage (self.enemy, self, self, ldmg, DF_BODY, string_null);
-    
+
     SpawnBlood (self.origin, '0 0 0', ldmg);
     SpawnBloodSpray (trace_ent, self.origin);
-    sound (self, CHAN_WEAPON, "weapons/pitchfrk/pflesh.wav", 1, ATTN_NORM);        
+    sound (self, CHAN_WEAPON, "weapons/pitchfrk/pflesh.wav", 1, ATTN_NORM);
 };
 
 //--- Pain sequence
@@ -391,7 +396,7 @@ void () butcher_pain =
     // don't make multiple pain sounds right after each other
     if (self.pain_finished > time)
         return;
-        
+
     sound (self,2,"butcher/fzompain.wav",1,1);
     butcher_pain1 ();
     self.pain_finished = (time + 1.01);
@@ -410,11 +415,13 @@ void () butcher_death8 = [$death8, butcher_death9] {};
 void () butcher_death9 = [$death9, butcher_death10] {};
 void () butcher_death10 = [$death10, butcher_death11] {};
 void () butcher_death11 = [$death11, butcher_death12] {};
-void () butcher_death12 = [$death12, butcher_death13] {}; 
-void () butcher_death13 = [$death13, butcher_death13] 
+void () butcher_death12 = [$death12, butcher_death13] {};
+void () butcher_death13 = [$death13, butcher_death13]
 {
-    // In the last frame, remove self 15 seconds after death
-    self.nextthink = time + 15;
+    CloneCorpse (self);
+
+    // In the last frame, spawn corpse, remove self 1 second after death
+    self.nextthink = time + 1;
     self.think = SUB_Remove;
 };
 
@@ -429,11 +436,12 @@ void () butcher_explode6 = [6, butcher_explode7] {};
 void () butcher_explode7 = [7, butcher_explode8] {};
 void () butcher_explode8 = [8, butcher_explode9] {};
 void () butcher_explode9 = [9, butcher_explode10] {};
-void () butcher_explode10 = [10, butcher_explode10] 
+void () butcher_explode10 = [10, butcher_explode10]
 {
     // In the last frame, remove self 15 seconds after death
     self.nextthink = time + 15;
     self.think = SUB_Remove;
+
 };
 
 void () butcher_die =
@@ -442,28 +450,28 @@ void () butcher_die =
     if (self.health < -40)
     {
         sound (self, CHAN_VOICE, "butcher/fzomdie3.wav", 1, ATTN_NORM);
-                
+
         ThrowHead ("models/enemies/butcher_head.md3", self.health);
         RandomHumanGibs ();
         RandomHumanGibs (); // Many gibs!
         remove (self);
         return;
     }
-    
+
     if (random () < 0.5)
         sound (self, CHAN_VOICE, "butcher/fzomdie1.wav", 1, ATTN_NORM);
     else
         sound (self, CHAN_VOICE, "butcher/fzomdie2.wav", 1, ATTN_NORM);
 
     self.solid = SOLID_NOT;
-    
+
     if (self.deathtype == "fire")
     {
         ThrowHead ("models/enemies/butcher_head.md3", self.health);
         setmodel (self, "models/enemies/butcher_explode.md3");
         butcher_explode1 ();
     }
-    
+
     else
         butcher_death1 ();
 
@@ -471,20 +479,20 @@ void () butcher_die =
 
 void () monster_butcher =
 {
-// Disable for testing the model
+/* Disable for testing the model
 
     if (deathmatch)
     {
         remove (self);
         return ;
     }
-
+*/
     precache_model ("models/enemies/butcher.md3");
     precache_model ("models/enemies/butcher_cleaver.md3");
     precache_model ("models/enemies/butcher_head.md3");
     precache_model ("models/enemies/butcher_explode.md3");
-    precache_model ("progs/naltball.mdl");
-        
+    precache_model ("models/weapons/objects/naltball.md3");
+
     precache_sound ("butcher/acidhit1.wav");
     precache_sound ("butcher/acidhit2.wav");
     precache_sound ("butcher/cleaver.wav");
@@ -495,18 +503,19 @@ void () monster_butcher =
     precache_sound ("butcher/fzompuke.wav");
     precache_sound ("butcher/fzomroam.wav");
     precache_sound ("butcher/fzomspot.wav");
-    
-    
+
+
     self.solid = SOLID_SLIDEBOX;
     self.movetype = MOVETYPE_STEP;
     setmodel (self, "models/enemies/butcher.md3");
     setsize (self,'-8 -11 0', '11 11 50');
-    self.health = 200;
+    self.health = 300;
+    self.max_health = self.health;
     self.th_stand = butcher_stand;
     self.th_walk = butcher_walk;
     self.th_run = butcher_run;
     self.th_die = butcher_die;
     self.th_pain = butcher_pain;
-    self.th_missile = butcher_attack;    
+    self.th_missile = butcher_attack;
     walkmonster_start ();
 };

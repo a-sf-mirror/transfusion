@@ -17,22 +17,20 @@
     See file, 'COPYING', for details.
 */
 
-/* Tim's to-do list    
-            
-    Shotgun does not hit up close - jump back hack implemented. real fix???
-    Test the idle smack talk    
-    Too many sounds at once - I need the sound lengths.  Set attackfinished to end when taunt sound ends
-    need more than one frame - luke
-    need to get real health and damage values
-    head - make use of cultist head with ThrowHead().  Kick cultist head around!    
-    damage to player if you touch cultist - in player.qc, for all monsters?        
-*/
+/* Tim's to-do list
 
+    Shotgun does not hit up close - jump back hack implemented. real fix???
+    Shots being fired too high
+    need to get real health and damage values
+    need to drop head
+    needs to be engulfed in flames when deathtype == fire and health < 1/4 of max health
+
+*/
 
 #include "common.qh"
 
 
-$base base        
+$base base
 $skin skin
 
 // idle
@@ -71,12 +69,12 @@ void () browncultist_walk1 = [$idle1, browncultist_walk1] {browncultist_ai (3);}
 
 
 //--- Decide what to say
-void () browncultist_stand = 
+void () browncultist_stand =
 {
     cultist_stand();
-    
+
     // FIXME: Whenever the model is finished I can probably redo this
-    browncultist_stand1();    
+    browncultist_stand1();
 };
 
 //--- Basic idle
@@ -96,41 +94,42 @@ void () browncultist_run =
 };
 
 //--- Shooting gun
- 
-void () browncultist_attacka1 = [$idle1, browncultist_attacka2] {browncultist_fireShotgun (); ai_face (); ai_run_slide();};
-void () browncultist_attacka2 = [$idle1, browncultist_run] {ai_face (); ai_run_slide();};
 
-//--- Throwing TNT 
+void () browncultist_attacka1 = [$idle1, browncultist_attacka2] {browncultist_fireShotgun (); ai_face ();};
+void () browncultist_attacka2 = [$idle1, browncultist_run] {ai_face ();};
 
-void () browncultist_attackb1 = [$idle1, browncultist_attackb2] {cultist_throw_TNT (); ai_face (); ai_run_slide();};
-void () browncultist_attackb2 = [$idle1, browncultist_run] {ai_face (); ai_run_slide();};
+//--- Throwing TNT
+
+void () browncultist_attackb1 = [$idle1, browncultist_attackb2] {cultist_throw_TNT (); ai_face ();};
+void () browncultist_attackb2 = [$idle1, browncultist_run] {ai_face ();};
 
 
 void () browncultist_attack =
 {
     if (!infront(self.enemy)) // If there's something blocking the shot
         return;
-        
+
     cultist_attack(); // Talk some smack!
-    
-    browncultist_attackDecide();    
+
+    browncultist_attackDecide();
 };
 
 void () browncultist_attackDecide =
 {
     if (self.attack_finished > time)
     {
-        ai_face();                        // Face player
-        
-        if (range(self.enemy) == RANGE_NEAR) // If the player is near shoot them
-            browncultist_attacka1 ();    
+        ai_face();                           // Face player
+
+        if (range(self.enemy) == RANGE_NEAR ||
+            range(self.enemy) == RANGE_MELEE)// If the player is near shoot them
+            browncultist_attacka1 ();
         else
-            browncultist_attackb1 ();    // Otherwise TNT them    
+            browncultist_attackb1 ();        // Otherwise TNT them
     }
     else
     {
-        self.think = browncultist_run;     // Turn basic "I have an enemy" AI back on
-        self.nextthink = time + 0.1;    // Turn that AI back on in 1/10 of a second
+        self.think = browncultist_run;       // Turn basic "I have an enemy" AI back on
+        self.nextthink = time + 0.1;         // Turn that AI back on in 1/10 of a second
     }
 
 };
@@ -148,9 +147,9 @@ void () browncultist_fireShotgun =
 void () browncultist_pain =
 {
     cultist_pain();
-    
+
 //    browncultist_pain1 (); // FIXME: Need pain frames - luke
-    
+
     if (self.deathtype != "fire") // FIXME: This is here until I can spread it through pain frames
         ai_pain(15);
 };
@@ -172,17 +171,17 @@ void () browncultist_die =
 
 void () monster_browncultist =
 {
-// Disable for testing the model
+/* Disable for testing the model
 
     if (deathmatch)
     {
         remove (self);
         return ;
     }
-
+*/
     precache_model ("models/enemies/cultist-brown.md3");
     precache_model ("models/weapons/grenades/gr_tnt.md3");
-        
+
     precache_sound ("cultist/cultatt1.wav");
     precache_sound ("cultist/cultatt2.wav");
     precache_sound ("cultist/cultdie1.wav");
@@ -206,12 +205,13 @@ void () monster_browncultist =
     precache_sound ("cultist/cultspt5.wav");
     precache_sound ("cultist/culttoss.wav");
     precache_sound ("weapons/r_exp3.wav");    // TNT explosion sound
-    
+
     self.solid = SOLID_SLIDEBOX;
     self.movetype = MOVETYPE_STEP;
     setmodel (self, "models/enemies/cultist-brown.md3");
     setsize (self,'-6 -14 0', '34 14 62');
-    self.health = 200;
+    self.health = 175;
+    self.max_health = self.health;
     self.th_stand = browncultist_stand;
     self.th_walk = browncultist_walk;
     self.th_run = browncultist_run;

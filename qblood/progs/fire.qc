@@ -72,8 +72,12 @@ void(entity targ, entity inflictor, entity attacker, float dmgtype, float damage
 //------------------------------------------------------------------------//
 void(entity victim, entity fire, float damage, float dmgtype, float burn, float burntime) BurnDamage =
 {
+    // Cerebrus doesn't take fire damage, just damage from napalm missile impact, and never catches on fire
+    if (victim.classname == "monster_cerebrus")
+        dmgtype = DF_BODY;
+
     // Set victim on fire first.
-    if (burn > 0)
+    else if (burn > 0)
         Ignite (victim, fire.owner, dmgtype, burn, burntime);
 
     // Apply damage next immediately.

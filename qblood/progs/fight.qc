@@ -107,22 +107,15 @@ float() CheckAttack =
 
     if (enemy_range == RANGE_MELEE)
     {
-        chance = 0.9;
-        self.attack_finished = 0;
+        chance = 1;
     }
     else if (enemy_range == RANGE_NEAR)
     {
-        if (self.th_melee)
-            chance = 0.2;
-        else
-            chance = 0.4;
+        chance = 0.2;
     }
     else if (enemy_range == RANGE_MID)
     {
-        if (self.th_melee)
-            chance = 0.05;
-        else
-            chance = 0.1;
+        chance = 0.05;
     }
     else
         chance = 0;
@@ -148,6 +141,19 @@ Stay facing the enemy
 void() ai_face =
 {
     self.ideal_yaw = vectoyaw(self.enemy.origin - self.origin);
+    ChangeYaw ();
+};
+
+/*
+=============
+ai_face
+
+Stay facing away from the enemy
+=============
+*/
+void() ai_faceaway =
+{
+    self.ideal_yaw = vectoyaw(self.origin - self.enemy.origin);
     ChangeYaw ();
 };
 
@@ -229,196 +235,3 @@ void() ai_melee_side =
     ldmg = (random() + random() + random()) * 3;
     T_Damage (self.enemy, self, self, ldmg, DF_BODY, string_null);
 };
-
-
-//=============================================================================
-
-/*
-===========
-SoldierCheckAttack
-
-The player is in view, so decide to move or launch an attack
-Returns FALSE if movement should continue
-============
-*/
-/* -------- NO LONGER USED ------------
-float() SoldierCheckAttack =
-{
-    local vector    spot1, spot2;
-    local entity    targ;
-    local float     chance;
-
-    targ = self.enemy;
-
-// see if any entities are in the way of the shot
-    spot1 = self.origin + self.view_ofs;
-    spot2 = targ.origin + targ.view_ofs;
-
-    traceline (spot1, spot2, FALSE, self);
-
-    if (trace_inopen && trace_inwater)
-        return FALSE;           // sight line crossed contents
-
-    if (trace_ent != targ)
-        return FALSE;   // don't have a clear shot
-
-
-// missile attack
-    if (time < self.attack_finished)
-        return FALSE;
-
-    if (enemy_range == RANGE_FAR)
-        return FALSE;
-
-    if (enemy_range == RANGE_MELEE)
-        chance = 0.9;
-    else if (enemy_range == RANGE_NEAR)
-        chance = 0.4;
-    else if (enemy_range == RANGE_MID)
-        chance = 0.05;
-    else
-        chance = 0;
-
-    if (random () < chance)
-    {
-        self.th_missile ();
-        AI_AttackFinished (1 + random());
-        if (random() < 0.3)
-            self.lefty = !self.lefty;
-
-        return TRUE;
-    }
-
-    return FALSE;
-};
-*/
-
-//=============================================================================
-
-/*
-===========
-ShamCheckAttack
-
-The player is in view, so decide to move or launch an attack
-Returns FALSE if movement should continue
-============
-*/
-/* -------- NO LONGER USED ------------
-float() ShamCheckAttack =
-{
-    local vector    spot1, spot2;
-    local entity    targ;
-    local float     chance;
-    local float     enemy_yaw;
-
-    if (enemy_range == RANGE_MELEE)
-    {
-        if (CanDamage (self.enemy, self))
-        {
-            self.attack_state = AS_MELEE;
-            return TRUE;
-        }
-    }
-
-    if (time < self.attack_finished)
-        return FALSE;
-
-    if (!enemy_vis)
-        return FALSE;
-
-    targ = self.enemy;
-
-// see if any entities are in the way of the shot
-    spot1 = self.origin + self.view_ofs;
-    spot2 = targ.origin + targ.view_ofs;
-
-    if (vlen(spot1 - spot2) > 600)
-        return FALSE;
-
-    traceline (spot1, spot2, FALSE, self);
-
-    if (trace_inopen && trace_inwater)
-        return FALSE;           // sight line crossed contents
-
-    if (trace_ent != targ)
-    {
-        return FALSE;   // don't have a clear shot
-    }
-
-// missile attack
-    if (enemy_range == RANGE_FAR)
-        return FALSE;
-
-    self.attack_state = AS_MISSILE;
-    AI_AttackFinished (2 + 2*random());
-    return TRUE;
-};
-*/
-
-//============================================================================
-
-/*
-===========
-OgreCheckAttack
-
-The player is in view, so decide to move or launch an attack
-Returns FALSE if movement should continue
-============
-*/
-/* -------- NO LONGER USED ------------
-float() OgreCheckAttack =
-{
-    local vector    spot1, spot2;
-    local entity    targ;
-    local float     chance;
-
-    if (enemy_range == RANGE_MELEE)
-    {
-        if (CanDamage (self.enemy, self))
-        {
-            self.attack_state = AS_MELEE;
-            return TRUE;
-        }
-    }
-
-    if (time < self.attack_finished)
-        return FALSE;
-
-    if (!enemy_vis)
-        return FALSE;
-
-    targ = self.enemy;
-
-// see if any entities are in the way of the shot
-    spot1 = self.origin + self.view_ofs;
-    spot2 = targ.origin + targ.view_ofs;
-
-    traceline (spot1, spot2, FALSE, self);
-
-    if (trace_inopen && trace_inwater)
-        return FALSE;           // sight line crossed contents
-
-    if (trace_ent != targ)
-    {
-        return FALSE;   // don't have a clear shot
-    }
-
-// missile attack
-    if (time < self.attack_finished)
-        return FALSE;
-
-    if (enemy_range == RANGE_FAR)
-        return FALSE;
-
-    else if (enemy_range == RANGE_NEAR)
-        chance = 0.10;
-    else if (enemy_range == RANGE_MID)
-        chance = 0.05;
-    else
-        chance = 0;
-
-    self.attack_state = AS_MISSILE;
-    AI_AttackFinished (1 + 2*random());
-    return TRUE;
-};
-*/

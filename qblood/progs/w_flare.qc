@@ -22,7 +22,7 @@
 
 
 void() Flare_Fire;
-
+void () FlareThink;
 
 //============================================================================
 
@@ -119,9 +119,8 @@ This causes the flare to emit sparks
 void() FlareSpark =
 {
     // FIXME:  Use better particle effects -- custom source port recommended.
-    particle (self.origin, '0 0 50', 151, 32);
+    particle (self.origin, '0 0 50', 195, 32);
 };
-
 
 /*
 ================
@@ -141,14 +140,59 @@ void() FlareTouch =
         return;
     }
 
-    // hit something that bleeds
-    if (other.takedamage)
+    if (other.takedamage && !(other.flags & FL_MONSTER))
         BurnDamage (other, self, self.dmg, DF_FIRE, self.charge, self.dmgtime);
 
     FlareSpark ();   // Throw a few sparks.
-    remove (self);
+
+    if (other.classname == "player" || (other.flags & FL_MONSTER))
+    {
+        self.alpha = 0.1; // Until I get a new model
+
+        // No more glowing, flesh has been hit
+        self.effects = 0;
+        self.enemy = other;
+        self.movetype = MOVETYPE_NONE;
+        self.v_angle = self.enemy.origin - self.origin;
+
+        // Flares stick for 6 seconds
+        self.attack_finished = time + 6;
+        FlareThink();
+    }
+    else
+        remove (self);
 };
 
+void () FlareThink =
+{
+   local float percent;
+
+   if (self.attack_finished < time ||  // flare is burnt out
+       self.enemy.health <=0)          // enemy is dead
+        remove (self);
+
+    if (self.enemy.max_health == 0)
+        error2("!!!TIM!!! set max health value for entity: ", self.enemy.classname);
+
+    percent = self.enemy.health / self.enemy.max_health;
+
+    if (!VecInWater(self.origin))
+    if (percent <= 0.35 && (self.enemy.flags & FL_MONSTER))  // Monsters don't catch on fire until they're low on health
+        {
+            Ignite(self.enemy, self, DF_FIRE, 10, 1);
+            T_Damage (self.enemy, self, self, 3, DF_FIRE, "fire");
+        }
+    else if (self.enemy.flags & FL_MONSTER)
+        T_Damage (self.enemy, self, self, 3, DF_FIRE, "fire");
+
+    FlareSpark ();   // Throw a few sparks.
+
+    if ((self.enemy.origin - self.origin) != self.v_angle)
+        self.origin = self.enemy.origin + self.v_angle;
+
+        self.nextthink = time + 0.1;
+        self.think = FlareThink;
+};
 
 /*
 ================

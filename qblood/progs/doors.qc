@@ -23,9 +23,13 @@
 
 #define DOOR_START_OPEN 1
 #define DOOR_DONT_LINK  4
-#define DOOR_GOLD_KEY   8
-#define DOOR_SILVER_KEY 16
+#define DOOR_EYE_KEY    8
+#define DOOR_SKULL_KEY  16
 #define DOOR_TOGGLE     32
+#define DOOR_FIRE_KEY   64
+#define DOOR_DAGGER_KEY 128
+#define DOOR_SPIDER_KEY 256
+#define DOOR_MOON_KEY   512
 
 /*
 
@@ -72,6 +76,7 @@ void() door_hit_top =
 {
     sound (self, CHAN_VOICE, self.noise1, 1, ATTN_NORM);
     self.state = STATE_TOP;
+
     if (self.spawnflags & DOOR_TOGGLE)
         return;     // don't come down automatically
     self.think = door_go_down;
@@ -102,7 +107,7 @@ void() door_go_up =
 {
     //dprint ("door_go_up\n");
     if (self.state == STATE_UP)
-        return;     // allready going up
+        return;     // already going up
 
     if (self.state == STATE_TOP)
     {   // reset top wait time
@@ -210,7 +215,7 @@ void() door_killed =
     oself = self;
     self = self.owner;
     self.health = self.max_health;
-    self.takedamage = DAMAGE_NO;    // wil be reset upon return
+    self.takedamage = DAMAGE_NO;    // will be reset upon return
     door_use ();
     self = oself;
 };
@@ -438,7 +443,7 @@ void() func_door =
     precache_sound ("thevoice/squash.wav");
 
     // REMOVEME: temporary hack
-    // shootable, fired, or key doors can't ge triggered manually
+    // shootable, fired, or key doors can't get triggered manually
     if (!self.health && !self.targetname && !self.items2)
         self.spawnflags = self.spawnflags | SF_USABLE;
 
@@ -509,10 +514,18 @@ void() func_door =
     self.blocked = door_blocked;
     self.use = door_use;
 
-    if (self.spawnflags & DOOR_SILVER_KEY)
+    if (self.spawnflags & DOOR_SKULL_KEY)
         self.items2 = IT2_KEY1;
-    if (self.spawnflags & DOOR_GOLD_KEY)
+    if (self.spawnflags & DOOR_EYE_KEY)
         self.items2 = IT2_KEY2;
+    if (self.spawnflags & DOOR_FIRE_KEY)
+        self.items2 = IT2_KEY3;
+    if (self.spawnflags & DOOR_DAGGER_KEY)
+        self.items2 = IT2_KEY4;
+    if (self.spawnflags & DOOR_SPIDER_KEY)
+        self.items2 = IT2_KEY5;
+    if (self.spawnflags & DOOR_MOON_KEY)
+        self.items2 = IT2_KEY6;
 
     if (!self.speed)
         self.speed = 100;
@@ -554,6 +567,7 @@ void() func_door =
     // the sizes can be detected properly.
     self.think = LinkDoors;
     self.nextthink = self.ltime + 0.1;
+
 };
 
 /*

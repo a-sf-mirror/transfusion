@@ -163,6 +163,18 @@
 #define IMP_MENU             55
 #define IMP_OBSERVER         56
 
+// Player taunts (70 - 79)
+#define TAUNT_0              70
+#define TAUNT_1              71
+#define TAUNT_2              72
+#define TAUNT_3              73
+#define TAUNT_4              74
+#define TAUNT_5              75
+#define TAUNT_6              76
+#define TAUNT_7              77
+#define TAUNT_8              78
+#define TAUNT_9              79
+
 // Cheats (from 254, going down)
 // WARNING: all of them are CHEAT PROTECTED
 #define IMP_CHEAT_BOD        250  // Brink Of Death
@@ -274,7 +286,7 @@
 #define TE_TELEPORT         11
 #define TE_EXPLOSION2       12  // color mapped explosion. No sprite
 #define TE_BEAM             13  // WARNING: "progs/beam.mdl" required
-
+#define TE_TEI_BIGEXPLOSION    78
 
 // sound channels
 // channel 0 never willingly overrides

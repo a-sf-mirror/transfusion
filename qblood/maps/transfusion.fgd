@@ -20,6 +20,10 @@
 	]
 	sounds(integer) : "CD track to play" : 1
 	light(integer) : "100"
+	_minlight_color(color255) : "Shadow Color(minlight)"
+	_sunlight(integer) : "Sunlight brightness"
+	_sun_mangle(string) : "Sunlight angle (yaw pitch 0)"
+	_sunlight_color(color255) : "Sunlight Color"
 ]
 
 
@@ -66,6 +70,7 @@
 @baseclass size(-8 -8 -8, 8 8 8) = Light
 [
 	light(integer) : "Brightness" : 300
+	_color(color255) : "RGB Color"
 	style(choices) : "Behaviour" : 0 =
 	[
 		0 : "Normal"
@@ -81,6 +86,15 @@
 		4 : "Fast strobe"
 		9 : "Slow strobe"
 	]
+	delay(Choices) : "Attenuation" : 0 =
+	[
+		0 : "Normal"
+		1 : "1/x attenuation"
+		2 : "1/x^2 attenuation"
+		3 : "Full (no attenuation)"
+	]
+	wait(string) : "Fade distance factor"
+	mangle(string) : "Spotlight angle (yaw pitch 0)"
 ]
 
 @PointClass base(Light, Targetname) = light : "Invisible lightsource"
@@ -300,6 +314,12 @@
 
 @SolidClass = func_plat : "Elevator"
 [
+	style(choices) : "Movement style" : 0 =
+	[
+		0: "Player Activated"
+		1: "Automated movement"
+	]	
+	speed(integer) : "Speed (units per second)" : 150
 	height(integer) : "Travel altitude (can be negative)" : 0
 	sounds(choices) : "Sound group" : 1 =
 	[

@@ -28,8 +28,13 @@ void() button_return;
 void() button_wait =
 {
     self.state = STATE_TOP;
-    self.nextthink = self.ltime + self.wait;
-    self.think = button_return;
+
+    if (self.wait)
+    {
+        self.nextthink = self.ltime + self.wait;
+        self.think = button_return;
+    }
+
     activator = self.enemy;
     SUB_UseTargets();
     self.frame = 1;         // use alternate textures
@@ -42,8 +47,20 @@ void() button_done =
 
 void() button_return =
 {
+    if (self.state == STATE_TOP && !self.style)
+    {
+        activator = self.enemy;
+        sound (self, CHAN_VOICE, self.noise, 1, ATTN_NORM);
+        SUB_UseTargets();
+    }
+
     self.state = STATE_DOWN;
-    SUB_CalcMove (self.pos1, self.speed, button_done);
+
+    if (self.style)
+        SUB_CalcMove (self.pos1, self.speed, button_done);
+    else
+        button_done();
+
     self.frame = 0;         // use normal textures
     if (self.health)
         self.takedamage = DAMAGE_YES;   // can be shot again
@@ -63,7 +80,11 @@ void() button_fire =
     sound (self, CHAN_VOICE, self.noise, 1, ATTN_NORM);
 
     self.state = STATE_UP;
-    SUB_CalcMove (self.pos2, self.speed, button_wait);
+
+    if (self.style)
+        SUB_CalcMove (self.pos2, self.speed, button_wait);
+    else
+        button_wait();
 };
 
 
@@ -77,8 +98,18 @@ void() button_touch =
 {
     if (other.classname != "player")
         return;
+
+    if (self.attack_finished > time)
+        return;
+    else
+        self.attack_finished = time + 1;
+
     self.enemy = other;
-    button_fire ();
+
+    if (self.state == STATE_TOP && !self.style)
+        button_return();
+    else
+        button_fire ();
 };
 
 void() button_killed =
@@ -150,6 +181,11 @@ local float     gtemp, ftemp;
         self.th_die = button_killed;
         self.takedamage = DAMAGE_YES;
     }
+    else if (!self.style)
+    {
+        self.spawnflags = self.spawnflags | SF_USABLE;
+        self.use = button_touch;
+    }
     else
         self.touch = button_touch;
 
@@ -166,3 +202,53 @@ local float     gtemp, ftemp;
     self.pos2 = self.pos1 + self.movedir*(fabs(self.movedir*self.size) - self.lip);
 };
 
+void() changelevel_use =
+{
+    local entity    pos;
+
+    if (other.classname != "player")
+        return;
+
+    if ((cvar("noexit") == 1) || ((cvar("noexit") == 2) && (mapname != "start")))
+    {
+        T_Damage (other, self, self, 50000, DF_BODY, "exitkill");
+        return;
+    }
+
+    if (coop || deathmatch)
+    {
+        bprint (other.netname);
+        bprint (" exited the level\n");
+    }
+
+    nextmap = self.map;
+
+    SUB_UseTargets ();
+
+    self.frame = 1 - self.frame;
+
+    if ( (self.spawnflags & 1) && (deathmatch == 0) )
+    {    // NO_INTERMISSION
+        GotoNextMap();
+        return;
+    }
+
+    self.use = SUB_Null;
+
+    execute_changelevel();
+};
+
+/*QUAKED func_changelevel (0.5 0.5 0.5) ? NO_INTERMISSION
+When the player uses this, he gets sent to the map listed in the "map" variable.  Unless the NO_INTERMISSION flag is set, the view will go to the info_intermission spot and display stats.
+*/
+void() func_changelevel =
+{
+    if (!self.map)
+        objerror ("changelevel func doesn't have map");
+
+    self.spawnflags = self.spawnflags | SF_USABLE;
+    self.solid = SOLID_BSP;
+    self.movetype = MOVETYPE_PUSH;
+    setmodel (self, self.model);
+    self.use = changelevel_use;
+};

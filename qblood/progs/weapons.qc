@@ -188,8 +188,9 @@ void(float damage, vector dir) TraceAttack =
     if (trace_ent.takedamage)
         AddMultiDamage (trace_ent, damage);
 
-    // Make players bleed
-    if (trace_ent.takedamage && trace_ent.classname == "player")
+    // If the target can bleed, spawn some blood
+    if (trace_ent.classname == "player" || (trace_ent.flags & FL_MONSTER) ||
+        trace_ent.classname == "corpse" ||  trace_ent.classname == "head")
     {
         SpawnBlood (org, vel*0.2, damage);
         SpawnBloodSpray (trace_ent, org);

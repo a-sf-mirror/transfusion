@@ -18,31 +18,30 @@
 */
 
 /* Tim's to-do list
-    
-    maybe float to surface when dead?
-    need biting "crunch" sound
-    does melee touch cause damage?
+
+    Need to be able to step on eel
+
 */
 
 
 #include "common.qh"
 
 
-$base base        
+$base base
 $skin skin
 
 $frame idle1
 
-$frame swim1 swim2 swim3 swim4 swim5 swim6 swim7 swim8 
+$frame swim1 swim2 swim3 swim4 swim5 swim6 swim7 swim8
 
 $frame attack1 attack2 attack3
 
-$frame death1 death2 death3 death4 death5 death6 death7 death8 
+$frame death1 death2 death3 death4 death5 death6 death7 death8
 
 
 void() swimmonster_start;
 
-void() eel_stand1  =[      $idle1, eel_stand1 ] 
+void() eel_stand1  =[      $idle1, eel_stand1 ]
 {
     if (random() < 0.05)
         sound (self, CHAN_VOICE, "eel/eelroam.wav", 1, ATTN_NORM);
@@ -75,12 +74,12 @@ void() eel_melee =
 
     if (!self.enemy)
         return;        // removed before stroke
-        
+
     delta = self.enemy.origin - self.origin;
 
     if (vlen(delta) > 60)
         return;
-        
+
 //    sound (self, CHAN_VOICE, "eel/bite.wav", 1, ATTN_NORM); // FIXME: I need eel biting sound
     ldmg = (random() + random()) * 3;
     T_Damage (self.enemy, self, self, ldmg, DF_BODY, string_null);
@@ -93,13 +92,13 @@ void() eel_attack3        =[      $attack3,       eel_attack1 ] {ai_charge(10);}
 void() eel_death1 =[      $death1,        eel_death2        ]
 {
     local float     r;
-    
+
     r = random();
-    
-    if (r < 0.33)
+
+    if (r <= 0.33)
         sound (self, CHAN_VOICE, "eel/eeldie1.wav", 1, ATTN_NORM);
-    else if (r < 0.66)
-        sound (self, CHAN_VOICE, "eel/eeldie2.wav", 1, ATTN_NORM);        
+    else if (r <= 0.66)
+        sound (self, CHAN_VOICE, "eel/eeldie2.wav", 1, ATTN_NORM);
     else
         sound (self, CHAN_VOICE, "eel/eeldie3.wav", 1, ATTN_NORM);
 };
@@ -110,7 +109,7 @@ void() eel_death4 =[      $death4,        eel_death5        ] {};
 void() eel_death5 =[      $death5,        eel_death6        ] {};
 void() eel_death6 =[      $death6,        eel_death7        ] {};
 void() eel_death7 =[      $death7,        eel_death8        ] {};
-void() eel_death8 =[      $death8,        eel_death8         ] 
+void() eel_death8 =[      $death8,        eel_death8         ]
 {
     self.solid = SOLID_NOT;     // In the last frame, remove self 15 seconds after death
     self.nextthink = time + 15;
@@ -125,22 +124,22 @@ void(entity attacker, float damage)    eel_pain =
     if (self.pain_finished > time)
         return;
 
-    sound (self, CHAN_VOICE, "eel/eelpain.wav", 1, ATTN_NORM);        
-        
+    sound (self, CHAN_VOICE, "eel/eelpain.wav", 1, ATTN_NORM);
+
     self.pain_finished = time + 1;
     ai_pain(12);
 };
 
 void() monster_eel =
 {
-//  Disabled for testing
+/*  Disabled for testing
 
     if (deathmatch)
     {
         remove(self);
         return;
     }
-
+*/
     precache_model ("models/enemies/bone_eel.md3");
 
     precache_sound ("eel/eeldie1.wav");
@@ -149,7 +148,6 @@ void() monster_eel =
     precache_sound ("eel/eelpain.wav");
     precache_sound ("eel/eelroam.wav");
     precache_sound ("eel/eelspot.wav");
-    // FIXME: need crunch noise made when eel is attacking
 
     self.solid = SOLID_SLIDEBOX;
     self.movetype = MOVETYPE_STEP;
@@ -158,13 +156,14 @@ void() monster_eel =
 
     setsize (self, '-9 -1 -2', '6 1 2');
     self.health = 25;
-    
+    self.max_health = self.health;
     self.th_stand = eel_stand1;
     self.th_walk = eel_walk1;
     self.th_run = eel_run1;
     self.th_die = eel_death1;
     self.th_pain = eel_pain;
     self.th_melee = eel_attack1;
-    
+    self.touch = monster_stepped_on;
+
     swimmonster_start ();
 };

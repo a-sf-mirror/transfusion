@@ -137,10 +137,6 @@ local entity    temp;
     self = other;
     other = temp;
 
-    if (self.classname == "monster_ogre")
-        sound (self, CHAN_VOICE, "ogre/ogdrag.wav", 1, ATTN_IDLE);// play chainsaw drag sound
-
-//dprint ("t_movetarget\n");
     self.goalentity = self.movetarget = find (world, targetname, other.target);
     self.ideal_yaw = vectoyaw(self.goalentity.origin - self.origin);
     if (!self.movetarget)
@@ -360,8 +356,8 @@ float() FindTarget =
         return FALSE;
 
     r = range (client);
-    if (r == RANGE_FAR)
-        return FALSE;
+//    if (r == RANGE_FAR)  // TESTME: Do all blood monsters respond to players as soon as they're spotted?
+//        return FALSE;
 
     if (!visible (client))
         return FALSE;
@@ -455,11 +451,6 @@ void(float dist) ai_walk =
 
     movedist = dist;
 
-    if (self.classname == "monster_dragon")
-    {
-        movetogoal (dist);
-        return;
-    }
     // check for noticing a player
     if (FindTarget ())
         return;
@@ -560,14 +551,6 @@ float() CheckAnyAttack =
 {
     if (!enemy_vis)
         return;
-/*  FIXME: These guys are gone but I'll replace them with our guys... Tim
-    if (self.classname == "monster_army")
-        return SoldierCheckAttack ();
-    if (self.classname == "monster_ogre")
-        return OgreCheckAttack ();
-    if (self.classname == "monster_shambler")
-        return ShamCheckAttack ();
-*/
     return CheckAttack ();
 };
 
@@ -692,13 +675,11 @@ void(float dist) ai_run =
 
     if (self.attack_state == AS_MISSILE)
     {
-//dprint ("ai_run_missile\n");
         ai_run_missile ();
         return;
     }
     if (self.attack_state == AS_MELEE)
     {
-//dprint ("ai_run_melee\n");
         ai_run_melee ();
         return;
     }
@@ -716,3 +697,33 @@ void(float dist) ai_run =
     movetogoal (dist);      // done in C code...
 };
 
+/*
+=============
+ai_run_away
+
+The heart and soul of the innocent ai.  Runs around like a dummy.  If he hits a wall, turn a little and keep going.
+=============
+*/
+void(float dist) ai_run_away =
+{
+// FIXME: This should be tweaked more
+traceline(self.origin, self.origin + '-32 0 0', FALSE, self); // Detect if there is something solid in self's way
+
+    if (self.attack_finished < time)
+       {
+         //    Thinking whether or not self is stuck
+         if (self.oldorigin == self.origin || trace_fraction != 1)
+         {
+           // Self is stuck
+           self.ideal_yaw = self.ideal_yaw - 22.5;   // Turn a little bit
+           self.ideal_yaw = anglemod(self.ideal_yaw);// Get rid of crazy values
+         }
+         else                                        // Self is not stuck!
+           self.oldorigin = self.origin;
+
+         self.attack_finished = time + 0.1;          // Give self a little while to get unstuck
+       }
+
+    ChangeYaw ();// Change the way self is facing
+    walkmove(self.ideal_yaw, dist);
+};

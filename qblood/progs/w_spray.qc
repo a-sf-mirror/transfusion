@@ -80,7 +80,7 @@ void() player_spray =
     }
 
     muzzleflash ();
-    
+
     self.weaponframe = self.weaponframe + 1;
     if (self.weaponframe > $spray_fire3)
         self.weaponframe = $spray_fire1;

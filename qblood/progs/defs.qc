@@ -145,7 +145,7 @@ void    end_sys_globals;    // flag for structure dumping
 .float  skin;
 .float  effects;
 
-.vector mins, maxs;     // bounding box extents reletive to origin
+.vector mins, maxs;     // bounding box extents relative to origin
 .vector size;           // maxs - mins
 
 .void() touch;
@@ -462,6 +462,16 @@ float map_cycle;
 .float      delay;          // time from activation to firing
 .entity     trigger_field;  // door's trigger entity
 .string     noise4;
+
+// rotation variables
+.vector     neworigin;
+.vector     rotate;
+.float      endtime;
+.float      rotate_type;
+.string     group;
+.string     event;
+.string     path;
+.float      duration;
 
 //
 // monsters

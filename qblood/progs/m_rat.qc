@@ -18,16 +18,16 @@
 */
 
 /* Tim's to-do list
-    
+
     Need more frames ??? (Luke)
-  
+
 */
 
 
 #include "common.qh"
 
 
-$base base        
+$base base
 $skin skin
 
 // idle
@@ -73,13 +73,13 @@ void () rat_walk4 = [$run4, rat_walk1] {rat_ai (3);};
 
 
 // FIXME: Unless more frames get added to the rat, we don't need two stand functions
-void () rat_stand = 
+void () rat_stand =
 {
     if (random () < 0.05)
         sound (self, CHAN_VOICE, "rat/ratroam.wav", 1, ATTN_IDLE);
-        
+
     self.style = 1;
-    rat_stand1();    
+    rat_stand1();
 };
 
 // idle
@@ -98,7 +98,7 @@ void () rat_run =
 };
 
 // --- Bite sequence
- 
+
 void () rat_attack1 = [$attack1, rat_attack2] {rat_bite();ai_face ();};
 void () rat_attack2 = [$attack2, rat_run] {ai_face ();};
 
@@ -113,9 +113,9 @@ void () rat_attack =
 
     delta = (self.enemy.origin - self.origin);
 
-    if (vlen (delta) <= 90)      
+    if (vlen (delta) <= 90)
         rat_attack1 ();    // If the player is near bite them
-    
+
 };
 
 
@@ -124,7 +124,7 @@ void () rat_attack =
 void() rat_bite =
 {
     local vector    delta;
-    local float     ldmg;    
+    local float     ldmg;
 
     if (self.enemy.classname != "player") // To avoid hurting monster buddies on purpose
         return;
@@ -138,26 +138,26 @@ void() rat_bite =
 
     if (vlen(delta) > 100)
         return;
-        
+
     ldmg = (random() + random() + random()) * 8;
     T_Damage (self.enemy, self, self, ldmg, DF_BODY, string_null);
-        
+
     sound (self, CHAN_VOICE, "hellhound/houndbit.wav", 1, ATTN_NORM);  //FIXME: Verify this is correct biting sound
-    
+
     self.attack_finished = time + 1;
-    
+
 };
 
 //--- Show pain
 
 void () rat_pain =
-{    
+{
     // don't make multiple pain sounds right after each other
     if (self.pain_finished > time)
-        return;            
-    
+        return;
+
         sound (self, CHAN_VOICE, "rat/ratpain.wav", 1, ATTN_NORM);
-                
+
 //    rat_pain1 (); // FIXME: No pain sequence for now
     self.pain_finished = (time + 1); // is really 0.33 seconds long, but that really sounds crappy
 };
@@ -174,12 +174,12 @@ void () rat_death1 = [$idle1, rat_death1]
 void () rat_die =
 {
     self.effects = 0;
-    if (self.health < -40) 
+    if (self.health < -40)
     {
         sound (self, CHAN_VOICE, "rat/ratdie3.wav", 1, ATTN_NORM);
 
         // FIXME: Throw really small gib or just make a big blood splat
-        
+
         remove (self);
         return;
     }
@@ -188,7 +188,7 @@ void () rat_die =
         sound (self, CHAN_VOICE, "rat/ratdie1.wav", 1, ATTN_NORM);
     else
         sound (self, CHAN_VOICE, "rat/ratdie2.wav", 1, ATTN_NORM);
-    
+
     rat_death1 ();
     self.solid = SOLID_NOT;
 };
@@ -197,16 +197,16 @@ void () rat_die =
 
 void () monster_rat =
 {
-// Disable for testing the model
+/* Disable for testing the model
 
     if (deathmatch)
     {
         remove (self);
         return ;
     }
-
+*/
     precache_model ("models/enemies/rat.md3");
-    
+
     precache_sound ("rat/ratdie1.wav");
     precache_sound ("rat/ratdie2.wav");
     precache_sound ("rat/ratdie3.wav");
@@ -214,12 +214,13 @@ void () monster_rat =
     precache_sound ("rat/ratroam.wav");
     precache_sound ("rat/ratspot.wav");
     precache_sound ("hellhound/houndbit.wav");
-            
+
     self.solid = SOLID_SLIDEBOX;
     self.movetype = MOVETYPE_STEP;
     setmodel (self, "models/enemies/rat.md3");
     setsize (self,'-13 -3 0', '13 3 6');     // FIXME: Need real coordinates
     self.health = 100;
+    self.max_health = self.health;
     self.th_stand = rat_stand;
     self.th_walk = rat_walk;
     self.th_run = rat_run;
