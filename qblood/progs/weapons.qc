@@ -1152,10 +1152,11 @@ void(entity attacker, vector org, vector dir, float mspeed, float big) PM_Launch
     setorigin (jolt, org);
 };
 
-void() W_FireLightning =
+void(float big) W_FireLightning =
 {
     local   vector      org;
     local   float       cells;
+    local   float       mspeed;
 
     if (self.ammo_cells < 1)
         return;
@@ -1171,17 +1172,17 @@ void() W_FireLightning =
     WriteByte (MSG_ONE, SVC_SMALLKICK);
     #endif
 
-    local   float   big;
-
-    big = FALSE;
-    if ((self.impulse == 12 || self.button1) && self.ammo_cells >= 35)
+    if (big && self.ammo_cells >= 35)
     {
-        sound (self, CHAN_WEAPON, "weapons/tesla/tessuper.wav", 1, ATTN_NORM);
-        big = TRUE;
+        // We have already started the sound
+
         self.ammo_cells = self.ammo_cells - 35;
+        mspeed = 2500;
     }
     else
     {
+        big = FALSE;
+
         // FIXME:  Is the sound needed?
         if (self.t_width < time)
         {
@@ -1189,23 +1190,13 @@ void() W_FireLightning =
             self.t_width = time + 0.3;
         }
         self.ammo_cells = self.ammo_cells - 1;
+        mspeed = 1500;
     }
     self.currentammo = self.ammo_cells;
 
     // PM:  This is for the plasma gun-wannabe mode.
     local   vector  dir;
-    local   float   mspeed;
 
-    if (big)
-    {
-        self.attack_finished = time + 1.256;
-        mspeed = 2500;
-    }
-    else
-    {
-        self.attack_finished = time + 0.1;
-        mspeed = 1500;
-    }
     makevectors (self.v_angle);
     dir = aim(self, mspeed);
     org = self.origin + v_forward * 50 + '0 0 12' + v_right * 12;
@@ -1961,6 +1952,7 @@ void()  player_axed1;
 void()  player_shot1;
 void()  player_nail1;
 void()  player_light1;
+void()  player_altlight1;
 void()  player_rocket1;
 void()  player_doll1;
 
@@ -2027,8 +2019,17 @@ void() W_Attack =
     }
     else if (self.weapon == IT_LIGHTNING)
     {
-        W_FireLightning ();
-        player_light1();
+        if (self.button0 || self.ammo_cells < 35)
+        {
+            player_light1();
+            W_FireLightning (FALSE);
+            self.attack_finished = time + 0.1;
+        }
+        else
+        {
+            player_altlight1();
+            self.attack_finished = time + 1.256;
+        }
 
         self.impulse = 0;  // REMOVEME as soon as the altfire will no longer be bind to an impulse
     }
