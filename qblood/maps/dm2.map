@@ -1,8 +1,9 @@
 {
 "classname" "worldspawn"
-"message" "Power!\n by JoeV [I Live...AGAIN]\n  http://www.planetblood.com/qblood/"
+"message" "Power!\n by JoeV [I Live...AGAIN]\n  http://www.planetblood.com/qblood"
 "sounds" "6"
-"wad" "TEXTURES.wad;d:\bloodbath\bloodbath.wad;d:\bloodbath\feb2.wad"
+"sky" "night1"
+"wad" "d:\bloodbath\bloodbath.wad;d:\bloodbath\feb2.wad;d:\bloodbath\fake_transparencies.wad"
 {
 ( -320 288 208 ) ( 128 288 208 ) ( 128 128 208 ) TILE0067 0 0 0 1.000000 1.000000
 ( -320 128 64 ) ( 128 128 64 ) ( 128 288 64 ) TILE0067 0 0 90 1.000000 1.000000
@@ -1724,7 +1725,7 @@
 }
 {
 "classname" "item_artifact_super_damage"
-"origin" "-512 -960 -96"
+"origin" "-512 -960 -136"
 }
 {
 "classname" "item_spikes"
@@ -1754,32 +1755,32 @@
 {
 "classname" "weapon_lifeleech"
 "angle" "273"
-"origin" "-512 -758 -36"
+"origin" "-512 -758 -80"
 }
 {
 "classname" "weapon_supernailgun"
-"origin" "-800 -544 -32"
+"origin" "-800 -544 -64"
 }
 {
 "classname" "weapon_supernailgun"
-"origin" "-848 -568 -32"
+"origin" "-848 -568 -64"
 }
 {
 "classname" "item_shells"
 "spawnflags" "1"
-"origin" "-936 -960 -16"
+"origin" "-936 -960 -64"
 }
 {
 "classname" "item_rockets"
 "angle" "273"
 "spawnflags" "1"
-"origin" "-680 -1256 -16"
+"origin" "-680 -1256 -64"
 }
 {
 "classname" "item_rockets"
 "angle" "273"
 "spawnflags" "1"
-"origin" "-600 -1256 -16"
+"origin" "-600 -1256 -64"
 }
 {
 "classname" "weapon_voodoodoll"
@@ -1788,22 +1789,22 @@
 {
 "classname" "item_flares"
 "angle" "273"
-"origin" "-352 -1256 -16"
+"origin" "-352 -1256 -64"
 }
 {
 "classname" "item_flares"
 "angle" "273"
-"origin" "-416 -1256 -16"
+"origin" "-416 -1256 -64"
 }
 {
 "classname" "item_cells"
 "spawnflags" "1"
-"origin" "-104 -1000 -16"
+"origin" "-104 -1000 -64"
 }
 {
 "classname" "item_cells"
 "spawnflags" "1"
-"origin" "-104 -920 -16"
+"origin" "-104 -920 -64"
 }
 {
 "classname" "item_spikes"
@@ -1880,7 +1881,7 @@
 "origin" "200 -840 0"
 }
 {
-"classname" "item_armor2"
+"classname" "item_armorInv"
 "origin" "64 -496 -16"
 }
 {

@@ -2,8 +2,8 @@
 "classname" "worldspawn"
 "sounds" "6"
 "light" "100"
-"message" "Area 15\n by JoeV [I Live...AGAIN]\n  http://www.planetblood.com/qblood/"
-"wad" "TEXTURES.wad;d:\bloodbath\bloodbath.wad;d:\bloodbath\feb2.wad"
+"message" "Area15\n by JoeV [I Live...AGAIN]\n  http://www.planetblood.com/qblood"
+"wad" "d:\bloodbath\bloodbath.wad;d:\bloodbath\feb2.wad;d:\bloodbath\fake_transparencies.wad"
 {
 ( -384 320 -320 ) ( 1600 320 -320 ) ( 1600 -1376 -320 ) TILE0041 0 0 0 1.000000 1.000000
 ( -384 320 -320 ) ( -384 -1376 -320 ) ( -384 -1376 -1212 ) TILE0041 0 16 0 1.000000 1.000000
@@ -706,8 +706,10 @@
 "origin" "412 -192 -654"
 }
 {
-"classname" "light_fluoro"
+"classname" "light"
+"angle" "-2"
 "light" "500"
+"wait" "0.50"
 "origin" "512 -320 -599"
 }
 {
@@ -755,8 +757,9 @@
 }
 }
 {
-"classname" "light_fluoro"
-"light" "500"
+"classname" "light"
+"angle" "-2"
+"light" "300"
 "origin" "1136 -928 -599"
 }
 {
@@ -799,22 +802,21 @@
 "origin" "320 571 -501"
 }
 {
-"classname" "light_fluoro"
-"light" "500"
+"classname" "light"
+"angle" "-2"
+"light" "400"
+"wait" "0.50"
 "origin" "512 0 -613"
-}
-{
-"classname" "light_fluoro"
-"light" "500"
-"origin" "584 128 -418"
 }
 {
 "classname" "info_player_deathmatch"
 "origin" "-120 -64 -473"
 }
 {
-"classname" "light_fluoro"
-"light" "500"
+"classname" "light"
+"angle" "-2"
+"light" "400"
+"wait" "0.50"
 "origin" "252 -192 -543"
 }
 {
@@ -840,18 +842,24 @@
 }
 }
 {
-"classname" "light_fluoro"
+"classname" "light"
+"angle" "-2"
 "light" "400"
+"wait" "0.50"
 "origin" "992 -1088 -418"
 }
 {
-"classname" "light_fluoro"
-"light" "350"
+"classname" "light"
+"angle" "-2"
+"light" "400"
+"wait" "0.50"
 "origin" "768 -864 -473"
 }
 {
 "classname" "light_fluoro"
-"light" "150"
+"angle" "-2"
+"light" "300"
+"wait" "0.50"
 "origin" "672 192 -473"
 }
 {
@@ -1010,11 +1018,6 @@
 {
 "classname" "item_artifact_reflect"
 "origin" "992 -1120 -445"
-}
-{
-"classname" "sentry_detect_laugh"
-"angle" "273"
-"origin" "336 576 -543"
 }
 {
 "classname" "item_health"
@@ -1191,9 +1194,10 @@
 "origin" "856 160 -544"
 }
 {
-"classname" "light_fluoro"
+"classname" "light"
 "angle" "-2"
-"light" "500"
+"light" "400"
+"wait" "0.50"
 "origin" "1216 -192 -448"
 }
 {
@@ -1251,4 +1255,7 @@
 "classname" "info_intermission"
 "angle" "182"
 "origin" "1232 -176 -592"
+}
+{
+"classname" "sentry_detect_laugh"
 }

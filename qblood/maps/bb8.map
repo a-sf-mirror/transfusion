@@ -2,6 +2,7 @@
 "classname" "worldspawn"
 "message" "Fun With Heads\n by JoeV [I Live...AGAIN]\n http://www.planetblood.com/qblood"
 "sounds" "6"
+"sky" "sky4"
 "wad" "d:\bloodbath\bloodbath.wad;d:\bloodbath\feb2.wad;d:\bloodbath\fake_transparencies.wad"
 {
 ( -1088 1536 -192 ) ( 1376 1536 -192 ) ( 1376 -640 -192 ) TILE0362 0 0 0 1.000000 1.000000
@@ -1514,7 +1515,8 @@
 }
 {
 "classname" "light"
-"light" "1300"
+"light" "600"
+"wait" "0.25"
 "origin" "96 452 136"
 }
 {
