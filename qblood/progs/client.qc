@@ -184,29 +184,30 @@ entity() FindIntermission =
         return spot;
     }
 
+    // If we haven't found an "info_intermission" entity,
+    // use an "info_player_deathmatch" entity instead
+    Bprint (PRINT_HIGH, "варнинг╨ FindIntermission: no info_intermission\n");  // "WARNING: ..."
+    spot = find (world, classname, "info_player_deathmatch");
+    if (spot)
+        return spot;
+
     objerror ("FindIntermission: no spot");
 };
 
 
 void() GotoNextMap =
 {
-    // if samelevel is set, stay on same level
-    if (cvar("samelevel"))
-        changelevel (mapname);
-    else
-    {
-        #ifdef QUAKEWORLD
-        local string newmap;
+    #ifdef QUAKEWORLD
+    local string newmap;
 
-        // QW supports a configurable map list
-        // see if the current map exists as a serverinfo / localinfo var
-        newmap = infokey(world, mapname);
-        if (newmap != "")
-            changelevel (newmap);
-        else
-        #endif
-            changelevel (nextmap);
-    }
+    // QW supports a configurable map list
+    // see if the current map exists as a serverinfo / localinfo var
+    newmap = infokey(world, mapname);
+    if (newmap != "")
+        changelevel (newmap);
+    else
+    #endif
+        changelevel (nextmap);
 };
 
 
@@ -634,47 +635,14 @@ void() NextLevel =
         return; // already done
     #endif
 
-    if (mapname == "start")
-    {
-        if (!cvar("registered"))
-        {
-            mapname = "e1m1";
-        }
-        else if (!(serverflags & 1))
-        {
-            mapname = "e1m1";
-            serverflags = serverflags | 1;
-        }
-        else if (!(serverflags & 2))
-        {
-            mapname = "e2m1";
-            serverflags = serverflags | 2;
-        }
-        else if (!(serverflags & 4))
-        {
-            mapname = "e3m1";
-            serverflags = serverflags | 4;
-        }
-        else if (!(serverflags & 8))
-        {
-            mapname = "e4m1";
-            serverflags = serverflags - 7;
-        }
+    // find a trigger changelevel
+    o = find(world, classname, "trigger_changelevel");
 
+    // go back to same map if no trigger_changelevel
+    if (!o)
+    {
         o = spawn();
         o.map = mapname;
-    }
-    else
-    {
-        // find a trigger changelevel
-        o = find(world, classname, "trigger_changelevel");
-
-        // go back to same map if no trigger_changelevel
-        if (!o)
-        {
-            o = spawn();
-            o.map = mapname;
-        }
     }
 
     nextmap = o.map;
@@ -1141,6 +1109,171 @@ void() CheckPowerups =
 
 
 /*
+============
+Impulses_Player
+
+Impulse list for living players
+============
+*/
+void() Impulses_Player =
+{
+    // Nothing to do, or altfire (will be treated later)
+    if (self.impulse == 0 || self.impulse == 12)
+        return;
+
+    if ((self.impulse >= 1 && self.impulse <= 9) || self.impulse == 17)
+        W_ChangeWeapon ();
+
+    else if (self.impulse == 10)
+        CycleWeaponCommand ();
+    else if (self.impulse == 11)
+        CycleWeaponReverseCommand ();
+
+    // Inventory selection/usage.
+    else if (self.impulse == 13)
+        InvenUse ();
+    else if (self.impulse == 14)
+        InvenSelect (FALSE);
+    else if (self.impulse == 15)
+        InvenSelect (TRUE);
+
+    // Armor cycle.
+    else if (self.impulse == 16)
+        ArmorTest ();
+
+    // Toggle menu
+    else if (self.impulse == 50)
+        Menu_Start ();
+
+    // Bot management
+    else if (self.impulse == 100 || self.impulse == 101)
+    {
+        // If bots are disabled
+        if (cvar ("sv_disable") & SV_DISABLE_BOTS)
+        {
+            Sprint (self, PRINT_HIGH, "Bots are disabled on this server\n");
+            return;
+        }
+
+        local float botskill;
+
+        botskill = cvar ("skill");
+        BotConnect (self.impulse - 100, 0, botskill);
+    }
+    else if (self.impulse == 102)
+        KickABot();
+
+    else if (self.impulse == 141)
+        identify_player ();
+
+    // These ones are considered cheats and are only allowed when the "sv_allowCheat" cvar is set
+    else if (cvar ("sv_allowCheat"))
+    {
+        #ifndef QUAKEWORLD
+        if (self.impulse == 103)
+            botcam_u ();
+        else if (self.impulse == 104)
+            bot_way_edit ();
+        else
+        #endif
+
+        if (self.impulse == 250)
+        {
+            coredump ();
+        }
+        else if (self.impulse == 251)
+        {
+            Sprint (self, PRINT_MEDIUM, "griswold -- You have full armor.\n");
+            self.armor_fire = self.armor_body = self.armor_mind = self.armorvalue = 200;
+            self.items = self.items - (self.items & (IT_ARMOR1 | IT_ARMOR2 | IT_ARMOR3)) + IT_ARMOR2;
+        }
+        else if (self.impulse == 252)
+        {
+            Sprint (self, PRINT_MEDIUM, "mcgee -- You're fired!\n");
+            Ignite (self, self, 200);
+        }
+        else if (self.impulse == 253)
+            InvenCheat ();
+        else if (self.impulse == 254)
+            CheatCommand ();
+        else if (self.impulse == 255)
+            QuadCheat ();
+    }
+
+    self.impulse = 0;
+};
+
+
+/*
+============
+Impulses_Dead
+
+Impulse list for dead players
+============
+*/
+void() Impulses_Dead =
+{
+    if (self.impulse == 0)
+        return;
+
+    // If we're dead, we are allowed to become an observer again
+    if (self.impulse == 20)
+    {
+        self.do_observer = 1;
+        respawn ();
+        Bprint (PRINT_MEDIUM, self.netname);
+        Bprint (PRINT_MEDIUM, " is an observer again\n");
+    }
+
+    // Toggle menu
+    else if (self.impulse == 50)
+        Menu_Start ();
+
+    // Bot management
+    else if (self.impulse == 100 || self.impulse == 101)
+    {
+        // If bots are disabled
+        if (cvar ("sv_disable") & SV_DISABLE_BOTS)
+        {
+            Sprint (self, PRINT_HIGH, "Bots are disabled on this server\n");
+            return;
+        }
+
+        local float botskill;
+
+        botskill = cvar ("skill");
+        BotConnect (self.impulse - 100, 0, botskill);
+    }
+    else if (self.impulse == 102)
+        KickABot();
+
+    else if (self.impulse == 141)
+        identify_player ();
+
+    self.impulse = 0;
+};
+
+
+/*
+============
+Impulses_Observer
+
+Impulse list for observers
+============
+*/
+void() Impulses_Observer =
+{
+    if (self.impulse == 0)
+        return;
+
+    if (self.impulse == 141)
+        identify_player ();
+
+    self.impulse = 0;
+};
+
+
+/*
 ================
 PlayerPostThink
 
@@ -1162,14 +1295,11 @@ void() PlayerPostThink =
     // if we're not allowed to act (in intermission, or dead, or observer)
     if (self.view_ofs == '0 0 0' || self.deadflag || self.observer)
     {
-        // If we're dead, we are allowed to become an observer again
-        if (self.impulse == 20 && self.deadflag == DEAD_RESPAWNABLE && !self.observer)
-        {
-            self.do_observer = 1;
-            respawn ();
-            Bprint (PRINT_MEDIUM, self.netname);
-            Bprint (PRINT_MEDIUM, " is an observer again\n");
-        }
+        // allow some impulses
+        if (self.observer)
+            Impulses_Observer ();
+        else if (self.deadflag == DEAD_RESPAWNABLE)
+            Impulses_Dead ();
 
         return;
     }

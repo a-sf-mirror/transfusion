@@ -264,7 +264,7 @@ void() worldspawn =
     }
     friendlyfire = (teamplay == 2);  // NOTE: should we allow friendlyfire changes during the game ?
 
-    // custom map attributes
+    // Set gravity
     cvar_set ("sv_gravity", "800");
 
     // Some CTF variables need an initialization
@@ -283,7 +283,8 @@ void() worldspawn =
     //precache_model ("progs/spike.mdl");
     //precache_model ("progs/s_spike.mdl");
 
-    // models and stuff
+    // Gibs and other stuff
+    precache_model ("progs/bitogore.mdl");
     precache_model ("progs/h_player.mdl");
     precache_model ("progs/gib1.mdl");
     precache_model ("progs/gib2.mdl");
@@ -301,14 +302,10 @@ void() worldspawn =
 
     precache_model ("progs/v_axe.mdl");
 
-    precache_model ("progs/missile.mdl");  // napalm regular fire
 
-    precache_model ("progs/bitogore.mdl");  // gib
-
-
-//
-// Setup light animation tables. 'a' is total darkness, 'z' is maxbright.
-//
+    //
+    // Setup light animation tables. 'a' is total darkness, 'z' is maxbright.
+    //
 
     // 0 normal
     lightstyle(0, "m");
@@ -377,22 +374,6 @@ void(string gibname, float dm) ThrowGib;
 
 /*
 ====================
-CorpseTouch
-
-So you don't slip on corpses
-====================
-*/
-void () CorpseTouch =
-{
-    self.velocity = '0 0 0';
-
-    if ((!other.flags & FL_ONGROUND) && (other.health) && (other.flags & FL_CLIENT))
-        other.flags = other.flags + FL_ONGROUND;
-};
-
-
-/*
-====================
 BecomeCorpse
 
 Modify entity properties to change it to a destroyable corpse
@@ -424,7 +405,7 @@ void(float corpseHealth, void() corpseToGib) BecomeCorpse =
     // Note: only player's heads can be into this function
     if (self.classname != "head")
     {
-        self.touch = CorpseTouch;
+        self.touch = SUB_SolidTouch;
         self.solid = SOLID_BBOX;
 
         setsize (self, '-32 -32 -24', '32 32 -19');

@@ -31,26 +31,47 @@ void() Tommy_Fire;
 // Normal model
 $modelname v_nail
 
+// idle
+$frame tommy_idle1
+
 // fire
-$frame tommy_fire1 tommy_fire2 tommy_fire3 tommy_fire4 tommy_fire5
-$frame tommy_fire6 tommy_fire7 tommy_fire8
+$frame tommy_fire1 tommy_fire2
 
 // altfire
+// tommy_alt1 = tommy_alt5 = center
+// tommy_alt2 = tommy_alt4 = near left
+// tommy_alt6 = tommy_alt8 = near right
 $frame tommy_alt1 tommy_alt2 tommy_alt3 tommy_alt4 tommy_alt5
-$frame tommy_alt6 tommy_alt7
+$frame tommy_alt6 tommy_alt7 tommy_alt8
+
+// draw
+$frame tommy_draw1 tommy_draw2 tommy_draw3
+
+// holster
+$frame tommy_holster1 tommy_holster2 tommy_holster3
 
 
 // Akimbo model
 $modelname v_anail
 
+// idle
+$frame atommy_idle1
+
 // fire
-$frame atommy_fire1 atommy_fire2 atommy_fire3 atommy_fire4 atommy_fire5
-$frame atommy_fire6 atommy_fire7 atommy_fire8
+$frame atommy_fire1 atommy_fire2
 
 // altfire
-// NOTE: "atommy_alt7" is the same as "atommy_alt1", so we skip it
-$frame atommy_alt1 atommy_alt2 tommy_alt3 atommy_alt4 atommy_alt5
-$frame atommy_alt6 atommy_alt7
+// atommy_alt1 = atommy_alt5 = center
+// atommy_alt2 = atommy_alt4 = near left
+// atommy_alt6 = atommy_alt8 = near right
+$frame atommy_alt1 atommy_alt2 atommy_alt3 atommy_alt4 atommy_alt5
+$frame atommy_alt6 atommy_alt7 atommy_alt8
+
+// draw
+$frame atommy_draw1 atommy_draw2 atommy_draw3
+
+// holster
+$frame atommy_holster1 atommy_holster2 atommy_holster3
 
 
 // ----- Player related code ----- //
@@ -67,22 +88,18 @@ void() player_tommy =
 
     muzzleflash ();
 
-    self.weaponframe = self.weaponframe + 1;
-    if (self.weaponframe > $tommy_fire8)
-        self.weaponframe = $tommy_fire1;
-
     Tommy_Fire ();
     self.attack_finished = time + 0.1;
 
     self.impulse = 0;
 };
 
-void() player_tommy1 = [$nailatt1, player_tommy2] { player_tommy (); };
-void() player_tommy2 = [$nailatt2, player_tommy1] { player_tommy (); };
+void() player_tommy1 = [$nailatt1, player_tommy2] { player_tommy (); self.weaponframe = $tommy_fire1; };
+void() player_tommy2 = [$nailatt2, player_tommy1] { player_tommy (); self.weaponframe = $tommy_fire2; };
 
 void() player_alttommy =
 {
-    if ((!self.button1 && self.impulse != 12 && self.weaponframe == $atommy_alt6) || intermission_running ||
+    if ((!self.button1 && self.impulse != 12 && self.weaponframe == $atommy_alt8) || intermission_running ||
         self.ammo_nails < 1 || (self.ammo_nails < 2 && (self.items & IT_GUNS_AKIMBO)))
     {
         player_run ();
@@ -91,9 +108,8 @@ void() player_alttommy =
 
     muzzleflash ();
 
-    // $tommy_alt7 is skipped (see above)
     self.weaponframe = self.weaponframe + 1;
-    if (self.weaponframe > $tommy_alt6 || self.weaponframe < $tommy_alt1)
+    if (self.weaponframe > $tommy_alt8 || self.weaponframe < $tommy_alt1)
         self.weaponframe = $tommy_alt1;
     Tommy_Fire ();
     self.attack_finished = time + 0.1;
@@ -104,12 +120,15 @@ void() player_alttommy1 = [$nailatt1, player_alttommy2] { player_alttommy (); };
 void() player_alttommy2 = [$nailatt2, player_alttommy1] { player_alttommy (); };
 
 // Normal draw
-// NOTE: no animation to play for now
-void() player_tommydraw1 = [$nailatt1, player_run] { self.weaponframe = 0; };
+void() player_tommydraw1 = [$nailatt1, player_tommydraw2] { self.weaponframe = $tommy_draw1; };
+void() player_tommydraw2 = [$nailatt1, player_tommydraw3] { self.weaponframe = $tommy_draw2; };
+void() player_tommydraw3 = [$nailatt1, player_run       ] { self.weaponframe = $tommy_draw3; };
 
 // Normal holster
-// NOTE: no animation to play for now
-void() player_tommyholster1 = [$nailatt1, player_run] { W_DrawWeapon (self.newweapon); };
+void() player_tommyholster1 = [$nailatt1, player_tommyholster2] { self.weaponframe = $tommy_holster1; };
+void() player_tommyholster2 = [$nailatt1, player_tommyholster3] { self.weaponframe = $tommy_holster2; };
+void() player_tommyholster3 = [$nailatt1, player_tommyholster4] { self.weaponframe = $tommy_holster3; };
+void() player_tommyholster4 = [$nailatt1, player_run          ] { W_DrawWeapon (self.newweapon); };
 
 
 //============================================================================
@@ -172,8 +191,10 @@ void() Tommy_Fire =
         dir = dir - v_right * (1 / 6);
     else if (self.weaponframe == $tommy_alt3)
         dir = dir - v_right * (1 / 3);
-    else if (self.weaponframe == $tommy_alt6)
+    else if (self.weaponframe == $tommy_alt6 || self.weaponframe == $tommy_alt8)
         dir = dir + v_right * (1 / 6);
+    else if (self.weaponframe == $tommy_alt7)
+        dir = dir + v_right * (1 / 3);
 
     // If we're in akimbo mode
     orig = self.origin + v_forward * 15 + v_up * 12 + v_right * 4;

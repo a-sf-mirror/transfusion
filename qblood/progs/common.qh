@@ -137,7 +137,6 @@
 
 #define IT2_ENEMY_FLAG      64       // 7 - CTF enemy flag
 
-
 // Inventory items
 #define S_FIRST_AID     0
 #define S_DIVING_SUIT   1
@@ -145,6 +144,12 @@
 #define S_BEAST_VISION  3
 #define S_JUMP_BOOTS    4
 
+// Flags for the "sv_disable" cvar
+#define SV_DISABLE_BOTS         1
+#define SV_DISABLE_VOTE_MAP     2
+#define SV_DISABLE_VOTE_GAME    4
+#define SV_DISABLE_VOTE_FRAG    8
+#define SV_DISABLE_VOTE_TIME    16
 
 // point content values
 #define CONTENT_EMPTY   -1

@@ -290,8 +290,38 @@ void() Menu_HandleMain =
     }
 
     // Select the next menu to draw
-    if (self.impulse >= 1 && self.impulse < NB_MENUS)
-        self.menu_index = self.impulse;
+    if (self.impulse == MENU_VOTE_MAP)
+    {
+        // If map voting is disabled
+        if (cvar ("sv_disable") & SV_DISABLE_VOTE_MAP)
+            Sprint (self, PRINT_HIGH, "\n===== Map voting is disabled on this server =====\n\n");
+        else
+            self.menu_index = MENU_VOTE_MAP;
+    }
+    else if (self.impulse == MENU_VOTE_GAMETYPE)
+    {
+        // If game type voting is disabled
+        if (cvar ("sv_disable") & SV_DISABLE_VOTE_GAME)
+            Sprint (self, PRINT_HIGH, "\n===== Game type voting is disabled on this server =====\n\n");
+        else
+            self.menu_index = MENU_VOTE_GAMETYPE;
+    }
+    else if (self.impulse == MENU_VOTE_FRAGLIMIT)
+    {
+        // If frag limit voting is disabled
+        if (cvar ("sv_disable") & SV_DISABLE_VOTE_FRAG)
+            Sprint (self, PRINT_HIGH, "\n===== Frag limit voting is disabled on this server =====\n\n");
+        else
+            self.menu_index = MENU_VOTE_FRAGLIMIT;
+    }
+    else if (self.impulse == MENU_VOTE_TIMELIMIT)
+    {
+        // If time limit voting is disabled
+        if (cvar ("sv_disable") & SV_DISABLE_VOTE_TIME)
+            Sprint (self, PRINT_HIGH, "\n===== Time limit voting is disabled on this server =====\n\n");
+        else
+            self.menu_index = MENU_VOTE_TIMELIMIT;
+    }
     else
         Sprint (self, PRINT_HIGH, "\n===== INVALID COMMAND =====\n\n");
 

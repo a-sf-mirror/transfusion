@@ -1730,6 +1730,7 @@ void() weapon_rocketlauncher =
     self.touch = weapon_touch;
     setsize (self, '-16 -16 0', '16 16 56');
 
+    precache_model ("progs/missile.mdl");  // napalm regular fire
     precache_model ("progs/naltball.mdl"); // napalm alt fire model
 
     // Precache the necessary sounds
@@ -1809,7 +1810,7 @@ void() weapon_lifeleech =
     precache_model ("progs/g_leech.mdl");
     precache_model ("progs/v_leech.mdl");
     //precache_model ("progs/lechball.mdl");
-    precache_model ("progs/bolt.mdl"); // FIXME: use Tesla shot until missile is finished
+    precache_model ("progs/missile.mdl");  // FIXME: use napalm shot until leech ball is finished
 
     setmodel (self, "progs/g_leech.mdl");
     self.weapon = IT_LIFE_LEECH;
@@ -1818,14 +1819,14 @@ void() weapon_lifeleech =
     setsize (self, '-16 -16 0', '16 16 56');
 
     // precache the necessary sounds
-    precache_sound ("weapons/lifelech/llaltht.wav");
+    //precache_sound ("weapons/lifelech/llaltht.wav");
     precache_sound ("weapons/lifelech/laltfr1.wav");
-    precache_sound ("weapons/lifelech/llaltfr2.wav");
-    precache_sound ("weapons/lifelech/llaltht.wav");
-    precache_sound ("weapons/lifelech/llcharge.wav");
-    precache_sound ("weapons/lifelech/llsngfr3.wav");
-    precache_sound ("weapons/lifelech/llsnght2.wav");
-    precache_sound ("weapons/lifelech/skulair4.wav");
+    //precache_sound ("weapons/lifelech/llaltfr2.wav");
+    //precache_sound ("weapons/lifelech/llaltht.wav");
+    //precache_sound ("weapons/lifelech/llcharge.wav");
+    //precache_sound ("weapons/lifelech/llsngfr3.wav");
+    //precache_sound ("weapons/lifelech/llsnght2.wav");
+    //precache_sound ("weapons/lifelech/skulair4.wav");
 
     StartItem ();
 };

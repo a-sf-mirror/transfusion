@@ -217,7 +217,6 @@ vector(entity ent)      realorigin;
 void(entity ent)            target_drop;
 void(entity ent)            target_add;
 void()              KickABot;
-void()              BotImpulses;
 void(entity targ, float success) bot_lost;
 string(float r)         BotName;
 float(float v)          frik_anglemod;
@@ -678,20 +677,16 @@ float () BotPostFrame =
 {
     if (self.b_clientno == -1)
         return TRUE;
+    #ifndef QUAKEWORLD
     if (self.ishuman)
     {
-        #ifndef QUAKEWORLD
         if (waypoint_mode > WM_LOADED)
             bot_menu_display();
-        #endif
 
-        BotImpulses();
-
-        #ifndef QUAKEWORLD
         if (botcam())
             return TRUE;
-        #endif
     }
+    #endif
     return FALSE;
 };
 
@@ -1310,43 +1305,4 @@ void() BotFrame =
     if (saved_bots)
         bot_return();
     #endif
-};
-
-/*
--=-=-=-=-=-=-=-=-=-=-=-=-=-=-=-=-=-=-=-=-=-=-=
-
-Bot Impulses. Allows the player to perform bot
-related functions.
-
--=-=-=-=-=-=-=-=-=-=-=-=-=-=-=-=-=-=-=-=-=-=-=
-*/
-
-void() BotImpulses =
-{
-    if (self.impulse == 100 || self.impulse == 101)
-    {
-        local float botskill;
-
-        botskill = cvar ("skill");
-        BotConnect (self.impulse - 100, 0, botskill);
-    }
-    else if (self.impulse == 102)
-        KickABot();
-
-    #ifndef QUAKEWORLD
-    // Those ones are considered cheats
-    else if (cvar ("sv_allowCheat"))
-    {
-        if (self.impulse == 103)
-            botcam_u ();
-        else if (self.impulse == 104)
-            bot_way_edit ();
-        else
-            return;
-    }
-    #endif
-    else
-        return;
-
-    self.impulse = 0;
 };

@@ -359,7 +359,7 @@ void() W_ChargeNormal =
         // If the fuse is burned up, the TNT explodes in our hands...
         if (self.tnt_time && self.tnt_time <= time)
         {
-            Sprint (self, PRINT_LOW, "Sorry. . . Timed out . . .\n");
+            Sprint (self, PRINT_LOW, "Timed out . . .\n");
 
             // Indeed, we use a little trick: we drop the dynamite with a zero match time
             self.charge = 0;    // Make sure it's dropped, not thrown
@@ -433,8 +433,6 @@ void() W_ChargeNormal =
         }
 
         self.tnt_time = time + FUSE_TIME;
-        Sprint (self, PRINT_LOW, "WARNING: you've just lit the fuse (5 sec)...\n");
-
         self.t_width = 0;  // So the fuse wav starts at the next frame
     }
 };
@@ -784,6 +782,8 @@ Spawn function for proximity mines (BB6 map)
 */
 void() proximity_mine =
 {
+    precache_sound ("weapons/tnt/proxdet.wav");  // proximity bomb triggered
+
     self.owner      = world;
     #ifdef QUAKEWORLD
     self.voided     = 0;

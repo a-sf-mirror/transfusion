@@ -20,9 +20,6 @@
 #include "common.qh"
 #include "player.qh"
 
-void() Leech_BallFire;
-void() Leech_BallTouch;
-
 
 //=======================================================================
 
@@ -44,69 +41,85 @@ $frame leech_fire21 leech_fire22 leech_fire23 leech_fire24 leech_fire25
 // draw
 $frame leech_draw1 leech_draw2 leech_draw3
 
-//holster
+// holster
 $frame leech_holster1 leech_holster2 leech_holster3
-
-
-// Akimbo model
-$modelname v_aleech
-
-// fire
-$frame alech_fire1 alech_fire2 alech_fire3 alech_fire4 alech_fire5
-$frame alech_fire6 alech_fire7 alech_fire8 alech_fire9 alech_fire10
-
-// draw
-$frame aleech_draw1 aleech_draw2 aleech_draw3 aleech_draw4
-
-//holster
-$frame aleech_holster1 aleech_holster2 aleech_holster3 aleech_holster4
 
 
 // ------------ Player related code ---------- //
 
 // Normal fire
-void() player_leech1 = [$rockatt1, player_leech2]
+void() player_leech =
 {
-    self.player_state = PS_FIRE;
-    self.weaponframe = $leech_fire2;
-    sound (self, CHAN_WEAPON, "weapons/lifelech/laltfr1.wav", 1, ATTN_NORM);
+    #ifdef QUAKEWORLD
+    msg_entity = self;
+    WriteByte (MSG_ONE, SVC_SMALLKICK);
+    #else
+    self.punchangle_x = -2;
+    #endif
     muzzleflash ();
-    Leech_BallFire();
-    Leech_BallFire();  // two balls per frame, 14 shots total
-};
 
-void() player_leech2  = [$rockatt2, player_leech3 ] { self.weaponframe = $leech_fire3; Leech_BallFire(); Leech_BallFire(); };
-void() player_leech3  = [$rockatt3, player_leech4 ] { self.weaponframe = $leech_fire4; Leech_BallFire(); Leech_BallFire(); };
-void() player_leech4  = [$rockatt4, player_leech5 ] { self.weaponframe = $leech_fire5; Leech_BallFire(); Leech_BallFire(); };
-void() player_leech5  = [$rockatt5, player_leech6 ] { self.weaponframe = $leech_fire6; Leech_BallFire(); Leech_BallFire(); };
-void() player_leech6  = [$rockatt1, player_leech7 ] { self.weaponframe = $leech_fire7; Leech_BallFire(); Leech_BallFire(); };
-void() player_leech7  = [$rockatt1, player_leech8 ] { self.weaponframe = $leech_fire8; Leech_BallFire(); Leech_BallFire(); };
-void() player_leech8  = [$rockatt1, player_leech9 ] { self.weaponframe = $leech_fire9; Leech_BallFire(); Leech_BallFire(); };
-void() player_leech9  = [$rockatt1, player_leech10] { self.weaponframe = $leech_fire10; };
-void() player_leech10 = [$rockatt1, player_run    ] { self.weaponframe = $leech_fire1; };
+    newmis = spawn ();
 
-// Akimbo mode
-void() player_akleech1  = [$rockatt1, player_akleech2 ] { self.weaponframe = $alech_fire2; muzzleflash (); };
-void() player_akleech2  = [$rockatt2, player_akleech3 ] { self.weaponframe = $alech_fire3; };
-void() player_akleech3  = [$rockatt1, player_akleech4 ] { self.weaponframe = $alech_fire4; Leech_BallFire(); };
-void() player_akleech4  = [$rockatt2, player_akleech5 ] { self.weaponframe = $alech_fire5; };
-void() player_akleech5  = [$rockatt3, player_akleech6 ] { self.weaponframe = $alech_fire6; };
-void() player_akleech6  = [$rockatt4, player_akleech7 ] { self.weaponframe = $alech_fire7; };
-void() player_akleech7  = [$rockatt5, player_akleech8 ] { self.weaponframe = $alech_fire8; };
-void() player_akleech8  = [$rockatt1, player_akleech9 ] { self.weaponframe = $alech_fire9; };
-void() player_akleech9  = [$rockatt1, player_akleech10] { self.weaponframe = $alech_fire10; };
-void() player_akleech10 = [$rockatt1, player_run]
-{
-    // Check if we have enough ammo for another Akimbo Shot
-    // if < 14, set a flag to drain from player health when ammo reaches 0
-    if ((self.items & IT_GUNS_AKIMBO) && self.currentammo < 14)
-    {
-        W_SetCurrentAmmo ();
-        self.weaponframe = $alech_fire1;
-    }
+    makevectors (self.v_angle);
+    newmis.velocity = aim (self, 1000);  // base velocity
+
+    newmis.owner = self;
+    newmis.solid = SOLID_BBOX;
+    newmis.classname = "rocket";
+    #ifdef QUAKEWORLD
+    newmis.voided = 0;
+    #endif
+    newmis.angles = vectoangles(newmis.velocity);
+    newmis.movetype = MOVETYPE_FLYMISSILE;
+    newmis.velocity = 1500 * (newmis.velocity + crandom()*0.18*v_right + crandom()*0.08*v_up);
+
+    // If we don't have enough ammo, use HP
+    if (self.ammo_leech == 0)
+        T_Damage (self, world, world, 1, DF_NO_PROTECT, "leech");
     else
-        self.weaponframe = $alech_fire10;
+        self.ammo_leech = self.ammo_leech - 1;
+    self.currentammo = self.ammo_leech;
+
+    newmis.touch = T_MissileTouch;
+    setmodel (newmis, "progs/missile.mdl");
+    setsize (newmis, '-1 -1 -1', '1 1 1');
+    setorigin (newmis, self.origin + v_forward * 20 + '0 0 12');
+
+    // set newmis duration
+    newmis.nextthink = time + 5;
+    newmis.think = SUB_Remove;
 };
+
+// Altfire
+void() player_leech1  = [$shotatt1, player_leech2 ]
+{
+    sound (self, CHAN_WEAPON, "weapons/lifelech/laltfr1.wav", 1, ATTN_NORM);
+    self.weaponframe = $leech_fire1;
+};
+void() player_leech2  = [$rockatt2, player_leech3 ] { self.weaponframe = $leech_fire2;  };
+void() player_leech3  = [$rockatt3, player_leech4 ] { self.weaponframe = $leech_fire3;  };
+void() player_leech4  = [$rockatt4, player_leech5 ] { self.weaponframe = $leech_fire4;  };
+void() player_leech5  = [$rockatt5, player_leech6 ] { self.weaponframe = $leech_fire5;  player_leech (); };
+void() player_leech6  = [$rockatt1, player_leech7 ] { self.weaponframe = $leech_fire6;  player_leech (); };
+void() player_leech7  = [$rockatt2, player_leech8 ] { self.weaponframe = $leech_fire7;  player_leech (); };
+void() player_leech8  = [$rockatt3, player_leech9 ] { self.weaponframe = $leech_fire8;  };
+void() player_leech9  = [$rockatt4, player_leech10] { self.weaponframe = $leech_fire9;  player_leech (); };
+void() player_leech10 = [$rockatt5, player_leech11] { self.weaponframe = $leech_fire10; player_leech (); };
+void() player_leech11 = [$rockatt1, player_leech12] { self.weaponframe = $leech_fire11; player_leech (); };
+void() player_leech12 = [$rockatt2, player_leech13] { self.weaponframe = $leech_fire12; };
+void() player_leech13 = [$rockatt3, player_leech14] { self.weaponframe = $leech_fire13; player_leech (); };
+void() player_leech14 = [$rockatt4, player_leech15] { self.weaponframe = $leech_fire14; player_leech (); };
+void() player_leech15 = [$rockatt5, player_leech16] { self.weaponframe = $leech_fire15; player_leech (); };
+void() player_leech16 = [$rockatt1, player_leech17] { self.weaponframe = $leech_fire16; };
+void() player_leech17 = [$rockatt2, player_leech18] { self.weaponframe = $leech_fire17; player_leech (); };
+void() player_leech18 = [$rockatt3, player_leech19] { self.weaponframe = $leech_fire18; player_leech (); };
+void() player_leech19 = [$rockatt4, player_leech20] { self.weaponframe = $leech_fire19; player_leech (); };
+void() player_leech20 = [$rockatt5, player_leech21] { self.weaponframe = $leech_fire20; };
+void() player_leech21 = [$rockatt1, player_leech22] { self.weaponframe = $leech_fire21; player_leech (); };
+void() player_leech22 = [$rockatt2, player_leech23] { self.weaponframe = $leech_fire22; player_leech (); };
+void() player_leech23 = [$rockatt3, player_leech24] { self.weaponframe = $leech_fire23; };
+void() player_leech24 = [$rockatt4, player_leech25] { self.weaponframe = $leech_fire24; };
+void() player_leech25 = [$rockatt5, player_run    ] { self.weaponframe = $leech_fire25; };
 
 // Normal draw
 void() player_leechdraw1 = [$rockatt1, player_leechdraw2] { self.weaponframe = $leech_draw1; };
@@ -133,22 +146,58 @@ void() Leech_BallFire =
 {
     // ... TODO ...
 
-    sound (self, CHAN_WEAPON, "weapons/lifelech/llsngfr3.wav", 1, ATTN_NORM);
+//    sound (self, CHAN_WEAPON, "weapons/lifelech/llsngfr3.wav", 1, ATTN_NORM);
+
+//    sound (self, CHAN_WEAPON, "weapons/lifelech/laltht.wav", 1, ATTN_NORM);
 };
 
 
 /*
 ==================
-Leech_BallTouch
+Leech_Drop
 
-Touch function for the Life Leech ball
+Drop the Life Leech as a solid staff (altfire)
 ==================
 */
-void() Leech_BallTouch =
+void() Leech_Drop =
 {
-    // ... TODO ...
+    local entity item;
 
-    sound (self, CHAN_WEAPON, "weapons/lifelech/laltht.wav", 1, ATTN_NORM);
+    makevectors (self.v_angle);
+
+    // Drop the Life Leech
+    item = spawn();
+    setmodel (item, "progs/g_leech.mdl");
+    setsize (item, '-5 -5 0', '5 7 41');
+
+    item.solid = SOLID_BBOX;
+    item.takedamage = DAMAGE_AIM;
+    item.health = 500;
+
+    item.origin = self.origin + '0 0 12';
+    item.velocity = aim (self, 1000) * 50;
+    item.velocity_z = 150;
+    item.movetype = MOVETYPE_TOSS;
+
+    // remove after 20 minutes
+    item.nextthink = time + 1200;
+    item.think = SUB_Remove;
+
+    item.touch = SUB_SolidTouch;
+    item.th_die = SUB_Remove;
+
+    // Dropping it requiers 25 ammo/HP
+    if (self.ammo_leech < 25)
+        T_Damage (self, world, world, 25 - self.ammo_leech, DF_NO_PROTECT, "leech");
+    self.currentammo = self.ammo_leech = 0;
+    self.items = self.items - self.weapon;
+
+    // If we're still alive
+    if (!self.deadflag)
+    {
+        self.newweapon = W_BestWeapon();
+        W_DrawWeapon (self.newweapon);
+    }
 };
 
 
@@ -161,29 +210,21 @@ Life Leech Attack Code
 */
 void() Leech_Attack =
 {
-    // Do NOTHING for now
-
-    /*
     // Normal fire or altfire?
     if (self.impulse == 12 || self.button1)
+    {
         self.player_state = PS_ALTFIRE;
+
+        Leech_Drop ();
+        self.attack_finished = time + 0.1;
+    }
     else
+    {
         self.player_state = PS_FIRE;
 
-    // If we have guns akimbo
-    if (self.items & IT_GUNS_AKIMBO)
-    {
-        player_akleech1 ();
-        self.attack_finished = time + 1.2;
-    }
-    else
-    {
         player_leech1 ();
-        self.attack_finished = time + 1.0;
+        self.attack_finished = time + 2.6;
     }
-
-    Leech_BallFire ();
-    */
 };
 
 

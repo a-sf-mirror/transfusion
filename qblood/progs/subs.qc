@@ -37,6 +37,20 @@ void() SUB_Remove = {remove(self);};
 
 
 /*
+====================
+SUB_SolidTouch
+
+So you don't slip on corpses, Life Leeches, ...
+====================
+*/
+void () SUB_SolidTouch =
+{
+    if ((!other.flags & FL_ONGROUND) && (other.health) && (other.flags & FL_CLIENT))
+        other.flags = other.flags + FL_ONGROUND;
+};
+
+
+/*
 QuakeEd only writes a single float for angles (bad idea), so up and down are
 just constant angles.
 */

@@ -355,6 +355,8 @@ entity team2_lastspawn;
 .float      idle_time;
 .float      idle_done;
 
+.float      voice_finished;
+
 .float      newweapon;      // used during the draw/holster weapon process
 
 

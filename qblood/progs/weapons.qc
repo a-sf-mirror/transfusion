@@ -394,9 +394,11 @@ void(entity client) ResetIdle =
 // This makes the player rave.
 void(entity client) BoredCaleb =
 {
-    if (client.health <= 0)
+    // If we're already talking
+    if (client.voice_finished >= time)
         return;
-    if (client.deadflag)
+
+    if (client.health <= 0 || client.deadflag)
         return;
     if (client.classname != "player")
         return;
@@ -431,17 +433,20 @@ void(entity client) BoredCaleb =
     else
         playit = "player/songs/vo3039.wav";   // "i've got you under my skin"
 
+    client.voice_finished = time + 8;
     sound (client, CHAN_VOICE, playit, 1, ATTN_NORM);
 };
 
 // This makes the player laugh or utter one of Caleb's signature one-liners.
 void(entity client) PsychoCaleb =
 {
+    // If we're already talking
+    if (client.voice_finished >= time)
+        return;
+
     if (random() > 0.15)
         return;     // Only 15% chance per call.
-    if (client.health <= 0)
-        return;
-    if (client.deadflag)
+    if (client.health <= 0 || client.deadflag)
         return;
     if (client.classname != "player")
         return;
@@ -480,7 +485,8 @@ void(entity client) PsychoCaleb =
             playit = "player/play1116.wav";
     }
 
-    sound (client, CHAN_BODY, playit, 1, ATTN_NORM);
+    client.voice_finished = time + 5;
+    sound (client, CHAN_VOICE, playit, 1, ATTN_NORM);
 };
 
 // This creates a blank entity that inflicts burn damage for several
@@ -840,7 +846,7 @@ float() W_BestWeapon =
         return IT_NAPALM_LAUNCHER;
     if (self.waterlevel <= 1 && self.ammo_cells >= 1 && (it & IT_TESLA_CANNON) )
         return IT_TESLA_CANNON;
-    if(self.ammo_leech >= 1 && (it & IT_LIFE_LEECH) )
+    if(self.ammo_leech >= 14 && (it & IT_LIFE_LEECH) )
         return IT_LIFE_LEECH;
     if(self.ammo_spray >= 1 && (it & IT_SPRAY_CAN) )
         return IT_SPRAY_CAN;
@@ -860,7 +866,7 @@ float() W_BestWeapon =
 
 float() W_AmmoAvailable =
 {
-    if (self.currentammo > 0 || self.weapon == IT_PITCHFORK)
+    if (self.currentammo > 0 || self.weapon == IT_PITCHFORK || self.weapon == IT_LIFE_LEECH)
         return TRUE;
 
     return FALSE;
@@ -1021,14 +1027,13 @@ void() W_ChangeWeapon =
     }
     else if (self.impulse == 9)
     {
-        new = IT_VOODOO_DOLL;
-        if (self.ammo_voodoo < 1)
-            am = 1;
+        new = IT_LIFE_LEECH;
+        // Life Leech doesn't need ammo
     }
     else if (self.impulse == 17)
     {
-        new = IT_LIFE_LEECH;
-        if (self.ammo_leech < 1)
+        new = IT_VOODOO_DOLL;
+        if (self.ammo_voodoo < 1)
             am = 1;
     }
 
@@ -1057,6 +1062,9 @@ void() W_ChangeWeapon =
 /*
 ============
 CheatCommand
+
+WARNING: it's very unlikely that all necessary sounds
+and models will be precached. Be prepared to crash
 ============
 */
 void() CheatCommand =
@@ -1089,8 +1097,6 @@ void() CheatCommand =
     self.items2 = self.items2 |
         IT2_KEY1 | IT2_KEY2;
 
-    // FIXME: we should precache all the weapons sounds
-
     W_SwitchToWeapon (IT_NAPALM_LAUNCHER);
     self.impulse = 0;
 };
@@ -1117,7 +1123,7 @@ void() CycleWeaponCommand =
     {
         am = 0;
 
-        if (newWeapon == IT_LIFE_LEECH)
+        if (newWeapon == IT_VOODOO_DOLL)
         {
             newWeapon = IT_PITCHFORK;
         }
@@ -1175,14 +1181,13 @@ void() CycleWeaponCommand =
         }
         else if (newWeapon == IT_TESLA_CANNON)
         {
+            newWeapon = IT_LIFE_LEECH;
+            // Life Leech doesn't need ammo
+        }
+        else if (newWeapon == IT_LIFE_LEECH)
+        {
             newWeapon = IT_VOODOO_DOLL;
             if (self.ammo_voodoo < 1)
-                am = 1;
-        }
-        else if (newWeapon == IT_VOODOO_DOLL)
-        {
-            newWeapon = IT_LIFE_LEECH;
-            if (self.ammo_leech < 1)
                 am = 1;
         }
 
@@ -1216,13 +1221,12 @@ void() CycleWeaponReverseCommand =
     {
         am = 0;
 
-        if (newWeapon == IT_LIFE_LEECH)
+        if (newWeapon == IT_VOODOO_DOLL)
         {
-            newWeapon = IT_VOODOO_DOLL;
-            if (self.ammo_voodoo < 1)
-                am = 1;
+            newWeapon = IT_LIFE_LEECH;
+            // Life Leech doesn't need ammo
         }
-        else if (newWeapon == IT_VOODOO_DOLL)
+        else if (newWeapon == IT_LIFE_LEECH)
         {
             newWeapon = IT_TESLA_CANNON;
             if (self.ammo_cells < 1)
@@ -1280,8 +1284,8 @@ void() CycleWeaponReverseCommand =
         }
         else if (newWeapon == IT_PITCHFORK)
         {
-            newWeapon = IT_LIFE_LEECH;
-            if (self.ammo_leech < 1)
+            newWeapon = IT_VOODOO_DOLL;
+            if (self.ammo_voodoo < 1)
                 am = 1;
         }
 
@@ -1352,85 +1356,19 @@ void() ArmorTest =
 
 /*
 ============
-ImpulseCommands
-
-============
-*/
-void() ImpulseCommands =
-{
-    if ((self.impulse >= 1 && self.impulse <= 9) || self.impulse == 17)
-        W_ChangeWeapon ();
-
-    else if (self.impulse == 10)
-        CycleWeaponCommand ();
-    else if (self.impulse == 11)
-        CycleWeaponReverseCommand ();
-
-    // Altfire (will be treated later; just return)
-    else if (self.impulse == 12)
-        return;
-
-    // Inventory selection/usage.
-    else if (self.impulse == 13)
-        InvenUse ();
-    else if (self.impulse == 14)
-        InvenSelect (FALSE);
-    else if (self.impulse == 15)
-        InvenSelect (TRUE);
-
-    // Armor cycle.
-    else if (self.impulse == 16)
-        ArmorTest ();
-
-    else if (self.impulse == 50)
-        Menu_Start ();
-
-    else if (self.impulse == 141)
-        identify_player ();
-
-    // Cheat codes are only allowed when the "sv_allowCheat" cvar is set
-    else if (cvar ("sv_allowCheat"))
-    {
-        if (self.impulse == 250)
-        {
-            coredump ();
-        }
-        else if (self.impulse == 251)
-        {
-            Sprint (self, PRINT_MEDIUM, "griswold -- You have full armor.\n");
-            self.armor_fire = self.armor_body = self.armor_mind = self.armorvalue = 200;
-            self.items = self.items - (self.items & (IT_ARMOR1 | IT_ARMOR2 | IT_ARMOR3)) + IT_ARMOR2;
-        }
-        else if (self.impulse == 252)
-        {
-            Sprint (self, PRINT_MEDIUM, "mcgee -- You're fired!\n");
-            Ignite (self, self, 200);
-        }
-        else if (self.impulse == 253)
-            InvenCheat ();
-        else if (self.impulse == 254)
-            CheatCommand ();
-        else if (self.impulse == 255)
-            QuadCheat ();
-    }
-
-    self.impulse = 0;
-};
-
-/*
-============
 W_WeaponFrame
 
 Called every frame so impulse events can be handled as well as possible
 ============
 */
+void() Impulses_Player;
 float() W_FireCharge;
 void() W_WeaponFrame =
 {
     if (time < self.attack_finished)
         return;
 
-    ImpulseCommands ();
+    Impulses_Player ();
 
     if (W_FireCharge ())
         return;

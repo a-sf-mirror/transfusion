@@ -3,12 +3,12 @@
 
    <!-- Header and TOC -->
 
-   <title> QBlood manual
+   <title> BloodBath manual
    <author> Mathieu Olivier <tt>&lt;elric@planetblood.com&gt;</tt>
-   <date>v?.?.? (development), January 7, 2002
+   <date>v?.?.? (development), January 13, 2002
    <abstract>
       This manual covers <url url="http://www.planetblood.com/qblood/"
-      name="qBlood"> installation and usage.
+      name="BloodBath"> installation and usage.
    </abstract>
    <toc>
 
@@ -16,39 +16,50 @@
 
    <sect><heading>Introduction<p>
       The qBlood Project aims to recreate an old DOS game from Monolith
-      Productions called Blood, using the Quake engine. Although qBlood is
-      still just a <it>mod</it>, we plan to make it an independant game. The
-      original Blood is a remarkable game, and the qBlood team hopes you'll
-      have as much fun playing it as you would have playing Blood.
+      Productions called Blood, using the Quake engine. Although qBlood will switch
+      to the Quake 2 engine soon, we have decided to release our current work under
+      the name "BloodBath".
 
-      Obviously, you'll be more at ease if you already know Blood, or Quake.
-      But even if it's not the case, don't worry: this manual will tell you all
-      you have to know about qBlood.
+      It looks like a simple <it>mod</it>, but actually you don't need Quake data
+      to run it. Indeed, BloodBath is a complete total conversion of the
+      multiplayer aspect of Blood. The original Blood is a remarkable game, and
+      the qBlood team hopes you'll have as much fun playing it as we had playing
+      Blood.
+
+      Obviously, you'll be more at ease if you already know Blood and/or Quake.
+      But even if it's not the case, don't worry: you should be able to find in
+      this manual all you have to know about BloodBath.
    </sect>
 
    <!-- Installation -->
 
    <sect><heading>Installation<p>
-      Before you start qBlood installation, you'll need a working Quake
-      installation. Which means a Quake compatible binary, either an official
-      Quake binary or one of the enhanced versions that were created since its
-      source code release; you will also need the Quake game data, <tt>pak0.pak
-      </tt> and <tt>pak1.pak</tt> in the <tt>id1</tt> subdirectory. Note that
-      qBlood supports both classic Quake (also known as NetQuake or NQ) and
-      QuakeWorld (QW), although NQ is the only way to play single player games.
+      Those of you that are already familiar with Quake shouldn't have any
+      difficulties for installing BloodBath. Like with any mod, all you have
+      to do is to put all BloodBath PAK files in a subdirectory of Quake (naming
+      it "bb" is highly recommended), and then launch the game with "quake
+      -game bb" if your Quake binary is "quake.exe" and BloodBath directory is
+      "bb".
+
+      Note that BloodBath supports both classic Quake (also known as NetQuake
+      or NQ) and QuakeWorld (QW). Installing BloodBath for QW will require the
+      same "bb" directory than NQ, but you'll also need to add a bunch of files
+      and subdirectories in the "qw" directory if you don't have the Quake data
+      or if you want to all BloodBath graphics as soon you launch the QW client.
+      These files are present into the BloodBath distribution under the "qw"
+      subdirectory.
    </sect>
 
    <!-- Basic usage -->
 
    <sect><heading> Basic usage<p>
       <sect1>Game types<p>
-         QBlood supports 3 game types:
+         BloodBath supports 3 game types:
          <itemize>
             <item> BloodBath / DeathMatch (deathmatch not 2, and teamplay = 0)<p>
             <item> Team BloodBath (deathmatch not 2, and teamplay not 0). If you
             set teamplay to 2, team members can damage each other.<p>
-            <item> Capture The Flag (deathmatch = 2). This game type can't be
-            set via the interface. You need to use the console. As with TBB,
+            <item> Capture The Flag (deathmatch = 2). As with TBB,
             setting teamplay to 2 activates friendly fire.<p>
          </itemize>
       </sect1>
@@ -58,7 +69,7 @@
          <itemize>
             <item> impulses 1 to 9, and impulse 17: select a weapon<p>
             <item> impulses 10 and 11: cycle to next/previous weapon<p>
-            <item> impulse 12: secondary fire<p>
+            <item> impulse 12: secondary fire (equivalent to the "+use" command)<p>
             <item> impulse 13: use the currently selected item<p>
             <item> impulses 14 and 15: select previous/next item<p>
             <item> impulse 16: view the current value of the next armor type<p>
@@ -73,11 +84,11 @@
          All those impulses are considered cheats (not available in multiplayer
          games, except if the server has the "sv_allowCheat" cvar set to a
          non-zero value). <em>WARNING</em>: due to strict resource management,
-         some of them may crash the game if the requiered sounds and models are
+         some of them may crash the game if the required sounds and models are
          not precached at this moment.
          <itemize>
-            <item> impulse 103: botcam mode<p>
-            <item> impulse 104: waypoint edit mode<p>
+            <item> impulse 103: botcam mode (NQ only)<p>
+            <item> impulse 104: waypoint edit mode (NQ only)<p>
             <item> impulse 250: Dump all entities stats to console (debug)<p>
             <item> impulse 251: Give full armor<p>
             <item> impulse 252: Burn yourself !<p>
@@ -91,7 +102,7 @@
    <!-- Weapons -->
 
    <sect><heading>Weapons<p>
-      You have 12 differents weapons at your disposal in qBlood. Each of them
+      You have 12 differents weapons at your disposal in BloodBath. Each of them
       but one has a normal fire and a secondary fire, also known as altfire.
       Most of the time, it's a deadlier mode that consumes more ammo.
       <descrip>
@@ -111,7 +122,7 @@
          your opponent. But beware: miss him and you'll be the one who will
          take the pain! The altfire consumes all your ammo in one powerful
          spiritual blow.
-         <tag>Life Leech</tag> (not yet implemented)
+         <tag>Life Leech</tag> ...
       </descrip>
    </sect>
 
@@ -148,6 +159,32 @@
       Observers don't have access to the menu.
    </sect>
 
+   <!-- Cvars -->
+
+   <sect><heading>Cvars<p>
+      You'll find in BloodBath quite a lot of the usual cvars from Quake. We
+      have already talked about "deathmatch", "teamplay", "fraglimit" and
+      "timelimit"; but you'll also find "skill" for setting the bots skill.
+
+      BloodBath has a few specific cvars that you may want to use:
+     <itemize>
+        <item> "sv_allowCheat": enable a few more client impulses, which may be
+        used to CHEAT one way or another, and MAY CRASH THE GAME. You're warned.<p>
+        <item> "g_weaponStay": if set, weapons don't disappear when taken but
+        you can't take a weapon more than once<p>
+        <item> "sv_disable": a set of flags that allow a server administrator
+        to keep his server under control despite the new voting system. Its value
+        must be set by adding the following numbers: 1 to disable bots, 2 to
+        disable map voting, 4 to disable game type voting, 8 to disable frag
+        limit voting, and 16 to disable time limit voting. For example, setting
+        "sv_disable" to 5 (1+4) will ensure your server won't have bots and
+        won't change its initial game type.<p>
+     </itemize>
+     Your server must have the "set" command to use the new cvars though. It's
+     not the case of the original QW server and even of a few modern versions.
+     Be sure to check that.
+   </sect>
+
    <!-- FAQ -->
 
    <sect> <heading> Frequently Asked Questions <p>
@@ -155,14 +192,14 @@
          <tag>Quake exits with: <em>Z_Malloc: failed on allocation of XXX bytes</em></tag>
          The engine hasn't allocated enough "zone" memory. You can change this
          with the "-zone" command line argument. With most engines, "-zone 256"
-         will be enough, but some of them may requier more (try 512).
+         will be enough, but some of them may require more (try 512).
 
          <tag>Boots of jumping doesn't work / I jump higher in NQ than in QW</tag>
          NQ relies on the game code to handle jumping, but QW does it in its
-		 own code. As a result, we can't tweak the jump velocity in QW until
-		 we get our own version of the Quake engine.
+         own code. As a result, we can't tweak the jump velocity in QW until
+         we get our own version of the Quake engine.
 
-         <tag>I want to contribute to qBlood. How can I do ?</tag>
+         <tag>I want to contribute to the qBlood Project. How can I do ?</tag>
          It's very simple. Start doing a quick tour through our 2 websites to
          be sure to know all the basic informations you may need. Then, contact
          the Project Coordinator and either the Lead Artist or the Lead
@@ -177,7 +214,7 @@
          <item><url url="http://www.planetblood.com/qblood/"
             name="The qBlood Project">: our home page<p>
          <item><url url="http://blood.sourceforge.net/"
-            name="QBlood on SourceForge.net">: our development page<p>
+            name="qBlood on SourceForge.net">: our development page<p>
       </itemize>
    </sect>
 

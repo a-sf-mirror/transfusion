@@ -106,7 +106,7 @@ void(entity targ, vector org, float damage) TineHit =
             targ = self;
             org = self.origin;
         }
-        if (targ.classname == "player")
+        if (targ.classname == "player" || targ.classname == "head" || targ.classname == "corpse")
         {
             SpawnBlood (org, '0 0 0', damage);
             SpawnBloodSpray (trace_ent, org);

@@ -247,6 +247,7 @@ void() PlayerDead =
 
     // allow respawn after a certain time
     self.deadflag = DEAD_DEAD;
+    self.player_state = PS_IDLE;  // so that he can enter the menu
 };
 
 vector(float dm) VelocityForDamage =
