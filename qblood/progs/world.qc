@@ -27,7 +27,7 @@ void() main =
 {
 };
 
-void () FadeAway;
+
 /*
 ================
 PrecacheSounds
@@ -256,7 +256,6 @@ void() worldspawn =
     map_cycle = cvar ("saved1");
 
     // Compute the game type
-    	
     if (cvar("coop"))
 	{
 		gametype = GT_COOPERATIVE;
@@ -266,33 +265,31 @@ void() worldspawn =
 	else if (cvar("teamplay"))
     {
 	    if (cvar("deathmatch"))
-	        gametype = GT_TEAM_BLOODBATH;		
-
+	        gametype = GT_TEAM_BLOODBATH;
 		else
 		    gametype = GT_CAPTURE_THE_FLAG;
-			
 		cvar_set ("coop", "0");
-	}		
+	}
     else if (cvar("deathmatch"))
 	    gametype = GT_BLOODBATH;
-		
     else
     {
-	    gametype = GT_BLOODBATH;      // When we finish the episode 1 media, we can finally do the switch!
+		// When we finish the episode 1 media, we can finally do the switch!
+	    gametype = GT_BLOODBATH;  //gametype = GT_SINGLE_PLAYER;
 		cvar_set("deathmatch", "1");
-		//gametype = GT_SINGLE_PLAYER;
 	}
-	
+
 	#ifndef NO_FRIKBOT
     // FrikBot X initialization
     if (gametype != GT_SINGLE_PLAYER && gametype != GT_COOPERATIVE)
 	    Bot_Init();
     #endif
 
-    friendlyfire = (cvar("teamplay") == 2);  // NOTE: should we allow friendlyfire changes during the game ?
-    
+	// NOTE: should we allow friendlyfire changes during the game ?
 	if (cvar("coop") == 2)
-	    friendlyfire = 1;
+		friendlyfire = 1;
+	else
+		friendlyfire = (cvar("teamplay") == 2);
 
     // Set gravity
     cvar_set ("sv_gravity", "800");
@@ -314,10 +311,10 @@ void() worldspawn =
     precache_model ("models/objects/gib2.md3");
     precache_model ("models/objects/gib3.md3");
     precache_model ("models/objects/gib4.md3");
-    precache_model ("models/objects/gib5.md3");	
+    precache_model ("models/objects/gib5.md3");
     precache_model ("models/objects/m_arm.md3");
     precache_model ("models/objects/m_brain.md3");
-    precache_model ("models/objects/m_chest.md3");	
+    precache_model ("models/objects/m_chest.md3");
     precache_model ("models/objects/m_foot.md3");
     precache_model ("models/objects/m_guts.md3");
     precache_model ("models/objects/m_leg.md3");
@@ -613,6 +610,25 @@ void() HeadDie;
 void(string gibname, float dm) ThrowGib;
 
 
+// "Fades" a corpse into the ground, like blood
+void() FadeDown =
+{
+	self.origin_z = self.origin_z - 1;
+	if (self.origin_z <= self.oldorigin_z - 32)
+	{
+		remove(self);
+		return;
+	}
+
+	self.nextthink = time + 0.5;
+};
+
+void() FadeAway =
+{
+	self.think = FadeDown;
+	self.nextthink = time + 0.5;
+};
+
 /*
 ====================
 BecomeCorpse
@@ -630,11 +646,11 @@ void(float corpseHealth, void() corpseToGib) BecomeCorpse =
     self.nextthink = time + 30;
     self.think = FadeAway;
 
-    self.reset = FadeAway;
+    self.reset = SUB_Remove;
 
     // Allow some interactions (so the corpses can be destroyed by explosions)
     self.solid = SOLID_BBOX;
-	
+
 	// Force realtime gravity on corpses, so they don't end up floating
 	if (self.classname != "head")
 	    self.movetype = MOVETYPE_TOSS;
@@ -710,7 +726,7 @@ void(entity ent) CloneCorpse =
         // FIXME: need to set bounding box based on angular data and size of corpse model
         minBbox = '-32 -32 -20';
         maxBbox = '32 32 0';
-
+	
         // Set corpse bbox min z based upon the monster's min z
         if (ent.flags & FL_MONSTER)
             minBbox_z = ent.mins_z;
@@ -723,22 +739,4 @@ void(entity ent) CloneCorpse =
     }
 
     self = tempEnt;
-};
-
-// "Fades" a corpse into the ground, like blood
-void () FadeDown =
-{
-  self.origin_z = self.origin_z - 1;
-  FadeAway();
-};
-
-void () FadeAway =
-{
-   if (self.origin_z <= self.oldorigin_z - 32)
-       remove(self);
-   else
-   {
-    self.nextthink = 0.5;
-    self.think = FadeDown;
-   }
 };

@@ -440,7 +440,8 @@ void () monster_become_corpse =
     self.solid = SOLID_BBOX;
 	setsize (self, minBbox, maxBbox);
     self.touch = SUB_SolidTouch;
-	self.think = self.reset = FadeAway;
+	self.think = FadeAway;
+	self.reset = SUB_Remove;
 	self.oldorigin = self.origin;
 	self.nextthink = time + 30;
 	self.th_die = GibPlayerCorpse;
