@@ -371,10 +371,14 @@ void(entity targ, entity inflictor, entity attacker, float damage, float dflags,
         if (!targ.deadflag)
             targ.deathtype = dtype;
         
-        // Suicide via grenade
-        if (inflictor.classname == "grenade" && inflictor.enemy == targ)
-            attacker = targ;            
-        
+        // Set up obituaries for grenades, since owner has to be world for BBOX
+
+        if (inflictor.classname == "grenade" && inflictor.enemy == targ)// Suicide via grenade
+            attacker = targ;
+
+        else if (inflictor.classname == "grenade")                      // Murder via grenade
+            attacker = inflictor.enemy;
+
         Killed (targ, attacker);
         return;
 	}        
