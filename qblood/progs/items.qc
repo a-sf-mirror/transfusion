@@ -21,6 +21,25 @@
 #include "common.qh"
 
 
+//--------------------//
+//  NEW EDICT FIELDS  //
+//--------------------//
+// PM:  Custom ammo.
+.float      ammo_flares;        // flare gun
+.float      ammo_tnt_bundle;    // standard dynamite
+.float      ammo_tnt_proxy;     // proxy bombs
+.float      ammo_tnt_remote;    // pipebombs
+.float      ammo_spray;         // spray can
+.float      ammo_voodoo;        // voodoo doll
+.float      ammo_leech;         // leech life
+
+//  NOTE:  The existing Quake ammo are used for the following weapons.
+//    ammo_shells  -> sawed-off shotgun
+//    ammo_nails   -> tommy sub-machinegun
+//    ammo_rockets -> napalm launcher (a.k.a. incinerator)
+//    ammo_cells   -> telsa cannon
+
+
 void() W_SetCurrentAmmo;
 /* ALL LIGHTS SHOULD BE 0 1 0 IN COLOR ALL OTHER ITEMS SHOULD
 BE .8 .3 .4 IN COLOR */
@@ -1219,7 +1238,6 @@ void() armor_touch =
 };
 
 // Basic Armor
-
 void() item_armor0 =
     {
     self.touch = armor_touch;
@@ -1294,14 +1312,30 @@ WEAPONS
 
 void() bound_other_ammo =
 {
-    if (other.ammo_shells > 100)
-        other.ammo_shells = 100;
-    if (other.ammo_nails > 500)
-        other.ammo_nails = 500;
-    if (other.ammo_rockets > 100)
-        other.ammo_rockets = 100;
-    if (other.ammo_cells > 250)
-        other.ammo_cells = 250;
+    if (other.ammo_shells > MAX_SHELLS)
+        other.ammo_shells = MAX_SHELLS;
+    if (other.ammo_nails > MAX_NAILS)
+        other.ammo_nails = MAX_NAILS;
+    if (other.ammo_rockets > MAX_ROCKETS)
+        other.ammo_rockets = MAX_ROCKETS;
+    if (other.ammo_cells > MAX_CELLS)
+        other.ammo_cells = MAX_CELLS;
+
+    // Custom ammo.
+    if (other.ammo_flares > MAX_FLARES)
+        other.ammo_flares = MAX_FLARES;
+    if (other.ammo_tnt_bundle > MAX_TNT)
+        other.ammo_tnt_bundle = MAX_TNT;
+    if (other.ammo_tnt_proxy > MAX_PROXY)
+        other.ammo_tnt_proxy = MAX_PROXY;
+    if (other.ammo_tnt_remote > MAX_REMOTE)
+        other.ammo_tnt_remote = MAX_REMOTE;
+    if (other.ammo_spray > MAX_SPRAY)
+        other.ammo_spray = MAX_SPRAY;
+    if (other.ammo_voodoo > MAX_VOODOO)
+        other.ammo_voodoo = MAX_VOODOO;
+    if (other.ammo_leech > MAX_LEECH)
+        other.ammo_leech = MAX_LEECH;
 };
 
 
@@ -1357,7 +1391,7 @@ void(float old, float new) Deathmatch_Weapon =
 {
     local float or, nr;
 
-// change self.weapon if desired
+    // change self.weapon if desired
     or = RankForWeapon (self.weapon);
     nr = RankForWeapon (new);
     if ( nr < or )
@@ -1390,7 +1424,7 @@ void() weapon_touch =
         if (leave && (other.items & IT_SHOTGUN) )
             return;
         new = IT_SHOTGUN;
-        other.ammo_shells = other.ammo_shells + 9;
+        other.ammo_flares = other.ammo_flares + 9;
     }
     else if (self.classname == "weapon_nailgun")
     {
@@ -1404,7 +1438,7 @@ void() weapon_touch =
         if (leave && (other.items & IT_SUPER_NAILGUN) )
             return;
         new = IT_SUPER_NAILGUN;
-        other.ammo_nails = other.ammo_nails + 48;
+        other.ammo_spray = other.ammo_spray + 48;
     }
     else if (self.classname == "weapon_supershotgun")
     {
@@ -1425,7 +1459,7 @@ void() weapon_touch =
         if (leave && (other.items & IT_GRENADE_LAUNCHER) )
             return;
         new = IT_GRENADE_LAUNCHER;
-        other.ammo_rockets = other.ammo_rockets + 5;
+        other.ammo_tnt_bundle = other.ammo_tnt_bundle + 5;
     }
     else if (self.classname == "weapon_lightning")
     {
@@ -1439,13 +1473,12 @@ void() weapon_touch =
         if (leave && (other.items & IT_VOODOO_DOLL) )
             return;
         new = IT_VOODOO_DOLL;
-        other.ammo_cells = other.ammo_cells + 100;
+        other.ammo_voodoo = other.ammo_voodoo + 100;
     }
     else
         objerror ("weapon_touch: unknown classname");
 
-
-    //ZOID--remove unnessary msgs
+    // Remove unnessary msgs
     if (!deathmatch)
     {
         Sprint (other, PRINT_LOW, "Picked up ");
@@ -1684,43 +1717,91 @@ local float     best;
     if (other.health <= 0)
         return;
 
-// if the player was using his best weapon, change up to the new one if better
+    // if the player was using his best weapon, change up to the new one if better
     stemp = self;
     self = other;
     best = W_BestWeapon();
     self = stemp;
 
 
-// shotgun
+    // shotgun
     if (self.weapon == 1)
     {
-        if (other.ammo_shells >= 100)
+        if (other.ammo_shells >= MAX_SHELLS)
             return;
         other.ammo_shells = other.ammo_shells + self.aflag;
     }
-
-// spikes
-    if (self.weapon == 2)
+    // spikes
+    else if (self.weapon == 2)
     {
-        if (other.ammo_nails >= 200)
+        if (other.ammo_nails >= MAX_NAILS)
             return;
         other.ammo_nails = other.ammo_nails + self.aflag;
     }
-
-//  rockets
-    if (self.weapon == 3)
+    // rockets
+    else if (self.weapon == 3)
     {
-        if (other.ammo_rockets >= 100)
+        if (other.ammo_rockets >= MAX_ROCKETS)
             return;
         other.ammo_rockets = other.ammo_rockets + self.aflag;
     }
-
-//  cells
+    // cells
     if (self.weapon == 4)
     {
-        if (other.ammo_cells >= 100)
+        if (other.ammo_cells >= MAX_CELLS)
             return;
         other.ammo_cells = other.ammo_cells + self.aflag;
+    }
+
+    // Custom ammo below...
+    // flares
+    else if (self.weapon == 5)
+    {
+        if (other.ammo_cells >= MAX_FLARES)
+            return;
+        other.ammo_flares = other.ammo_flares + self.aflag;
+    }
+    // tnt bundle
+    else if (self.weapon == 6)
+    {
+        if (other.ammo_cells >= MAX_TNT)
+            return;
+        other.ammo_tnt_bundle = other.ammo_tnt_bundle + self.aflag;
+    }
+    // tnt proxy
+    else if (self.weapon == 7)
+    {
+        if (other.ammo_cells >= MAX_PROXY)
+            return;
+        other.ammo_tnt_proxy = other.ammo_tnt_proxy + self.aflag;
+    }
+    // tnt remote
+    else if (self.weapon == 8)
+    {
+        if (other.ammo_cells >= MAX_REMOTE)
+            return;
+        other.ammo_tnt_remote = other.ammo_tnt_remote + self.aflag;
+    }
+    // spray can
+    else if (self.weapon == 9)
+    {
+        if (other.ammo_cells >= MAX_SPRAY)
+            return;
+        other.ammo_spray = other.ammo_spray + self.aflag;
+    }
+    // voodoo doll
+    else if (self.weapon == 10)
+    {
+        if (other.ammo_cells >= MAX_VOODOO)
+            return;
+        other.ammo_voodoo = other.ammo_voodoo + self.aflag;
+    }
+    // leech life
+    else if (self.weapon == 11)
+    {
+        if (other.ammo_cells >= MAX_LEECH)
+            return;
+        other.ammo_leech = other.ammo_leech + self.aflag;
     }
 
     bound_other_ammo ();
@@ -1728,12 +1809,12 @@ local float     best;
     Sprint (other, PRINT_LOW, "Picked up ");
     Sprint (other, PRINT_LOW, self.netname);
     Sprint (other, PRINT_LOW, "\n");
-// ammo touch sound
+
+    // ammo touch sound
     sound (other, CHAN_ITEM, "items/ammo.wav", 1, ATTN_NORM);
     stuffcmd (other, "bf\n");
 
-// change to a better weapon if appropriate
-
+    // change to a better weapon if appropriate
     if ( other.weapon == best )
     {
         stemp = self;
@@ -1743,13 +1824,13 @@ local float     best;
         self = stemp;
     }
 
-// if changed current ammo, update it
+    // if changed current ammo, update it
     stemp = self;
     self = other;
     W_SetCurrentAmmo();
     self = stemp;
 
-// remove it in single player, or setup for respawning in deathmatch
+    // remove it in single player, or setup for respawning in deathmatch
     self.model = string_null;
     self.solid = SOLID_NOT;
     if (deathmatch)
@@ -1799,15 +1880,11 @@ void() item_flares =
 
     precache_model ("progs/i_flares.mdl");
     setmodel (self, "progs/i_flares.mdl");
-    if (self.spawnflags & AMMO_BIG)
-    {
-        self.netname = "box of flares";
-        self.aflag = 8;
-    }
-    else
-        self.aflag = 4;
-    self.weapon = 1;
-    self.netname = "a few flares";
+
+    self.netname = "box of flares";
+    self.aflag = 8;
+    self.weapon = 5;
+
     setsize (self, '0 0 0', '32 32 56');
     StartItem ();
 };
@@ -1890,8 +1967,8 @@ void() item_cells =
 };
 
 
-// PM:  Rewritten to use 'item_*' ammo boxes.
-//      Some levels such as dm5.bsp use this function.
+// Rewritten to use 'item_*' ammo boxes.
+// Some levels such as dm5.bsp use this function.
 
 /*QUAKED item_weapon (0 .5 .8) (0 0 0) (32 32 32) shotgun rocket spikes big
 DO NOT USE THIS!!!! IT WILL BE REMOVED!
@@ -1904,7 +1981,7 @@ DO NOT USE THIS!!!! IT WILL BE REMOVED!
 #define WEAPON_ROCKET   2
 #define WEAPON_SPIKES   4
 #define WEAPON_BIG      8
-//-------------------------------
+
 void() item_weapon =
 {
     local   float   osf;    // Short for original spawnflags.
@@ -1960,7 +2037,8 @@ local float     best;
         return;
     if (other.health <= 0)
         return;
-// PM:  Changed to .items2 since that is where key bits are stored.
+
+    // Changed to .items2 since that is where key bits are stored.
     if (other.items2 & self.items2)
         return;
 
@@ -1970,7 +2048,8 @@ local float     best;
 
     sound (other, CHAN_ITEM, self.noise, 1, ATTN_NORM);
     stuffcmd (other, "bf\n");
-// PM:  Changed to .items2 since that is where key bits are stored.
+
+    // Changed to .items2 since that is where key bits are stored.
     other.items2 = other.items2 | self.items2;
 
     if (!coop)
@@ -2264,17 +2343,27 @@ void() BackpackTouch =
             Sprint (other, PRINT_LOW, self.netname);
         }
 
-// if the player was using his best weapon, change up to the new one if better
+    // if the player was using his best weapon,
+	// change up to the new one if better
     stemp = self;
     self = other;
     best = W_BestWeapon();
     self = stemp;
 
-// change weapons
+    // change weapons
     other.ammo_shells = other.ammo_shells + self.ammo_shells;
     other.ammo_nails = other.ammo_nails + self.ammo_nails;
     other.ammo_rockets = other.ammo_rockets + self.ammo_rockets;
     other.ammo_cells = other.ammo_cells + self.ammo_cells;
+
+    // Custom ammo.
+    other.ammo_flares = other.ammo_flares + self.ammo_flares;
+    other.ammo_tnt_bundle = other.ammo_tnt_bundle + self.ammo_tnt_bundle;
+    other.ammo_tnt_proxy = other.ammo_tnt_proxy + self.ammo_tnt_proxy;
+    other.ammo_tnt_remote = other.ammo_tnt_remote + self.ammo_tnt_remote;
+    other.ammo_spray = other.ammo_spray + self.ammo_spray;
+    other.ammo_voodoo = other.ammo_voodoo + self.ammo_voodoo;
+    other.ammo_leech = other.ammo_leech + self.ammo_leech;
 
     new = self.items;
     if (!new)
@@ -2321,27 +2410,81 @@ void() BackpackTouch =
         Sprint (other, PRINT_LOW, " cells");  // "Tesla Charge"
     }
 
-/* dturner,4/10/2001
-   still need Flares,
-   Bundle of TNT, Case of Tnt,
-   Voodoo Doll,
-   Trapped Soul,
-   Spray Can,
-   Proximaty Detonator,
-   Remote Detonator
-   */
-
+    // Custom ammo.
+    if (self.ammo_flares)
+    {
+        if (acount)
+            Sprint(other, PRINT_LOW, ", ");
+        acount = 1;
+        s = ftos(self.ammo_flares);
+        Sprint (other, PRINT_LOW, s);
+        Sprint (other, PRINT_LOW, " flares");
+    }
+    if (self.ammo_tnt_bundle)
+    {
+        if (acount)
+            Sprint(other, PRINT_LOW, ", ");
+        acount = 1;
+        s = ftos(self.ammo_flares);
+        Sprint (other, PRINT_LOW, s);
+        Sprint (other, PRINT_LOW, " TNT");
+    }
+    if (self.ammo_tnt_proxy)
+    {
+        if (acount)
+            Sprint(other, PRINT_LOW, ", ");
+        acount = 1;
+        s = ftos(self.ammo_tnt_proxy);
+        Sprint (other, PRINT_LOW, s);
+        Sprint (other, PRINT_LOW, " proximity bombs");
+    }
+    if (self.ammo_tnt_remote)
+    {
+        if (acount)
+            Sprint(other, PRINT_LOW, ", ");
+        acount = 1;
+        s = ftos(self.ammo_tnt_remote);
+        Sprint (other, PRINT_LOW, s);
+        Sprint (other, PRINT_LOW, " remote detonators");
+    }
+    if (self.ammo_spray)
+    {
+        if (acount)
+            Sprint(other, PRINT_LOW, ", ");
+        acount = 1;
+        s = ftos(self.ammo_spray);
+        Sprint (other, PRINT_LOW, s);
+        Sprint (other, PRINT_LOW, " units of spray can");
+    }
+    if (self.ammo_voodoo)
+    {
+        if (acount)
+            Sprint(other, PRINT_LOW, ", ");
+        acount = 1;
+        s = ftos(self.ammo_voodoo);
+        Sprint (other, PRINT_LOW, s);
+        Sprint (other, PRINT_LOW, " units of voodoo magic");
+    }
+    if (self.ammo_leech)
+    {
+        if (acount)
+            Sprint(other, PRINT_LOW, ", ");
+        acount = 1;
+        s = ftos(self.ammo_leech);
+        Sprint (other, PRINT_LOW, s);
+        Sprint (other, PRINT_LOW, " trapped souls");
+    }
     Sprint(other, PRINT_LOW, "\n");
 
     // backpack touch sound
     sound (other, CHAN_ITEM, "items/ammo.wav", 1, ATTN_NORM);
     stuffcmd (other, "bf\n");
 
-// remove the backpack, change self to the player
+    // remove the backpack, change self to the player
     remove(self);
     self = other;
 
-// change to the weapon
+    // change to the weapon
     if (!deathmatch)
         self.weapon = new;
     else
@@ -2396,6 +2539,15 @@ void() DropBackpack =
     item.ammo_nails = self.ammo_nails;
     item.ammo_rockets = self.ammo_rockets;
     item.ammo_cells = self.ammo_cells;
+
+    // Custom ammo.
+    item.ammo_flares = self.ammo_flares;
+    item.ammo_tnt_bundle = self.ammo_tnt_bundle;
+    item.ammo_tnt_proxy = self.ammo_tnt_proxy;
+    item.ammo_tnt_remote = self.ammo_tnt_remote;
+    item.ammo_spray = self.ammo_spray;
+    item.ammo_voodoo = self.ammo_voodoo;
+    item.ammo_leech = self.ammo_leech;
 
     item.velocity_z = 300;
     item.velocity_x = -100 + (random() * 200);

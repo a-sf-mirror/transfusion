@@ -75,31 +75,51 @@ void() SetChangeParms =
     // cap super health
     if (self.health > 200)
         self.health = 200;
+
+    //
+    //  *Very* important note:
+    //
+    //  Since qblood has enough data to require more than 16 parms, some of
+    //  the parms contain data from up to three different fields.
+    //
+    //  Ammo parms...
+    //  parm3 -> Bits used for flares/shells/bullets are 7/7/9.
+    //      Flares use bits 0-6.  Shells use bits 7-13.  Bullets use bits 14-22.
+    //  parm4 -> Bits used for napalm/tnt/proxy are 7/7/7.
+    //      Rockets use bits 0-6.  TNT use bits 7-13.  Proxy use bits 14-20.
+    //  parm5 -> Bits used for remote/spraycan/cells are 7/8/8.
+    //      Remotes use bits 0-6.  Cans use bits 7-14.  Cells use bits 15-22.
+    //  parm6 -> Bits used for voodoo/souls are 8/8.
+    //      Voodoo uses bits 0-7.  Souls use bits 8-15.
+    //
+    //  Armor parms...
+    //  parm8 -> Bits used for fire/body/spirit are 8/8/8.
+    //      Fire uses bits 0-7.  Body uses bits 8-15.  Spirit uses bits 16-23.
+    //
     parm1 = self.items;
-    parm2 = self.health;
-    parm3 = self.ammo_shells;
-    parm4 = self.ammo_nails;
-    parm5 = self.ammo_rockets;
-    parm6 = self.ammo_cells;
-    parm7 = self.weapon;
-    parm8 = self.armor_fire;
-    parm9 = self.armor_body;
-    parm10 = self.armor_mind;
-    parm11 = self.inven1;
-    parm12 = self.inven2;
-    parm13 = self.it_select;
+    parm2 = self.items2;
+    parm3 = self.health;
+    parm4 = self.ammo_flares + (self.ammo_shells * 128) + (self.ammo_nails * 16384);
+    parm5 = self.ammo_rockets + (self.ammo_tnt_bundle * 128) + (self.ammo_tnt_proxy * 16384);
+    parm6 = self.ammo_tnt_remote + (self.ammo_spray * 128) + (self.ammo_cells * 32768);
+    parm7 = self.ammo_voodoo + (self.ammo_leech * 256);
+    parm8 = self.weapon;
+    parm9 = self.armor_fire + (self.armor_body * 256) + (self.armor_mind * 65536);
+    parm10 = self.inven1;
+    parm11 = self.inven2;
+    parm12 = self.it_select;
 };
 
 void() SetNewParms =
 {
     parm1 = IT_AXE;
-    parm2 = 100;
-    parm3 = 0;
+    parm2 = 0;
+    parm3 = 100;
     parm4 = 0;
     parm5 = 0;
     parm6 = 0;
-    parm7 = IT_AXE;
-    parm8 = 0;
+    parm7 = 0;
+    parm8 = IT_AXE;
     parm9 = 0;
     parm10 = 0;
     parm11 = 0;
@@ -113,19 +133,27 @@ void() DecodeLevelParms =
     if (serverflags && world.model == "maps/start.bsp")
         SetNewParms ();
 
-    self.items          = parm1;
-    self.health         = parm2;
-    self.ammo_shells    = parm3;
-    self.ammo_nails     = parm4;
-    self.ammo_rockets   = parm5;
-    self.ammo_cells     = parm6;
-    self.weapon         = parm7;
-    self.armor_fire     = parm8;
-    self.armor_body     = parm9;
-    self.armor_mind     = parm10;
-    self.inven1         = parm11;
-    self.inven2         = parm12;
-    self.it_select      = parm13;
+    self.items           = parm1;
+    self.items2          = parm2;
+    self.health          = parm3;
+    self.ammo_flares     = (parm4 & 127);
+    self.ammo_shells     = (parm4 & 16256) / 128;
+    self.ammo_nails      = (parm4 & 8372224) / 16384;
+    self.ammo_rockets    = (parm5 & 127);
+    self.ammo_tnt_bundle = (parm5 & 16256) / 128;
+    self.ammo_tnt_proxy  = (parm5 & 2080768) / 16384;
+    self.ammo_tnt_remote = (parm6 & 127);
+    self.ammo_spray      = (parm6 & 32640) / 128;
+    self.ammo_cells      = (parm6 & 8355840) / 32768;
+    self.ammo_voodoo     = (parm7 & 255);
+    self.ammo_leech      = (parm7 & 65280) / 256;
+    self.weapon          = parm8;
+    self.armor_fire      = (parm9 & 255);
+    self.armor_body      = (parm9 & 65280) / 256;
+    self.armor_mind      = (parm9 & 16711680) / 65536;
+    self.inven1          = parm10;
+    self.inven2          = parm11;
+    self.it_select       = parm12;
 
     if (self.items & IT_ARMOR1)
         self.armorvalue = self.armor_body;
@@ -669,8 +697,8 @@ void() PutClientInServer =
     self.invincible_finished = 0;
     self.effects = 0;
     self.invincible_time = 0;
-    PM_KillBurner (other);
-// fixme2
+    PM_KillBurner (self);
+
     self.reflect_finished = 0;
     self.remain_dmg = 0;
     self.remain_arm = 0;
@@ -720,6 +748,7 @@ void() PutClientInServer =
 
     spawn_tdeath (self.origin, self);
 
+    // Let's start with our best weapon
     self.weapon = W_BestWeapon ();
     W_SetCurrentAmmo ();
 };

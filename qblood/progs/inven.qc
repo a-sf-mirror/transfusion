@@ -1,5 +1,24 @@
+/*  Copyright (C) 2001  Patrick Martin
+
+    This program is free software; you can redistribute it and/or modify
+    it under the terms of the GNU General Public License as published by
+    the Free Software Foundation; either version 2 of the License, or
+    (at your option) any later version.
+
+    This program is distributed in the hope that it will be useful,
+    but WITHOUT ANY WARRANTY; without even the implied warranty of
+    MERCHANTABILITY or FITNESS FOR A PARTICULAR PURPOSE.  See the
+    GNU General Public License for more details.
+
+    You should have received a copy of the GNU General Public License
+    along with this program; if not, write to the Free Software
+    Foundation, Inc., 59 Temple Place, Suite 330, Boston, MA 02111-1307 USA
+
+    See file, 'COPYING', for details.
+*/
+
 //==========================================================================
-//  inven.qc -- by Patrick Martin               Last updated:  8-18-2001
+//  inven.qc -- by Patrick Martin               Last updated:  10-1-2001
 //--------------------------------------------------------------------------
 //  This controls a player's inventory of items.
 //
@@ -319,7 +338,7 @@ void(float chosen) InvenList =
     {
         text = ftos(fuel);
         if (chosen == S_FIRST_AID)
-            Sprint (self, PRINT_MEDIUM, "ΑιδΊ ");
+            Sprint (self, PRINT_MEDIUM, "Δογτος§σ ΒαηΊ ");
         else
             Sprint (self, PRINT_MEDIUM, "Doctor's Bag: ");
         Sprint (self, PRINT_MEDIUM, text);
@@ -333,7 +352,7 @@ void(float chosen) InvenList =
         if (i)
             Sprint (self, PRINT_MEDIUM, " / ");
         if (chosen == S_DIVING_SUIT)
-            Sprint (self, PRINT_MEDIUM, "ΣυιτΊ ");
+            Sprint (self, PRINT_MEDIUM, "Διφιξη ΣυιτΊ ");
         else
             Sprint (self, PRINT_MEDIUM, "Diving Suit: ");
         Sprint (self, PRINT_MEDIUM, text);
@@ -347,7 +366,7 @@ void(float chosen) InvenList =
         if (i)
             Sprint (self, PRINT_MEDIUM, " / ");
         if (chosen == S_CRYSTAL_BALL)
-            Sprint (self, PRINT_MEDIUM, "ΨςαωΊ ");
+            Sprint (self, PRINT_MEDIUM, "Γςωσταμ ΒαμμΊ ");
         else
             Sprint (self, PRINT_MEDIUM, "Crystal Ball: ");
         Sprint (self, PRINT_MEDIUM, text);
@@ -361,7 +380,7 @@ void(float chosen) InvenList =
         if (i)
             Sprint (self, PRINT_MEDIUM, " / ");
         if (chosen == S_BEAST_VISION)
-            Sprint (self, PRINT_MEDIUM, "ΒεαστΊ ");
+            Sprint (self, PRINT_MEDIUM, "Βεαστ ΦισιοξΊ ");
         else
             Sprint (self, PRINT_MEDIUM, "Beast Vision: ");
         Sprint (self, PRINT_MEDIUM, text);
@@ -375,7 +394,7 @@ void(float chosen) InvenList =
         if (i)
             Sprint (self, PRINT_MEDIUM, " / ");
         if (chosen == S_JUMP_BOOTS)
-            Sprint (self, PRINT_MEDIUM, "ΚυνπΊ ");
+            Sprint (self, PRINT_MEDIUM, "Βοοτσ οζ ΚυνπιξηΊ ");
         else
             Sprint (self, PRINT_MEDIUM, "Boots of Jumping: ");
         Sprint (self, PRINT_MEDIUM, text);

@@ -477,15 +477,15 @@ void() W_FireShotgun =
 
     mspeed = 1000;
     dir = aim (self, mspeed);
-    if ((self.impulse == 12 || self.button1) && self.ammo_shells >= 8)
+    if ((self.impulse == 12 || self.button1) && self.ammo_flares >= 8)
     {
         // PM:  Fire alt-flares instead.
-        self.currentammo = self.ammo_shells = self.ammo_shells - 8;
+        self.currentammo = self.ammo_flares = self.ammo_flares - 8;
         PM_FireAltFlares (self, self.origin + '0 0 16', dir, mspeed, 10, 50);
         return;
     }
 
-    self.currentammo = self.ammo_shells = self.ammo_shells - 1;
+    self.currentammo = self.ammo_flares = self.ammo_flares - 1;
     PM_FireFlare (self, self.origin + '0 0 16', dir, mspeed);
 };
 
@@ -721,20 +721,18 @@ void(entity client) PM_PsychoCaleb =
     local   float   rs;
     local   string  playit;
 
-    rs = random() * 4;
-    rs = floor (rs);
+    rs = floor (random() * 5);
 
     if (rs == 0)
         playit = "player/quips/1039.wav";   // "Son of a bitch must pay!"
     else if (rs == 1)
         playit = "player/quips/1050.wav";   // "Tha, tha, that's all folks!"
     else if (rs == 2)
-        playit = "player/quips/1057.wav"; // "Rest in pieces"
+        playit = "player/quips/1057.wav";   // "Rest in pieces"
     else
     {
-        // 50% chance of laughing like a psycho.
-        rs = random() * 8;
-        rs = floor (rs);
+        // Laugh like a psycho.
+        rs = floor (random() * 8);
 
         if (rs == 0)
             playit = "player/play1109.wav";
@@ -753,7 +751,10 @@ void(entity client) PM_PsychoCaleb =
         else
             playit = "player/play1116.wav";
     }
-    sound (client, CHAN_VOICE, playit, 1, ATTN_NONE);
+
+    // Play on two channels so the player can hear himself clearly.
+    sound (client, CHAN_VOICE, playit, 1, ATTN_NORM);
+    sound (client, CHAN_BODY, playit, 1, ATTN_NORM);
 };
 
 // This creates a blank entity that inflicts burn damage for several
@@ -1226,10 +1227,10 @@ void() W_UseVoodooDoll =
     muzzleflash ();
 
     // Alt-fire mode
-    if ((self.impulse == 12 || self.button1) && self.ammo_cells >= 1)
+    if ((self.impulse == 12 || self.button1) && self.ammo_voodoo >= 1)
     {
-        damage = self.ammo_cells;
-        self.ammo_cells = 0;
+        damage = self.ammo_voodoo;
+        self.ammo_voodoo = 0;
         self.weaponframe = 19;
         sound (self, CHAN_WEAPON, "weapons/voodoodl/voochant.wav", 1, ATTN_NORM);
     }
@@ -1268,10 +1269,10 @@ void() W_UseVoodooDoll =
         else
             sound (self, CHAN_WEAPON, "weapons/voodoodl/voostab.wav", 1, ATTN_NORM);
 
-        self.ammo_cells = self.ammo_cells - damage / 4;
+        self.ammo_voodoo = self.ammo_voodoo - damage / 4;
     }
 
-    self.currentammo = self.ammo_cells;
+    self.currentammo = self.ammo_voodoo;
 
     dir = aim (self, 100000);
 
@@ -1507,7 +1508,10 @@ Fire a grenade
 */
 void() W_FireGrenade =
 {
-    self.currentammo = self.ammo_rockets = self.ammo_rockets - 1;
+    if (self.weapon == IT_PROXIMITY_BOMB)
+        self.currentammo = self.ammo_tnt_proxy = self.ammo_tnt_proxy - 1;
+    else
+        self.currentammo = self.ammo_tnt_bundle = self.ammo_tnt_bundle - 1;
 
     sound (self, CHAN_WEAPON, "weapons/tnt/tnttoss.wav", 1, ATTN_NORM);
 
@@ -1629,9 +1633,12 @@ void() W_FireSuperSpikes =
     local vector    dir;
     local entity    old;
 
+    if (self.ammo_spray < 1)
+        return;
+
     sound (self, CHAN_WEAPON, "weapons/spraycan/sprayfir.wav", 1, ATTN_NORM);
     self.attack_finished = time + 0.2;
-    self.currentammo = self.ammo_nails = self.ammo_nails - 1;
+    self.currentammo = self.ammo_spray = self.ammo_spray - 1;
     dir = aim (self, 1000);
     launch_spike (self.origin + '0 0 16', dir);
     newmis.touch = superspike_touch;
@@ -1648,6 +1655,12 @@ void() W_FireSuperSpikes =
 
 void() W_FireSpikes =
 {
+    if (self.weapon == IT_SUPER_NAILGUN)
+    {
+        W_FireSuperSpikes ();
+        return;
+    }
+
     local vector    dir;
     local entity    old;
 
@@ -1655,12 +1668,6 @@ void() W_FireSpikes =
         return;
 
     makevectors (self.v_angle);
-
-    if (self.weapon == IT_SUPER_NAILGUN)
-    {
-        W_FireSuperSpikes ();
-        return;
-    }
 
     sound (self, CHAN_WEAPON, "weapons/tommygun/_tom.wav", 1, ATTN_NORM);
     self.attack_finished = time + 0.1; // rate is too slow still D_L
@@ -1832,10 +1839,11 @@ void() W_SetCurrentAmmo =
     }
     else if (self.weapon == IT_SHOTGUN)
     {
+        self.currentammo = self.ammo_flares;
         self.currentammo = self.ammo_shells;
         self.weaponmodel = "progs/v_shot.mdl";
         self.weaponframe = 0;
-        self.items = self.items | IT_SHELLS;
+//        self.items = self.items | IT_SHELLS;
     }
     else if (self.weapon == IT_SUPER_SHOTGUN)
     {
@@ -1853,17 +1861,24 @@ void() W_SetCurrentAmmo =
     }
     else if (self.weapon == IT_SUPER_NAILGUN)
     {
-        self.currentammo = self.ammo_nails;
+        self.currentammo = self.ammo_spray;
         self.weaponmodel = "progs/v_nail2.mdl";
         self.weaponframe = 0;
-        self.items = self.items | IT_NAILS;
+//        self.items = self.items | IT_NAILS;
     }
-    else if (self.weapon == IT_GRENADE_LAUNCHER || self.weapon == IT_PROXIMITY_BOMB)
+    else if (self.weapon == IT_GRENADE_LAUNCHER)
     {
-        self.currentammo = self.ammo_rockets;
+        self.currentammo = self.ammo_tnt_bundle;
         self.weaponmodel = "progs/v_rock.mdl";
         self.weaponframe = 0;
-        self.items = self.items | IT_ROCKETS;
+//        self.items = self.items | IT_ROCKETS;
+    }
+    else if (self.weapon == IT_PROXIMITY_BOMB)
+    {
+        self.currentammo = self.ammo_tnt_proxy;
+        self.weaponmodel = "progs/v_rock.mdl";
+        self.weaponframe = 0;
+//        self.items = self.items | IT_ROCKETS;
     }
     else if (self.weapon == IT_ROCKET_LAUNCHER)
     {
@@ -1881,10 +1896,10 @@ void() W_SetCurrentAmmo =
     }
     else if (self.weapon == IT_VOODOO_DOLL)
     {
-        self.currentammo = self.ammo_cells;
+        self.currentammo = self.ammo_voodoo;
         self.weaponmodel = "progs/v_voodoo.mdl";
         self.weaponframe = 0;
-        self.items = self.items | IT_CELLS;
+//        self.items = self.items | IT_CELLS;
     }
     else
     {
@@ -1904,17 +1919,17 @@ float() W_BestWeapon =
         return IT_ROCKET_LAUNCHER;
     if (self.waterlevel <= 1 && self.ammo_cells >= 1 && (it & IT_LIGHTNING) )
         return IT_LIGHTNING;
-    if(self.ammo_nails >= 2 && (it & IT_SUPER_NAILGUN) )
+    if(self.ammo_spray >= 1 && (it & IT_SUPER_NAILGUN) )
         return IT_SUPER_NAILGUN;
-    if(self.ammo_rockets >= 1 && (it & IT_GRENADE_LAUNCHER) )
+    if(self.ammo_tnt_bundle >= 1 && (it & IT_GRENADE_LAUNCHER) )
         return IT_GRENADE_LAUNCHER;
-    if(self.ammo_shells >= 2 && (it & IT_SUPER_SHOTGUN) )
+    if(self.ammo_shells >= 1 && (it & IT_SUPER_SHOTGUN) )
         return IT_SUPER_SHOTGUN;
     if(self.ammo_nails >= 1 && (it & IT_NAILGUN) )
         return IT_NAILGUN;
-    if(self.ammo_shells >= 1 && (it & IT_SHOTGUN) )
+    if(self.ammo_flares >= 1 && (it & IT_SHOTGUN) )
         return IT_SHOTGUN;
-    if(self.ammo_cells >= 1 && (it & IT_VOODOO_DOLL) )
+    if(self.ammo_voodoo >= 1 && (it & IT_VOODOO_DOLL) )
         return IT_VOODOO_DOLL;
 
     return IT_AXE;
@@ -2060,13 +2075,13 @@ void() W_ChangeWeapon =
     else if (self.impulse == 2)
     {
         fl = IT_SHOTGUN;
-        if (self.ammo_shells < 1)
+        if (self.ammo_flares < 1)
             am = 1;
     }
     else if (self.impulse == 3)
     {
         fl = IT_SUPER_SHOTGUN;
-        if (self.ammo_shells < 2)
+        if (self.ammo_shells < 1)
             am = 1;
     }
     else if (self.impulse == 4)
@@ -2084,13 +2099,13 @@ void() W_ChangeWeapon =
     else if (self.impulse == 6)
     {
         fl = IT_GRENADE_LAUNCHER;
-        if (self.ammo_rockets < 1)
+        if (self.ammo_tnt_bundle < 1)
             am = 1;
     }
     else if (self.impulse == 7)
     {
         fl = IT_SUPER_NAILGUN;
-        if (self.ammo_nails < 2)
+        if (self.ammo_spray < 1)
             am = 1;
     }
     else if (self.impulse == 8)
@@ -2102,7 +2117,7 @@ void() W_ChangeWeapon =
     else if (self.impulse == 9)
     {
         fl = IT_VOODOO_DOLL;
-        if (self.ammo_cells < 1)
+        if (self.ammo_voodoo < 1)
             am = 1;
     }
 
@@ -2153,10 +2168,18 @@ CheatCommand
 */
 void() CheatCommand =
 {
-    self.ammo_rockets = 100;
-    self.ammo_nails = 200;
-    self.ammo_shells = 100;
-    self.ammo_cells = 200;
+    self.ammo_flares     = MAX_FLARES;
+    self.ammo_shells     = MAX_SHELLS;
+    self.ammo_nails      = MAX_NAILS;
+    self.ammo_rockets    = MAX_ROCKETS;
+    self.ammo_tnt_bundle = MAX_TNT;
+    self.ammo_tnt_proxy  = MAX_PROXY;
+    self.ammo_tnt_remote = MAX_REMOTE;
+    self.ammo_spray      = MAX_SPRAY;
+    self.ammo_cells      = MAX_CELLS;
+    self.ammo_voodoo     = MAX_VOODOO;
+    self.ammo_leech      = MAX_LEECH;
+
     self.items = self.items |
         IT_AXE |
         IT_SHOTGUN |
@@ -2205,13 +2228,13 @@ void() CycleWeaponCommand =
         else if (self.weapon == IT_AXE)
         {
             self.weapon = IT_SHOTGUN;
-            if (self.ammo_shells < 1)
+            if (self.ammo_flares < 1)
                 am = 1;
         }
         else if (self.weapon == IT_SHOTGUN)
         {
             self.weapon = IT_SUPER_SHOTGUN;
-            if (self.ammo_shells < 2)
+            if (self.ammo_shells < 1)
                 am = 1;
         }
         else if (self.weapon == IT_SUPER_SHOTGUN)
@@ -2229,13 +2252,13 @@ void() CycleWeaponCommand =
         else if (self.weapon == IT_ROCKET_LAUNCHER)
         {
             self.weapon = IT_GRENADE_LAUNCHER;
-            if (self.ammo_rockets < 1)
+            if (self.ammo_tnt_bundle < 1)
                 am = 1;
         }
         else if (self.weapon == IT_GRENADE_LAUNCHER || self.weapon == IT_PROXIMITY_BOMB)
         {
             self.weapon = IT_SUPER_NAILGUN;
-            if (self.ammo_nails < 2)
+            if (self.ammo_spray < 1)
                 am = 1;
         }
         else if (self.weapon == IT_SUPER_NAILGUN)
@@ -2247,7 +2270,7 @@ void() CycleWeaponCommand =
         else if (self.weapon == IT_LIGHTNING)
         {
             self.weapon = IT_VOODOO_DOLL;
-            if (self.ammo_cells < 1)
+            if (self.ammo_voodoo < 1)
                 am = 1;
         }
 
@@ -2289,13 +2312,13 @@ void() CycleWeaponReverseCommand =
         else if (self.weapon == IT_LIGHTNING)
         {
             self.weapon = IT_SUPER_NAILGUN;
-            if (self.ammo_nails < 2)
+            if (self.ammo_spray < 2)
                 am = 1;
         }
         else if (self.weapon == IT_SUPER_NAILGUN)
         {
             self.weapon = IT_GRENADE_LAUNCHER;
-            if (self.ammo_rockets < 1)
+            if (self.ammo_tnt_bundle < 1)
                 am = 1;
         }
         else if (self.weapon == IT_GRENADE_LAUNCHER || self.weapon == IT_PROXIMITY_BOMB)
@@ -2313,13 +2336,13 @@ void() CycleWeaponReverseCommand =
         else if (self.weapon == IT_NAILGUN)
         {
             self.weapon = IT_SUPER_SHOTGUN;
-            if (self.ammo_shells < 2)
+            if (self.ammo_shells < 1)
                 am = 1;
         }
         else if (self.weapon == IT_SUPER_SHOTGUN)
         {
             self.weapon = IT_SHOTGUN;
-            if (self.ammo_shells < 1)
+            if (self.ammo_flares < 1)
                 am = 1;
         }
         else if (self.weapon == IT_SHOTGUN)
@@ -2329,7 +2352,7 @@ void() CycleWeaponReverseCommand =
         else if (self.weapon == IT_AXE)
         {
             self.weapon = IT_VOODOO_DOLL;
-            if (self.ammo_cells < 1)
+            if (self.ammo_voodoo < 1)
                 am = 1;
         }
 
@@ -2347,7 +2370,8 @@ void() QuadCheat =
 {
     self.super_time = 1;
     self.super_damage_finished = time + 30;
-// PM:  Guns Akimbo no longer uses IT_QUAD.
+
+    // Guns Akimbo no longer uses IT_QUAD.
     Sprint (self, PRINT_MEDIUM, "tequila\n");
     dprint ("quad cheat\n");
 };
@@ -2417,7 +2441,7 @@ float() W_FireCharge =
 {
     if (self.weapon == IT_GRENADE_LAUNCHER)
     {
-        if (self.ammo_rockets < 1)
+        if (self.ammo_tnt_bundle < 1)
         {
             // Out of ammo, so don't bother trying to throw.
             W_Uncharge ();

@@ -267,6 +267,20 @@
 #define DF_MIND         32  // Damage is absorbed by spirit armor.
 
 
+// Maximum ammo.
+#define MAX_FLARES      100
+#define MAX_SHELLS      100
+#define MAX_NAILS       500
+#define MAX_ROCKETS     100
+#define MAX_TNT          50
+#define MAX_PROXY        50     // FIXME:  Is this right?
+#define MAX_REMOTE       50     // FIXME:  Is this right?
+#define MAX_SPRAY       200     // FIXME:  Is this right?
+#define MAX_CELLS       250
+#define MAX_VOODOO      200     // FIXME:  Is this right?
+#define MAX_LEECH       100     // FIXME:  Is this right?
+
+
 /* ----------------- */
 /* --- CTF stuff --- */
 /* ----------------- */
