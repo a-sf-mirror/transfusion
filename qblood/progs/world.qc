@@ -250,6 +250,7 @@ void() worldspawn =
     precache_sound ("items/pickarmr.wav");          // armor up
     precache_sound ("weapons/napalm/burn.wav");  // burning on lava
     precache_sound ("ambience/sizzle.wav");      // smelt on slime
+    precache_sound ("foley/swimuw.wav"); // diving suit engage sound
 
 // player gib sounds
     precache_sound ("butcher/fzomdie1.wav");
@@ -284,13 +285,22 @@ void() worldspawn =
     precache_sound ("player/play1116.wav");
     precache_sound ("player/quips/1039.wav");   // "SOB must pay!"
     precache_sound ("player/quips/1050.wav");   // "That's all folks!"
+    precache_sound ("player/quips/1057.wav");   //  "rest in pieces"
 
     // Player songs (when idle for too long).
     precache_sound ("player/songs/1093.wav");
     precache_sound ("player/songs/1094.wav");
     precache_sound ("player/songs/1095.wav");
     precache_sound ("player/songs/1097.wav");
-
+    precache_sound ("player/songs/vo3011.wav");
+    precache_sound ("player/songs/vo3024.wav");
+    precache_sound ("player/songs/vo3026.wav");
+    precache_sound ("player/songs/vo3030.wav");
+    precache_sound ("player/songs/vo3033.wav");
+    precache_sound ("player/songs/vo3034.wav");
+    precache_sound ("player/songs/vo3035.wav");
+    precache_sound ("player/songs/vo3039.wav");
+    
     // player death sounds
     precache_sound ("player/die1.wav");
     precache_sound ("player/die2.wav");
