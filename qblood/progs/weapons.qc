@@ -638,7 +638,7 @@ void() SpawnBouncingNapalmBall =
     newmis.netname = "Napalm Ball";
     newmis.dmg = 120;
 
-    setmodel (newmis, "progs/missile.mdl");
+    setmodel (newmis, "progs/naltball.mdl");
     setsize (newmis, '-1 -1 -1', '1 1 1');
     setorigin (newmis, self.origin);
 };
