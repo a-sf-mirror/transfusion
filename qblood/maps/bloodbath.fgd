@@ -1,0 +1,724 @@
+// Additional BloodBath entities and crap
+// Started by Jeff "Alastair" Dennis (jdennis97@home.com)
+// Appended by Tim "protoplasmatic" Hale (timothyhale@hotmail.com)
+// Appended and corrected by Dave "Darth Linux" Turner (darth_linux@planetblood.com)
+// BloodBath can be found at http://www.planetblood.com/qblood/
+
+//
+// worldspawn
+//
+
+@SolidClass = worldspawn : "World entity"
+[
+	message(string) : "LEVELNAME \n by MAPPER NAME \n http://www.planetblood.com/qblood/"
+	worldtype(choices) : "Ambience" : 0 =
+	[
+		0 : "Medieval"		
+		1 : "Runic (metal)"		
+		2 : "Present (base)"
+	]
+	sounds(integer) : "CD track to play" : 1	
+	light(integer) : "100"
+]
+
+//
+// base marker definitions
+//
+@baseclass = Appearflags [
+	spawnflags(Flags) =	
+	[
+		256 : "Not in Pink on the Inside" : 0		
+		512 : "Not in Lightly Broiled" : 0
+		1024 : "Not in Well Done" : 0
+		2048 : "Not in BloodBath" : 0
+	]
+]
+@baseclass = Targetname [ targetname(target_source) : "Name" ]
+@baseclass = Target [ target(target_destination) : "Target" ]
+
+//
+// player starts, deathmatch, coop, teleport
+//
+
+@baseclass base(Appearflags) size(-16 -16 -24, 16 16 32)
+ 	color(0 255 0) = PlayerClass []
+
+@PointClass base(PlayerClass) = info_player_start : "Player 1 start" []
+@PointClass base(PlayerClass) = info_player_deathmatch : "Player deathmatch start" []
+@PointClass base(PlayerClass) = info_player_coop : "Player cooperative start" []
+@PointClass base(PlayerClass) = info_player_start2 : "Player episode return point" []
+@PointClass base(PlayerClass, Targetname) = info_teleport_destination : "Teleport destination" []
+@PointClass = info_null : "info_null (spotlight target)"
+[
+	targetname(target_source) : "Name"
+]
+
+//
+// CTF stuff
+//
+
+@PointClass size(-6 -7 -1, 6 49 75) base(Appearflags) =
+     item_flag_team1 : "CTF: Red Team Flag" []
+@PointClass size(-6 -7 -1, 6 49 75) base(Appearflags) =
+     item_flag_team2 : "CTF: Blue Team Flag" []
+@PointClass base(PlayerClass) = info_player_team1 : "CTF: Red team base start" []
+@PointClass base(PlayerClass) = info_player_team2 : "CTF: Blue team base start" []
+
+@PointClass base(Appearflags) = info_intermission : "Intermission camera" []
+@PointClass base(Appearflags) = item_lure : "Testing Entity, set the model and pickup noise manually" []
+
+//
+// items
+//
+
+@baseclass size(-12 -11 -1, 8 13 24) color(80 0 200) base(Appearflags) = Ammo
+[
+	spawnflags(flags) =
+ 	[
+		1 : "Large box" : 0
+	]
+]
+
+@PointClass size(-9 -11 -1, 9 11 14) base(Appearflags) = item_health : "Health pak"
+[
+	spawnflags(flags) =
+ 	[
+		1 : "Life Esscence" : 0
+		2 : "Life Seed" : 0
+	]
+]
+
+// ********NOTE********* Left 'sigil' IN
+
+@PointClass size(-16 -16 -24, 16 16 32) base(Appearflags) =
+ 	item_sigil : "Sigil"
+[
+	spawnflags(Flags) =
+	[
+		1 : "Episode 1" : 1
+		2 : "Episode 2" : 0
+		4 : "Episode 3" : 0
+		8 : "Episode 4" : 0
+	]
+]
+
+//
+// lights
+//
+
+@baseclass = Light [
+	light(integer) : "Brightness" : 200
+	style(Choices) : "Appearance" : 0 =
+	[
+		0 : "Normal"
+		10: "Fluorescent flicker"
+		2 : "Slow, strong pulse"
+		11: "Slow pulse, noblack"
+		5 : "Gentle pulse"
+		1 : "Flicker A"
+		6 : "Flicker B"
+		3 : "Candle A"
+		7 : "Candle B"
+		8 : "Candle C"
+		4 : "Fast strobe"
+		9 : "Slow strobe"
+	]
+]
+
+@PointClass size(-8 -8 -8, 8 8 8) base(Light, Target, Targetname) =
+ 	light : "Invisible lightsource"
+	[
+		spawnflags(Flags) = [ 1 : "Initially dark" : 0 ]
+	]
+@PointClass size(-8 -8 -8, 8 8 8) base(Light, Targetname) =
+ 	light_fluoro : "Fluorescent light"
+	[
+		spawnflags(Flags) = [ 1 : "Initially dark" : 0 ]
+	]
+@PointClass size(-8 -8 -8, 8 8 8) base(Light, Targetname) =
+ 	light_fluorospark : "Sparking fluorescent light"
+	[
+		spawnflags(Flags) = [ 1 : "Initially dark" : 0 ]
+	]
+@PointClass size(-8 -8 -8, 8 8 8) base(Light, Targetname) =
+ 	light_globe : "Globe light" []
+@PointClass size(-10 -10 -12, 12 12 18) base(Light, Targetname) =
+ 	light_flame_large_yellow : "Large yellow flame" []
+@PointClass size(-10 -10 -12, 12 12 18) base(Light, Targetname) =
+ 	light_flame_small_yellow : "Small yellow flame"
+ 	[
+		spawnflags(Flags) = [ 1 : "Initially dark" : 0 ]
+	]
+@PointClass size(-10 -10 -12, 12 12 18) base(Light, Targetname) =
+ 	light_flame_small_white : "Small white flame"
+ 	[
+		spawnflags(Flags) = [ 1 : "Initially dark" : 0 ]
+	]
+@PointClass size(-10 -10 -20, 10 10 20) base(Light, Targetname) =
+ 	light_torch_small_walltorch : "Small walltorch" []
+
+//
+// misc
+//
+
+@PointClass base(Appearflags) = air_bubbles : "Air bubbles" []
+@PointClass base(Appearflags, Targetname) =
+	event_lightning : "Chthon's lightning" []
+
+@PointClass base(Appearflags) = misc_fireball : "Small fireball"
+	[ speed(integer) : "Speed" : 40 ]
+
+@PointClass = misc_explobox2 : "TNT Barrel" []
+
+// 
+// ambient sounds
+//
+
+@PointClass = ambient_drip : "Dripping sound" []
+@PointClass = ambient_drone : "Engine/machinery sound" []
+@PointClass = ambient_comp_hum : "Computer background sounds" []
+@PointClass = ambient_flouro_buzz : "Fluorescent buzzing sound" []
+@PointClass = ambient_light_buzz : "Buzzing sound from light" []
+@PointClass = ambient_suck_wind : "Wind sound" []
+@PointClass = ambient_swamp1 : "Frogs croaking" []
+@PointClass = ambient_swamp2 : "Frogs croaking B" []
+@PointClass = ambient_thunder : "Thunder sound" []
+@PointClass = ambient_amb2 : "Humming, violin sound" []
+@PointClass = ambient_amb3 : "Underwater Music" []
+@PointClass = ambient_amb4 : "Ominous Cello Note" []
+@PointClass = ambient_amb5 : "Pinging Sound, EKG" []
+@PointClass = ambient_amb6 : "A Couple of Crickets" []
+@PointClass = ambient_amb7 : "Underwater" []
+@PointClass = ambient_amb8 : "Throb of distant machinery" []
+@PointClass = ambient_amb9 : "Pulsing Machinery" []
+@PointClass = ambient_amb10 : "Flock of chirping birds" []
+@PointClass = ambient_amb11 : "Persistent cricket" []
+@PointClass = ambient_amb12 : "Running water - pipe" []
+@PointClass = ambient_amb13 : "Running Water - stream" []
+@PointClass = ambient_amb14 : "Running Water - something plopping" []
+@PointClass = ambient_amb15 : "Underwater motor" []
+@PointClass = ambient_amb16 : "Wind of approaching storm" []
+@PointClass = ambient_amb17 : "Low volume wind rush - e1m1 crypt" []
+@PointClass = ambient_amb18 : "Louder wind rush" []
+@PointClass = ambient_amb20 : "Distant Hum" []
+@PointClass = ambient_amb21 : "Ocean with floating creaky pier" []
+@PointClass = ambient_amb22 : "Ocean with floating creaky pier, longer" []
+@PointClass = ambient_amb24 : "Pulsing underwater engine" []
+@PointClass = ambient_amb25 : "Fluorescent hum" []
+@PointClass = ambient_amb26 : "Electric Hum" []
+@PointClass = ambient_1wind : "Windstorm" []
+@PointClass = ambient_altair2 : "Soft Blowing Wind" []
+@PointClass = ambient_brgloop : "Background Noise Loop" []
+@PointClass = ambient_buzslow2 : "Slow buzzing sound" []
+@PointClass = ambient_buzz2 : "Buzzing noise" []
+@PointClass = light_office : "noisy flou. office lights" []
+@PointClass = ambient_chain1 : "Dangling Chains 1" []
+@PointClass = ambient_chain2 : "Dangling chains 2" []
+@PointClass = ambient_chain4 : "Dangling Chains 3" []
+@PointClass = ambient_chain5 : "Dangling Chains 4" []
+@PointClass = ambient_chain6 : "Dangling Chains 5" []
+@PointClass = ambient_chant1lp : "Chanting Cultists Looped" []
+@PointClass = ambient_chant2lp : "Chanting Cultists 2 Looped" []
+@PointClass = ambient_cryptlp : "Spooky crypt sound, looped" []
+@PointClass = ambient_clock : "Grandfather clock ticking" []
+@PointClass = ambient_dialtone : "phone dialtone" []
+@PointClass = ambient_elcloop1 : "Arcing tesla coil" []
+@PointClass = ambient_eriedrne : "Erie droning noise" []
+@PointClass = ambient_erthloop : "earthquake rumblings" []
+@PointClass = ambient_flatlin2 : "patient flatlines" []
+@PointClass = ambient_flybuzz : "buzzing flies" []
+@PointClass = ambient_grglng : "gurgling, gargling  . . ." []
+@PointClass = ambient_howling : "howling wolves/dogs" []
+@PointClass = ambient_hrtbt : "heartbeat in Click!" []
+@PointClass = ambient_icemllp : "ice melting, breaking up looped" []
+@PointClass = ambient_icevio : "violent ice breakup" []
+@PointClass = ambient_mfly : "Mfly" []
+@PointClass = ambient_moan2lp : "more moaning, looped" []
+@PointClass = ambient_mtldrn : "Metallic droning noise" []
+@PointClass = ambient_qamb10 : "Quake amb10 sound" []
+@PointClass = ambient_qamb11 : "Quake amb11 sound" []
+@PointClass = ambient_qamb12 : "Quake amb12 sound" []
+@PointClass = ambient_qamb2 : "Quake amb2 sound" []
+@PointClass = ambient_qamb3 : "Quake amb3 sound" []
+@PointClass = ambient_qamb4 : "Quake amb4 sound" []
+@PointClass = ambient_qamb5 : "Quake amb5 sound" []
+@PointClass = ambient_qamb6 : "Quake amb6 sound" []
+@PointClass = ambient_qamb7 : "Quake amb7 sound" []
+@PointClass = ambient_qamb8 : "Quake amb8 sound" []
+@PointClass = ambient_qamb9 : "Quake amb9 sound" []
+@PointClass = ambient_qsuck1 : "Quake suck1 sound" []
+@PointClass = ambient_qtrain1 : "Quake train1 sound" []
+@PointClass = ambient_qwindfly : "Quake windfly sound" []
+@PointClass = ambient_rain2 : "Rain" []
+@PointClass = ambient_sawcut : "Big saw cutting for The Lumber Mill" []
+@PointClass = ambient_sawrun : "Big saw running for The Lumber Mill" []
+@PointClass = ambient_sewage : "Sewage draining, flowing" []
+@PointClass = ambient_sizzle : "torch burning" []
+@PointClass = ambient_sizzle1 : "different torch burning" []
+@PointClass = ambient_sizzle2 : "another torch burning" []
+@PointClass = ambient_snakepit : "hiss of the JoJo snake pit" []
+@PointClass = ambient_sngair2 : "More airy noise" []
+@PointClass = ambient_torch : "yet another torch" []
+@PointClass = ambient_train1 : "Train noise" []
+@PointClass = ambient_underwat : "Underwater ambient noise" []
+@PointClass = ambient_water : "Water noises" []
+@PointClass = ambient_water1 : "more water noises" []
+@PointClass = ambient_waterlap : "water lapping up to shore" []
+@PointClass = ambient_wind2 : "More wind noise" []
+@PointClass = ambient_drip1 : "water dripping" []
+@PointClass = ambient_drip2 : "More water dripping" []
+@PointClass = ambient_drip5 : "Still more water dripping" []
+@PointClass = ambient_laugh : "Crazy laugh used in Area 15" []
+//
+ // moving things
+//
+@baseclass base(Appearflags, Targetname) = Door
+[
+	speed(integer) : "Speed" : 100
+	sounds(choices) : "Sound" : 1 =
+ 	[
+		1: "Stone"
+		2: "Machine"
+		3: "Stone Chain"
+		4: "Screechy Metal"
+	]
+	wait(choices) : "Delay before close" : 4 =
+ 	[
+		-1 : "Stays open"
+	]
+	lip(integer) : "Lip"
+	dmg(integer) : "Damage inflicted when blocked" : 0
+	message(string) : "Message if triggered"
+	health(integer) : "Health (shoot open)" : 0
+]
+
+@SolidClass base(Door) = func_door : "Basic door"
+[
+	spawnflags(flags) =
+	[
+		1 : "Starts Open" : 0
+		4 : "Don't link" : 0
+		8 : "Gold Key required" : 0
+        	16: "Silver Key required" : 0
+        	32: "Toggle" : 0
+	]
+]
+
+@SolidClass base(Door) = func_door_secret : "Triggered door"
+[
+	spawnflags(flags) =
+ 	[
+		1 : "Open once only" : 0
+		2 : "Moves left first" : 0
+		4 : "Moves down first" : 0
+		8 : "Not shootable" : 0
+        	16 : "Always shootable" : 0
+	]
+]
+
+@SolidClass base(Appearflags) = func_wall : "Moving wall" []
+
+@SolidClass = func_button : "Button"
+[
+	speed(integer) : "Speed" : 5
+	target(target_source) : "Targetted object"
+	health(integer) : "Health (shootable if > 0)"
+	sounds(choices) : "Sounds" : 1 =
+ 	[
+		1: "Steam metal"
+		2: "Wooden clunk"
+		3: "Metallic clink"
+		4: "In-out"
+	]
+	wait(choices) : "Delay before reset" : 3 =
+	[
+		-1: "Stays pressed"
+	]
+	delay(integer) : "Delay before trigger"]
+
+@SolidClass base(Targetname) = func_train : "Moving platform"
+[
+	sounds(choices) : "Sound" : 1 =
+	[
+		0: "None"
+		1: "Ratchet Metal"
+	]
+	speed(integer) : "Speed (units per second)" : 64
+	target(target_source) : "First stop target"
+	dmg(integer) : "Damage on crush" : 0
+]
+
+@PointClass base(Targetname) size(16 16 16) =
+ 	path_corner : "Moving platform stop"
+[
+	target(target_source) : "Next stop target"
+]
+
+@SolidClass = func_plat : "Elevator"
+[
+	height(integer) : "Travel altitude (can be negative)" : 0
+	sounds(choices) : "Sound group" : 1 =
+	[
+		0: "None"
+		1: "Base fast"
+		2: "Chain Slow"
+	]
+]
+
+@SolidClass = func_dm_only : "Deathmatch teleporter" []
+@SolidClass = func_illusionary : "Solids can be walked through" []
+
+@SolidClass = func_episodegate : "Episode Gate"
+[
+	spawnflags(Flags) =
+	[
+		1 : "Episode 1" : 1
+		2 : "Episode 2" : 0
+		4 : "Episode 3" : 0
+		8 : "Episode 4" : 0
+	]
+]
+
+@SolidClass = func_bossgate : "Boss gate" []
+
+//
+// triggers
+//
+
+@baseclass base(Target) = Trigger
+[
+	style(integer) : "Style" : 32
+	killtarget(target_source) : "Kill target"
+	sounds(choices) : "Sound style" : 3 =
+	[
+		1 : "Secret sound"
+		2 : "Beep beep"
+		3 : "Large switch"
+		4 : "Set message to text string"
+	]
+	delay(integer) : "Delay before trigger" : 2
+	message(string) : "Message (set sound too!)"
+]
+
+@SolidClass = trigger_changelevel : "Trigger: Change level"
+[
+	map(string) : "New map name"
+	spawnflags(flags) =
+	[
+		1: "No Intermission" : 0
+	]
+]
+
+@SolidClass base(Trigger) = trigger_once : "Trigger: Activate once"
+[
+	spawnflags(flags) = [ 1: "Entity only" : 0 ]
+]
+
+@SolidClass base(Trigger) = trigger_multiple : "Trigger: Activate multiple" 
+[
+	spawnflags(flags) = [ 1: "Entity only" : 0 ]
+	wait(integer) : "Delay before reset" : 10
+]
+
+@SolidClass base(Trigger) = trigger_onlyregistered : "Trigger: Registered only" 
+[
+	spawnflags(flags) = [ 1: "Entity only" : 0 ]
+]
+
+@SolidClass base(Trigger) = trigger_secret : "Trigger: Secret" 
+[
+	spawnflags(flags) = [ 1: "Entity only" : 0 ]
+	wait(integer) : "Delay before reset" : 10
+]
+
+@SolidClass base(Target, Targetname) = trigger_teleport : "Trigger teleport" 
+[
+	spawnflags(Flags) =
+	[
+		1 : "Player only" : 0
+		2 : "Silent" : 0
+	]
+]
+
+// need updates:
+
+@SolidClass = trigger_setskill : "Trigger set skill" 
+[
+	message(choices) : "Skill to change to" : 1 =
+	[
+        0 : "Pink on the Inside"
+        1 : "Lightly Broiled"
+        2 : "Well Done"
+        3 : "Extra Crispy"
+	]
+]
+@PointClass base(Trigger, Targetname) = trigger_relay : "Trigger relay"
+[
+]
+@SolidClass base(Trigger) = trigger_monsterjump : "Trigger monster jump"
+[
+	speed(integer) : "Jump Speed" : 40
+	height(integer) : "Jump Height" : 128
+]
+
+@SolidClass base(Trigger, Targetname) = trigger_counter : "Trigger counter" 
+[
+	spawnflags(flags) = [ 1: "No Message" : 0 ]
+	count(integer) : "Count before activation" : 2
+]
+
+@SolidClass base(Trigger) = trigger_push : "Trigger player push"
+[
+	spawnflags(flags) = [ 1: "Once Only" : 0 ]
+	speed(integer) : "Speed of push" : 40
+]
+
+@SolidClass base(Trigger) = trigger_hurt : "Trigger player hurt" 
+[
+	dmg(integer) : "Damage" : 10]
+
+//
+// BloodBath Weapons
+//
+
+@baseclass size(-16 -16 0, 16 16 32) color(0 0 200) base(Appearflags) = Weapon []
+
+@PointClass base(Weapon) = weapon_flaregun : "Flare Gun" []
+@PointClass base(Weapon) = weapon_supershotgun : "Sawed-off Shotgun" []
+@PointClass base(Weapon) = weapon_nailgun : "Tommy Gun" []
+@PointClass base(Weapon) = weapon_rocketlauncher : "Napalm Launcher" []
+@PointClass base(Weapon) = weapon_grenadelauncher : "Case of TNT" []
+@PointClass base(Weapon) = weapon_proximity : "Proximity Detonator" []
+@PointClass base(Weapon) = weapon_remote : "Remote Detonator" []
+@PointClass base(Weapon) = weapon_supernailgun : "Spray Can" []
+@PointClass base(Weapon) = weapon_voodoodoll : "Voodoo Doll" []
+@PointClass base(Weapon) = weapon_lifeleech : "Life Leech" []
+@PointClass base(Weapon) = weapon_lightning : "Tesla Cannon" []
+
+//
+// BloodBath Ammunitions
+//
+
+@baseclass size(32 32 32) color(80 0 200) base(Appearflags) = Ammo
+[
+	spawnflags(flags) =
+ 	[
+		1 : "Large box" : 0
+	]
+]
+
+@PointClass base(Ammo) = item_flares : "Box of Flares" []
+@PointClass base(Ammo) = item_shells : "Box of Shotgun Shells" []
+@PointClass base(Ammo) = item_spikes : "Full Drum of Bullets" []
+@PointClass base(Ammo) = item_rockets : "Gasoline Can" []
+@PointClass base(Ammo) = item_tnt : "Bundle of TNT" []
+@PointClass base(Ammo) = item_cells : "Battery" []
+@PointClass base(Ammo) = item_soul : "Trapped Soul" []
+
+//
+// BloodBath Powerups
+//
+
+@PointClass base(Appearflags) =
+ 	item_artifact_bag : "Doctor's Bag" []
+
+@PointClass size(-16 -16 0, 16 16 16) base(Appearflags) = item_health : "Health pak" 
+[
+	spawnflags(flags) =
+ 	[
+		1 : "Rotten" : 0
+		2 : "Megahealth" : 0
+	]
+]
+
+@PointClass base(Appearflags) =
+ 	item_artifact_invisibility : "Cloak of Invisibility" []
+
+@PointClass base(Appearflags) =
+ 	item_artifact_boots : "Boots of Jumping" []
+
+@PointClass base(Appearflags) =
+ 	item_artifact_super_damage : "Guns Akimbo" []
+
+@PointClass base(Appearflags) =
+ 	item_artifact_envirosuit : "Diving Suit" []
+
+@PointClass base(Appearflags) =
+ 	item_artifact_crystal : "Crystal Ball" []
+
+@PointClass base(Appearflags) =
+ 	item_artifact_reflect : "Reflective Shots" []
+
+@PointClass base(Appearflags) =
+ 	item_artifact_vision : "Beast Vision" []
+
+@PointClass base(Appearflags) =
+ 	item_artifact_shadow : "Shadow Cloak" []
+
+@PointClass base(Appearflags) =
+ 	item_artifact_invulnerability : "Death Mask" []
+
+//
+// BloodBath Keys
+//
+
+@PointClass size(-16 -16 -24, 16 16 32) base(Appearflags) =
+ 	item_key1 : "Skull Key" []
+@PointClass size(-16 -16 -24, 16 16 32) base(Appearflags) =
+ 	item_key2 : "Eye Key" []
+@PointClass size(-16 -16 -24, 16 16 32) base(Appearflags) =
+ 	item_key3 : "Fire Key" []
+@PointClass size(-16 -16 -24, 16 16 32) base(Appearflags) =
+ 	item_key4 : "Daggar Key" []
+@PointClass size(-16 -16 -24, 16 16 32) base(Appearflags) =
+ 	item_key5 : "Spider Key" []
+@PointClass size(-16 -16 -24, 16 16 32) base(Appearflags) =
+ 	item_key6 : "Moon Key" []
+
+//
+// BloodBath Armor
+//
+
+@PointClass size(-16 -16 -24, 16 16 32) base(Appearflags) =
+ 	item_armorInv : "Super Armor" []
+@PointClass size(-16 -16 -24, 16 16 32) base(Appearflags) =
+ 	item_armor4 : "Spirit Armor" []
+@PointClass size(-16 -16 -24, 16 16 32) base(Appearflags) =
+ 	item_armor2 : "Fire armor" []
+@PointClass size(-16 -16 -24, 16 16 32) base(Appearflags) =
+ 	item_armor1 : "Body Armor" []
+@PointClass size(-16 -16 -24, 16 16 32) base(Appearflags) =
+ 	item_armor0 : "Basic Armor" []
+
+//
+// BloodBath Monsters
+//
+
+@baseclass base(Appearflags, Target, Targetname) color(220 0 0) = Monster 
+[
+	spawnflags(Flags) = 	[	1 : "Ambush" : 0]
+]
+
+@PointClass base(Monster) size(-8 -8 -8, 8 8 8) = monster_bat : "Bat" []
+@PointClass base(Monster) size(-32 -32 -24, 32 32 64) = monster_beast : "The Beast - Chosen" []
+@PointClass base(Monster) size(-16 -16 -24, 16 16 40) = monster_blackcultist : "Black Cultist - Tommygun" []
+@PointClass base(Monster) size(-16 -16 -24, 16 16 40) = monster_bluecultist : "Blue Cultist - Tesla Cannon" []
+@PointClass base(Monster) size(-16 -16 -16, 16 16 16) = monster_blackspider : "Green Spider" []
+@PointClass base(Monster) size(-16 -16 -24, 16 16 40) = monster_browncultist : "Brown Cultist - Shotgun" []
+@PointClass base(Monster) size(-16 -16 -16, 16 16 16) = monster_brownspider : "Brown Spider" []
+@PointClass base(Monster) size(-32 -32 -24, 32 32 64) = monster_butcher : "Butcher" []
+@PointClass base(Monster) size(-64 -64 -48, 64 64 64) = monster_cerberus : "Cerberus" []
+@PointClass base(Monster) size(-32 -32 -24, 32 32 40) = monster_chrysalid : "Chrysalid Pod" []
+@PointClass base(Monster) size(-8 -8 -8, 8 8 8) = monster_eel : "Bone Eel" []
+@PointClass base(Monster) size(-16 -16 -24, 16 16 40) = monster_emergingzombie : "Emerging Zombie" []
+@PointClass base(Monster) size(-32 -32 -24, 32 32 40) = monster_firechrysalid : "Fire Pod" []
+@PointClass base(Monster) size(-16 -16 -24, 16 16 40) = monster_firetentacle : "Fire Tentacle" []
+@PointClass base(Monster) size(-16 -16 -24, 16 16 40) = monster_gargoyle : "Gargoyle" []
+@PointClass base(Monster) size(-16 -16 -24, 16 16 40) = monster_gilbeast : "Gilbeast" []
+@PointClass base(Monster) size(-16 -16 -24, 16 16 40) = monster_greencultist : "Green Cultist - TNT" []
+@PointClass base(Monster) size(-16 -16 -24, 16 16 40) = monster_greygargoyle : "Cheogh" []
+@PointClass base(Monster) size(-8 -8 -8, 8 8 8) = monster_hand : "Disembodied Hand" []
+@PointClass base(Monster) size(-32 -32 -24, 32 32 40) = monster_hellhound : "Hell Hound" []
+@PointClass base(Monster) size(-16 -16 -24, 16 16 40) = monster_innocent : "Innocent" []
+@PointClass base(Monster) size(-8 -8 -8, 8 8 8) = monster_lilcaleb : "Lil' Caleb" []
+@PointClass base(Monster) size(-16 -16 -24, 16 16 40) = monster_mime : "Mime" []
+@PointClass base(Monster) size(-32 -32 -24, 32 32 64) = monster_phantasm : "Phantasm" []
+@PointClass base(Monster) size(-8 -8 -8, 8 8 8) = monster_rat : "Rat" []
+@PointClass base(Monster) size(-16 -16 -24, 16 16 40) = monster_redcultist : "Red Cultist - Chosen" []
+@PointClass base(Monster) size(-16 -16 -16, 16 16 16) = monster_redspider : "Red Spider" []
+@PointClass base(Monster) size(-16 -16 -24, 16 16 40) = monster_shial : "Shial" []
+@PointClass base(Monster) size(-32 -32 -16, 32 32 16) = monster_sleepingzombie : "Sleeping Zombie" []
+@PointClass base(Monster) size(-16 -16 -24, 16 16 40) = monster_statuegargoyle : "Statue Gargoyle" []
+@PointClass base(Monster) size(-32 -32 -24, 32 32 64) = monster_statuegreygargoyle : "Statue Grey Gargoyle" []
+@PointClass base(Monster) size(-48 -48 -64, 48 48 64) = monster_tchernobog : "Tchernobog" []
+
+//
+// BloodBath Objects
+//
+
+@baseclass color(130 255 64) = Object []
+@PointClass size(-10 -4 -10, 10 4 11) = obj_tome : "A Closed Book " []
+@PointClass size(-5 -6 -9, 5 6 10) = obj_boost : "Small Potion Vial" []
+@PointClass size(-9 -10 -9, 9 10 10) = obj_mboost : "Large Potion Vial" []
+@PointClass size(-50 -30 0, 44 29 132) = obj_anglstat : "Huge Statue of Praying Angel" []
+@PointClass size(-14 -14 1, 22 14 89) = obj_beefslab : "Slab of Beef in Freezers" []
+@PointClass size(-16 -15 -3, 16 16 14) = obj_bonepile : "Pile of Bones" []
+@PointClass size(-9 -7 -1, 9 7 6) = obj_bookclos : "Closed Book" []
+@PointClass size(-8 -14 -1, 9 14 5) = obj_bookopen : "Open Book" []
+@PointClass size(-31 -34 -1, 31 32 39) = obj_bush1 : "Small Bush" []
+@PointClass size(-23 -21 0, 24 20 34) = obj_cauldren : "Large Cauldren" []
+@PointClass size(-9 -6 -29, 8 6 27) = obj_cflmtrch : "Chromed Flaming Torch" []
+@PointClass size(-12 -16 -1, 13 16 23) = obj_chest1 : "Locked Chest" []
+@PointClass size(-12 -15 0, 12 17 25) = obj_chest2 : "Rounded Chest" []
+@PointClass size(-12 -16 -1, 12 16 22) = obj_chest3 : "Squared Chest" []
+@PointClass size(-8 -11 -11, 7 11 12) = obj_clueb : "Nice Book" []
+@PointClass size(-37 -17 -2, 39 17 13) = obj_corps2 : "Corpse, Face Up - 5 skins" []
+@PointClass size(-3 -12 -19, 3 12 21) = obj_cross : "Tilted Cross" []
+@PointClass size(-1 -4 -12, 1 3 12) = obj_cskey : "Chrome Skeleton Key" []
+@PointClass size(-12 -5 -21, 14 5 34) = obj_eflmtrch : "Egyptian Torch" []
+@PointClass size(-12 -5 -21, 12 5 9) = obj_egtorch : "Egyptian Torch, unlit" []
+@PointClass size(-3 -25 0, 3 29 53) = obj_fence : "Iron Fence Gateway" []
+@PointClass size(-31 -27 -1, 31 27 95) = obj_fountain : "Large 2 Tier Fountain" []
+@PointClass size(-51 -65 -24, 55 65 90) = obj_goal : "Soccar Goal from FWH" []
+@PointClass size(-9 -3 0, 5 3 14) = obj_hfangel : "Head of Fallen Angel" []
+@PointClass size(-27 -27 -1, 26 26 92) = obj_hedge1 : "Triangular Hedge" []
+@PointClass size(-19 -28 0, 18 29 89) = obj_hedge2 : "Square Hedge" []
+@PointClass size(-27 -27 -1, 27 27 127) = obj_hedge3 : "Round Hedge" []
+@PointClass size(-6 -13 -19, 6 13 21) = obj_holycrss : "Cross with fluer de lis" []
+@PointClass size(-1 -339 -411, 51 336 387) = obj_megaweb : "Huge Moving Spider Web" []
+@PointClass size(-30 -29 -1, 29 30 30) = obj_plantgen : "Small Plant" []
+@PointClass size(-30 -29 -1, 29 30 39) = obj_plantmez : "Potted Plant" []
+@PointClass size(-39 -38 -1, 39 39 95) = obj_plantrom : "Plant in Vase" []
+@PointClass size(-19 -32 -1, 19 32 58) = obj_pot1 : "Large 2 Handled Jug - 4 skins" []
+@PointClass size(-12 -14 0, 12 14 42) = obj_pot2 : "Large Vase - 4 skins" []
+@PointClass size(-17 -19 -1, 17 20 48) = obj_pot3 : "Large Vase - 4 skins" []
+@PointClass size(-10 -10 -15, 2 10 27) = obj_rflmtrch : "Roman Style Flaming Torch" []
+@PointClass size(-4 -5 0, 4 5 72) = obj_seaweed : "Flowing Seaweed" []
+@PointClass size(-5 -5 -1, 5 3 55) = obj_skllstk1 : "1 Skull on a Stake" []
+@PointClass size(-5 -2 -1, 6 8 57) = obj_skllstk2 : "2 Skulls on a Stake" []
+@PointClass size(-8 -25 -1, 8 25 72) = obj_tombstn1 : "Cross Tombstone" []
+@PointClass size(-5 -16 -1, 5 16 44) = obj_tombstn2 : "Oval Tombstone" []
+@PointClass size(-7 -19 -1, 7 18 48) = obj_tombstn3 : "R.I.P. Tombstone" []
+@PointClass size(-44 -74 0, 89 45 208) = obj_tree : "Dead Tree" []
+@PointClass size(-138 -131 -20, 118 106 224) = obj_tree2 : "Large Leafy Tree" []
+@PointClass size(-1 -23 -28, 4 23 26) = obj_webs : "Small Spider Webs - 4 skins" []
+@PointClass size(-6 -4 0, 6 4 11) = obj_skull : "Brown Skull" []
+@PointClass size(-7 -6 -1, 7 6 2) = obj_skulbook : "Book with a skull on it" []
+@PointClass size(-7 -7 0, 7 7 18) = obj_stool : "A Stool" []
+@PointClass size(-5 -9 -13, 5 9 14) = obj_hbook : "Another book" []
+@PointClass size(-12 -8 -11, 12 8 11) = obj_m2 : "White Skull" []
+@PointClass size(-12 -8 -11, 12 8 11) = obj_m3 : "Green Skull" []
+@PointClass size(-8 -11 -11, 7 11 12) = obj_mage : "Another Book" []
+@PointClass size(-3 -7 -26, 3 7 27) = obj_shovel : "A Shovel" []
+@PointClass size(-32 -21 -0, 24 20 34) = obj_cauldron : "A Boiling Cauldron" []
+@PointClass size(-14 -20 -14, 14 20 39) = obj_barrel : "Barrel - 4 skins" []
+@PointClass size(-11 -7 -1, 14 8 28) = obj_brainjar : "Jar with brain in it - 2 skins" []
+
+//
+// BloodBath MISC
+//
+@SolidClass base(Target, Targetname) = sentry_detect_laugh : "Laugh sound for Area 15" []
+@SolidClass base(Target, Targetname) = sentry_detect_switch1 : "Switch Sound for Bodies" []
+@SolidClass base(Target, Targetname) = sentry_detect_crypt : "Howling sound for The Crypt (Blood2)" []
+@SolidClass base(Target, Targetname) = exploding_wall : "Exploding Wall"
+[	
+health(integer) : "Health (shootable if > 0)"	skin(choices) : "Skin" : 0 =
+ 	[
+		0: "Grey concrete"
+		1: "Brown concrete"
+		2: "Red/Brown bricks"
+		3: "Rusty Metal"
+		4: "Rotten Wood"
+		5: "Stained Glass"
+		6: "Regular Glass"
+	]
+	cnt(integer) : "Rubble Amt" : 12
+	spawnflags(Flags) =
+	[
+		1 : "Trigger Break" : 0
+		2 : "Regenerates" : 0
+		4 : "BSP clip" : 0
+		8 : "No sound" : 0
+		16 : "No Rubble" : 0
+	]
+]
