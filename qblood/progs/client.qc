@@ -28,6 +28,7 @@ void() player_pain;
 void() player_stand1;
 void (vector org) spawn_tfog;
 void (vector org, entity death_owner) spawn_tdeath;
+void() CTF_PlayerDropFlag;
 
 float   modelindex_eyes, modelindex_player;
 
@@ -486,6 +487,7 @@ void() ClientKill =
 
     Bprint (PRINT_MEDIUM, "Kevorkian approves!\n");
     sound (self, CHAN_AUTO, "thevoice/vo5.wav", 1, ATTN_NORM);
+    CTF_PlayerDropFlag ();
     set_suicide_frame ();
     self.modelindex = modelindex_player;
     #ifdef QUAKEWORLD
@@ -1496,6 +1498,7 @@ void() ClientDisconnect =
     Bprint (PRINT_HIGH, ftos(self.frags));
     Bprint (PRINT_HIGH, " kills\n");
     sound (self, CHAN_BODY, "thevoice/vo2.wav", 1, ATTN_NONE);
+    CTF_PlayerDropFlag ();
     set_suicide_frame ();
 };
 

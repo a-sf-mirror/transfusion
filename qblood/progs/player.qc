@@ -640,44 +640,42 @@ void() PlayerDie =
 
     self.items = self.items - (self.items & IT_INVISIBILITY);
 
-    #ifdef QUAKEWORLD
-    if (self.super_damage_finished > 0)
-    #else
-    if (self.super_damage_finished > 0 && (deathmatch || coop))
-    #endif
+    #ifndef QUAKEWORLD
+    if (deathmatch || coop)
     {
-        DropQuad (self.super_damage_finished - time);
-        Bprint (PRINT_LOW, self.netname);
-        Bprint (PRINT_LOW, " lost a Guns Akimbo with ");
-        s = ftos(rint(self.super_damage_finished - time));
-        Bprint (PRINT_LOW, s);
-        Bprint (PRINT_LOW, " seconds remaining\n");
-    }
+    #endif
+        if (self.super_damage_finished > 0)
+        {
+            DropQuad (self.super_damage_finished - time);
+            Bprint (PRINT_LOW, self.netname);
+            Bprint (PRINT_LOW, " lost a Guns Akimbo with ");
+            s = ftos(rint(self.super_damage_finished - time));
+            Bprint (PRINT_LOW, s);
+            Bprint (PRINT_LOW, " seconds remaining\n");
+        }
 
-    #ifdef QUAKEWORLD
-    if (self.invisible_finished > 0)
-    #else
-    if (self.invisible_finished > 0 && (deathmatch || coop))
-    #endif
-    {
-        Bprint (PRINT_LOW, self.netname);
-        Bprint (PRINT_LOW, " lost a cloak with ");
-        s = ftos(rint(self.invisible_finished - time));
-        Bprint (PRINT_LOW, s);
-        Bprint (PRINT_LOW, " seconds remaining\n");
-        DropRing (self.invisible_finished - time);
+        if (self.invisible_finished > 0)
+        {
+            Bprint (PRINT_LOW, self.netname);
+            Bprint (PRINT_LOW, " lost a cloak with ");
+            s = ftos(rint(self.invisible_finished - time));
+            Bprint (PRINT_LOW, s);
+            Bprint (PRINT_LOW, " seconds remaining\n");
+            DropRing (self.invisible_finished - time);
+        }
+
+        DropBackpack();
+
+        CTF_PlayerDropFlag ();
+    #ifndef QUAKEWORLD
     }
+    #endif
 
     self.invisible_finished = 0;    // don't die as eyes
     self.invincible_finished = 0;
     self.super_damage_finished = 0;
     self.radsuit_finished = 0;
     self.modelindex = modelindex_player;    // don't use eyes
-
-    #ifndef QUAKEWORLD
-    if (deathmatch || coop)
-    #endif
-        DropBackpack();
 
     self.weaponmodel="";
     self.view_ofs = '0 0 -8';

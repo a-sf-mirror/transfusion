@@ -197,8 +197,6 @@ void() CTF_FlagTouch =
             Bprint (PRINT_HIGH, ftos (team2score));
             Bprint (PRINT_HIGH, "\n");
 
-            other.items = other.items - (other.items & (IT_KEY1 | IT_KEY2));
-
             sound (other, CHAN_VOICE, self.noise2, 1, ATTN_NONE);
 
             // other gets another 10 frag bonus
@@ -304,6 +302,24 @@ void(entity flg) TeamDropFlag =
 };
 
 
+void() CTF_PlayerDropFlag =
+{
+    local string kn;
+    local entity e;
+
+    if (!(self.items2 & ITEM_ENEMY_FLAG))
+        return;
+    if (self.team == TEAM_COLOR1)
+        kn = "item_flag_team2";
+    else
+        kn = "item_flag_team1";
+    self.items2 = self.items2 - ITEM_ENEMY_FLAG;
+    e = find(world, classname, kn);
+    if (e != world)
+        TeamDropFlag (e);
+};
+
+
 void() CTF_FlagThink =
 {
     local entity e;
@@ -317,8 +333,8 @@ void() CTF_FlagThink =
         return; // just sitting around waiting to be picked up
 
     if (self.cnt == FLAG_DROPPED) {
-        if (time - self.ltime > TEAM_CAPTURE_FLAG_RETURN_TIME)
-            //TeamCaptureReturnFlag(self);  // <===================== TODO
+        if (time - self.super_time > TEAM_CAPTURE_FLAG_RETURN_TIME)
+            TeamCaptureReturnFlag(self);
         return;
     }
 
@@ -416,7 +432,6 @@ void() item_flag_team1 =
     self.noise2 = "thevoice/8000.wav";
 
     self.team = TEAM_COLOR1;
-    self.items = IT_KEY1;
     self.skin = 0;
     self.nextthink = time + 0.2;    // items start after other solids
     self.think = place_flag;
@@ -444,7 +459,6 @@ void() item_flag_team2 =
     self.noise2 = "thevoice/8001.wav";
 
     self.team = TEAM_COLOR2;
-    self.items = IT_KEY2;
     self.skin = 1;
     self.nextthink = time + 0.2;    // items start after other solids
     self.think = place_flag;
