@@ -799,7 +799,7 @@ void() W_FireLightning =
 
     if (self.t_width < time)
     {
-        sound (self, CHAN_WEAPON, "weapons/tesla/tessnght.wav", 1, ATTN_NORM);
+        sound (self, CHAN_WEAPON, "weapons/tesla/tessngfr.wav", 1, ATTN_NORM);
         self.t_width = time + 0.6;
     }
     #ifndef QUAKEWORLD

@@ -808,8 +808,8 @@ void() weapon_lightning =
 */
     precache_sound ("weapons/tesla/teslaz~1.wav");
 //    precache_sound ("weapons/tesla/teslaz~2.wav");
-//    precache_sound ("weapons/tesla/tessngfr.wav");
-    precache_sound ("weapons/tesla/tessnght.wav");  // Hit
+    precache_sound ("weapons/tesla/tessngfr.wav");
+//    precache_sound ("weapons/tesla/tessnght.wav");  // Hit
 
     StartItem ();
 };
