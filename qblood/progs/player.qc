@@ -267,11 +267,9 @@ local float     rs;
     if (self.health < 0)
         return;
 
-    // FIXME: telefragging generates two sounds - the 'squish' of the telefragged, and the evil laugh of the one telerfragging - how do we do both?
-    // below is the evil laugh - need to put in squish still - 5.2.2001 dturner
     if (damage_attacker.classname == "teledeath")
     {
-        sound (self, CHAN_VOICE, "player/play1115.wav", 1, ATTN_NONE);
+        sound (self, CHAN_AUTO, "butcher/fzomdie3.wav", 1, ATTN_NONE);
         return;
     }
 
@@ -289,8 +287,6 @@ local float     rs;
 // slime pain sounds
     if (self.watertype == CONTENT_SLIME)
     {
-        // FIX ME   put in some steam here
-        // dturner: 4/11/2001 - closest we got is butcher stomach acid
         if (random() > 0.5)
             sound (self, CHAN_VOICE, "butcher/acidhit1.wav", 1, ATTN_NORM);
         else

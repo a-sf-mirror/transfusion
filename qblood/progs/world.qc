@@ -228,7 +228,7 @@ void() worldspawn =
     precache_sound ("foley/gasp.wav");            // gasping for air
     precache_sound ("foley/undchoke.wav");        // taking breath
     precache_sound ("bludbath/message.wav");    // talk
-    precache_sound ("player/play1115.wav");    // telefrag - evil laugh
+//    precache_sound ("player/play1115.wav");    // telefrag - evil laugh
     precache_sound ("misc/r_tele1.wav");        // teleport sounds
     precache_sound ("misc/r_tele2.wav");    // these are all qbasetry.wav
     precache_sound ("misc/r_tele3.wav");

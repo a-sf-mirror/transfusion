@@ -314,34 +314,34 @@ float   DAMAGE_NO               = 0;
 float   DAMAGE_YES              = 1;
 float   DAMAGE_AIM              = 2;
 
-// items
-float   IT_AXE                  = 4096;
-float   IT_SHOTGUN              = 1;
-float   IT_SUPER_SHOTGUN        = 2;
-float   IT_NAILGUN              = 4;
-float   IT_SUPER_NAILGUN        = 8;
-float   IT_GRENADE_LAUNCHER     = 16;
-float   IT_ROCKET_LAUNCHER      = 32;
-float   IT_LIGHTNING            = 64;
-float   IT_PROXIMITY_BOMB       = 128;
+// items (32 max; each value must be a power of 2)
+float   IT_AXE                  = 4096;     // 13 - pitchfork
+float   IT_SHOTGUN              = 1;        // 1  - flaregun
+float   IT_SUPER_SHOTGUN        = 2;        // 2  - sawed-off
+float   IT_NAILGUN              = 4;        // 3  - tommy gun
+float   IT_ROCKET_LAUNCHER      = 8;        // 4  - napalm launcher
+float   IT_GRENADE_LAUNCHER     = 16;       // 5  - tnt
+float   IT_SUPER_NAILGUN        = 32;       // 6  - spray can
+float   IT_LIGHTNING            = 64;       // 7  - tesla cannon
+float   IT_PROXIMITY_BOMB       = 128;      // 8  - proximity bomb
 
-float   IT_SHELLS               = 256;
-float   IT_NAILS                = 512;
-float   IT_ROCKETS              = 1024;
-float   IT_CELLS                = 2048;
+float   IT_SHELLS               = 256;      // 9  - shot shells
+float   IT_NAILS                = 512;      // 10 - drum of  bullets
+float   IT_ROCKETS              = 1024;     // 11 - gasoline can
+float   IT_CELLS                = 2048;     // 12 - tesla charge
 
-float   IT_ARMOR1               = 8192;
-float   IT_ARMOR2               = 16384;
-float   IT_ARMOR3               = 32768;
-float   IT_SUPERHEALTH          = 65536;
+float   IT_ARMOR1               = 8192;     // 14 - basic armor
+float   IT_ARMOR2               = 16384;    // 15 - fire armor
+float   IT_ARMOR3               = 32768;    // 16 - spirit armor
+float   IT_SUPERHEALTH          = 65536;    // 17 - life essence
 
-float   IT_KEY1                 = 131072;
-float   IT_KEY2                 = 262144;
+float   IT_KEY1                 = 131072;   // 18 - skull
+float   IT_KEY2                 = 262144;   // 19 - dagger
 
-float   IT_INVISIBILITY         = 524288;
-float   IT_INVULNERABILITY      = 1048576;
-float   IT_SUIT                 = 2097152;
-float   IT_QUAD                 = 4194304;
+float   IT_INVISIBILITY         = 524288;   // 20 - cloak
+float   IT_INVULNERABILITY      = 1048576;  // 21 - deathmask
+float   IT_SUIT                 = 2097152;  // 22 - diving suit
+float   IT_QUAD                 = 4194304;  // 23 - guns akimbo
 
 // point content values
 

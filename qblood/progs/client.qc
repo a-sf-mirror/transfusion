@@ -1022,7 +1022,7 @@ void() PlayerJump =
 
     #ifndef QUAKEWORLD
     self.flags = self.flags - FL_ONGROUND;  // don't stairwalk
-    self.velocity_z = self.velocity_z + 270;
+    self.velocity_z = self.velocity_z + 450;  // quake = 270
     #endif
 };
 
@@ -1401,11 +1401,14 @@ void() PlayerPostThink =
     if (self.deadflag)
         return;
 
-// check to see if player landed and play landing sound
+    // check to see if player landed and play landing sound
+    // no damage taken if not > 300 units high
     if ((self.jump_flag < -300) && (self.flags & FL_ONGROUND) && (self.health > 0))
     {
         if (self.watertype == CONTENT_WATER)
             sound (self, CHAN_BODY, "foley/lndwater.wav", 1, ATTN_NORM);
+
+        // if higher than 300 units, do 5 damage, and set the falling death flag if player is killed
         else if (self.jump_flag < -650)
         {
             T_Damage (self, world, world, 5);

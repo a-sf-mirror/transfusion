@@ -84,6 +84,8 @@ void() W_Precache =
     precache_sound ("weapons/tnt/proxdet.wav");  // proximity bomb triggered
     precache_sound ("weapons/tnt/tnttoss.wav");  // bounce sound
 /*
+    precache_sound ("weapons/tnt/remdet.wav");   // remote armed
+    precache_sound ("weapons/tnt/remfire.wav");  // remote set off
     precache_sound ("weapons/tnt/zipclose.wav");
     precache_sound ("weapons/tnt/ziplight.wav");
     precache_sound ("weapons/tnt/zipopen.wav");
@@ -154,7 +156,7 @@ float() crandom =
 
 /*
 ================
-W_FireAxe
+W_FireAxe - Pitchfork
 ================
 */
 void() W_FireAxe =
@@ -476,7 +478,7 @@ void(float shotcount, vector dir, vector spread) FireBullets =
 
 /*
 ================
-W_FireShotgun
+W_FireShotgun - Flaregun
 ================
 */
 void() W_FireShotgun =
@@ -495,7 +497,7 @@ void() W_FireShotgun =
     self.currentammo = self.ammo_shells = self.ammo_shells - 1;
 
     dir = aim (self, 100000);
-    FireBullets (6, dir, '0.04 0.04 0');
+    FireBullets (1, dir, '0.04 0.04 0');
 };
 
 
@@ -566,7 +568,7 @@ void() SpawnShell =
 
 /*
 ================
-W_FireSuperShotgun
+W_FireSuperShotgun - Sawed Off
 ================
 */
 void() W_FireSuperShotgun =
@@ -592,7 +594,7 @@ void() W_FireSuperShotgun =
 
     dir = aim (self, 100000);
     SpawnShell (); SpawnShell ();  // 2 shells dropped
-    FireBullets (14, dir, '0.14 0.08 0');
+    FireBullets (30, dir, '0.14 0.08 0');  // quake = 14 bullets
 };
 
 
@@ -605,12 +607,20 @@ ROCKETS
 */
 
 #ifndef QUAKEWORLD
-void()  s_explode1  =   [0,     s_explode2] {};
-void()  s_explode2  =   [1,     s_explode3] {};
-void()  s_explode3  =   [2,     s_explode4] {};
-void()  s_explode4  =   [3,     s_explode5] {};
-void()  s_explode5  =   [4,     s_explode6] {};
-void()  s_explode6  =   [5,     SUB_Remove] {};
+// 13 frames for Blood's explosion
+void() s_explode1  = [0,  s_explode2]  {};
+void() s_explode2  = [1,  s_explode3]  {};
+void() s_explode3  = [2,  s_explode4]  {};
+void() s_explode4  = [3,  s_explode5]  {};
+void() s_explode5  = [4,  s_explode6]  {};
+void() s_explode6  = [5,  s_explode7]  {};
+void() s_explode7  = [6,  s_explode8]  {};
+void() s_explode8  = [7,  s_explode9]  {};
+void() s_explode9  = [8,  s_explode10] {};
+void() s_explode10 = [9,  s_explode11] {};
+void() s_explode11 = [10, s_explode12] {};
+void() s_explode12 = [11, s_explode13] {};
+void() s_explode13 = [12, SUB_Remove]  {};
 
 void() BecomeExplosion =
 {
@@ -643,7 +653,7 @@ void() T_MissileTouch =
         return;
     }
 
-    damg = 100 + random()*20;
+    damg = 70 + random()*20; // quake = 100 + random()*20
 
     if (other.health)
     {
@@ -863,7 +873,7 @@ void() W_FireLightning =
     WriteCoord (MSG_BROADCAST, trace_endpos_z);
     #endif
 
-    LightningDamage (self.origin, trace_endpos + v_forward*4, self, 30);
+    LightningDamage (self.origin, trace_endpos + v_forward*4, self, 20); //quake = 30
 };
 
 
@@ -1137,7 +1147,7 @@ void() W_FireSpikes =
     self.attack_finished = time + 0.2;
     self.currentammo = self.ammo_nails = self.ammo_nails - 1;
     dir = aim (self, 1000);
-    launch_spike (self.origin + '0 0 16' + v_right * 4 + v_forward * 4, dir);
+    launch_spike (self.origin + '0 0 16' + v_right * 8 + v_forward * 4, dir);
 
     #ifdef QUAKEWORLD
     msg_entity = self;
@@ -1500,8 +1510,8 @@ void() W_ChangeWeapon =
     }
     else if (self.impulse == 5)
     {
-        fl = IT_SUPER_NAILGUN;
-        if (self.ammo_nails < 2)
+        fl = IT_ROCKET_LAUNCHER;
+        if (self.ammo_rockets < 1)
             am = 1;
     }
     else if (self.impulse == 6)
@@ -1512,8 +1522,8 @@ void() W_ChangeWeapon =
     }
     else if (self.impulse == 7)
     {
-        fl = IT_ROCKET_LAUNCHER;
-        if (self.ammo_rockets < 1)
+        fl = IT_SUPER_NAILGUN;
+        if (self.ammo_nails < 2)
             am = 1;
     }
     else if (self.impulse == 8)
@@ -1549,7 +1559,7 @@ void() W_ChangeWeapon =
         else
         {
             self.weapon = IT_GRENADE_LAUNCHER;
-            Sprint (self, PRINT_MEDIUM, "Normal grenades selected.\n");
+            Sprint (self, PRINT_MEDIUM, "TNT Bundle selected.\n");
         }
     }
     else
