@@ -486,6 +486,12 @@ void() sentry_detect_crypt =
     sentry_detect_init ("misc/b2_crypt.wav");
 };
 
+// BloodBath generic Thunder sound triggered in any map desired
+void() sentry_detect_thunder =
+{
+    sentry_detect_init ("ambience/thunder3.wav");
+};
+
 
 /*~>~<~>~<~>~<~>~<~>~<~>~<~>~<~>~<~>~<~>~<~>~<~>~<~>~<~>~<~>~<~>~<~>~<~>
 ~>~<~>~<~>~<~>~<~>~<~>~<~>~<~>~<~>~<~>~<~>~<~>~<~>~<~>~<~>~<~>~<~>~<~>~*/
@@ -908,7 +914,7 @@ void() ambient_comp_hum =
 */
 void() ambient_thunder =
 {
-    precache_sound ("ambience/amb18.wav"); // not really thunder anymore
+    precache_sound ("ambience/amb18.wav"); // is now a whooshing sound
     ambientsound (self.origin, "ambience/amb18.wav", 1, ATTN_STATIC);
 };
 
@@ -1620,13 +1626,6 @@ void() ambient_laugh =
     ambientsound (self.origin, "ambience/laugh.wav", 1, ATTN_STATIC);
 };
 
-/*QUAKED ambient_thunder3 (0.3 0.1 0.6) (-10 -10 -8) (10 10 8)
-*/
-void() ambient_thunder3 =
-{
-    precache_sound ("ambience/thunder3.wav");
-    ambientsound (self.origin, "ambience/thunder3.wav", 1, ATTN_STATIC);
-};
 
 /*QUAKED ambient_chant3lp (0.3 0.1 0.6) (-10 -10 -8) (10 10 8)
 */
