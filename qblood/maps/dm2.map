@@ -1,6 +1,6 @@
 {
 "classname" "worldspawn"
-"message" "Power!\n by JoeV [I Live...AGAIN]\n  http://www.planetblood.com/qblood"
+"message" "Power!\n by JoeV [I Live...AGAIN]\n  Made For Transfusion"
 "sounds" "6"
 "sky" "night1"
 "wad" "d:\bloodbath\bloodbath.wad;d:\bloodbath\feb2.wad;d:\bloodbath\fake_transparencies.wad"
@@ -1725,7 +1725,7 @@
 }
 {
 "classname" "item_artifact_super_damage"
-"origin" "-512 -960 -136"
+"origin" "-512 -960 -128"
 }
 {
 "classname" "item_spikes"

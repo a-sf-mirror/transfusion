@@ -1,7 +1,7 @@
 {
 "classname" "worldspawn"
 "sounds" "1"
-"message" "Area15 From Blood 2\n by David Kelvin\n Remade by JoeV [I Live...AGAIN]\n  http://www.planetblood.com/qblood"
+"message" "Area15 From B2\n by David Kelvin\n Remade by JoeV [I Live...AGAIN]\n  Made For Transfusion"
 "light" "0"
 "sky" "desrt1"
 "wad" "d:\bloodbath\bloodbath.wad;d:\bloodbath\feb2.wad;d:\bloodbath\fake_transparencies.wad"
@@ -3130,7 +3130,7 @@
 }
 {
 "classname" "item_flag_team1"
-"origin" "616 -448 72"
+"origin" "704 -464 16"
 }
 {
 "classname" "item_flag_team2"

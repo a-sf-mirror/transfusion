@@ -1,6 +1,6 @@
 {
 "classname" "worldspawn"
-"message" "The Tower\n by JoeV [I Live...AGAIN]\n http://www.planetblood.com/qblood"
+"message" "The Tower\n by JoeV [I Live...AGAIN]\n Made For Transfusion"
 "sounds" "7"
 "wad" "d:\bloodbath\bloodbath.wad;d:\bloodbath\feb2.wad;d:\bloodbath\fake_transparencies.wad"
 {
@@ -3420,7 +3420,7 @@
 }
 {
 "classname" "ambient_amb8"
-"origin" "-200 -680 362"
+"origin" "-192 -704 362"
 }
 {
 "classname" "trigger_teleport"
@@ -3562,4 +3562,8 @@
 "style" "1"
 "_color" "255 153 102"
 "origin" "216 -812 268"
+}
+{
+"classname" "item_armorInv"
+"origin" "-160 -688 352"
 }

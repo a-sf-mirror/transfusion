@@ -1,6 +1,6 @@
 {
 "classname" "worldspawn"
-"message" "Crypt From Blood 2\n by Jay Wilson\n Remade by JoeV [I Live...AGAIN]\n  http://www.planetblood.com/qblood"
+"message" "Crypt From B2\n by Jay Wilson\n Remade by JoeV [I Live...AGAIN]\n  Made For Transfusion"
 "sky" "sky4"
 "wad" "d:\bloodbath\bloodbath.wad;d:\bloodbath\feb2.wad;d:\bloodbath\fake_transparencies.wad"
 {
@@ -7208,4 +7208,5 @@
 }
 {
 "classname" "sentry_detect_crypt"
+"origin" "1408 1440 240"
 }

@@ -1,6 +1,6 @@
 {
 "classname" "worldspawn"
-"message" "Bloodkeep From Blood 2\n by David Kelvin\n Remade by JoeV [I Live...AGAIN]\n  http://www.planetblood.com/qblood"
+"message" "Bloodkeep From B2\n by David Kelvin\n Remade by JoeV [I Live...AGAIN]\n  Made For Transfusion"
 "wad" "d:\bloodbath\bloodbath.wad;d:\bloodbath\feb2.wad;d:\bloodbath\fake_transparencies.wad"
 {
 ( 0 0 128 ) ( 0 -64 128 ) ( -128 -64 128 ) TILE0281 0 0 0 1.000000 1.000000
