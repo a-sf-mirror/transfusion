@@ -197,6 +197,7 @@ void() Impulses_Observer =
                     self.team = TEAM_COLOR2;
                     centerprint (self, "You have joined the BLUE team");
                 }
+                self.team_save = self.team;  // backup the team of the player
 
                 // ...and join the game
                 self.observer = 0;

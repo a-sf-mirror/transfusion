@@ -989,6 +989,10 @@ void() PlayerPreThink =
     local   float   mspeed, aspeed;
     local   float   r;
 
+    // Quake allows players to change "team" manually (thanks to the console command "color")
+    // so we must restore it every turn to avoid cheaters
+    self.team = self.team_save;
+
     // "impulse 12" and "+use" are aliases for "+button3"
     self.button3 = (self.button3 & 1) | (self.button1 * 2);
     if (self.impulse == 12)

@@ -365,6 +365,8 @@ float map_cycle;
 .void()     reset;          // Used by the warmup code. Most of the time, it resets
                             // the entity to its original state or just remove it
 
+.float      team_save;      // Backup of the "team" property
+
 // QuakeC extensions
 .float      button3;        // altfire; DP_INPUTBUTTONS extension
 .float      alpha;          // controls opacity of the entity (0.0 or 1.0 is solid, -1 is invisible); DP_ENT_ALPHA extension
