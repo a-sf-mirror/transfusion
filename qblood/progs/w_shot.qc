@@ -1,4 +1,4 @@
-/*  Copyright (C) 2001  Mathieu Olivier
+/*  Copyright (C) 2001-2002  Mathieu Olivier
 
     This program is free software; you can redistribute it and/or modify
     it under the terms of the GNU General Public License as published by
@@ -54,8 +54,11 @@ $frame shot_holster1 shot_holster2 shot_holster3 shot_holster4
 // Akimbo model
 $modelname v_ashot2
 
-// fire
-$frame ashot_fire1 ashot_fire2 ashot_fire3 ashot_fire4 ashot_fire5
+// idle
+$frame ashot_idle1
+
+// fire (1 & 3 and 2 & 4 are the same)
+$frame ashot_fire1 ashot_fire2 ashot_fire3 ashot_fire4
 
 // draw
 $frame ashot_draw1 ashot_draw2 ashot_draw3 ashot_draw4
@@ -86,20 +89,11 @@ void() player_shot2 = [$attack2, player_run  ]
     }
 };
 
-// Altfire shot
-void() player_altshot1 = [$attack1, player_altshot2   ] { self.weaponframe = $shot_alt1; muzzleflash (); };
-void() player_altshot2 = [$attack1, player_altshot3   ] { self.weaponframe = $shot_alt2; };
-void() player_altshot3 = [$attack2, player_reloadshot1]
-{
-    self.weaponframe = $shot_alt3;
-    self.attack_finished = time + 0.6;
-};
-
 // Akimbo shot
-void() player_akshot1 = [$attack1, player_akshot2] { self.weaponframe = $ashot_fire1; };
-void() player_akshot2 = [$attack1, player_akshot3] { self.weaponframe = $ashot_fire2; muzzleflash (); Shot_Fire (); };
-void() player_akshot3 = [$attack2, player_akshot4] { self.weaponframe = $ashot_fire3; };
-void() player_akshot4 = [$attack2, player_akshot5] { self.weaponframe = $ashot_fire4; muzzleflash (); Shot_Fire (); };
+void() player_akshot1 = [$attack1, player_akshot2] { self.weaponframe = $ashot_fire1; muzzleflash (); Shot_Fire (); };
+void() player_akshot2 = [$attack1, player_akshot3] { self.weaponframe = $ashot_fire2; };
+void() player_akshot3 = [$attack2, player_akshot4] { self.weaponframe = $ashot_fire3; muzzleflash (); Shot_Fire (); };
+void() player_akshot4 = [$attack2, player_akshot5] { self.weaponframe = $ashot_fire4; };
 void() player_akshot5 = [$attack1, player_run    ]
 {
     // If we don't have enough ammo anymore, drop the akimbo mode for now
@@ -108,8 +102,6 @@ void() player_akshot5 = [$attack1, player_run    ]
         Shot_UpdateView ();
         self.weaponframe = 0;
     }
-    else
-        self.weaponframe = $ashot_fire5;
 };
 
 // Normal draw
@@ -133,13 +125,10 @@ void() player_akshotdraw4 = [$attack1, player_run        ] { self.weaponframe = 
 
 // Akimbo holster
 void() player_akshotholster1 = [$attack1, player_akshotholster2] { self.weaponframe = $ashot_holster1; };
-void() player_akshotholster2 = [$attack1, player_akshotholster3] { self.weaponframe = $ashot_holster2; };
-void() player_akshotholster3 = [$attack1, player_akshotholster4] { self.weaponframe = $ashot_holster3; };
-void() player_akshotholster4 = [$attack1, player_akshotholster5] { self.weaponframe = $ashot_holster4; };
-void() player_akshotholster5 = [$attack1, player_akshotholster6] { self.weaponframe = $ashot_holster5; };
-void() player_akshotholster6 = [$attack1, player_akshotholster7] { self.weaponframe = $ashot_holster6; };
-void() player_akshotholster7 = [$attack1, player_akshotholster8] { self.weaponframe = $ashot_holster7; };
-void() player_akshotholster8 = [$attack1, player_run           ] { W_DrawWeapon (self.newweapon); };
+void() player_akshotholster2 = [$attack1, player_akshotholster3] { self.weaponframe = $ashot_holster3; };
+void() player_akshotholster3 = [$attack1, player_akshotholster4] { self.weaponframe = $ashot_holster5; };
+void() player_akshotholster4 = [$attack1, player_akshotholster5] { self.weaponframe = $ashot_holster7; };
+void() player_akshotholster5 = [$attack1, player_run           ] { W_DrawWeapon (self.newweapon); };
 
 
 //============================================================================
@@ -196,6 +185,9 @@ void() Shot_Fire =
     local float nbshots;
     local vector dir;
     local vector spread;
+
+    if (! self.ammo_shells)
+        return;
 
     if (self.player_state == PS_ALTFIRE && (self.currentammo & 1) != 1)
     {
@@ -272,16 +264,11 @@ void() Shot_Draw =
 
     Shot_UpdateView ();
 
+    self.attack_finished = time + 0.5;
     if (self.items & IT_GUNS_AKIMBO)
-    {
-        self.attack_finished = time + 0.5;
         player_akshotdraw1 ();
-    }
     else
-    {
-        self.attack_finished = time + 0.5;
         player_shotdraw1 ();
-    }
 };
 
 
@@ -294,16 +281,11 @@ Holster code for the sawed-off
 */
 void() Shot_Holster =
 {
+    self.attack_finished = time + 0.5;
     if (self.items & IT_GUNS_AKIMBO)
-    {
-        self.attack_finished = time + 0.9;
         player_akshotholster1 ();
-    }
     else
-    {
-        self.attack_finished = time + 0.6;
         player_shotholster1 ();
-    }
 };
 
 

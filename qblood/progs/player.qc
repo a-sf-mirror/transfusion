@@ -492,6 +492,16 @@ void() PlayerDie =
     // I may not die alone...
     W_ActivateRemoteBombs ();
 
+    // Drop any lighted bomb/can
+    if (self.weapon == IT_TNT || self.weapon == IT_SPRAY_CAN)
+    {
+        if (self.player_state == PS_HOLD_FIRE || self.charge)
+        {
+            self.charge = 0;
+            Bomb_Fire ();
+        }
+    }
+
     self.items = self.items - (self.items & IT_INVISIBILITY);
 
     if (self.akimbo_finished > 0)

@@ -1483,6 +1483,10 @@ void() weapon_touch =
 
     else if (self.classname == "weapon_lifeleech")
     {
+        // If we own a Life Leech in sentry mode
+        if (other.leech_sentry)
+            return;
+
         if (leave && (other.items & IT_LIFE_LEECH) )
             return;
         new = IT_LIFE_LEECH;

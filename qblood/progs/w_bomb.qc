@@ -1,4 +1,4 @@
-/*  Copyright (C) 2001  Mathieu Olivier
+/*  Copyright (C) 2001-2002  Mathieu Olivier
 
     This program is free software; you can redistribute it and/or modify
     it under the terms of the GNU General Public License as published by
@@ -854,24 +854,26 @@ void() Bomb_Fire =
     // set newmis speed
     makevectors (self.v_angle);
 
-    // TNT Charge/throw meter power.
-    local   float   mspeed, mup;
-
-    mspeed = 200 + (self.charge * 50);
-    if (mspeed < 300)
-        mspeed = 300;  // don't throw the grenade on our own feet !
-    mup = mspeed / 1.75;
-
-    if (self.v_angle_x)
-        newmis.velocity = v_forward * mspeed + v_up * mup + crandom () * v_right * 10 + crandom () * v_up * 10;
-    else
+    if (self.charge)
     {
-        newmis.velocity = aim(self, 10000);
-        newmis.velocity = newmis.velocity * mspeed;
-        newmis.velocity_z = mup;
-    }
+        // TNT Charge/throw meter power.
+        local   float   mspeed, mup;
 
-    if (!self.charge)
+        mspeed = 200 + (self.charge * 50);
+        if (mspeed < 300)
+            mspeed = 300;  // don't throw the grenade on our own feet !
+        mup = mspeed / 1.75;
+
+        if (self.v_angle_x)
+            newmis.velocity = v_forward * mspeed + v_up * mup + crandom () * v_right * 10 + crandom () * v_up * 10;
+        else
+        {
+            newmis.velocity = aim(self, 10000);
+            newmis.velocity = newmis.velocity * mspeed;
+            newmis.velocity_z = mup;
+        }
+    }
+    else
         newmis.velocity = '0 0 0';
 
     newmis.touch = GrenadeTouch;

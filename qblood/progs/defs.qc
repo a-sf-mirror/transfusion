@@ -355,6 +355,7 @@ float team2score;
 
 .float      newweapon;      // used during the draw/holster weapon process
 
+.entity     leech_sentry;
 
 //
 // Fire

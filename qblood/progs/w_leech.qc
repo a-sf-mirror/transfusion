@@ -1,4 +1,4 @@
-/*  Copyright (C) 2001 Dave Turner
+/*  Copyright (C) 2001-2002  Dave Turner
 
     This program is free software; you can redistribute it and/or modify
     it under the terms of the GNU General Public License as published by
@@ -237,7 +237,7 @@ void() Leech_AltBallTouch =
     #endif
 
     // Switch ownership from the Life Leech itself to the LL owner
-    self.owner = self.owner.owner;
+    self.owner = self.owner.enemy;
 
     if (pointcontents(self.origin) == CONTENT_SKY)
     {
@@ -267,6 +267,7 @@ void() Leech_Think =
     local entity ent, bestent;
     local vector ballorigin;
 
+    self.owner = world;  // the LL must be able to touch its owner
     self.nextthink = time + 0.75;
     ballorigin = self.origin + '0 0 45';
 
@@ -281,7 +282,7 @@ void() Leech_Think =
         {
             // If he's closer than our current choice
             diff = vlen (ent.origin - ballorigin);
-            if (diff < bestdiff && ent != self.owner)
+            if (diff < bestdiff && ent != self.enemy)
             {
                 // If he's visible
                 traceline (ballorigin, ent.origin, FALSE, self);
@@ -321,6 +322,42 @@ void() Leech_Think =
 
 /*
 ==================
+Leech_Die
+
+Die function for a LL sentry
+==================
+*/
+void() Leech_Die =
+{
+    self.enemy.leech_sentry = world;
+    remove (self);
+};
+
+
+/*
+==================
+Leech_Touch
+
+Touch function for a LL sentry
+==================
+*/
+void() Leech_Touch =
+{
+    // If it's the owner, he takes back his Life Leech
+    if (self.enemy == other)
+    {
+        other.items = other.items + IT_LIFE_LEECH;
+        other.leech_sentry = world;
+        other.ammo_leech = other.ammo_leech + self.ammo_leech;
+        sound (other, CHAN_ITEM, "items/weaponup.wav", 1, ATTN_NORM);
+        remove (self);
+    }
+
+    SUB_SolidTouch ();
+};
+
+/*
+==================
 Leech_Drop
 
 Drop the Life Leech as a solid staff (altfire)
@@ -337,28 +374,34 @@ void() Leech_Drop =
     setmodel (item, "progs/g_leech.mdl");
     setsize (item, '-5 -5 0', '5 7 41');
 
-    item.owner = self;
+    item.owner = self;             // we don't want to trigger the touch function yet
+    item.enemy = self;             // we can't use "owner" because the owner of an entity is never clipped against it
     item.solid = SOLID_BBOX;
     item.takedamage = DAMAGE_AIM;
     item.health = 300;
 
-    item.origin = self.origin + '0 0 12';
+    item.origin = self.origin + '0 0 12' + v_forward * 8;
     item.velocity = aim (self, 1000) * 50;
     item.velocity_z = 150;
     item.movetype = MOVETYPE_TOSS;
 
     // Sentry mode
-    item.nextthink = time + 0.75;
+    item.nextthink = time + 1.5;
     item.think = Leech_Think;
-
-    item.touch = SUB_SolidTouch;
-    item.th_die = SUB_Remove;
+    item.touch = Leech_Touch;
+    item.th_die = Leech_Die;
 
     // Dropping it requiers 25 ammo/HP
     if (self.ammo_leech < 25)
+    {
         T_Damage (self, world, world, 25 - self.ammo_leech, DF_MIND, "leech");
+        item.ammo_leech = 0;
+    }
+    else
+        item.ammo_leech = self.ammo_leech - 25;
     self.currentammo = self.ammo_leech = 0;
     self.items = self.items - self.weapon;
+    self.leech_sentry = item;
 
     // If we're still alive
     if (!self.deadflag)

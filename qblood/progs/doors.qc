@@ -430,8 +430,9 @@ Key doors are allways wait -1.
 */
 
 void() func_door =
-
 {
+    local string sound1, sound2;
+
     precache_sound ("thevoice/squash.wav");
 
     // All key doors make Caleb say "I need a key!"
@@ -461,38 +462,35 @@ void() func_door =
 
     if (self.sounds == 0)
     {
-        self.noise1 = "misc/null.wav";
-        self.noise2 = "misc/null.wav";
+        sound1 = "misc/null.wav";
+        sound2 = "misc/null.wav";
     }
-    if (self.sounds == 1)
+    else if (self.sounds == 1)
     {
-        precache_sound ("doors/qdrclos4.wav");
-        precache_sound ("doors/qairdoor.wav");
-        self.noise1 = "doors/qdrclos4.wav";
-        self.noise2 = "doors/qairdoor.wav";
+        sound1 = "doors/qdrclos4.wav";
+        sound2 = "doors/qairdoor.wav";
     }
-    if (self.sounds == 2)
+    else if (self.sounds == 2)
     {
-        precache_sound ("ambience/qhydro1.wav");
-        precache_sound ("ambience/hydro3.wav");
-        self.noise2 = "ambience/qhydro1.wav";
-        self.noise1 = "ambience/hydro3.wav";
+        sound1 = "ambience/hydro3.wav";
+        sound2 = "ambience/qhydro1.wav";
     }
-    if (self.sounds == 3)
+    else if (self.sounds == 3)
     {
-        precache_sound ("ambience/qwinch2.wav");
-        precache_sound ("doors/qdrclos4.wav");
-        self.noise2 = "ambience/qwinch2.wav";
-        self.noise1 = "doors/qdrclos4.wav";
+        sound1 = "doors/qdrclos4.wav";
+        sound2 = "ambience/qwinch2.wav";
     }
-    if (self.sounds == 4)
+    else if (self.sounds == 4)
     {
-        precache_sound ("doors/doorclos.wav");
-        precache_sound ("doors/dooropen.wav");
-        self.noise1 = "doors/dooropen.wav";
-        self.noise2 = "doors/doorclos.wav";
+        sound1 = "doors/dooropen.wav";
+        sound2 = "doors/doorclos.wav";
     }
-
+    if (self.noise1 == string_null)
+        self.noise1 = sound1;
+    if (self.noise2 == string_null)
+        self.noise2 = sound2;
+    precache_sound (self.noise1);
+    precache_sound (self.noise2);
 
     SetMovedir ();
 
@@ -741,36 +739,39 @@ If a secret door has a targetname, it will only be opened by it's botton or trig
 
 void () func_door_secret =
 {
+    local string sound1, sound2, sound3;
+
     precache_sound ("thevoice/squash.wav");
 
     if (self.sounds == 0)
         self.sounds = 3;
     if (self.sounds == 1)
     {
-        precache_sound ("locks/qlatch2.wav");
-        precache_sound ("doors/rustdoor.wav");
-        precache_sound ("doors/qdrclos4.wav");
-        self.noise1 = "locks/qlatch2.wav";
-        self.noise2 = "doors/rustdoor.wav";
-        self.noise3 = "doors/qdrclos4.wav";
+        sound1 = "locks/qlatch2.wav";
+        sound2 = "doors/rustdoor.wav";
+        sound3 = "doors/qdrclos4.wav";
     }
     if (self.sounds == 2)
     {
-        precache_sound ("doors/qairdoor.wav");
-        precache_sound ("doors/qdrclos4.wav");
-        self.noise2 = "doors/qairdoor.wav";
-        self.noise1 = "doors/qdrclos4.wav";
-        self.noise3 = "doors/qdrclos4.wav";
+        sound1 = "doors/qdrclos4.wav";
+        sound2 = "doors/qairdoor.wav";
+        sound3 = "doors/qdrclos4.wav";
     }
     if (self.sounds == 3)
     {
-        precache_sound ("ambience/qhydro1.wav");
-        precache_sound ("ambience/hydro2.wav");
-        precache_sound ("ambience/hydro3.wav");
-        self.noise2 = "ambience/qhydro1.wav";
-        self.noise1 = "ambience/hydro2.wav";
-        self.noise3 = "ambience/hydro3.wav";
+        sound1 = "ambience/hydro2.wav";
+        sound2 = "ambience/qhydro1.wav";
+        sound3 = "ambience/hydro3.wav";
     }
+    if (self.noise1 == string_null)
+        self.noise1 = sound1;
+    if (self.noise2 == string_null)
+        self.noise2 = sound2;
+    if (self.noise3 == string_null)
+        self.noise3 = sound3;
+    precache_sound (self.noise1);
+    precache_sound (self.noise2);
+    precache_sound (self.noise3);
 
     if (!self.dmg)
         self.dmg = 2;
