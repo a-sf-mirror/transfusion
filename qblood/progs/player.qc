@@ -392,12 +392,10 @@ void() player_rocket6   =[$rockatt6, player_run      ] {self.weaponframe=6;};
 
 void() player_akrocket1   =[$rockatt1, player_akrocket2 ] {self.weaponframe=1; muzzleflash();};
 void() player_akrocket2   =[$rockatt2, player_akrocket3 ] {self.weaponframe=2;};
-void() player_akrocket3   =[$rockatt3, player_akrocket4 ] {self.weaponframe=3;};
-void() player_akrocket4   =[$rockatt2, player_akrocket5 ] {self.weaponframe=4; W_FireRocket ();};
+void() player_akrocket3   =[$rockatt1, player_akrocket4 ] {self.weaponframe=3; W_FireRocket ();};
+void() player_akrocket4   =[$rockatt2, player_akrocket5 ] {self.weaponframe=4;};
 void() player_akrocket5   =[$rockatt3, player_akrocket6 ] {self.weaponframe=5;};
-void() player_akrocket6   =[$rockatt4, player_akrocket7 ] {self.weaponframe=6;};
-void() player_akrocket7   =[$rockatt5, player_akrocket8 ] {self.weaponframe=7;};
-void() player_akrocket8   =[$rockatt6, player_run       ]
+void() player_akrocket6   =[$rockatt5, player_run       ]
 {
     // If we don't have enough ammo anymore, drop the guns akimbo
     if ((self.items & IT_GUNS_AKIMBO) && self.currentammo < 2)
@@ -406,7 +404,7 @@ void() player_akrocket8   =[$rockatt6, player_run       ]
         self.weaponframe = 0;
     }
     else
-        self.weaponframe = 8;
+        self.weaponframe = 6;
 };
 
 

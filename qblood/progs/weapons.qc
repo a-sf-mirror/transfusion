@@ -1623,10 +1623,10 @@ void() W_FireGrenade =
     mspeed = 200 + (self.charge * 50);
     if (mspeed < 300)
         mspeed = 300;  // don't throw the grenade on our feet !
-    mup = mspeed / 2;
+    mup = mspeed / 1.5;
 
     if (self.v_angle_x)
-        newmis.velocity = v_forward*mspeed + v_up * mup + crandom()*v_right*10 + crandom()*v_up*10;
+        newmis.velocity = v_forward*mup + v_up * mup + crandom()*v_right*10 + crandom()*v_up*10;
     else
     {
         newmis.velocity = aim(self, 10000);
@@ -1647,6 +1647,9 @@ void() W_FireGrenade =
 
     newmis.nextthink = 0.1;
     newmis.think     = BombThink;
+
+    setsize (newmis, '-1 -1 -1', '1 1 1');
+    setorigin (newmis, self.origin);
 
     // If we fire a proximity bomb
     if (self.weapon == IT_PROXIMITY_BOMB)
@@ -1676,7 +1679,6 @@ void() W_FireGrenade =
     // Else, it's TNT or a spray can!
     else
     {
-        newmis.avelocity = '300 300 300';
         newmis.style     = self.tnt_type;
         newmis.pausetime = self.tnt_time;
         newmis.think     = DynaThink;
@@ -1685,9 +1687,12 @@ void() W_FireGrenade =
 
         if (self.weapon == IT_SUPER_NAILGUN)
         {
-            newmis.netname = "Lit Spray Can";
-            newmis.dmg     = DMG_SPRAY_CAN;
-            newmis.model   = "progs/grd_aero.mdl";
+            newmis.netname   = "Lit Spray Can";
+            newmis.dmg       = DMG_SPRAY_CAN;
+            newmis.model     = "progs/grd_aero.mdl";
+            newmis.angles    = '0 -300 0';
+            newmis.avelocity = '150 150 150';
+            setorigin (newmis, self.origin + v_forward * 35 + '0 0 20' + v_right * 8);
 
             self.weaponframe = 0;  // reset the weapon view
         }
@@ -1696,13 +1701,11 @@ void() W_FireGrenade =
             newmis.netname = "TNT";
             newmis.dmg     = DMG_TNT;
             newmis.model   = "progs/grd_bund.mdl";
+            newmis.avelocity = '300 300 300';
         }
     }
 
     setmodel (newmis, newmis.model);
-    setsize (newmis, '-1 -1 -1', '1 1 1');
-    setorigin (newmis, self.origin);
-
     // If we have no more dynamite, we "lose" the weapon
     // (expect for remote detonators: we always have the remote)
     if (self.currentammo == 0 && self.weapon != IT_REMOTE_DETONATOR)
@@ -2249,16 +2252,12 @@ void() W_Attack =
     {
         // If we have guns akimbo
         if (self.items & IT_GUNS_AKIMBO)
-        {
             player_akrocket1();
-            self.attack_finished = time + 0.8;
-        }
         else
-        {
             player_rocket1();
-            self.attack_finished = time + 0.5;
-        }
+
         W_FireRocket ();
+        self.attack_finished = time + 0.5;
     }
     else if (self.weapon == IT_LIGHTNING)
     {
