@@ -247,6 +247,19 @@ $frame frame3 0.25
 $frame frame4 0.25
 $framegroupend
 
+$modelname lifeseed
+$cd id1/models/lifeseed
+$base base
+$skin skin
+$framegroupstart
+$frame frame1 0.33
+$frame frame2 0.33
+$frame frame3 0.33
+$frame frame4 0.33
+$frame frame5 0.33
+$frame frame6 0.33
+$framegroupend
+
 $modelname invulner
 $flags 8        // client side rotate
 $cd id1/models/invulner
