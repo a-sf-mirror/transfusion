@@ -5,7 +5,7 @@
 
    <title> qBlood manual
    <author> Mathieu Olivier <tt>&lt;elric@planetblood.com&gt;</tt>
-   <date>v0.0.0 devel, October 25, 2001
+   <date>v?.?.? (development), November 9, 2001
    <abstract>
       This manual covers <url url="http://www.planetblood.com/qblood/"
       name="qBlood"> installation and usage.
@@ -64,6 +64,11 @@
             <item> impulse 13: use the currently selected item<p>
             <item> impulses 14 and 15: select previous/next item<p>
             <item> impulse 16: view the current value of the next armor type<p>
+            <item> impulse 100: add a bot (to the red team if available)<p>
+            <item> impulse 101: add a bot (to the blue team if available)<p>
+            <item> impulse 102: kick a bot<p>
+            <item> impulse 103: botcam mode<p>
+            <item> impulse 104: waypoint edit mode<p>
             <item> impulse 141: identify the player you're aiming at<p>
          </itemize>
 
