@@ -235,13 +235,25 @@ void() PlaceObject =
         return;
     }
 
-    // If there's no spawn flag, make the object static
+    // If there's no spawn flag and no animation, make the object static
     // (changes or interactions are then impossible, but as a consequence
     // the object has virtually no cost from the server point of view)
-    if (!self.spawnflags)
+    if (!self.spawnflags && !self.think1)
+    {
         makestatic (self);
-    else
-        self.touch = SUB_SolidTouch;
+        return;
+    }
+
+    self.touch = SUB_SolidTouch;
+
+    #ifdef NEW_MODELS
+    // If the object has an animation loop
+    if (self.think1)
+    {
+        self.nextthink = time + 0.1;
+        self.think = self.think1;
+    }
+    #endif
 };
 
 /*
@@ -251,8 +263,12 @@ StartObject
 Sets the clipping size and plants the object on the floor
 ============
 */
-void() StartObject =
+void(string objmodel, vector bbox_min, vector bbox_max) StartObject =
 {
+    precache_model (objmodel);
+    setmodel (self, objmodel);
+    setsize (self, bbox_min, bbox_max);
+
     self.nextthink = time + 0.2;    // objects start after other solids, but before items
     self.think = PlaceObject;
 };
@@ -261,458 +277,278 @@ void() StartObject =
 // small tome or book, closed
 void() obj_tome =
 {
-    precache_model("progs/a_tome.mdl");
-    setmodel(self, "progs/a_tome.mdl");
-
-    setsize (self, '-10 -4 -10', '10 4 11');
-    StartObject ();
+    StartObject ("progs/a_tome.mdl", '-10 -4 -10', '10 4 11');
 };
 
 // small potion vial
 void() obj_boost =
 {
-    precache_model("progs/a_boost.mdl");
-    setmodel(self, "progs/a_boost.mdl");
-
-    setsize (self, '-5 -6 -9', '5 6 10');
-    StartObject ();
+    StartObject ("progs/a_boost.mdl", '-5 -6 -9', '5 6 10');
 };
 
 // large potion goblet
 
 void() obj_mboost =
 {
-    precache_model("progs/a_mboost.mdl");
-    setmodel(self, "progs/a_mboost.mdl");
-
-    setsize (self, '-9 -10 -9', '9 10 10');
-    StartObject ();
+    StartObject ("progs/a_mboost.mdl", '-9 -10 -9', '9 10 10');
 };
 
 // a slab of beef, found in restaraunt freezers
 void() obj_beefslab =
 {
-    precache_model("progs/beefslab.mdl");
-    setmodel(self, "progs/beefslab.mdl");
-
-    setsize (self, '-14 -14 1', '22 14 89');
-    StartObject ();
+    StartObject ("progs/beefslab.mdl", '-14 -14 1', '22 14 89');
 };
 
 // pile of bones
 void() obj_bonepile =
 {
-    precache_model("progs/bonepile.mdl");
-    setmodel(self, "progs/bonepile.mdl");
-
-    setsize (self, '-16 -15 -3', '16 16 14');
-    StartObject ();
+    StartObject ("progs/bonepile.mdl", '-16 -15 -3', '16 16 14');
 };
 
 // another book, closed
 void() obj_bookclos =
 {
-    precache_model("progs/bookclos.mdl");
-    setmodel(self, "progs/bookclos.mdl");
-
-    setsize (self, '-9 -7 -1', '9 7 6');
-    StartObject ();
+    StartObject ("progs/bookclos.mdl", '-9 -7 -1', '9 7 6');
 };
 
 // another book, open
 void() obj_bookopen =
 {
-    precache_model("progs/bookopen.mdl");
-    setmodel(self, "progs/bookopen.mdl");
-
-    setsize (self, '-8 -14 -1', '9 14 5');
-    StartObject ();
+    StartObject ("progs/bookopen.mdl", '-8 -14 -1', '9 14 5');
 };
 
 // small bush
 void() obj_bush1 =
 {
-    precache_model("progs/bush1.mdl");
-    setmodel(self, "progs/bush1.mdl");
-
-    setsize (self, '-31 -34 -1', '31 32 39');
-    StartObject ();
+    StartObject ("progs/bush1.mdl", '-31 -34 -1', '31 32 39');
 };
 
 // chrome flaming torch
 void() obj_cflmtrch =
 {
-    precache_model("progs/cflmtrch.mdl");
-    setmodel(self, "progs/cflmtrch.mdl");
-
-    setsize (self, '-9 -6 -29', '8 6 27');
     FireAmbient ();
-    StartObject ();
+    StartObject ("progs/cflmtrch.mdl", '-9 -6 -29', '8 6 27');
 };
 
 // Corpse, Face up
 void() obj_corps2 =
 {
-    precache_model("progs/corps2.mdl");
-    setmodel(self, "progs/corps2.mdl");
-
-    setsize (self, '-37 -17 -2', '39 17 13');
-    StartObject ();
+    StartObject ("progs/corps2.mdl", '-37 -17 -2', '39 17 13');
 };
 
 // a rusty metal cross with a tilted cross beam
 void() obj_cross =
 {
-    precache_model("progs/cross.mdl");
-    setmodel(self, "progs/cross.mdl");
-
-    setsize (self, '-3 -12 -19', '3 12 21');
-    StartObject ();
+    StartObject ("progs/cross.mdl", '-3 -12 -19', '3 12 21');
 };
 
 // an egyptian looking torch
 void() obj_eflmtrch =
 {
-    precache_model("progs/eflmtrch.mdl");
-    setmodel(self, "progs/eflmtrch.mdl");
-
-    setsize (self, '-12 -5 -21', '14 5 34');
     FireAmbient ();
-    StartObject ();
+    StartObject ("progs/eflmtrch.mdl", '-12 -5 -21', '14 5 34');
 };
 
 // egytpian torch, unlit
 void() obj_egtorch =
 {
-    precache_model("progs/egtorch.mdl");
-    setmodel(self, "progs/egtorch.mdl");
-
-    setsize (self, '-12 -5 -21', '12 5 9');
-    StartObject ();
+    StartObject ("progs/egtorch.mdl", '-12 -5 -21', '12 5 9');
 };
 
 // Iron Fence Gateway
 void() obj_fence =
 {
-    precache_model("progs/fence.mdl");
-    setmodel(self, "progs/fence.mdl");
-
-    setsize (self, '-3 -25 0', '3 29 53');
-    StartObject ();
+    StartObject ("progs/fence.mdl", '-3 -25 0', '3 29 53');
 };
 
 // large 2 tier fountain
 void() obj_fountain =
 {
-    precache_model("progs/fountain.mdl");
-    setmodel(self, "progs/fountain.mdl");
-
-    setsize (self, '-31 -27 -1', '31 27 95');
     // TODO: Water sound here?
-    StartObject ();
+    StartObject ("progs/fountain.mdl", '-31 -27 -1', '31 27 95');
 };
 
 // Soccer Goal
 void() obj_goal =
 {
-    precache_model ("progs/goalpost.mdl");
-    setmodel (self, "progs/goalpost.mdl");
-
-    setsize (self, '-51 -65 -3', '55 65 111');
-    StartObject ();
+    StartObject ("progs/goalpost.mdl", '-51 -65 -3', '55 65 111');
 };
 
 // tall triangular hedge
 void() obj_hedge1 =
 {
-    precache_model("progs/hedge1.mdl");
-    setmodel(self, "progs/hedge1.mdl");
-
-    setsize (self, '-27 -27 -1', '26 26 92');
-    StartObject ();
+    StartObject ("progs/hedge1.mdl", '-27 -27 -1', '26 26 92');
 };
 
 // tall square hedge
 void() obj_hedge2 =
 {
-    precache_model("progs/hedge2.mdl");
-    setmodel(self, "progs/hedge2.mdl");
-
-    setsize (self, '-19 -28 0', '18 29 89');
-    StartObject ();
+    StartObject ("progs/hedge2.mdl", '-19 -28 0', '18 29 89');
 };
 
 // tall rounded hedge
 void() obj_hedge3 =
 {
-    precache_model("progs/hedge3.mdl");
-    setmodel(self, "progs/hedge3.mdl");
-
-    setsize (self, '-27 -27 -1', '27 27 127');
-    StartObject ();
+    StartObject ("progs/hedge3.mdl", '-27 -27 -1', '27 27 127');
 };
 
 // cross with fluer de lis
 void() obj_holycrss =
 {
-    precache_model("progs/holycrss.mdl");
-    setmodel(self, "progs/holycrss.mdl");
-
-    setsize (self, '-6 -13 -19', '6 13 21');
-    StartObject ();
+    StartObject ("progs/holycrss.mdl", '-6 -13 -19', '6 13 21');
 };
 
 // small plant
 void() obj_plantgen =
 {
-    precache_model("progs/plantgen.mdl");
-    setmodel(self, "progs/plantgen.mdl");
-
-    setsize (self, '-30 -29 -1', '29 30 30');
-    StartObject ();
+    StartObject ("progs/plantgen.mdl", '-30 -29 -1', '29 30 30');
 };
 
 // potted plant
 void() obj_plantmez =
 {
-    precache_model("progs/plantmez.mdl");
-    setmodel(self, "progs/plantmez.mdl");
-
-    setsize (self, '-30 -29 -1', '29 30 39');
-    StartObject ();
+    StartObject ("progs/plantmez.mdl", '-30 -29 -1', '29 30 39');
 };
 
 // plant in vase
 void() obj_plantrom =
 {
-    precache_model("progs/plantrom.mdl");
-    setmodel(self, "progs/plantrom.mdl");
-
-    setsize (self, '-39 -38 -1', '39 39 95');
-    StartObject ();
+    StartObject ("progs/plantrom.mdl", '-39 -38 -1', '39 39 95');
 };
 
 // large 2 handled jug, 4 skins
 void() obj_pot1 =
 {
-    precache_model("progs/pot1.mdl");
-    setmodel(self, "progs/pot1.mdl");
-
-    setsize (self, '-19 -32 -1', '19 32 58');
-    StartObject ();
+    StartObject ("progs/pot1.mdl", '-19 -32 -1', '19 32 58');
 };
 
 // large vase, 4 skins
 void() obj_pot2 =
 {
-    precache_model("progs/pot2.mdl");
-    setmodel(self, "progs/pot2.mdl");
-
-    setsize (self, '-12 -14 0', '12 14 42');
-    StartObject ();
+    StartObject ("progs/pot2.mdl", '-12 -14 0', '12 14 42');
 };
 
 // large vase, 4 skins
 void() obj_pot3 =
 {
-    precache_model("progs/pot3.mdl");
-    setmodel(self, "progs/pot3.mdl");
-
-    setsize (self, '-17 -19 -1', '17 20 48');
-    StartObject ();
+    StartObject ("progs/pot3.mdl", '-17 -19 -1', '17 20 48');
 };
 
 // roman style flaming torch
 void() obj_rflmtrch =
 {
-    precache_model("progs/rflmtrch.mdl");
-    setmodel(self, "progs/rflmtrch.mdl");
-
-    setsize (self, '-10 -10 -15', '2 10 27');
     FireAmbient ();
-    StartObject ();
+    StartObject ("progs/rflmtrch.mdl", '-10 -10 -15', '2 10 27');
 };
 
 // seaweed
 void() obj_seaweed =
 {
-    precache_model("progs/seaweed.mdl");
-    setmodel(self, "progs/seaweed.mdl");
-
-    setsize (self, '-4 -5 0', '4 5 72');
-    StartObject ();
+    StartObject ("progs/seaweed.mdl", '-4 -5 0', '4 5 72');
 };
 
 // 1 skull on a stick
 void() obj_skllstk1 =
 {
-    precache_model("progs/skllstk1.mdl");
-    setmodel(self, "progs/skllstk1.mdl");
-
-    setsize (self, '-5 -5 -1', '5 3 55');
-    StartObject ();
+    StartObject ("progs/skllstk1.mdl", '-5 -5 -1', '5 3 55');
 };
 
 // 2 skulls on a stick
 void() obj_skllstk2 =
 {
-    precache_model("progs/skllstk2.mdl");
-    setmodel(self, "progs/skllstk2.mdl");
-
-    setsize (self, '-5 -2 -1', '6 8 57');
-    StartObject ();
+    StartObject ("progs/skllstk2.mdl", '-5 -2 -1', '6 8 57');
 };
 
 //  cross tombstone
 void() obj_tombstn1 =
 {
-    precache_model("progs/tombstn1.mdl");
-    setmodel(self, "progs/tombstn1.mdl");
-
-    setsize (self, '-8 -25 -1', '8 25 72');
-    StartObject ();
+    StartObject ("progs/tombstn1.mdl", '-8 -25 -1', '8 25 72');
 };
 
 // oval tombstone
 void() obj_tombstn2 =
 {
-    precache_model("progs/tombstn2.mdl");
-    setmodel(self, "progs/tombstn2.mdl");
-
-    setsize (self, '-5 -16 -1', '5 16 44');
-    StartObject ();
+    StartObject ("progs/tombstn2.mdl", '-5 -16 -1', '5 16 44');
 };
 
 // R. I. P. tombstone
 void() obj_tombstn3 =
 {
-    precache_model("progs/tombstn3.mdl");
-    setmodel(self, "progs/tombstn3.mdl");
-
-    setsize (self, '-7 -19 -1', '7 18 48');
-    StartObject ();
+    StartObject ("progs/tombstn3.mdl", '-7 -19 -1', '7 18 48');
 };
 
 // dead tree
 void() obj_tree =
 {
-    precache_model("progs/tree.mdl");
-    setmodel(self, "progs/tree.mdl");
-
-    setsize (self, '-16 -16 0', '16 16 32');
-    StartObject ();
+    StartObject ("progs/tree.mdl", '-16 -16 0', '16 16 32');
 };
 
 // leafy tree
 void() obj_tree2 =
 {
-    precache_model("progs/tree2.mdl");
-    setmodel(self, "progs/tree2.mdl");
-
-    setsize (self, '-16 -16 0', '16 16 32');
-    StartObject ();
+    StartObject ("progs/tree2.mdl", '-16 -16 0', '16 16 32');
 };
 
 // small spider webs
 // TODO: Accept a spawn flag differentiating between the skins
 void() obj_webs =
 {
-    precache_model("progs/webs.mdl");
-    setmodel(self, "progs/webs.mdl");
-
+    StartObject ("progs/webs.mdl", '-1 -23 -28', '4 23 26');
     // TODO: set skin ...
-    setsize (self, '-1 -23 -28', '4 23 26');
-    StartObject ();
 };
 
 // Brown skull
 void() obj_skull =
 {
-    precache_model("progs/skull.mdl");
-    setmodel(self, "progs/skull.mdl");
-
-    setsize (self, '-6 -4 0', '6 4 11');
-    StartObject ();
+    StartObject ("progs/skull.mdl", '-6 -4 0', '6 4 11');
 };
 
 // book with skull on it
 void() obj_skulbook =
 {
-    precache_model("progs/skulbook.mdl");
-    setmodel(self, "progs/skulbook.mdl");
-
-    setsize (self, '-7 -6 -1', '7 6 2');
-    StartObject ();
+    StartObject ("progs/skulbook.mdl", '-7 -6 -1', '7 6 2');
 };
 
 // bar stool
 void() obj_stool =
 {
-    precache_model("progs/stool.mdl");
-    setmodel(self, "progs/stool.mdl");
-
-    setsize (self, '-7 -7 0', '7 7 18');
-    StartObject ();
+    StartObject ("progs/stool.mdl", '-7 -7 0', '7 7 18');
 };
 
 // another scroll
 void() obj_hbook =
 {
-    precache_model("progs/h-book.mdl");
-    setmodel(self, "progs/h-book.mdl");
-
-    setsize (self, '-5 -9 -13', '5 9 14');
-    StartObject ();
+    StartObject ("progs/h-book.mdl", '-5 -9 -13', '5 9 14');
 };
 
 // White skull
 void() obj_m2 =
 {
-    precache_model("progs/m2.mdl");
-    setmodel(self, "progs/m2.mdl");
-
-    setsize (self, '-12 -8 -11', '12 8 11');
-    StartObject ();
+    StartObject ("progs/m2.mdl", '-12 -8 -11', '12 8 11');
 };
 
 // Green skull
 void() obj_m3 =
 {
-    precache_model("progs/m3.mdl");
-    setmodel(self, "progs/m3.mdl");
-
-    setsize (self, '-12 -8 -11', '12 8 11');
-    StartObject ();
+    StartObject ("progs/m3.mdl", '-12 -8 -11', '12 8 11');
 };
 
 // another book
 void() obj_mage =
 {
-    precache_model("progs/mage.mdl");
-    setmodel(self, "progs/mage.mdl");
-
-    setsize (self, '-8 -11 -11', '7 11 12');
-    StartObject ();
+    StartObject ("progs/mage.mdl", '-8 -11 -11', '7 11 12');
 };
 
 // shovel
 void() obj_shovel =
 {
-    precache_model("progs/shovl.mdl");
-    setmodel(self, "progs/shovl.mdl");
-
-    setsize (self, '-16 -16 -16', '16 16 16');
-    StartObject ();
+    StartObject ("progs/shovl.mdl", '-16 -16 -16', '16 16 16');
 };
 
 // a boiling cauldron
 void() obj_cauldron =
 {
-    precache_model("progs/cauldron.mdl");
-    setmodel(self, "progs/cauldron.mdl");
-
-    setsize (self, '-32 -21 0', '24 20 34');
-    StartObject ();
+    StartObject ("progs/cauldron.mdl", '-32 -21 0', '24 20 34');
 };
 
 // barrels -
@@ -720,11 +556,7 @@ void() obj_cauldron =
 // skin2 = zombie head barrel, skin3 = "waste" barrel
 void() obj_barrel =
 {
-    precache_model("progs/barrel.mdl");
-    setmodel(self, "progs/barrel.mdl");
-
-    setsize (self, '-16 -16 -14', '16 16 42');
-    StartObject ();
+    StartObject ("progs/barrel.mdl", '-16 -16 -14', '16 16 42');
 };
 
 // jar with a brain in it
@@ -732,11 +564,7 @@ void() obj_barrel =
 // skin1 is red fluid
 void() obj_brainjar =
 {
-    precache_model("progs/jar.mdl");
-    setmodel(self, "progs/jar.mdl");
-
-    setsize (self, '-11 -7 -1', '14 8 28');
-    StartObject ();
+    StartObject ("progs/jar.mdl", '-11 -7 -1', '14 8 28');
 };
 
 // drum-type barrel
@@ -744,12 +572,298 @@ void() obj_brainjar =
 // skin1 is green slime, "Caution - Toxic"
 void() obj_drum =
 {
-    precache_model("progs/drum.mdl");
-    setmodel(self, "progs/drum.mdl");
-
-    setsize (self, '-14 -14 -1', '14 14 36');
-    StartObject ();
+    StartObject ("progs/drum.mdl", '-14 -14 -1', '14 14 36');
 };
+
+
+#ifdef NEW_MODELS
+// Glass Jar w/brain (tile0075)
+void() obj_world_jar1 =
+{
+    StartObject ("models/world/jar1.md3", '-8 -8 0', '9 9 18');
+};
+
+// Pram (tile0183)
+void() obj_world_pram =
+{
+    StartObject ("models/world/pram.md3", '-17 -32 0', '17 35 43');
+};
+
+// Stake w/ 1 skull (tile0257)
+void() obj_world_skllstk1 =
+{
+    StartObject ("models/world/skllstk1.md3", '-6 -5 0', '5 5 52');
+};
+
+// Stake w/ 3 skulls (tile0258)
+void() obj_world_skllstk2 =
+{
+    StartObject ("models/world/skllstk2.md3", '-6 -4 0', '5 6 55');
+};
+
+// Ceiling Light (tile0468)
+void() obj_world_light1 =
+{
+    StartObject ("models/world/light1.md3", '-5 -6 -13', '5 6 13');
+};
+
+// Sink taps (tile0485)
+void() obj_world_sinktaps =
+{
+    StartObject ("models/world/sinktaps.md3", '-3 -11 0', '12 11 9');
+};
+
+// Waste bucket (tile0505)
+void() obj_world_bucket1 =
+{
+    StartObject ("models/world/bucket1.md3", '-6 -6 0', '6 6 24');
+};
+
+// Large Vase (tile0537)
+void() obj_world_pot1 =
+{
+    StartObject ("models/world/pot1.md3", '-8 -9 0', '8 9 38');
+};
+
+// Wall torch (tile0570)
+void() obj_world_torch =
+{
+    StartObject ("models/world/torch.md3", '-5 -5 -6', '5 5 6');
+};
+
+// Wreath (tile0575)
+void() obj_world_wreath1 =
+{
+    StartObject ("models/world/wreath1.md3", '-11 -16 0', '11 16 58');
+};
+
+// Short Candelabra (tile0584)
+void() obj_world_candlbr1 =
+{
+    // Set animation loop
+    self.anim_len = 4;
+    self.think1 = SUB_AutoAnimation;
+
+    StartObject ("models/world/candlbr1.md3", '-3 -10 0', '3 10 38');
+};
+
+// Tall Candelabra (tile0580)
+void() obj_world_candlbr2 =
+{
+    // Set animation loop
+    self.anim_len = 4;
+    self.think1 = SUB_AutoAnimation;
+
+    StartObject ("models/world/candlbr2.md3", '-5 -7 0', '5 7 54');
+};
+
+// Small Pot (tile0604)
+void() obj_world_pot5 =
+{
+    StartObject ("models/world/pot5.md3", '-7 -7 0', '7 7 15');
+};
+
+// Skull on stake w/rags (tile0607)
+void() obj_world_skullrag =
+{
+    StartObject ("models/world/skullrag.md3", '-6 -19 0', '5 20 71');
+};
+
+// Big Wreath (tile0633)
+void() obj_world_wreath2 =
+{
+    StartObject ("models/world/wreath2.md3", '0 -49 -42', '11 50 47');
+};
+
+// Garden Lantern (tile0640)
+void() obj_world_lantern1 =
+{
+    StartObject ("models/world/lantern1.md3", '-6 -8 0', '8 8 63');
+};
+
+// Fire Extinguisher (tile0658)
+void() obj_world_extngsh =
+{
+    StartObject ("models/world/extngsh.md3", '-4 -12 16', '4 13 61');
+};
+
+// Stone Statue (tile0679)
+void() obj_world_statue4 =
+{
+    StartObject ("models/world/statue4.md3", '-15 -17 0', '15 17 112');
+};
+
+// Severed Leg (tile0682)
+void() obj_world_leg1 =
+{
+    StartObject ("models/world/leg1.md3", '-8 -3 0', '9 4 7');
+};
+
+// Impaled Skull (tile0685)
+void() obj_world_skllstk3 =
+{
+    StartObject ("models/world/skllstk3.md3", '-6 -5 0', '5 5 19');
+};
+
+// Wooden Cross Tombstone (tile0703)
+void() obj_world_tombstn6 =
+{
+    StartObject ("models/world/tombstn6.md3", '-8 -16 0', '8 14 47');
+};
+
+// Large Cross Tombstone (tile0678)
+void() obj_world_tombstn5 =
+{
+    StartObject ("models/world/tombstn5.md3", '-10 -24 0', '10 24 62');
+};
+
+// Old Tombstone (tile0704)
+void() obj_world_tombstn4 =
+{
+    StartObject ("models/world/tombstn4.md3", '-14 -21 -6', '7 18 45');
+};
+
+// RIP Tombstone (tile0701)
+void() obj_world_tombstn3 =
+{
+    StartObject ("models/world/tombstn3.md3", '-18 -6 0', '18 6 47');
+};
+
+// Broken Tombstone (tile0705)
+void() obj_world_tombstn2 =
+{
+    StartObject ("models/world/tombstn2.md3", '-7 -22 0', '7 22 57');
+};
+
+// Tombstone w/cross (tile0706)
+void() obj_world_tombstn1 =
+{
+    StartObject ("models/world/tombstn1.md3", '-7 -22 0', '7 22 72');
+};
+
+// Bottle (tile0759)
+void() obj_world_bottle2 =
+{
+    StartObject ("models/world/bottle2.md3", '-2 -2 0', '2 2 16');
+};
+
+// Stone Jar (tile0802)
+void() obj_world_jar2 =
+{
+    StartObject ("models/world/jar2.md3", '-3 -3 0', '3 3 9');
+};
+
+// Boulder (tile804)
+void() obj_world_boulder =
+{
+    StartObject ("models/world/boulder.md3", '-18 -13 0', '18 13 10');
+};
+
+// Skull (tile807)
+void() obj_world_skull1 =
+{
+    StartObject ("models/world/skull1.md3", '-5 -5 0', '5 5 8');
+};
+
+// Wooden Barrel (tile0907)
+// NOTE: the model has 2 static frames (0- standing on end, 1- lying on side)
+void() obj_world_barrel =
+{
+    StartObject ("models/world/barrel.md3", '-15 -15 0', '15 15 43');
+};
+
+// IV Drip (tile0962)
+void() obj_world_ivdrip =
+{
+    StartObject ("models/world/ivdrip.md3", '-11 -11 0', '11 11 55');
+};
+
+// Potted Plant (tile1009)
+void() obj_world_plant1 =
+{
+    StartObject ("models/world/plant1.md3", '-4 -4 0', '4 4 8');
+};
+
+// Large Urn (tile1063)
+void() obj_world_pot2 =
+{
+    StartObject ("models/world/pot2.md3", '-17 -18 0', '18 18 41');
+};
+
+// Draven Tombstone (tile1159)
+void() obj_world_draven =
+{
+    StartObject ("models/world/draven.md3", '-6 -18 0', '6 18 47');
+};
+
+// Spade (tile1712)
+void() obj_world_spade =
+{
+    StartObject ("models/world/spade.md3", '-1 -5 -18', '1 5 18');
+};
+
+// Shovel (tile1713)
+void() obj_world_shovel =
+{
+    StartObject ("models/world/shovel.md3", '-0 -7 -27', '3 7 26');
+};
+
+// Saw (tile1714)
+void() obj_world_saw =
+{
+    StartObject ("models/world/saw.md3", '-1 -4 -9', '1 6 15');
+};
+
+// Calipers (tile1715)
+void() obj_world_calipers =
+{
+    StartObject ("models/world/calipers.md3", '-0 -5 -9', '2 5 10');
+};
+
+// Poker (tile1716)
+void() obj_world_poker =
+{
+    StartObject ("models/world/poker.md3", '-1 -1 8', '1 3 36');
+};
+
+// Dead body (tile2333)
+void() obj_world_body1 =
+{
+    StartObject ("models/world/body1.md3", '-21 -12 -1', '27 23 19');
+};
+
+// Dead Tree (tile0540)
+void() obj_world_tree =
+{
+    StartObject ("models/world/tree.md3", '-32 -41 0', '52 45 174');
+};
+
+// Live Tree (tile0541)
+void() obj_world_tree2 =
+{
+    StartObject ("models/world/tree2.md3", '-32 -41 0', '52 45 174');
+};
+
+// Clock (tile1165)
+void() obj_world_clock =
+{
+    StartObject ("models/world/clock.md3", '0 -10 -10', '2 10 10');
+};
+
+
+// Metal Barrel (tile0201)
+void() obj_world_metbarrel =
+{
+    StartObject ("models/world/metbarrel.md3", '-14 -14 0', '14 14 36');
+};
+
+
+// Metal Body Barrel (tile0563)
+void() obj_world_metbarrel2 =
+{
+    StartObject ("models/world/metbarrel2.md3", '-14 -14 0', '14 14 36');
+};
+#endif
 
 
 /*

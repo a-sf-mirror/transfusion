@@ -557,6 +557,7 @@ void(string gibname, float dm) ThrowRubble=
     new.movetype = MOVETYPE_BOUNCE;
     new.classname = "rubble";
     new.solid = SOLID_TRIGGER;
+    new.effects = EF_LOWPRECISION;
     new.touch = brik_touch;
     new.avelocity_x = random()*600;
     new.avelocity_y = random()*600;
