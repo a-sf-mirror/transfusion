@@ -1853,9 +1853,9 @@ void() W_FireSpikes =
 
     // If we use the altfire mode
     if (self.weaponframe >= 8 && self.weaponframe <= 13)
-        FireBullets (20, dir, '0.04 0.04 0');
+        FireBullets (15, dir, '0.04 0.04 0');
     else
-        FireBullets (7, dir, '0.04 0.04 0');
+        FireBullets (5, dir, '0.04 0.04 0');
 
     #ifdef QUAKEWORLD
     msg_entity = self;

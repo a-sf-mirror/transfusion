@@ -95,8 +95,6 @@ $frame shotatt1 shotatt2 shotatt3 shotatt4
 
 $frame supatt1 supatt2
 
-$frame aksup1 aksup2 aksup3 aksup4 aksup5
-
 $frame axatt1 axatt2 axatt3 axatt4 axatt5 axatt6
 
 $frame axattb1 axattb2 axattb3 axattb4 axattb5 axattb6
@@ -202,12 +200,12 @@ void()  player_reload9 = [$supatt1, player_reload10] {self.weaponframe=11;};
 void()  player_reload10 = [$supatt1, player_reload11] {self.weaponframe=12;};
 void()  player_reload11 = [$supatt1, player_run    ] {self.weaponframe=1;};
 
-void()  player_aksup1 = [$aksup1, player_aksup2     ] {self.weaponframe=0;};
-void()  player_aksup2 = [$aksup2, player_aksup3     ] {self.weaponframe=1;muzzleflash();};
-void()  player_aksup3 = [$aksup3, player_aksup4     ] {self.weaponframe=2;};
-void()  player_aksup4 = [$aksup4, player_aksup5     ] {self.weaponframe=3;W_FireSuperShotgun();};
-void()  player_aksup5 = [$aksup5, player_aksup6     ] {self.weaponframe=4;muzzleflash();};
-void()  player_aksup6 = [$aksup5, player_run        ] {self.weaponframe=0;};
+void()  player_aksup1 = [$supatt1, player_aksup2     ] {self.weaponframe=0;};
+void()  player_aksup2 = [$supatt1, player_aksup3     ] {self.weaponframe=1;muzzleflash();};
+void()  player_aksup3 = [$supatt1, player_aksup4     ] {self.weaponframe=2;};
+void()  player_aksup4 = [$supatt1, player_aksup5     ] {self.weaponframe=3;W_FireSuperShotgun();};
+void()  player_aksup5 = [$supatt1, player_aksup6     ] {self.weaponframe=4;muzzleflash();};
+void()  player_aksup6 = [$supatt1, player_run        ] {self.weaponframe=0;};
 
 
 void()  player_axe1 =   [$axatt1, player_axe2   ] {self.weaponframe=1;};
