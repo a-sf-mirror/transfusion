@@ -138,6 +138,11 @@ void(string newOptions) Vote_ChangeOptions =
     Bprint (PRINT_HIGH, " щ\n");  // " ]\n"
 
     cvar_set ("g_weaponStay", newOptions);
+
+    // Test if the engine support creation of new cvars by progs
+    if (newOptions == "1")
+        if (cvar ("g_weaponStay") != 1)
+            Bprint (PRINT_HIGH, "варнинг╨ the engine doesn't support dynamic cvar creation. Can't change option\n");  // "WARNING ..."
 };
 
 
@@ -372,6 +377,7 @@ void() Menu_Draw =
                 "1) b2a15  A15        | 2) bkeep  Blood Keep\n"
                 "3) bstar  Brownstar  | 4) crypt  The Crypt\n"
                 "5) barena Blood Arena\n"
+                "\n"
                 "10) Go back to map menu\n");
     }
     else if (self.menu_index == MENU_VOTE_MAP_BLOODBATH)

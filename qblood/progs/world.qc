@@ -222,6 +222,11 @@ void() worldspawn =
 
     lastspawn = world;
 
+    // Try to create our own cvars as soon as possible
+    cvar ("g_weaponStay");
+    cvar ("sv_allowCheat");
+    cvar ("sv_disable");
+
     #ifdef FRIKBOT
     // FrikBot X initialization
     BotInit();

@@ -494,7 +494,7 @@ PR_ParseFunctionCall
 def_t *PR_ParseFunctionCall (def_t *func)
 {
 	def_t    *e;
-	int         arg;
+	static int arg = 0;
 	type_t      *t;
 
 	t = func->type;
@@ -503,8 +503,10 @@ def_t *PR_ParseFunctionCall (def_t *func)
 		PR_ParseError ("not a function");
 	//MrE: function is called from inside the Quake C code
 	func->internuse = 1;
+	// BQCC doesn't support nested function calls, except for the first parameter
+	if (arg != 0)
+		PR_ParseError ("nested function calls are only supported for the first parameter");
 	// copy the arguments to the global parameter variables
-	arg = 0;
 	if (!PR_Check(")"))
 	{
 		do
@@ -548,6 +550,7 @@ def_t *PR_ParseFunctionCall (def_t *func)
 
 	PR_Statement (&pr_opcodes[OP_CALL0+arg], func, 0);
 
+	arg = 0;  // reinitialize the counter
 	def_ret.type = t->aux_type;
 	return &def_ret;
 } //end of the function PR_ParseFunctionCall

@@ -4,14 +4,17 @@ into this package.
 
 Changes since MeQCC v1.4:
   * v0.1.1
-    - Some code tweaking to make it compile on OpenBSD. Other Unixes should
-    work without changes too.
-    - ...
+    - nested function calls are now forbidden, except for the first parameter.
+    Quake VM can't handle them properly without temporary variables in the other
+    cases: the first parameters are overwritten by the nested function call,
+    which causes very nasty errors.
+    - some code tweaking to make BQCC compile on OpenBSD (and probably most
+    Unixes now).
 
   * v0.1.0
-    - You can now use several frame lists (up to 4 for now) in a single source
+    - you can now use several frame lists (up to 4 at this time) in a source
     file if you name them with "$modelname". If you don't name the first
-    model, it will be known as "<default>" be the compiler. Here's an example:
+    model, it will be known as "<default>" by the compiler. Here's an example:
 
         // unnamed -> <default>
         $frame player1 player2

@@ -1268,6 +1268,9 @@ void() Impulses_Player =
     }
     else if (self.impulse == 102)
         KickABot();
+    #else
+    else if (self.impulse >= 100 && self.impulse <= 102)
+        Sprint (self, PRINT_HIGH, "Sorry, these progs don't have bot support\n");
     #endif
 
     else if (self.impulse == 141)
@@ -1353,6 +1356,9 @@ void() Impulses_Dead =
     }
     else if (self.impulse == 102)
         KickABot();
+    #else
+    else if (self.impulse >= 100 && self.impulse <= 102)
+        Sprint (self, PRINT_HIGH, "Sorry, these progs don't have bot support\n");
     #endif
 
     else if (self.impulse == 141)

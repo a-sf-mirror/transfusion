@@ -296,10 +296,13 @@ Napalm Trap - shoots one napalm shot every 5 seconds until switched off
 
 void() trap_tommygun_think =
 {
+    local vector aim_vec;
+
     sound (self, CHAN_WEAPON, "weapons/tommygun/_tom.wav", 1, ATTN_NORM);
 
     makevectors (self.v_angle);
-    FireBullets (self.origin, aim (self, 1000), 1, 5, '0.05 0.02 0');
+    aim_vec = aim (self, 1000);
+    FireBullets (self.origin, aim_vec, 1, 5, '0.05 0.02 0');
 
     // Continue until we have shot all our bullets
     self.ammo_nails = self.ammo_nails - 1;

@@ -5,7 +5,7 @@
 
    <title> BloodBath manual
    <author> Mathieu Olivier <tt>&lt;elric@planetblood.com&gt;</tt>
-   <date>v?.?.? (development), February 1, 2002
+   <date>v?.?.? (development), March 18, 2002
    <abstract>
       This manual covers <url url="http://www.planetblood.com/qblood/"
       name="BloodBath"> installation and usage.
@@ -84,7 +84,7 @@
          All those impulses are considered cheats (not available in multiplayer
          games, except if the server has the "sv_allowCheat" cvar set to a
          non-zero value). <em>WARNING</em>: due to strict resource management,
-         some of them may crash the game if the required sounds and models are
+         some of them MAY CRASH THE GAME if the required sounds and models are
          not precached at this moment.
          <itemize>
             <item> impulse 103: botcam mode (NQ only)<p>
@@ -93,7 +93,7 @@
             <item> impulse 251: Give full armor<p>
             <item> impulse 252: Burn yourself !<p>
             <item> impulse 253: Give all inventory items<p>
-            <item> impulse 254: Give all weapons, ammos, and keys<p>
+            <item> impulse 254: Put you on the <ref id="BOD" name="Brink Of Death"><p>
             <item> impulse 255: Give <ref id="Akimbo" name="Guns Akimbo"><p>
          </itemize>
       </sect1>
@@ -131,15 +131,29 @@
    <sect><heading>Items &amp; Powerups<p>
       Here is the (incomplete) list:
       <descrip>
-         <tag>Boots of Jumping</tag> ...
-         <tag>Cloak of Shadows</tag> ...
+         <tag>Boots of Jumping</tag> When activated, double your jump height.
+         <tag>Cloak of Shadows</tag> Makes you invisible (except the eyes)
          <tag>Diving Suit</tag> ...
-         <tag>Doctor's Bag</tag> ...
+         <tag>Doctor's Bag</tag> When activated, give you back enough life
+         points to put you at 100. Can be used several times (the bag can give
+         back a total of 100 HP).
          <tag>Guns akimbo<label id="Akimbo"></tag> If you have enough ammo,
          gives you a copy of your current weapon in your left hand. Lasts 30
-         secondes.
-         <tag>Reflective Shots</tag> ...
+         secondes. Don't work with the fork, the spray can and the voodoo doll.
+         <tag>Reflective Shots</tag> All damages done to you by bullets are
+         inflicted to the attacker instead.
       </descrip>
+   </sect>
+
+   <!-- Brink Of Death -->
+
+   <sect><heading>Brink Of Death<label id="BOD"><p>
+      When a player reaches exactly 0 HP, he is on the brink of death, but not
+      dead yet. If nobody finishes him, he will be able to come back to life
+      after a dozen of seconds, at 1 HP.
+
+      A player can't put himself on the BOD. It also doesn't apply to someone
+      who's on fire.
    </sect>
 
    <!-- Voting menu -->
@@ -168,21 +182,23 @@
 
       BloodBath has a few specific cvars that you may want to use:
      <itemize>
-        <item> "sv_allowCheat": enable a few more client impulses, which may be
-        used to CHEAT one way or another, and MAY CRASH THE GAME. You're warned.<p>
-        <item> "g_weaponStay": if set, weapons don't disappear when taken but
+        <item> "g_weaponStay": if set, weapons don't disappear when taken, but
         you can't take a weapon more than once<p>
+        <item> "sv_allowCheat": enable a few more client impulses, which may be
+        used to CHEAT one way or another, and MAY CRASH THE GAME under some
+        conditions. You have been warned.<p>
         <item> "sv_disable": a set of flags that allow a server administrator
-        to keep his server under control despite the new voting system. Its value
+        to keep his server under control despite the voting system. Its value
         must be set by adding the following numbers: 1 to disable bots, 2 to
         disable map voting, 4 to disable game type voting, 8 to disable frag
         limit voting, 16 to disable time limit voting, and 32 to disable options
         voting. For example, setting "sv_disable" to 5 (1+4) will ensure your
         server won't have bots and won't change its initial game type.<p>
      </itemize>
-     Your server must have the "set" command to use the new cvars though. It's
-     not the case of the original QW server and even of a few modern versions.
-     Be sure to check that.
+     Your server must have a "set" command, or an automatic cvar creation at
+     progs request, to allow you to use the new cvars though. It's not the case
+     of the original Quake binaries and of quite a lot of more modern versions
+     of the Quake engine. Be sure to check that.
    </sect>
 
    <!-- FAQ -->
