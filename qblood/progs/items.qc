@@ -904,11 +904,10 @@ void() item_health =
         setmodel(self, "progs/i_lifess.mdl");
         self.noise = "items/pickheal.wav";
         self.healamount = 15;
-        self.netname = "Life Essence"
-;
+        self.netname = "Life Essence";
         #ifdef QUAKEWORLD
         self.effects = self.effects | EF_RED; 
-	#endif
+        #endif
         self.healtype = 1;
     }
     else if (self.spawnflags & H_MEGA)
@@ -1077,7 +1076,6 @@ void() item_armor0 =
     precache_model("progs/i_arm_bs.mdl");
     setmodel(self, "progs/i_arm_bs.mdl");
 
-    //self.skin = 0;
     setsize (self, '0 0 0', '32 32 56');
     StartItem ();
     };
@@ -1091,7 +1089,6 @@ void() item_armor4 =
     precache_model("progs/i_arm_sp.mdl");
     setmodel(self, "progs/i_arm_sp.mdl");
 
-    //self.skin = 0;
     setsize (self, '0 0 0', '32 32 56');
     StartItem ();
     };
@@ -1104,7 +1101,7 @@ void() item_armor1 =
     self.touch = armor_touch;
     precache_model ("progs/i_arm_bd.mdl");
     setmodel (self, "progs/i_arm_bd.mdl");
-    //self.skin = 0;
+
     setsize (self, '-16 -16 0', '16 16 56');
     StartItem ();
 };
@@ -1117,7 +1114,7 @@ void() item_armor2 =
     self.touch = armor_touch;
     precache_model ("progs/i_arm_fr.mdl");
     setmodel (self, "progs/i_arm_fr.mdl");
-    //self.skin = 0;
+
     setsize (self, '-16 -16 0', '16 16 56');
     StartItem ();
 };
@@ -1130,7 +1127,7 @@ void() item_armorInv =
     self.touch = armor_touch;
     precache_model ("progs/i_arm_su.mdl");
     setmodel (self, "progs/i_arm_su.mdl");
-    //self.skin = 0;
+
     setsize (self, '-16 -16 0', '16 16 56');
     StartItem ();
 };

@@ -226,8 +226,7 @@ void(entity player) BecomeObserver =
     player.weaponframe      = 0;
     player.weapon           = 0;
 
-    setsize(player, '-12 -12 -12', '12 12 12');
-    player.view_ofs = '0 0 10';
+    setsize (player, '12 12 8', '12 12 32');
 
     player.observer = 1;
     player.do_observer = 0;
