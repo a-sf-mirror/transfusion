@@ -404,16 +404,6 @@ void() obj_bush1 =
     StartObject ();
 };
 
-// large cauldren
-void() obj_cauldren =
-{
-    precache_model("progs/cauldren.mdl");
-    setmodel(self, "progs/cauldren.mdl");
-
-    setsize (self, '-23 -21 0', '24 20 34');
-    StartObject ();
-};
-
 // chrome flaming torch
 void() obj_cflmtrch =
 {
@@ -462,16 +452,6 @@ void() obj_clueb =
     setmodel(self, "progs/clueb.mdl");
 
     setsize (self, '-8 -11 -11', '7 11 12');
-    StartObject ();
-};
-
-// Corpse, Face Down
-void() obj_corps1 =
-{
-    precache_model("progs/corps1.mdl");
-    setmodel(self, "progs/corps1.mdl");
-
-    setsize (self, '-38 -15 -1', '31 16 9');
     StartObject ();
 };
 
@@ -878,7 +858,7 @@ void() obj_barrel =
     precache_model("progs/barrel.mdl");
     setmodel(self, "progs/barrel.mdl");
 
-    setsize (self, '-14 20 -14', '14 20 39');
+    setsize (self, '-14 -20 -14', '14 20 39');
     StartObject ();
 };
 
@@ -2109,7 +2089,7 @@ void() item_cells =
         self.aflag = 32;
     }
     self.weapon = 4;
-    self.netname = "tesla charges";
+    self.netname = "batteries";
     setsize (self, '0 0 0', '32 32 56');
     StartItem ();
 };
