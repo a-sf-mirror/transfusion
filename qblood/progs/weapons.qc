@@ -2294,7 +2294,7 @@ void() W_ChangeWeapon =
     }
 
     // If the weapon has really changed
-    if (self.weapon != old)
+    if (fl != old)
     {
         self.weapon = fl;
         W_SetCurrentAmmo (TRUE);
