@@ -120,37 +120,6 @@ vector() wall_velocity =
 
 /*
 ================
-SpawnMeatSpray
-================
-*/
-void(vector org, vector vel) SpawnMeatSpray =
-{
-    local   entity missile;
-    local   vector  org;
-
-    missile = spawn ();
-    missile.owner = self;
-    missile.movetype = MOVETYPE_BOUNCE;
-    missile.solid = SOLID_NOT;
-
-    makevectors (self.angles);
-
-    missile.velocity = vel;
-    missile.velocity_z = missile.velocity_z + 250 + 50*random();
-
-    missile.avelocity = '3000 1000 2000';
-
-// set missile duration
-    missile.nextthink = time + 1;
-    missile.think = SUB_Remove;
-
-    setmodel (missile, "progs/zom_gib.mdl");
-    setsize (missile, '0 0 0', '0 0 0');
-    setorigin (missile, org);
-};
-
-/*
-================
 SpawnBlood
 ================
 */
@@ -188,6 +157,81 @@ void(float damage) spawn_touchblood =
 
 /*
 ================
+MeatSprayTouch
+
+Bleeds when generic meat spray touches something
+================
+*/
+void() MeatSprayTouch =
+{
+    SpawnBlood (self.origin, '0 0 500', 16);
+};
+
+/*
+================
+BloodMeatSpray
+
+Modified to behave more like Blood's blood spray
+================
+*/
+void(vector org, vector vel, entity ignore) BloodMeatSpray =
+{
+    local   entity  missile;
+    local   vector  org;
+
+    missile = spawn ();
+    missile.owner       = ignore;
+    missile.movetype    = MOVETYPE_TOSS;    // Was *_BOUNCE
+    missile.solid       = SOLID_BBOX;       // Was *_NOT
+
+    missile.velocity    = vel;
+    missile.avelocity   = '3000 1000 2000';
+
+    // set missile duration
+    missile.nextthink   = time + 1;
+    missile.think       = SUB_Remove;
+    missile.touch       = MeatSprayTouch;
+
+    setmodel (missile, "progs/zom_gib.mdl");
+    setsize (missile, '0 0 0', '0 0 0');
+    setorigin (missile, org);
+};
+
+/*
+================
+SpawnMeatSpray
+
+Default to modified function above
+================
+*/
+void(vector org, vector vel) SpawnMeatSpray =
+{
+    vel_z = vel_z + 250 + 50*random();
+    BloodMeatSpray (org, vel, self);
+};
+
+/*
+================
+SpawnBloodSpray
+================
+*/
+void(entity targ, vector org) SpawnBloodSpray =
+{
+    if (random() < 0.25)    // 25% chance per call of spawning blood.
+        if ((targ.flags & FL_MONSTER) || (targ.classname == "player"))
+        {
+            local   vector  vel;
+
+            vel_x = crandom() * 300;
+            vel_y = crandom() * 300;
+            vel_z = random() * 300 + 200;
+            BloodMeatSpray (org, vel, targ);
+        }
+};
+
+
+/*
+================
 W_FireAxe - Pitchfork
 ================
 */
@@ -219,6 +263,7 @@ void(entity targ, vector org, float damage) TineHit =
         targ.axhitme = 1;
         SpawnBlood (org, '0 0 0', damage);
         AddMultiDamage (targ, damage);
+        SpawnBloodSpray (trace_ent, org);
     }
     else
     {   // hit wall
@@ -399,6 +444,7 @@ void(float damage, vector dir) TraceAttack =
         SpawnBlood (org, vel*0.2, damage);
         #endif
         AddMultiDamage (trace_ent, damage);
+        SpawnBloodSpray (trace_ent, org);
     }
     else
     {

@@ -582,7 +582,7 @@ Function called when a head "dies"
 void() HeadDie =
 {
     sound (self, CHAN_ITEM, "misc/gibsq.wav", 1, ATTN_NORM);
-    ThrowGib ("progs/gib1.mdl", self.health);
+    ThrowGib ("progs/m_brain.mdl", self.health);
     remove (self);
 };
 
@@ -692,15 +692,98 @@ void(string gibname, float dm) ThrowHead =
 };
 
 
+//  This produces a variety of semi-random gibs.  This should only be
+//  used by gibbed players and humanoid monsters (e.g., zombies, cultists)
+void() RandomHumanGibs =
+{
+//
+// In Blood, you get 2 hands, ribcage, some meat, guts, eyeball, and a skull
+//
+// gib models...
+//
+// gib1 = bone (arm/leg) with flesh
+// gib2 = rib cage
+// gib3 = heart
+// m_arm = upper arm
+// m_brain = brain
+// m_chest = torso
+// m_farm = forearm with fist
+// m_fist = hand/fist
+// m_foot = looks like a bloody shoe?
+// m_guts = intestines
+// m_leg = femur with meat
+//
+
+    local   float   gibs, r;
+
+    // Throw 4-5 gibs
+    gibs = random() * 2;
+    gibs = 4 + floor(gibs);
+
+    // throw torso
+    ThrowGib ("progs/m_chest.mdl", self.health);
+    gibs = gibs - 1;
+
+    // throw hands (either or both)
+    r = random();
+    if (r < 0.4)
+    {
+        ThrowGib ("progs/m_farm.mdl", self.health);
+        gibs = gibs - 1;
+    }
+    else if (r < 0.8)
+    {
+        ThrowGib ("progs/m_fist.mdl", self.health);
+        gibs = gibs - 1;
+    }
+    else
+    {
+        ThrowGib ("progs/m_farm.mdl", self.health);
+        ThrowGib ("progs/m_fist.mdl", self.health);
+        gibs = gibs - 2;
+    }
+
+    // throw misc. organs (either or both)
+    r = random();
+    if (r < 0.4)
+    {
+        ThrowGib ("progs/gib3.mdl", self.health);
+        gibs = gibs - 1;
+    }
+    else if (r < 0.8)
+    {
+        ThrowGib ("progs/m_guts.mdl", self.health);
+        gibs = gibs - 1;
+    }
+    else
+    {
+        ThrowGib ("progs/gib3.mdl", self.health);
+        ThrowGib ("progs/m_guts.mdl", self.health);
+        gibs = gibs - 2;
+    }
+
+    // throw arm/leg limbs until we run out of gibs
+    while (gibs > 0)
+    {
+        r = random() * 3;
+        r = ceil (r);
+
+        if (r == 1)
+            ThrowGib ("progs/m_arm.mdl", self.health);
+        else if (r == 2)
+            ThrowGib ("progs/m_foot.mdl", self.health);
+        else //if (r == 3)
+            ThrowGib ("progs/m_leg.mdl", self.health);
+
+        gibs = gibs - 1;
+    }
+};
+
+
 void() GibPlayer =
 {
     ThrowHead ("progs/h_player.mdl", self.health);
-    ThrowGib ("progs/gib1.mdl", self.health);
-    ThrowGib ("progs/gib2.mdl", self.health);
-    ThrowGib ("progs/gib3.mdl", self.health);
-
-    ThrowGib ("progs/larm.mdl", self.health);
-    ThrowGib ("progs/leg.mdl", self.health);
+    RandomHumanGibs ();
 
     self.deadflag = DEAD_DEAD;
 

@@ -228,9 +228,7 @@ Remove a enforcer's corpse and throw gibs
 */
 void() GibEnfCorpse =
 {
-    ThrowGib ("progs/gib1.mdl", self.health);
-    ThrowGib ("progs/gib2.mdl", self.health);
-    ThrowGib ("progs/gib3.mdl", self.health);
+    RandomHumanGibs ();
 
     sound (self, CHAN_ITEM, "misc/gibsq.wav", 1, ATTN_NORM);
 
@@ -297,10 +295,8 @@ void() enf_die =
     if (self.health < -35)
     {
         sound (self, CHAN_VOICE, "player/udeath.wav", 1, ATTN_NORM);
+        RandomHumanGibs ();
         ThrowHead ("progs/h_mega.mdl", self.health);
-        ThrowGib ("progs/gib1.mdl", self.health);
-        ThrowGib ("progs/gib2.mdl", self.health);
-        ThrowGib ("progs/gib3.mdl", self.health);
         return;
     }
 

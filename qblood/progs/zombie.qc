@@ -480,10 +480,8 @@ void() zombie_burnd13   =[  $paind13,   zombie_gib ] {};
 void() zombie_gib =
 {
     sound (self, CHAN_VOICE, "zombie/z_gib.wav", 1, ATTN_NORM);
+    RandomHumanGibs ();
     ThrowHead ("progs/h_zombie.mdl", self.health);
-    ThrowGib ("progs/gib1.mdl", self.health);
-    ThrowGib ("progs/gib2.mdl", self.health);
-    ThrowGib ("progs/gib3.mdl", self.health);
     self.deadflag = DEAD_DEAD;      // PM:  So death flame goes out.
 };
 //------------------------------------------------------------------------//

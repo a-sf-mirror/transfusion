@@ -233,9 +233,7 @@ Remove a soldier's corpse and throw gibs
 */
 void() GibArmyCorpse =
 {
-    ThrowGib ("progs/gib1.mdl", self.health);
-    ThrowGib ("progs/gib2.mdl", self.health);
-    ThrowGib ("progs/gib3.mdl", self.health);
+    RandomHumanGibs ();
 
     sound (self, CHAN_ITEM, "misc/gibsq.wav", 1, ATTN_NORM);
 
@@ -288,10 +286,8 @@ void() army_die =
     if (self.health < -35)
     {
         sound (self, CHAN_VOICE, "player/udeath.wav", 1, ATTN_NORM);
+        RandomHumanGibs ();
         ThrowHead ("progs/h_guard.mdl", self.health);
-        ThrowGib ("progs/gib1.mdl", self.health);
-        ThrowGib ("progs/gib2.mdl", self.health);
-        ThrowGib ("progs/gib3.mdl", self.health);
         return;
     }
 

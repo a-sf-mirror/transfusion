@@ -388,8 +388,14 @@ void() worldspawn =
     precache_model ("progs/gib1.mdl");
     precache_model ("progs/gib2.mdl");
     precache_model ("progs/gib3.mdl");
-    precache_model ("progs/larm.mdl");
-    precache_model ("progs/leg.mdl");
+    precache_model ("progs/m_arm.mdl");
+    precache_model ("progs/m_brain.mdl");
+    precache_model ("progs/m_chest.mdl");
+    precache_model ("progs/m_farm.mdl");
+    precache_model ("progs/m_fist.mdl");
+    precache_model ("progs/m_foot.mdl");
+    precache_model ("progs/m_guts.mdl");
+    precache_model ("progs/m_leg.mdl");
 
 //    precache_model ("progs/flesh1.mdl");
 //    precache_model ("progs/flesh2.mdl");
