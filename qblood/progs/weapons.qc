@@ -194,6 +194,7 @@ void(entity targ, vector org, float damage) TineHit =
         SpawnBlood (org, '0 0 0', damage);
         AddMultiDamage (targ, damage);
         SpawnBloodSpray (trace_ent, org);
+	sound (self, CHAN_WEAPON, "weapons/pitchfrk/pflesh.wav", 1, ATTN_NORM);
     }
     else
     {   // hit wall
@@ -623,7 +624,7 @@ void() W_FireSuperShotgun =
 
     dir = aim (self, 100000);
     SpawnShell ();
-    FireBullets (9 * nbshots, dir, '0.08 0.08 0');  // 9 "shot pellets" per shell
+    FireBullets (11 * nbshots, dir, '0.08 0.08 0');  // 9 "shot pellets" per shell
 };
 
 
@@ -898,7 +899,7 @@ void() T_MissileTouch =
         return;
     }
 
-    damg = 50 + random()*50;
+    damg = 75 + random()*50;
 
     self.deathtype = "rocket";  // Done for the fire code.
     if (other.health)
@@ -1141,12 +1142,13 @@ void(float big) W_FireLightning =
     local   vector  dir;
     local   float   mspeed;
     local   float   akimboFactor;  // 1 if normal shot / 2 if akimbo
-
+    
     if (self.items & IT_GUNS_AKIMBO)
-        akimboFactor = 2;
+	     akimboFactor = 2;
+	     
     else
         akimboFactor = 1;
-
+	
     // If we don't have enough ammo
     if (self.ammo_cells < akimboFactor)
         return;
@@ -1355,7 +1357,7 @@ void() GrenadeExplode =
         PM_MakeBlastDamage (self, radius, damage, burn);
     }
     else if (self.netname == "Lit Spray Can")
-        PM_MakeBlastDamage (self, 200, 20, 15);
+        PM_MakeBlastDamage (self, 250, 20, 15);
 
     PM_PsychoCaleb (self.owner);
 
@@ -1791,7 +1793,7 @@ void() W_FireSuperSpikes =
     if (self.ammo_spray < 1)
         return;
 
-    sound (self, CHAN_WEAPON, "weapons/spraycan/sprayfir.wav", 1, ATTN_NORM);
+    sound (self, CHAN_WEAPON, "weapons/spraycan/spraycan.wav", 1, ATTN_NORM);
     self.attack_finished = time + 0.2;
     self.currentammo = self.ammo_spray = self.ammo_spray - 1;
     dir = aim (self, 1000);
@@ -2231,10 +2233,10 @@ void() W_Attack =
         if (self.tnt_time)
         {
             self.attack_finished = time + 0.6;
-            W_FireGrenade();
+    	    W_FireGrenade();
         }
         else
-            player_supernail1 ();
+        player_supernail1 ();
     }
     else if (self.weapon == IT_GRENADE_LAUNCHER ||
              self.weapon == IT_PROXIMITY_BOMB   ||
