@@ -5,7 +5,7 @@
 "message" "Winter Wonderland\n by JoeV [I Live...AGAIN]\n Made For Transfusion"
 "worldtype" "1"
 "sky" "sky4"
-"wad" "c:\worldcraft\bloodbath.wad;c:\worldcraft\fake_transparencies.wad;c:\worldcraft\feb2.wad;quake.wad"
+"wad" "c:\worldcraft\bloodbath.wad;c:\worldcraft\fake_transparencies.wad;c:\worldcraft\feb2.wad"
 {
 ( 192 -800 288 ) ( 896 -800 288 ) ( 896 -864 288 ) tile2492 -32 96 0 1.000000 1.000000
 ( 192 -800 288 ) ( 192 -864 288 ) ( 192 -864 32 ) tile0005 -32 17 0 1.000000 1.000000
