@@ -6,7 +6,7 @@
 // Version 0.0
 //
 
-/* Copyright (C) 2001  Mathieu Olivier  <elric@linuxmail.org>
+/* Copyright (C) 2001  Mathieu Olivier  <elric@planetblood.com>
  *
  * This program is free software; you can redistribute it and/or modify
  * it under the terms of the GNU General Public License as published by
@@ -38,7 +38,8 @@
 #define VERSION "0.0"
 
 // Contants used by the WAV header
-#define RIFF_MAGIC_NUMBER 0x46464952  // "RFF\x1A"
+// FIXME: use an endian-independent system instead of little endian integers
+#define RIFF_MAGIC_NUMBER 0x46464952  // "RIFF"
 #define WAVE_FORMAT_ID    0x45564157  // "WAVE"
 #define FMT_CHUNK_ID      0x20746D66  // "fmt "
 #define DATA_CHUNK_ID     0x61746164  // "data"
@@ -316,7 +317,7 @@ int main (int ArgC, char* ArgV [])
 
     // Header
     printf ("\n"
-            "Sfx2Wav version " VERSION " by Mathieu Olivier  <elric@linuxmail.org>\n"
+            "Sfx2Wav version " VERSION " by Mathieu Olivier  <elric@planetblood.com>\n"
             "===============================================================\n"
             "\n"
            );
@@ -325,11 +326,11 @@ int main (int ArgC, char* ArgV [])
     Ind = ParseArg (ArgC, (const char**)ArgV);
     if (Ind == -1 || Ind == ArgC)
     {
-        printf ("Syntax: sfx2wav [option] <sfx files ...>\n"
+        printf ("Syntax: sfx2wav [options] <sfx files ...>\n"
                 "   Options:\n"
                 "      '-b<buffer size>': set the extraction buffer size in Kb (default: %u Kb)\n"
                 "      '-t': Test. Do NOT write WAV files to disk\n"
-                "      '-v': Give the maximum amount of informations during the process\n"
+                "      '-v': Give the maximum amount of information during the process\n"
                 "\n",
                 DEFAULT_BUFFER_SIZE
                );
