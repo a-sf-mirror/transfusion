@@ -30,6 +30,7 @@ void() ShowThrowMeter;
 
 // ----- TNT model ----- //
 
+#ifndef NEW_MODELS
 $modelname v_rock
 
 // idle (animation; 3 frames)
@@ -57,6 +58,38 @@ $frame tnt_holster1 tnt_holster2 tnt_holster3 tnt_holster4
 
 // holster half
 $frame tnt_holsterhlf1 tnt_holsterhlf2 tnt_holsterhlf3 tnt_holsterhlf4
+
+
+#else
+$modelname v_tnt
+
+// idle (animation; 3 frames)
+$frame tnt_idle1 tnt_idle2 tnt_idle3
+
+// draw
+$frame tnt_draw1 tnt_draw2 tnt_draw3 tnt_draw4 tnt_draw5
+$frame tnt_draw6 tnt_draw7 tnt_draw8
+
+// draw half
+$frame tnt_drawhalf1 tnt_drawhalf2 tnt_drawhalf3
+
+// fire
+// the last 3 frames must be looped while holding the lighted TNT
+// FIXME: should be named "tnt_light" instead of "tnt_fire"
+$frame tnt_fire1 tnt_fire2 tnt_fire3 tnt_fire4 tnt_fire5
+$frame tnt_fire6 tnt_fire7 tnt_fire8 tnt_fire9
+
+// throw
+// at tnt_throw6, it's a new TNT that we have in hands
+$frame tnt_throw1  tnt_throw2 tnt_throw3 tnt_throw4 tnt_throw5
+$frame tnt_throw6  tnt_throw7
+
+// holster
+$frame tnt_holster1 tnt_holster2 tnt_holster3
+
+// holster half
+$frame tnt_holsterhlf1 tnt_holsterhlf2 tnt_holsterhlf3
+#endif
 
 
 // ----- Proximity Bomb model ----- //
@@ -149,8 +182,12 @@ void() player_throwtnt6 = [$attack1, player_throwtnt7]
     ShowThrowMeter ();
     self.player_state = PS_IDLE;
 };
+#ifndef NEW_MODELS
 void() player_throwtnt7 = [$attack1, player_throwtnt8] { self.weaponframe = $tnt_throw7; };
 void() player_throwtnt8 = [$attack2, player_run      ] { self.weaponframe = $tnt_throw8; };
+#else
+void() player_throwtnt7 = [$attack1, player_run      ] { self.weaponframe = $tnt_throw7; };
+#endif
 
 // Throw a proximity bomb
 void() player_throwproxy1 = [$attack2, player_throwproxy2] { self.weaponframe = $proxy_throw1; };
@@ -203,8 +240,12 @@ void() player_throwremote7 = [$attack1, player_run         ]
 // TNT half draw
 void() player_tnthalfdraw1 = [$attack2, player_tnthalfdraw2] { self.weaponframe = $tnt_drawhalf1; };
 void() player_tnthalfdraw2 = [$attack2, player_tnthalfdraw3] { self.weaponframe = $tnt_drawhalf2; };
+#ifndef NEW_MODELS
 void() player_tnthalfdraw3 = [$attack2, player_tnthalfdraw4] { self.weaponframe = $tnt_drawhalf3; };
 void() player_tnthalfdraw4 = [$attack2, player_run         ] { self.weaponframe = $tnt_drawhalf4; };
+#else
+void() player_tnthalfdraw3 = [$attack2, player_run         ] { self.weaponframe = $tnt_drawhalf3; };
+#endif
 
 // TNT normal draw
 void() player_tntdraw1 = [$attack2, player_tntdraw2] { self.weaponframe = $tnt_draw1; };
@@ -220,15 +261,23 @@ void() player_tntdraw8 = [$attack2, player_run     ] { self.weaponframe = $tnt_d
 void() player_tnthalfholster1 = [$attack2, player_tnthalfholster2] { self.weaponframe = $tnt_holsterhlf1; };
 void() player_tnthalfholster2 = [$attack2, player_tnthalfholster3] { self.weaponframe = $tnt_holsterhlf2; };
 void() player_tnthalfholster3 = [$attack2, player_tnthalfholster4] { self.weaponframe = $tnt_holsterhlf3; };
+#ifndef NEW_MODELS
 void() player_tnthalfholster4 = [$attack2, player_tnthalfholster5] { self.weaponframe = $tnt_holsterhlf4; };
 void() player_tnthalfholster5 = [$attack2, player_run            ] { W_DrawWeapon (self.newweapon); };
+#else
+void() player_tnthalfholster4 = [$attack2, player_run            ] { W_DrawWeapon (self.newweapon); };
+#endif
 
 // TNT normal holster
 void() player_tntholster1 = [$attack2, player_tntholster2] { self.weaponframe = $tnt_holster1; };
 void() player_tntholster2 = [$attack2, player_tntholster3] { self.weaponframe = $tnt_holster2; };
 void() player_tntholster3 = [$attack2, player_tntholster4] { self.weaponframe = $tnt_holster3; };
+#ifndef NEW_MODELS
 void() player_tntholster4 = [$attack2, player_tntholster5] { self.weaponframe = $tnt_holster4; };
 void() player_tntholster5 = [$attack2, player_run        ] { W_DrawWeapon (self.newweapon); };
+#else
+void() player_tntholster4 = [$attack2, player_run        ] { W_DrawWeapon (self.newweapon); };
+#endif
 
 // Proximity bomb draw
 void() player_proxydraw1 = [$attack2, player_proxydraw2] { self.weaponframe = $proxy_draw1; };
@@ -491,7 +540,11 @@ void() W_ChargeNormal =
             else  // if (self.weapon == IT_SPRAY_CAN)
             {
                 self.tnt_type = TNT_TYPE_NORMAL;
+                #ifndef NEW_MODELS
                 self.attack_finished = time + 0.6;  // let the animation play
+                #else
+                self.attack_finished = time + 0.9;  // let the animation play
+                #endif
                 player_lightcan1 ();
             }
         }
@@ -1055,7 +1108,11 @@ void() TNT_Draw =
     else
     {
         player_tnthalfdraw1 ();
+        #ifndef NEW_MODELS
         self.attack_finished = time + 0.5;
+        #else
+        self.attack_finished = time + 0.4;
+        #endif
     }
 
     self.weapon = IT_TNT;
@@ -1071,7 +1128,11 @@ Holster code for the TNT
 */
 void() TNT_Holster =
 {
+    #ifndef NEW_MODELS
     self.attack_finished = time + 0.5;
+    #else
+    self.attack_finished = time + 0.4;
+    #endif
 
     // If we need to close the lighter
     if (self.newweapon != IT_SPRAY_CAN)
@@ -1093,7 +1154,11 @@ Choose the right TNT model to display
 */
 void() TNT_UpdateView =
 {
+    #ifndef NEW_MODELS
     self.weaponmodel = "progs/v_rock.mdl";
+    #else
+    self.weaponmodel = "models/weapons/v_tnt.md3";
+    #endif
     self.items = self.items - (self.items & IT_GUNS_AKIMBO);
 };
 

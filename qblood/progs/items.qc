@@ -1641,11 +1641,12 @@ void() weapon_nailgun =
 // Spray Can
 void() weapon_supernailgun =
 {
-    precache_model ("progs/v_nail2.mdl");
     #ifndef NEW_MODELS
+    precache_model ("progs/v_nail2.mdl");
     precache_model ("progs/g_nail2.mdl");
     precache_model ("progs/grd_aero.mdl");
     #else
+    precache_model ("models/weapons/v_aerosol.md3");
     precache_model ("models/ammo/g_aerosol.md3");
     precache_model ("models/weapons/grenades/gr_aerosol.md3");
     #endif
@@ -1677,10 +1678,11 @@ void() weapon_supernailgun =
 // TNT (case & bundle)
 void() item_tnt_common =
 {
-    precache_model ("progs/v_rock.mdl");
     #ifndef NEW_MODELS
+    precache_model ("progs/v_rock.mdl");
     precache_model ("progs/grd_bund.mdl");
     #else
+    precache_model ("models/weapons/v_tnt.md3");
     precache_model ("models/weapons/grenades/gr_tnt.md3");
     #endif
 
