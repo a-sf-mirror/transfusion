@@ -480,6 +480,14 @@ void() World_WarmupCountdown =
     if (warmup_done)
         return;
 
+    // If the game is already over, don't bother with a warmup
+    if (gameover)
+    {
+        warmup_done = TRUE;
+        warmup_counttime = 0;
+        return;
+    }
+
     // If the warmup hasn't begun, send regularly a message to all players
     // so they know they're not in the real game yet
     if (! warmup_endtime)
