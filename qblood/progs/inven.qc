@@ -467,7 +467,7 @@ void(float add) InvenSelect =
 };
 
 // This gives the cheater all items.
-void() InvenCheat =
+void() Cheat_Inventory =
 {
     InvenSet (self, S_FIRST_AID, 100);
     InvenSet (self, S_DIVING_SUIT, 100);

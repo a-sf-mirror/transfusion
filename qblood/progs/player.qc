@@ -143,8 +143,10 @@ void(entity player, entity attacker) Player_BrinkOfDeath =
     player.weaponmodel = "";
 
     player.attack_finished = time + 10;
-    sound (player, CHAN_VOICE, "thevoice/vo15.wav", 1, ATTN_NORM);
-    centerprint (attacker, "FINISH HIM!!");
+    sound (player, CHAN_VOICE, "thevoice/vo15.wav", 1, ATTN_NONE);
+    // If there's a real attacker (not a BOD triggered by cheat code)
+    if (attacker != world)
+        centerprint (attacker, "FINISH HIM!!");
 };
 
 

@@ -1098,49 +1098,6 @@ void() W_ChangeWeapon =
 
 /*
 ============
-CheatCommand
-
-WARNING: it's very unlikely that all necessary sounds
-and models will be precached. Be prepared to crash
-============
-*/
-void() CheatCommand =
-{
-    self.ammo_flares     = MAX_FLARES;
-    self.ammo_shells     = MAX_SHELLS;
-    self.ammo_nails      = MAX_NAILS;
-    self.ammo_rockets    = MAX_ROCKETS;
-    self.ammo_tnt_bundle = MAX_TNT;
-    self.ammo_tnt_proxy  = MAX_PROXY;
-    self.ammo_tnt_remote = MAX_REMOTE;
-    self.ammo_spray      = MAX_SPRAY;
-    self.ammo_cells      = MAX_CELLS;
-    self.ammo_voodoo     = MAX_VOODOO;
-    self.ammo_leech      = MAX_LEECH;
-
-    self.items = self.items |
-        IT_PITCHFORK |
-        IT_FLAREGUN |
-        IT_SAWED_OFF |
-        IT_TOMMYGUN |
-        IT_SPRAY_CAN |
-        IT_TNT |
-        IT_PROXIMITY_BOMB |
-        IT_REMOTE_DETONATOR |
-        IT_NAPALM_LAUNCHER |
-        IT_TESLA_CANNON |
-        IT_VOODOO_DOLL |
-        IT_LIFE_LEECH;
-    self.items2 = self.items2 |
-        IT2_KEY1 | IT2_KEY2;
-
-    W_SwitchToWeapon (IT_NAPALM_LAUNCHER);
-    self.impulse = 0;
-};
-
-
-/*
-============
 CycleWeaponCommand
 
 Go to the next weapon with ammo
@@ -1340,12 +1297,12 @@ void() CycleWeaponReverseCommand =
 };
 
 
-void() QuadCheat =
+void() Cheat_Akimbo =
 {
     self.akimbo_finished = time + 30;
     W_SetCurrentAmmo ();
 
-    Sprint (self, PRINT_MEDIUM, "Tequila !\n");
+    Sprint (self, PRINT_MEDIUM, "Tequila!\n");
     dprint ("Akimbo cheat\n");
 };
 

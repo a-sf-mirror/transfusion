@@ -1301,11 +1301,11 @@ void() Impulses_Player =
             Ignite (self, self, 200, DF_FIRE);
         }
         else if (self.impulse == 253)
-            InvenCheat ();
+            Cheat_Inventory ();
         else if (self.impulse == 254)
-            CheatCommand ();
+            Player_BrinkOfDeath (self, world);
         else if (self.impulse == 255)
-            QuadCheat ();
+            Cheat_Akimbo ();
     }
 
     self.impulse = 0;

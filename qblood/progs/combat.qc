@@ -331,9 +331,10 @@ void(entity targ, entity inflictor, entity attacker, float damage, float dflags,
         if (targ.health == 0 && targ.classname == "player")
         {
             // If he wasn't already on the Brink Of Death
-            if (targ.player_state != PS_BRINK_OF_DEATH)
+            // and if he doesn't kill himself
+            if (targ.player_state != PS_BRINK_OF_DEATH && targ != attacker)
             {
-                // If he doesn't burn, he becomes on the BOD
+                // If he doesn't burn, he becomes on the BOD; else let him go
                 if (targ.burner == world)
                 {
                     Player_BrinkOfDeath (targ, attacker);
@@ -342,8 +343,6 @@ void(entity targ, entity inflictor, entity attacker, float damage, float dflags,
                     recursioncount = recursioncount - 1;
                     return;
                 }
-
-                // If he burns, let him go
             }
         }
 
