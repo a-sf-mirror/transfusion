@@ -140,6 +140,34 @@ void() shalrath_pain =
     self.pain_finished = time + 3;
 };
 
+void() shal_burn1   =[  $pain1,  shal_burn2  ] {};
+void() shal_burn2   =[  $pain2,  shal_burn3  ] {};
+void() shal_burn3   =[  $pain3,  shal_burn4  ] {};
+void() shal_burn4   =[  $pain4,  shal_burn5  ] {};
+void() shal_burn5   =[  $pain5,  shal_burn6  ] {};
+void() shal_burn6   =[  $walk2,  shal_burn7  ] {
+    if (random() < 0.2)
+        sound (self, CHAN_VOICE, "shalrath/idle.wav", 1, ATTN_IDLE);
+    ai_charge(6);
+};
+void() shal_burn7   =[  $walk3,  shal_burn8  ] {ai_charge(4);};
+void() shal_burn8   =[  $walk4,  shal_burn9  ] {ai_charge(0);};
+void() shal_burn9   =[  $walk5,  shal_burn10 ] {ai_charge(0);};
+void() shal_burn10  =[  $walk6,  shal_burn11 ] {ai_charge(0);};
+void() shal_burn11  =[  $walk7,  shal_burn12 ] {ai_charge(0);};
+void() shal_burn12  =[  $walk8,  shal_burn13 ] {ai_charge(5);};
+void() shal_burn13  =[  $walk9,  shal_burn14 ] {ai_charge(6);};
+void() shal_burn14  =[  $walk10, shal_burn15 ] {ai_charge(5);};
+void() shal_burn15  =[  $walk11, shal_burn16 ] {ai_charge(0);};
+void() shal_burn16  =[  $walk12, shal_burn17 ] {ai_charge(4);};
+void() shal_burn17  =[  $walk1,  shal_burn18 ] {ai_charge(5);};
+void() shal_burn18  =
+{
+    sound (self, CHAN_VOICE, "shalrath/death.wav", 1, ATTN_NORM);
+    shal_death1();
+    self.solid = SOLID_NOT;
+};
+
 void() shalrath_die =
 {
 // check for gib
@@ -150,6 +178,15 @@ void() shalrath_die =
         ThrowGib ("progs/gib1.mdl", self.health);
         ThrowGib ("progs/gib2.mdl", self.health);
         ThrowGib ("progs/gib3.mdl", self.health);
+        return;
+    }
+
+// PM:  Check for death by fire.
+    if (self.deathtype == "fire")
+    {
+        sound (self, CHAN_VOICE, "shalrath/pain.wav", 1, ATTN_NORM);
+        PM_DeathFlame ('4 0 20');
+        shal_burn1 ();
         return;
     }
 

@@ -1,4 +1,6 @@
 /*  Copyright (C) 1996-1997  Id Software, Inc.
+    Copyright (C) 2001       contributors of the qBlood project
+    Please see the file "AUTHORS" for a list of contributors
 
     This program is free software; you can redistribute it and/or modify
     it under the terms of the GNU General Public License as published by
@@ -242,6 +244,17 @@
 #define AS_SLIDING  2
 #define AS_MELEE    3
 #define AS_MISSILE  4
+
+
+// Damage flags for 'T_NewDamage'.  Must be in powers of 2.
+#define DF_NONE         0   // No flags -- just for readability.
+#define DF_RADIUS       1   // Splash damage.
+#define DF_MIN_PAIN     2   // Attack causes minimal pain.
+#define DF_NO_PROTECT   4   // Ignores all protection, including godmode.
+#define DF_ALT_SAVE     8   // Drop save fractions.  (Don't round up.)
+#define DF_FIRE         16  // Damage is absorbed by fire armor.
+#define DF_BODY         32  // Damage is absorbed by body armor.
+#define DF_MIND         64  // Damage is absorbed by spirit armor.
 
 
 /* ----------------- */

@@ -249,6 +249,19 @@ void()  knight_dieb10 = [   $deathb10,  knight_dieb11] {};
 void()  knight_dieb11 = [   $deathb11,  knight_dieb11] {BecomeCorpse(40,GibKnightCorpse);};
 
 
+// PM:  Burning death.
+void()  knight_burn1   =[  $painb1,    knight_burn2   ] {ai_forward(0);};
+void()  knight_burn2   =[  $painb2,    knight_burn3   ] {ai_forward(3);};
+void()  knight_burn3   =[  $painb3,    knight_burn4   ] {};
+void()  knight_burn4   =[  $painb4,    knight_burn5   ] {};
+void()  knight_burn5   =[  $painb5,    knight_burn6   ] {ai_forward(2);};
+void()  knight_burn6   =[  $painb6,    knight_burn7   ] {ai_forward(4);};
+void()  knight_burn7   =[  $painb7,    knight_burn8   ] {ai_forward(2);};
+void()  knight_burn8   =[  $painb8,    knight_burn9   ] {ai_forward(5);};
+void()  knight_burn9   =[  $painb9,    knight_burn10  ] {ai_forward(5);};
+void()  knight_burn10  =[  $painb10,   knight_burn11  ] {ai_forward(0);};
+void()  knight_burn11  =[  $painb11,   knight_dieb1   ] {sound (self, CHAN_VOICE, "knight/kdeath.wav", 1, ATTN_NORM);};
+
 void() knight_die =
 {
 // check for gib
@@ -259,6 +272,15 @@ void() knight_die =
         ThrowGib ("progs/gib1.mdl", self.health);
         ThrowGib ("progs/gib2.mdl", self.health);
         ThrowGib ("progs/gib3.mdl", self.health);
+        return;
+    }
+
+// PM:  Check for death by fire.
+    if (self.deathtype == "fire")
+    {
+        sound (self, CHAN_VOICE, "knight/khurt.wav", 1, ATTN_NORM);
+        PM_DeathFlame ('2 0 16');
+        knight_burn1 ();
         return;
     }
 

@@ -4,6 +4,7 @@ defs.qc
 subs.qc
 fight.qc
 ai.qc
+fire.qc
 combat.qc
 items.qc
 weapons.qc

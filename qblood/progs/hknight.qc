@@ -237,6 +237,41 @@ void()  hknight_dieb7   =[  $deathb7,   hknight_dieb8   ] {};
 void()  hknight_dieb8   =[  $deathb8,   hknight_dieb9   ] {};
 void()  hknight_dieb9   =[  $deathb9,   hknight_dieb9   ] {BecomeCorpse(40,GibHknightCorpse);};
 
+// PM:  Burning death.
+void()  hknight_burn1 =[  $char_a1,   hknight_burn2     ] {ai_charge(20);};
+void()  hknight_burn2 =[  $char_a2,   hknight_burn3     ] {ai_charge(25);};
+void()  hknight_burn3 =[  $char_a3,   hknight_burn4     ] {ai_charge(18);};
+void()  hknight_burn4 =[  $char_a4,   hknight_burn5     ] {ai_charge(16);};
+void()  hknight_burn5 =[  $char_a5,   hknight_burn6     ] {ai_charge(14);};
+void()  hknight_burn6 =[  $char_a6,   hknight_burn7     ] {ai_charge(20); ai_melee();};
+void()  hknight_burn7 =[  $char_a7,   hknight_burn8     ] {ai_charge(21); ai_melee();};
+void()  hknight_burn8 =[  $char_a8,   hknight_burn9     ] {ai_charge(13); ai_melee();};
+void()  hknight_burn9 =[  $char_a9,   hknight_burn10    ] {ai_charge(20); ai_melee();};
+void()  hknight_burn10=[  $char_a10,  hknight_burn11    ] {ai_charge(20); ai_melee();};
+void()  hknight_burn11=[  $char_a11,  hknight_burn12    ] {ai_charge(18); ai_melee();};
+void()  hknight_burn12=[  $char_a12,  hknight_burn13    ] {ai_charge(16);};
+void()  hknight_burn13=[  $char_a13,  hknight_burn14    ] {ai_charge(14);};
+void()  hknight_burn14=[  $char_a14,  hknight_burn15    ] {ai_charge(25);};
+void()  hknight_burn15=[  $char_a15,  hknight_burn16    ] {ai_charge(21);};
+void()  hknight_burn16=[  $char_a16,  hknight_burndie   ] {ai_charge(13);};
+
+void()  hknight_burnb1   =[  $pain1,     hknight_burnb2   ] {sound (self, CHAN_VOICE, "hknight/pain1.wav", 1, ATTN_NORM);};
+void()  hknight_burnb2   =[  $pain2,     hknight_burnb3   ] {};
+void()  hknight_burnb3   =[  $pain3,     hknight_burnb4   ] {};
+void()  hknight_burnb4   =[  $pain4,     hknight_burnb5   ] {};
+void()  hknight_burnb5   =[  $pain5,     hknight_burnb6   ] {};
+void()  hknight_burnb6   =[  $pain1,     hknight_burnb7   ] {sound (self, CHAN_VOICE, "hknight/pain1.wav", 1, ATTN_NORM);};
+void()  hknight_burnb7   =[  $pain2,     hknight_burnb8   ] {};
+void()  hknight_burnb8   =[  $pain3,     hknight_burnb9   ] {};
+void()  hknight_burnb9   =[  $pain4,     hknight_burnb10  ] {};
+void()  hknight_burnb10  =[  $pain5,     hknight_burndie  ] {};
+
+void()  hknight_burndie =
+{
+    sound (self, CHAN_VOICE, "hknight/death1.wav", 1, ATTN_NORM);
+    hknight_die1 ();
+};
+
 void() hknight_die =
 {
 // check for gib
@@ -247,6 +282,23 @@ void() hknight_die =
         ThrowGib ("progs/gib1.mdl", self.health);
         ThrowGib ("progs/gib2.mdl", self.health);
         ThrowGib ("progs/gib3.mdl", self.health);
+        return;
+    }
+
+// PM:  Check for death by fire.
+    if (self.deathtype == "fire")
+    {
+        PM_DeathFlame ('2 0 24');
+        if (self.enemy.health > 0)
+        {
+            sound (self, CHAN_VOICE, "hknight/sight1.wav", 1, ATTN_NORM);
+            hknight_burn1 ();
+        }
+        else
+        {
+            // In case the death knight is idle.
+            hknight_burnb1 ();
+        }
         return;
     }
 

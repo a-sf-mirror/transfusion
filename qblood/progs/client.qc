@@ -346,6 +346,7 @@ void() execute_changelevel =
     while (other != world)
     {
         #ifndef QUAKEWORLD
+        PM_KillBurner (other);
         other.view_ofs = '0 0 0';
         other.angles = other.v_angle = pos.mangle;
         other.fixangle = TRUE;      // turn this way immediately
@@ -674,6 +675,7 @@ void() PutClientInServer =
     self.invincible_finished = 0;
     self.effects = 0;
     self.invincible_time = 0;
+    PM_KillBurner (other);
 
     DecodeLevelParms ();
 
@@ -1018,7 +1020,8 @@ void() WaterMove =
             self.dmg = self.dmg + 2;
             if (self.dmg > 15)
                 self.dmg = 10;
-            T_Damage (self, world, world, self.dmg);
+            // PM:  Armor does not protect against drowning.
+            T_NewDamage (self, world, world, self.dmg, 0, "drowning");
             self.pain_finished = time + 1;
         }
     }
@@ -1043,7 +1046,8 @@ void() WaterMove =
             else
                 self.dmgtime = time + 0.2;
 
-            T_Damage (self, world, world, 10*self.waterlevel);
+            // PM:  Fire-based damage.
+            T_NewDamage (self, world, world, 10*self.waterlevel, DF_FIRE, "lava");
         }
     }
     else if (self.watertype == CONTENT_SLIME)
@@ -1051,7 +1055,8 @@ void() WaterMove =
         if (self.dmgtime < time && self.radsuit_finished < time)
         {
             self.dmgtime = time + 1;
-            T_Damage (self, world, world, 4*self.waterlevel);
+            // PM:  Acid damage.
+            T_NewDamage (self, world, world, 4*self.waterlevel, DF_BODY, "acid");
         }
     }
 
@@ -1369,9 +1374,12 @@ void() PlayerPostThink =
         // if higher than 300 units, do 5 damage, and set the falling death flag if player is killed
         else if (self.jump_flag < -650)
         {
-            T_Damage (self, world, world, 5);
             sound (self, CHAN_VOICE, "player/pain/play1105.wav", 1, ATTN_NORM);
-            self.deathtype = "falling";
+            // PM:  Armor does not protect against falling.
+            // Quake falling damage = 5.
+            aspeed = 0 - self.jump_flag;
+            aspeed = (aspeed - 600) * 0.2;
+            T_NewDamage (self, world, world, aspeed, 0, "falling");
         }
         else
             sound (self, CHAN_VOICE, "foley/land.wav", 1, ATTN_NORM);

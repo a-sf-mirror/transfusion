@@ -912,7 +912,7 @@ void() item_health =
         self.healamount = 15;
         self.netname = "Life Essence";
         #ifdef QUAKEWORLD
-        self.effects = self.effects | EF_RED; 
+        self.effects = self.effects | EF_RED;
         #endif
         self.healtype = 1;
     }
@@ -1034,30 +1034,90 @@ void() armor_touch =
     if (other.classname != "player")
         return;
 
+// PM:  Use Blood's three armor/damage system.
     if (self.classname == "item_armor1")
     {
-        type = 0.3;
-        value = 100;
+        // Body armor
+        if (other.armor_body >= 100)
+            return;
+        value = other.armor_body = 100;
         bit = IT_ARMOR1;
     }
-    if (self.classname == "item_armor2")
+    else if (self.classname == "item_armor2")
     {
-        type = 0.6;
-        value = 150;
+        // Fire armor
+        if (other.armor_fire >= 100)
+            return;
+        value = other.armor_fire = 100;
         bit = IT_ARMOR2;
     }
-    if (self.classname == "item_armorInv")
+    else if (self.classname == "item_armorInv")
     {
-        type = 0.8;
-        value = 200;
+        // Super armor (200 of all three armors).
+        if (other.armor_body >= 200)
+            if (other.armor_fire >= 200)
+                if (other.armor_mind >= 200)
+                    return;
+
+        other.armor_body = other.armor_fire = other.armor_mind = 200;
+
+        bit = other.items & (IT_ARMOR1 | IT_ARMOR2 | IT_ARMOR3);
+        if (bit == IT_ARMOR1)
+            value = other.armor_body;
+        else if (bit == IT_ARMOR2)
+            value = other.armor_fire;
+        else
+        {
+            bit = IT_ARMOR3;
+            value = other.armor_mind;
+        }
+    }
+    else if (self.classname == "item_armor0")
+    {
+        // Basic armor
+        if (other.armor_body >= 100)
+            if (other.armor_fire >= 100)
+                if (other.armor_mind >= 100)
+                    return;
+
+        other.armor_body = other.armor_body + 50;
+        if (other.armor_body > 100)
+            other.armor_body = 100;
+        other.armor_fire = other.armor_fire + 50;
+        if (other.armor_fire > 100)
+            other.armor_fire = 100;
+        other.armor_mind = other.armor_mind + 50;
+        if (other.armor_mind > 100)
+            other.armor_mind = 100;
+
+        bit = other.items & (IT_ARMOR1 | IT_ARMOR2 | IT_ARMOR3);
+        if (bit == IT_ARMOR3)
+            value = other.armor_mind;
+        else if (bit == IT_ARMOR2)
+            value = other.armor_fire;
+        else
+        {
+            bit = IT_ARMOR1;
+            value = other.armor_body;
+        }
+    }
+    else if (self.classname == "item_armor4")
+    {
+        // Spirit armor
+        if (other.armor_mind >= 100)
+            return;
+        value = other.armor_mind = 100;
         bit = IT_ARMOR3;
     }
-    if (other.armortype*other.armorvalue >= type*value)
-        return;
+    else
+    {
+        Sprint(other, PRINT_MEDIUM, "Tried to pickup illegal armor.\n");
+    }
 
-    other.armortype = type;
+    other.armortype = 0;    // FIXME:  Remove -- this isn't needed.
     other.armorvalue = value;
-    other.items = other.items - (other.items & (IT_ARMOR1 | IT_ARMOR2 | IT_ARMOR3)) + bit;
+    if (bit)
+        other.items = other.items - (other.items & (IT_ARMOR1 | IT_ARMOR2 | IT_ARMOR3)) + bit;
 
     self.solid = SOLID_NOT;
     self.model = string_null;
@@ -1065,7 +1125,7 @@ void() armor_touch =
         self.nextthink = time + 20;
     self.think = SUB_regen;
 
-    Sprint(other, PRINT_LOW, "Picked up "); 
+    Sprint(other, PRINT_LOW, "Picked up ");
     Sprint(other, PRINT_LOW, self.netname);
     Sprint(other, PRINT_LOW, "\n");
     sound(other, CHAN_ITEM, "items/pickarmr.wav", 1, ATTN_NORM);
@@ -1096,8 +1156,8 @@ void() item_armor4 =
     self.touch = armor_touch;
     precache_model("progs/i_arm_sp.mdl");
     setmodel(self, "progs/i_arm_sp.mdl");
-
     self.netname = "Spirit Armor";
+
     setsize (self, '0 0 0', '32 32 56');
     StartItem ();
     };
@@ -1110,8 +1170,8 @@ void() item_armor1 =
     self.touch = armor_touch;
     precache_model ("progs/i_arm_bd.mdl");
     setmodel (self, "progs/i_arm_bd.mdl");
-
     self.netname = "Body Armor";
+
     setsize (self, '-16 -16 0', '16 16 56');
     StartItem ();
 };
@@ -1124,8 +1184,8 @@ void() item_armor2 =
     self.touch = armor_touch;
     precache_model ("progs/i_arm_fr.mdl");
     setmodel (self, "progs/i_arm_fr.mdl");
-
     self.netname = "Fire Armor";
+
     setsize (self, '-16 -16 0', '16 16 56');
     StartItem ();
 };
@@ -1138,8 +1198,8 @@ void() item_armorInv =
     self.touch = armor_touch;
     precache_model ("progs/i_arm_su.mdl");
     setmodel (self, "progs/i_arm_su.mdl");
-
     self.netname = "Super Armor";
+
     setsize (self, '-16 -16 0', '16 16 56');
     StartItem ();
 };
@@ -1397,6 +1457,8 @@ void() weapon_flaregun =
 
     // precache the necessary sounds
     precache_sound ("weapons/flaregun/flaref.wav");
+// PM:  For alt-flares.
+    precache_sound ("weapons/napalm/explodfs.wav");
 
     StartItem ();
 };

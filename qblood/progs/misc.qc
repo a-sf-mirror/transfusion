@@ -227,36 +227,44 @@ local entity    fireball;
 
 void() fire_touch =
 {
-    T_Damage (other, self, self, 20);
+// PM:  Make fireballs do fire damage.
+    T_NewDamage (other, self, self, 20, DF_FIRE, "fire");
     remove(self);
 };
 
+
 //============================================================================
 
-
-void() barrel_explode =
+//  This fixes a bug in which barrel explosions cancel other explosions.
+//  Here, the barrel explosion is delayed for one frame so that other
+//  explosions can occur without interference from the barrel.
+void() barrel_damage =
 {
-    self.takedamage = DAMAGE_NO;
-    self.classname = "explo_box";
-    // did say self.owner
-    T_RadiusDamage (self, self, 160, world, "");
+    setorigin (self, self.origin + '0 0 32');
+    T_RadiusDamage (self, self, 160, world, string_null);
+
     #ifdef QUAKEWORLD
     WriteByte (MSG_MULTICAST, SVC_TEMPENTITY);
     WriteByte (MSG_MULTICAST, TE_EXPLOSION);
     WriteCoord (MSG_MULTICAST, self.origin_x);
     WriteCoord (MSG_MULTICAST, self.origin_y);
-    WriteCoord (MSG_MULTICAST, self.origin_z+32);
+    WriteCoord (MSG_MULTICAST, self.origin_z);
     multicast (self.origin, MULTICAST_PHS);
     remove (self);
     #else
     sound (self, CHAN_VOICE, "weapons/napalm/explodfl.wav", 1, ATTN_NORM);
     particle (self.origin, '0 0 0', 75, 255);
-
-    self.origin_z = self.origin_z + 32;
     BecomeExplosion ();
     #endif
 };
 
+void() barrel_explode =
+{
+    self.takedamage = DAMAGE_NO;
+    self.classname = "explo_box";
+    self.nextthink = time + 0.1;
+    self.think = barrel_damage;
+};
 
 
 /*QUAKED misc_explobox (0 .5 .8) (0 0 0) (32 32 64)

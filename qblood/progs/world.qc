@@ -268,6 +268,22 @@ void() worldspawn =
     precache_sound ("player/pain/play1106.wav");
     precache_sound ("player/pain/play1107.wav");
     precache_sound ("player/pain/play1108.wav");
+// PM:  Pain while onfire.
+    precache_sound ("player/pain/play1118.wav");
+    precache_sound ("player/pain/play1119.wav");
+    precache_sound ("player/pain/play1120.wav");
+
+    // Player quips (when playing with explosives).
+    precache_sound ("player/play1109.wav");
+    precache_sound ("player/play1110.wav");
+    precache_sound ("player/play1111.wav");
+    precache_sound ("player/play1112.wav");
+    precache_sound ("player/play1113.wav");
+    precache_sound ("player/play1114.wav");
+    precache_sound ("player/play1115.wav");
+    precache_sound ("player/play1116.wav");
+    precache_sound ("player/quips/1039.wav");   // "SOB must pay!"
+    precache_sound ("player/quips/1050.wav");   // "That's all folks!"
 
     // player death sounds
     precache_sound ("player/die1.wav");
@@ -546,7 +562,7 @@ void() GibPlayerCorpse =
     ThrowGib ("progs/gib3.mdl", self.health);
     ThrowGib ("progs/larm.mdl", self.health);
     ThrowGib ("progs/leg.mdl", self.health);
-    
+
     sound (self, CHAN_ITEM, "misc/gibsq.wav", 1, ATTN_NORM);
 
     remove (self);

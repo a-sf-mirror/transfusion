@@ -407,13 +407,119 @@ void() zombie_paine28   =[  $paine28,   zombie_paine29  ] {ai_pain(1);};
 void() zombie_paine29   =[  $paine29,   zombie_paine30  ] {};
 void() zombie_paine30   =[  $paine30,   zombie_run1     ] {};
 
-void() zombie_die =
+// PM:  Burning death.
+void() zombie_burn1    =[  $stand1,        zombie_burn2   ] {sound (self, CHAN_VOICE, "zombie/z_pain.wav", 1, ATTN_NORM);};
+void() zombie_burn2    =[  $stand2,        zombie_burn3   ] {};
+void() zombie_burn3    =[  $stand3,        zombie_burn4   ] {};
+void() zombie_burn4    =[  $stand4,        zombie_burn5   ] {};
+void() zombie_burn5    =[  $stand5,        zombie_burn6   ] {};
+void() zombie_burn6    =[  $stand6,        zombie_burn7   ] {};
+void() zombie_burn7    =[  $stand7,        zombie_burn8   ] {};
+void() zombie_burn8    =[  $stand8,        zombie_burn9   ] {};
+void() zombie_burn9    =[  $stand9,        zombie_burn10  ] {};
+void() zombie_burn10   =[  $stand10,       zombie_burn11  ] {};
+void() zombie_burn11   =[  $stand11,       zombie_burn12  ] {};
+void() zombie_burn12   =[  $stand12,       zombie_burn13  ] {};
+void() zombie_burn13   =[  $stand13,       zombie_burn14  ] {};
+void() zombie_burn14   =[  $stand14,       zombie_burn15  ] {};
+void() zombie_burn15   =[  $stand15,       zombie_gib     ] {};
+
+void() zombie_burnb1     =[  $walk1,     zombie_burnb2    ] {sound (self, CHAN_VOICE, "zombie/z_idle.wav", 1, ATTN_NORM);ai_face();};
+void() zombie_burnb2     =[  $walk2,     zombie_burnb3    ] {ai_charge(2);};
+void() zombie_burnb3     =[  $walk3,     zombie_burnb4    ] {ai_charge(3);};
+void() zombie_burnb4     =[  $walk4,     zombie_burnb5    ] {ai_charge(2);};
+void() zombie_burnb5     =[  $walk5,     zombie_burnb6    ] {ai_charge(1);};
+void() zombie_burnb6     =[  $walk6,     zombie_burnb7    ] {ai_face();};
+void() zombie_burnb7     =[  $walk7,     zombie_burnb8    ] {ai_face();};
+void() zombie_burnb8     =[  $walk8,     zombie_burnb9    ] {ai_face();};
+void() zombie_burnb9     =[  $walk9,     zombie_burnb10   ] {ai_face();};
+void() zombie_burnb10    =[  $walk10,    zombie_burnb11   ] {ai_face();};
+void() zombie_burnb11    =[  $walk11,    zombie_burnb12   ] {ai_charge(2);};
+void() zombie_burnb12    =[  $walk12,    zombie_burnb13   ] {ai_charge(2);};
+void() zombie_burnb13    =[  $walk13,    zombie_burnb14   ] {ai_charge(1);};
+void() zombie_burnb14    =[  $walk14,    zombie_burnb15   ] {ai_face();};
+void() zombie_burnb15    =[  $walk15,    zombie_burnb16   ] {ai_face();};
+void() zombie_burnb16    =[  $walk16,    zombie_burnb17   ] {ai_face();};
+void() zombie_burnb17    =[  $walk17,    zombie_burnb18   ] {ai_face();};
+void() zombie_burnb18    =[  $walk18,    zombie_burnb19   ] {ai_face();};
+void() zombie_burnb19    =[  $walk19,    zombie_gib       ] {ai_face();};
+
+void() zombie_burnc1     =[  $run1,      zombie_burnc2    ] {sound (self, CHAN_VOICE, "zombie/z_idle.wav", 1, ATTN_NORM);ai_charge(1);};
+void() zombie_burnc2     =[  $run2,      zombie_burnc3    ] {ai_charge(1);};
+void() zombie_burnc3     =[  $run3,      zombie_burnc4    ] {ai_face();};
+void() zombie_burnc4     =[  $run4,      zombie_burnc5    ] {ai_charge(1);};
+void() zombie_burnc5     =[  $run5,      zombie_burnc6    ] {ai_charge(2);};
+void() zombie_burnc6     =[  $run6,      zombie_burnc7    ] {ai_charge(3);};
+void() zombie_burnc7     =[  $run7,      zombie_burnc8    ] {ai_charge(4);};
+void() zombie_burnc8     =[  $run8,      zombie_burnc9    ] {ai_charge(4);};
+void() zombie_burnc9     =[  $run9,      zombie_burnc10   ] {ai_charge(2);};
+void() zombie_burnc10    =[  $run10,     zombie_burnc11   ] {ai_face();};
+void() zombie_burnc11    =[  $run11,     zombie_burnc12   ] {ai_face();};
+void() zombie_burnc12    =[  $run12,     zombie_burnc13   ] {ai_face();};
+void() zombie_burnc13    =[  $run13,     zombie_burnc14   ] {ai_charge(2);};
+void() zombie_burnc14    =[  $run14,     zombie_burnc15   ] {ai_charge(4);};
+void() zombie_burnc15    =[  $run15,     zombie_burnc16   ] {ai_charge(6);};
+void() zombie_burnc16    =[  $run16,     zombie_burnc17   ] {ai_charge(7);};
+void() zombie_burnc17    =[  $run17,     zombie_burnc18   ] {ai_charge(3);};
+void() zombie_burnc18    =[  $run18,     zombie_gib       ] {ai_charge(8);};
+
+void() zombie_burnd1    =[  $paind1,    zombie_burnd2   ] {sound (self, CHAN_VOICE, "zombie/z_pain.wav", 1, ATTN_NORM);};
+void() zombie_burnd2    =[  $paind2,    zombie_burnd3   ] {};
+void() zombie_burnd3    =[  $paind3,    zombie_burnd4   ] {};
+void() zombie_burnd4    =[  $paind4,    zombie_burnd5   ] {};
+void() zombie_burnd5    =[  $paind5,    zombie_burnd6   ] {};
+void() zombie_burnd6    =[  $paind6,    zombie_burnd7   ] {};
+void() zombie_burnd7    =[  $paind7,    zombie_burnd8   ] {};
+void() zombie_burnd8    =[  $paind8,    zombie_burnd9   ] {};
+void() zombie_burnd9    =[  $paind9,    zombie_burnd10  ] {ai_back(1);};
+void() zombie_burnd10   =[  $paind10,   zombie_burnd11  ] {};
+void() zombie_burnd11   =[  $paind11,   zombie_burnd12  ] {};
+void() zombie_burnd12   =[  $paind12,   zombie_burnd13  ] {};
+void() zombie_burnd13   =[  $paind13,   zombie_gib ] {};
+
+void() zombie_gib =
 {
     sound (self, CHAN_VOICE, "zombie/z_gib.wav", 1, ATTN_NORM);
     ThrowHead ("progs/h_zombie.mdl", self.health);
     ThrowGib ("progs/gib1.mdl", self.health);
     ThrowGib ("progs/gib2.mdl", self.health);
     ThrowGib ("progs/gib3.mdl", self.health);
+    self.deadflag = DEAD_DEAD;      // PM:  So death flame goes out.
+};
+//------------------------------------------------------------------------//
+
+void() zombie_die =
+{
+// PM:  Check for death by fire.
+    if (self.deathtype == "fire")
+    {
+        if (self.solid == SOLID_NOT)
+            if (self.inpain == 2)
+            {
+                // Lying on the ground.  Just let it stay there.
+                PM_DeathFlame ('2 0 -8');
+                self.nextthink = time + 1 + random() * 2;   // 1-3 secs.
+                self.think = zombie_gib;
+                return;
+            }
+
+        local   float   r;
+
+        PM_DeathFlame ('2 0 8');
+        r = random();
+        if (r < 0.25)
+            zombie_burn1 ();
+        else if (r < 0.5)
+            zombie_burnb1 ();
+        else if (r < 0.75)
+            zombie_burnc1 ();
+        else
+            zombie_burnd1 ();
+        return;
+    }
+
+// PM:  Normal death.
+    zombie_gib ();
 };
 
 /*

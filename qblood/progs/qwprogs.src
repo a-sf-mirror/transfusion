@@ -2,6 +2,7 @@
 
 defs.qc
 subs.qc
+fire.qc
 combat.qc
 items.qc
 weapons.qc

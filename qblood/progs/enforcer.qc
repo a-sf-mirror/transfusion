@@ -260,6 +260,31 @@ void()  enf_fdie10  =[  $fdeath10,  enf_fdie11  ] {};
 void()  enf_fdie11  =[  $fdeath11,  enf_fdie11  ] {BecomeCorpse(35,GibEnfCorpse);};
 
 
+void()  enf_burn1  =[  $paind1,    enf_burn2  ] {};
+void()  enf_burn2  =[  $paind2,    enf_burn3  ] {};
+void()  enf_burn3  =[  $paind3,    enf_burn4  ] {};
+void()  enf_burn4  =[  $paind4,    enf_burn5  ] {ai_forward(2);};
+void()  enf_burn5  =[  $paind5,    enf_burn6  ] {ai_forward(1);};
+void()  enf_burn6  =[  $paind6,    enf_burn7  ] {};
+void()  enf_burn7  =[  $paind7,    enf_burn8  ] {};
+void()  enf_burn8  =[  $paind8,    enf_burn9  ] {};
+void()  enf_burn9  =[  $paind9,    enf_burn10 ] {};
+void()  enf_burn10 =[  $paind10,   enf_burn11 ] {};
+void()  enf_burn11 =[  $paind11,   enf_burn12 ] {ai_forward(1);};
+void()  enf_burn12 =[  $paind12,   enf_burn13 ] {ai_forward(1);};
+void()  enf_burn13 =[  $paind13,   enf_burn14 ] {ai_forward(1);};
+void()  enf_burn14 =[  $paind14,   enf_burn15 ] {};
+void()  enf_burn15 =[  $paind15,   enf_burn16 ] {};
+void()  enf_burn16 =[  $paind16,   enf_burn17 ] {ai_back(1);};
+void()  enf_burn17 =[  $paind17,   enf_burn18 ] {ai_back(1);};
+void()  enf_burn18 =[  $paind18,   enf_burn19 ] {};
+void()  enf_burn19 =
+{
+   sound (self, CHAN_VOICE, "enforcer/death1.wav", 1, ATTN_NORM);
+    enf_die1 ();
+};
+
+
 void() enf_die =
 {
 // check for gib
@@ -270,6 +295,18 @@ void() enf_die =
         ThrowGib ("progs/gib1.mdl", self.health);
         ThrowGib ("progs/gib2.mdl", self.health);
         ThrowGib ("progs/gib3.mdl", self.health);
+        return;
+    }
+
+// PM:  Check for death by fire.
+    if (self.deathtype == "fire")
+    {
+        if (random() < 0.5)
+            sound (self, CHAN_VOICE, "enforcer/pain1.wav", 1, ATTN_NORM);
+        else
+            sound (self, CHAN_VOICE, "enforcer/pain2.wav", 1, ATTN_NORM);
+        PM_DeathFlame ('2 0 16');
+        enf_burn1 ();
         return;
     }
 

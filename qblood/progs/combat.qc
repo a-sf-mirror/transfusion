@@ -130,14 +130,75 @@ The damage is coming from inflictor, but get mad at attacker
 This should be the only function that ever reduces health.
 ============
 */
-void(entity targ, entity inflictor, entity attacker, float damage) T_Damage=
+//----------------------------------------------------/ New Code /--------//
+#ifndef QUAKEWORLD
+// PM:  Support function that checks if both sides are friendly enough.
+float(entity victim, entity attacker) PM_MonsterAlly =
+{
+    // Check if target should fight back.
+    if (victim == attacker.enemy)
+        if (attacker.flags & FL_MONSTER)
+            return FALSE;   // Always defend against deliberate attack.
+    if (victim.classname == "monster_army")
+        return FALSE;   // Standard -- Grunts attack anything.
+    if (victim.classname != attacker.classname)
+        return FALSE;   // Standard -- Different species don't get along.
+
+    // No reason to get angry.
+    return TRUE;
+};
+
+// PM:  Support function to check if target should fight the attacker.
+float(entity victim, entity attacker) PM_GetMad =
+{
+    // Check if fighting back is even possible.
+    if (victim == attacker)
+        return FALSE;   // Don't attack itself.
+    if (victim.enemy == attacker)
+        return FALSE;   // Already mad at attacker.
+    if (attacker.health <= 0)
+        return FALSE;   // Attacker is already dead.
+    if (attacker.classname == "monster_boss")
+        return FALSE;   // Chthon is immune to normal damage.
+    if (PM_MonsterAlly (victim, attacker))
+        return FALSE;   // Both sides are friendly.
+
+    // Fight back!
+    return TRUE;
+};
+#endif
+
+// PM:  Blood's armor damage protection algorithm, or close to it.
+float(float armour, float damage) PM_ArmorSave =
+{
+    local   float   hi, lo;
+
+    hi = armour;
+    if (hi > 200)
+        hi = 200;
+    lo = hi - damage;
+    if (lo < 0)
+        lo = 0;
+    armour = (hi + lo) * 0.5;
+
+    armour = 20 + (armour * 0.4);
+    if (armour > 1)
+        armour = 1;
+    armour = armour * 0.01;
+
+    return armour;
+};
+
+// PM:  Below is the new damage function that replaces 'T_Damage'.
+void(entity targ, entity inflictor, entity attacker, float damage, float dflags, string dtype) T_NewDamage =
 {
     local   vector  dir;
     local   entity  oldself;
     local   float   save;
     local   float   take;
+    local   float   protected;  // PM:  Boolean for invulnerability.
+
     #ifdef QUAKEWORLD
-//    local   string  s;
     local   string  attackerteam, targteam;
     #endif
 
@@ -149,39 +210,25 @@ void(entity targ, entity inflictor, entity attacker, float damage) T_Damage=
         return;
     recursioncount = recursioncount + 1;
 
-// used by buttons and triggers to set activator for target firing
+    // Used by buttons and triggers to set activator for target firing
     damage_attacker = attacker;
 
-// check for quad damage powerup on the attacker
+    // Check for quad damage powerup on the attacker
     if (attacker.super_damage_finished > time && inflictor.classname != "door")
         damage = damage * 4;
 
-// save damage based on the target's armor level
-
-    save = ceil(targ.armortype*damage);
-    if (save >= targ.armorvalue)
+    #ifndef QUAKEWORLD
+    if (dflags & DF_RADIUS)
     {
-        save = targ.armorvalue;
-        targ.armortype = 0; // lost all armor
-        targ.items = targ.items - (targ.items & (IT_ARMOR1 | IT_ARMOR2 | IT_ARMOR3));
+        // shambler takes half damage from all explosions
+        if (targ.classname == "monster_shambler")
+            damage = damage * 0.5;
     }
-
-    targ.armorvalue = targ.armorvalue - save;
-    take = ceil(damage-save);
-
-// add to the damage total for clients, which will be sent as a single
-// message at the end of the frame
-// FIXME: remove after combining shotgun blasts?
-    if (targ.flags & FL_CLIENT)
-    {
-        targ.dmg_take = targ.dmg_take + take;
-        targ.dmg_save = targ.dmg_save + save;
-        targ.dmg_inflictor = inflictor;
-    }
+    #endif
 
     damage_inflictor = inflictor;
 
-// figure momentum add
+    // Figure momentum add
     if ( (inflictor != world) && (targ.movetype == MOVETYPE_WALK) )
     {
         dir = targ.origin - (inflictor.absmin + inflictor.absmax) * 0.5;
@@ -205,80 +252,190 @@ void(entity targ, entity inflictor, entity attacker, float damage) T_Damage=
         #endif
     }
 
-// check for godmode or invincibility
-    if (targ.flags & FL_GODMODE)
+    protected = FALSE;
+    take = damage;
+    save = 0;
+
+    if (!(dflags & DF_NO_PROTECT))
     {
-        // Decrease the recursion count
-        recursioncount = recursioncount - 1;
-        return;
-    }
-    if (targ.invincible_finished >= time)
-    {
-        if (self.invincible_sound < time)
+        // Save damage based on the target's armor level, but do not apply
+        // the savings to the armor yet... in case target is invulnerable.
+        if (dflags & DF_FIRE)
         {
-            sound (targ, CHAN_ITEM, "bludbath/powerup.wav", 1, ATTN_NORM);
-            self.invincible_sound = time + 2;
+            save = damage * PM_ArmorSave (targ.armor_fire, damage);
+            if (dflags & DF_ALT_SAVE)
+                save = floor(save);
+            else
+                save = ceil(save);
+            if (save >= targ.armor_fire)
+                save = targ.armor_fire;
+            take = ceil(damage-save);
         }
-        // Decrease the recursion count
-        recursioncount = recursioncount - 1;
-        return;
+        else if (dflags & DF_BODY)
+        {
+            save = damage * PM_ArmorSave (targ.armor_body, damage);
+            if (dflags & DF_ALT_SAVE)
+                save = floor(save);
+            else
+                save = ceil(save);
+            if (save >= targ.armor_body)
+                save = targ.armor_body;
+            take = ceil(damage-save);
+        }
+        else if (dflags & DF_MIND)
+        {
+            save = damage * PM_ArmorSave (targ.armor_mind, damage);
+            if (dflags & DF_ALT_SAVE)
+                save = floor(save);
+            else
+                save = ceil(save);
+            if (save >= targ.armor_mind)
+                save = targ.armor_mind;
+            take = ceil(damage-save);
+        }
+        // Check for godmode or invincibility.
+        if (targ.flags & FL_GODMODE)
+        {
+            protected = TRUE;
+        }
+        else if (targ.invincible_finished >= time)
+        {
+            if (self.invincible_sound < time)
+            {
+                sound (targ, CHAN_ITEM, "bludbath/powerup.wav", 1, ATTN_NORM);
+                self.invincible_sound = time + 2;
+            }
+            protected = TRUE;
+        }
+        else
+        {
+            // Team play avoidance.
+            #ifdef QUAKEWORLD
+            //ZOID 12-13-96: self.team doesn't work in QW.  Use keys
+            attackerteam = infokey(attacker, "team");
+            targteam = infokey(targ, "team");
+
+            if ((teamplay == 1 || (teamplay == 3 && targ != attacker)) &&
+            attacker.classname == "player" && attackerteam != "" &&
+            targteam == attackerteam       && inflictor.classname !="door"   )
+            #else
+            if ( (teamplay == 1) && (targ.team > 0)&&(targ.team == attacker.team) )
+            #endif
+                protected = TRUE;
+        }
     }
 
-    // team play damage avoidance
-    #ifdef QUAKEWORLD
-    //ZOID 12-13-96: self.team doesn't work in QW.  Use keys
-    attackerteam = infokey(attacker, "team");
-    targteam = infokey(targ, "team");
-
-    if ((teamplay == 1 || (teamplay == 3 && targ != attacker)) &&
-        attacker.classname == "player" && attackerteam != "" &&
-        targteam == attackerteam       && inflictor.classname !="door"   )
-    #else
-    if ( (teamplay == 1) && (targ.team > 0)&&(targ.team == attacker.team) )
-    #endif
+    // If client, use damage values for hud effects.
+    if (targ.flags & FL_CLIENT)
     {
-        // Decrease the recursion count
-        recursioncount = recursioncount - 1;
-        return;
+        targ.dmg_take = targ.dmg_take + take;
+        targ.dmg_save = targ.dmg_save + save;
+        targ.dmg_inflictor = inflictor;
+
+        // Leave the hud alone if nopain.
+        if (dflags & DF_MIN_PAIN)
+            if (protected || (targ.pain_finished > time))
+            {
+                // Negate above changes.
+                targ.dmg_take = targ.dmg_take - take;
+                targ.dmg_save = targ.dmg_save - save;
+            }
     }
 
-// do the damage
-    targ.health = targ.health - take;
+    if (protected)
+    {
+        // Decrease the recursion count.
+        recursioncount = recursioncount - 1;
+        return;     // Target is invulnerable to damage.
+    }
 
+    // Now check for armor damage.
+    if (save)
+    {
+        if (dflags & DF_FIRE)
+        {
+            targ.armor_fire = targ.armor_fire - save;
+            if (targ.armor_fire <= 0)
+            {
+                targ.armorvalue = targ.armor_fire = 0;
+                targ.items = targ.items - (targ.items & IT_ARMOR2);
+            }
+            else
+            {
+                targ.armorvalue = targ.armor_fire;
+                targ.items = targ.items - (targ.items & (IT_ARMOR1 | IT_ARMOR2 | IT_ARMOR3)) + IT_ARMOR2;
+            }
+        }
+        else if (dflags & DF_BODY)
+        {
+            targ.armor_body = targ.armor_body - save;
+            if (targ.armor_body <= 0)
+            {
+                targ.armorvalue = targ.armor_body = 0;
+                targ.items = targ.items - (targ.items & IT_ARMOR1);
+            }
+            else
+            {
+                targ.armorvalue = targ.armor_body;
+                targ.items = targ.items - (targ.items & (IT_ARMOR1 | IT_ARMOR2 | IT_ARMOR3)) + IT_ARMOR1;
+            }
+        }
+        else if (dflags & DF_MIND)
+        {
+            targ.armor_mind = targ.armor_mind - save;
+            if (targ.armor_mind <= 0)
+            {
+                targ.armorvalue = targ.armor_mind = 0;
+                targ.items = targ.items - (targ.items & IT_ARMOR3);
+            }
+            else
+            {
+                targ.armorvalue = targ.armor_mind;
+                targ.items = targ.items - (targ.items & (IT_ARMOR1 | IT_ARMOR2 | IT_ARMOR3)) + IT_ARMOR3;
+            }
+        }
+//        else
+//            Bprint (PRINT_MEDIUM, "Unknown armor\n");
+    }
+
+    // Do the damage.
+    targ.health = targ.health - take;
     if (targ.health <= 0)
     {
+        // Target was slain!
+        if (!targ.deadflag)
+            targ.deathtype = dtype;
         Killed (targ, attacker);
 
-        // Decrease the recursion count
+        // Decrease the recursion count.
         recursioncount = recursioncount - 1;
         return;
     }
 
-// react to the damage
+    // React to the damage.
     oldself = self;
     self = targ;
 
     #ifndef QUAKEWORLD
     if ( (self.flags & FL_MONSTER) && attacker != world)
-    {
-    // get mad unless of the same class (except for soldiers)
-        if (self != attacker && attacker != self.enemy)
-        {
-            if ( (self.classname != attacker.classname)
-            || (self.classname == "monster_army" ) )
+        if (!(dflags & DF_MIN_PAIN) || !self.enemy)
+            if (PM_GetMad (self, attacker))
             {
                 if (self.enemy.classname == "player")
                     self.oldenemy = self.enemy;
                 self.enemy = attacker;
                 FoundTarget ();
             }
-        }
-    }
     #endif
 
     if (self.th_pain)
     {
+        // Set value for monsters that support nopain.
+        if (dflags & DF_MIN_PAIN)
+            take = 1;
+
         self.th_pain (attacker, take);
+
         #ifndef QUAKEWORLD
         // nightmare mode monsters don't go into pain frames often
         if (skill == 3)
@@ -290,6 +447,16 @@ void(entity targ, entity inflictor, entity attacker, float damage) T_Damage=
 
     // Decrease the recursion count
     recursioncount = recursioncount - 1;
+};
+
+//------------------------------------------------------------------------//
+
+void(entity targ, entity inflictor, entity attacker, float damage) T_Damage=
+{
+//----------------------------------------------------/ Code Change /-----//
+    // PM:  Default to the new damage function.
+    T_NewDamage (targ, inflictor, attacker, damage, DF_BODY, string_null);
+//------------------------------------------------------------------------//
 };
 
 /*
@@ -316,20 +483,12 @@ void(entity inflictor, entity attacker, float damage, entity ignore, string dtyp
                 if (points < 0)
                     points = 0;
                 points = damage - points;
-                if (head == attacker)
-                    points = points * 0.5;
+// PM:  Attacker takes full damage in Blood AFAIK.
                 if (points > 0)
                 {
                     if (CanDamage (head, inflictor))
                     {
-                        head.deathtype = dtype;
-                        #ifndef QUAKEWORLD
-                        // shambler takes half damage from all explosions
-                        if (head.classname == "monster_shambler")
-                            T_Damage (head, inflictor, attacker, points*0.5);
-                        else
-                        #endif
-                            T_Damage (head, inflictor, attacker, points);
+                        T_NewDamage (head, inflictor, attacker, points, DF_RADIUS | DF_FIRE, dtype);
                     }
                 }
             }
@@ -345,35 +504,7 @@ T_BeamDamage
 */
 void(entity attacker, float damage) T_BeamDamage =
 {
-    local   float   points;
-    local   entity  head;
-
-    head = findradius(attacker.origin, damage+40);
-
-    while (head)
-    {
-        if (head.takedamage)
-        {
-            points = 0.5*vlen (attacker.origin - head.origin);
-            if (points < 0)
-                points = 0;
-            points = damage - points;
-            if (head == attacker)
-                points = points * 0.5;
-            if (points > 0)
-            {
-                if (CanDamage (head, attacker))
-                {
-                    #ifndef QUAKEWORLD
-                    if (head.classname == "monster_shambler")
-                        T_Damage (head, attacker, attacker, points*0.5);
-                    else
-                    #endif
-                        T_Damage (head, attacker, attacker, points);
-                }
-            }
-        }
-        head = head.chain;
-    }
+    // PM:  Default to another function.  Is 'T_BeamDamage()' ever used?
+    T_RadiusDamage (attacker, attacker, damage, world, string_null);
 };
 

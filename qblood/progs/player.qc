@@ -273,6 +273,7 @@ void() player_light =
     if (self.weaponframe == 5)
         self.weaponframe = 1;
     SuperDamageSound ();
+    sound (self, CHAN_AUTO, "weapons/tesla/tessngfr.wav", 1, ATTN_NORM);
     W_FireLightning ();
     self.attack_finished = time + 0.2;
 
@@ -339,6 +340,28 @@ local float     rs;
     if (self.pain_finished > time)
     {
         self.axhitme = 0;
+        return;
+    }
+    if (self.burner)
+    {
+        // PM -- Player is on fire so scream.
+        rs = ceil(random() * 3);
+        if (rs == 3)
+        {
+            self.noise = "player/pain/play1120.wav";
+            self.pain_finished = time + 1.9;
+        }
+        else if (rs == 2)
+        {
+            self.noise = "player/pain/play1119.wav";
+            self.pain_finished = time + 2;
+        }
+        else
+        {
+            self.noise = "player/pain/play1118.wav";
+            self.pain_finished = time + 2.6;
+        }
+        sound (self, CHAN_VOICE, self.noise, 1, ATTN_NORM);
         return;
     }
     self.pain_finished = time + 0.5;
@@ -415,9 +438,13 @@ void() player_die_ax1;
 
 void() DeathBubblesSpawn =
 {
-local entity    bubble;
+    local entity    bubble;
     if (self.owner.waterlevel != 3)
+    {
+        // Bug fix -- won't think anymore so remove bubble spawner entity.
+        remove (self);
         return;
+    }
     bubble = spawn();
     setmodel (bubble, "progs/s_bubble.spr");
     setorigin (bubble, self.owner.origin + '0 0 24');
@@ -654,9 +681,9 @@ void() GibPlayer =
     ThrowGib ("progs/gib1.mdl", self.health);
     ThrowGib ("progs/gib2.mdl", self.health);
     ThrowGib ("progs/gib3.mdl", self.health);
+
     ThrowGib ("progs/larm.mdl", self.health);
     ThrowGib ("progs/leg.mdl", self.health);
-
 
     self.deadflag = DEAD_DEAD;
 

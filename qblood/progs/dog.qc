@@ -268,6 +268,22 @@ void() dog_dieb8        =[  $deathb8,   dog_dieb9   ] {};
 void() dog_dieb9        =[  $deathb9,   dog_dieb9   ] {BecomeCorpse(35,GibDogCorpse);};
 
 
+// PM:  Burning death.
+void() dog_burn1   =[  $painb1 ,   dog_burn2  ] {};
+void() dog_burn2   =[  $painb2 ,   dog_burn3  ] {};
+void() dog_burn3   =[  $painb3 ,   dog_burn4  ] {ai_back(4);};
+void() dog_burn4   =[  $painb4 ,   dog_burn5  ] {ai_back(12);};
+void() dog_burn5   =[  $painb5 ,   dog_burn6  ] {ai_back(12);};
+void() dog_burn6   =[  $painb6 ,   dog_burn7  ] {ai_back(2);};
+void() dog_burn7   =[  $painb7 ,   dog_burn8  ] {};
+void() dog_burn8   =[  $painb8 ,   dog_burn9  ] {ai_back(4);};
+void() dog_burn9   =[  $painb9 ,   dog_burn10 ] {};
+void() dog_burn10  =[  $painb10 ,  dog_burn11 ] {ai_back(10);};
+void() dog_burn11  =[  $painb11 ,  dog_burn12 ] {};
+void() dog_burn12  =[  $painb12 ,  dog_burn13 ] {};
+void() dog_burn13  =[  $painb13 ,  dog_burn14 ] {};
+void() dog_burn14  =[  $painb14 ,  dog_dieb5 ]  {self.solid = SOLID_NOT;};
+
 void() dog_die =
 {
 // check for gib
@@ -278,6 +294,15 @@ void() dog_die =
         ThrowGib ("progs/gib3.mdl", self.health);
         ThrowGib ("progs/gib3.mdl", self.health);
         ThrowHead ("progs/h_dog.mdl", self.health);
+        return;
+    }
+
+// PM:  Check for death by fire.
+    if (self.deathtype == "fire")
+    {
+        sound (self, CHAN_VOICE, "dog/ddeath.wav", 1, ATTN_NORM);
+        PM_DeathFlame ('2 0 0');
+        dog_burn1 ();
         return;
     }
 

@@ -256,6 +256,21 @@ void()  army_cdie9  =[  $deathc9,   army_cdie10 ] {};
 void()  army_cdie10 =[  $deathc10,  army_cdie11 ] {};
 void()  army_cdie11 =[  $deathc11,  army_cdie11 ] {BecomeCorpse(35,GibArmyCorpse);};
 
+// PM:  Burning death.
+void()  army_burn1 =[  $painc1,    army_burn2 ] {};
+void()  army_burn2 =[  $painc2,    army_burn3 ] {ai_back(1);};
+void()  army_burn3 =[  $painc3,    army_burn4 ] {};
+void()  army_burn4 =[  $painc4,    army_burn5 ] {};
+void()  army_burn5 =[  $painc5,    army_burn6 ] {ai_forward(1);};
+void()  army_burn6 =[  $painc6,    army_burn7 ] {ai_forward(1);};
+void()  army_burn7 =[  $painc7,    army_burn8 ] {};
+void()  army_burn8 =[  $painc8,    army_burn9 ] {ai_back(1);};
+void()  army_burn9 =[  $painc9,    army_burn10] {ai_forward(4);};
+void()  army_burn10=[  $painc10,   army_burn11] {ai_forward(3);};
+void()  army_burn11=[  $painc11,   army_burn12] {ai_forward(6);};
+void()  army_burn12=[  $painc12,   army_burn13] {ai_forward(8);};
+void()  army_burn13=[  $painc13,   army_burn14] {};
+void()  army_burn14=[  $painb1,    army_cdie1]  {sound (self, CHAN_VOICE, "soldier/death1.wav", 1, ATTN_NORM);};
 
 void() army_die =
 {
@@ -267,6 +282,15 @@ void() army_die =
         ThrowGib ("progs/gib1.mdl", self.health);
         ThrowGib ("progs/gib2.mdl", self.health);
         ThrowGib ("progs/gib3.mdl", self.health);
+        return;
+    }
+
+// PM:  Check for death by fire.
+    if (self.deathtype == "fire")
+    {
+        sound (self, CHAN_VOICE, "soldier/pain2.wav", 1, ATTN_NORM);
+        PM_DeathFlame ('2 0 16');
+        army_burn1 ();
         return;
     }
 

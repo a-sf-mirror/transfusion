@@ -138,6 +138,7 @@ void() plat_crush =
 {
 //dprint ("plat_crush\n");
 
+// FIXME:  PM -- Does squishing via plats (ala Doom) even damage in Blood?
     other.deathtype = "squish";
     T_Damage (other, self, self, 1);
 
@@ -248,6 +249,7 @@ void() train_blocked =
     if (time < self.attack_finished)
         return;
     self.attack_finished = time + 0.5;
+// FIXME:  PM -- Are there trains in Blood?  If so, is it instant death?
     other.deathtype = "squish";
     T_Damage (other, self, self, self.dmg);
 };

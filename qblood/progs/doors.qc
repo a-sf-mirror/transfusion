@@ -53,8 +53,10 @@ void() door_go_up;
 
 void() door_blocked =
 {
-    other.deathtype = "squish";
-    T_Damage (other, self, self, self.dmg);
+// PM:  In Blood, squished by door is instant death.  Armor offers
+//      no protection either.
+    // Used to do self.dmg for damage.
+    T_NewDamage (other, self, self, other.health, 0, "squish");
 
 // if a door has a negative wait, it would never come back if blocked,
 // so let it just squash the object to death real fast
@@ -706,7 +708,10 @@ void () secret_blocked =
         return;
     self.attack_finished = time + 0.5;
     other.deathtype = "squish";
-    T_Damage (other, self, self, self.dmg);
+// PM:  In Blood, squished by door is instant death.  Armor offers
+//      no protection either.
+    // Used to do self.dmg for damage.
+    T_NewDamage (other, self, self, other.health, 0, "squish");
 };
 
 /*

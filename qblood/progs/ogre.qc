@@ -421,6 +421,48 @@ void()  ogre_bdie9  =[  $bdeath9,   ogre_bdie10 ] {};
 void()  ogre_bdie10 =[  $bdeath10,  ogre_bdie10 ] {BecomeCorpse(80,GibOgreCorpse);};
 
 
+// PM:  Burning death.
+void()  ogre_burn1 =[  $paine1,    ogre_burn2 ] {};
+void()  ogre_burn2 =[  $paine2,    ogre_burn3 ] {ai_back(10);};
+void()  ogre_burn3 =[  $paine3,    ogre_burn4 ] {ai_back(9);};
+void()  ogre_burn4 =[  $paine4,    ogre_burn5 ] {ai_back(4);};
+void()  ogre_burn5 =[  $paine5,    ogre_burn6 ] {};
+void()  ogre_burn6 =[  $paine6,    ogre_burn7 ] {};
+void()  ogre_burn7 =[  $paine7,    ogre_burn8 ] {};
+void()  ogre_burn8 =[  $paine8,    ogre_burn9 ] {};
+void()  ogre_burn9 =[  $paine9,    ogre_burn10    ] {};
+void()  ogre_burn10=[  $paine10,   ogre_burn11    ] {};
+void()  ogre_burn11=[  $paine11,   ogre_burn12    ] {};
+void()  ogre_burn12=[  $paine12,   ogre_burn13    ] {};
+void()  ogre_burn13=[  $paine13,   ogre_burn14    ] {};
+void()  ogre_burn14=[  $paine14,   ogre_burn15    ] {};
+void()  ogre_burn15=[  $paine15,   ogre_burndead  ] {};
+
+void()  ogre_burnb1  =[  $painb1,    ogre_burnb2 ] {};
+void()  ogre_burnb2  =[  $painb2,    ogre_burnb3 ] {};
+void()  ogre_burnb3  =[  $painb3,    ogre_burnb4 ] {};
+void()  ogre_burnb4  =[  $painc1,    ogre_burnb5 ] {sound (self, CHAN_VOICE, "ogre/ogpain1.wav", 1, ATTN_NORM);};
+void()  ogre_burnb5  =[  $painc2,    ogre_burnb6 ] {};
+void()  ogre_burnb6  =[  $painc3,    ogre_burnb7 ] {};
+void()  ogre_burnb7  =[  $painc4,    ogre_burnb8 ] {};
+void()  ogre_burnb8  =[  $painc5,    ogre_burnb9 ] {};
+void()  ogre_burnb9  =[  $painc6,    ogre_burnb10] {};
+void()  ogre_burnb10 =[  $pain1,     ogre_burnb11] {sound (self, CHAN_VOICE, "ogre/ogpain1.wav", 1, ATTN_NORM);};
+void()  ogre_burnb11 =[  $pain2,     ogre_burnb12] {};
+void()  ogre_burnb12 =[  $pain3,     ogre_burnb13] {};
+void()  ogre_burnb13 =[  $pain4,     ogre_burnb14] {};
+void()  ogre_burnb14 =[  $pain5,     ogre_burndead ] {};
+
+void() ogre_burndead =
+{
+    sound (self, CHAN_VOICE, "ogre/ogdth.wav", 1, ATTN_NORM);
+
+    if (random() < 0.5)
+        ogre_die1 ();
+    else
+        ogre_bdie1 ();
+};
+
 void() ogre_die =
 {
 // check for gib
@@ -431,6 +473,18 @@ void() ogre_die =
         ThrowGib ("progs/gib3.mdl", self.health);
         ThrowGib ("progs/gib3.mdl", self.health);
         ThrowGib ("progs/gib3.mdl", self.health);
+        return;
+    }
+
+// PM:  Check for death by fire.
+    if (self.deathtype == "fire")
+    {
+        sound (self, CHAN_VOICE, "ogre/ogpain1.wav", 1, ATTN_NORM);
+        PM_DeathFlame ('6 0 24');
+        if (random() < 0.5)
+            ogre_burn1 ();
+        else
+            ogre_burnb1 ();
         return;
     }
 

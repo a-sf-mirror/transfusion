@@ -26,7 +26,6 @@ void () player_run;
 void(entity bomb, entity attacker, float rad, entity ignore, string dtype) T_RadiusDamage;
 void() SuperDamageSound;
 entity() identify_player;
-void() muzzleflash;
 
 
 // called by worldspawn
@@ -95,6 +94,11 @@ void() W_Precache =
     precache_sound ("weapons/tink1.wav");    // spikes tink (used in c code)
     precache_sound ("weapons/tommygun/tomcock.wav");  // Out of ammo
 //    precache_sound ("weapons/lstart.wav");
+    PM_PrecacheFire ();
+
+// PM:  Temporary -- remove.
+    precache_sound ("weapons/napalm/explodfs.wav");
+    precache_sound ("weapons/tesla/tessnght.wav");  // Hit
 };
 
 float() crandom =
@@ -191,29 +195,23 @@ void(float damage) spawn_touchblood =
 W_FireAxe - Pitchfork
 ================
 */
-void() W_FireAxe =
+
+void() ClearMultiDamage;
+void(entity hit, float damage) AddMultiDamage;
+void() ApplyMultiDamage;
+
+void(entity targ, vector org, float damage) TineHit =
 {
-    local   vector  source;
-    local   vector  org;
-
-    makevectors (self.v_angle);
-    source = self.origin + '0 0 16';
-    traceline (source, source + v_forward*64, FALSE, self);
-    if (trace_fraction == 1.0)
-        return;
-
-    org = trace_endpos - v_forward*4;
-
-    if (trace_ent.takedamage)
+    if (targ.takedamage)
     {
-        trace_ent.axhitme = 1;
-        SpawnBlood (org, '0 0 0', 20);
-
-        T_Damage (trace_ent, self, self, 51); // this needs to be 17 per tine, 68 max, need logic for checking how many tines contact enemy
+        targ.axhitme = 1;
+        SpawnBlood (org, '0 0 0', damage);
+        AddMultiDamage (targ, damage);
     }
     else
     {   // hit wall
         sound (self, CHAN_WEAPON, "weapons/pitchfrk/pstone.wav", 1, ATTN_NORM);
+
         #ifdef QUAKEWORLD
         WriteByte (MSG_MULTICAST, SVC_TEMPENTITY);
         WriteByte (MSG_MULTICAST, TE_GUNSHOT);
@@ -230,6 +228,39 @@ void() W_FireAxe =
         WriteCoord (MSG_BROADCAST, org_z);
         #endif
     }
+};
+
+void() W_FireAxe =
+{
+    local   vector  source;
+    local   vector  start, end;         // Endpoints per tine.
+    local   vector  vx, vy, vz;         // forward, right, up unit vectors.
+    local   float   damage;             // Damage per tine.
+    local   float   loop;               // Number of tines.
+
+    makevectors (self.v_angle);
+    vx = v_forward;
+    vy = v_right;
+    vz = v_up;
+    source = self.origin + '0 0 16';
+    damage = 17;
+    loop = 4;
+
+    // Tines attacks start at the right, and end at the left.
+    ClearMultiDamage ();
+    while (loop > 0)
+    {
+        start = source + vy * ((loop - 2) * 4 - 2);
+        end = start + vx * 64;
+        traceline (start, end, FALSE, self);
+        if (trace_fraction < 1)
+        {
+            end = trace_endpos - vx * 4;
+            TineHit (trace_ent, end, damage);
+        }
+        loop = loop - 1;
+    }
+    ApplyMultiDamage ();
 };
 
 
@@ -411,6 +442,7 @@ void() W_FireShotgun =
 {
     local vector dir;
 
+// Launch flare instead.
     sound (self, CHAN_WEAPON, "weapons/flaregun/flaref.wav", 1, ATTN_NORM);
 
     #ifndef QUAKEWORLD
@@ -420,10 +452,17 @@ void() W_FireShotgun =
     WriteByte (MSG_ONE, SVC_SMALLKICK);
     #endif
 
-    self.currentammo = self.ammo_shells = self.ammo_shells - 1;
+    dir = aim (self, 1000);
+    if ((self.impulse == 12 || self.button1) && self.ammo_rockets >= 8)
+    {
+        // PM:  Fire alt-flares instead.
+        self.currentammo = self.ammo_shells = self.ammo_shells - 8;
+        PM_FireAltFlares (self, self.origin + '0 0 16', dir, 1000, 10, 10);
+        return;
+    }
 
-    dir = aim (self, 100000);
-    FireBullets (1, dir, '0.04 0.04 0');
+    self.currentammo = self.ammo_shells = self.ammo_shells - 1;
+    PM_FireFlare (self, self.origin + '0 0 16', dir, 1000, 10);
 };
 
 
@@ -585,6 +624,107 @@ ROCKETS
 ==============================================================================
 */
 
+//  PM:  Napalm blast effects.
+
+// This makes the player laugh or utter one of Caleb's signature one-liners.
+void(entity client) PM_PsychoCaleb =
+{
+    if (client.health <= 0)
+        return;
+    if (client.deadflag)
+        return;
+    if (client.classname != "player")
+        return;
+
+    local   float   rs;
+    local   string  playit;
+
+    rs = random() * 4;
+    rs = floor (rs);
+
+    if (rs == 0)
+        playit = "player/quips/1039.wav";   // "Son of a bitch must pay!"
+    else if (rs == 1)
+        playit = "player/quips/1050.wav";   // "Tha, tha, that's all folks!"
+    else
+    {
+        // 50% chance of laughing like a psycho.
+        rs = random() * 8;
+        rs = floor (rs);
+
+        if (rs == 0)
+            playit = "player/play1109.wav";
+        else if (rs == 1)
+            playit = "player/play1110.wav";
+        else if (rs == 2)
+            playit = "player/play1111.wav";
+        else if (rs == 3)
+            playit = "player/play1112.wav";
+        else if (rs == 4)
+            playit = "player/play1113.wav";
+        else if (rs == 5)
+            playit = "player/play1114.wav";
+        else if (rs == 6)
+            playit = "player/play1115.wav";
+        else
+            playit = "player/play1116.wav";
+    }
+
+    sound (client, CHAN_VOICE, playit, 1, ATTN_NONE);
+};
+
+// This creates a blank entity that inflicts burn damage for several
+// frames.  Refers to code in 'fire.qc'
+
+void() PM_BlastDamageThink =
+{
+    PM_BurnRadius (self, self.dmg, self.cnt, world);
+
+    // Damage decreases each frame to a minimum of 5.
+    if (self.dmg > 5)
+    {
+        if (self.dmg < 15)
+            self.dmg = 5;
+        else
+            self.dmg = self.dmg - 10;
+    }
+    self.cnt = 5;   // Burn up to a half second per frame.
+
+    self.delay = self.delay - 1;
+    if (self.delay <= 0)
+    {
+        remove (self);
+        return;
+    }
+
+    self.nextthink = time + 0.1;
+};
+
+void(entity inflictor, float radius, float damage, float burn) PM_MakeBlastDamage =
+{
+    local   entity  blast;
+
+    blast = spawn();
+
+    setorigin (blast, inflictor.origin);
+    setmodel (blast, string_null);
+    setsize (blast, VEC_ORIGIN, VEC_ORIGIN);
+
+    blast.solid     = SOLID_NOT;
+    blast.movetype  = MOVETYPE_NONE;
+    blast.velocity  = '0 0 0';
+    blast.touch     = SUB_Null;
+
+    blast.owner     = inflictor.owner;
+    blast.height    = radius;
+    blast.dmg       = damage;
+    blast.cnt       = burn;
+    blast.delay     = 7;    // Damage for seven frames.
+
+    blast.nextthink = time + 0.1;
+    blast.think     = PM_BlastDamageThink;
+};
+
 #ifndef QUAKEWORLD
 // 13 frames for Blood's explosion
 void() s_explode1  = [0,  s_explode2]  {};
@@ -628,6 +768,9 @@ void() SpawnBouncingNapalmBall =
     #ifdef QUAKEWORLD
     newmis.voided=0;
     #endif
+    // Remember who really owns the napalm.
+    if (self.owner)
+        newmis.oldenemy = self.owner;
     newmis.owner = self;
     newmis.movetype = MOVETYPE_BOUNCE;
     newmis.solid = SOLID_BBOX;
@@ -711,6 +854,12 @@ void() T_MissileTouch =
         SpawnBouncingNapalmBall ();
         ind = ind + 1;
     }
+
+    PM_ThrowEmbers (8);
+    PM_MakeBlastDamage (self, 160, 20, 10);
+
+    if (random() < 0.05)
+        PM_PsychoCaleb (self.owner);
 
     #ifdef QUAKEWORLD
     WriteByte (MSG_MULTICAST, SVC_TEMPENTITY);
@@ -816,44 +965,49 @@ LightningDamage
 */
 void(vector p1, vector p2, entity from, float damage) LightningDamage =
 {
-    local entity        e1, e2;
-    local vector        f;
-
-    f = p2 - p1;
-    normalize (f);
-    f_x = 0 - f_y;
-    f_y = f_x;
-    f_z = 0;
-    f = f*16;
-
-    e1 = e2 = world;
+//  PM:  Function mostly rewritten.
+//
+//  What did the old code suppose to do?  Hit three different targets
+//  in row ala railgun?  Make the beam wider?  Whatever it was supposed
+//  to do, it didn't work.  Therefore, I simplified the code.
+//  Also, the +400 up vector to 'other' code in player vs. player
+//  Thunderbolt battles doesn't work either, so I removed it.
 
     traceline (p1, p2, FALSE, self);
     if (trace_ent.takedamage)
-    {
         LightningHit (from, damage);
-        if (self.classname == "player")
-        {
-            if (other.classname == "player")
-                trace_ent.velocity_z = trace_ent.velocity_z + 400;
-        }
-    }
-    e1 = trace_ent;
-
-    traceline (p1 + f, p2 + f, FALSE, self);
-    if (trace_ent != e1 && trace_ent.takedamage)
-    {
-        LightningHit (from, damage);
-    }
-    e2 = trace_ent;
-
-    traceline (p1 - f, p2 - f, FALSE, self);
-    if (trace_ent != e1 && trace_ent != e2 && trace_ent.takedamage)
-    {
-        LightningHit (from, damage);
-    }
 };
 
+
+//  PM:  Tesla Cannon
+
+void() PM_TelsaTouch =
+{
+    if (other == self.owner)
+        return;     // don't explode on owner
+
+    #ifdef QUAKEWORLD
+    if (self.voided)
+        return;
+    self.voided = 1;
+    #endif
+
+    if (pointcontents(self.origin) == CONTENT_SKY)
+
+    {
+        remove(self);
+        return;
+    }
+
+    if (other.takedamage)
+        T_NewDamage (other, self, self.owner, self.dmg, DF_BODY, "tesla");
+
+    sound (self, CHAN_AUTO, "weapons/tesla/tessnght.wav", 1, ATTN_NORM);
+
+    self.origin = self.origin - 8*normalize(self.velocity);
+
+    remove (self);
+};
 
 void() W_FireLightning =
 {
@@ -863,16 +1017,7 @@ void() W_FireLightning =
     if (self.ammo_cells < 1)
         return;
 
-// explode if under water
-    if (self.waterlevel > 1)
-    {
-        cells = self.ammo_cells;
-        self.ammo_cells = 0;
-        W_SetCurrentAmmo ();
-        T_RadiusDamage (self, self, 35*cells, world, "");
-        return;
-    }
-
+// FIXME:  Add alt-telsa mode.
     if (self.t_width < time)
     {
         sound (self, CHAN_WEAPON, "weapons/tesla/tessngfr.wav", 1, ATTN_NORM);
@@ -889,33 +1034,37 @@ void() W_FireLightning =
 
     org = self.origin + '0 0 16';
 
-    traceline (org, org + v_forward*600, TRUE, self);
+    // PM:  This is for the plasma gun-wannabe mode.
+    local   entity  jolt;
+    local   vector  dir;
+    local   float   mspeed;
+
+    mspeed = 1000;
+    makevectors (self.v_angle);
+    dir = aim(self, mspeed);
+
+    jolt = spawn();
 
     #ifdef QUAKEWORLD
-    WriteByte (MSG_MULTICAST, SVC_TEMPENTITY);
-    WriteByte (MSG_MULTICAST, TE_LIGHTNING2);
-    WriteEntity (MSG_MULTICAST, self);
-    WriteCoord (MSG_MULTICAST, org_x);
-    WriteCoord (MSG_MULTICAST, org_y);
-    WriteCoord (MSG_MULTICAST, org_z);
-    WriteCoord (MSG_MULTICAST, trace_endpos_x);
-    WriteCoord (MSG_MULTICAST, trace_endpos_y);
-    WriteCoord (MSG_MULTICAST, trace_endpos_z);
-    multicast (org, MULTICAST_PHS);
-
-    #else
-    WriteByte (MSG_BROADCAST, SVC_TEMPENTITY);
-    WriteByte (MSG_BROADCAST, TE_LIGHTNING2);
-    WriteEntity (MSG_BROADCAST, self);
-    WriteCoord (MSG_BROADCAST, org_x);
-    WriteCoord (MSG_BROADCAST, org_y);
-    WriteCoord (MSG_BROADCAST, org_z);
-    WriteCoord (MSG_BROADCAST, trace_endpos_x);
-    WriteCoord (MSG_BROADCAST, trace_endpos_y);
-    WriteCoord (MSG_BROADCAST, trace_endpos_z);
+    jolt.voided     = 0;
     #endif
 
-    LightningDamage (self.origin, trace_endpos + v_forward*4, self, 25); //quake = 30
+    jolt.owner      = self;
+    jolt.movetype   = MOVETYPE_FLYMISSILE;
+    jolt.solid      = SOLID_BBOX;
+    jolt.classname  = "telsa";
+    jolt.velocity   = dir * mspeed;
+    jolt.avelocity  = '300 300 300';
+    jolt.angles     = vectoangles(dir);
+    jolt.dmg        = 30;
+
+    jolt.touch      = PM_TelsaTouch;
+    jolt.nextthink  = time + (8000 / mspeed);
+    jolt.think      = SUB_Remove;
+
+    setmodel (jolt, "progs/bolt2.mdl");
+    setsize (jolt, '0 0 0', '0 0 0');
+    setorigin (jolt, org);
 };
 
 
@@ -1026,12 +1175,14 @@ void() W_UseVoodooDoll =
         SpawnBlood (org, vel*0.2, damage);
         #endif
 
-        T_Damage (trace_ent, self, self, damage);
+        // PM:  I assume voodoo does 'spiritual' damage.
+        T_NewDamage (trace_ent, self, self, damage, DF_MIND, "voodoo");
     }
 
     // Else, WE take the damage
     else
-        T_Damage (self, self, self, damage);
+        // PM:  I assume voodoo does 'spiritual' damage.
+        T_NewDamage (self, self, self, damage, DF_MIND, "voodoo");
 };
 
 
@@ -1054,6 +1205,21 @@ void() GrenadeExplode =
     }
     self.voided = 1;
     #endif
+
+    // Remember who really owns the napalm.
+    if (self.netname == "Napalm Ball")
+    {
+        self.owner = self.oldenemy;
+        PM_ThrowEmbers (4);
+        local   float   radius, damage, burn;
+        radius = self.dmg + 40;
+        damage = self.dmg / 6;
+        burn   = self.dmg / 12;
+        PM_MakeBlastDamage (self, radius, damage, burn);
+    }
+
+    if (random() < 0.05)
+        PM_PsychoCaleb (self.owner);
 
     T_RadiusDamage (self, self.owner, self.dmg, world, "grenade");
 
