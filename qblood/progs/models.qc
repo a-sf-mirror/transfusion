@@ -267,6 +267,12 @@ $base base
 $skin skin
 $frame frame1
 
+$modelname goalpost
+$cd id1/models/goalpost
+$base base
+$skin skin
+$frame frame
+
 //modelname jetpack
 //cd id1/models/jetpack
 //flags 8       // client side rotate
