@@ -241,6 +241,7 @@ The player is in view, so decide to move or launch an attack
 Returns FALSE if movement should continue
 ============
 */
+/* -------- NO LONGER USED ------------
 float() SoldierCheckAttack =
 {
     local vector    spot1, spot2;
@@ -290,6 +291,8 @@ float() SoldierCheckAttack =
 
     return FALSE;
 };
+*/
+
 //=============================================================================
 
 /*
@@ -300,6 +303,7 @@ The player is in view, so decide to move or launch an attack
 Returns FALSE if movement should continue
 ============
 */
+/* -------- NO LONGER USED ------------
 float() ShamCheckAttack =
 {
     local vector    spot1, spot2;
@@ -349,6 +353,7 @@ float() ShamCheckAttack =
     AI_AttackFinished (2 + 2*random());
     return TRUE;
 };
+*/
 
 //============================================================================
 
@@ -360,6 +365,7 @@ The player is in view, so decide to move or launch an attack
 Returns FALSE if movement should continue
 ============
 */
+/* -------- NO LONGER USED ------------
 float() OgreCheckAttack =
 {
     local vector    spot1, spot2;
@@ -415,4 +421,4 @@ float() OgreCheckAttack =
     AI_AttackFinished (1 + 2*random());
     return TRUE;
 };
-
+*/

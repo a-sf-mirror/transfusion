@@ -17,305 +17,457 @@
     See file, 'COPYING', for details.
 */
 
+/* Tim's to-do list
+    
+    August 14/15/16 - updated ai.qc (spotted sounds), client.qc (obituaries), w_fork.qc (non-clank for hitting enemy), 
+                      m_rat.qc, m_bat.qc, m_eel.qc, m_zombie.qc, m_hellhound.qc, m_butcher.qc, m_browncultist.qc, player.qc (throwhead)
+            
+    tweak corpse explosion
+    corpse explosion model when voodoo dolled alt-fire death? 
+    model - vomit ball (Kazashi and Cruaich)
+    need to get real health and damage values
+    head - fix use of butcher head with ThrowHead().
+    fix missile impacts so they only make living non-world objects bleed
+    pain sequence issue with being on fire?
+    damage to player if you touch butcher - in player.qc, for all monsters?
+*/
+
+
 #include "common.qh"
-#include "player.qh"
+
+
+$base base        
+$skin skin
+
+// idle
+
+$frame idle1 idle2 idle3 idle4 idle5 idle6 idle7 idle8 idle9 idle10 idle11 idle12 idle13 idle14 idle15 idle16
+
+// special idle
+
+$frame idlea1 idlea2 idlea3 idlea4 idlea5 idlea6 idlea7 idlea8 idlea9 idlea10 idlea11 idlea12 idlea13 idlea14 idlea15
+$frame idlea16 idlea17 idlea18 idlea19 idlea20 idlea21 idlea22 idlea23 idlea24 idlea25 idlea26 idlea27 idlea28 idlea29 idlea30
+
+// walk
+
+$frame walk1 walk2 walk3 walk4 walk5 walk6
+$frame walk7 walk8 walk9 walk10 walk11 walk12
+
+//attack1
+
+$frame attacka1 attacka2 attacka3 attacka4 attacka5 attacka6
+$frame attacka7 attacka8 attacka9 attacka10 attacka11 attacka12
+
+//attack2
+
+$frame attackb1 attackb2 attackb3 attackb4 attackb5 attackb6 attackb7 attackb8
+
+//pain
+
+$frame pain1 pain2 pain3 pain4
+
+//death
+
+$frame death1 death2 death3 death4 death5 death6 death7
+$frame death8 death9 death10 death11 death12 death13
+
 
 // Prototypes
 
-void () butcher_launch_cleaver;  	// Throw butcher's cleaver
-void () butcher_launch_vomit;		// Throw up on player
-void () butcher_push;				// Touch the player
+void () butcher_launch_cleaver;      // Throw butcher's cleaver
+void () butcher_launch_vomit;        // Throw up on player
+void () butcher_stand1;             // Minor shoulder shrugging and undead breathing
+void () butcher_standa1;            // Bad habits... kids- don't pick your nose!
+void () butcher_VomitTouch;         // When struck by vomit
+void () butcher_CleaverTouch;         // When struck by cleaver
 
-// First
 
 void (float dist) butcher_ai =
 {
-	if (self.style == 1)
-		ai_stand ();
-	else
-	{
-		if (self.style == 2)
-			ai_walk (dist);
-		else
-		{
-			if (self.style == 3)
-			{
-				ai_run (dist * 2);
-				ai_face ();
-			}
-		}
-	}
+    if (self.style == 1)
+        ai_stand ();
+    else
+    {
+        if (self.style == 2)
+            ai_walk (dist);
+        else
+        {
+            if (self.style == 3)
+            {
+                ai_run (dist * 2);
+                ai_face ();
+            }
+        }
+    }
 };
 
-// Second
+//--- Walking around
 
-void () butcher_walk1 = [19, butcher_walk2]
+void () butcher_walk1 = [$walk1, butcher_walk2] {butcher_ai (6);};
+void () butcher_walk2 = [$walk2, butcher_walk3] {butcher_ai (4);};
+void () butcher_walk3 = [$walk3, butcher_walk4] {butcher_ai (3);};
+void () butcher_walk4 = [$walk4, butcher_walk5] {butcher_ai (5);};
+void () butcher_walk5 = [$walk5, butcher_walk6] {butcher_ai (6);};
+void () butcher_walk6 = [$walk6, butcher_walk7] {butcher_ai (4);};
+void () butcher_walk7 = [$walk7, butcher_walk8] {butcher_ai (3);};
+void () butcher_walk8 = [$walk8, butcher_walk9] {butcher_ai (3);};
+void () butcher_walk9 = [$walk9, butcher_walk10] {butcher_ai (3);};
+void () butcher_walk10 = [$walk10, butcher_walk11] {butcher_ai (3);};
+void () butcher_walk11 = [$walk11, butcher_walk12] {butcher_ai (3);};
+void () butcher_walk12 = [$walk12, butcher_walk1] {butcher_ai (3);};
+
+
+//--- Decide which idle to do
+
+void () butcher_stand = 
 {
-	self.effects = 0;
-	if (random () < 0.2)
-		sound (self, CHAN_VOICE, "boss2/idle.wav", 1, ATTN_IDLE);
-	butcher_ai (6);
+    if (random () < 0.1)
+    sound (self, CHAN_WEAPON, "butcher/fzomroam.wav", 1, ATTN_NORM);
+    
+    if (random () < 0.05)
+        butcher_standa1();
+    else     
+        butcher_stand1();    
 };
 
-void () butcher_walk2 = [20, butcher_walk3] {butcher_ai (4);};
-void () butcher_walk3 = [21, butcher_walk4] {butcher_ai (3);};
-void () butcher_walk4 = [22, butcher_walk5] {butcher_ai (5);};
-void () butcher_walk5 = [23, butcher_walk6] {butcher_ai (6);};
-void () butcher_walk6 = [24, butcher_walk7] {butcher_ai (4);};
-void () butcher_walk7 = [25, butcher_walk8] {butcher_ai (3);};
-void () butcher_walk8 = [26, butcher_walk9] {butcher_ai (3);};
-void () butcher_walk9 = [27, butcher_walk10] {butcher_ai (3);};
-void () butcher_walk10 = [28, butcher_walk11] {butcher_ai (3);};
-void () butcher_walk11 = [29, butcher_walk12] {butcher_ai (3);};
-void () butcher_walk12 = [30, butcher_walk1] {butcher_ai (3);};
+//--- Huff and puff sequence
 
+void () butcher_stand1 = [$idle1, butcher_stand2] {ai_stand();};
+void () butcher_stand2 = [$idle2, butcher_stand3] {ai_stand();};
+void () butcher_stand3 = [$idle3, butcher_stand4] {ai_stand();};
+void () butcher_stand4 = [$idle4, butcher_stand5] {ai_stand();};
+void () butcher_stand5 = [$idle5, butcher_stand6] {ai_stand();};
+void () butcher_stand6 = [$idle6, butcher_stand7] {ai_stand();};
+void () butcher_stand7 = [$idle7, butcher_stand8] {ai_stand();};
+void () butcher_stand8 = [$idle8, butcher_stand9] {ai_stand();};
+void () butcher_stand9 = [$idle9, butcher_stand10] {ai_stand();};
+void () butcher_stand10 = [$idle10, butcher_stand11] {ai_stand();};
+void () butcher_stand11 = [$idle11, butcher_stand12] {ai_stand();};
+void () butcher_stand12 = [$idle12, butcher_stand13] {ai_stand();};
+void () butcher_stand13 = [$idle13, butcher_stand14] {ai_stand();};
+void () butcher_stand14 = [$idle14, butcher_stand15] {ai_stand();};
+void () butcher_stand15 = [$idle15, butcher_stand16] {ai_stand();};
+void () butcher_stand16 = [$idle16, butcher_stand] {};
 
-void () butcher_stand =
-{
-	self.style = 1;
-	butcher_walk1 ();
-};
+//--- Pick nose
+
+void () butcher_standa1 = [$idlea1, butcher_standa2] {ai_stand();};
+void () butcher_standa2 = [$idlea2, butcher_standa3] {ai_stand();};
+void () butcher_standa3 = [$idlea3, butcher_standa4] {ai_stand();};
+void () butcher_standa4 = [$idlea4, butcher_standa5] {ai_stand();};
+void () butcher_standa5 = [$idlea5, butcher_standa6] {ai_stand();};
+void () butcher_standa6 = [$idlea6, butcher_standa7] {ai_stand();};
+void () butcher_standa7 = [$idlea7, butcher_standa8] {ai_stand();};
+void () butcher_standa8 = [$idlea8, butcher_standa9] {ai_stand();};
+void () butcher_standa9 = [$idlea9, butcher_standa10] {ai_stand();};
+void () butcher_standa10 = [$idlea10, butcher_standa11] {ai_stand();};
+void () butcher_standa11 = [$idlea11, butcher_standa12] {ai_stand();};
+void () butcher_standa12 = [$idlea12, butcher_standa13] {ai_stand();};
+void () butcher_standa13 = [$idlea13, butcher_standa14] {ai_stand();};
+void () butcher_standa14 = [$idlea14, butcher_standa15] {ai_stand();};
+void () butcher_standa15 = [$idlea15, butcher_standa16] {ai_stand();};
+void () butcher_standa16 = [$idlea16, butcher_standa17] {ai_stand();};
+void () butcher_standa17 = [$idlea17, butcher_standa18] {ai_stand();};
+void () butcher_standa18 = [$idlea18, butcher_standa19] {ai_stand();};
+void () butcher_standa19 = [$idlea19, butcher_standa20] {ai_stand();};
+void () butcher_standa20 = [$idlea20, butcher_standa21] {ai_stand();};
+void () butcher_standa21 = [$idlea21, butcher_standa22] {ai_stand();};
+void () butcher_standa22 = [$idlea22, butcher_standa23] {ai_stand();};
+void () butcher_standa23 = [$idlea23, butcher_standa24] {ai_stand();};
+void () butcher_standa24 = [$idlea24, butcher_standa25] {ai_stand();};
+void () butcher_standa25 = [$idlea25, butcher_standa26] {ai_stand();};
+void () butcher_standa26 = [$idlea26, butcher_standa27] {ai_stand();};
+void () butcher_standa27 = [$idlea27, butcher_standa28] {ai_stand();};
+void () butcher_standa28 = [$idlea28, butcher_standa29] {ai_stand();};
+void () butcher_standa29 = [$idlea29, butcher_standa30] {ai_stand();};
+void () butcher_standa30 = [$idlea30, butcher_stand] {};
+
 
 void () butcher_walk =
 {
-	self.style = 2;
-	butcher_walk1 ();
+    self.style = 2;
+    butcher_walk1 ();
 };
 
 void () butcher_run =
 {
-	self.style = 3;
-	butcher_walk1 ();
+    self.style = 3;
+    butcher_walk1 ();
 };
-
-
-// Third
 
 //--- Cleaver Throw
  
-void () butcher_attacka1 = [31, butcher_attacka2] {ai_face ();};
-void () butcher_attacka2 = [32, butcher_attacka3] {ai_face ();};
-void () butcher_attacka3 = [33, butcher_attacka4] {ai_face ();};
-void () butcher_attacka4 = [34, butcher_attacka5] {ai_face ();};
-void () butcher_attacka5 = [35, butcher_attacka6] {ai_face ();};
-void () butcher_attacka6 = [36, butcher_attacka7] {ai_face ();};
-void () butcher_attacka7 = [37, butcher_attacka8] {ai_face ();};
-void () butcher_attacka8 = [38, butcher_attacka9] {ai_face ();};
-void () butcher_attacka9 = [39, butcher_attacka10] {ai_face ();};
-void () butcher_attacka10 = [40, butcher_attacka11] {ai_face ();};
-void () butcher_attacka11 = [41, butcher_attacka12] {butcher_launch_cleaver ();ai_face ();};
-void () butcher_attacka12 = [42, butcher_run] {ai_face ();};
+void () butcher_attacka1 = [$attacka1, butcher_attacka2] {ai_face ();};
+void () butcher_attacka2 = [$attacka2, butcher_attacka3] {ai_face ();};
+void () butcher_attacka3 = [$attacka3, butcher_attacka4] {ai_face ();};
+void () butcher_attacka4 = [$attacka4, butcher_attacka5] {ai_face ();};
+void () butcher_attacka5 = [$attacka5, butcher_attacka6] {ai_face ();};
+void () butcher_attacka6 = [$attacka6, butcher_attacka7] {ai_face ();};
+void () butcher_attacka7 = [$attacka7, butcher_attacka8] {ai_face ();};
+void () butcher_attacka8 = [$attacka8, butcher_attacka9] {ai_face ();};
+void () butcher_attacka9 = [$attacka9, butcher_attacka10] {ai_face ();};
+void () butcher_attacka10 = [$attacka10, butcher_attacka11] {ai_face ();};
+void () butcher_attacka11 = [$attacka11, butcher_attacka12] {butcher_launch_cleaver ();ai_face ();};
+void () butcher_attacka12 = [$attacka12, butcher_run] {ai_face ();};
 
 //--- Vomiting 
 
-void () butcher_attackb1 = [43, butcher_attackb2] {ai_face ();};
-void () butcher_attackb2 = [44, butcher_attackb3] {ai_face ();};
-void () butcher_attackb3 = [45, butcher_attackb4] {ai_face ();};
-void () butcher_attackb4 = [46, butcher_attackb5] {ai_face ();};
-void () butcher_attackb5 = [47, butcher_attackb6] {ai_face ();};
-void () butcher_attackb6 = [48, butcher_attackb7] {ai_face ();};
-void () butcher_attackb7 = [49, butcher_attackb8] {butcher_launch_vomit ();ai_face ();};
-void () butcher_attackb8 = [50, butcher_run] {ai_face ();};
-
-//--- "Touch" attack
-
-void () butcher_attackc1 = [26, butcher_run] {ai_face ();butcher_push ();};
-
+void () butcher_attackb1 = [$attackb1, butcher_attackb2] {ai_face ();};
+void () butcher_attackb2 = [$attackb2, butcher_attackb3] {ai_face ();};
+void () butcher_attackb3 = [$attackb3, butcher_attackb4] {ai_face ();};
+void () butcher_attackb4 = [$attackb4, butcher_attackb5] {ai_face ();};
+void () butcher_attackb5 = [$attackb5, butcher_attackb6] {ai_face ();};
+void () butcher_attackb6 = [$attackb6, butcher_attackb7] {ai_face ();};
+void () butcher_attackb7 = [$attackb7, butcher_attackb8] {butcher_launch_vomit ();ai_face ();};
+void () butcher_attackb8 = [$attackb8, butcher_run] {ai_face ();};
 
 void () butcher_attack =
 {
-	local vector delta;
-
-	delta = (self.enemy.origin - self.origin);
-	if (vlen (delta) <= 90)  	// If the player is near nudge them
-		butcher_attackc1 ();
-	else
-	{
-		if ((vlen (delta) <= 300) && (random () < 0.5))
-			butcher_attackb1 ();
-		else
-			butcher_attacka1 ();
-	}
+    if (random () < 0.5)
+        butcher_attacka1 ();
+    else
+        butcher_attackb1 ();
 };
 
-
-
-void () butcher_MissileTouch =
-{
-	local float damg;
-
-	if (other == self.owner)
-		return;
-	if (pointcontents (self.origin) == CONTENT_SKY)
-	{
-		remove (self);
-		return;
-	}
-	damg = (50+ (random () * 20));
-	if (other.health)
-		T_Damage (other,self,self.owner,damg, DF_BODY, string_null);
-
-	T_RadiusDamage (self, self.owner, 120, other, string_null);
-	self.origin = (self.origin - (8* normalize (self.velocity)));
-	WriteByte (MSG_BROADCAST, SVC_TEMPENTITY);
-	WriteByte (MSG_BROADCAST, TE_EXPLOSION);
-	WriteCoord (MSG_BROADCAST, self.origin_x);
-	WriteCoord (MSG_BROADCAST, self.origin_y);
-	WriteCoord (MSG_BROADCAST, self.origin_z);
-	BecomeExplosion ();
-};
-
-// Throw butcher's cleaver
+//--- Throw butcher's cleaver
 
 void () butcher_launch_cleaver =
 {
-	local vector vec;
+    local vector vec;
 
-	sound (self, CHAN_WEAPON, "shalrath/attack2.wav", 1, ATTN_NORM);
-	vec = (self.enemy.origin - self.origin);
-	vec = normalize (vec);
+    sound (self, CHAN_WEAPON, "butcher/cleaver.wav", 1, ATTN_NORM);
+    vec = (self.enemy.origin - self.origin);
+    vec = normalize (vec);
 
-	newmis = spawn ();
-	newmis.owner = self;
+    newmis = spawn ();
+    newmis.owner = self;
 
-	newmis.solid = SOLID_BBOX;
-	newmis.movetype = MOVETYPE_FLYMISSILE;
-	setmodel (newmis, "progs/cleaver.mdl");
-	setsize (newmis, '0 0 0', '0 0 0');	
-	newmis.origin = self.origin + '0 0 16';
-	newmis.velocity = vec * 600;
-	newmis.avelocity = '500 500 500';
-	newmis.touch = butcher_MissileTouch;
-	self.effects = 0;
+    newmis.solid = SOLID_BBOX;
+    newmis.movetype = MOVETYPE_FLYMISSILE;
+    setmodel (newmis, "models/enemies/butcher_cleaver.md3");
+    setsize (newmis, '0 0 0', '0 0 0');        // FIXME
+    newmis.origin = self.origin + '0 0 16';
+    newmis.velocity = vec * 600;
+    newmis.avelocity = '500 500 500';
+    newmis.touch = butcher_CleaverTouch;
+    self.effects = 0;
 };
 
+//--- Cleaver hit something solid, now what?
 
-// Throw up on player
+void () butcher_CleaverTouch =
+{
+    local float damg;
+
+    if (other == self.owner)
+        return;
+    if (pointcontents (self.origin) == CONTENT_SKY)
+    {
+        remove (self);
+        return;
+    }    
+    
+    if (other.health) // FIXME: I'll probably have to change this so world objects won't bleed
+    {
+        damg = (50+ (random () * 20));    // FIXME: I need the "real" values
+        
+        SpawnBlood (self.origin, '0 0 0', damg);
+        SpawnBloodSpray (trace_ent, self.origin);
+        sound (self, CHAN_WEAPON, "weapons/pitchfrk/pflesh.wav", 1, ATTN_NORM);    
+    
+        T_Damage (other,self,self.owner,damg, DF_BODY, string_null);
+    }
+
+    self.origin = (self.origin - (8* normalize (self.velocity)));
+    remove (self);
+};
+
+//--- Throw up on player
 
 void () butcher_launch_vomit =
 {
-	local vector vec;
+    local vector vec;
 
-	sound (self, CHAN_WEAPON, "shalrath/attack2.wav", 1, ATTN_NORM);
-	vec = (self.enemy.origin - self.origin);
-	vec = normalize (vec);
+    sound (self, CHAN_WEAPON, "butcher/fzompuke.wav", 1, ATTN_NORM);
+    vec = (self.enemy.origin - self.origin);
+    vec = normalize (vec);
 
-	newmis = spawn ();
-	newmis.owner = self;
+    newmis = spawn ();
+    newmis.owner = self;
 
-	newmis.solid = SOLID_BBOX;
-	newmis.movetype = MOVETYPE_FLYMISSILE;
-	setmodel (newmis, "progs/vomit.mdl");
-	setsize (newmis, '0 0 0', '0 0 0');	
-	newmis.origin = self.origin + '0 0 16';
-	newmis.velocity = vec * 600;
-	newmis.avelocity = '500 500 500';
-	newmis.touch = butcher_MissileTouch;
-	self.effects = 0;
+    newmis.solid = SOLID_BBOX;
+    newmis.movetype = MOVETYPE_FLYMISSILE;
+    setmodel (newmis, "progs/naltball.mdl"); // FIXME: Switch to vomit once model is made
+    setsize (newmis, '0 0 0', '0 0 0');    
+    newmis.origin = self.origin + '0 0 28';
+    newmis.velocity = vec * 600;
+    newmis.avelocity = '500 500 500';
+    newmis.touch = butcher_VomitTouch;
+    self.effects = 0;
 };
 
-void () butcher_push =
+//--- Vomit hit something solid, now what?
+
+void () butcher_VomitTouch =
 {
-	local vector delta;
-	local float ldmg;
+    local float damg;
 
-	if (self.enemy.classname != "player") // To avoid hurting monster buddies
-		return;
-		
-	delta = (self.enemy.origin - self.origin);
-	ldmg = (random () * 25);
-	T_Damage (self.enemy, self, self, ldmg, DF_BODY, string_null);
-	sound (self, CHAN_WEAPON, "wizard/wsight.wav", 1, ATTN_NORM);
-	self.enemy.flags = self.enemy.flags - (self.enemy.flags & FL_ONGROUND);
-	self.enemy.velocity = (delta * 10);
-	self.enemy.velocity_z = 100;
+    if (other == self.owner)
+        return;
+    if (pointcontents (self.origin) == CONTENT_SKY)
+    {
+        remove (self);
+        return;
+    }    
+    
+    
+
+    if (other.health)  // If it's a hurtable object (i.e. non-wall)
+    {
+        damg = (10+ (random () * 40));    // FIXME: I need the "real" values
+    
+        if (damg > 25)
+            sound (self, CHAN_WEAPON, "butcher/acidhit1.wav", 1, ATTN_NORM);
+        else
+            sound (self, CHAN_WEAPON, "butcher/acidhit2.wav", 1, ATTN_NORM);    
+    
+        T_Damage (other,self,self.owner,damg, DF_BODY, string_null);
+        
+    }
+
+    self.origin = (self.origin - (8* normalize (self.velocity)));
+    remove (self);
 };
 
+//--- Pain sequence
 
-// Fourth
-
-/* 
-The butcher_attack determines what attack to actually use. 
-Take some time and study these functions. 
-The butcher_Push will only affect players, 
-if I remember correctly from when I originally created this, 
-pushing monsters will cause some bug. Next is pain, death, and spawning:
-*/
-
-void () butcher_pain1 = [51, butcher_pain2] {};
-void () butcher_pain2 = [52, butcher_pain3] {};
-void () butcher_pain3 = [53, butcher_pain4] {};
-void () butcher_pain4 = [54, butcher_run] {}; 
+void () butcher_pain1 = [$pain1, butcher_pain2] {};
+void () butcher_pain2 = [$pain2, butcher_pain3] {};
+void () butcher_pain3 = [$pain3, butcher_pain4] {};
+void () butcher_pain4 = [$pain4, butcher_run] {}; 
 
 
 void () butcher_pain =
 {
-	if (self.pain_finished > time)
-		return;
-	sound (self,2,"wizard/wdeath.wav",1,1);
-	butcher_pain1 ();
-	self.pain_finished = (time + 3);
+    // don't make multiple pain sounds right after each other
+    if (self.pain_finished > time)
+        return;
+        
+    sound (self,2,"butcher/fzompain.wav",1,1);
+    butcher_pain1 ();
+    self.pain_finished = (time + 1.01);
 };
 
-void () butcher_death1 = [55, butcher_death2] {};
-void () butcher_death2 = [56, butcher_death3] {};
-void () butcher_death3 = [57, butcher_death4] {};
-void () butcher_death4 = [58, butcher_death5] {};
-void () butcher_death5 = [59, butcher_death6] {};
-void () butcher_death6 = [60, butcher_death7] {};
-void () butcher_death7 = [61, butcher_death8] {};
-void () butcher_death8 = [62, butcher_death9] {};
-void () butcher_death9 = [63, butcher_death10] {};
-void () butcher_death10 = [64, butcher_death11] {};
-void () butcher_death11 = [65, butcher_death12] {};
-void () butcher_death12 = [66, butcher_death13] {};
-void () butcher_death13 = [67, butcher_death13] {};
+//--- Death sequence
+
+void () butcher_death1 = [$death1, butcher_death2] {};
+void () butcher_death2 = [$death2, butcher_death3] {};
+void () butcher_death3 = [$death3, butcher_death4] {};
+void () butcher_death4 = [$death4, butcher_death5] {};
+void () butcher_death5 = [$death5, butcher_death6] {};
+void () butcher_death6 = [$death6, butcher_death7] {};
+void () butcher_death7 = [$death7, butcher_death8] {};
+void () butcher_death8 = [$death8, butcher_death9] {};
+void () butcher_death9 = [$death9, butcher_death10] {};
+void () butcher_death10 = [$death10, butcher_death11] {};
+void () butcher_death11 = [$death11, butcher_death12] {};
+void () butcher_death12 = [$death12, butcher_death13] {}; 
+void () butcher_death13 = [$death13, butcher_death13] 
+{
+    // In the last frame, remove self 15 seconds after death
+    self.nextthink = time + 15;
+    self.think = SUB_Remove;
+};
+
+// Sequence for burn or voodoo death
+
+void () butcher_explode1 = [1, butcher_explode2] {};
+void () butcher_explode2 = [2, butcher_explode3] {};
+void () butcher_explode3 = [3, butcher_explode4] {};
+void () butcher_explode4 = [4, butcher_explode5] {};
+void () butcher_explode5 = [5, butcher_explode6] {};
+void () butcher_explode6 = [6, butcher_explode7] {};
+void () butcher_explode7 = [7, butcher_explode8] {};
+void () butcher_explode8 = [8, butcher_explode9] {};
+void () butcher_explode9 = [9, butcher_explode10] {};
+void () butcher_explode10 = [10, butcher_explode10] 
+{
+    // In the last frame, remove self 15 seconds after death
+    self.nextthink = time + 15;
+    self.think = SUB_Remove;
+};
 
 void () butcher_die =
 {
-	self.effects = 0;
-	if (self.health < -40)
-	{
-		sound (self, CHAN_VOICE, "player/udeath.wav", 1, ATTN_NORM);
-		ThrowHead (self.health);  // FIXME: At some point need to drop butcher head
-		ThrowGib ("models/objects/gib1.md3", self.health);
-		ThrowGib ("models/objects/gib2.md3", self.health);
-		ThrowGib ("models/objects/gib3.md3", self.health);
-		return;
-	}
-	sound (self, CHAN_VOICE, "blob/death1.wav", 1, ATTN_NORM);
-	butcher_death1 ();
-	self.solid = SOLID_NOT;
+    self.effects = 0;
+    if (self.health < -40)
+    {
+        sound (self, CHAN_VOICE, "butcher/fzomdie3.wav", 1, ATTN_NORM);
+                
+        ThrowHead ("models/enemies/butcher_head.md3", self.health);
+        RandomHumanGibs ();
+        RandomHumanGibs (); // Many gibs!
+        remove (self);
+        return;
+    }
+    
+    if (random () < 0.5)
+        sound (self, CHAN_VOICE, "butcher/fzomdie1.wav", 1, ATTN_NORM);
+    else
+        sound (self, CHAN_VOICE, "butcher/fzomdie2.wav", 1, ATTN_NORM);
+
+    self.solid = SOLID_NOT;
+    
+    if (self.deathtype == "fire")
+    {
+        ThrowHead ("models/enemies/butcher_head.md3", self.health);
+        setmodel (self, "models/enemies/butcher_explode.md3");
+        butcher_explode1 ();
+    }
+    
+    else
+        butcher_death1 ();
+
 };
 
 void () monster_butcher =
 {
-	if (deathmatch)
-	{
-		remove (self);
-		return ;
-	}
-	precache_model ("models/enemies/butcher.md3");
-	precache_model ("progs/h_shal.mdl");
-	precache_sound ("wizard/wdeath.wav");
-	precache_sound ("wizard/wsight.wav");
-	precache_sound ("blob/death1.wav");
-	precache_sound ("boss2/idle.wav");
-	precache_sound ("shalrath/attack2.wav");
-	precache_sound ("shalrath/sight.wav");
+// Disable for testing the model
 
-	self.solid = SOLID_SLIDEBOX;
-	self.movetype = MOVETYPE_STEP;
-	setmodel (self, "models/enemies/butcher.md3");
-	setsize (self,'-32 -32 -24','32 32 64');
-	self.health = 500;
-	self.th_stand = butcher_stand;
-	self.th_walk = butcher_walk;
-	self.th_run = butcher_run;
-	self.th_die = butcher_die;
-	self.th_pain = butcher_pain;
-	self.th_missile = butcher_attack;
-	walkmonster_start ();
+    if (deathmatch)
+    {
+        remove (self);
+        return ;
+    }
+
+    precache_model ("models/enemies/butcher.md3");
+    precache_model ("models/enemies/butcher_cleaver.md3");
+    precache_model ("models/enemies/butcher_head.md3");
+    precache_model ("models/enemies/butcher_explode.md3");
+    precache_model ("progs/naltball.mdl");
+        
+    precache_sound ("butcher/acidhit1.wav");
+    precache_sound ("butcher/acidhit2.wav");
+    precache_sound ("butcher/cleaver.wav");
+    precache_sound ("butcher/fzomdie1.wav");
+    precache_sound ("butcher/fzomdie2.wav");
+    precache_sound ("butcher/fzomdie3.wav");
+    precache_sound ("butcher/fzompain.wav");
+    precache_sound ("butcher/fzompuke.wav");
+    precache_sound ("butcher/fzomroam.wav");
+    precache_sound ("butcher/fzomspot.wav");
+    
+    
+    self.solid = SOLID_SLIDEBOX;
+    self.movetype = MOVETYPE_STEP;
+    setmodel (self, "models/enemies/butcher.md3");
+    setsize (self,'-8 -11 0', '11 11 50');
+    self.health = 200;
+    self.th_stand = butcher_stand;
+    self.th_walk = butcher_walk;
+    self.th_run = butcher_run;
+    self.th_die = butcher_die;
+    self.th_pain = butcher_pain;
+    self.th_missile = butcher_attack;
+    walkmonster_start ();
 };
-
-

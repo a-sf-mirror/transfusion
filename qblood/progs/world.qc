@@ -37,7 +37,7 @@ Precache all necessary sounds
 */
 void() PrecacheSounds =
 {
-    // DON'T TOUCH !! - The following sounds are useed by the engine code
+    // DON'T TOUCH !! - The following sounds are used by the engine code
     precache_sound ("misc/h2ohit1.wav");     // object entering water
     precache_sound ("demon/dland2.wav");     // landing thud
 

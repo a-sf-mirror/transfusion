@@ -42,4 +42,14 @@ ctf.qc
 fight.qc
 ai.qc
 monsters.qc
+m_bat.qc
+m_blackcultist.qc
+m_bluecultist.qc
+m_browncultist.qc
 m_butcher.qc
+m_eel.qc
+m_greencultist.qc
+m_hellhound.qc
+m_rat.qc
+m_redcultist.qc
+m_zombie.qc

@@ -433,11 +433,11 @@ void() HeadTouch =
 };
 
 
-void(float dm) ThrowHead =
+void(string headmodel, float dm) ThrowHead =
 {
     self.frame = 0;
     self.skin = 0;
-    setmodel (self, "progs/h_player.mdl");
+    setmodel (self, headmodel);
     setsize (self, '-10 -13 -3', '12 6 18');
     self.view_ofs = '0 0 8';
 
@@ -529,7 +529,7 @@ void() RandomHumanGibs =
 
 void() GibPlayer =
 {
-    ThrowHead (self.health);
+    ThrowHead ("progs/h_player.mdl", self.health);
     RandomHumanGibs ();
 
     self.deadflag = DEAD_DEAD;
@@ -636,7 +636,7 @@ void() PlayerDie =
 
             self = player_head;
             self.deadflag = DEAD_DEAD;
-            ThrowHead (self.health);
+            ThrowHead ("progs/h_player.mdl", self.health);
         }
         else
             player_bod_dieh1 ();

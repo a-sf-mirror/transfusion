@@ -540,7 +540,17 @@
 
 @baseclass color(220 0 0) = Monster []
 
-@PointClass base(Monster) size(-32 -32 -24, 32 32 64) = monster_butcher : "Butcher" []
+@PointClass base(Monster) size(-4 -4 -5, 5 3 7) = monster_bat : "Bat" []
+@PointClass base(Monster) size(-6 -14 0, 34 14 62) = monster_blackcultist : "Black Cultist" []
+@PointClass base(Monster) size(-6 -14 0, 34 14 62) = monster_bluecultist : "Blue Cultist" []
+@PointClass base(Monster) size(-6 -14 0, 34 14 62) = monster_browncultist : "Brown Cultist" []
+@PointClass base(Monster) size(-8 -11 0, 11 11 50) = monster_butcher : "Butcher" []
+@PointClass base(Monster) size(-9 -1 -2, 6 1 2) = monster_eel : "Eel" []
+@PointClass base(Monster) size(-6 -14 0, 34 14 62) = monster_greencultist : "Green Cultist" []
+@PointClass base(Monster) size(-39 -17 0, 38 17 35) = monster_hellhound : "Hellhound" []
+@PointClass base(Monster) size(-13 -3 0, 13 3 6) = monster_rat : "Rat" []
+@PointClass base(Monster) size(-6 -14 0, 34 14 62) = monster_redcultist : "Red Cultist" []
+@PointClass base(Monster) size(-5 -15 0, 11 15 62) = monster_zombie : "Zombie" []
 
 
 //

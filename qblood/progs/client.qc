@@ -1917,6 +1917,41 @@ void(entity attacker) ClientObituary =
             bprint ("\n");
         }
     }
+
+    // If the player was killed by a monster
+    else if (attacker.flags & FL_MONSTER)
+    {
+        local string m_name;
+
+        Cl_UpdatePlayerFrags (self, -1);
+
+        if (attacker.classname == "monster_rat")
+            m_name = "a rat";
+        else if (attacker.classname == "monster_bat")
+            m_name = "a bat";
+        else if (attacker.classname == "monster_eel")
+            m_name = "an eel";
+        else if (attacker.classname == "monster_zombie")
+            m_name = "an axe zombie";
+        else if (attacker.classname == "monster_hellhound")
+            m_name = "a hellhound";
+        else if (attacker.classname == "monster_butcher")
+            m_name = "a bloated zombie";
+        else if (attacker.classname == "monster_browncultist")
+            m_name = "a shotgun cultist";
+        else if (attacker.classname == "monster_blackcultist")
+            m_name = "a tommygun cultist";
+        else if (attacker.classname == "monster_greencultist")
+            m_name = "a TNT cultist";
+        else if (attacker.classname == "monster_bluecultist")
+            m_name = "a tesla cultist";
+        else if (attacker.classname == "monster_redcultist")
+            m_name = "a chosen cultist";
+
+        bprint4 (self.netname, " was killed by ", m_name, "\n");
+    }
+
+    // No idea?
     else
     {
         Cl_UpdatePlayerFrags (self, -1);
