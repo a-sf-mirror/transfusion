@@ -62,6 +62,7 @@ void() W_Precache =
 */
     precache_sound ("weapons/shotgun/shotfire.wav");  // shotgun fired
 //    precache_sound ("weapons/shotgun/shotload.wav");
+    precache_sound ("weapons/shtshl2.wav");           // shell hitting ground
 
     // tommy gun
     precache_sound ("weapons/tommygun/_tom.wav");  // Tommy gun
@@ -500,6 +501,71 @@ void() W_FireShotgun =
 
 /*
 ================
+ShellHit
+
+Plays hit sound when shell hits hard surface if not stuck inloop
+================
+*/
+void() ShellHit =
+{
+    // prevent sound if last shellhit sound occured within last 2 frames
+    if (self.ltime <= (time - 0.2))
+        sound (self, CHAN_WEAPON, self.noise, 1,ATTN_NORM);
+
+    self.ltime = time; // marks time of current touch triggeractivation
+};
+
+
+/*
+================
+DropShell
+
+Displays shell and defines its dynamic manifestation
+================
+*/
+void() DropShell =
+{
+    self.movetype = MOVETYPE_BOUNCE;
+    self.solid = SOLID_BBOX;
+    setmodel (self, self.mdl);
+    setsize (self, VEC_ORIGIN, VEC_ORIGIN);
+    makevectors (self.owner.v_angle);
+    setorigin (self, self.owner.origin + v_forward * 15);
+    self.velocity = (crandom() + 1)*v_forward*30 + v_up*(220 + crandom()*10) - v_right*crandom()*50;
+    self.avelocity_x = crandom()*500;
+    self.avelocity_y = crandom()*500;
+    self.avelocity_z = crandom()*500;
+    self.touch = ShellHit;
+    self.nextthink = time + 10;
+    self.think = SUB_Remove;
+    self.ltime = time - 1;
+};
+
+
+/*
+================
+SpawnShell
+
+Spawns new shell entity but doesn't display it until reloadtime
+================
+*/
+void() SpawnShell =
+{
+    local entity shell;
+
+    shell = spawn ();
+    shell.owner = self;
+
+    // Shotgun shells only for now
+    shell.nextthink = time + 0.4;  // delay shells until reload
+    shell.mdl = "progs/shotshl.mdl";
+    shell.noise = "weapons/shtshl2.wav";
+    shell.think = DropShell;
+};
+
+
+/*
+================
 W_FireSuperShotgun
 ================
 */
@@ -525,6 +591,7 @@ void() W_FireSuperShotgun =
     self.currentammo = self.ammo_shells = self.ammo_shells - 2;
 
     dir = aim (self, 100000);
+    SpawnShell (); SpawnShell ();  // 2 shells dropped
     FireBullets (14, dir, '0.14 0.08 0');
 };
 
