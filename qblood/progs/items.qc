@@ -101,7 +101,7 @@ void(float timeleft) DropQuad =
     item.movetype = MOVETYPE_TOSS;
     item.noise = "bludbath/powerup.wav";
     setmodel (item, "progs/quaddama.mdl");
-    setsize (item, '-16 -16 -24', '16 16 32');
+    setsize (item, '-18 -11 -33', '19 11 9');
     item.touch = q_touch;
     item.nextthink = time + timeleft;    // remove it with the time left on it
     item.think = SUB_Remove;
@@ -550,7 +550,7 @@ void() obj_goal =
     precache_model ("progs/goalpost.mdl");
     setmodel (self, "progs/goalpost.mdl");
 
-    setsize (self, '-51 -65 -24', '55 65 90');
+    setsize (self, '-51 -65 -3', '55 65 111');
     StartObject ();
 };
 
@@ -1278,7 +1278,7 @@ void() item_armor4 =
     StartItem ();
     };
 
-/*QUAKED item_armor1 (0 .5 .8) (-16 -16 0) (16 16 32)
+/*QUAKED item_armor1 (0 .5 .8) (-1 -18 2) (6 19 45)
 */
 
 void() item_armor1 =
@@ -1288,11 +1288,11 @@ void() item_armor1 =
     setmodel (self, "progs/i_arm_bd.mdl");
     self.netname = "Body Armor";
 
-    setsize (self, '-16 -16 0', '16 16 56');
+    setsize (self, '-1 -18 2', '6 19 45');
     StartItem ();
 };
 
-/*QUAKED item_armor2 (0 .5 .8) (-16 -16 0) (16 16 32)
+/*QUAKED item_armor2 (0 .5 .8) (-7 -12 8) (7 10 37)
 */
 
 void() item_armor2 =
@@ -1302,11 +1302,11 @@ void() item_armor2 =
     setmodel (self, "progs/i_arm_fr.mdl");
     self.netname = "Fire Armor";
 
-    setsize (self, '-16 -16 0', '16 16 56');
+    setsize (self, '-7 -12 8', '7 10 37');
     StartItem ();
 };
 
-/*QUAKED item_armorInv (0 .5 .8) (-16 -16 0) (16 16 32)
+/*QUAKED item_armorInv (0 .5 .8) (-12 -17 2) (12 19 42)
 */
 
 void() item_armorInv =
@@ -1316,7 +1316,7 @@ void() item_armorInv =
     setmodel (self, "progs/i_arm_su.mdl");
     self.netname = "Super Armor";
 
-    setsize (self, '-16 -16 0', '16 16 56');
+    setsize (self, '-12 -17 2', '12 19 42');
     StartItem ();
 };
 
@@ -2369,11 +2369,11 @@ void() item_artifact_invulnerability =
     self.netname = "Death mask";
     self.effects = self.effects | EF_RED;
     self.items = IT_INVULNERABILITY;
-    setsize (self, '-16 -16 -24', '16 16 32');
+    setsize (self, '-4 -12 -0', '2 12 30');
     StartItem ();
 };
 
-/*QUAKED item_artifact_envirosuit (0 .5 .8) (-16 -16 -24) (16 16 32)
+/*QUAKED item_artifact_envirosuit (0 .5 .8) (-9 -13 -3) (8 13 74)
 Player takes no damage from water or slime for 30 seconds
 */
 void() item_artifact_envirosuit =
@@ -2391,12 +2391,12 @@ void() item_artifact_envirosuit =
     setmodel (self, "progs/suit.mdl");
     self.netname = "Diving Suit";
 // PM:  Diving suit/IT_SUIT controlled by inventory.
-    setsize (self, '-16 -16 -24', '16 16 32');
+    setsize (self, '-9 -13 -3', '8 13 74');
     StartItem ();
 };
 
 
-/*QUAKED item_artifact_invisibility (0 .5 .8) (-16 -16 -24) (16 16 32)
+/*QUAKED item_artifact_invisibility (0 .5 .8) (-3 -6 -2) (6 7 23)
 Player is invisible for 30 seconds
 */
 void() item_artifact_invisibility =
@@ -2414,7 +2414,7 @@ void() item_artifact_invisibility =
 };
 
 
-/*QUAKED item_artifact_super_damage (0 .5 .8) (-16 -16 -24) (16 16 32)
+/*QUAKED item_artifact_super_damage (0 .5 .8) (-18 -11 -33) (19 11 9)
 The next attack from the player will do 4x damage
 */
 void() item_artifact_super_damage =
@@ -2428,6 +2428,6 @@ void() item_artifact_super_damage =
 
     self.netname = "Guns Akimbo";
 
-    setsize (self, '-16 -16 -24', '16 16 32');
+    setsize (self, '-18 -11 -33', '19 11 9');
     StartItem ();
 };
