@@ -1196,7 +1196,11 @@ void() CheckPowerups =
         if (self.akimbo_finished < time)
         {
             self.akimbo_finished = 0;
-            W_SetCurrentAmmo ();
+            #ifndef QUAKEWORLD
+            // Don't reset the weapon view while on the BOD
+            if (self.player_state != PS_BRINK_OF_DEATH)
+            #endif
+                W_SetCurrentAmmo ();
         }
 
         // (un)set the entity effects
