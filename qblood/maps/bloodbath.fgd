@@ -730,5 +730,6 @@
 		4 : "BSP clip" : 0
 		8 : "No sound" : 0
 		16 : "No Rubble" : 0
+		32 : "Explosive only" : 0
 	]
 ]

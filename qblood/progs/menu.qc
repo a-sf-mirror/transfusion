@@ -403,10 +403,10 @@ void() Menu_Draw =
     {
         Sprint (self, PRINT_HIGH,
                 "Vote for a map:\n"
-                "1) bb1   The Stronghold  | 2) bb2  Winter Wonderland\n"
-                "3) bb3   Bodies          | 4) bb4  The Tower\n"
-                "5) bb5   Click!\n"
-                "7) bb7   Midgard         | 8) bb8  Fun With Heads\n"
+                "1) bb1   The Stronghold  | 2) bb2   Winter Wonderland\n"
+                "3) bb3   Bodies          | 4) bb4   The Tower\n"
+                "5) bb5   Click!          | 6) bb7   Midgard\n"
+                "7) bb8   Fun With Heads  | 8) e1m1  Cradle to Grave\n"
                 "9) e1m7  Altar of Stone\n"
                 "\n"
                 "10) Go back to map menu\n");
@@ -649,14 +649,12 @@ void() Menu_HandleVoteMapBlood =
         newmap = "bb4";
     else if (self.impulse == 5)
         newmap = "bb5";
-//    else if (self.impulse == 6)
-//        newmap = "bb6";
-    else if (self.impulse == 7)
+    else if (self.impulse == 6)
         newmap = "bb7";
-    else if (self.impulse == 8)
+    else if (self.impulse == 7)
         newmap = "bb8";
-//    else if (self.impulse == 9)
-//        newmap = "e1m1";
+    else if (self.impulse == 8)
+        newmap = "e1m1";
     else if (self.impulse == 9)
         newmap = "e1m7";
     else

@@ -239,7 +239,7 @@ void() Shot_Fire =
         sound (self ,CHAN_AUTO, "weapons/shotgun/shotfir2.wav", 1, ATTN_NORM);
 
     dir = aim (self, 100000);
-    FireBullets (self.origin + v_up * 20, dir, 8 * nbshots, 7, spread);  // 8 "shot pellets" per shell
+    FireBullets (self.origin + v_up * 20, dir, 8 * nbshots, 8, spread);  // 8 "shot pellets" per shell
 };
 
 

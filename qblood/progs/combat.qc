@@ -53,6 +53,21 @@ float(entity targ, entity inflictor) CanDamage =
         return FALSE;
     }
 
+    // Some exploding_wall entities are only destroyable with explosives
+    // FIXME: The damage code should really be rewritten to prevent this kind of hacks
+    if (targ.spawnflags & 32)
+        if (targ.classname == "exploding_wall")
+        {
+            if (inflictor.classname == "misc_explobox2")  // TNT barrels
+                return TRUE;
+            if (inflictor.classname == "grenade")         // All bombs, lighted Spray Can, Napalm Launcher (altfire)
+                return TRUE;
+            if (inflictor.classname == "missile")         // Napalm Launcher (normal), Life Leech
+                return TRUE;
+
+            return FALSE;
+        }
+
     traceline(inflictor.origin, targ.origin, TRUE, self);
     if (trace_fraction == 1)
         return TRUE;

@@ -777,6 +777,7 @@ SPAWNFLAGS
 4 = use bsp clipping rather than bounding box clipping
 8 = play no sounds
 16 = throw no rubble
+32 = the wall will not take damage from non-explosive sources
 */
 void() exploding_wall =
 {
