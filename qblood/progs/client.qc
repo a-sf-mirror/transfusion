@@ -558,7 +558,11 @@ entity() SelectSpawnPoint =
     // If it's a cooperative game, choose a cooperative spawn point,
     // and fall back to a single player spawn point if necessary
     // TODO: add single player support here
-	if (gametype == GT_COOPERATIVE)
+	if (gametype == GT_SINGLE_PLAYER)
+	{
+		spawnpoint = Cl_GetRandomSpawnPoint ("info_player_start");
+	}
+	else if (gametype == GT_COOPERATIVE)
 	{
 		spawnpoint = Cl_GetRandomSpawnPoint("info_player_coop");
 
