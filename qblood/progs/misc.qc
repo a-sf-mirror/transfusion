@@ -798,8 +798,11 @@ void(string gibname, float dm) ThrowRubble=
     else if (sndrnd < 0.5)
         new.cnt = 2;
 
-    // set the skin of the piece of rubble
-    new.skin = self.skin;
+    // set the skin of the piece of rubble/glass
+    if (self.skin <= 4)
+        new.skin = self.skin;
+    else
+        new.skin = self.skin - 5;
 
     if (self.noise1)
     {

@@ -457,8 +457,16 @@ void() DropShell =
     setmodel (self, self.mdl);
     setsize (self, VEC_ORIGIN, VEC_ORIGIN);
     makevectors (self.owner.v_angle);
-    setorigin (self, self.owner.origin + v_forward * 15);
-    self.velocity = (crandom() + 1)*v_forward*30 + v_up*(220 + crandom()*10) - v_right*crandom()*30;
+    if (self.weapon == IT_NAILGUN)
+    {
+        setorigin (self, self.owner.origin + v_forward * 15 + v_up * 12 + v_right * 4);
+        self.velocity = (crandom() + 1)*v_forward*30 - v_right*(100 + crandom()*10) + v_up*(100 + crandom()*10);
+    }
+    else if (self.weapon == IT_SUPER_SHOTGUN)
+    {
+        setorigin (self, self.owner.origin + v_forward * 15);
+        self.velocity = (crandom() + 1)*v_forward*30 + v_up*(220 + crandom()*10) - v_right*crandom()*30;
+    }
     self.avelocity_x = crandom()*500;
     self.avelocity_y = crandom()*500;
     self.avelocity_z = crandom()*500;
@@ -499,6 +507,7 @@ void() SpawnShell =
             shell.noise  = "weapons/shtshl.wav";
         else
             shell.noise  = "weapons/shtshl3.wav";
+        shell.weapon = IT_NAILGUN;
 
         // since we directly call DropShell, the shell must be "self" temporary
         player = self;
@@ -516,7 +525,8 @@ void() SpawnShell =
         shell.mdl    = "progs/shotshl.mdl";
         shell.noise  = "weapons/shtshl2.wav";
         shell.noise1 = "weapons/shotgun/shotcock.wav";
-        shell.think = DropShell;
+        shell.think  = DropShell;
+        shell.weapon = IT_SUPER_SHOTGUN;
 
         // 2nd shell
         shell2 = spawn ();
@@ -526,6 +536,7 @@ void() SpawnShell =
         shell2.mdl       = shell.mdl;
         shell2.noise     = shell.noise;
         shell2.think     = shell.think;
+        shell2.weapon    = shell.weapon;
     }
 };
 

@@ -1239,7 +1239,7 @@ weapon_touch
 */
 void() weapon_touch =
 {
-    local   float   best, new, old;
+    local   float   new, old;
     local   float   leave;
     local   entity  stemp;
 
@@ -1266,12 +1266,6 @@ void() weapon_touch =
         leave = 1;
     else
         leave = 0;
-
-// if the player was using his best weapon, change up to the new one if better
-    stemp = self;
-    self = other;
-    best = W_BestWeapon();
-    self = stemp;
 
     if (self.classname == "weapon_flaregun")
     {
