@@ -212,7 +212,7 @@ void() player_nail =
         return;
     }
     self.weaponframe = self.weaponframe + 1;
-    if (self.weaponframe == 9)
+    if (self.weaponframe == 8 )
         self.weaponframe = 1;
     SuperDamageSound ();
     W_FireSpikes ();
