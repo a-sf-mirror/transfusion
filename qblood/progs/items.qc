@@ -1803,7 +1803,7 @@ local float     best;
     // spray can
     else if (self.weapon == 9)
     {
-        if (other.ammo_cells >= MAX_SPRAY)
+        if (other.ammo_spray >= MAX_SPRAY)
             return;
         other.ammo_spray = other.ammo_spray + self.aflag;
     }
@@ -2519,16 +2519,18 @@ void() DropBackpack =
 {
     local entity    item;
 
-    if (!(self.ammo_shells + self.ammo_nails + self.ammo_rockets + self.ammo_cells))
+    if (!(self.ammo_shells + self.ammo_nails + self.ammo_rockets + self.ammo_cells +
+          self.ammo_flares + self.ammo_tnt_bundle + self.ammo_tnt_proxy + self.ammo_tnt_remote +
+          self.ammo_spray + self.ammo_voodoo + self.ammo_leech))
         return; // nothing in it
 
     item = spawn();
     item.origin = self.origin - '0 0 24';
 
     // If the current weapon is dynamite, don't record it (it's just ammo)
-    if (self.weapon = IT_GRENADE_LAUNCHER ||
-        self.weapon == IT_PROXIMITY_BOMB  ||
-        self.weapon == IT_REMOTE_DETONATOR)
+    if (self.weapon == IT_GRENADE_LAUNCHER ||
+        self.weapon == IT_PROXIMITY_BOMB   ||
+        self.weapon == IT_REMOTE_DETONATOR )
     {
         item.items = 0;
         item.netname = "";

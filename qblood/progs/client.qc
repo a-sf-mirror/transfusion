@@ -359,7 +359,8 @@ void() ExitIntermission =
     if (intermission_running == 3)
     {
         if (!cvar("registered"))
-        {   // shareware episode has been completed, go to sell screen
+        {
+            // shareware episode has been completed, go to sell screen
             WriteByte (MSG_ALL, SVC_SELLSCREEN);
             return;
         }
@@ -380,7 +381,6 @@ void() ExitIntermission =
                                   "as if you had never been born.");
             return;
         }
-
     }
 
     GotoNextMap();
@@ -961,7 +961,7 @@ void() PlayerJump =
         else
             self.velocity_z = 50;
 
-// play swiming sound
+        // play swiming sound
         if (self.swim_flag < time)
         {
             self.swim_flag = time + 1;
@@ -983,18 +983,18 @@ void() PlayerJump =
     self.flags = self.flags - (self.flags & FL_JUMPRELEASED);
 
     self.button2 = 0;
-// player jumping sound
-    sound (self, CHAN_BODY, "foley/jump.wav", 1, ATTN_NORM);
+    sound (self, CHAN_BODY, "foley/jump.wav", 1, ATTN_NORM);  // player jumping sound
 
     #ifndef QUAKEWORLD
     local   float   jump;
 
-// Boots let player jump about 4x as high.
-// NOTE:  max height = v0^2 / 2g.
+    jump = 350;     // quake = 270
+
+    // Boots let player jump about 4x as high.
+    // NOTE:  max height = v0^2 / 2g.
     if (self.boots_on)
-        jump = 740;     // Velocity is doubled.
-    else
-        jump = 370;     // quake = 270
+        jump = jump * 2;
+
     self.flags = self.flags - FL_ONGROUND;  // don't stairwalk
     self.velocity_z = self.velocity_z + jump;
     #endif
@@ -1406,14 +1406,10 @@ void() PlayerPostThink =
     W_WeaponFrame ();
 
     // Check for boredom.
-    if (self.velocity == '0 0 0')
+    if (self.velocity == '0 0 0' && self.idle_time <= time && !self.idle_done)
     {
-        if (self.idle_time <= time)
-            if (!self.idle_done)
-            {
-                PM_BoredCaleb (self);
-                self.idle_done = TRUE;
-            }
+        PM_BoredCaleb (self);
+        self.idle_done = TRUE;
     }
     else
     {
@@ -1559,8 +1555,6 @@ void(entity attacker) ClientObituary =
         if (self == attacker)
         {
             // killed self in a dumb fashion
-            // dturner, 5/14/2001
-            // eliminate quake obit logic, use bloods instead
             #ifdef QUAKEWORLD
             logfrag (attacker, attacker);
             #endif
@@ -1614,7 +1608,6 @@ void(entity attacker) ClientObituary =
         }
         else
         {
-            // all new obituary logic starts here
             // no weapon associations, just random message and Announcer voice
             #ifdef QUAKEWORLD
             logfrag (attacker, self);
@@ -1905,7 +1898,7 @@ void(entity attacker) ClientObituary =
                     deathstring = " throttled ";
                     self.noise1 = "thevoice/throttl.wav";
                 }
-                else if (rnum <= 54)
+                else
                 {
                     deathstring = " wasted ";
                     self.noise1 = "thevoice/wasted.wav";

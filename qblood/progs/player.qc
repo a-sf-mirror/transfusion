@@ -204,7 +204,9 @@ void()  player_axed4 =  [$axattd4, player_run   ] {self.weaponframe=8;};
 
 void() player_nail =
 {
-    if ((!self.button0 && !self.button1 && self.impulse != 12) || intermission_running || self.ammo_nails < 1)
+    if ((!self.button0 && !self.button1 && self.impulse != 12)  || intermission_running ||
+        (self.weapon == IT_NAILGUN       && self.ammo_nails < 1) ||
+        (self.weapon == IT_SUPER_NAILGUN && self.ammo_spray < 1) )
     {
         player_run ();
         return;
@@ -720,6 +722,9 @@ void() PlayerDie =
 {
     local   float   i;
     local   string  s;
+
+    // I may not die alone...
+    W_ActivateRemoteBombs ();
 
     self.items = self.items - (self.items & IT_INVISIBILITY);
 

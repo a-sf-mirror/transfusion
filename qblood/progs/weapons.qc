@@ -921,7 +921,7 @@ void() T_MissileTouch =
         return;
     }
 
-    damg = 50 + random()*50; // quake = 100 + random()*20
+    damg = 50 + random()*50;
 
     self.deathtype = "rocket";  // Done for the fire code.
     if (other.health)
@@ -929,13 +929,11 @@ void() T_MissileTouch =
         other.deathtype = "rocket";
         if (other.classname == "monster_shambler")
             damg = damg * 0.5;  // mostly immune
-//        T_Damage (other, self, self.owner, damg );
         PM_BurnDamage (other, self, damg*0.75, damg*0.25);
     }
 
     // don't do radius damage to the other, because all the damage
     // was done in the impact
-//    T_RadiusDamage (self, self.owner, 120, other, "rocket");
     PM_BurnRadius (self, 90, 30, other);
 
     self.origin = self.origin - 8*normalize(self.velocity);
@@ -1918,17 +1916,28 @@ void() W_SetCurrentAmmo =
         self.currentammo = self.ammo_tnt_bundle;
         self.weaponmodel = "progs/v_rock.mdl";
 //        self.items = self.items | IT_ROCKETS;
+        Sprint (self, PRINT_MEDIUM, "TNT Bundle selected\n");
     }
     else if (self.weapon == IT_PROXIMITY_BOMB)
     {
         self.currentammo = self.ammo_tnt_proxy;
         self.weaponmodel = "progs/v_rock.mdl";
 //        self.items = self.items | IT_ROCKETS;
+        Sprint (self, PRINT_MEDIUM, "Promixity bombs selected\n");
     }
     else if (self.weapon == IT_REMOTE_DETONATOR)
     {
         self.currentammo = self.ammo_tnt_remote;
-        self.weaponmodel = "progs/v_rock.mdl";
+        if (!self.currentammo)
+        {
+            self.weaponmodel = "";  // FIXME: we don't have the remote model / frames yet
+            Sprint (self, PRINT_MEDIUM, "Remote detonator selected\n");
+        }
+        else
+        {
+            self.weaponmodel = "progs/v_rock.mdl";
+            Sprint (self, PRINT_MEDIUM, "Remote bombs selected\n");
+        }
 //        self.items = self.items | IT_ROCKETS;
     }
     else if (self.weapon == IT_ROCKET_LAUNCHER)
@@ -2190,21 +2199,6 @@ void() W_ChangeWeapon =
                 else
                     fl = IT_REMOTE_DETONATOR;
             }
-
-            // Print the type of dynamite selected
-            if (fl == IT_GRENADE_LAUNCHER)
-                Sprint (self, PRINT_MEDIUM, "TNT Bundle selected.\n");
-            else if (fl == IT_PROXIMITY_BOMB)
-                Sprint (self, PRINT_MEDIUM, "Promixity bombs selected.\n");
-            else
-            {
-                // If we actually have bombs
-                if (self.ammo_tnt_remote > 0)
-                    Sprint (self, PRINT_MEDIUM, "Remote bombs selected.\n");
-                // Else, we just have the detonator
-                else
-                    Sprint (self, PRINT_MEDIUM, "Remote detonator selected.\n");
-            }
         }
     }
     else if (self.impulse == 7)
@@ -2343,12 +2337,20 @@ void() CycleWeaponCommand =
         else if (self.weapon == IT_ROCKET_LAUNCHER)
         {
             self.weapon = IT_GRENADE_LAUNCHER;
-            if (self.ammo_tnt_bundle < 1)
-                am = 1;
+            // No need to check the ammo (it's removed as soon as there's no more ammo)
         }
-        else if (self.weapon == IT_GRENADE_LAUNCHER ||
-                 self.weapon == IT_PROXIMITY_BOMB   ||
-                 self.weapon == IT_REMOTE_DETONATOR )
+        else if (self.weapon == IT_GRENADE_LAUNCHER)
+        {
+            self.weapon = IT_PROXIMITY_BOMB;
+            // No need to check the ammo (it's removed as soon as there's no more ammo)
+        }
+        else if (self.weapon == IT_PROXIMITY_BOMB)
+        {
+            self.weapon = IT_REMOTE_DETONATOR;
+            // No need to check the ammo (it's removed as soon as there's
+            // no more ammo and no remaining bombs to trigger)
+        }
+        else if (self.weapon == IT_REMOTE_DETONATOR)
         {
             self.weapon = IT_SUPER_NAILGUN;
             if (self.ammo_spray < 1)
@@ -2410,13 +2412,21 @@ void() CycleWeaponReverseCommand =
         }
         else if (self.weapon == IT_SUPER_NAILGUN)
         {
-            self.weapon = IT_GRENADE_LAUNCHER;
-            if (self.ammo_tnt_bundle < 1)
-                am = 1;
+            self.weapon = IT_REMOTE_DETONATOR;
+            // No need to check the ammo (it's removed as soon as there's
+            // no more ammo and no remaining bombs to trigger)
         }
-        else if (self.weapon == IT_GRENADE_LAUNCHER ||
-                 self.weapon == IT_PROXIMITY_BOMB   ||
-                 self.weapon == IT_REMOTE_DETONATOR )
+        else if (self.weapon == IT_REMOTE_DETONATOR)
+        {
+            self.weapon = IT_PROXIMITY_BOMB;
+            // No need to check the ammo (it's removed as soon as there's no more ammo)
+        }
+        else if (self.weapon == IT_PROXIMITY_BOMB)
+        {
+            self.weapon = IT_GRENADE_LAUNCHER;
+            // No need to check the ammo (it's removed as soon as there's no more ammo)
+        }
+        else if (self.weapon == IT_GRENADE_LAUNCHER)
         {
             self.weapon = IT_ROCKET_LAUNCHER;
             if (self.ammo_rockets < 1)
@@ -2562,7 +2572,10 @@ float() W_FireCharge =
             else
             {
                 if (self.currentammo != 0)
+                {
                     self.weaponmodel = "progs/v_rock.mdl";
+                    self.attack_finished = time + 0.4;  // to avoid the take-and-drop bug
+                }
                 else
                     Sprint (self, PRINT_LOW, "You have no more remote bombs\n");
             }
@@ -2637,6 +2650,7 @@ float() W_FireCharge =
                 ShowThrowMeter ();  // Remove throw meter.
 
                 self.impulse = 0;
+                self.attack_finished = time + 0.4;
                 return TRUE;
             }
         }
@@ -2676,6 +2690,8 @@ float() W_FireCharge =
 
             W_Uncharge ();
             ShowThrowMeter ();  // Remove throw meter.
+
+            self.attack_finished = time + 0.4;
         }
 
         return TRUE;
@@ -2715,7 +2731,7 @@ void() PM_ArmorTest =
             self.items = self.items - (self.items & (IT_ARMOR1 | IT_ARMOR2 | IT_ARMOR3)) + IT_ARMOR2;
         }
     }
-    else //if (self.items & IT_ARMOR3)
+    else if (self.items & IT_ARMOR3)
     {
         if (self.armor_fire)
         {
@@ -2726,11 +2742,6 @@ void() PM_ArmorTest =
         {
             self.armorvalue = self.armor_body;
             self.items = self.items - (self.items & (IT_ARMOR1 | IT_ARMOR2 | IT_ARMOR3)) + IT_ARMOR1;
-        }
-        else if (self.armor_mind)
-        {
-            self.armorvalue = self.armor_mind;
-            self.items = self.items - (self.items & (IT_ARMOR1 | IT_ARMOR2 | IT_ARMOR3)) + IT_ARMOR3;
         }
     }
 };
