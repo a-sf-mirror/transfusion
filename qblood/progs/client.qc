@@ -866,18 +866,18 @@ void() PlayerJump =
     local   float   jump;
 
     #ifndef QUAKEWORLD
-    jump = 350;     // quake value was 270
+    jump = 360;     // quake value was 270
     #else
-    jump = 80;     // quake will add 270 to that
+    jump = 90;     // quake will add 270 to that
     #endif
 
     // Boots let player jump about 4x as high.
     // NOTE:  max height = v0^2 / 2g.
     if (self.boots_on)
         #ifndef QUAKEWORLD
-        jump = jump + 320;
+        jump = jump + 350;
         #else
-        jump = jump + 600;
+        jump = jump + 650;
         #endif
 
     self.flags = self.flags - FL_ONGROUND;  // don't stairwalk
