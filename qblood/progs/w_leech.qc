@@ -186,7 +186,7 @@ void() Leech_BallFire =
 
     newmis.owner = self;
     newmis.solid = SOLID_BBOX;
-    newmis.classname = "rocket";
+    newmis.classname = "missile";
     #ifdef QUAKEWORLD
     newmis.voided = 0;
     #endif
@@ -304,7 +304,7 @@ void() Leech_Think =
     newmis = spawn ();
     newmis.owner = self;
     newmis.solid = SOLID_BBOX;
-    newmis.classname = "rocket";
+    newmis.classname = "missile";
     #ifdef QUAKEWORLD
     newmis.voided = 0;
     #endif

@@ -34,27 +34,31 @@ float(entity e) bot_size_player =
     local float sz;
 
     sz = e.health + e.armorvalue * e.armortype;
-    if (e.weapon == 32)
+    if (e.weapon == IT_NAPALM_LAUNCHER)
         sz = sz + 60;
-    else if (e.weapon == 64)
+    else if (e.weapon == IT_TESLA_CANNON)
         sz = sz + 60;
-    else if (e.weapon == 16)
+    else if (e.weapon == IT_LIFE_LEECH)
         sz = sz + 50;
-    else if (e.weapon == 8)
+    else if (e.weapon == IT_SPRAY_CAN)
         sz = sz + 50;
-    else if (e.weapon == 4)
+    else if (e.weapon == IT_TOMMYGUN)
         sz = sz + 40;
-    else if (e.weapon == 2)
+    else if (e.weapon == IT_SAWED_OFF)
         sz = sz + 40;
-    else if (e.weapon == 1)
+    else if (e.weapon == IT_VOODOO_DOLL)
+        sz = sz + 40;
+    else if (e.weapon == IT_TNT)
+        sz = sz + 30;
+    else if (e.weapon == IT_FLAREGUN)
         sz = sz + 10;
-    else if (e.weapon == 4096)
+    else if (e.weapon == IT_PITCHFORK)
         sz = sz - 50;
-    if (e.items & 4194304) // Quad
+    if (e.items & IT_GUNS_AKIMBO)
         sz = sz + 200;
-    if (e.items & 1048576) // Invul
+    if (e.items & IT_INVULNERABILITY) // Invul
         sz = sz + 300;
-    if (e.items & 524288) // Invis
+    if (e.items & IT_INVISIBILITY) // Invis
         sz = sz + 250;
     return sz;
 };
@@ -191,11 +195,11 @@ vector(float wep) weapon_range =
     else if (wep == IT_NAPALM_LAUNCHER)
         return '180 48 3000';
     else if (wep == IT_TNT)
-        return '180 48 3000';
+        return '180 48 512';
     else if (wep == IT_PROXIMITY_BOMB)
-        return '180 48 3000';
+        return '180 48 512';
     else if (wep == IT_REMOTE_DETONATOR)
-        return '180 48 3000';
+        return '180 48 512';
     else if (wep == IT_SPRAY_CAN)
         return '128 0 512';
     else if (wep == IT_TESLA_CANNON)
@@ -312,7 +316,7 @@ void() bot_shoot =
     if (fabs(g) > 10 * (4 - self.b_skill))
         return; // argh, too far away
     g = angcomp(self.v_angle_y, self.b_angle_y);
-    if (fabs(g) > 10 * (4 - self.b_skill))
+    if (fabs(g) > 7 * (4 - self.b_skill))
         return; // not again!
     self.button0 = TRUE;
 };

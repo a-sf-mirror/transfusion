@@ -205,10 +205,10 @@ void() T_MissileTouch =
         return;
     }
 
-    self.deathtype = "rocket";  // Done for the fire code.
+    self.deathtype = "missile";  // Done for the fire code.
     if (other.health)
     {
-        other.deathtype = "rocket";
+        other.deathtype = "missile";
         BurnDamage (other, self, self.dmg*0.75, DF_FIRE, self.dmg*0.25);
     }
 
@@ -320,7 +320,7 @@ void() Napalm_Fire =
     {
         newmis.owner = self;
         newmis.solid = SOLID_BBOX;
-        newmis.classname = "rocket";
+        newmis.classname = "missile";
         #ifdef QUAKEWORLD
         newmis.voided = 0;
         #endif

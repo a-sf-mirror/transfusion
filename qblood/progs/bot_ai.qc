@@ -153,7 +153,7 @@ void(entity targ, float success) bot_lost =
         else
         {
         if (targ.classname == "item_artifact_invisibility")
-            if (self.items & 524288)
+            if (self.items & IT_INVISIBILITY)
                 bot_start_topic(3);
 
                 if (targ.flags & FL_ITEM)
@@ -699,6 +699,33 @@ float(entity thing) priority_for_thing =
             if (!(self.items & IT_LIFE_LEECH))
                 thisp = 55;
         }
+        // Very basic CTF stuff
+        else if (thing.classname == "item_flag_team1")
+        {
+            // If we are red
+            if (self.team == TEAM_COLOR1)
+            {
+                // If we have the blue flag, we must return it to our base
+                if (self.items2 & IT2_ENEMY_FLAG)
+                    thisp = 150;
+            }
+            // else, let's capture the flag!
+            else
+                thisp = 100;
+        }
+        else if (thing.classname == "item_flag_team2")
+        {
+            // If we are blue
+            if (self.team == TEAM_COLOR2)
+            {
+                // If we have the red flag, we must return it to our base
+                if (self.items2 & IT2_ENEMY_FLAG)
+                    thisp = 150;
+            }
+            // else, let's capture the flag!
+            else
+                thisp = 100;
+        }
     }
     else if (thing.classname == "player")
     {
@@ -848,7 +875,7 @@ void() bot_angle_set =
 
     // Bad hack to try to make bots less precise
     self.b_angle_x = self.b_angle_x + (crandom () * (3 - self.b_skill) * 15);
-    self.b_angle_y = self.b_angle_y + (crandom () * (3 - self.b_skill) * 15);
+    self.b_angle_y = self.b_angle_y + (crandom () * (3 - self.b_skill) * 10);
 
     // HACK HACK HACK HACK
     // The bot falls off ledges a lot because of "turning around"

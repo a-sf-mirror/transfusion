@@ -297,7 +297,7 @@ void(string gibname, float dm) ThrowGib =
     new = spawn();
     new.origin = self.origin;
     setmodel (new, gibname);
-    setsize (new, '0 0 0', '0 0 0');
+    setsize (new, '-1 -1 -1', '1 1 1');
     new.velocity = VelocityForDamage (dm);
     new.movetype = MOVETYPE_BOUNCE;
     new.solid = SOLID_NOT;
@@ -402,7 +402,7 @@ void(string gibname, float dm) ThrowHead =
     self.classname = "head";
     self.solid = SOLID_BBOX;
     self.view_ofs = '0 0 8';
-    setsize (self, '-16 -16 0', '16 16 56');
+    setsize (self, '-10 -13 -3', '12 6 18');
     self.velocity = VelocityForDamage (dm);
     self.origin_z = self.origin_z - 24;
     self.avelocity = crandom() * '0 600 0';

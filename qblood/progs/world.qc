@@ -397,8 +397,8 @@ void(float corpseHealth, void() corpseToGib) BecomeCorpse =
     self.health = corpseHealth;
     self.th_die = corpseToGib;
 
-    // Get rid of it in 1 minute anyway
-    self.nextthink = time + 60;
+    // Get rid of it in 30 sec anyway
+    self.nextthink = time + 30;
     self.think = SUB_Remove;
 
     // Allow some interactions (so the corpses can be destroyed by explosions)
