@@ -887,7 +887,7 @@ void() Bomb_Fire =
     newmis.think     = BombThink;
 
     setorigin (newmis, self.origin);
-    setsize (newmis, '-10 -5 0', '10 5 10');
+    setsize (newmis, '0 0 0', '0 0 0');
 
     self.player_state = PS_FIRE;
 
@@ -920,7 +920,6 @@ void() Bomb_Fire =
         newmis.think     = DynaThink;
         newmis.touch     = DynaTouch;
         newmis.dest      = normalize (newmis.velocity);
-        setsize (newmis, '0 0 0', '0 0 0');
 
         if (self.weapon == IT_SPRAY_CAN)
         {
