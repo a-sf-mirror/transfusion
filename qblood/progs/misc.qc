@@ -153,7 +153,7 @@ void() barrel_reset =
     self.solid = SOLID_BBOX;
     self.takedamage = DAMAGE_AIM;
     self.classname = "exploding_barrel";
-    self.model = "progs/barrel.mdl";
+    self.model = "models/world/barrel.md3";
     self.health = self.max_health;
 };
 
@@ -204,8 +204,8 @@ void() exploding_barrel =
 
     self.solid = SOLID_BBOX;
     self.movetype = MOVETYPE_NONE;
-    precache_model ("progs/barrel.mdl");
-    setmodel (self, "progs/barrel.mdl");
+    precache_model ("models/world/barrel.md3");
+    setmodel (self, "models/world/barrel.md3");
     setsize (self, '-16 -16 0', '16 16 32');
     precache_sound ("weapons/napalm/explodfl.wav");
     if (!self.dmg)

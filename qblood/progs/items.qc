@@ -353,34 +353,58 @@ void() obj_seaweed =
     StartObject ("progs/seaweed.mdl", '-4 -5 0', '4 5 72');
 };
 
-// 1 skull on a stick
+// Stake w/ 1 skull (tile0257)
 void() obj_skllstk1 =
 {
-    StartObject ("progs/skllstk1.mdl", '-5 -5 -1', '5 3 55');
+    StartObject ("models/world/skllstk1.md3", '-6 -5 0', '5 5 52');
 };
 
-// 2 skulls on a stick
+// Stake w/ 3 skulls (tile0258)
 void() obj_skllstk2 =
 {
-    StartObject ("progs/skllstk2.mdl", '-5 -2 -1', '6 8 57');
+    StartObject ("models/world/skllstk2.md3", '-6 -4 0', '5 6 55');
 };
 
-//  cross tombstone
+// Impaled Skull (tile0685)
+void() obj_skllstk3 =
+{
+    StartObject ("models/world/skllstk3.md3", '-6 -5 0', '5 5 19');
+};
+
+// Tombstone w/cross (tile0706)
 void() obj_tombstn1 =
 {
-    StartObject ("progs/tombstn1.mdl", '-8 -25 -1', '8 25 72');
+    StartObject ("models/world/tombstn1.md3", '-7 -22 0', '7 22 72');
 };
 
-// oval tombstone
+// Broken Tombstone (tile0705)
 void() obj_tombstn2 =
 {
-    StartObject ("progs/tombstn2.mdl", '-5 -16 -1', '5 16 44');
+    StartObject ("models/world/tombstn2.md3", '-7 -22 0', '7 22 57');
 };
 
-// R. I. P. tombstone
+// RIP Tombstone (tile0701)
 void() obj_tombstn3 =
 {
-    StartObject ("progs/tombstn3.mdl", '-7 -19 -1', '7 18 48');
+    StartObject ("models/world/tombstn3.md3", '-18 -6 0', '18 6 47');
+};
+
+// Old Tombstone (tile0704)
+void() obj_tombstn4 =
+{
+    StartObject ("models/world/tombstn4.md3", '-14 -21 -6', '7 18 45');
+};
+
+// Large Cross Tombstone (tile0678)
+void() obj_tombstn5 =
+{
+    StartObject ("models/world/tombstn5.md3", '-10 -24 0', '10 24 62');
+};
+
+// Wooden Cross Tombstone (tile0703)
+void() obj_tombstn6 =
+{
+    StartObject ("models/world/tombstn6.md3", '-8 -16 0', '8 14 47');
 };
 
 // dead tree
@@ -454,18 +478,6 @@ void() obj_world_jar1 =
 void() obj_world_pram =
 {
     StartObject ("models/world/pram.md3", '-17 -32 0', '17 35 43');
-};
-
-// Stake w/ 1 skull (tile0257)
-void() obj_world_skllstk1 =
-{
-    StartObject ("models/world/skllstk1.md3", '-6 -5 0', '5 5 52');
-};
-
-// Stake w/ 3 skulls (tile0258)
-void() obj_world_skllstk2 =
-{
-    StartObject ("models/world/skllstk2.md3", '-6 -4 0', '5 6 55');
 };
 
 // Ceiling Light (tile0468)
@@ -564,48 +576,6 @@ void() obj_world_statue4 =
 void() obj_world_leg1 =
 {
     StartObject ("models/world/leg1.md3", '-8 -3 0', '9 4 7');
-};
-
-// Impaled Skull (tile0685)
-void() obj_world_skllstk3 =
-{
-    StartObject ("models/world/skllstk3.md3", '-6 -5 0', '5 5 19');
-};
-
-// Wooden Cross Tombstone (tile0703)
-void() obj_world_tombstn6 =
-{
-    StartObject ("models/world/tombstn6.md3", '-8 -16 0', '8 14 47');
-};
-
-// Large Cross Tombstone (tile0678)
-void() obj_world_tombstn5 =
-{
-    StartObject ("models/world/tombstn5.md3", '-10 -24 0', '10 24 62');
-};
-
-// Old Tombstone (tile0704)
-void() obj_world_tombstn4 =
-{
-    StartObject ("models/world/tombstn4.md3", '-14 -21 -6', '7 18 45');
-};
-
-// RIP Tombstone (tile0701)
-void() obj_world_tombstn3 =
-{
-    StartObject ("models/world/tombstn3.md3", '-18 -6 0', '18 6 47');
-};
-
-// Broken Tombstone (tile0705)
-void() obj_world_tombstn2 =
-{
-    StartObject ("models/world/tombstn2.md3", '-7 -22 0', '7 22 57');
-};
-
-// Tombstone w/cross (tile0706)
-void() obj_world_tombstn1 =
-{
-    StartObject ("models/world/tombstn1.md3", '-7 -22 0', '7 22 72');
 };
 
 // Bottle (tile0759)
