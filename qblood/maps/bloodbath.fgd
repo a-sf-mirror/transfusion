@@ -68,7 +68,11 @@
 @PointClass base(PlayerClass) = info_player_team2 : "CTF: Blue team base start" []
 
 @PointClass base(Appearflags) = info_intermission : "Intermission camera" []
-@PointClass base(Appearflags) = item_lure : "Testing Entity, set the model and pickup noise manually" []
+@PointClass size(-16 -16 0, 16 16 32) base(Appearflags) = item_lure : "Testing Entity, set the model and pickup noise manually"
+[
+	model(string) : "Model file"
+	noise(string) : "Pickup noise file"
+]
 
 //
 // items
@@ -597,52 +601,16 @@
  	item_armorInv : "Super Armor" []
 
 //
-// BloodBath Monsters
-//
-
-@baseclass base(Appearflags, Target, Targetname) color(220 0 0) = Monster 
-[
-	spawnflags(Flags) = 	[	1 : "Ambush" : 0]
-]
-
-@PointClass base(Monster) size(-8 -8 -8, 8 8 8) = monster_bat : "Bat" []
-@PointClass base(Monster) size(-32 -32 -24, 32 32 64) = monster_beast : "The Beast - Chosen" []
-@PointClass base(Monster) size(-16 -16 -24, 16 16 40) = monster_blackcultist : "Black Cultist - Tommygun" []
-@PointClass base(Monster) size(-16 -16 -24, 16 16 40) = monster_bluecultist : "Blue Cultist - Tesla Cannon" []
-@PointClass base(Monster) size(-16 -16 -16, 16 16 16) = monster_blackspider : "Green Spider" []
-@PointClass base(Monster) size(-16 -16 -24, 16 16 40) = monster_browncultist : "Brown Cultist - Shotgun" []
-@PointClass base(Monster) size(-16 -16 -16, 16 16 16) = monster_brownspider : "Brown Spider" []
-@PointClass base(Monster) size(-32 -32 -24, 32 32 64) = monster_butcher : "Butcher" []
-@PointClass base(Monster) size(-64 -64 -48, 64 64 64) = monster_cerberus : "Cerberus" []
-@PointClass base(Monster) size(-32 -32 -24, 32 32 40) = monster_chrysalid : "Chrysalid Pod" []
-@PointClass base(Monster) size(-8 -8 -8, 8 8 8) = monster_eel : "Bone Eel" []
-@PointClass base(Monster) size(-16 -16 -24, 16 16 40) = monster_emergingzombie : "Emerging Zombie" []
-@PointClass base(Monster) size(-32 -32 -24, 32 32 40) = monster_firechrysalid : "Fire Pod" []
-@PointClass base(Monster) size(-16 -16 -24, 16 16 40) = monster_firetentacle : "Fire Tentacle" []
-@PointClass base(Monster) size(-16 -16 -24, 16 16 40) = monster_gargoyle : "Gargoyle" []
-@PointClass base(Monster) size(-16 -16 -24, 16 16 40) = monster_gilbeast : "Gilbeast" []
-@PointClass base(Monster) size(-16 -16 -24, 16 16 40) = monster_greencultist : "Green Cultist - TNT" []
-@PointClass base(Monster) size(-16 -16 -24, 16 16 40) = monster_greygargoyle : "Cheogh" []
-@PointClass base(Monster) size(-8 -8 -8, 8 8 8) = monster_hand : "Disembodied Hand" []
-@PointClass base(Monster) size(-32 -32 -24, 32 32 40) = monster_hellhound : "Hell Hound" []
-@PointClass base(Monster) size(-16 -16 -24, 16 16 40) = monster_innocent : "Innocent" []
-@PointClass base(Monster) size(-8 -8 -8, 8 8 8) = monster_lilcaleb : "Lil' Caleb" []
-@PointClass base(Monster) size(-16 -16 -24, 16 16 40) = monster_mime : "Mime" []
-@PointClass base(Monster) size(-32 -32 -24, 32 32 64) = monster_phantasm : "Phantasm" []
-@PointClass base(Monster) size(-8 -8 -8, 8 8 8) = monster_rat : "Rat" []
-@PointClass base(Monster) size(-16 -16 -24, 16 16 40) = monster_redcultist : "Red Cultist - Chosen" []
-@PointClass base(Monster) size(-16 -16 -16, 16 16 16) = monster_redspider : "Red Spider" []
-@PointClass base(Monster) size(-16 -16 -24, 16 16 40) = monster_shial : "Shial" []
-@PointClass base(Monster) size(-32 -32 -16, 32 32 16) = monster_sleepingzombie : "Sleeping Zombie" []
-@PointClass base(Monster) size(-16 -16 -24, 16 16 40) = monster_statuegargoyle : "Statue Gargoyle" []
-@PointClass base(Monster) size(-32 -32 -24, 32 32 64) = monster_statuegreygargoyle : "Statue Grey Gargoyle" []
-@PointClass base(Monster) size(-48 -48 -64, 48 48 64) = monster_tchernobog : "Tchernobog" []
-
-//
 // BloodBath Objects
 //
 
-@baseclass color(130 255 64) = Object []
+@baseclass color(130 255 64) = Object
+[
+	spawnflags(flags) =
+	[
+		1 : "Solid" : 0
+	]
+]
 @PointClass size(-10 -4 -10, 10 4 11) = obj_tome : "A Closed Book " []
 @PointClass size(-5 -6 -9, 5 6 10) = obj_boost : "Small Potion Vial" []
 @PointClass size(-9 -10 -9, 9 10 10) = obj_mboost : "Large Potion Vial" []
@@ -662,11 +630,11 @@
 [
 	skin(Choices) : "Skin" : 0 =
 	[
-		0 : "Human 1"
-		1 : "Human 2"
-		2 : "Human 3"
-		3 : "Human 4"
-		4 : "Statue"
+		0 : "Body 1"
+		1 : "Body 2"
+		2 : "Body 3"
+		3 : "Body 4"
+		4 : "Body wrapped in spiderwebs"
 	]
 ]
 @PointClass size(-3 -12 -19, 3 12 21) = obj_cross : "Tilted Cross" []

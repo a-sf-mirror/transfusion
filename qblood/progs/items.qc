@@ -250,7 +250,7 @@ void() item_lure =
     setmodel (self, self.model);
     precache_sound (self.noise);
 
-    setsize (self, '0 0 0', '32 32 32');
+    setsize (self, '-16 -16 0', '16 16 32');
     StartItem ();
 };
 
