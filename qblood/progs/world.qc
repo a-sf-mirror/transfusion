@@ -354,12 +354,15 @@ void() worldspawn =
     precache_model ("progs/gib1.mdl");
     precache_model ("progs/gib2.mdl");
     precache_model ("progs/gib3.mdl");
+    precache_model ("progs/larm.mdl");
+    precache_model ("progs/leg.mdl");
+
 //    precache_model ("progs/flesh1.mdl");
 //    precache_model ("progs/flesh2.mdl");
 //    precache_model ("progs/flesh3.mdl");
 
     precache_model ("progs/s_bubble.spr");  // drowning bubbles
-    precache_model ("progs/s_explod.spr");  // sprite explosion
+    precache_model ("progs/s_explod.spr");  // napalm sprite explosion
 
     precache_model ("progs/v_axe.mdl");
     precache_model ("progs/v_shot.mdl");
@@ -541,7 +544,9 @@ void() GibPlayerCorpse =
     ThrowGib ("progs/gib1.mdl", self.health);
     ThrowGib ("progs/gib2.mdl", self.health);
     ThrowGib ("progs/gib3.mdl", self.health);
-
+    ThrowGib ("progs/larm.mdl", self.health);
+    ThrowGib ("progs/leg.mdl", self.health);
+    
     sound (self, CHAN_ITEM, "misc/gibsq.wav", 1, ATTN_NORM);
 
     remove (self);
