@@ -940,11 +940,11 @@ void() item_health =
 
     if (self.spawnflags & H_LIFE_ESSENCE)
     {
-        precache_model("progs/i_lifess.mdl");
-
-        precache_sound("items/pickheal.wav");
-        setmodel(self, "progs/i_lifess.mdl");
-        self.noise = "items/pickheal.wav";
+        #ifndef NEW_MODELS
+        self.model = "progs/i_lifess.mdl";
+        #else
+        self.model = "models/items/i_essence.md3";
+        #endif
         self.healamount = 20;
         self.netname = "Life Essence";
         self.healtype = 1;
@@ -962,25 +962,34 @@ void() item_health =
     }
     else if (self.spawnflags & H_LIFE_SEED)
     {
-        precache_model("progs/lifeseed.mdl");
-        precache_sound("items/pickheal.wav");
-        setmodel(self, "progs/lifeseed.mdl");
-        self.noise = "items/pickheal.wav";
+        #ifndef NEW_MODELS
+        self.model = "progs/lifeseed.mdl";
+        #else
+        self.model = "models/items/i_seed.md3";
+        #endif
         self.healamount = 100;
         self.netname = "Life Seed";
         self.healtype = 2;
     }
     else
     {
-        precache_model("progs/i_medpch.mdl");
-        precache_sound("items/pickheal.wav");
-        setmodel(self, "progs/i_medpch.mdl");
-        self.noise = "items/pickheal.wav";
+        #ifndef NEW_MODELS
+        self.model = "progs/i_medpch.mdl";
+        #else
+        self.model = "models/items/i_pouch.md3";
+        #endif
         self.healamount = 50;
         self.netname = "Medicine Patch";
         self.healtype = 1;
     }
+
+    precache_model (self.model);
+    setmodel(self, self.model);
     setsize (self, '-16 -16 0', '16 16 56');
+
+    self.noise = "items/pickheal.wav";
+    precache_sound (self.noise);
+
     StartItem ();
 };
 
@@ -1101,8 +1110,13 @@ void() armor_touch =
 void() item_armor0 =
 {
     self.touch = armor_touch;
-    precache_model("progs/i_arm_bs.mdl");
-    setmodel(self, "progs/i_arm_bs.mdl");
+    #ifndef NEW_MODELS
+    self.model = "progs/i_arm_bs.mdl";
+    #else
+    self.model = "models/items/armour/i_arm_basic.md3";
+    #endif
+    precache_model (self.model);
+    setmodel (self, self.model);
     self.netname = "Basic Armor";
 
     setsize (self, '-7 -18 0', '10 18 38');
@@ -1113,8 +1127,13 @@ void() item_armor0 =
 void() item_armor4 =
 {
     self.touch = armor_touch;
-    precache_model("progs/i_arm_sp.mdl");
-    setmodel(self, "progs/i_arm_sp.mdl");
+    #ifndef NEW_MODELS
+    self.model = "progs/i_arm_sp.mdl";
+    #else
+    self.model = "models/items/armour/i_arm_spirit.md3";
+    #endif
+    precache_model (self.model);
+    setmodel (self, self.model);
     self.netname = "Spirit Armor";
 
     setsize (self, '-2 -17 0', '4 19 37');
@@ -1125,8 +1144,13 @@ void() item_armor4 =
 void() item_armor1 =
 {
     self.touch = armor_touch;
-    precache_model ("progs/i_arm_bd.mdl");
-    setmodel (self, "progs/i_arm_bd.mdl");
+    #ifndef NEW_MODELS
+    self.model = "progs/i_arm_bd.mdl";
+    #else
+    self.model = "models/items/armour/i_arm_body.md3";
+    #endif
+    precache_model (self.model);
+    setmodel (self, self.model);
     self.netname = "Body Armor";
 
     setsize (self, '-1 -18 0', '6 19 45');
@@ -1137,8 +1161,13 @@ void() item_armor1 =
 void() item_armor2 =
 {
     self.touch = armor_touch;
-    precache_model ("progs/i_arm_fr.mdl");
-    setmodel (self, "progs/i_arm_fr.mdl");
+    #ifndef NEW_MODELS
+    self.model = "progs/i_arm_fr.mdl";
+    #else
+    self.model = "models/items/armour/i_arm_fire.md3";
+    #endif
+    precache_model (self.model);
+    setmodel (self, self.model);
     self.netname = "Fire Armor";
 
     setsize (self, '-7 -12 0', '7 10 37');
@@ -1149,8 +1178,13 @@ void() item_armor2 =
 void() item_armorInv =
 {
     self.touch = armor_touch;
-    precache_model ("progs/i_arm_su.mdl");
-    setmodel (self, "progs/i_arm_su.mdl");
+    #ifndef NEW_MODELS
+    self.model = "progs/i_arm_su.mdl";
+    #else
+    self.model = "models/items/armour/i_arm_super.md3";
+    #endif
+    precache_model (self.model);
+    setmodel (self, self.model);
     self.netname = "Super Armor";
 
     setsize (self, '-16 -16 0', '16 16 56');
@@ -2174,7 +2208,11 @@ POWERUPS
 void() item_artifact_bag =
 {
     self.netname = "Doctor's Bag";
+    #ifndef NEW_MODELS
     self.model   = "progs/i_docbag.mdl";
+    #else
+    self.model   = "models/items/i_docbag.md3";
+    #endif
     item_powerup ();
     setsize (self, '-7 -11 -1', '7 11 19');
 };
@@ -2185,7 +2223,11 @@ void() item_artifact_boots =
     precache_sound ("bludbath/powerup.wav");
 
     self.netname = "Boots of Jumping";
+    #ifndef NEW_MODELS
     self.model   = "progs/i_boots.mdl";
+    #else
+    self.model   = "models/items/i_boots.md3";
+    #endif
     item_powerup ();
     setsize (self, '-11 -10 -1', '4 10 19');
 };
@@ -2196,7 +2238,11 @@ void() item_artifact_crystal =
     precache_sound ("bludbath/powerup.wav");
 
     self.netname = "Crystal Ball";
+    #ifndef NEW_MODELS
     self.model   = "progs/i_crysbl.mdl";
+    #else
+    self.model   = "models/items/i_crystal.md3";
+    #endif
     item_powerup ();
     setsize (self, '-7 -7 -1', '7 7 14');
 };
@@ -2207,7 +2253,11 @@ void() item_artifact_envirosuit =
     precache_sound ("foley/swimuw.wav"); // diving suit engage sound
 
     self.netname = "Diving Suit";
+    #ifndef NEW_MODELS
     self.model   = "progs/suit.mdl";
+    #else
+    self.model   = "models/items/i_diving.md3";
+    #endif
     item_powerup ();
     setsize (self, '-9 -13 -3', '8 13 74');
 };
@@ -2218,7 +2268,11 @@ void() item_artifact_invisibility =
     self.items = IT_INVISIBILITY;
 
     self.netname = "Cloak of Invisibility";
+    #ifndef NEW_MODELS
     self.model   = "progs/invisibl.mdl";
+    #else
+    self.model   = "models/items/i_invisible.md3";
+    #endif
     self.noise   = "bludbath/powerup.wav";
     item_powerup ();
     setsize (self, '-16 -16 -2', '16 16 54');
@@ -2231,7 +2285,11 @@ void() item_artifact_invulnerability =
     self.items = IT_INVULNERABILITY;
 
     self.netname = "Death mask";
+    #ifndef NEW_MODELS
     self.model   = "progs/invulner.mdl";
+    #else
+    self.model   = "models/items/i_mask.md3";
+    #endif
     self.noise   = "bludbath/powerup.wav";
     item_powerup ();
     setsize (self, '-4 -12 0', '2 12 30');
@@ -2243,7 +2301,11 @@ void() item_artifact_reflect =
     self.effects = self.effects | EF_BLUE;
 
     self.netname = "Reflective Shots";
+    #ifndef NEW_MODELS
     self.model   = "progs/i_reflct.mdl";
+    #else
+    self.model   = "models/items/i_reflect.md3";
+    #endif
     self.noise   = "bludbath/powerup.wav";
     item_powerup ();
     setsize (self, '-7 -7 0', '7 11 16');
@@ -2253,7 +2315,11 @@ void() item_artifact_reflect =
 void() item_artifact_super_damage =
 {
     self.netname = "Guns Akimbo";
+    #ifndef NEW_MODELS
     self.model   = "progs/quaddama.mdl";
+    #else
+    self.model   = "models/items/i_akimbo.md3";
+    #endif
     self.noise   = "bludbath/powerup.wav";
     item_powerup ();
     setsize (self, '-16 -16 -2', '16 16 54');
@@ -2265,7 +2331,11 @@ void() item_artifact_vision =
     precache_sound ("bludbath/powerup.wav");
 
     self.netname = "Beast Vision";
+    #ifndef NEW_MODELS
     self.model   = "progs/i_vision.mdl";
+    #else
+    self.model   = "models/items/i_vision.md3";
+    #endif
     item_powerup ();
     setsize (self, '-10 -9 0', '11 9 9');
 };
