@@ -420,9 +420,9 @@ local float     rs;
     else if (rs == 3)
         self.noise = "player/die3.wav";
     else if (rs == 4)
-        self.noise = "butcher/fzomdie2.wav";
+        self.noise = "player/die1.wav";
     else
-        self.noise = "butcher/fzomdie3.wav";
+        self.noise = "player/die2.wav";
 
     sound (self, CHAN_VOICE, self.noise, 1, ATTN_NONE);
     return;
@@ -675,9 +675,9 @@ void() GibPlayer =
     }
 
     if (random() < 0.5)
-        sound (self, CHAN_VOICE, "butcher/fzomdie2.wav", 1, ATTN_NONE);
+        sound (self, CHAN_VOICE, "player/die1.wav", 1, ATTN_NONE);
     else
-        sound (self, CHAN_VOICE, "butcher/fzomdie3.wav", 1, ATTN_NONE);
+        sound (self, CHAN_VOICE, "player/die3.wav", 1, ATTN_NONE);
 };
 
 void() PlayerDie =

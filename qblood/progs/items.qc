@@ -1139,7 +1139,6 @@ void() item_health =
         self.noise = "items/pickheal.wav";
         self.healamount = 20;   // PM:  Quake = 15
         self.netname = "Life Essence";
-        self.effects = self.effects | EF_RED;
         self.healtype = 1;
     }
     else if (self.spawnflags & H_MEGA)

@@ -162,8 +162,8 @@ void() PrecacheSounds =
     precache_sound ("weapons/napalm/burn.wav");  // burning on lava
 
     // Death and gib sounds
-    precache_sound ("butcher/fzomdie2.wav");
-    precache_sound ("butcher/fzomdie3.wav");
+    //precache_sound ("butcher/fzomdie2.wav");
+    //precache_sound ("butcher/fzomdie3.wav");
     precache_sound ("firepod/fpodcol2.wav");  // telefragged player
     precache_sound ("misc/gibsq.wav");        // used when gibbing a corpse/head
     precache_sound ("player/die1.wav");
