@@ -641,6 +641,7 @@ void() PutClientInServer =
     if (self.do_observer)
     {
         BecomeObserver (self);
+        World_CheckWarmup ();
         return;
     }
 
@@ -658,6 +659,8 @@ void() PutClientInServer =
     // Let's start with our best weapon
     self.weapon = W_BestWeapon ();
     W_DrawWeapon (self.weapon);
+
+    World_CheckWarmup ();
 };
 
 
@@ -1256,12 +1259,6 @@ void() Impulses_Player =
     else if (self.impulse == 16)
         ArmorTest ();
 
-    // TEMP: for testing
-    else if (self.impulse == 33)
-        World_EndWarmup (FALSE);
-    else if (self.impulse == 34)
-        World_EndWarmup (TRUE);
-
     // Toggle menu
     else if (self.impulse == 50)
         Menu_Start ();
@@ -1520,6 +1517,8 @@ void() ClientDisconnect =
     sound (self, CHAN_BODY, "thevoice/vo2.wav", 1, ATTN_NONE);
     CTF_PlayerDropFlag ();
     set_suicide_frame ();
+
+    World_CheckWarmup ();
 };
 
 /*

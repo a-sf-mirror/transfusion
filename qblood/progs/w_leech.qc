@@ -344,6 +344,20 @@ void() Leech_FadeOut =
 
 /*
 ==================
+Leech_Reset
+
+Reset function for a LL sentry
+==================
+*/
+void() Leech_Reset =
+{
+    self.leech_sentry.leech_sentry = world;
+    remove (self);
+};
+
+
+/*
+==================
 Leech_Die
 
 Die function for a LL sentry
@@ -433,6 +447,7 @@ void() Leech_Drop =
     item.think = Leech_Think;
     item.touch = Leech_Touch;
     item.th_die = Leech_Die;
+    item.reset = Leech_Reset;
 
     // Dropping it requiers 25 ammo/HP
     if (self.ammo_leech < 25)

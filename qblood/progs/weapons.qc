@@ -373,6 +373,7 @@ void(entity shell) DropShell =
     shell.touch = ShellHit;
     shell.nextthink = time + 1.5;
     shell.think = SUB_Remove;
+    shell.reset = SUB_Remove;
     shell.ltime = time - 1;
 };
 

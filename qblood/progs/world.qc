@@ -219,6 +219,8 @@ World Types:
 //=======================
 void() worldspawn =
 {
+    local float doWarmup;
+
     lastspawn = world;
 
     // Check for QC extensions
@@ -235,13 +237,13 @@ void() worldspawn =
         }
 
     // Some engines create them on the fly
-    cvar ("g_warmup");
+    doWarmup = cvar ("g_warmup");
     cvar ("g_weaponStay");
     cvar ("sv_allowCheat");
     cvar ("sv_disable");
 
     // Warmup initialization
-    warmup_done = 0;
+    warmup_done = (! doWarmup);
     warmup_endtime = 0;
 
     #ifdef FRIKBOT
@@ -375,11 +377,14 @@ void() worldspawn =
     lightstyle(63, "a");
 };
 
+void() World_WarmupCountdown;
 void() StartFrame =
 {
     timelimit = cvar("timelimit") * 60;
     fraglimit = cvar("fraglimit");
     skill     = cvar("skill");
+
+    World_WarmupCountdown ();
 
     #ifdef FRIKBOT
     BotFrame();
@@ -404,7 +409,7 @@ If "startPlay" is TRUE, the game begins; else it restarts the whole warmup proce
 ====================
 */
 void(float cloneCorpse) respawn;
-void(float startPlay) World_EndWarmup =
+void() World_EndWarmup =
 {
     if (warmup_done)
         return;
@@ -448,8 +453,150 @@ void(float startPlay) World_EndWarmup =
 
     self = tempEnt;
 
-    warmup_done = startPlay;
+    warmup_done = TRUE;
+    warmup_counttime = 0;
     warmup_endtime = 0;
+};
+
+
+/*
+====================
+World_WarmupCountdown
+
+Handle the warmup countdown
+====================
+*/
+void() World_WarmupCountdown =
+{
+    // If the warmup has already been done or hasn't begun
+    if (warmup_done)
+        return;
+    if (! warmup_endtime)
+        return;
+
+    // If the warmup is over
+    if (warmup_endtime <= time)
+    {
+        World_EndWarmup ();
+        return;
+    }
+
+    // Send regularly the countdown to all clients
+    if (warmup_counttime <= time)
+    {
+        local string remaining;
+
+        if (warmup_endtime - time < 5)
+            warmup_counttime = warmup_counttime + 1;
+        else
+            warmup_counttime = warmup_counttime + 5;
+
+        remaining = ftos (rint (warmup_endtime - time));
+        Bprint (PRINT_HIGH, "вармуп╨ ");  // "WARMUP: "
+        Bprint (PRINT_HIGH, remaining);
+        Bprint (PRINT_HIGH, " sec\n");
+    }
+};
+
+
+/*
+====================
+World_StartWarmup
+
+Start the warmup countdown
+====================
+*/
+void() World_StartWarmup =
+{
+    local float duration;
+    local string str;
+
+    // If the warmup has already begun or has been done
+    if (warmup_endtime || warmup_done)
+        return;
+
+    // If you must do a warmup, make it last at least 5 secondes
+    duration = cvar ("g_warmup");
+    if (duration < 5)
+        duration = 5;
+
+    warmup_endtime = time + duration;
+    warmup_counttime = time + duration - (floor (duration / 5) * 5);
+
+    Bprint (PRINT_HIGH, "BEGINNING WARMUP (");
+    str = ftos (duration);
+    Bprint (PRINT_HIGH, str);
+    Bprint (PRINT_HIGH, " sec)\n");
+};
+
+
+/*
+====================
+World_StopWarmup
+
+Stop the warmup countdown
+====================
+*/
+void() World_StopWarmup =
+{
+    // If the warmup has not begun yet (or is finished)
+    if (!warmup_endtime)
+        return;
+
+    warmup_endtime = 0;
+};
+
+
+/*
+====================
+World_CheckWarmup
+
+Check the warmup conditions, and start or stop the warmup when necessary
+====================
+*/
+void() World_CheckWarmup =
+{
+    local entity ent;
+    local float count1, count2;
+    local float doWarmup;
+
+    // If it's done
+    if (warmup_done)
+        return;
+
+    count1 = count2 = 0;
+    ent = find (world, classname, "player");
+    while (ent != world)
+    {
+        if (ent.team != TEAM_COLOR2)
+            count1 = count1 + 1;
+        else
+            count2 = count2 + 1;
+        ent = find (ent, classname, "player");
+    }
+    ent = find (world, classname, "head");
+    while (ent != world)
+    {
+        if (! ent.takedamage)
+        {
+            if (ent.team != TEAM_COLOR2)
+                count1 = count1 + 1;
+            else
+                count2 = count2 + 1;
+        }
+        ent = find (ent, classname, "head");
+    }
+
+    // At least 2 players in BloodBath, and at least 1 player in each team for teamplay
+    if (gametype == GT_BLOODBATH)
+        doWarmup = (count1 >= 2);
+    else
+        doWarmup = (count1 >= 1 && count2 >= 1);
+
+    if (doWarmup)
+        World_StartWarmup ();
+    else
+        World_StopWarmup ();
 };
 
 

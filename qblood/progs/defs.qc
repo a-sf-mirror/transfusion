@@ -278,6 +278,7 @@ entity  damage_inflictor;
 float   qcextensions;       // Does the engine support QC extensions?
 
 float   warmup_done;        // set to TRUE when the warmup has been done
+float   warmup_counttime;   // used by the warmup countdown
 float   warmup_endtime;     // set to 0 before AND after the warmup
 
 // cvars checked each frame
