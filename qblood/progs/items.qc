@@ -488,7 +488,7 @@ float(float w) RankForWeapon =
         return 2;
     if (w == IT_SUPER_NAILGUN)
         return 3;
-    if (w == IT_GRENADE_LAUNCHER)
+    if (w == IT_GRENADE_LAUNCHER || w == IT_PROXIMITY_GRENADE)
         return 4;
     if (w == IT_SUPER_SHOTGUN)
         return 5;
@@ -505,7 +505,7 @@ float (float w) WeaponCode =
         return 4;
     if (w == IT_SUPER_NAILGUN)
         return 5;
-    if (w == IT_GRENADE_LAUNCHER)
+    if (w == IT_GRENADE_LAUNCHER || w == IT_PROXIMITY_GRENADE)
         return 6;
     if (w == IT_ROCKET_LAUNCHER)
         return 7;
@@ -1566,6 +1566,10 @@ void() DropBackpack =
 
     item = spawn();
     item.origin = self.origin - '0 0 24';
+
+    // If the proximity grenades were selected, switch to grenade launcher
+    if (self.weapon == IT_PROXIMITY_GRENADE)
+        self.weapon = IT_GRENADE_LAUNCHER;
 
     item.items = self.weapon;
     if (item.items == IT_AXE)

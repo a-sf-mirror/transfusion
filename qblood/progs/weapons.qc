@@ -46,7 +46,9 @@ void() W_Precache =
     precache_sound ("weapons/ric3.wav");             // ricochet (used in c code)
     precache_sound ("weapons/spike2.wav");  // super spikes
     precache_sound ("weapons/tink1.wav");            // spikes tink (used in c code)
-    precache_sound ("weapons/grenade.wav"); // grenade launcher
+    precache_sound ("weapons/grenade.wav");          // grenade launcher
+    precache_sound ("weapons/tnt/proxarm.wav");      // proximity grenade armed
+    precache_sound ("weapons/tnt/proxdet.wav");      // proximity grenade triggered
     precache_sound ("weapons/bounce.wav");      // grenade bounce
     precache_sound ("weapons/shotgun/shotfire.wav"); // shotgun fired
 };
@@ -753,9 +755,121 @@ void() GrenadeTouch =
         self.avelocity = '0 0 0';
 };
 
+
+/*
+================
+ProximGrenadeCheck
+
+The proximity grenade checks its neighborhood and explodes if a living being is nearby
+================
+*/
+void() ProximGrenadeCheck =
+{
+    local entity thing;
+
+    // Try to find something interesting nearby
+    thing = findradius (self.origin, 160);
+    while (thing)
+    {
+        // If it's a player or a monster, explode in 750 msec
+        if (thing.classname == "player" || (thing.flags & FL_MONSTER))
+        {
+            sound (self, CHAN_WEAPON, "weapons/tnt/proxdet.wav", 1, ATTN_NORM);
+            self.nextthink = time + 0.75;
+            self.think = GrenadeExplode;
+            return;
+        }
+
+        // Next one
+        thing = thing.chain;
+    }
+
+    // Retry in a moment
+    self.nextthink = time + 0.5;
+};
+
+
+/*
+================
+ProximGrenadeArmed
+
+The proximity grenade becomes armed, ready to explode as soon as someone is nearby
+================
+*/
+void() ProximGrenadeArmed =
+{
+    sound (self, CHAN_WEAPON, "weapons/tnt/proxarm.wav", 1, ATTN_NORM);
+
+    // Check its neighborhood every 1/2 sec
+    self.nextthink = time + 0.5;
+    self.think = ProximGrenadeCheck;
+};
+
+
+/*
+================
+W_FireProximityGrenade
+
+Fire a proximity grenade
+================
+*/
+void() W_FireProximityGrenade =
+{
+    self.currentammo = self.ammo_rockets = self.ammo_rockets - 1;
+
+    sound (self, CHAN_WEAPON, "weapons/grenade.wav", 1, ATTN_NORM);
+
+    #ifdef QUAKEWORLD
+    msg_entity = self;
+    WriteByte (MSG_ONE, SVC_SMALLKICK);
+    #else
+    self.punchangle_x = -2;
+    #endif
+
+    newmis = spawn ();
+    #ifdef QUAKEWORLD
+    newmis.voided=0;
+    #endif
+    newmis.owner = self;
+    newmis.movetype = MOVETYPE_BOUNCE;
+    newmis.solid = SOLID_BBOX;
+    newmis.classname = "grenade";
+
+    // Explodes as soon as it takes 1 point of damage
+    newmis.takedamage = DAMAGE_YES;
+    newmis.health = 1;
+    newmis.th_die = GrenadeExplode;
+
+    // set newmis speed
+    makevectors (self.v_angle);
+    if (self.v_angle_x)
+        newmis.velocity = v_forward*600 + v_up * 200 + crandom()*v_right*10 + crandom()*v_up*10;
+    else
+    {
+        newmis.velocity = aim(self, 10000);
+        newmis.velocity = newmis.velocity * 600;
+        newmis.velocity_z = 200;
+    }
+
+    newmis.avelocity = '300 300 300';
+    newmis.angles = vectoangles(newmis.velocity);
+    newmis.touch = SUB_Null;  // don't explode when touching someone
+
+    // set missile duration
+    newmis.nextthink = time + 3.0;
+    newmis.think = ProximGrenadeArmed;  // will be ready to explode in 3.0 sec
+
+    setmodel (newmis, "progs/grenade.mdl");
+    setsize (newmis, '-2 -2 -2', '2 2 2');
+    setorigin (newmis, self.origin);
+};
+
+
 /*
 ================
 W_FireGrenade
+
+Fire a normal grenade
 ================
 */
 void() W_FireGrenade =
@@ -1064,7 +1178,7 @@ void() W_SetCurrentAmmo =
         self.weaponframe = 0;
         self.items = self.items | IT_NAILS;
     }
-    else if (self.weapon == IT_GRENADE_LAUNCHER)
+    else if (self.weapon == IT_GRENADE_LAUNCHER || self.weapon == IT_PROXIMITY_GRENADE)
     {
         self.currentammo = self.ammo_rockets;
         self.weaponmodel = "progs/v_rock.mdl";
@@ -1194,11 +1308,14 @@ void() W_Attack =
     {
         player_nail1 ();
     }
-    else if (self.weapon == IT_GRENADE_LAUNCHER)
+    else if (self.weapon == IT_GRENADE_LAUNCHER || self.weapon == IT_PROXIMITY_GRENADE)
     {
         player_rocket1();
         self.attack_finished = time + 0.6;
-        W_FireGrenade();
+        if (self.weapon == IT_PROXIMITY_GRENADE)
+            W_FireProximityGrenade();
+        else
+            W_FireGrenade();
     }
     else if (self.weapon == IT_ROCKET_LAUNCHER)
     {
@@ -1278,20 +1395,35 @@ void() W_ChangeWeapon =
 
     if (!(self.items & fl))
     {   // don't have the weapon or the ammo
-        Sprint (self, PRINT_LOW, "You don't have that weapon.\n");
+        Sprint (self, PRINT_MEDIUM, "You don't have that weapon.\n");
         return;
     }
 
     if (am)
     {   // don't have the ammo
-        Sprint (self, PRINT_LOW, "You have no ammo.\n");
+        Sprint (self, PRINT_MEDIUM, "You have no ammo.\n");
         return;
     }
 
-//
-// set weapon, set ammo
-//
-    self.weapon = fl;
+    // If the grenade launcher has been selected...
+    if (fl == IT_GRENADE_LAUNCHER)
+    {
+        // ... and that it was already selected, switch to proximity grenades
+        if (self.weapon == IT_GRENADE_LAUNCHER)
+        {
+            self.weapon = IT_PROXIMITY_GRENADE;
+            Sprint (self, PRINT_MEDIUM, "Promixity grenades selected.\n");
+        }
+        else
+        {
+            self.weapon = IT_GRENADE_LAUNCHER;
+            Sprint (self, PRINT_MEDIUM, "Normal grenades selected.\n");
+        }
+    }
+    else
+        self.weapon = fl;
+
+    // set ammo
     W_SetCurrentAmmo ();
 };
 
@@ -1381,7 +1513,7 @@ void() CycleWeaponCommand =
             if (self.ammo_rockets < 1)
                 am = 1;
         }
-        else if (self.weapon == IT_GRENADE_LAUNCHER)
+        else if (self.weapon == IT_GRENADE_LAUNCHER || self.weapon == IT_PROXIMITY_GRENADE)
         {
             self.weapon = IT_ROCKET_LAUNCHER;
             if (self.ammo_rockets < 1)
@@ -1432,7 +1564,7 @@ void() CycleWeaponReverseCommand =
             if (self.ammo_rockets < 1)
                 am = 1;
         }
-        else if (self.weapon == IT_GRENADE_LAUNCHER)
+        else if (self.weapon == IT_GRENADE_LAUNCHER || self.weapon == IT_PROXIMITY_GRENADE)
         {
             self.weapon = IT_SUPER_NAILGUN;
             if (self.ammo_nails < 2)

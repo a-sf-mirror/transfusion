@@ -1570,7 +1570,7 @@ void(entity targ, entity attacker) ClientObituary =
                         Bprint (PRINT_MEDIUM," discharges into the water.\n");
                     return;
                 }
-                else if (targ.weapon == IT_GRENADE_LAUNCHER)
+                else if (targ.weapon == IT_GRENADE_LAUNCHER || targ.weapon == IT_PROXIMITY_GRENADE)
                     Bprint (PRINT_MEDIUM," tries to put the pin back in\n");
                 else if (rnum)
                     Bprint (PRINT_MEDIUM," becomes bored with life\n");
@@ -1691,7 +1691,7 @@ void(entity targ, entity attacker) ClientObituary =
                     deathstring = " was punctured by ";
                     deathstring2 = "\n";
                 }
-                else if (rnum == IT_GRENADE_LAUNCHER)
+                else if (rnum == IT_GRENADE_LAUNCHER || rnum == IT_PROXIMITY_GRENADE)
                 {
                     deathstring = " eats ";
                     deathstring2 = "'s pineapple\n";
