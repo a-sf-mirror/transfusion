@@ -617,6 +617,15 @@
 @PointClass base(Monster) size(-6 -14 0, 34 14 62) = monster_greencultist : "Green Cultist" []
 @PointClass base(Monster) size(-39 -17 0, 38 17 35) = monster_hellhound : "Hellhound" []
 @PointClass base(Monster) size(-6 -14 0, 15 10 55) = monster_innocent : "Innocent" []
+@PointClass base(Monster) size(-10 -10 -30, 10 10 29) = monster_mime : "Mime" 
+[
+    sounds(choices) : "Death sound" : 0 =
+	    [
+		    0: "None"
+		    1: "I hate mimes"
+            2: "Pathetic insects"
+    	]
+]
 @PointClass base(Monster) size(-16 -16 -10, 16 16 20) = monster_minicaleb : "Mini-Caleb" []
 @PointClass base(Monster) size(-13 -3 0, 13 3 6) = monster_rat : "Rat" []
 @PointClass base(Monster) size(-6 -14 0, 34 14 62) = monster_redcultist : "Red Cultist" []

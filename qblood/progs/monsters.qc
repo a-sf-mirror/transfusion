@@ -431,3 +431,38 @@ void () monster_become_corpse =
 	self.movetype = MOVETYPE_TOSS;
 	self.takedamage = DAMAGE_AIM;
 };
+
+void () mime_stand1 = [1, mime_stand2 ]{self.nextthink = time + 1;};
+void () mime_stand2 = [2, mime_stand3 ]{self.nextthink = time + 1;};
+void () mime_stand3 = [3, mime_stand4 ]{self.nextthink = time + 1;};
+void () mime_stand4 = [0, mime_stand1 ]{self.nextthink = time + 1;};
+
+void () mime_die = 
+{
+    if (self.sounds == 1)
+        localcmd("play player/quips/1081.wav\n"); // I hate mimes!
+    else if (self.sounds == 2)
+        localcmd("play player/quips/1082.wav\n"); // Pathetic insects
+
+    RandomHumanGibs();
+    monster_death();
+    remove(self);
+};
+
+void () monster_mime =
+{
+    precache_model ("mime.spr");
+    self.solid = SOLID_SLIDEBOX;
+    self.movetype = MOVETYPE_TOSS;
+    self.takedamage = DAMAGE_AIM;
+    self.flags = self.flags | FL_MONSTER;
+    setmodel (self, "mime.spr");
+    setsize (self, '-10 -10 -30', '10 10 29');
+    self.health = 50;
+    self.th_die = mime_die;
+    self.max_health = self.health;
+	self.touch = monster_stepped_on;
+    self.netname = "monster";
+    self.nextthink = time + 1;
+    self.think = mime_stand1;
+};
