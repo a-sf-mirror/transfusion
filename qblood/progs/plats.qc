@@ -148,8 +148,12 @@ void() plat_trigger_use =
 
 void() plat_crush =
 {
+    // Don't hurt players
+    if (other.classname == "player")
+        return;
+
     other.deathtype = "squish";
-    T_Damage (other, self, self, self.dmg, DF_BODY, "squish");
+    T_Damage (other, self, self, 999/*self.dmg*/, DF_BODY, "squish");
 
     if (self.state == STATE_UP)
         plat_go_down ();

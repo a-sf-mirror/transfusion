@@ -46,8 +46,12 @@ void() door_go_up;
 
 void() door_blocked =
 {
+    // Don't hurt players
+    if (other.classname == "player")
+        return;
+
     // Used to do self.dmg for damage.
-    T_Damage (other, self, self, other.health + 10, DF_NO_PROTECT, "squish");
+    T_Damage (other, self, self, 999/*other.health + 10*/, DF_NO_PROTECT, "squish");
 
 // if a door has a negative wait, it would never come back if blocked,
 // so let it just squash the object to death real fast
