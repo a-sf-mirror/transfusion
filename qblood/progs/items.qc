@@ -576,7 +576,14 @@ void() weapon_touch =
     best = W_BestWeapon();
     self = stemp;
 
-    if (self.classname == "weapon_nailgun")
+    if (self.classname == "weapon_flaregun")
+    {
+	if (leave && (other.items & IT_SHOTGUN) )
+	    return;
+	new = IT_SHOTGUN;
+	other.ammo_shells = other.ammo_shells + 8;
+    }
+    else if (self.classname == "weapon_nailgun")
     {
         if (leave && (other.items & IT_NAILGUN) )
             return;
@@ -704,7 +711,7 @@ void() weapon_flaregun =
     setsize (self, '-16 -16 0', '16 16 56');
 
     // precache the necessary sounds
-    precache_sound ("sound/weapons/flaregun/flaref.wav");
+    precache_sound ("weapons/flaregun/flaref.wav");
 
     StartItem ();
 };
