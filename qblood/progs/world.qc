@@ -282,7 +282,7 @@ void() worldspawn =
 	#ifndef NO_FRIKBOT
     // FrikBot X initialization
     if (gametype != GT_SINGLE_PLAYER && gametype != GT_COOPERATIVE)
-	    Bot_Init();
+	    BotInit();
     #endif
 
 	// NOTE: should we allow friendlyfire changes during the game ?
@@ -382,7 +382,7 @@ void() StartFrame =
     World_WarmupCountdown ();
 
     #ifndef NO_FRIKBOT
-    Bot_Frame ();
+    BotFrame ();
     #endif
 };
 

@@ -1564,7 +1564,7 @@ called when a player connects to a server
 void() ClientConnect =
 {
     #ifndef NO_FRIKBOT
-    Bot_ClientConnect ();
+    ClientInRankings(); // FrikBot
     #endif
 
     bprint2 (self.netname, " entered the game\n");
@@ -1609,7 +1609,7 @@ void() ClientDisconnect =
     }
 
     #ifndef NO_FRIKBOT
-    Bot_ClientDisconnect ();
+    ClientDisconnected(); // FrikBot
     #endif
 
     // if the level end trigger has been activated, just return
