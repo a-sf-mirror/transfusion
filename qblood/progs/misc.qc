@@ -1336,7 +1336,7 @@ void() ambient_mfly =
 */
 void() ambient_moan2lp =
 {
-    precache_sound ("ambience/maon2lp.wav");
+    precache_sound ("ambience/moan2lp.wav");
     ambientsound (self.origin, "ambience/moan2lp.wav", 1, ATTN_STATIC);
 };
 
