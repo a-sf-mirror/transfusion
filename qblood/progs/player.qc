@@ -630,6 +630,9 @@ void() GibPlayer =
     ThrowGib ("progs/gib1.mdl", self.health);
     ThrowGib ("progs/gib2.mdl", self.health);
     ThrowGib ("progs/gib3.mdl", self.health);
+    ThrowGib ("progs/larm.mdl", self.health);
+    ThrowGib ("progs/leg.mdl", self.health);
+
 
     self.deadflag = DEAD_DEAD;
 
