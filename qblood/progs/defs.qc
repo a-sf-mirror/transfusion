@@ -280,6 +280,15 @@ float   framecount;
 float   recursioncount;  // used to avoid stack overflow with explosions
 
 //
+// CTF stuff
+//
+
+// Team scores
+float team1score;
+float team2score;
+
+
+//
 // cvars checked each frame
 //
 #ifdef QUAKEWORLD

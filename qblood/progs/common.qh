@@ -238,6 +238,20 @@
 #define AS_MISSILE  4
 
 
+/* ----------------- */
+/* --- CTF stuff --- */
+/* ----------------- */
+
+// Team colors
+#ifdef QUAKEWORLD
+# define TEAM_COLOR1 4
+# define TEAM_COLOR2 13
+#else
+# define TEAM_COLOR1 5
+# define TEAM_COLOR2 14
+#endif
+
+
 /* -------------- */
 /* --- Macros --- */
 /* -------------- */

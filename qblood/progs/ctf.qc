@@ -23,15 +23,6 @@
 
 .float items2;
 
-// Team colors
-#ifdef QUAKEWORLD
-# define TEAM_COLOR1 4
-# define TEAM_COLOR2 13
-#else
-# define TEAM_COLOR1 5
-# define TEAM_COLOR2 14
-#endif
-
 #define ITEM_ENEMY_FLAG 1
 
 // flag status used in cnt field of flag
@@ -65,7 +56,7 @@ void(entity flg) RegenFlag =
     #ifdef QUAKEWORLD
     flg.velocity = '0 0 0';
     #endif
-    sound (flg, CHAN_VOICE, "items/itembk2.wav", 1, ATTN_NORM); // play respawn sound
+    sound (flg, CHAN_VOICE, "bludbath/respawn2.wav", 1, ATTN_NORM); // play respawn sound
 };
 
 
@@ -185,6 +176,13 @@ void() CTF_FlagTouch =
             if (! (other.items2 & ITEM_ENEMY_FLAG))
                 return;
 
+            other.items2 = other.items2 - (other.items2 & ITEM_ENEMY_FLAG);
+
+            if (self.team == TEAM_COLOR1)
+                team1score = team1score + 1;
+            else
+                team2score = team2score + 1;
+
             // the flag is at home base.  if the player has the enemy
             // flag, he's just won!
             Bprint (PRINT_HIGH, other.netname);
@@ -192,9 +190,16 @@ void() CTF_FlagTouch =
                 Bprint (PRINT_HIGH, " „·ÙıÚÂ‰ the ¬Ã’≈ flag!\n"); // blue
             else
                 Bprint (PRINT_HIGH, " „·ÙıÚÂ‰ the “≈ƒ flag!\n"); // red
+
+            Bprint (PRINT_HIGH, "RED: ");
+            Bprint (PRINT_HIGH, ftos (team1score));
+            Bprint (PRINT_HIGH, " / BLUE: ");
+            Bprint (PRINT_HIGH, ftos (team2score));
+            Bprint (PRINT_HIGH, "\n");
+
             other.items = other.items - (other.items & (IT_KEY1 | IT_KEY2));
 
-            sound (other, CHAN_VOICE, "misc/flagcap.wav", 1, ATTN_NONE);
+            sound (other, CHAN_VOICE, self.noise2, 1, ATTN_NONE);
 
             // other gets another 10 frag bonus
             other.frags = other.frags + TEAM_CAPTURE_CAPTURE_BONUS;
@@ -362,9 +367,6 @@ void() CTF_FlagThink =
 
 
 void() place_flag = {
-    self.noise = "misc/flagtk.wav";
-    self.noise1 = "doors/runetry.wav";
-
     setmodel (self, "progs/flag.mdl");
     setsize(self, '-16 -16 0', '16 16 74');
 
@@ -401,11 +403,17 @@ void() item_flag_team1 =
         return;
     }
 
-    precache_sound ("misc/flagcap.wav");  // flag capture
-    precache_sound ("misc/flagtk.wav");         // flag taken
-    precache_sound ("doors/runetry.wav");
-
     precache_model ("progs/flag.mdl");
+
+    precache_sound ("thevoice/8000.wav");  // "Red captures the flag"
+    precache_sound ("thevoice/8002.wav");  // "Red returns the flag"
+    precache_sound ("thevoice/8006.wav");  // "Red flag stolen"
+
+    precache_sound ("bludbath/respawn2.wav");  // Respawn sound
+
+    self.noise = "thevoice/8006.wav";
+    self.noise1 = "thevoice/8002.wav";
+    self.noise2 = "thevoice/8000.wav";
 
     self.team = TEAM_COLOR1;
     self.items = IT_KEY1;
@@ -423,11 +431,17 @@ void() item_flag_team2 =
         return;
     }
 
-    precache_sound ("misc/flagcap.wav");  // flag capture
-    precache_sound ("misc/flagtk.wav");         // flag taken
-    precache_sound ("doors/runetry.wav");
-
     precache_model ("progs/flag.mdl");
+
+    precache_sound ("thevoice/8001.wav");  // "Blue captures the flag"
+    precache_sound ("thevoice/8003.wav");  // "Blue returns the flag"
+    precache_sound ("thevoice/8007.wav");  // "Blue flag stolen"
+
+    precache_sound ("bludbath/respawn2.wav");  // Respawn sound
+
+    self.noise = "thevoice/8007.wav";
+    self.noise1 = "thevoice/8003.wav";
+    self.noise2 = "thevoice/8001.wav";
 
     self.team = TEAM_COLOR2;
     self.items = IT_KEY2;

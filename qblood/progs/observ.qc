@@ -117,10 +117,41 @@ void(entity player,entity tele) ObserverTeleporter =
 
 float() DoObserverImpulse =
 {
-    if (self.button2)
+    // If we're not in CTF mode, join the game on impulse 1 or 2, or on "jump"
+    if (deathmatch != 2)
     {
-        self.observer = 0;
-        respawn();
+        if (self.impulse == 1 || self.impulse == 2 || self.button2)
+        {
+            self.observer = 0;
+            respawn();
+        }
+    }
+
+    // Else (in CTF mode)
+    else
+    {
+        if (self.button2)
+            centerprint (self, "Type:\nimpulse 1 for joining the RED team\nimpulse 2 for joining the BLUE team\n");
+        else if (self.impulse == 1 || self.impulse == 2)
+        {
+            // Choose the color...
+            if (self.impulse == 1)
+            {
+                self.team = TEAM_COLOR1;
+                self.skin = 1;
+                centerprint (self, "You have joined the RED team");
+            }
+            else
+            {
+                self.team = TEAM_COLOR2;
+                self.skin = 2;
+                centerprint (self, "You have joined the BLUE team");
+            }
+
+            // ...and join the game
+            self.observer = 0;
+            respawn();
+        }
     }
 
     self.impulse = 0;
