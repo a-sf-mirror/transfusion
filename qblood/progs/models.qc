@@ -90,7 +90,7 @@ $cd id1/models/v_axe
 $origin 0 5 54
 $base base
 $skin skin
-$frame frame1 frame2 frame3 frame4 frame5 frame6 frame7 frame8 frame9
+$frame frame1 frame2 frame3 frame4
 
 
 $modelname v_shot
