@@ -502,8 +502,25 @@ void() SpawnShell =
     // shell.noise is the hitting ground sound
     // shell.noise1 is the cocking sound
 
-    // Shotgun shells (2 shells dropped)
-    if (self.weapon == IT_SUPER_SHOTGUN)
+    // Tommy gun shells
+    if (self.weapon == IT_NAILGUN)
+    {
+        local entity player;
+
+        shell.mdl    = "progs/tommyshl.mdl";
+        if (random() < 0.5)
+            shell.noise  = "weapons/shtshl.wav";
+        else
+            shell.noise  = "weapons/shtshl3.wav";
+
+        // since we directly call DropShell, the shell must be "self" temporary
+        player = self;
+        self = shell;
+        DropShell ();
+        self = player;
+    }
+    // Shotgun shells (2 shells dropped at a time, or nothing)
+    else if (self.weapon == IT_SUPER_SHOTGUN && (self.currentammo & 1) == 0)
     {
         local entity shell2;
 
@@ -523,23 +540,6 @@ void() SpawnShell =
         shell2.noise     = shell.noise;
         shell2.think     = shell.think;
     }
-    // Tommy gun shells
-    else  // if (self.weapon == IT_NAILGUN)
-    {
-        local entity player;
-
-        shell.mdl    = "progs/tommyshl.mdl";
-        if (random() < 0.5)
-            shell.noise  = "weapons/shtshl.wav";
-        else
-            shell.noise  = "weapons/shtshl3.wav";
-
-        // since we directly call DropShell, the shell must be "self" temporary
-        player = self;
-        self = shell;
-        DropShell ();
-        self = player;
-    }
 };
 
 
@@ -548,30 +548,30 @@ void() SpawnShell =
 W_FireSuperShotgun - Sawed Off
 ================
 */
-void() W_FireSuperShotgun =
+void(float nbshots) W_FireSuperShotgun =
 {
     local vector dir;
 
-    if (self.currentammo == 1)
-    {
-        W_FireShotgun ();
-        return;
-    }
-
-    sound (self ,CHAN_WEAPON, "weapons/shotgun/shotfire.wav", 1, ATTN_NORM);
+    if ((self.currentammo & 1) == 1 && nbshots != 1)
+        nbshots = 1;
 
     #ifndef QUAKEWORLD
-    self.punchangle_x = -4;
+    self.punchangle_x = -2 * nbshots;
     #else
     msg_entity = self;
-    WriteByte (MSG_ONE, SVC_BIGKICK);
+    WriteByte (MSG_ONE, SVC_SMALLKICK + nbshots - 1);
     #endif
 
-    self.currentammo = self.ammo_shells = self.ammo_shells - 2;
+    self.currentammo = self.ammo_shells = self.ammo_shells - nbshots;
+
+    if (nbshots == 1)
+        sound (self, CHAN_WEAPON, "weapons/shotgun/shotfire.wav", 1, ATTN_NORM);
+    else
+        sound (self ,CHAN_WEAPON, "weapons/shotgun/shotfir2.wav", 1, ATTN_NORM);
 
     dir = aim (self, 100000);
     SpawnShell ();
-    FireBullets (18, dir, '0.14 0.08 0');  // 2 shells, with 9 "shot pellets" each.  quake = 14 bullets
+    FireBullets (9 * nbshots, dir, '0.08 0.08 0');  // 9 "shot pellets" per shell.  quake = 14 bullets
 };
 
 
@@ -695,7 +695,7 @@ void() W_FireRocket =
     // set newmis speed
     makevectors (self.v_angle);
     newmis.velocity = aim(self, 1000);
-    newmis.velocity = newmis.velocity * 1000;
+    newmis.velocity = newmis.velocity * 1500;
     newmis.angles = vectoangles(newmis.velocity);
 
     newmis.touch = T_MissileTouch;
@@ -1449,6 +1449,10 @@ W_Attack
 An attack impulse can be triggered now
 ============
 */
+
+#define ATTACK_NORMAL  0
+#define ATTACK_ALTFIRE 1
+
 void()  player_axe1;
 void()  player_axeb1;
 void()  player_axec1;
@@ -1458,7 +1462,7 @@ void()  player_nail1;
 void()  player_light1;
 void()  player_rocket1;
 
-void() W_Attack =
+void(float attackMode) W_Attack =
 {
     local   float   r;
 
@@ -1496,13 +1500,9 @@ void() W_Attack =
     {
         player_shot1 ();
         self.attack_finished = time + 0.7;
-        W_FireSuperShotgun ();
+        W_FireSuperShotgun (attackMode + 1);
     }
-    else if (self.weapon == IT_NAILGUN)
-    {
-        player_nail1 ();
-    }
-    else if (self.weapon == IT_SUPER_NAILGUN)
+    else if (self.weapon == IT_NAILGUN || self.weapon == IT_SUPER_NAILGUN)
     {
         player_nail1 ();
     }
@@ -1829,19 +1829,6 @@ void() CycleWeaponReverseCommand =
 
 };
 
-/*
-============
-ServerflagsCommand
-
-Just for development
-
-FIXME: molivier: what's the point ?
-============
-*/
-void() ServerflagsCommand =
-{
-    serverflags = serverflags * 2 + 1;
-};
 
 #ifndef QUAKEWORLD
 void() QuadCheat =
@@ -1858,6 +1845,23 @@ void() QuadCheat =
 
 /*
 ============
+W_AltFire
+
+Alternative attack
+============
+*/
+void() W_AltFire =
+{
+    // Check for normal attack instead
+    if (self.button0)
+        return;
+
+    SuperDamageSound ();
+    W_Attack (ATTACK_ALTFIRE);
+};
+
+/*
+============
 ImpulseCommands
 
 ============
@@ -1870,9 +1874,9 @@ void() ImpulseCommands =
     else if (self.impulse == 10)
         CycleWeaponCommand ();
     else if (self.impulse == 11)
-        ServerflagsCommand ();
-    else if (self.impulse == 12)
         CycleWeaponReverseCommand ();
+    else if (self.impulse == 12)
+        W_AltFire ();
 
     #ifndef QUAKEWORLD
     else if (self.impulse == 254)
@@ -1898,11 +1902,11 @@ void() W_WeaponFrame =
 
     ImpulseCommands ();
 
-// check for attack
+    // Check for attack
     if (self.button0)
     {
         SuperDamageSound ();
-        W_Attack ();
+        W_Attack (ATTACK_NORMAL);
     }
 };
 

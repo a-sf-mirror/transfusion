@@ -723,7 +723,7 @@ void() weapon_supershotgun =
     // Precache the necessary sounds
 //    precache_sound ("weapons/shotgun/sawcock1.wav"); //same as shotcock.wav
     precache_sound ("weapons/shotgun/shotcock.wav");
-//    precache_sound ("weapons/shotgun/shotfir2.wav");  //shotgun alt-fire
+    precache_sound ("weapons/shotgun/shotfir2.wav");  //shotgun alt-fire
     precache_sound ("weapons/shotgun/shotfire.wav");  // shotgun fired
 //    precache_sound ("weapons/shotgun/shotload.wav");
     precache_sound ("weapons/shtshl2.wav");  // shell hitting ground
