@@ -248,6 +248,8 @@ void() execute_changelevel =
 
     pos = FindIntermission ();
 
+    sound (pos, CHAN_VOICE, "misc/moans.wav", 0.5, ATTN_NORM);
+
     WriteByte (MSG_ALL, SVC_CDTRACK);
     WriteByte (MSG_ALL, 3);
 

@@ -201,11 +201,6 @@
          with the "-zone" command line argument. With most engines, "-zone 256"
          will be enough, but some of them may require more (try 512).
 
-         <tag>Boots of jumping doesn't work / I jump higher in NQ than in QW</tag>
-         NQ relies on the game code to handle jumping, but QW does it in its
-         own code. As a result, we can't tweak the jump velocity in QW until
-         we get our own version of the Quake engine.
-
          <tag>I want to contribute to the qBlood Project. How can I do ?</tag>
          It's very simple. Start doing a quick tour through our 2 websites to
          be sure to know all the basic informations you may need. Then, contact

@@ -1148,9 +1148,7 @@ void(float clientno) BotInvalidClientNo =
                 active_clients2 = active_clients2 | ClientBitFlag(self.b_clientno - 16);
             else
                 active_clients1 = active_clients1 | ClientBitFlag(self.b_clientno);
-            #ifndef QUAKEWORLD
-            BotConnect(0, bot.b_num, bot.b_skill);  // FIXME: what is it supposed to do?
-            #endif
+            BotConnect(0, bot.b_num, bot.b_skill);
             return;
         }
     }

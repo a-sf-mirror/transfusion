@@ -193,6 +193,7 @@ void() PrecacheSounds =
     precache_sound ("items/ammo.wav");             // ammo pick up
     precache_sound ("items/pickarmr.wav");         // armor pick up
     precache_sound ("items/weaponup.wav");         // weapon pick up
+    precache_sound ("misc/moans.wav");             // intermission sound
     precache_sound ("misc/null.wav");              // null sound (used as a placeholder, and to stop sounds)
     precache_sound ("player/slimbrn2.wav");
     precache_sound ("player/taunts/t1010.wav");    // "I live ... again !"
