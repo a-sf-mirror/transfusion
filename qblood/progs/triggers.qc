@@ -625,7 +625,7 @@ void() trigger_push_touch =
             if (other.fly_sound < time)
             {
                 other.fly_sound = time + 1.5;
-                sound (other, CHAN_AUTO, "ambience/qwindfly.wav", 1, ATTN_NORM);
+                sound (other, CHAN_AUTO, "misc/qwindfly.wav", 1, ATTN_NORM);
             }
         }
     }
@@ -640,7 +640,7 @@ Pushes the player
 void() trigger_push =
 {
     InitTrigger ();
-    precache_sound ("ambience/qwindfly.wav");
+    precache_sound ("misc/qwindfly.wav");
     self.touch = trigger_push_touch;
     if (!self.speed)
         self.speed = 1000;

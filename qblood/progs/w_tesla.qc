@@ -78,7 +78,7 @@ $frame atesla_holster1 atesla_holster2 atesla_holster3
 void() player_tesla =
 {
     // If we must stop
-    if ((!self.button0 && !self.button3 && self.impulse != 12) || intermission_running || self.ammo_cells < 1)
+    if ((!self.button0 && !self.button3) || intermission_running || self.ammo_cells < 1)
     {
         player_run ();
         return;

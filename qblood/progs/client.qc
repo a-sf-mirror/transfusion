@@ -996,6 +996,14 @@ void() PlayerPreThink =
     local   float   mspeed, aspeed;
     local   float   r;
 
+    // "impulse 12" and "+use" are aliases for "+button3"
+    self.button3 = (self.button3 & 1) | (self.button1 * 2);
+    if (self.impulse == 12)
+    {
+        self.button3 = self.button3 | 2;
+        self.impulse = 0;
+    }
+
     #ifdef FRIKBOT
     if (BotPreFrame())
         return;
@@ -1188,8 +1196,8 @@ Impulse list for living players
 */
 void() Impulses_Player =
 {
-    // Nothing to do, or altfire (will be treated later)
-    if (self.impulse == 0 || self.impulse == 12)
+    // Nothing to do
+    if (self.impulse == 0)
         return;
 
     if ((self.impulse >= 1 && self.impulse <= 9) || self.impulse == 17)

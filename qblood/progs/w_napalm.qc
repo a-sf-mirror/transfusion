@@ -358,7 +358,7 @@ Attack code for the napalm launcher
 void() Napalm_Attack =
 {
     // Normal fire or altfire?
-    if (self.impulse == 12 || self.button3)
+    if (self.button3)
         self.player_state = PS_ALTFIRE;
     else
         self.player_state = PS_FIRE;

@@ -80,7 +80,7 @@ $frame atommy_holster1 atommy_holster2 atommy_holster3
 
 void() player_tommy =
 {
-    if ((!self.button0 && !self.button3 && self.impulse != 12)  || intermission_running || self.ammo_nails < 1)
+    if ((!self.button0 && !self.button3)  || intermission_running || self.ammo_nails < 1)
     {
         player_run ();
         return;
@@ -99,7 +99,7 @@ void() player_tommy2 = [$attack2, player_tommy1] { player_tommy (); self.weaponf
 
 void() player_alttommy =
 {
-    if ((!self.button3 && self.impulse != 12 && self.weaponframe == $atommy_alt8) || intermission_running ||
+    if ((!self.button3 && self.weaponframe == $atommy_alt8) || intermission_running ||
         self.ammo_nails < 1 || (self.ammo_nails < 2 && (self.items & IT_GUNS_AKIMBO)))
     {
         player_run ();
@@ -253,8 +253,7 @@ Attack code for the tommygun
 void() Tommy_Attack =
 {
     // If it's a tommy gun altfire start and if we have enough ammo
-    if ((self.impulse == 12 || self.button3) &&
-        (! (self.items & IT_GUNS_AKIMBO) || self.ammo_nails >= 2))
+    if (self.button3 && (! (self.items & IT_GUNS_AKIMBO) || self.ammo_nails >= 2))
     {
         self.player_state = PS_ALTFIRE;
         player_alttommy1 ();
