@@ -622,7 +622,6 @@
 @PointClass size(-10 -4 -10, 10 4 11) = obj_tome : "A Closed Book " []
 @PointClass size(-5 -6 -9, 5 6 10) = obj_boost : "Small Potion Vial" []
 @PointClass size(-9 -10 -9, 9 10 10) = obj_mboost : "Large Potion Vial" []
-@PointClass size(-50 -30 0, 44 29 132) = obj_anglstat : "Huge Statue of Praying Angel" []
 @PointClass size(-14 -14 1, 22 14 89) = obj_beefslab : "Slab of Beef in Freezers" []
 @PointClass size(-16 -15 -3, 16 16 14) = obj_bonepile : "Pile of Bones" []
 @PointClass size(-9 -7 -1, 9 7 6) = obj_bookclos : "Closed Book" []

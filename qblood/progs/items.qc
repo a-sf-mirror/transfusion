@@ -340,16 +340,6 @@ void() obj_mboost =
     StartObject ();
 };
 
-// Huge Statue of Praying Angel
-void() obj_anglstat =
-{
-    precache_model("progs/anglstat.mdl");
-    setmodel(self, "progs/anglstat.mdl");
-
-    setsize (self, '-50 -30 0', '44 29 132');
-    StartObject ();
-};
-
 // a slab of beef, found in restaraunt freezers
 void() obj_beefslab =
 {
