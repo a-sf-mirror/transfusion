@@ -27,7 +27,7 @@
 		<li>
 			<span class="title">October 13, 2003:</span> (by Elric)<br />
 			I am officially resigning from my Lead Programmer position today. Timothy Hale, another co-founder
-			of this project, takes the chair.<p />
+			of this project, will be taking up the chair in my place.<p />
 		</li>
 		<li>
 			<span class="title">August 13, 2003:</span> (by Elric)<br />
