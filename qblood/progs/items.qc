@@ -1759,7 +1759,7 @@ void() ammo_touch =
             return;
         other.ammo_voodoo = other.ammo_voodoo + self.aflag;
     }
-    // leech life
+    // life leech
     else if (self.weapon == 11)
     {
         if (other.ammo_leech >= MAX_LEECH)

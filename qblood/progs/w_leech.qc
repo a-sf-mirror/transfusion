@@ -195,7 +195,7 @@ void() Leech_BallFire =
     // If we don't have enough ammo, use HP
     if (self.ammo_leech < 2)
     {
-        T_Damage (self, world, world, 2 - self.ammo_leech, DF_MIND, "leech");
+        T_Damage (self, world, self, 2 - self.ammo_leech, DF_MIND, "leech");
         self.ammo_leech = 0;
     }
     else
@@ -371,6 +371,8 @@ void() Leech_Die =
     self.leech_sentry.leech_sentry = world;
     sound (self, CHAN_VOICE, "weapons/lifelech/llaltht.wav", 1, ATTN_NORM);
 
+    KillBurner (self);
+
     // If the engine supports the QC extension DP_ENT_ALPHA, make it fade out
     if (qcextensions)
         if (checkextension ("DP_ENT_ALPHA"))
@@ -459,7 +461,7 @@ void() Leech_Drop =
     // Dropping it requiers 25 ammo/HP
     if (self.ammo_leech < 25)
     {
-        T_Damage (self, world, world, 25 - self.ammo_leech, DF_MIND, "leech");
+        T_Damage (self, world, self, 25 - self.ammo_leech, DF_MIND, "leech");
         item.ammo_leech = 0;
     }
     else
