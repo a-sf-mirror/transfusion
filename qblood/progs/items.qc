@@ -335,16 +335,22 @@ void() obj_plantrom =
     StartObject ("progs/plantrom.mdl", '-39 -38 -1', '39 39 95');
 };
 
-// large 2 handled jug, 4 skins
+// Large Vase (tile0537)
 void() obj_pot1 =
 {
-    StartObject ("progs/pot1.mdl", '-19 -32 -1', '19 32 58');
+    StartObject ("models/world/pot1.md3", '-8 -9 0', '8 9 38');
 };
 
-// large vase, 4 skins
+// Large Urn (tile1063)
 void() obj_pot2 =
 {
-    StartObject ("progs/pot2.mdl", '-12 -14 0', '12 14 42');
+    StartObject ("models/world/pot2.md3", '-17 -18 0', '18 18 41');
+};
+
+// Small Pot (tile0604)
+void() obj_pot5 =
+{
+    StartObject ("models/world/pot5.md3", '-7 -7 0', '7 7 15');
 };
 
 // seaweed
@@ -407,16 +413,16 @@ void() obj_tombstn6 =
     StartObject ("models/world/tombstn6.md3", '-8 -16 0', '8 14 47');
 };
 
-// dead tree
+// Dead Tree (tile0540)
 void() obj_tree =
 {
-    StartObject ("progs/tree.mdl", '-16 -16 0', '16 16 32');
+    StartObject ("models/world/tree.md3", '-32 -41 0', '52 45 174');
 };
 
-// leafy tree
+// Live Tree (tile0541)
 void() obj_tree2 =
 {
-    StartObject ("progs/tree2.mdl", '-16 -16 0', '16 16 32');
+    StartObject ("models/world/tree2.md3", '-32 -41 0', '52 45 174');
 };
 
 // Brown skull
@@ -443,10 +449,10 @@ void() obj_m3 =
     StartObject ("progs/m3.mdl", '-12 -8 -11', '12 8 11');
 };
 
-// shovel
+// Shovel (tile1713)
 void() obj_shovel =
 {
-    StartObject ("progs/shovl.mdl", '-16 -16 -16', '16 16 16');
+    StartObject ("models/world/shovel.md3", '-0 -7 -27', '3 7 26');
 };
 
 // jar with a brain in it
@@ -498,12 +504,6 @@ void() obj_world_bucket1 =
     StartObject ("models/world/bucket1.md3", '-6 -6 0', '6 6 24');
 };
 
-// Large Vase (tile0537)
-void() obj_world_pot1 =
-{
-    StartObject ("models/world/pot1.md3", '-8 -9 0', '8 9 38');
-};
-
 // Wall torch (tile0570)
 void() obj_world_torch =
 {
@@ -534,12 +534,6 @@ void() obj_world_candlbr2 =
     self.think1 = SUB_AutoAnimation;
 
     StartObject ("models/world/candlbr2.md3", '-5 -7 0', '5 7 54');
-};
-
-// Small Pot (tile0604)
-void() obj_world_pot5 =
-{
-    StartObject ("models/world/pot5.md3", '-7 -7 0', '7 7 15');
 };
 
 // Skull on stake w/rags (tile0607)
@@ -621,12 +615,6 @@ void() obj_world_plant1 =
     StartObject ("models/world/plant1.md3", '-4 -4 0', '4 4 8');
 };
 
-// Large Urn (tile1063)
-void() obj_world_pot2 =
-{
-    StartObject ("models/world/pot2.md3", '-17 -18 0', '18 18 41');
-};
-
 // Draven Tombstone (tile1159)
 void() obj_world_draven =
 {
@@ -637,12 +625,6 @@ void() obj_world_draven =
 void() obj_world_spade =
 {
     StartObject ("models/world/spade.md3", '-1 -5 -18', '1 5 18');
-};
-
-// Shovel (tile1713)
-void() obj_world_shovel =
-{
-    StartObject ("models/world/shovel.md3", '-0 -7 -27', '3 7 26');
 };
 
 // Saw (tile1714)
@@ -667,18 +649,6 @@ void() obj_world_poker =
 void() obj_world_body1 =
 {
     StartObject ("models/world/body1.md3", '-21 -12 -1', '27 23 19');
-};
-
-// Dead Tree (tile0540)
-void() obj_world_tree =
-{
-    StartObject ("models/world/tree.md3", '-32 -41 0', '52 45 174');
-};
-
-// Live Tree (tile0541)
-void() obj_world_tree2 =
-{
-    StartObject ("models/world/tree2.md3", '-32 -41 0', '52 45 174');
 };
 
 // Clock (tile1165)

@@ -484,8 +484,9 @@
 @PointClass base(Object) size(-30 -29 -1, 29 30 30) = obj_plantgen : "Small Plant" []
 @PointClass base(Object) size(-30 -29 -1, 29 30 39) = obj_plantmez : "Potted Plant" []
 @PointClass base(Object) size(-39 -38 -1, 39 39 95) = obj_plantrom : "Plant in Vase" []
-@PointClass base(Object) size(-19 -32 -1, 19 32 58) = obj_pot1 : "Large 2 Handled Jug - 4 skins" []
-@PointClass base(Object) size(-12 -14 0, 12 14 42) = obj_pot2 : "Large Vase - 4 skins" []
+@PointClass base(Object) size(-8 -9 0, 8 9 38) = obj_pot1 : "Large Vase (tile0537)" []
+@PointClass base(Object) size(-17 -18 0, 18 18 41) = obj_pot2 : "Large Urn (tile1063)" []
+@PointClass base(Object) size(-7 -7 0, 7 7 15) = obj_pot5 : "Small Pot (tile0604)" []
 @PointClass base(Object) size(-4 -5 0, 4 5 72) = obj_seaweed : "Flowing Seaweed" []
 @PointClass base(Object) size(-6 -5 0, 5 5 52) = obj_skllstk1 : "Stake w/ 1 skull (tile0257)" []
 @PointClass base(Object) size(-6 -4 0, 5 6 55) = obj_skllstk2 : "Stake w/ 3 skulls (tile0258)" []
@@ -496,13 +497,13 @@
 @PointClass base(Object) size(-14 -21 -6, 7 18 45) = obj_tombstn4 : "Old Tombstone (tile0704)" []
 @PointClass base(Object) size(-10 -24 0, 10 24 62) = obj_tombstn5 : "Large Cross Tombstone (tile0678)" []
 @PointClass base(Object) size(-8 -16 0, 8 14 47) = obj_tombstn6 : "Wooden Cross Tombstone (tile0703)" []
-@PointClass base(Object) size(-16 -16 -32, 16 16 32) = obj_tree : "Dead Tree" []
-@PointClass base(Object) size(-16 -16 -32, 16 16 32) = obj_tree2 : "Large Leafy Tree" []
+@PointClass base(Object) size(-32 -41 0, 52 45 174) = obj_tree : "Dead Tree (tile0540)" []
+@PointClass base(Object) size(-32 -41 0, 52 45 174) = obj_tree2 : "Live Tree (tile0541)" []
 @PointClass base(Object) size(-6 -4 0, 6 4 11) = obj_skull : "Brown Skull" []
 @PointClass base(Object) size(-7 -7 0, 7 7 18) = obj_stool : "A Stool" []
 @PointClass base(Object) size(-12 -8 -11, 12 8 11) = obj_m2 : "White Skull" []
 @PointClass base(Object) size(-12 -8 -11, 12 8 11) = obj_m3 : "Green Skull" []
-@PointClass base(Object) size(-16 -16 -16, 16 16 16) = obj_shovel : "A Shovel" []
+@PointClass base(Object) size(-0 -7 -27, 3 7 26) = obj_shovel : "Shovel (tile1713)" []
 @PointClass base(Object) size(-11 -7 -1, 14 8 28) = obj_brainjar : "Jar with brain in it"
 [
 	skin(Choices) : "Skin" : 0 =
