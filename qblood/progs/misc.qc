@@ -345,11 +345,7 @@ void() Laser_Touch =
 
     if (other.health)
     {
-        #ifdef QUAKEWORLD
-        SpawnBlood (org, 15);
-        #else
         SpawnBlood (org, self.velocity*0.2, 15);
-        #endif
         other.deathtype = "laser";
         T_Damage (other, self, self.owner, 15);
     }

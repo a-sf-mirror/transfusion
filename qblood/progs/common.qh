@@ -238,11 +238,13 @@
 /* -------------- */
 
 #ifdef QUAKEWORLD
-#define Bprint(p, s)    bprint (p, s)
-#define Sprint(e, p, s) sprint (e, p, s)
+# define Bprint(p, s)           bprint (p, s)
+# define Sprint(e, p, s)        sprint (e, p, s)
+# define SpawnBlood(o, v, d)    QW_SpawnBlood (o, d)
 #else
-#define Bprint(p, s)    bprint (s)
-#define Sprint(e, p, s) sprint (e, s)
+# define Bprint(p, s)           bprint (s)
+# define Sprint(e, p, s)        sprint (e, s)
+# define SpawnBlood(o, v, d)    NQ_SpawnBlood (o, v, d)
 #endif
 
 

@@ -23,11 +23,6 @@
 
 void (entity targ, entity inflictor, entity attacker, float damage) T_Damage;
 void () player_run;
-#ifdef QUAKEWORLD
-void(vector org, float damage) SpawnBlood;
-#else
-void(vector org, vector vel, float damage) SpawnBlood;
-#endif
 void(entity bomb, entity attacker, float rad, entity ignore, string dtype) T_RadiusDamage;
 void() SuperDamageSound;
 
@@ -141,8 +136,8 @@ void() W_Precache =
     // shells hitting ground
     precache_sound ("weapons/shtshl.wav");   // tommy gun shell
     precache_sound ("weapons/shtshl2.wav");  // shotgun shell
+    precache_sound ("weapons/shtshl3.wav");  // tommy gun shell (2nd)
 /*
-    precache_sound ("weapons/shtshl3.wav");
     precache_sound ("weapons/shtshl4.wav");
 */
     precache_sound ("weapons/tink1.wav");    // spikes tink (used in c code)
@@ -154,59 +149,8 @@ float() crandom =
     return 2*(random() - 0.5);
 };
 
-/*
-================
-W_FireAxe - Pitchfork
-================
-*/
-void() W_FireAxe =
-{
-    local   vector  source;
-    local   vector  org;
-
-    makevectors (self.v_angle);
-    source = self.origin + '0 0 16';
-    traceline (source, source + v_forward*64, FALSE, self);
-    if (trace_fraction == 1.0)
-        return;
-
-    org = trace_endpos - v_forward*4;
-
-    if (trace_ent.takedamage)
-    {
-        trace_ent.axhitme = 1;
-        #ifdef QUAKEWORLD
-        SpawnBlood (org, 20);
-        #else
-        SpawnBlood (org, '0 0 0', 20);
-        #endif
-
-        T_Damage (trace_ent, self, self, 20);
-    }
-    else
-    {   // hit wall
-        sound (self, CHAN_WEAPON, "weapons/pitchfrk/pstone.wav", 1, ATTN_NORM);
-        #ifdef QUAKEWORLD
-        WriteByte (MSG_MULTICAST, SVC_TEMPENTITY);
-        WriteByte (MSG_MULTICAST, TE_GUNSHOT);
-        WriteByte (MSG_MULTICAST, 3);
-        WriteCoord (MSG_MULTICAST, org_x);
-        WriteCoord (MSG_MULTICAST, org_y);
-        WriteCoord (MSG_MULTICAST, org_z);
-        multicast (org, MULTICAST_PVS);
-        #else
-        WriteByte (MSG_BROADCAST, SVC_TEMPENTITY);
-        WriteByte (MSG_BROADCAST, TE_GUNSHOT);
-        WriteCoord (MSG_BROADCAST, org_x);
-        WriteCoord (MSG_BROADCAST, org_y);
-        WriteCoord (MSG_BROADCAST, org_z);
-        #endif
-    }
-};
-
 
 //============================================================================
-
 
 vector() wall_velocity =
 {
@@ -258,12 +202,8 @@ SpawnBlood
 ================
 */
 #ifdef QUAKEWORLD
-void(vector org, float damage) SpawnBlood =
-#else
-void(vector org, vector vel, float damage) SpawnBlood =
-#endif
+void(vector org, float damage) QW_SpawnBlood =
 {
-    #ifdef QUAKEWORLD
     WriteByte (MSG_MULTICAST, SVC_TEMPENTITY);
     WriteByte (MSG_MULTICAST, TE_BLOOD);
     WriteByte (MSG_MULTICAST, 1);
@@ -271,10 +211,13 @@ void(vector org, vector vel, float damage) SpawnBlood =
     WriteCoord (MSG_MULTICAST, org_y);
     WriteCoord (MSG_MULTICAST, org_z);
     multicast (org, MULTICAST_PVS);
-    #else
-    particle (org, vel*0.1, 73, damage*2);
-    #endif
 };
+#else
+void(vector org, vector vel, float damage) NQ_SpawnBlood =
+{
+    particle (org, vel*0.1, 73, damage*2);
+};
+#endif
 
 /*
 ================
@@ -286,11 +229,7 @@ void(float damage) spawn_touchblood =
     local vector    vel;
 
     vel = wall_velocity () * 0.2;
-    #ifdef QUAKEWORLD
-    SpawnBlood (self.origin + vel*0.01, damage);
-    #else
     SpawnBlood (self.origin + vel*0.01, vel, damage);
-    #endif
 };
 
 
@@ -306,6 +245,54 @@ void(vector org, vector vel) SpawnChunk =
     particle (org, vel*0.02, 0, 10);
     #endif
 };
+
+
+/*
+================
+W_FireAxe - Pitchfork
+================
+*/
+void() W_FireAxe =
+{
+    local   vector  source;
+    local   vector  org;
+
+    makevectors (self.v_angle);
+    source = self.origin + '0 0 16';
+    traceline (source, source + v_forward*64, FALSE, self);
+    if (trace_fraction == 1.0)
+        return;
+
+    org = trace_endpos - v_forward*4;
+
+    if (trace_ent.takedamage)
+    {
+        trace_ent.axhitme = 1;
+        SpawnBlood (org, '0 0 0', 20);
+
+        T_Damage (trace_ent, self, self, 20);
+    }
+    else
+    {   // hit wall
+        sound (self, CHAN_WEAPON, "weapons/pitchfrk/pstone.wav", 1, ATTN_NORM);
+        #ifdef QUAKEWORLD
+        WriteByte (MSG_MULTICAST, SVC_TEMPENTITY);
+        WriteByte (MSG_MULTICAST, TE_GUNSHOT);
+        WriteByte (MSG_MULTICAST, 3);
+        WriteCoord (MSG_MULTICAST, org_x);
+        WriteCoord (MSG_MULTICAST, org_y);
+        WriteCoord (MSG_MULTICAST, org_z);
+        multicast (org, MULTICAST_PVS);
+        #else
+        WriteByte (MSG_BROADCAST, SVC_TEMPENTITY);
+        WriteByte (MSG_BROADCAST, TE_GUNSHOT);
+        WriteCoord (MSG_BROADCAST, org_x);
+        WriteCoord (MSG_BROADCAST, org_y);
+        WriteCoord (MSG_BROADCAST, org_z);
+        #endif
+    }
+};
+
 
 /*
 ==============================================================================
@@ -557,6 +544,9 @@ Spawns new shell entity but doesn't display it until reloadtime
 void() SpawnShell =
 {
     local entity shell;
+    local float rnum;
+
+    rnum = random ();
 
     shell = spawn ();
     shell.owner = self;
@@ -591,7 +581,10 @@ void() SpawnShell =
         local entity player;
 
         shell.mdl    = "progs/tommyshl.mdl";
-        shell.noise  = "weapons/shtshl.wav";
+        if (rnum < 0.5)
+            shell.noise  = "weapons/shtshl.wav";
+	else
+            shell.noise  = "weapons/shtshl3.wav";
 
         // since we directly call DropShell, the shell must be "self" temporary
         player = self;
