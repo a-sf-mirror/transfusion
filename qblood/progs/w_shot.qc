@@ -234,9 +234,9 @@ void() Shot_Fire =
     self.currentammo = self.ammo_shells = self.ammo_shells - nbshots;
 
     if (nbshots == 1)
-        sound (self, CHAN_WEAPON, "weapons/shotgun/shotfire.wav", 1, ATTN_NORM);
+        sound (self, CHAN_AUTO, "weapons/shotgun/shotfire.wav", 1, ATTN_NORM);
     else
-        sound (self ,CHAN_WEAPON, "weapons/shotgun/shotfir2.wav", 1, ATTN_NORM);
+        sound (self ,CHAN_AUTO, "weapons/shotgun/shotfir2.wav", 1, ATTN_NORM);
 
     dir = aim (self, 100000);
     FireBullets (self.origin + v_up * 20, dir, 11 * nbshots, 4, spread);  // 9 "shot pellets" per shell

@@ -863,24 +863,24 @@ void() obj_shovel =
 // a boiling cauldron
 void() obj_cauldron =
 {
-     precache_model("progs/cauldron.mdl");
-     setmodel(self, "progs/cauldron.mdl");
-     
-     setsize (self, '-32 -21 0', '24 20 34');
-     StartObject ();
+    precache_model("progs/cauldron.mdl");
+    setmodel(self, "progs/cauldron.mdl");
+
+    setsize (self, '-32 -21 0', '24 20 34');
+    StartObject ();
 };
 
-// barrels - 
+// barrels -
 //skin0 = tnt (don't use), skin1 = wine barrel,
 //skin2 = zombie head barrel, skin3 = "waste" barrel
 void() obj_barrel =
 {
-     precache_model("progs/barrel.mdl");
-     setmodel(self, "progs/barrel.mdl");
-     
-     setsize (self, '-14 20 -14', '14 20 39');
-     StartObject ();
-     };
+    precache_model("progs/barrel.mdl");
+    setmodel(self, "progs/barrel.mdl");
+
+    setsize (self, '-14 20 -14', '14 20 39');
+    StartObject ();
+};
 
 
 /*
@@ -1600,7 +1600,7 @@ void() weapon_supershotgun =
     self.weapon = IT_SAWED_OFF;
     self.netname = "Sawed-off";
     self.touch = weapon_touch;
-    setsize (self, '-19 -4 3', '17 4 14');
+    setsize (self, '-19 -4 0', '17 4 14');
 
     // Precache the necessary sounds
     precache_sound ("weapons/shotgun/shotcock.wav");  // shell ejection

@@ -1,4 +1,4 @@
-/*  Copyright (C) 2001  Mathieu Olivier
+/*  Copyright (C) 2001-2002  Mathieu Olivier
 
     This program is free software; you can redistribute it and/or modify
     it under the terms of the GNU General Public License as published by
@@ -353,9 +353,9 @@ void() Menu_Draw =
     {
         Sprint (self, PRINT_HIGH,
                 "Vote for a map:\n"
-                "1) dm2      Power!               | 2) dm3  Area 15\n"
-                "3) bb3_2k1  Bodies Infusion\n"
-                "4) qe1m7    The House of Chthon\n"
+                "1) dm2      Power!               | 2) dm3   Area 15\n"
+                "3) bb3_2k1  Bodies Infusion      | 4) b2a15 Area 15 from Blood 2\n"
+                "5) qe1m7    The House of Chthon\n"
                 "\n"
                 "10) Go back to map menu\n");
     }
@@ -446,14 +446,6 @@ void() Menu_HandleVoteFraglimit =
         return;
     }
 
-    // If the command is invalid
-    if (self.impulse > 9 )
-    {
-        Sprint (self, PRINT_HIGH, "\n===== INVALID COMMAND =====\n\n");
-        Menu_Draw ();
-        return;
-    }
-
     if (self.impulse == 1)
         fl = "10";
     else if (self.impulse == 2)
@@ -472,6 +464,12 @@ void() Menu_HandleVoteFraglimit =
         fl = "200";
     else if (self.impulse == 9)
         fl = "unlimited";
+    else
+    {
+        Sprint (self, PRINT_HIGH, "\n===== INVALID COMMAND =====\n\n");
+        Menu_Draw ();
+        return;
+    }
 
     self.vote_fraglimit = self.impulse;
     Bprint (PRINT_HIGH, "Û ");  // "[ "
@@ -550,14 +548,6 @@ void() Menu_HandleVoteMapBB =
         return;
     }
 
-    // If the command is invalid
-    if (self.impulse > 7)
-    {
-        Sprint (self, PRINT_HIGH, "\n===== INVALID COMMAND =====\n\n");
-        Menu_Draw ();
-        return;
-    }
-
     if (self.impulse == 1)
         newmap = "bb1";
     else if (self.impulse == 2)
@@ -572,6 +562,12 @@ void() Menu_HandleVoteMapBB =
         newmap = "bb7";
     else if (self.impulse == 7)
         newmap = "bb8";
+    else
+    {
+        Sprint (self, PRINT_HIGH, "\n===== INVALID COMMAND =====\n\n");
+        Menu_Draw ();
+        return;
+    }
 
     // Validate the vote
     Vote_AddMapVote (MAPS_BB + self.impulse, newmap);
@@ -599,14 +595,6 @@ void() Menu_HandleVoteMapOther =
         return;
     }
 
-    // If the command is invalid
-    if (self.impulse > 4)
-    {
-        Sprint (self, PRINT_HIGH, "\n===== INVALID COMMAND =====\n\n");
-        Menu_Draw ();
-        return;
-    }
-
     if (self.impulse == 1)
         newmap = "dm2";
     else if (self.impulse == 2)
@@ -614,7 +602,15 @@ void() Menu_HandleVoteMapOther =
     else if (self.impulse == 3)
         newmap = "bb3_2k1";
     else if (self.impulse == 4)
+        newmap = "b2a15";
+    else if (self.impulse == 5)
         newmap = "qe1m7";
+    else
+    {
+        Sprint (self, PRINT_HIGH, "\n===== INVALID COMMAND =====\n\n");
+        Menu_Draw ();
+        return;
+    }
 
     // Validate the vote
     Vote_AddMapVote (MAPS_OTHER + self.impulse, newmap);
@@ -709,14 +705,6 @@ void() Menu_HandleVoteTimelimit =
         return;
     }
 
-    // If the command is invalid
-    if (self.impulse > 9 )
-    {
-        Sprint (self, PRINT_HIGH, "\n===== INVALID COMMAND =====\n\n");
-        Menu_Draw ();
-        return;
-    }
-
     if (self.impulse == 1)
         tl = "5";
     else if (self.impulse == 2)
@@ -735,6 +723,12 @@ void() Menu_HandleVoteTimelimit =
         tl = "60";
     else if (self.impulse == 9)
         tl = "unlimited";
+    else
+    {
+        Sprint (self, PRINT_HIGH, "\n===== INVALID COMMAND =====\n\n");
+        Menu_Draw ();
+        return;
+    }
 
     self.vote_timelimit = self.impulse;
     Bprint (PRINT_HIGH, "Û ");  // "[ "
