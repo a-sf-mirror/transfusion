@@ -1048,14 +1048,14 @@ void() item_rockets =
 
     if (self.spawnflags & AMMO_BIG)
     {
-        precache_model ("maps/b_rock1.bsp");
-        setmodel (self, "maps/b_rock1.bsp");
+        precache_model ("progs/i_gascan.mdl");
+        setmodel (self, "progs/i_gascan.mdl");
         self.aflag = 10;
     }
     else
     {
-        precache_model ("maps/b_rock0.bsp");
-        setmodel (self, "maps/b_rock0.bsp");
+        precache_model ("progs/i_gascan.mdl");
+        setmodel (self, "progs/i_gascan.mdl");
         self.aflag = 5;
     }
     self.weapon = 3;
@@ -1143,14 +1143,14 @@ void() item_weapon =
     {
         if (self.spawnflags & WEAPON_BIG)
         {
-            precache_model ("maps/b_rock1.bsp");
-            setmodel (self, "maps/b_rock1.bsp");
+            precache_model ("progs/i_gascan.mdl");
+            setmodel (self, "progs/i_gascan.mdl");
             self.aflag = 10;
         }
         else
         {
-            precache_model ("maps/b_rock0.bsp");
-            setmodel (self, "maps/b_rock0.bsp");
+            precache_model ("progs/i_gascan.mdl");
+            setmodel (self, "progs/i_gascan.mdl");
             self.aflag = 5;
         }
         self.weapon = 3;
