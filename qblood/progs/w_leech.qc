@@ -444,7 +444,6 @@ void() Leech_Drop =
     item.velocity = aim (self, 1000) * 50;
     item.velocity_z = 150;
     item.movetype = MOVETYPE_TOSS;
-    item.effects = EF_FLAME;
 
     // Sentry mode
     item.nextthink = time + 1.5;
