@@ -123,6 +123,7 @@ void() PrecacheSounds =
     precache_sound ("thevoice/vo12.wav");  // Population control
     precache_sound ("thevoice/vo13.wav");  // Unassisted death
     precache_sound ("thevoice/vo14.wav");
+    precache_sound ("thevoice/vo15.wav");  // Finish him
     precache_sound ("thevoice/vo16.wav");  // Darwin Award
     precache_sound ("thevoice/vo19.wav");
     precache_sound ("thevoice/vo20.wav");

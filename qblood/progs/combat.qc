@@ -25,6 +25,7 @@ void() T_MissileTouch;
 void() info_player_start;
 void(entity attacker) ClientObituary;
 void(entity inflictor, entity attacker, float damage, entity ignore, string dtype) T_RadiusDamage;
+void(entity player, entity attacker) Player_BrinkOfDeath;
 
 
 //============================================================================
@@ -85,8 +86,10 @@ void(entity targ, entity attacker) Killed =
     if (self.health < -99)
         self.health = -99;      // don't let sbar look bad if a player
 
-    if (self.movetype == MOVETYPE_PUSH || self.movetype == MOVETYPE_NONE)
-    {   // doors, triggers, etc
+    // doors, triggers, etc
+    if (self.movetype == MOVETYPE_PUSH ||
+        (self.movetype == MOVETYPE_NONE && self.player_state != PS_BRINK_OF_DEATH))
+    {
         self.th_die ();
         self = oself;
         return;
@@ -324,6 +327,26 @@ void(entity targ, entity inflictor, entity attacker, float damage, float dflags,
     targ.health = targ.health - take;
     if (targ.health <= 0)
     {
+        // If a player reaches exactly 0 HP (Brink Of Death)
+        if (targ.health == 0 && targ.classname == "player")
+        {
+            // If he wasn't already on the Brink Of Death
+            if (targ.player_state != PS_BRINK_OF_DEATH)
+            {
+                // If he doesn't burn, he becomes on the BOD
+                if (targ.burner == world)
+                {
+                    Player_BrinkOfDeath (targ, attacker);
+
+                    // Decrease the recursion count.
+                    recursioncount = recursioncount - 1;
+                    return;
+                }
+
+                // If he burns, let him go
+            }
+        }
+
         // Target was slain!
         if (!targ.deadflag)
             targ.deathtype = dtype;

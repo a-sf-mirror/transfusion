@@ -1579,9 +1579,6 @@ void() weapon_flaregun =
     PsychoCaleb_Precache ();
     precache_sound ("weapons/flaregun/flaref.wav");
     precache_sound ("weapons/napalm/explodfs.wav");  // For alt-flares
-//    precache_sound ("weapons/flaregun/flar_wat.wav");
-//    precache_sound ("weapons/flaregun/flarair2.wav");
-//    precache_sound ("weapons/flaregun/flarefuw.wav");
 
     StartItem ();
 };
@@ -1780,11 +1777,6 @@ void() weapon_rocketlauncher =
     // Precache the necessary sounds
     PsychoCaleb_Precache ();
     precache_sound ("weapons/napalm/blaster.wav");  // Shot
-//    precache_sound ("weapons/napalm/explodcs.wav");
-//    precache_sound ("weapons/napalm/explodfl.wav");
-//    precache_sound ("weapons/napalm/explodul.wav");
-//    precache_sound ("weapons/napalm/explodus.wav");
-//    precache_sound ("weapons/napalm/naplmex2.wav");
 
     StartItem ();
 };
@@ -1809,15 +1801,11 @@ void() weapon_lightning =
 
     // Precache the necessary sounds
 
-//    precache_sound ("weapons/tesla/taltac3.wav");  // another altfire charge sound
-//    precache_sound ("weapons/tesla/tesaltf2.wav");
     precache_sound ("weapons/tesla/tessngfr.wav");  // normal fire
     precache_sound ("weapons/tesla/tessnght.wav");  // normal hit
-//    precache_sound ("weapons/tesla/tesaltfr.wav");  // alt fire
     precache_sound ("weapons/tesla/tesaltht.wav");  // altfire hit
-//    precache_sound ("weapons/tesla/tesla1.wav"); // alt charge up
-    precache_sound ("weapons/tesla/tessuper.wav"); // alt fire charge up + fire
-    precache_sound ("weapons/tesla/tesakima.wav"); // alt fire charge up + fire (Akimbo)
+    precache_sound ("weapons/tesla/tessuper.wav");  // alt fire charge up + fire
+    precache_sound ("weapons/tesla/tesakima.wav");  // alt fire charge up + fire (Akimbo)
 
     StartItem ();
 };
@@ -1838,7 +1826,6 @@ void() weapon_voodoodoll =
     setsize (self, '-16 -16 0', '16 16 56');
 
     // Precache the necessary sounds
-//    precache_sound ("weapons/voodoodl/vooburn.wav");
     precache_sound ("weapons/voodoodl/voolaugh.wav");
     precache_sound ("weapons/voodoodl/voostab.wav");
     precache_sound ("weapons/voodoodl/voochant.wav");
@@ -1853,8 +1840,7 @@ void() weapon_lifeleech =
 {
     precache_model ("progs/g_leech.mdl");
     precache_model ("progs/v_leech.mdl");
-    precache_model ("progs/lechball.mdl");
-    precache_model ("progs/bolt.mdl");  // alftire ball
+    precache_model ("progs/bolt.mdl");
 
     setmodel (self, "progs/g_leech.mdl");
     self.weapon = IT_LIFE_LEECH;
@@ -1863,14 +1849,7 @@ void() weapon_lifeleech =
     setsize (self, '-16 -16 0', '16 16 56');
 
     // precache the necessary sounds
-    //precache_sound ("weapons/lifelech/llaltht.wav");
     precache_sound ("weapons/lifelech/laltfr1.wav");
-    //precache_sound ("weapons/lifelech/llaltfr2.wav");
-    //precache_sound ("weapons/lifelech/llaltht.wav");
-    //precache_sound ("weapons/lifelech/llcharge.wav");
-    //precache_sound ("weapons/lifelech/llsngfr3.wav");
-    //precache_sound ("weapons/lifelech/llsnght2.wav");
-    //precache_sound ("weapons/lifelech/skulair4.wav");
     precache_sound ("weapons/napalm/explodfs.wav");  // altfire missile touch
     StartItem ();
 };

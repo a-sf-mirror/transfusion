@@ -190,7 +190,7 @@ void() Leech_BallFire =
     #ifdef QUAKEWORLD
     newmis.voided = 0;
     #endif
-    newmis.angles = vectoangles(newmis.velocity);
+    newmis.angles = vectoangles(newmis.velocity) + '0 90 0';
     newmis.movetype = MOVETYPE_FLYMISSILE;
 
     // If we don't have enough ammo, use HP
@@ -204,9 +204,10 @@ void() Leech_BallFire =
     self.currentammo = self.ammo_leech;
 
     newmis.touch = Leech_BallTouch;
-    setmodel (newmis, "progs/lechball.mdl");
+    setmodel (newmis, "progs/bolt.mdl");
+    newmis.skin = 1;
     setsize (newmis, '0 0 0', '0 0 0');
-    setorigin (newmis, self.origin + v_forward * 8 + '0 0 16');
+    setorigin (newmis, self.origin + v_forward * 8 + '0 0 24');
 
     newmis.dmg = 40;
 

@@ -83,14 +83,15 @@
 #define DEAD_RESPAWNABLE    3
 
 // player_state values
-#define PS_IDLE         0
-#define PS_FIRE         1
-#define PS_ALTFIRE      2   // includes remote/proxy altfire (dropping)
-#define PS_CHARGE       3   // charging the weapon (normal fire with TNT/remote/proxy)
-#define PS_HOLD_FIRE    4   // holding fire (altfire with TNT or spray can, or remote for remote bombs)
-#define PS_DRAW         5
-#define PS_HOLSTER      6
-#define PS_MENU         7   // when a player is browsing the menu
+#define PS_IDLE             0
+#define PS_FIRE             1
+#define PS_ALTFIRE          2   // includes remote/proxy altfire (dropping)
+#define PS_CHARGE           3   // charging the weapon (normal fire with TNT/remote/proxy)
+#define PS_HOLD_FIRE        4   // holding fire (altfire with TNT or spray can, or remote for remote bombs)
+#define PS_DRAW             5
+#define PS_HOLSTER          6
+#define PS_MENU             7   // when a player is browsing the menu
+#define PS_BRINK_OF_DEATH   8   // when a player reaches exactly 0 HP, he may survive
 
 // takedamage values
 #define DAMAGE_NO   0

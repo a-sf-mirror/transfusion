@@ -259,19 +259,21 @@ void(vector org, vector dir, float mspeed) Tesla_LaunchJolt =
     jolt.solid      = SOLID_BBOX;
     jolt.classname  = "tesla ball";
     jolt.velocity   = dir * mspeed;
-    jolt.angles     = vectoangles(dir);
+    jolt.angles     = vectoangles (jolt.velocity);
     if (self.player_state == PS_ALTFIRE)
     {
         jolt.dmg    = 170;
         jolt.model  = "progs/bolt2.mdl";
         jolt.style  = TESLA_BIGJOLT;
+        setorigin (jolt, org);
     }
     else
     {
-        jolt.dmg       = 25;
-        jolt.model     = "progs/bolt.mdl";
-        jolt.avelocity = '300 300 300';
-        jolt.style     = TESLA_NORMALJOLT;
+        jolt.dmg    = 24;
+        jolt.model  = "progs/bolt.mdl";
+        jolt.style  = TESLA_NORMALJOLT;
+        jolt.angles = jolt.angles + '0 90 0';
+        setorigin (jolt, org + '0 0 8');
     }
     jolt.touch      = Tesla_JoltTouch;
     jolt.nextthink  = time + (8000 / mspeed);
@@ -279,7 +281,6 @@ void(vector org, vector dir, float mspeed) Tesla_LaunchJolt =
 
     setmodel (jolt, jolt.model);
     setsize (jolt, '0 0 0', '0 0 0');
-    setorigin (jolt, org);
 };
 
 

@@ -22,6 +22,7 @@
 #include "player.qh"
 
 void() CTF_PlayerDropFlag;
+void() PlayerDead;
 
 
 /*
@@ -94,6 +95,66 @@ void() muzzleflash =
     #else
     self.effects = self.effects | EF_MUZZLEFLASH;
     #endif
+};
+
+
+//============================================================================
+
+void() player_bod1  = [$fall1, player_bod2 ] {};
+void() player_bod2  = [$fall2, player_bod3 ] {};
+void() player_bod3  = [$fall3, player_bod4 ] {};
+void() player_bod4  = [$fall4, player_bod5 ] {};
+void() player_bod5  = [$fall5, player_bod6 ] {};
+void() player_bod6  = [$fall6, player_bod7 ] {};
+void() player_bod7  = [$fall7, player_bod8 ] {};
+void() player_bod8  = [$fall8, player_bod9 ] {};
+void() player_bod9  = [$fall9, player_bod10] {};
+void() player_bod10 = [$sway1, player_bod11] {};
+void() player_bod11 = [$sway2, player_bod12] {};
+void() player_bod12 = [$sway3, player_bod13] {};
+void() player_bod13 = [$sway4, player_bod14] {};
+void() player_bod14 = [$sway5, player_bod15] {};
+void() player_bod15 = [$sway6, player_bod16] {};
+void() player_bod16 = [$sway7, player_bod17] {};
+void() player_bod17 = [$sway8, player_bod10] {};
+
+void() player_bod_die1 = [$deathc1, player_bod_die2] {};
+void() player_bod_die2 = [$deathc2, player_bod_die3] {};
+void() player_bod_die3 = [$deathc3, player_bod_die4] {};
+void() player_bod_die4 = [$deathc4, player_bod_die4] {PlayerDead();};
+
+void() player_bod_dieh1 = [$deathc1, player_bod_dieh2] {};
+void() player_bod_dieh2 = [$deathc2, player_bod_dieh3] {};
+void() player_bod_dieh3 = [$deathc3, player_bod_dieh3] {PlayerDead();};
+
+
+void(entity player, entity attacker) Player_BrinkOfDeath =
+{
+    local entity oself;
+
+    player.player_state = PS_BRINK_OF_DEATH;
+
+    player.health = 1;  // 0 toggles the dead view on the client
+    oself = self;
+    self = player;
+    player_bod1 ();
+    self = oself;
+    player.movetype = MOVETYPE_NONE;
+    player.weaponmodel = "";
+
+    player.attack_finished = time + 10;
+    sound (player, CHAN_VOICE, "thevoice/vo15.wav", 1, ATTN_NORM);
+    centerprint (attacker, "FINISH HIM!!");
+};
+
+
+void() Player_LiveAgain =
+{
+    sound (self, CHAN_VOICE, "player/taunts/t1010.wav", 1, ATTN_NORM);  // I live ... again!
+    self.movetype = MOVETYPE_WALK;
+    self.player_state = PS_IDLE;
+    player_run ();
+    W_DrawWeapon (self.weapon);
 };
 
 
@@ -552,7 +613,17 @@ void() PlayerDie =
     self.angles_x = 0;
     self.angles_z = 0;
 
-    player_die1 ();
+    // If the player was on the Brink Of Death
+    if (self.player_state == PS_BRINK_OF_DEATH)
+    {
+        // If the head is removed in the process
+        if (self.health < -20)
+            player_bod_die1 ();
+        else
+            player_bod_dieh1 ();
+    }
+    else
+        player_die1 ();
 };
 
 void() set_suicide_frame =
