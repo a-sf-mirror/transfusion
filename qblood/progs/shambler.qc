@@ -309,6 +309,25 @@ void(entity attacker, float damage) sham_pain =
 
 //============================================================================
 
+/*
+====================
+GibShamCorpse
+
+Remove a shambler's corpse and throw gibs
+====================
+*/
+void() GibShamCorpse =
+{
+    ThrowGib ("progs/gib1.mdl", self.health);
+    ThrowGib ("progs/gib2.mdl", self.health);
+    ThrowGib ("progs/gib3.mdl", self.health);
+
+    sound (self, CHAN_VOICE, "player/udeath.wav", 1, ATTN_NONE);
+
+    remove (self);
+};
+
+
 void() sham_death1      =[      $death1,       sham_death2     ] {};
 void() sham_death2      =[      $death2,       sham_death3     ] {};
 void() sham_death3      =[      $death3,       sham_death4     ] {self.solid = SOLID_NOT;};
@@ -319,7 +338,7 @@ void() sham_death7      =[      $death7,       sham_death8     ] {};
 void() sham_death8      =[      $death8,       sham_death9     ] {};
 void() sham_death9      =[      $death9,       sham_death10    ] {};
 void() sham_death10     =[      $death10,      sham_death11    ] {};
-void() sham_death11     =[      $death11,      sham_death11    ] {};
+void() sham_death11     =[      $death11,      sham_death11    ] {BecomeCorpse(60,GibShamCorpse);};
 
 void() sham_die =
 {

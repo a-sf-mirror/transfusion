@@ -190,10 +190,28 @@ void()  hknight_pain5   =[  $pain5,     hknight_run1    ] {};
 
 //============================================================================
 
+/*
+====================
+GibHknightCorpse
+
+Remove a hknight's corpse and throw gibs
+====================
+*/
+void() GibHknightCorpse =
+{
+    ThrowGib ("progs/gib1.mdl", self.health);
+    ThrowGib ("progs/gib2.mdl", self.health);
+    ThrowGib ("progs/gib3.mdl", self.health);
+
+    sound (self, CHAN_VOICE, "player/udeath.wav", 1, ATTN_NONE);
+
+    remove (self);
+};
+
+
 void()  hknight_die1    =[  $death1,    hknight_die2    ] {ai_forward(10);};
 void()  hknight_die2    =[  $death2,    hknight_die3    ] {ai_forward(8);};
-void()  hknight_die3    =[  $death3,    hknight_die4    ]
-{self.solid = SOLID_NOT; ai_forward(7);};
+void()  hknight_die3    =[  $death3,    hknight_die4    ] {self.solid = SOLID_NOT; ai_forward(7);};
 void()  hknight_die4    =[  $death4,    hknight_die5    ] {};
 void()  hknight_die5    =[  $death5,    hknight_die6    ] {};
 void()  hknight_die6    =[  $death6,    hknight_die7    ] {};
@@ -202,18 +220,17 @@ void()  hknight_die8    =[  $death8,    hknight_die9    ] {ai_forward(10);};
 void()  hknight_die9    =[  $death9,    hknight_die10   ] {ai_forward(11);};
 void()  hknight_die10   =[  $death10,   hknight_die11   ] {};
 void()  hknight_die11   =[  $death11,   hknight_die12   ] {};
-void()  hknight_die12   =[  $death12,   hknight_die12   ] {};
+void()  hknight_die12   =[  $death12,   hknight_die12   ] {BecomeCorpse(40,GibHknightCorpse);};
 
 void()  hknight_dieb1   =[  $deathb1,   hknight_dieb2   ] {};
 void()  hknight_dieb2   =[  $deathb2,   hknight_dieb3   ] {};
-void()  hknight_dieb3   =[  $deathb3,   hknight_dieb4   ]
-{self.solid = SOLID_NOT;};
+void()  hknight_dieb3   =[  $deathb3,   hknight_dieb4   ] {self.solid = SOLID_NOT;};
 void()  hknight_dieb4   =[  $deathb4,   hknight_dieb5   ] {};
 void()  hknight_dieb5   =[  $deathb5,   hknight_dieb6   ] {};
 void()  hknight_dieb6   =[  $deathb6,   hknight_dieb7   ] {};
 void()  hknight_dieb7   =[  $deathb7,   hknight_dieb8   ] {};
 void()  hknight_dieb8   =[  $deathb8,   hknight_dieb9   ] {};
-void()  hknight_dieb9   =[  $deathb9,   hknight_dieb9   ] {};
+void()  hknight_dieb9   =[  $deathb9,   hknight_dieb9   ] {BecomeCorpse(40,GibHknightCorpse);};
 
 void() hknight_die =
 {

@@ -208,13 +208,28 @@ void(entity attacker, float damage) enf_pain =
 
 //============================================================================
 
+/*
+====================
+GibEnfCorpse
 
+Remove a enforcer's corpse and throw gibs
+====================
+*/
+void() GibEnfCorpse =
+{
+    ThrowGib ("progs/gib1.mdl", self.health);
+    ThrowGib ("progs/gib2.mdl", self.health);
+    ThrowGib ("progs/gib3.mdl", self.health);
+
+    sound (self, CHAN_VOICE, "player/udeath.wav", 1, ATTN_NONE);
+
+    remove (self);
+};
 
 
 void()  enf_die1    =[  $death1,    enf_die2    ] {};
 void()  enf_die2    =[  $death2,    enf_die3    ] {};
-void()  enf_die3    =[  $death3,    enf_die4    ]
-{self.solid = SOLID_NOT;self.ammo_cells = 5;DropBackpack();};
+void()  enf_die3    =[  $death3,    enf_die4    ] {self.solid = SOLID_NOT;self.ammo_cells = 5;DropBackpack();};
 void()  enf_die4    =[  $death4,    enf_die5    ] {ai_forward(14);};
 void()  enf_die5    =[  $death5,    enf_die6    ] {ai_forward(2);};
 void()  enf_die6    =[  $death6,    enf_die7    ] {};
@@ -225,14 +240,11 @@ void()  enf_die10   =[  $death10,   enf_die11   ] {ai_forward(5);};
 void()  enf_die11   =[  $death11,   enf_die12   ] {ai_forward(5);};
 void()  enf_die12   =[  $death12,   enf_die13   ] {ai_forward(5);};
 void()  enf_die13   =[  $death13,   enf_die14   ] {};
-void()  enf_die14   =[  $death14,   enf_die14   ] {};
+void()  enf_die14   =[  $death14,   enf_die14   ] {BecomeCorpse(35,GibEnfCorpse);};
 
-void()  enf_fdie1   =[  $fdeath1,   enf_fdie2   ] {
-
-};
+void()  enf_fdie1   =[  $fdeath1,   enf_fdie2   ] {};
 void()  enf_fdie2   =[  $fdeath2,   enf_fdie3   ] {};
-void()  enf_fdie3   =[  $fdeath3,   enf_fdie4   ]
-{self.solid = SOLID_NOT;self.ammo_cells = 5;DropBackpack();};
+void()  enf_fdie3   =[  $fdeath3,   enf_fdie4   ] {self.solid = SOLID_NOT;self.ammo_cells = 5;DropBackpack();};
 void()  enf_fdie4   =[  $fdeath4,   enf_fdie5   ] {};
 void()  enf_fdie5   =[  $fdeath5,   enf_fdie6   ] {};
 void()  enf_fdie6   =[  $fdeath6,   enf_fdie7   ] {};
@@ -240,7 +252,7 @@ void()  enf_fdie7   =[  $fdeath7,   enf_fdie8   ] {};
 void()  enf_fdie8   =[  $fdeath8,   enf_fdie9   ] {};
 void()  enf_fdie9   =[  $fdeath9,   enf_fdie10  ] {};
 void()  enf_fdie10  =[  $fdeath10,  enf_fdie11  ] {};
-void()  enf_fdie11  =[  $fdeath11,  enf_fdie11  ] {};
+void()  enf_fdie11  =[  $fdeath11,  enf_fdie11  ] {BecomeCorpse(35,GibEnfCorpse);};
 
 
 void() enf_die =

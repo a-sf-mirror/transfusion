@@ -200,24 +200,40 @@ void()  knight_bow9 =[  $kneel1,        knight_bow10    ] {ai_turn();};
 void()  knight_bow10    =[  $walk1,     knight_walk1    ] {ai_turn();};
 
 
+/*
+====================
+GibKnightCorpse
+
+Remove a knight's corpse and throw gibs
+====================
+*/
+void() GibKnightCorpse =
+{
+    ThrowGib ("progs/gib1.mdl", self.health);
+    ThrowGib ("progs/gib2.mdl", self.health);
+    ThrowGib ("progs/gib3.mdl", self.health);
+
+    sound (self, CHAN_VOICE, "player/udeath.wav", 1, ATTN_NONE);
+
+    remove (self);
+};
+
 
 void()  knight_die1 =[  $death1,    knight_die2 ] {};
 void()  knight_die2 =[  $death2,    knight_die3 ] {};
-void()  knight_die3 =[  $death3,    knight_die4 ]
-{self.solid = SOLID_NOT;};
+void()  knight_die3 =[  $death3,    knight_die4 ] {self.solid = SOLID_NOT;};
 void()  knight_die4 =[  $death4,    knight_die5 ] {};
 void()  knight_die5 =[  $death5,    knight_die6 ] {};
 void()  knight_die6 =[  $death6,    knight_die7 ] {};
 void()  knight_die7 =[  $death7,    knight_die8 ] {};
 void()  knight_die8 =[  $death8,    knight_die9 ] {};
 void()  knight_die9 =[  $death9,    knight_die10] {};
-void()  knight_die10=[  $death10,   knight_die10] {};
+void()  knight_die10=[  $death10,   knight_die10] {BecomeCorpse(40,GibKnightCorpse);};
 
 
 void()  knight_dieb1    =[  $deathb1,   knight_dieb2    ] {};
 void()  knight_dieb2    =[  $deathb2,   knight_dieb3    ] {};
-void()  knight_dieb3    =[  $deathb3,   knight_dieb4    ]
-{self.solid = SOLID_NOT;};
+void()  knight_dieb3    =[  $deathb3,   knight_dieb4    ] {self.solid = SOLID_NOT;};
 void()  knight_dieb4    =[  $deathb4,   knight_dieb5    ] {};
 void()  knight_dieb5    =[  $deathb5,   knight_dieb6    ] {};
 void()  knight_dieb6    =[  $deathb6,   knight_dieb7    ] {};
@@ -225,7 +241,7 @@ void()  knight_dieb7    =[  $deathb7,   knight_dieb8    ] {};
 void()  knight_dieb8    =[  $deathb8,   knight_dieb9    ] {};
 void()  knight_dieb9    =[  $deathb9,   knight_dieb10] {};
 void()  knight_dieb10 = [   $deathb10,  knight_dieb11] {};
-void()  knight_dieb11 = [   $deathb11,  knight_dieb11] {};
+void()  knight_dieb11 = [   $deathb11,  knight_dieb11] {BecomeCorpse(40,GibKnightCorpse);};
 
 
 void() knight_die =

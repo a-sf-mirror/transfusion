@@ -201,6 +201,8 @@ void() worldspawn =
     W_Precache ();          // get weapon precaches
 
 // sounds used from C physics code
+    precache_sound ("zombie/z_miss.wav");       // used by kickable heads
+    precache_sound ("zombie/z_hit.wav");        // used by kickable heads
     precache_sound ("demon/dland2.wav");        // landing thud
     precache_sound ("misc/h2ohit1.wav");        // landing splash
 
@@ -379,6 +381,22 @@ void(string gibname, float dm) ThrowGib;  // In player.qc
 
 /*
 ====================
+CorpseTouch
+
+So you don't slip on corpses
+====================
+*/
+void () CorpseTouch =
+{
+    self.velocity = '0 0 0';
+
+    if ((!other.flags & FL_ONGROUND) && (other.health) && (other.flags & FL_CLIENT))
+        other.flags = other.flags + FL_ONGROUND;
+};
+
+
+/*
+====================
 BecomeCorpse
 
 Modify entity properties to change it to a destroyable corpse
@@ -386,7 +404,6 @@ Modify entity properties to change it to a destroyable corpse
 */
 void(float corpseHealth, void() corpseToGib) BecomeCorpse =
 {
-    self.touch = SUB_Null;
     self.th_pain = SUB_Null;
 
     // Get rid of it in 2 minutes anyway (to avoid too many entities)
@@ -395,11 +412,21 @@ void(float corpseHealth, void() corpseToGib) BecomeCorpse =
 
     // Allow some interactions (so the corpses can be destroyed by explosions)
     self.takedamage = DAMAGE_YES;
-    self.solid = SOLID_SLIDEBOX;       // molivier: I would prefer SOLID_TRIGGER, but GLQuake doesn't agree for monsters
-    setsize (self, '0 0 0', '0 0 0');  // make a non-blocking corpse
+    if (self.classname != "head")
+    {
+        self.touch = CorpseTouch;
+        self.solid = SOLID_BBOX;
+
+        // make shamblers bigger
+        if (self.classname == "monster_shambler")
+            setsize (self, '-32 -32 -24', '32 32 -14');
+        else
+            setsize (self, '-32 -32 -24', '32 32 -19');
+
+        self.classname = "corpse";
+    }
 
     // Corpse will turn into gibs if destroyed
-    self.classname = "corpse";
     self.health = corpseHealth;
     self.th_die = corpseToGib;
 };
@@ -438,6 +465,7 @@ void(entity ent) CloneCorpse =
 
     // Copy the entity characteristics
     clone = spawn ();
+    clone.classname = ent.classname;
     clone.angles = ent.angles;
     clone.model = ent.model;
     clone.modelindex = ent.modelindex;
@@ -446,18 +474,18 @@ void(entity ent) CloneCorpse =
     clone.movetype = ent.movetype;
     clone.velocity = ent.velocity;
     clone.takedamage = ent.takedamage;
+    clone.touch = ent.touch;
+    clone.solid = ent.solid;
     setorigin (clone, ent.origin);
     setsize (clone, ent.mins, ent.maxs);
 
     // If the entity is a head, we just need to remove it when it's destroyed
-    if (ent.classname == "head")
+    if (clone.classname == "head")
     {
         tempEnt = self;
         self = clone;
         BecomeCorpse (120, SUB_Remove);
         self = tempEnt;
-
-        clone.classname = "head";  // BecomeCorpse has modified the classname, so we need to fix it
         return;
     }
 
