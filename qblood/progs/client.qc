@@ -569,10 +569,10 @@ entity() SelectSpawnPoint =
 		bprint("Coop mode set, but no info_player_coop or info_player_start entities in the map\n");
 	}	
 	// If it's a team based game, try to spawn on one of the team's points
-    else if ((gametype != GT_TEAM_BLOODBATH && gametype != GT_CAPTURE_THE_FLAG))
+    else if ((gametype == GT_TEAM_BLOODBATH || gametype == GT_CAPTURE_THE_FLAG))
     {
         if (self.team == TEAM_COLOR1)
-        {
+        {            
             spawnpoint = Cl_FindBestSpawn ("info_player_team1");
             if (spawnpoint)
                 return spawnpoint;
@@ -583,9 +583,13 @@ entity() SelectSpawnPoint =
             if (spawnpoint)
                 return spawnpoint;
         }
+        else
+            bprint("No team spawns found, looking for deathmatch spawns\n");
     }
-//	else if (deathmatch)
-            spawnpoint = Cl_FindBestSpawn ("info_player_deathmatch");
+    
+	
+    if (!spawnpoint)
+        spawnpoint = Cl_FindBestSpawn ("info_player_deathmatch");
 
 // FIXME: Disabled until the mappers put coops / starts in the maps
 //	else
