@@ -588,6 +588,7 @@ void(string gibname, float dm) ThrowHead =
     if (self.classname != "player")
     {
         self.takedamage = DAMAGE_AIM;
+        self.health = 120;
 
         // Get rid of it in 2 minutes anyway (to avoid too many entities)
         self.nextthink = time + 120;
@@ -608,9 +609,8 @@ void(string gibname, float dm) ThrowHead =
     self.th_missile = SUB_Null;
     self.th_melee = SUB_Null;
     self.th_pain = SUB_Null;
-    self.flags = self.flags - (self.flags & FL_MONSTER);
+    self.flags = self.flags - (self.flags & (FL_MONSTER | FL_ONGROUND));
 
-    self.health = 120;
     self.th_die = HeadDie;
     self.touch = HeadTouch;
 
@@ -620,7 +620,6 @@ void(string gibname, float dm) ThrowHead =
     setsize (self, '-16 -16 0', '16 16 56');
     self.velocity = VelocityForDamage (dm);
     self.origin_z = self.origin_z - 24;
-    self.flags = self.flags - (self.flags & FL_ONGROUND);
     self.avelocity = crandom() * '0 600 0';
 };
 
@@ -659,31 +658,33 @@ void() PlayerDie =
 
     self.items = self.items - (self.items & IT_INVISIBILITY);
 
-    #ifndef QUAKEWORLD
+    #ifdef QUAKEWORLD
+    if (self.super_damage_finished > 0)
+    #else
     if (self.super_damage_finished > 0 && (deathmatch || coop))
-    {
     #endif
+    {
         DropQuad (self.super_damage_finished - time);
         Bprint (PRINT_LOW, self.netname);
         Bprint (PRINT_LOW, " lost a quad with ");
         s = ftos(rint(self.super_damage_finished - time));
         Bprint (PRINT_LOW, s);
         Bprint (PRINT_LOW, " seconds remaining\n");
-    #ifndef QUAKEWORLD
     }
 
+    #ifdef QUAKEWORLD
+    if (self.invisible_finished > 0)
+    #else
     if (self.invisible_finished > 0 && (deathmatch || coop))
-    {
     #endif
+    {
         Bprint (PRINT_LOW, self.netname);
         Bprint (PRINT_LOW, " lost a ring with ");
         s = ftos(rint(self.invisible_finished - time));
         Bprint (PRINT_LOW, s);
         Bprint (PRINT_LOW, " seconds remaining\n");
         DropRing (self.invisible_finished - time);
-    #ifndef QUAKEWORLD
     }
-    #endif
 
     self.invisible_finished = 0;    // don't die as eyes
     self.invincible_finished = 0;
