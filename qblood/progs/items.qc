@@ -981,18 +981,19 @@ void() item_shells =
 
     if (self.spawnflags & AMMO_BIG)
     {
-        precache_model ("maps/b_shell1.bsp");
-        setmodel (self, "maps/b_shell1.bsp");
-        self.aflag = 40;
+        precache_model ("progs/i_boxshl.mdl");
+        setmodel (self, "progs/i_boxshl.mdl");
+	self.netname = "box of shotgun shells";
+        self.aflag = 15;
     }
     else
     {
-        precache_model ("progs/i_boxshl.mdl");
-        setmodel (self, "progs/i_boxshl.mdl");
-        self.aflag = 20;
+        precache_model ("progs/i_fewshl.mdl");
+        setmodel (self, "progs/i_fewshl.mdl");
+	self.netname = "4 shotgun shells";
+        self.aflag = 4;
     }
     self.weapon = 1;
-    self.netname = "box of shotgun shells";  // other choice is "%n shotgun shells"
     setsize (self, '0 0 0', '32 32 56');
     StartItem ();
 };
@@ -1007,11 +1008,12 @@ void() item_flares =
         precache_model ("progs/i_flares.mdl");
         setmodel (self, "progs/i_flares.mdl");
     if (self.spawnflags & AMMO_BIG)
-        self.aflag = 40;
+        self.netname = "box of flares"
+	self.aflag = 16;
     else
-        self.aflag = 20;
+        self.aflag = 8;
     self.weapon = 1;
-    self.netname = "box of flares";
+    self.netname = "a few flares";
     setsize (self, '0 0 0', '32 32 56');
     StartItem ();
 };
@@ -1027,16 +1029,17 @@ void() item_spikes =
     {
         precache_model ("progs/i_drum.mdl");
         setmodel (self, "progs/i_drum.mdl");
-        self.aflag = 50;
+        self.netname = "full drum of bullets";
+	self.aflag = 150;
     }
     else
     {
-        precache_model ("progs/i_drum.mdl");
-        setmodel (self, "progs/i_drum.mdl");
-        self.aflag = 25;
+        precache_model ("progs/i_fewblt.mdl");
+        setmodel (self, "progs/i_fewblt.mdl");
+	self.netname = "a few bullets";
+        self.aflag = 15;
     }
     self.weapon = 2;
-    self.netname = "full drum of bullets";  // other choice is "A few bullets"
     setsize (self, '0 0 0', '32 32 56');
     StartItem ();
 };
@@ -1109,18 +1112,19 @@ void() item_weapon =
     {
         if (self.spawnflags & WEAPON_BIG)
         {
-            precache_model ("maps/b_shell1.bsp");
-            setmodel (self, "maps/b_shell1.bsp");
-            self.aflag = 40;
+            precache_model ("progs/i_boxshl.mdl");
+            setmodel (self, "progs/i_boxshl.mdl");
+            self.netname = "box of shotgun shells";
+	    self.aflag = 15;
         }
         else
         {
-            precache_model ("progs/i_boxshl.mdl");
-            setmodel (self, "progs/i_boxshl.mdl");
-            self.aflag = 20;
+            precache_model ("progs/i_fewshl.mdl");
+            setmodel (self, "progs/i_fewshl.mdl");
+            self.netname = "4 shotgun shells";
+	    self.aflag = 4;
         }
         self.weapon = 1;
-        self.netname = "box of shotgun shells";
     }
 
     if (self.spawnflags & WEAPON_SPIKES)
@@ -1129,16 +1133,18 @@ void() item_weapon =
         {
             precache_model ("progs/i_drum.mdl");
             setmodel (self, "progs/i_drum.mdl");
-            self.aflag = 40;
+	    self.netname = "full drum of bullets";
+            self.aflag = 150;
         }
         else
         {
-            precache_model ("progs/i_drum.mdl");
-            setmodel (self, "progs/i_drum.mdl");
-            self.aflag = 20;
+            precache_model ("progs/i_fewblt.mdl");
+            setmodel (self, "progs/i_fewblt.mdl");
+	    self.netname = "a few bullets";
+	    self.aflag = 15;
         }
         self.weapon = 2;
-        self.netname = "full drum of bullets";
+
     }
 
     if (self.spawnflags & WEAPON_ROCKET)
