@@ -359,6 +359,8 @@ float       skill;
 
 .float      walkframe;
 
+.float      items2;
+
 #ifdef QUAKEWORLD
 // Zoid Additions
 .float      maxspeed;       // Used to set Maxspeed on a player

@@ -65,9 +65,9 @@ void() SetChangeParms =
         return;
     }
 
-// remove items
-    self.items = self.items - (self.items &
-    (IT_KEY1 | IT_KEY2 | IT_INVISIBILITY | IT_INVULNERABILITY | IT_SUIT | IT_QUAD) );
+    // remove items
+    self.items  = self.items  - (self.items  & (IT_INVISIBILITY | IT_INVULNERABILITY | IT_SUIT | IT_QUAD));
+    self.items2 = self.items2 - (self.items2 & (IT2_KEY1 | IT2_KEY2));
 
 // cap super health
     if (self.health > 100)

@@ -81,7 +81,8 @@
 #define DAMAGE_YES  1
 #define DAMAGE_AIM  2
 
-// items (24 max; each value must be a power of 2)
+// --- Items (24 max; each value must be a power of 2) ---
+// In ".items"
 #define IT_AXE              4096     // 13 - pitchfork
 #define IT_SHOTGUN          1        // 1  - flaregun
 #define IT_SUPER_SHOTGUN    2        // 2  - sawed-off
@@ -103,13 +104,18 @@
 #define IT_ARMOR3           32768    // 16 - spirit armor
 #define IT_SUPERHEALTH      65536    // 17 - life essence
 
-#define IT_KEY1             131072   // 18 - skull
-#define IT_KEY2             262144   // 19 - dagger
+#define IT_LIFE_LEECH       131072   // 18 - life leech
+#define IT_ENEMY_FLAG       262144   // 19 - CTF enemy flag
 
 #define IT_INVISIBILITY     524288   // 20 - cloak
 #define IT_INVULNERABILITY  1048576  // 21 - deathmask
 #define IT_SUIT             2097152  // 22 - diving suit
 #define IT_QUAD             4194304  // 23 - guns akimbo
+
+// In ".items2"
+#define IT2_KEY1            1        // 1 - skull
+#define IT2_KEY2            2        // 2 - dagger
+
 
 // point content values
 #define CONTENT_EMPTY   -1

@@ -265,193 +265,193 @@ MISCELLANEOUS OBJECTS
 
 // small tome or book, closed
 
-void() obj_tome = 
-    { 
-    precache_model("progs/a_tome.mdl"); 
-    precache_sound("items/pickup.wav"); 
-    setmodel(self, "progs/a_tome.mdl"); 
-    self.noise = "items/pickup.wav"; 
-		    
-    setsize (self, '0 0 0', '32 32 56'); 
-    StartItem (); 
-    }; 
- 
+void() obj_tome =
+    {
+    precache_model("progs/a_tome.mdl");
+    precache_sound("items/pickup.wav");
+    setmodel(self, "progs/a_tome.mdl");
+    self.noise = "items/pickup.wav";
+
+    setsize (self, '0 0 0', '32 32 56');
+    StartItem ();
+    };
+
 // small potion vial
 
-void() obj_boost = 
-    { 
-    precache_model("progs/a_boost.mdl"); 
-    setmodel(self, "progs/a_boost.mdl"); 
-		    
-    setsize (self, '0 0 0', '32 32 56'); 
-    StartItem (); 
-    }; 
+void() obj_boost =
+    {
+    precache_model("progs/a_boost.mdl");
+    setmodel(self, "progs/a_boost.mdl");
+
+    setsize (self, '0 0 0', '32 32 56');
+    StartItem ();
+    };
 
 // large potion goblet
 
-void() obj_mboost = 
-    { 
-    precache_model("progs/a_mboost.mdl"); 
-    setmodel(self, "progs/a_mboost.mdl"); 
-		    
-    setsize (self, '0 0 0', '32 32 56'); 
-    StartItem (); 
-    }; 
+void() obj_mboost =
+    {
+    precache_model("progs/a_mboost.mdl");
+    setmodel(self, "progs/a_mboost.mdl");
+
+    setsize (self, '0 0 0', '32 32 56');
+    StartItem ();
+    };
 
 
 // huge statue of praying angel
 
-void() obj_anglstat = 
-    { 
-    precache_model("progs/anglstat.mdl");  
-    setmodel(self, "progs/anglstat.mdl"); 
-		    
-    setsize (self, '0 0 0', '32 32 56'); 
-    StartItem (); 
-    }; 
+void() obj_anglstat =
+    {
+    precache_model("progs/anglstat.mdl");
+    setmodel(self, "progs/anglstat.mdl");
+
+    setsize (self, '0 0 0', '32 32 56');
+    StartItem ();
+    };
 
 // a slab of beef, found in restaraunt freezers
 
-void() obj_beefslab = 
-    { 
-    precache_model("progs/beefslab.mdl");  
-    setmodel(self, "progs/beefslab.mdl"); 
-		    
-    setsize (self, '0 0 0', '32 32 56'); 
-    StartItem (); 
-    }; 
+void() obj_beefslab =
+    {
+    precache_model("progs/beefslab.mdl");
+    setmodel(self, "progs/beefslab.mdl");
+
+    setsize (self, '0 0 0', '32 32 56');
+    StartItem ();
+    };
 
 // pile of bones
 
-void() obj_bonepile = 
-    { 
-    precache_model("progs/bonepile.mdl");  
-    setmodel(self, "progs/bonepile.mdl"); 
-		    
-    setsize (self, '0 0 0', '32 32 56'); 
-    StartItem (); 
-    }; 
+void() obj_bonepile =
+    {
+    precache_model("progs/bonepile.mdl");
+    setmodel(self, "progs/bonepile.mdl");
+
+    setsize (self, '0 0 0', '32 32 56');
+    StartItem ();
+    };
 
 // another book, closed
 
-void() obj_bookclos = 
-    { 
-    precache_model("progs/bookclos.mdl");  
-    setmodel(self, "progs/bookclos.mdl"); 
-		    
-    setsize (self, '0 0 0', '32 32 56'); 
-    StartItem (); 
-    }; 
+void() obj_bookclos =
+    {
+    precache_model("progs/bookclos.mdl");
+    setmodel(self, "progs/bookclos.mdl");
+
+    setsize (self, '0 0 0', '32 32 56');
+    StartItem ();
+    };
 
 // another book, open
 
-void() obj_bookopen = 
-    { 
-    precache_model("progs/bookopen.mdl");  
-    setmodel(self, "progs/bookopen.mdl"); 
-		    
-    setsize (self, '0 0 0', '32 32 56'); 
-    StartItem (); 
-    }; 
+void() obj_bookopen =
+    {
+    precache_model("progs/bookopen.mdl");
+    setmodel(self, "progs/bookopen.mdl");
+
+    setsize (self, '0 0 0', '32 32 56');
+    StartItem ();
+    };
 
 // small bush
 
-void() obj_bush1 = 
-    { 
-    precache_model("progs/bush1.mdl");  
-    setmodel(self, "progs/bush1.mdl"); 
-		    
-    setsize (self, '0 0 0', '32 32 56'); 
-    StartItem (); 
-    }; 
+void() obj_bush1 =
+    {
+    precache_model("progs/bush1.mdl");
+    setmodel(self, "progs/bush1.mdl");
+
+    setsize (self, '0 0 0', '32 32 56');
+    StartItem ();
+    };
 
 // large cauldren
 
-void() obj_cauldren = 
-    { 
-    precache_model("progs/cauldren.mdl");  
-    setmodel(self, "progs/cauldren.mdl"); 
-		    
-    setsize (self, '0 0 0', '32 32 56'); 
-    StartItem (); 
-    }; 
+void() obj_cauldren =
+    {
+    precache_model("progs/cauldren.mdl");
+    setmodel(self, "progs/cauldren.mdl");
+
+    setsize (self, '0 0 0', '32 32 56');
+    StartItem ();
+    };
 
 // chrome flaming torch
 
-void() obj_cflmtrch = 
-    { 
-    precache_model("progs/cflmtrch.mdl");  
-    setmodel(self, "progs/cflmtrch.mdl"); 
-		    
-    setsize (self, '0 0 0', '32 32 56'); 
-    StartItem (); 
-    }; 
+void() obj_cflmtrch =
+    {
+    precache_model("progs/cflmtrch.mdl");
+    setmodel(self, "progs/cflmtrch.mdl");
+
+    setsize (self, '0 0 0', '32 32 56');
+    StartItem ();
+    };
 
 // a locked chest, with 2 skins
 
-void() obj_chest1 = 
-    { 
-    precache_model("progs/chest1.mdl");  
-    setmodel(self, "progs/chest1.mdl"); 
-		    
-    setsize (self, '0 0 0', '32 32 56'); 
-    StartItem (); 
-    }; 
+void() obj_chest1 =
+    {
+    precache_model("progs/chest1.mdl");
+    setmodel(self, "progs/chest1.mdl");
+
+    setsize (self, '0 0 0', '32 32 56');
+    StartItem ();
+    };
 
 // a locked chest, round, with 3 skins
 
-void() obj_chest2 = 
-    { 
-    precache_model("progs/chest2.mdl");  
-    setmodel(self, "progs/chest2.mdl"); 
-		    
-    setsize (self, '0 0 0', '32 32 56'); 
-    StartItem (); 
-    }; 
+void() obj_chest2 =
+    {
+    precache_model("progs/chest2.mdl");
+    setmodel(self, "progs/chest2.mdl");
+
+    setsize (self, '0 0 0', '32 32 56');
+    StartItem ();
+    };
 
 // square chest
 
-void() obj_chest3 = 
-    { 
-    precache_model("progs/chest3.mdl");  
-    setmodel(self, "progs/chest3.mdl"); 
-		    
-    setsize (self, '0 0 0', '32 32 56'); 
-    StartItem (); 
-    }; 
+void() obj_chest3 =
+    {
+    precache_model("progs/chest3.mdl");
+    setmodel(self, "progs/chest3.mdl");
+
+    setsize (self, '0 0 0', '32 32 56');
+    StartItem ();
+    };
 
 // corpse lying on stomach, 4 skins
 
-void() obj_corps1 = 
-    { 
-    precache_model("progs/corps1.mdl");  
-    setmodel(self, "progs/corps1.mdl"); 
-		    
-    setsize (self, '0 0 0', '32 32 56'); 
-    StartItem (); 
-    }; 
+void() obj_corps1 =
+    {
+    precache_model("progs/corps1.mdl");
+    setmodel(self, "progs/corps1.mdl");
+
+    setsize (self, '0 0 0', '32 32 56');
+    StartItem ();
+    };
 
 // clue book
 
-void() obj_clueb = 
-    { 
-    precache_model("progs/clueb.mdl");  
-    setmodel(self, "progs/clueb.mdl"); 
-		    
-    setsize (self, '0 0 0', '32 32 56'); 
-    StartItem (); 
-    }; 
+void() obj_clueb =
+    {
+    precache_model("progs/clueb.mdl");
+    setmodel(self, "progs/clueb.mdl");
+
+    setsize (self, '0 0 0', '32 32 56');
+    StartItem ();
+    };
 
 // a corpse lying face up with 5 skins
 // skin4 is encased in webs
-void() obj_corps2 = 
-    { 
-    precache_model("progs/corps2.mdl");  
-    setmodel(self, "progs/corps2.mdl"); 
-		    
-    setsize (self, '0 0 0', '32 32 56'); 
-    StartItem (); 
-    }; 
+void() obj_corps2 =
+    {
+    precache_model("progs/corps2.mdl");
+    setmodel(self, "progs/corps2.mdl");
+
+    setsize (self, '0 0 0', '32 32 56');
+    StartItem ();
+    };
 
 
 // a rusty metal cross with a tilted cross beam
@@ -460,293 +460,293 @@ void() obj_cross =
     {
     precache_model("progs/cross.mdl");
     setmodel(self, "progs/cross.mdl");
-    
+
     setsize (self, '0 0 0', '32 32 56');
     StartItem ();
     };
-    
+
 // a chrome skeleton key
 
 void() obj_cskey =
     {
     precache_model("progs/cskey.mdl");
     setmodel(self, "progs/cskey.mdl");
-    
+
     setsize (self, '0 0 0', '32 32 56');
     StartItem ();
     };
-    
+
 // an egyptian looking torch
 
 void() obj_eflmtrch =
     {
     precache_model("progs/eflmtrch.mdl");
     setmodel(self, "progs/eflmtrch.mdl");
-    
+
     setsize (self, '0 0 0', '32 32 56');
     StartItem ();
     };
-    
+
 // egytpian torch, unlit
 
 void() obj_egtorch =
     {
     precache_model("progs/egtorch.mdl");
     setmodel(self, "progs/egtorch.mdl");
-    
+
     setsize (self, '0 0 0', '32 32 56');
     StartItem ();
     };
-    
+
 // iron fence gateway
 
 void() obj_fence =
     {
     precache_model("progs/fence.mdl");
     setmodel(self, "progs/fence.mdl");
-    
+
     setsize (self, '0 0 0', '32 32 56');
     StartItem ();
     };
-    
+
 // large 2 tier fountain
 
 void() obj_fountain =
     {
     precache_model("progs/fountain.mdl");
     setmodel(self, "progs/fountain.mdl");
-    
+
     setsize (self, '0 0 0', '32 32 56');
     StartItem ();
     };
-    
+
 // head of a fallen angel
 
 void() obj_hfangel =
     {
     precache_model("progs/h_fangel.mdl");
     setmodel(self, "progs/h_fangel.mdl");
-    
+
     setsize (self, '0 0 0', '32 32 56');
     StartItem ();
     };
-    
+
 // tall triangular hedge
 
 void() obj_hedge1 =
     {
     precache_model("progs/hedge1.mdl");
     setmodel(self, "progs/hedge1.mdl");
-    
+
     setsize (self, '0 0 0', '32 32 56');
     StartItem ();
     };
-    
+
 // tall square hedge
 
 void() obj_hedge2 =
     {
     precache_model("progs/hedge2.mdl");
     setmodel(self, "progs/hedge2.mdl");
-    
+
     setsize (self, '0 0 0', '32 32 56');
     StartItem ();
     };
-    
+
 // tall rounded hedge
 
 void() obj_hedge3 =
     {
     precache_model("progs/hedge3.mdl");
     setmodel(self, "progs/hedge3.mdl");
-    
+
     setsize (self, '0 0 0', '32 32 56');
     StartItem ();
     };
-    
+
 // cross with fluer de lis
 
 void() obj_holycrss =
     {
     precache_model("progs/holycrss.mdl");
     setmodel(self, "progs/holycrss.mdl");
-    
+
     setsize (self, '0 0 0', '32 32 56');
     StartItem ();
     };
-    
+
 // huge moving spider web
 
 void() obj_megaweb =
     {
     precache_model("progs/megaweb.mdl");
     setmodel(self, "progs/megaweb.mdl");
-    
+
     setsize (self, '0 0 0', '32 32 56');
     StartItem ();
     };
-    
+
 // small plant
 
 void() obj_plantgen =
     {
     precache_model("progs/plantgen.mdl");
     setmodel(self, "progs/plantgen.mdl");
-    
+
     setsize (self, '0 0 0', '32 32 56');
     StartItem ();
     };
-    
+
 // potted plant
 
 void() obj_plantmez =
     {
     precache_model("progs/plantmez.mdl");
     setmodel(self, "progs/plantmez.mdl");
-    
+
     setsize (self, '0 0 0', '32 32 56');
     StartItem ();
     };
-    
+
 // plant in vase
 
 void() obj_plantrom =
     {
     precache_model("progs/plantrom.mdl");
     setmodel(self, "progs/plantrom.mdl");
-    
+
     setsize (self, '0 0 0', '32 32 56');
     StartItem ();
     };
-    
+
 // large 2 handled jug, 4 skins
 
 void() obj_pot1 =
     {
     precache_model("progs/pot1.mdl");
     setmodel(self, "progs/pot1.mdl");
-    
+
     setsize (self, '0 0 0', '32 32 56');
     StartItem ();
     };
-    
+
 // large vase, 4 skins
 
 void() obj_pot2 =
     {
     precache_model("progs/pot2.mdl");
     setmodel(self, "progs/pot2.mdl");
-    
+
     setsize (self, '0 0 0', '32 32 56');
     StartItem ();
     };
-    
+
 // large vase, 4 skins
 
 void() obj_pot3 =
     {
     precache_model("progs/pot3.mdl");
     setmodel(self, "progs/pot3.mdl");
-    
+
     setsize (self, '0 0 0', '32 32 56');
     StartItem ();
     };
-    
+
 // roman style flaming torch
 
 void() obj_rflmtrch =
     {
     precache_model("progs/rflmtrch.mdl");
     setmodel(self, "progs/rflmtrch.mdl");
-    
+
     setsize (self, '0 0 0', '32 32 56');
     StartItem ();
     };
-    
+
 // seaweed
 
 void() obj_seaweed =
     {
     precache_model("progs/seaweed.mdl");
     setmodel(self, "progs/seaweed.mdl");
-    
+
     setsize (self, '0 0 0', '32 32 56');
     StartItem ();
     };
-    
+
 // 1 skull on a stick
 
 void() obj_skllstk1 =
     {
     precache_model("progs/skllstk1.mdl");
     setmodel(self, "progs/skllstk1.mdl");
-    
+
     setsize (self, '0 0 0', '32 32 56');
     StartItem ();
     };
-    
+
 // 2 skulls on a stick
 
 void() obj_skllstk2 =
     {
     precache_model("progs/skllstk2.mdl");
     setmodel(self, "progs/skllstk2.mdl");
-    
+
     setsize (self, '0 0 0', '32 32 56');
     StartItem ();
     };
-    
+
 //  cross tombstone
 
 void() obj_tombstn1 =
     {
     precache_model("progs/tombstn1.mdl");
     setmodel(self, "progs/tombstn1.mdl");
-    
+
     setsize (self, '0 0 0', '32 32 56');
     StartItem ();
     };
-    
+
 // oval tombstone
 
 void() obj_tombstn2 =
     {
     precache_model("progs/tombstn2.mdl");
     setmodel(self, "progs/tombstn2.mdl");
-    
+
     setsize (self, '0 0 0', '32 32 56');
     StartItem ();
     };
-    
+
 // dead tree
 
 void() obj_tree =
     {
     precache_model("progs/tree.mdl");
     setmodel(self, "progs/tree.mdl");
-    
+
     setsize (self, '0 0 0', '32 32 56');
     StartItem ();
     };
-    
+
 // leafy tree
 
 void() obj_tree2 =
     {
     precache_model("progs/tree2.mdl");
     setmodel(self, "progs/tree2.mdl");
-    
+
     setsize (self, '0 0 0', '32 32 56');
     StartItem ();
     };
-    
+
 // small spider webs
 
 void() obj_webs =
     {
     precache_model("progs/webs.mdl");
     setmodel(self, "progs/webs.mdl");
-    
+
     setsize (self, '0 0 0', '32 32 56');
     StartItem ();
     };
@@ -761,7 +761,7 @@ POWERUPS
 */
 
 //various powerups that aren't in other sections already
-    
+
 // Proximity grenade model
 // FIXME: move to weapons when code is complete
 
@@ -771,7 +771,7 @@ void() weapon_proximity =
     self.noise = "items/weaponup.wav";
     item_lure ();
 };
-    
+
 // Remote Detonator model
 // FIXME: move to weapons when code is complete
 
@@ -781,7 +781,7 @@ void() weapon_remote =
     self.noise = "items/weaponup.wav";
     item_lure ();
 };
-    
+
 // Life Leech model
 //  FIXME: move to weapons when code is complete
 
@@ -800,42 +800,42 @@ void() item_tnt =
     self.noise = "items/weaponup.wav";
     item_lure ();
 };
-    
+
 // Doctor's Bag
 void() item_artifact_bag =
 {
     self.model = "progs/i_docbag.mdl";
     item_lure ();
 };
-    
+
 // Boots of Jumping
 void() item_artifact_boots =
 {
     self.model = "progs/i_boots.mdl";
     item_lure ();
 };
-    
+
 // Crystal Ball
 void() item_artifact_crystal =
 {
     self.model = "progs/i_crysbal.mdl";
     item_lure ();
 };
-    
+
 // Reflective Shots
 void() item_artifact_reflect =
 {
     self.model = "progs/i_reflct.mdl";
     item_lure ();
 };
-    
+
 // Beast Vision
 void() item_artifact_vision =
 {
     self.model = "progs/i_vision.mdl";
     item_lure ();
 };
-    
+
 // Cloak of Shadows
 void() item_artifact_shadow =
 {
@@ -898,7 +898,7 @@ void() item_health =
         setmodel(self, "progs/i_lifess.mdl");
         self.noise = "items/pickheal.wav";
         self.healamount = 15;
-	self.netname = "Life Essence"
+        self.netname = "Life Essence"
 ;
         self.healtype = 1;
     }
@@ -909,7 +909,7 @@ void() item_health =
         setmodel(self, "progs/lifeseed.mdl");
         self.noise = "items/pickup.wav";
         self.healamount = 100;
-	self.netname = "Life Seed";
+        self.netname = "Life Seed";
         self.healtype = 2;
     }
     else
@@ -919,7 +919,7 @@ void() item_health =
         setmodel(self, "progs/i_medpch.mdl");
         self.noise = "items/pickheal.wav";
         self.healamount = 50;
-	self.netname = "Medicine Patch";
+        self.netname = "Medicine Patch";
         self.healtype = 1;
     }
     setsize (self, '0 0 0', '32 32 56');
@@ -1066,7 +1066,7 @@ void() item_armor0 =
     {
     precache_model("progs/i_arm_bs.mdl");
     setmodel(self, "progs/i_arm_bs.mdl");
-    
+
     setsize (self, '0 0 0', '32 32 56');
     StartItem ();
     };
@@ -1078,7 +1078,7 @@ void() item_armor4 =
     {
     precache_model("progs/i_arm_sp.mdl");
     setmodel(self, "progs/i_arm_sp.mdl");
-    
+
     setsize (self, '0 0 0', '32 32 56');
     StartItem ();
     };
@@ -1933,7 +1933,7 @@ void() item_key1 =
     }
     key_setsounds();
     self.touch = key_touch;
-    self.items = IT_KEY1;
+    self.items2 = IT2_KEY1;
     setsize (self, '-16 -16 -24', '16 16 32');
     StartItem ();
 };
@@ -1971,7 +1971,7 @@ void() item_key2 =
     }
     key_setsounds();
     self.touch = key_touch;
-    self.items = IT_KEY2;
+    self.items2 = IT2_KEY2;
     setsize (self, '-16 -16 -24', '16 16 32');
     StartItem ();
 };

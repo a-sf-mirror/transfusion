@@ -208,7 +208,7 @@ void() W_FireAxe =
         trace_ent.axhitme = 1;
         SpawnBlood (org, '0 0 0', 20);
 
-        T_Damage (trace_ent, self, self, 68); // this needs to be 17 per tine, 68 max, need logic for checking how many tines contact enemy
+        T_Damage (trace_ent, self, self, 51); // this needs to be 17 per tine, 68 max, need logic for checking how many tines contact enemy
     }
     else
     {   // hit wall
@@ -1751,8 +1751,9 @@ void() CheatCommand =
         IT_GRENADE_LAUNCHER |
         IT_ROCKET_LAUNCHER |
         IT_LIGHTNING |
-        IT_VOODOO_DOLL |
-        IT_KEY1 | IT_KEY2;
+        IT_VOODOO_DOLL;
+    self.items2 = self.items2 |
+        IT2_KEY1 | IT2_KEY2;
 
     // FIXME: we should precache all the weapons sounds
 
