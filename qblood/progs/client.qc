@@ -91,7 +91,6 @@ void() InitPlayerCharacteristics =
         self.armor_body = 50;
         self.armor_fire = 50;
         self.armor_mind = 50;
-        self.armorvalue = self.armor_body;
         if (available_weapons & IT_FLAREGUN)
             self.ammo_flares = self.ammo_flares + 15;
         if (available_weapons & IT_SAWED_OFF)
@@ -115,6 +114,8 @@ void() InitPlayerCharacteristics =
         if (available_weapons & IT_LIFE_LEECH)
             self.ammo_leech = self.ammo_leech + 50;
     }
+
+    self.armorvalue = self.armor_body;
 };
 
 /*

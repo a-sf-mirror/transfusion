@@ -123,15 +123,10 @@ float WM_EDITOR         = 4;
 float WM_EDITOR_DYNAMIC = 5;
 float WM_EDITOR_DYNLINK = 6;
 
-#ifndef QUAKEWORLD
-float OPT_SAVEBOTS  = 1;
-#endif
-float OPT_NOCHAT    = 2;
-
 // -------globals-----
-float   active_clients1, active_clients2;
+float   active_clients;
 float   max_clients, real_frametime;
-float   bot_count, b_options;
+float   bot_count;
 #ifdef QUAKEWORLD
 float   lasttime;
 #endif
@@ -148,7 +143,7 @@ entity  b_temp1, b_temp2, b_temp3;
 entity  player_head, player_tail, phys_head, way_head;
 float   busy_waypoints;
 #ifndef QUAKEWORLD
-float   saved_bots, saved_skills1, saved_skills2, current_bots;
+float   saved_bots, current_bots;
 #endif
 
 // -------ProtoTypes------
@@ -175,7 +170,6 @@ void()              WaypointThink;
 entity(entity start)                FindWayPoint;
 
 // physics & movement
-float(entity e)         bot_can_rj;
 void()              bot_jump;
 void()              frik_bot_roam;
 float(vector weird)     frik_walkmove;
@@ -425,10 +419,7 @@ void(float to, entity s) WriteEntity =
 
 float(float clientno) ClientIsActive =
 {
-    if(clientno > 16)
-        return (active_clients2 & ClientBitFlag (clientno - 16)) != 0;
-
-    return (active_clients1 & ClientBitFlag (clientno)) != 0;
+    return (active_clients & ClientBitFlag (clientno)) != 0;
 };
 
 
@@ -545,14 +536,18 @@ void() FixPlayerList =
         while (fromHead._next != self)
             fromHead = fromHead._next;
     }
+    else
+        fromHead = world;
 
     // Search for the first _last that points on "self"
     if (player_tail != self)
     {
-        fromTail = player_head;
+        fromTail = player_tail;
         while (fromTail._last != self)
             fromTail = fromTail._last;
     }
+    else
+        fromTail = world;
 
     self._last = fromHead;
     self._next = fromTail;
@@ -618,10 +613,7 @@ void() ClientInRankings =
         return;
     }
     BotInvalidClientNo (cno);
-    if(cno > 16)
-        active_clients2 = active_clients2 | ClientBitFlag(cno - 16);
-    else
-        active_clients1 = active_clients1 | ClientBitFlag(cno);
+    active_clients = active_clients | ClientBitFlag (cno);
 
     self.b_clientno = cno;
     self.ishuman = TRUE;
@@ -640,10 +632,7 @@ void() ClientDisconnected =
     if (self._last)
         self._last._next = self._next;
 
-    if(self.b_clientno > 16)
-        active_clients2 = active_clients2 - (active_clients2 & ClientBitFlag(self.b_clientno - 16));
-    else
-        active_clients1 = active_clients1 - (active_clients1 & ClientBitFlag(self.b_clientno));
+    active_clients = active_clients - (active_clients & ClientBitFlag (self.b_clientno));
 
     // If it's a real player, reset the client number
     if (self.ishuman)
@@ -803,8 +792,9 @@ void() BotInit =
         ent = nextent(ent);
     }
 
-    if (max_clients > 32)
-        max_clients = 32;
+    // We can't support more than 16 clients
+    if (max_clients > 16)
+        max_clients = 16;
 
     ent = nextent(world);
     fisent = world;
@@ -825,13 +815,7 @@ void() BotInit =
     precache_model("progs/s_light.spr");
     precache_model("progs/s_bubble.spr");
     // the bots return!
-    b_options = cvar("saved1");
-    if (b_options & OPT_SAVEBOTS)
-    {
-        saved_bots = cvar("scratch1");
-        saved_skills1 = cvar("scratch2");
-        saved_skills2 = cvar("scratch3");
-    }
+    saved_bots = cvar ("scratch1");
     cvar_set ("saved4", "0");
     if (max_clients > 1)
     {
@@ -1038,10 +1022,7 @@ void(float whichteam, float whatbot, float whatskill) BotConnect =
     }
 
     // chat thing
-    if(f > 16)
-        active_clients2 = active_clients2 | ClientBitFlag(f - 16);
-    else
-        active_clients1 = active_clients1 | ClientBitFlag(f);
+    active_clients = active_clients | ClientBitFlag (f);
 
     bot_count = bot_count + 1;
     self = GetClientEntity(f);
@@ -1084,20 +1065,8 @@ void(float whichteam, float whatbot, float whatskill) BotConnect =
     f = ClientBitFlag(self.b_num - 1);
     current_bots = current_bots | f;
 
-    if (self.b_num <= 8)
-        saved_skills1 = (saved_skills1 & (65536 - (3 * f)) | (self.b_skill * f));
-    else
-    {
-        f = ClientBitFlag(self.b_num - 9);
-        saved_skills2 = (saved_skills2 & (65536 - (3 * f)) | (self.b_skill * f));
-    }
-
     h = ftos(current_bots);
     cvar_set("scratch1", h);
-    h = ftos(saved_skills1);
-    cvar_set("scratch2", h);
-    h = ftos(saved_skills2);
-    cvar_set("scratch3", h);
     #endif
 
     self = uself;
@@ -1136,10 +1105,7 @@ void(entity bot) BotDisconnect =
         self.b_shirt = 0;
         self.ammo_shells = self.ammo_nails = self.ammo_rockets = self.ammo_cells = 0;
         UpdateClient(self);
-        if(self.b_clientno > 16)
-            active_clients2 = active_clients2 - (active_clients2 & ClientBitFlag(self.b_clientno - 16));
-        else
-            active_clients1 = active_clients1 - (active_clients1 & ClientBitFlag(self.b_clientno));
+        active_clients = active_clients - (active_clients & ClientBitFlag (self.b_clientno));
         self.b_clientno = -1;
     }
     self = uself;
@@ -1164,10 +1130,7 @@ void(float clientno) BotInvalidClientNo =
         {
             bot.b_clientno = -1;
             BotDisconnect(bot);
-            if(self.b_clientno > 16)
-                active_clients2 = active_clients2 | ClientBitFlag(self.b_clientno - 16);
-            else
-                active_clients1 = active_clients1 | ClientBitFlag(self.b_clientno);
+            active_clients = active_clients | ClientBitFlag (self.b_clientno);
             BotConnect(0, bot.b_num, bot.b_skill);
             return;
         }
@@ -1204,28 +1167,33 @@ void() LoadWaypoint =
 
 void() bot_return =
 {
+    // Don't return bots if they've been disabled
+    if (cvar ("sv_disable") & SV_DISABLE_BOTS)
+    {
+        saved_bots = 0;
+        return;
+    }
+
     if (time > 2)
     {
         if ((waypoint_mode == WM_DYNAMIC) || (waypoint_mode == WM_LOADED))
         {
-            // minor precaution
+            local float botskill;
+            local float num, bit;
 
-            if (saved_bots & 1) BotConnect(0, 1, saved_skills1 & 3);
-            if (saved_bots & 2) BotConnect(0, 2, (saved_skills1 & 12) / 4);
-            if (saved_bots & 4) BotConnect(0, 3, (saved_skills1 & 48) / 16);
-            if (saved_bots & 8) BotConnect(0, 4, (saved_skills1 & 192) / 64);
-            if (saved_bots & 16) BotConnect(0, 5, (saved_skills1 & 768) / 256);
-            if (saved_bots & 32) BotConnect(0, 6, (saved_skills1 & 3072) / 1024);
-            if (saved_bots & 64) BotConnect(0, 7, (saved_skills1 & 12288) / 4096);
-            if (saved_bots & 128) BotConnect(0, 8, (saved_skills1 & 49152) / 16384);
-            if (saved_bots & 256) BotConnect(0, 9, saved_skills2 & 3);
-            if (saved_bots & 512) BotConnect(0, 10, (saved_skills2 & 12) / 4);
-            if (saved_bots & 1024) BotConnect(0, 11, (saved_skills2& 48) / 16);
-            if (saved_bots & 2048) BotConnect(0, 12, (saved_skills2 & 192) / 64);
-            if (saved_bots & 4096) BotConnect(0, 13, (saved_skills2 & 768) / 256);
-            if (saved_bots & 8192) BotConnect(0, 14, (saved_skills2 & 3072) / 1024);
-            if (saved_bots & 16384) BotConnect(0, 15, (saved_skills2 & 12288) / 4096);
-            if (saved_bots & 32768) BotConnect(0, 16, (saved_skills2 & 49152) / 16384);
+            botskill = cvar ("skill");
+            num = 1;
+            bit = 1;
+
+            while (num <= 16)
+            {
+                if (saved_bots & bit)
+                    BotConnect (num & 1, num, botskill);
+
+                num = num + 1;
+                bit = bit * 2;
+            }
+
             saved_bots = 0;
         }
     }
@@ -1236,7 +1204,6 @@ void() WaypointWatch =
 {
     // Waypoint Baywatch
     local float bigboobs;
-    local string h;
 
     if (max_clients < 2)
         return;
@@ -1250,8 +1217,6 @@ void() WaypointWatch =
             else if ((bigboobs & 3) == 3)
             {
                 FixWaypoints();
-                h = ftos(b_options);
-                cvar_set("saved1", h);
                 cvar_set("saved4", "0");
                 cvar_set("scratch1", "0");
                 waypoint_mode = WM_LOADED;
@@ -1271,12 +1236,6 @@ void() BotFrame =
         return;
 
     local float num;
-    #ifdef QUAKEWORLD
-    local string h;
-
-    h = infokey(world, "bot_options");
-    b_options = stof(h);
-    #endif
 
     // for the sake of speed
     sv_maxspeed = cvar("sv_maxspeed");
@@ -1324,7 +1283,9 @@ void() BotFrame =
     WaypointWatch();
 
     if (saved_bots)
-        bot_return();
+        // Don't respawn bots until at least 1 player has entered the game
+        if (active_clients)
+            bot_return();
     #endif
 };
 

@@ -738,12 +738,9 @@ void(entity e2, float b_bit) FollowLink =
     else
         dist = vlen(self.origin - e2.origin) + self.items;
 
-    // check if this is an RJ link
+    // check if this is an RJ link (no RJ in BloodBath!)
     if (e2.b_aiflags & AI_SUPER_JUMP)
-    {
-        if (!bot_can_rj(route_table))
-            return;
-    }
+        return;
     if (e2.b_aiflags & AI_DIFFICULT)
         dist = dist + 1000;
 

@@ -198,8 +198,7 @@ void(float tpic) bot_start_topic =
 void() bot_chat =
 {
     local float r;
-    if (b_options & OPT_NOCHAT)
-        return;
+
     r = ceil (random() * 6);
 
     if (self.b_chattime > time)

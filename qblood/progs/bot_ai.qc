@@ -382,20 +382,11 @@ void() bot_handle_ai =
     }
     else if (self.b_aiflags & AI_SUPER_JUMP)
     {
-        if (self.weapon != IT_NAPALM_LAUNCHER)
-            self.impulse = 7;
-        else if (self.flags & FL_ONGROUND)
+        if (self.flags & FL_ONGROUND)
         {
+            // No Rocket Jump in BloodBath!
             self.b_aiflags = self.b_aiflags - AI_SUPER_JUMP;
-            if (bot_can_rj(self))
-            {
-                bot_jump();
-                self.v_angle_x = self.b_angle_x = 80;
-                self.button0 = TRUE;
-            }
-            else
-                bot_lost(self.target1, FALSE);
-
+            bot_lost(self.target1, FALSE);
         }
     }
     if (self.b_aiflags & AI_SURFACE)

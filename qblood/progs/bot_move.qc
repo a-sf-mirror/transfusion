@@ -35,35 +35,6 @@ void() bot_jump =
     self.button2 = TRUE;
 };
 
-float(entity e) bot_can_rj =
-{
-    // this returns true of the bot can rocket/superjump/hook
-    // if your mod doesn't have an RL you can just return FALSE all the time
-    // if it has a hook or some other means for the bot to get to high places
-    // you can check here for that capability
-
-    // am I dumb?
-    if (e.b_skill == 0)
-        return FALSE;
-
-    // quad = bad
-    if (e.items & 4194304)
-        return FALSE;
-
-    // do I have rockets & RL?
-    if (!((e.items & 32) && (e.ammo_rockets > 0)))
-        return FALSE;
-
-    // do I have pent?
-    if (e.items & 1048576)
-        return TRUE;
-
-    if (e.health > 50)
-        return TRUE;
-    else
-        return FALSE;
-};
-
 float(float flag) frik_recognize_plat =
 {
     if ((self.classname != "waypoint") && !(self.flags & FL_ONGROUND))
