@@ -156,17 +156,35 @@ void(entity attacker, float damage) demon1_pain =
     demon1_pain1 ();
 };
 
-void()  demon1_die1     =[  $death1,        demon1_die2 ] {
-sound (self, CHAN_VOICE, "demon/ddeath.wav", 1, ATTN_NORM);};
+
+/*
+====================
+GibDemonCorpse
+
+Remove a demon's corpse and throw gibs
+====================
+*/
+void() GibDemonCorpse =
+{
+    ThrowGib ("progs/gib1.mdl", self.health);
+    ThrowGib ("progs/gib1.mdl", self.health);
+    ThrowGib ("progs/gib1.mdl", self.health);
+
+    sound (self, CHAN_VOICE, "player/udeath.wav", 1, ATTN_NONE);
+
+    remove (self);
+};
+
+
+void()  demon1_die1     =[  $death1,        demon1_die2 ] {sound (self, CHAN_VOICE, "demon/ddeath.wav", 1, ATTN_NORM);};
 void()  demon1_die2     =[  $death2,        demon1_die3 ] {};
 void()  demon1_die3     =[  $death3,        demon1_die4 ] {};
 void()  demon1_die4     =[  $death4,        demon1_die5 ] {};
 void()  demon1_die5     =[  $death5,        demon1_die6 ] {};
-void()  demon1_die6     =[  $death6,        demon1_die7 ]
-{self.solid = SOLID_NOT;};
+void()  demon1_die6     =[  $death6,        demon1_die7 ] {self.solid = SOLID_NOT;};
 void()  demon1_die7     =[  $death7,        demon1_die8 ] {};
 void()  demon1_die8     =[  $death8,        demon1_die9 ] {};
-void()  demon1_die9     =[  $death9,        demon1_die9 ] {};
+void()  demon1_die9     =[  $death9,        demon1_die9 ] {BecomeCorpse(80,GibDemonCorpse);};
 
 void() demon_die =
 {

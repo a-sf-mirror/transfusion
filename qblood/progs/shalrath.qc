@@ -96,13 +96,33 @@ void() shal_pain3       =[      $pain3, shal_pain4      ] {};
 void() shal_pain4       =[      $pain4, shal_pain5      ] {};
 void() shal_pain5       =[      $pain5, shal_run1      ] {};
 
+
+/*
+====================
+GibShalCorpse
+
+Remove shalrath's corpse and throw gibs
+====================
+*/
+void() GibShalCorpse =
+{
+    ThrowGib ("progs/gib1.mdl", self.health);
+    ThrowGib ("progs/gib2.mdl", self.health);
+    ThrowGib ("progs/gib3.mdl", self.health);
+
+    sound (self, CHAN_VOICE, "player/udeath.wav", 1, ATTN_NONE);
+
+    remove (self);
+};
+
+
 void() shal_death1      =[      $death1,        shal_death2     ] {};
 void() shal_death2      =[      $death2,        shal_death3     ] {};
 void() shal_death3      =[      $death3,        shal_death4     ] {};
 void() shal_death4      =[      $death4,        shal_death5     ] {};
 void() shal_death5      =[      $death5,        shal_death6     ] {};
 void() shal_death6      =[      $death6,        shal_death7     ] {};
-void() shal_death7      =[      $death7,        shal_death7    ] {};
+void() shal_death7      =[      $death7,        shal_death7     ] {BecomeCorpse(90,GibShalCorpse);};
 
 
 void() shalrath_pain =

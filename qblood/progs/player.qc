@@ -507,12 +507,12 @@ vector(float dm) VelocityForDamage =
 
 /*
 ====================
-KickTouch
+HeadTouch
 
-Function used for throwing heads someone touch them
+Function used for throwing heads when someone touchs them
 ====================
 */
-void() KickTouch =
+void() HeadTouch =
 {
     local vector v;
 
@@ -520,17 +520,14 @@ void() KickTouch =
     if (other.classname != "player")
         return;
 
-    // randomize sound
-    // FIXME: use a particular sound when the head is destroyed
-    if (random()< 0.8)
-        sound(other, CHAN_ITEM, "zombie/z_hit.wav", 1, ATTN_NORM);
-    else
-        sound(other, CHAN_ITEM, "zombie/z_miss.wav", 1, ATTN_NORM);
+    sound(other, CHAN_ITEM, "zombie/z_hit.wav", 1, ATTN_NORM);
 
     // Destroy the head, kick after kick
     self.health = self.health - 10;
     if (self.health < 0)
     {
+        sound(other, CHAN_ITEM, "zombie/z_miss.wav", 1, ATTN_NORM);
+        ThrowGib ("progs/gib1.mdl", self.health);
         remove (self);
         return;
     }
@@ -587,7 +584,7 @@ void(string gibname, float dm) ThrowHead =
         self.takedamage = DAMAGE_NO;
     self.health = 120;
     self.th_die = SUB_Remove;
-    self.touch = KickTouch;
+    self.touch = HeadTouch;
     self.th_pain = SUB_Null;
 
     self.classname = "head";
@@ -635,25 +632,31 @@ void() PlayerDie =
 
     self.items = self.items - (self.items & IT_INVISIBILITY);
 
-    if (self.super_damage_finished > 0)
+    #ifndef QUAKEWORLD
+    if (self.super_damage_finished > 0 && (deathmatch || coop))
     {
+    #endif
         DropQuad (self.super_damage_finished - time);
         Bprint (PRINT_LOW, self.netname);
         Bprint (PRINT_LOW, " lost a quad with ");
         s = ftos(rint(self.super_damage_finished - time));
         Bprint (PRINT_LOW, s);
         Bprint (PRINT_LOW, " seconds remaining\n");
+    #ifndef QUAKEWORLD
     }
 
-    if (self.invisible_finished > 0)
+    if (self.invisible_finished > 0 && (deathmatch || coop))
     {
+    #endif
         Bprint (PRINT_LOW, self.netname);
         Bprint (PRINT_LOW, " lost a ring with ");
         s = ftos(rint(self.invisible_finished - time));
         Bprint (PRINT_LOW, s);
         Bprint (PRINT_LOW, " seconds remaining\n");
         DropRing (self.invisible_finished - time);
+    #ifndef QUAKEWORLD
     }
+    #endif
 
     self.invisible_finished = 0;    // don't die as eyes
     self.invincible_finished = 0;

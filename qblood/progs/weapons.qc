@@ -528,8 +528,6 @@ W_FireRocket
 */
 void() W_FireRocket =
 {
-    local   entity missile, mpuff;
-
     self.currentammo = self.ammo_rockets = self.ammo_rockets - 1;
 
     sound (self, CHAN_WEAPON, "weapons/sgun1.wav", 1, ATTN_NORM);
@@ -537,57 +535,36 @@ void() W_FireRocket =
     #ifdef QUAKEWORLD
     msg_entity = self;
     WriteByte (MSG_ONE, SVC_SMALLKICK);
+    #else
+    self.punchangle_x = -2;
+    #endif
 
     newmis = spawn ();
     newmis.owner = self;
     newmis.movetype = MOVETYPE_FLYMISSILE;
     newmis.solid = SOLID_BBOX;
 
-// set newmis speed
-
+    // set newmis speed
     makevectors (self.v_angle);
     newmis.velocity = aim(self, 1000);
     newmis.velocity = newmis.velocity * 1000;
     newmis.angles = vectoangles(newmis.velocity);
 
     newmis.touch = T_MissileTouch;
+    #ifdef QUAKEWORLD
+    newmis.classname = "missile";
     newmis.voided = 0;
+    #else
+    newmis.classname = "rocket";
+    #endif
 
-// set newmis duration
+    // set newmis duration
     newmis.nextthink = time + 5;
     newmis.think = SUB_Remove;
-    newmis.classname = "rocket";
 
     setmodel (newmis, "progs/missile.mdl");
     setsize (newmis, '0 0 0', '0 0 0');
     setorigin (newmis, self.origin + v_forward*8 + '0 0 16');
-
-    #else
-    self.punchangle_x = -2;
-
-    missile = spawn ();
-    missile.owner = self;
-    missile.movetype = MOVETYPE_FLYMISSILE;
-    missile.solid = SOLID_BBOX;
-    missile.classname = "missile";
-
-// set missile speed
-
-    makevectors (self.v_angle);
-    missile.velocity = aim(self, 1000);
-    missile.velocity = missile.velocity * 1000;
-    missile.angles = vectoangles(missile.velocity);
-
-    missile.touch = T_MissileTouch;
-
-// set missile duration
-    missile.nextthink = time + 5;
-    missile.think = SUB_Remove;
-
-    setmodel (missile, "progs/missile.mdl");
-    setsize (missile, '0 0 0', '0 0 0');
-    setorigin (missile, self.origin + v_forward*8 + '0 0 16');
-    #endif
 };
 
 /*
@@ -783,10 +760,6 @@ W_FireGrenade
 */
 void() W_FireGrenade =
 {
-    #ifndef QUAKEWORLD
-    local   entity missile;
-    #endif
-
     self.currentammo = self.ammo_rockets = self.ammo_rockets - 1;
 
     sound (self, CHAN_WEAPON, "weapons/grenade.wav", 1, ATTN_NORM);
@@ -794,18 +767,21 @@ void() W_FireGrenade =
     #ifdef QUAKEWORLD
     msg_entity = self;
     WriteByte (MSG_ONE, SVC_SMALLKICK);
+    #else
+    self.punchangle_x = -2;
+    #endif
 
     newmis = spawn ();
+    #ifdef QUAKEWORLD
     newmis.voided=0;
+    #endif
     newmis.owner = self;
     newmis.movetype = MOVETYPE_BOUNCE;
     newmis.solid = SOLID_BBOX;
     newmis.classname = "grenade";
 
-// set newmis speed
-
+    // set newmis speed
     makevectors (self.v_angle);
-
     if (self.v_angle_x)
         newmis.velocity = v_forward*600 + v_up * 200 + crandom()*v_right*10 + crandom()*v_up*10;
     else
@@ -816,55 +792,16 @@ void() W_FireGrenade =
     }
 
     newmis.avelocity = '300 300 300';
-
     newmis.angles = vectoangles(newmis.velocity);
-
     newmis.touch = GrenadeTouch;
 
+    // set missile duration
     newmis.nextthink = time + 2.5;
-
     newmis.think = GrenadeExplode;
 
     setmodel (newmis, "progs/grenade.mdl");
     setsize (newmis, '0 0 0', '0 0 0');
     setorigin (newmis, self.origin);
-
-    #else
-    self.punchangle_x = -2;
-
-    missile = spawn ();
-    missile.owner = self;
-    missile.movetype = MOVETYPE_BOUNCE;
-    missile.solid = SOLID_BBOX;
-    missile.classname = "grenade";
-
-// set missile speed
-
-    makevectors (self.v_angle);
-
-    if (self.v_angle_x)
-        missile.velocity = v_forward*600 + v_up * 200 + crandom()*v_right*10 + crandom()*v_up*10;
-    else
-    {
-        missile.velocity = aim(self, 10000);
-        missile.velocity = missile.velocity * 600;
-        missile.velocity_z = 200;
-    }
-
-    missile.avelocity = '300 300 300';
-
-    missile.angles = vectoangles(missile.velocity);
-
-    missile.touch = GrenadeTouch;
-
-// set missile duration
-    missile.nextthink = time + 2.5;
-    missile.think = GrenadeExplode;
-
-    setmodel (missile, "progs/grenade.mdl");
-    setsize (missile, '0 0 0', '0 0 0');
-    setorigin (missile, self.origin);
-    #endif
 };
 
 
