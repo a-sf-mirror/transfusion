@@ -699,6 +699,7 @@ void() ambient_flouro_buzz =
     precache_sound ("ambience/elecgen2.wav");
     ambientsound (self.origin, "ambience/elecgen2.wav", 1, ATTN_STATIC);
 };
+
 /*QUAKED ambient_drip (0.3 0.1 0.6) (-10 -10 -8) (10 10 8)
 */
 void() ambient_drip =
@@ -706,20 +707,23 @@ void() ambient_drip =
     precache_sound ("ambience/drip3.wav");
     ambientsound (self.origin, "ambience/drip3.wav", 0.5, ATTN_STATIC);
 };
+
 /*QUAKED ambient_comp_hum (0.3 0.1 0.6) (-10 -10 -8) (10 10 8)
 */
 void() ambient_comp_hum =
 {
-    precache_sound ("ambience/gearstar.wav");
-    ambientsound (self.origin, "ambience/gearstar.wav", 1, ATTN_STATIC);
+    precache_sound ("ambience/fanlup2.wav");
+    ambientsound (self.origin, "ambience/fanlup2.wav", 1, ATTN_STATIC);
 };
+
 /*QUAKED ambient_thunder (0.3 0.1 0.6) (-10 -10 -8) (10 10 8)
 */
 void() ambient_thunder =
 {
-    precache_sound ("ambience/thunder1.wav");
-    ambientsound (self.origin, "ambience/thunder1.wav", 0.5, ATTN_STATIC);
+    precache_sound ("ambience/amb18.wav"); // not really thunder anymore
+    ambientsound (self.origin, "ambience/amb18.wav", 0.5, ATTN_STATIC);
 };
+
 /*QUAKED ambient_light_buzz (0.3 0.1 0.6) (-10 -10 -8) (10 10 8)
 */
 void() ambient_light_buzz =
@@ -727,6 +731,7 @@ void() ambient_light_buzz =
     precache_sound ("ambience/hum.wav");
     ambientsound (self.origin, "ambience/hum.wav", 0.5, ATTN_STATIC);
 };
+
 /*QUAKED ambient_swamp1 (0.3 0.1 0.6) (-10 -10 -8) (10 10 8)
 */
 void() ambient_swamp1 =
@@ -734,12 +739,685 @@ void() ambient_swamp1 =
     precache_sound ("ambience/swamp.wav");
     ambientsound (self.origin, "ambience/swamp.wav", 0.5, ATTN_STATIC);
 };
+
 /*QUAKED ambient_swamp2 (0.3 0.1 0.6) (-10 -10 -8) (10 10 8)
 */
 void() ambient_swamp2 =
 {
+    precache_sound ("ambience/amb19.wav");
+    ambientsound (self.origin, "ambience/amb19.wav", 0.5, ATTN_STATIC);
+};
+
+/*QUAKED ambient_1wind (0.3 0.1 0.6) (-10 -10 -8) (10 10 8)
+*/
+void() ambient_1wind =
+{
+    precache_sound ("ambience/1wind.wav");
+    ambientsound (self.origin, "ambience/1wind.wav", 0.5, ATTN_STATIC);
+};
+
+/*QUAKED ambient_altair2 (0.3 0.1 0.6) (-10 -10 -8) (10 10 8)
+*/
+void() ambient_altair2 =
+{
+    precache_sound ("ambience/altair2.wav");
+    ambientsound (self.origin, "ambience/altair2.wav", 0.5, ATTN_STATIC);
+};
+
+/*QUAKED ambient_amb10 (0.3 0.1 0.6) (-10 -10 -8) (10 10 8)
+*/
+void() ambient_amb10 =
+{
+    precache_sound ("ambience/amb10.wav");
+    ambientsound (self.origin, "ambience/amb10.wav", 0.5, ATTN_STATIC);
+};
+
+/*QUAKED ambient_amb11 (0.3 0.1 0.6) (-10 -10 -8) (10 10 8)
+*/
+void() ambient_amb11 =
+{
     precache_sound ("ambience/amb11.wav");
     ambientsound (self.origin, "ambience/amb11.wav", 0.5, ATTN_STATIC);
+};
+
+/*QUAKED ambient_amb12 (0.3 0.1 0.6) (-10 -10 -8) (10 10 8)
+*/
+void() ambient_amb12 =
+{
+    precache_sound ("ambience/amb12.wav");
+    ambientsound (self.origin, "ambience/amb12.wav", 0.5, ATTN_STATIC);
+};
+
+/*QUAKED ambient_amb13 (0.3 0.1 0.6) (-10 -10 -8) (10 10 8)
+*/
+void() ambient_amb13 =
+{
+    precache_sound ("ambience/amb13.wav");
+    ambientsound (self.origin, "ambience/amb13.wav", 0.5, ATTN_STATIC);
+};
+
+/*QUAKED ambient_amb14 (0.3 0.1 0.6) (-10 -10 -8) (10 10 8)
+*/
+void() ambient_amb14 =
+{
+    precache_sound ("ambience/amb14.wav");
+    ambientsound (self.origin, "ambience/amb14.wav", 0.5, ATTN_STATIC);
+};
+
+/*QUAKED ambient_amb15 (0.3 0.1 0.6) (-10 -10 -8) (10 10 8)
+*/
+void() ambient_amb15 =
+{
+    precache_sound ("ambience/amb15.wav");
+    ambientsound (self.origin, "ambience/amb15wav", 0.5, ATTN_STATIC);
+};
+
+/*QUAKED ambient_amb16 (0.3 0.1 0.6) (-10 -10 -8) (10 10 8)
+*/
+void() ambient_amb16 =
+{
+    precache_sound ("ambience/amb16.wav");
+    ambientsound (self.origin, "ambience/amb16.wav", 0.5, ATTN_STATIC);
+};
+
+/*QUAKED ambient_amb17 (0.3 0.1 0.6) (-10 -10 -8) (10 10 8)
+*/
+void() ambient_amb17 =
+{
+    precache_sound ("ambience/amb17.wav");
+    ambientsound (self.origin, "ambience/amb17.wav", 0.5, ATTN_STATIC);
+};
+
+/*QUAKED ambient_amb2 (0.3 0.1 0.6) (-10 -10 -8) (10 10 8)
+*/
+void() ambient_amb2 =
+{
+    precache_sound ("ambience/amb2.wav");
+    ambientsound (self.origin, "ambience/amb2.wav", 0.5, ATTN_STATIC);
+};
+
+/*QUAKED ambient_amb20 (0.3 0.1 0.6) (-10 -10 -8) (10 10 8)
+*/
+void() ambient_amb20 =
+{
+    precache_sound ("ambience/amb20.wav");
+    ambientsound (self.origin, "ambience/amb20.wav", 0.5, ATTN_STATIC);
+};
+
+/*QUAKED ambient_amb21 (0.3 0.1 0.6) (-10 -10 -8) (10 10 8)
+*/
+void() ambient_amb21 =
+{
+    precache_sound ("ambience/amb21.wav");
+    ambientsound (self.origin, "ambience/amb21.wav", 0.5, ATTN_STATIC);
+};
+
+/*QUAKED ambient_amb22 (0.3 0.1 0.6) (-10 -10 -8) (10 10 8)
+*/
+void() ambient_amb22 =
+{
+    precache_sound ("ambience/amb22.wav");
+    ambientsound (self.origin, "ambience/amb22.wav", 0.5, ATTN_STATIC);
+};
+
+/*QUAKED ambient_amb24 (0.3 0.1 0.6) (-10 -10 -8) (10 10 8)
+*/
+void() ambient_amb24 =
+{
+    precache_sound ("ambience/amb24.wav");
+    ambientsound (self.origin, "ambience/amb24.wav", 0.5, ATTN_STATIC);
+};
+
+/*QUAKED ambient_amb25 (0.3 0.1 0.6) (-10 -10 -8) (10 10 8)
+*/
+void() ambient_amb25 =
+{
+    precache_sound ("ambience/amb25.wav");
+    ambientsound (self.origin, "ambience/amb25.wav", 0.5, ATTN_STATIC);
+};
+
+/*QUAKED ambient_amb26 (0.3 0.1 0.6) (-10 -10 -8) (10 10 8)
+*/
+void() ambient_amb26 =
+{
+    precache_sound ("ambience/amb26.wav");
+    ambientsound (self.origin, "ambience/amb26.wav", 0.5, ATTN_STATIC);
+};
+
+/*QUAKED ambient_amb3 (0.3 0.1 0.6) (-10 -10 -8) (10 10 8)
+*/
+void() ambient_amb3 =
+{
+    precache_sound ("ambience/amb3.wav");
+    ambientsound (self.origin, "ambience/amb3.wav", 0.5, ATTN_STATIC);
+};
+
+/*QUAKED ambient_amb4 (0.3 0.1 0.6) (-10 -10 -8) (10 10 8)
+*/
+void() ambient_amb4 =
+{
+    precache_sound ("ambience/amb4.wav");
+    ambientsound (self.origin, "ambience/amb4.wav", 0.5, ATTN_STATIC);
+};
+
+/*QUAKED ambient_amb5 (0.3 0.1 0.6) (-10 -10 -8) (10 10 8)
+*/
+void() ambient_amb5 =
+{
+    precache_sound ("ambience/amb5.wav");
+    ambientsound (self.origin, "ambience/amb5.wav", 0.5, ATTN_STATIC);
+};
+
+/*QUAKED ambient_amb6 (0.3 0.1 0.6) (-10 -10 -8) (10 10 8)
+*/
+void() ambient_amb6 =
+{
+    precache_sound ("ambience/amb6.wav");
+    ambientsound (self.origin, "ambience/amb6.wav", 0.5, ATTN_STATIC);
+};
+
+/*QUAKED ambient_amb7 (0.3 0.1 0.6) (-10 -10 -8) (10 10 8)
+*/
+void() ambient_amb7 =
+{
+    precache_sound ("ambience/amb7.wav");
+    ambientsound (self.origin, "ambience/amb7.wav", 0.5, ATTN_STATIC);
+};
+
+/*QUAKED ambient_amb8 (0.3 0.1 0.6) (-10 -10 -8) (10 10 8)
+*/
+void() ambient_amb8 =
+{
+    precache_sound ("ambience/amb8.wav");
+    ambientsound (self.origin, "ambience/amb8.wav", 0.5, ATTN_STATIC);
+};
+
+/*QUAKED ambient_amb9 (0.3 0.1 0.6) (-10 -10 -8) (10 10 8)
+*/
+void() ambient_amb9 =
+{
+    precache_sound ("ambience/amb9.wav");
+    ambientsound (self.origin, "ambience/amb9.wav", 0.5, ATTN_STATIC);
+};
+
+/*QUAKED ambient_brgloop (0.3 0.1 0.6) (-10 -10 -8) (10 10 8)
+*/
+void() ambient_brgloop =
+{
+    precache_sound ("ambience/brgloop.wav");
+    ambientsound (self.origin, "ambience/brgloop.wav", 0.5, ATTN_STATIC);
+};
+
+/*QUAKED ambient_buzslow2 (0.3 0.1 0.6) (-10 -10 -8) (10 10 8)
+*/
+void() ambient_buzslow2 =
+{
+    precache_sound ("ambience/buzslow2.wav");
+    ambientsound (self.origin, "ambience/buzslow2.wav", 0.5, ATTN_STATIC);
+};
+
+/*QUAKED ambient_buzz2 (0.3 0.1 0.6) (-10 -10 -8) (10 10 8)
+*/
+void() ambient_buzz2 =
+{
+    precache_sound ("ambience/buzz2.wav");
+    ambientsound (self.origin, "ambience/buzz2.wav", 0.5, ATTN_STATIC);
+};
+
+/*QUAKED ambient_chain1 (0.3 0.1 0.6) (-10 -10 -8) (10 10 8)
+*/
+void() ambient_chain1 =
+{
+    precache_sound ("ambience/chain1.wav");
+    ambientsound (self.origin, "ambience/chain1.wav", 0.5, ATTN_STATIC);
+};
+
+/*QUAKED ambient_chain2 (0.3 0.1 0.6) (-10 -10 -8) (10 10 8)
+*/
+void() ambient_chain2 =
+{
+    precache_sound ("ambience/chain2.wav");
+    ambientsound (self.origin, "ambience/chain2.wav", 0.5, ATTN_STATIC);
+};
+
+/*QUAKED ambient_chain4 (0.3 0.1 0.6) (-10 -10 -8) (10 10 8)
+*/
+void() ambient_chain4 =
+{
+    precache_sound ("ambience/chain4.wav");
+    ambientsound (self.origin, "ambience/chain4.wav", 0.5, ATTN_STATIC);
+};
+
+/*QUAKED ambient_chain5 (0.3 0.1 0.6) (-10 -10 -8) (10 10 8)
+*/
+void() ambient_chain5 =
+{
+    precache_sound ("ambience/chain5.wav");
+    ambientsound (self.origin, "ambience/chain5.wav", 0.5, ATTN_STATIC);
+};
+
+/*QUAKED ambient_chain6 (0.3 0.1 0.6) (-10 -10 -8) (10 10 8)
+*/
+void() ambient_chain6 =
+{
+    precache_sound ("ambience/chain6.wav");
+    ambientsound (self.origin, "ambience/chain6.wav", 0.5, ATTN_STATIC);
+};
+
+/*QUAKED ambient_chant1lp (0.3 0.1 0.6) (-10 -10 -8) (10 10 8)
+*/
+void() ambient_chant1lp =
+{
+    precache_sound ("ambience/chant1lp.wav");
+    ambientsound (self.origin, "ambience/chant1lp.wav", 0.5, ATTN_STATIC);
+};
+
+/*QUAKED ambient_chant2lp (0.3 0.1 0.6) (-10 -10 -8) (10 10 8)
+*/
+void() ambient_chant2lp =
+{
+    precache_sound ("ambience/chant2lp.wav");
+    ambientsound (self.origin, "ambience/chant2lp.wav", 0.5, ATTN_STATIC);
+};
+
+/*QUAKED ambient_clock (0.3 0.1 0.6) (-10 -10 -8) (10 10 8)
+*/
+void() ambient_clock =
+{
+    precache_sound ("ambience/clock.wav");
+    ambientsound (self.origin, "ambience/clock.wav", 0.5, ATTN_STATIC);
+};
+
+/*QUAKED ambient_cryptlp (0.3 0.1 0.6) (-10 -10 -8) (10 10 8)
+*/
+void() ambient_cryptlp =
+{
+    precache_sound ("ambience/cryptlp.wav");
+    ambientsound (self.origin, "ambience/cryptlp.wav", 0.5, ATTN_STATIC);
+};
+
+/*QUAKED ambient_dialtone (0.3 0.1 0.6) (-10 -10 -8) (10 10 8)
+*/
+void() ambient_dialtone =
+{
+    precache_sound ("ambience/dialtone.wav");
+    ambientsound (self.origin, "ambience/dialtone.wav", 0.5, ATTN_STATIC);
+};
+
+/*QUAKED ambient_elcloop1 (0.3 0.1 0.6) (-10 -10 -8) (10 10 8)
+*/
+void() ambient_elcloop1 =
+{
+    precache_sound ("ambience/elcloop1.wav");
+    ambientsound (self.origin, "ambience/elcloop1.wav", 0.5, ATTN_STATIC);
+};
+
+/*QUAKED ambient_eriedrne (0.3 0.1 0.6) (-10 -10 -8) (10 10 8)
+*/
+void() ambient_eriedrne =
+{
+    precache_sound ("ambience/eriedrne.wav");
+    ambientsound (self.origin, "ambience/eriedrne.wav", 0.5, ATTN_STATIC);
+};
+
+/*QUAKED ambient_erthloop (0.3 0.1 0.6) (-10 -10 -8) (10 10 8)
+*/
+void() ambient_erthloop =
+{
+    precache_sound ("ambience/erthloop.wav");
+    ambientsound (self.origin, "ambience/erthloop.wav", 0.5, ATTN_STATIC);
+};
+
+/*QUAKED ambient_flatlin2 (0.3 0.1 0.6) (-10 -10 -8) (10 10 8)
+*/
+void() ambient_flatlin2 =
+{
+    precache_sound ("ambience/flatlin2.wav");
+    ambientsound (self.origin, "ambience/flatlin2.wav", 0.5, ATTN_STATIC);
+};
+
+/*QUAKED ambient_flybuzz (0.3 0.1 0.6) (-10 -10 -8) (10 10 8)
+*/
+void() ambient_flybuzz =
+{
+    precache_sound ("ambience/flybuzz.wav");
+    ambientsound (self.origin, "ambience/flybuzz.wav", 0.5, ATTN_STATIC);
+};
+
+/*QUAKED ambient_grglng (0.3 0.1 0.6) (-10 -10 -8) (10 10 8)
+*/
+void() ambient_grglng =
+{
+    precache_sound ("ambience/grglng.wav");
+    ambientsound (self.origin, "ambience/grglng.wav", 0.5, ATTN_STATIC);
+};
+
+/*QUAKED ambient_howling (0.3 0.1 0.6) (-10 -10 -8) (10 10 8)
+*/
+void() ambient_howling =
+{
+    precache_sound ("ambience/howling.wav");
+    ambientsound (self.origin, "ambience/howling.wav", 0.5, ATTN_STATIC);
+};
+
+/*QUAKED ambient_hrtbt (0.3 0.1 0.6) (-10 -10 -8) (10 10 8)
+*/
+void() ambient_hrtbt =
+{
+    precache_sound ("ambience/hrtbt.wav");
+    ambientsound (self.origin, "ambience/hrtbt.wav", 0.5, ATTN_STATIC);
+};
+
+/*QUAKED ambient_icemellp (0.3 0.1 0.6) (-10 -10 -8) (10 10 8)
+*/
+void() ambient_icemellp =
+{
+    precache_sound ("ambience/icemellp.wav");
+    ambientsound (self.origin, "ambience/icemellp.wav", 0.5, ATTN_STATIC);
+};
+
+/*QUAKED ambient_icevio (0.3 0.1 0.6) (-10 -10 -8) (10 10 8)
+*/
+void() ambient_icevio =
+{
+    precache_sound ("ambience/icevio.wav");
+    ambientsound (self.origin, "ambience/icevio.wav", 0.5, ATTN_STATIC);
+};
+
+/*QUAKED ambient_mfly (0.3 0.1 0.6) (-10 -10 -8) (10 10 8)
+*/
+void() ambient_mfly =
+{
+    precache_sound ("ambience/mfly.wav");
+    ambientsound (self.origin, "ambience/mfly.wav", 0.5, ATTN_STATIC);
+};
+
+/*QUAKED ambient_moan2lp (0.3 0.1 0.6) (-10 -10 -8) (10 10 8)
+*/
+void() ambient_moan2lp =
+{
+    precache_sound ("ambience/maon2lp.wav");
+    ambientsound (self.origin, "ambience/moan2lp.wav", 0.5, ATTN_STATIC);
+};
+
+/*QUAKED ambient_mtldrn (0.3 0.1 0.6) (-10 -10 -8) (10 10 8)
+*/
+void() ambient_mtldrn =
+{
+    precache_sound ("ambience/mtldrn.wav");
+    ambientsound (self.origin, "ambience/mtldrn.wav", 0.5, ATTN_STATIC);
+};
+
+/*QUAKED ambient_qamb10 (0.3 0.1 0.6) (-10 -10 -8) (10 10 8)
+*/
+void() ambient_qamb10 =
+{
+    precache_sound ("ambience/qamb10.wav");
+    ambientsound (self.origin, "ambience/qamb10.wav", 0.5, ATTN_STATIC);
+};
+
+/*QUAKED ambient_qamb11 (0.3 0.1 0.6) (-10 -10 -8) (10 10 8)
+*/
+void() ambient_qamb11 =
+{
+    precache_sound ("ambience/qamb11.wav");
+    ambientsound (self.origin, "ambience/qamb11.wav", 0.5, ATTN_STATIC);
+};
+
+/*QUAKED ambient_qamb12 (0.3 0.1 0.6) (-10 -10 -8) (10 10 8)
+*/
+void() ambient_qamb12 =
+{
+    precache_sound ("ambience/qamb12.wav");
+    ambientsound (self.origin, "ambience/qamb12.wav", 0.5, ATTN_STATIC);
+};
+
+/*QUAKED ambient_qamb2 (0.3 0.1 0.6) (-10 -10 -8) (10 10 8)
+*/
+void() ambient_qamb2 =
+{
+    precache_sound ("ambience/qamb2.wav");
+    ambientsound (self.origin, "ambience/qamb2.wav", 0.5, ATTN_STATIC);
+};
+
+/*QUAKED ambient_qamb3 (0.3 0.1 0.6) (-10 -10 -8) (10 10 8)
+*/
+void() ambient_qamb3 =
+{
+    precache_sound ("ambience/qamb3.wav");
+    ambientsound (self.origin, "ambience/qamb3.wav", 0.5, ATTN_STATIC);
+};
+
+/*QUAKED ambient_qamb4 (0.3 0.1 0.6) (-10 -10 -8) (10 10 8)
+*/
+void() ambient_qamb4 =
+{
+    precache_sound ("ambience/qamb4.wav");
+    ambientsound (self.origin, "ambience/qamb4.wav", 0.5, ATTN_STATIC);
+};
+
+/*QUAKED ambient_qamb5 (0.3 0.1 0.6) (-10 -10 -8) (10 10 8)
+*/
+void() ambient_qamb5 =
+{
+    precache_sound ("ambience/qamb5.wav");
+    ambientsound (self.origin, "ambience/qamb5.wav", 0.5, ATTN_STATIC);
+};
+
+/*QUAKED ambient_qamb6 (0.3 0.1 0.6) (-10 -10 -8) (10 10 8)
+*/
+void() ambient_qamb6 =
+{
+    precache_sound ("ambience/qamb6.wav");
+    ambientsound (self.origin, "ambience/qamb6.wav", 0.5, ATTN_STATIC);
+};
+
+/*QUAKED ambient_qamb7 (0.3 0.1 0.6) (-10 -10 -8) (10 10 8)
+*/
+void() ambient_qamb7 =
+{
+    precache_sound ("ambience/qamb7.wav");
+    ambientsound (self.origin, "ambience/qamb7.wav", 0.5, ATTN_STATIC);
+};
+
+/*QUAKED ambient_qamb8 (0.3 0.1 0.6) (-10 -10 -8) (10 10 8)
+*/
+void() ambient_qamb8 =
+{
+    precache_sound ("ambience/qamb8.wav");
+    ambientsound (self.origin, "ambience/qamb8.wav", 0.5, ATTN_STATIC);
+};
+
+/*QUAKED ambient_qamb9 (0.3 0.1 0.6) (-10 -10 -8) (10 10 8)
+*/
+void() ambient_qamb9 =
+{
+    precache_sound ("ambience/qamb9.wav");
+    ambientsound (self.origin, "ambience/qamb9.wav", 0.5, ATTN_STATIC);
+};
+
+/*QUAKED ambient_qsuck1 (0.3 0.1 0.6) (-10 -10 -8) (10 10 8)
+*/
+void() ambient_qsuck1 =
+{
+    precache_sound ("ambience/qsuck1.wav");
+    ambientsound (self.origin, "ambience/qsuck1.wav", 0.5, ATTN_STATIC);
+};
+
+/*QUAKED ambient_qtrain1 (0.3 0.1 0.6) (-10 -10 -8) (10 10 8)
+*/
+void() ambient_qtrain1 =
+{
+    precache_sound ("ambience/qtrain1.wav");
+    ambientsound (self.origin, "ambience/qtrain1.wav", 0.5, ATTN_STATIC);
+};
+
+/*QUAKED ambient_qwindfly (0.3 0.1 0.6) (-10 -10 -8) (10 10 8)
+*/
+void() ambient_qwindfly =
+{
+    precache_sound ("ambience/qwindfly.wav");
+    ambientsound (self.origin, "ambience/qwindfly.wav", 0.5, ATTN_STATIC);
+};
+
+/*QUAKED ambient_rain2 (0.3 0.1 0.6) (-10 -10 -8) (10 10 8)
+*/
+void() ambient_rain2 =
+{
+    precache_sound ("ambience/rain2.wav");
+    ambientsound (self.origin, "ambience/rain2.wav", 0.5, ATTN_STATIC);
+};
+
+/*QUAKED ambient_sawcut(0.3 0.1 0.6) (-10 -10 -8) (10 10 8)
+*/
+void() ambient_sawcut =
+{
+    precache_sound ("ambience/sawcut.wav");
+    ambientsound (self.origin, "ambience/sawcut.wav", 0.5, ATTN_STATIC);
+};
+
+/*QUAKED ambient_sawrun (0.3 0.1 0.6) (-10 -10 -8) (10 10 8)
+*/
+void() ambient_sawrun =
+{
+    precache_sound ("ambience/sawrun.wav");
+    ambientsound (self.origin, "ambience/sawrun.wav", 0.5, ATTN_STATIC);
+};
+
+/*QUAKED ambient_sewage (0.3 0.1 0.6) (-10 -10 -8) (10 10 8)
+*/
+void() ambient_sewage =
+{
+    precache_sound ("ambience/sewage.wav");
+    ambientsound (self.origin, "ambience/sewage.wav", 0.5, ATTN_STATIC);
+};
+
+/*QUAKED ambient_sizzle (0.3 0.1 0.6) (-10 -10 -8) (10 10 8)
+*/
+void() ambient_sizzle =
+{
+    precache_sound ("ambience/sizzle.wav");
+    ambientsound (self.origin, "ambience/sizzle.wav", 0.5, ATTN_STATIC);
+};
+
+/*QUAKED ambient_sizzle1 (0.3 0.1 0.6) (-10 -10 -8) (10 10 8)
+*/
+void() ambient_sizzle1 =
+{
+    precache_sound ("ambience/sizzle1.wav");
+    ambientsound (self.origin, "ambience/sizzle1.wav", 0.5, ATTN_STATIC);
+};
+
+/*QUAKED ambient_sizzle2 (0.3 0.1 0.6) (-10 -10 -8) (10 10 8)
+*/
+void() ambient_sizzle2 =
+{
+    precache_sound ("ambience/sizzle2.wav");
+    ambientsound (self.origin, "ambience/sizzle2.wav", 0.5, ATTN_STATIC);
+};
+
+/*QUAKED ambient_snakepit (0.3 0.1 0.6) (-10 -10 -8) (10 10 8)
+*/
+void() ambient_snakepit =
+{
+    precache_sound ("ambience/snakepit.wav");
+    ambientsound (self.origin, "ambience/snakepit.wav", 0.5, ATTN_STATIC);
+};
+
+/*QUAKED ambient_sngair2 (0.3 0.1 0.6) (-10 -10 -8) (10 10 8)
+*/
+void() ambient_sngair2 =
+{
+    precache_sound ("ambience/sngair2.wav");
+    ambientsound (self.origin, "ambience/sngair2.wav", 0.5, ATTN_STATIC);
+};
+
+/*QUAKED ambient_torch (0.3 0.1 0.6) (-10 -10 -8) (10 10 8)
+*/
+void() ambient_torch =
+{
+    precache_sound ("ambience/torch.wav");
+    ambientsound (self.origin, "ambience/torch.wav", 0.5, ATTN_STATIC);
+};
+
+/*QUAKED ambient_train1 (0.3 0.1 0.6) (-10 -10 -8) (10 10 8)
+*/
+void() ambient_train1 =
+{
+    precache_sound ("ambience/train1.wav");
+    ambientsound (self.origin, "ambience/train1.wav", 0.5, ATTN_STATIC);
+};
+
+/*QUAKED ambient_underwat (0.3 0.1 0.6) (-10 -10 -8) (10 10 8)
+*/
+void() ambient_underwat =
+{
+    precache_sound ("ambience/underwat.wav");
+    ambientsound (self.origin, "ambience/underwat.wav", 0.5, ATTN_STATIC);
+};
+
+/*QUAKED ambient_water (0.3 0.1 0.6) (-10 -10 -8) (10 10 8)
+*/
+void() ambient_water =
+{
+    precache_sound ("ambience/water.wav");
+    ambientsound (self.origin, "ambience/water.wav", 0.5, ATTN_STATIC);
+};
+
+/*QUAKED ambient_water1 (0.3 0.1 0.6) (-10 -10 -8) (10 10 8)
+*/
+void() ambient_water1 =
+{
+    precache_sound ("ambience/water1.wav");
+    ambientsound (self.origin, "ambience/water1.wav", 0.5, ATTN_STATIC);
+};
+
+/*QUAKED ambient_waterlap (0.3 0.1 0.6) (-10 -10 -8) (10 10 8)
+*/
+void() ambient_waterlap =
+{
+    precache_sound ("ambience/waterlap.wav");
+    ambientsound (self.origin, "ambience/waterlap.wav", 0.5, ATTN_STATIC);
+};
+
+/*QUAKED ambient_wind2 (0.3 0.1 0.6) (-10 -10 -8) (10 10 8)
+*/
+void() ambient_wind2 =
+{
+    precache_sound ("ambience/wind2.wav");
+    ambientsound (self.origin, "ambience/wind2.wav", 0.5, ATTN_STATIC);
+};
+
+/*QUAKED ambient_drip1 (0.3 0.1 0.6) (-10 -10 -8) (10 10 8)
+*/
+void() ambient_drip1 =
+{
+    precache_sound ("ambience/drip1.wav");
+    ambientsound (self.origin, "ambience/drip1.wav", 0.5, ATTN_STATIC);
+};
+
+/*QUAKED ambient_drip2 (0.3 0.1 0.6) (-10 -10 -8) (10 10 8)
+*/
+void() ambient_drip2 =
+{
+    precache_sound ("ambience/drip2.wav");
+    ambientsound (self.origin, "ambience/drip2.wav", 0.5, ATTN_STATIC);
+};
+
+/*QUAKED ambient_drip5 (0.3 0.1 0.6) (-10 -10 -8) (10 10 8)
+*/
+void() ambient_drip5 =
+{
+    precache_sound ("ambience/drip5.wav");
+    ambientsound (self.origin, "ambience/drip5.wav", 0.5, ATTN_STATIC);
+};
+
+/*QUAKED ambient_laugh (0.3 0.1 0.6) (-10 -10 -8) (10 10 8)
+*/
+void() ambient_laugh =
+{
+    precache_sound ("ambience/laugh.wav");
+    ambientsound (self.origin, "ambience/laugh.wav", 0.5, ATTN_STATIC);
 };
 
 //============================================================================

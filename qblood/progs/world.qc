@@ -264,25 +264,24 @@ void() worldspawn =
     precache_sound ("player/die3.wav");
 
     // The Voice
-//    precache_sound ("thevoice/boned.wav");
-//    precache_sound ("thevoice/castra.wav");
+    precache_sound ("thevoice/boned.wav");
+    precache_sound ("thevoice/castra.wav");
     precache_sound ("thevoice/creamed.wav");
+    precache_sound ("thevoice/decimat.wav");
     precache_sound ("thevoice/destro.wav");
     precache_sound ("thevoice/diced.wav");
     precache_sound ("thevoice/disembo.wav");
-//    precache_sound ("thevoice/flatte.wav");
-//    precache_sound ("thevoice/justice.wav");
-//    precache_sound ("thevoice/madness.wav");
+    precache_sound ("thevoice/flatte.wav");
+    precache_sound ("thevoice/justice.wav");
+    precache_sound ("thevoice/madness.wav");
     precache_sound ("thevoice/killed.wav");
-//    precache_sound ("thevoice/massacr.wav");
+    precache_sound ("thevoice/massacr.wav");
     precache_sound ("thevoice/mincmeat.wav");
     precache_sound ("thevoice/mutila.wav");
     precache_sound ("thevoice/reamed.wav");
-    #ifdef QUAKEWORLD
     precache_sound ("thevoice/ripped.wav");
-    #endif
     precache_sound ("thevoice/slaught.wav");
-//    precache_sound ("thevoice/sliced.wav");
+    precache_sound ("thevoice/sliced.wav");
     precache_sound ("thevoice/smashed.wav");
     precache_sound ("thevoice/sodomiz.wav");
     precache_sound ("thevoice/splatt.wav");
@@ -291,9 +290,36 @@ void() worldspawn =
     precache_sound ("thevoice/vo1.wav");
     precache_sound ("thevoice/vo10.wav");
     precache_sound ("thevoice/vo12.wav");
+    precache_sound ("thevoice/vo13.wav");
+    precache_sound ("thevoice/vo14.wav");
+    precache_sound ("thevoice/vo16.wav");
     precache_sound ("thevoice/vo17.wav");
+    precache_sound ("thevoice/vo19.wav");
     precache_sound ("thevoice/vo2.wav");
-//    precache_sound ("thevoice/vo30.wav");
+    precache_sound ("thevoice/vo20.wav");
+    precache_sound ("thevoice/vo21.wav");
+    precache_sound ("thevoice/vo22.wav");
+    precache_sound ("thevoice/vo23.wav");
+    precache_sound ("thevoice/vo24.wav");
+    precache_sound ("thevoice/vo25.wav");
+    precache_sound ("thevoice/vo26.wav");
+    precache_sound ("thevoice/vo27.wav");
+    precache_sound ("thevoice/vo28.wav");
+    precache_sound ("thevoice/vo29.wav");
+    precache_sound ("thevoice/vo30.wav");
+    precache_sound ("thevoice/vo31.wav");
+    precache_sound ("thevoice/vo32.wav");
+    precache_sound ("thevoice/vo33.wav");
+    precache_sound ("thevoice/vo34.wav");
+    precache_sound ("thevoice/vo35.wav");
+    precache_sound ("thevoice/vo36.wav");
+    precache_sound ("thevoice/vo38.wav");
+    precache_sound ("thevoice/vo39.wav");
+    precache_sound ("thevoice/vo40.wav");
+    precache_sound ("thevoice/vo41.wav");
+    precache_sound ("thevoice/vo42.wav");
+    precache_sound ("thevoice/vo43.wav");
+    precache_sound ("thevoice/vo44.wav");
     precache_sound ("thevoice/vo5.wav");
     precache_sound ("thevoice/vo7.wav");
     precache_sound ("thevoice/vo8.wav");     // hamburger
