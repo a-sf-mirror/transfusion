@@ -200,9 +200,9 @@ void() Tommy_Fire =
 
     // If we are in altfire mode
     if (self.weaponframe >= $tommy_alt1)
-        damage = 15;
+        damage = 20;
     else
-        damage = 5;
+        damage = 12;
 
     orig = self.origin + v_forward * 15 + v_up * 12 + v_right * 4;
     spread = '0.05 0.02 0';
