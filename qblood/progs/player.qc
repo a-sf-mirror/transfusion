@@ -270,7 +270,7 @@ void() player_supernail =
 
     SuperDamageSound ();
     W_FireSuperSpikes ();
-    self.attack_finished = time + 0.1;
+    self.attack_finished = time + 0.2;
 };
 
 void() player_supernail1 = [$nailatt1, player_supernail2] { player_supernail (); };

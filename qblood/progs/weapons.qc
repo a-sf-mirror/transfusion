@@ -1756,7 +1756,7 @@ void() flame_touch =
 
     // hit something that bleeds
     if (other.takedamage)
-        PM_BurnDamage (other, self, 0, 30);
+        PM_BurnDamage (other, self, 5, 30);
 
     remove(self);
 
@@ -1788,12 +1788,12 @@ void() W_FireSuperSpikes =
     newmis.touch = flame_touch;
     newmis.classname = "spike";
     newmis.think = SUB_Remove;
-    newmis.nextthink = time + 6;
+    newmis.nextthink = time + 0.6;
     setmodel (newmis, "progs/sprayfir.spr");
     setsize (newmis, '-5 -5 -7', '5 5 7');
-    setorigin (newmis, self.origin + '0 0 16' + v_forward * 50);
+    setorigin (newmis, self.origin + '0 0 10' + v_forward * 50 + v_right * 8);
 
-    newmis.velocity = dir * 500;
+    newmis.velocity = dir * 550;
 
     newmis.frame = floor (random () * 3);
 };
