@@ -173,12 +173,12 @@ void() Use_FirstAid =
     faid = InvenFuel (S_FIRST_AID);
     if (faid == 0)
     {
-        Sprint (self, PRINT_MEDIUM, "No first-aid\n");
+        Sprint (self, PRINT_MEDIUM, "You don't have the Doctor's Bag\n");
         return;
     }
     if (self.health >= self.max_health)
     {
-        Sprint (self, PRINT_MEDIUM, "You don't need first-aid\n");
+        Sprint (self, PRINT_MEDIUM, "You don't need the Doctor's Bag\n");
         return;
     }
 
@@ -191,7 +191,7 @@ void() Use_FirstAid =
         local   string  text;
 
         text = ftos(faid);
-        Sprint (self, PRINT_MEDIUM, "First-aid is now at ");
+        Sprint (self, PRINT_MEDIUM, "Doctor's Bag health level is now at ");
         Sprint (self, PRINT_MEDIUM, text);
         Sprint (self, PRINT_MEDIUM, "%\n");
     }
@@ -199,7 +199,7 @@ void() Use_FirstAid =
     {
         self.health = self.health + faid;
         faid = 0;
-        Sprint (self, PRINT_MEDIUM, "First-aid used up\n");
+        Sprint (self, PRINT_MEDIUM, "Doctor's Bag is used up\n");
     }
 
     InvenSet (self, S_FIRST_AID, faid);
@@ -228,14 +228,14 @@ void() Use_DivingSuit =
             return;
         }
 
-//        Sprint (self, PRINT_MEDIUM, "Dive ON\n");
+//        Sprint (self, PRINT_MEDIUM, "Diving Suit ON\n");
         self.items = self.items | IT_SUIT;
         self.dive_time = time + self.dive_time;
-        sound (self, CHAN_ITEM, "bludbath/powerup.wav", 1, ATTN_NORM);
+        sound (self, CHAN_ITEM, "foley/swimuw.wav", 1, ATTN_NORM);
     }
     else
     {
-//        Sprint (self, PRINT_MEDIUM, "Dive OFF\n");
+//        Sprint (self, PRINT_MEDIUM, "Diving Suit OFF\n");
         self.items = self.items - (self.items & IT_SUIT);
         self.dive_time = self.dive_time - time;
     }
@@ -275,13 +275,13 @@ void() Use_JumpBoots =
     self.boots_on = !self.boots_on;
     if (self.boots_on)
     {
-        Sprint (self, PRINT_MEDIUM, "Boots ON\n");
+        Sprint (self, PRINT_MEDIUM, "Boots of Jumping ON\n");
         self.boots_time = time + self.boots_time;
         sound (self, CHAN_ITEM, "bludbath/powerup.wav", 1, ATTN_NORM);
     }
     else
     {
-        Sprint (self, PRINT_MEDIUM, "Boots OFF\n");
+        Sprint (self, PRINT_MEDIUM, "Boots of Jumping OFF\n");
         self.boots_time = self.boots_time - time;
     }
 };
@@ -321,7 +321,7 @@ void(float chosen) InvenList =
         if (chosen == S_FIRST_AID)
             Sprint (self, PRINT_MEDIUM, "¡È‰∫ ");
         else
-            Sprint (self, PRINT_MEDIUM, "Aid: ");
+            Sprint (self, PRINT_MEDIUM, "Doctor's Bag: ");
         Sprint (self, PRINT_MEDIUM, text);
         i = i + 1;
     }
@@ -335,7 +335,7 @@ void(float chosen) InvenList =
         if (chosen == S_DIVING_SUIT)
             Sprint (self, PRINT_MEDIUM, "”ıÈÙ∫ ");
         else
-            Sprint (self, PRINT_MEDIUM, "Suit: ");
+            Sprint (self, PRINT_MEDIUM, "Diving Suit: ");
         Sprint (self, PRINT_MEDIUM, text);
         i = i + 1;
     }
@@ -349,7 +349,7 @@ void(float chosen) InvenList =
         if (chosen == S_CRYSTAL_BALL)
             Sprint (self, PRINT_MEDIUM, "ÿÚ·˘∫ ");
         else
-            Sprint (self, PRINT_MEDIUM, "Xray: ");
+            Sprint (self, PRINT_MEDIUM, "Crystal Ball: ");
         Sprint (self, PRINT_MEDIUM, text);
         i = i + 1;
     }
@@ -363,7 +363,7 @@ void(float chosen) InvenList =
         if (chosen == S_BEAST_VISION)
             Sprint (self, PRINT_MEDIUM, "¬Â·ÛÙ∫ ");
         else
-            Sprint (self, PRINT_MEDIUM, "Beast: ");
+            Sprint (self, PRINT_MEDIUM, "Beast Vision: ");
         Sprint (self, PRINT_MEDIUM, text);
         i = i + 1;
     }
@@ -377,12 +377,12 @@ void(float chosen) InvenList =
         if (chosen == S_JUMP_BOOTS)
             Sprint (self, PRINT_MEDIUM, " ıÌ∫ ");
         else
-            Sprint (self, PRINT_MEDIUM, "Jump: ");
+            Sprint (self, PRINT_MEDIUM, "Boots of Jumping: ");
         Sprint (self, PRINT_MEDIUM, text);
     }
 
 //    if (!i)
-//        Sprint (self, PRINT_MEDIUM, "No inventory");
+//        Sprint (self, PRINT_MEDIUM, "You aren't carrying anything");
 
     Sprint (self, PRINT_MEDIUM, "\n");
 };
@@ -395,7 +395,7 @@ void(float add) InvenSelect =
         {
             // No items.
             self.it_select = 0;
-            Sprint (self, PRINT_MEDIUM, "No inventory\n");
+            Sprint (self, PRINT_MEDIUM, "You aren't carrying anything\n");
             return;
         }
 
@@ -489,7 +489,7 @@ void() InvenCheck =
                 if (floor(fuel) == fuel)
                 {
                     text = ftos(fuel * 10);
-                    Sprint (self, PRINT_MEDIUM, "Dive at ");
+                    Sprint (self, PRINT_MEDIUM, "Dive Suit air remaining: ");
                     Sprint (self, PRINT_MEDIUM, text);
                     Sprint (self, PRINT_MEDIUM, "%\n");
                 }
@@ -521,7 +521,7 @@ void() InvenCheck =
                 if (floor(fuel) == fuel)
                 {
                     text = ftos(fuel * 10);
-                    Sprint (self, PRINT_MEDIUM, "Jump at ");
+                    Sprint (self, PRINT_MEDIUM, "Boots of Jumping time remaining ");
                     Sprint (self, PRINT_MEDIUM, text);
                     Sprint (self, PRINT_MEDIUM, "%\n");
                 }
