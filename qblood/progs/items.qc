@@ -940,8 +940,7 @@ void() item_artifact_vision =
 {
     self.netname = "Beast Vision";
     self.model   = "progs/i_vision.mdl";
-    self.noise   = "items/
-    pickup.wav";
+    self.noise   = "items/pickup.wav";
     item_powerup ();
 };
 
