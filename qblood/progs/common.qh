@@ -193,15 +193,15 @@
 #define TE_GUNSHOT          2
 #define TE_EXPLOSION        3
 #define TE_TAREXPLOSION     4
-#define TE_LIGHTNING1       5
-#define TE_LIGHTNING2       6
+#define TE_LIGHTNING1       5   // WARNING: "progs/bolt.mdl" required
+#define TE_LIGHTNING2       6   // WARNING: "progs/bolt2.mdl" required
 #define TE_WIZSPIKE         7
 #define TE_KNIGHTSPIKE      8
-#define TE_LIGHTNING3       9
+#define TE_LIGHTNING3       9   // WARNING: "progs/bolt3.mdl" required
 #define TE_LAVASPLASH       10
 #define TE_TELEPORT         11
 #define TE_EXPLOSION2       12  // color mapped explosion. No sprite
-#define TE_BEAM             13
+#define TE_BEAM             13  // WARNING: "progs/beam.mdl" required
 
 
 // sound channels
