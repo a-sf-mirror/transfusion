@@ -5,8 +5,8 @@
 
    <title> Transfusion manual
    <author> Mathieu Olivier and Dave Turner
-      <tt>&lt;{elric,darth_linux}@planetblood.com&gt;</tt>
-   <date>v1.1cvs, August 23, 2003
+      <tt>&lt;elric and darth_linux at planetblood dot com&gt;</tt>
+   <date>v1.1cvs, September 24, 2004
    <abstract>
       This manual covers installation and usage of the
       <ref id="links" name="Transfusion"> game.
@@ -19,7 +19,7 @@
       The Transfusion Project aims to recreate an old DOS game from Monolith
       Productions called Blood, using the Quake engine.
 
-      It looks like a simple <it>mod</it>, but actually, you don't need any
+      You may think it's a simple <it>mod</it>, but actually, you don't need any
       Quake data to run it. In fact, Transfusion is a complete total conversion
       of the multiplayer aspect of Blood. The original Blood is a remarkable
       game, and the Transfusion team hopes you'll have as much fun playing it
@@ -41,13 +41,14 @@
       extract its contents in a new, clean directory. That's it. You can launch
       the game now.
 
-      Unfortunately, there are a few cases where people will have to use another
-      Quake engine instead of the one we provide, because of a low-end machine,
-      or a poor network connection, or because of drivers with no OpenGL support
-      or even a video card with no 3D acceleration.
-
       <sect1><heading>Using Transfusion as a Quake mod<p>
-         If you are in this case, you will be happy to know that Transfusion can
+         Unfortunately, there are a few cases where people will have to use another
+         Quake engine instead of the one we provide, because of a low-end machine,
+         or a poor network connection, or because of drivers with no OpenGL support
+         or even a video card with no 3D acceleration.
+
+         If you are in this case, you will be happy to know that old versions of
+         Transfusion, up to version 1.01 included, can actually
          be run using any Quake compatible engine, as a simple mod. Theorically,
          all you have to do is to copy the "transfusion" subdirectory (the one
          which contains the PAK files) into your Quake directory. Or copy a
@@ -549,7 +550,7 @@
 
    <sect>Links<label id="links"><p>
       <itemize>
-         <item><url url="http://www.planetblood.com/qblood/"
+         <item><url url="http://transfusion.deathmask.net/"
             name="The Transfusion Project">: our home page
          <item><url url="http://blood.sourceforge.net/"
             name="Transfusion on SourceForge.net">: our development page
