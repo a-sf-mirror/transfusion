@@ -128,7 +128,7 @@ void() Napalm_BallTouch;
 
 /*
 ================
-Napalm_ThrowBouncingBall
+Napalm_ActivateBall
 
 Activate the split function of a napalm ball
 
@@ -264,15 +264,15 @@ void() Napalm_BallTouch =
         newmis = spawn ();
         newmis.cnt = floor (self.cnt / 2);
         self.cnt = self.cnt - newmis.cnt;
-        newmis.velocity = v_forward * 500 + v_right * 100;
-        newmis.velocity_z = random() * 100 + 300;
+        newmis.velocity = v_forward * 300 + v_right * 100;
+        newmis.velocity_z = random() * 150 + 350;
         Napalm_ThrowBouncingBall (newmis);
         setorigin (newmis, neworigin);
 
         newball = spawn ();
         newball.cnt = self.cnt;
-        newball.velocity = v_forward * 500 - v_right * 100;
-        newball.velocity_z = random() * 100 + 300;
+        newball.velocity = v_forward * 300 - v_right * 100;
+        newball.velocity_z = random() * 150 + 350;
         Napalm_ThrowBouncingBall (newball);
         setorigin (newball, neworigin);
     }
@@ -312,7 +312,7 @@ void() Napalm_Fire =
         else
             newmis.cnt = self.ammo_rockets;
         self.ammo_rockets = self.ammo_rockets - newmis.cnt;
-        newmis.velocity = newmis.velocity * 500 + '0 0 200';
+        newmis.velocity = newmis.velocity * 400 + '0 0 200';
 
         Napalm_ThrowBouncingBall (newmis);
     }

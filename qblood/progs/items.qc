@@ -178,7 +178,7 @@ void() PlaceItem =
     self.solid = SOLID_TRIGGER;
     self.movetype = MOVETYPE_TOSS;
     self.velocity = '0 0 0';
-    self.origin_z = self.origin_z + 6;
+    self.origin_z = self.origin_z + 2;
     if (!droptofloor())
     {
         dprint ("Bonus item \"");
@@ -278,7 +278,7 @@ void() PlaceObject =
     self.solid = SOLID_BBOX;
     self.movetype = MOVETYPE_TOSS;
     self.velocity = '0 0 0';
-    self.origin_z = self.origin_z + 6;
+    self.origin_z = self.origin_z + 2;
     if (!droptofloor())
     {
         dprint ("Object \"");
@@ -461,7 +461,7 @@ void() obj_corps2 =
     precache_model("progs/corps2.mdl");
     setmodel(self, "progs/corps2.mdl");
 
-    setsize (self, '-2 -2 -2', '2 2 2'); //modifed so JoeV can better place
+    setsize (self, '-37 -17 -2', '39 17 13');
     StartObject ();
 };
 
@@ -755,7 +755,7 @@ void() obj_webs =
     precache_model("progs/webs.mdl");
     setmodel(self, "progs/webs.mdl");
 
-    // set skin ...
+    // TODO: set skin ...
     setsize (self, '-1 -23 -28', '4 23 26');
     StartObject ();
 };
@@ -851,8 +851,8 @@ void() obj_cauldron =
 };
 
 // barrels -
-//skin0 = tnt (don't use), skin1 = wine barrel,
-//skin2 = zombie head barrel, skin3 = "waste" barrel
+// skin0 = tnt (don't use), skin1 = wine barrel,
+// skin2 = zombie head barrel, skin3 = "waste" barrel
 void() obj_barrel =
 {
     precache_model("progs/barrel.mdl");
@@ -864,7 +864,7 @@ void() obj_barrel =
 
 // jar with a brain in it
 // skin0 is green fluid
-//skin1 is red fluid
+// skin1 is red fluid
 void() obj_brainjar =
 {
     precache_model("progs/jar.mdl");
@@ -874,14 +874,14 @@ void() obj_brainjar =
     StartObject ();
 };
 
-// drum-type barrell
+// drum-type barrel
 // skin0 is zombie head with blood,  "Caution Toxic Waste"
 // skin1 is green slime, "Caution - Toxic"
 void() obj_drum =
 {
     precache_model("progs/drum.mdl");
     setmodel(self, "progs/drum.mdl");
-    
+
     setsize (self, '-14 -14 -1', '14 14 36');
     StartObject ();
 };
@@ -1002,8 +1002,8 @@ void() item_artifact_bag =
     self.netname = "Doctor's Bag";
     self.model   = "progs/i_docbag.mdl";
     self.noise   = "items/pickup.wav";
-    setsize (self, '-7 -11 -1', '7 11 19');
     item_powerup ();
+    setsize (self, '-7 -11 -1', '7 11 19');
 };
 
 // Boots of Jumping
@@ -1012,8 +1012,8 @@ void() item_artifact_boots =
     self.netname = "Boots of Jumping";
     self.model   = "progs/i_boots.mdl";
     self.noise   = "items/pickup.wav";
-    setsize (self, '-11 -10 -1', '4 10 19');
     item_powerup ();
+    setsize (self, '-11 -10 -1', '4 10 19');
 };
 
 // Crystal Ball
@@ -1022,8 +1022,8 @@ void() item_artifact_crystal =
     self.netname = "Crystal Ball";
     self.model   = "progs/i_crysbl.mdl";
     self.noise   = "items/pickup.wav";
-    setsize (self, '-7 -7 -1', '7 7 14');
     item_powerup ();
+    setsize (self, '-7 -7 -1', '7 7 14');
 };
 
 // Reflective Shots
@@ -1035,8 +1035,8 @@ void() item_artifact_reflect =
 
     self.effects = self.effects | EF_BLUE;
 
-    setsize (self, '-7 -7 0', '7 11 16');
     item_powerup ();
+    setsize (self, '-7 -7 0', '7 11 16');
 };
 
 // Beast Vision
@@ -1045,8 +1045,8 @@ void() item_artifact_vision =
     self.netname = "Beast Vision";
     self.model   = "progs/i_vision.mdl";
     self.noise   = "items/pickup.wav";
-    setsize (self, '-10 -9 1', '11 9 9');
     item_powerup ();
+    setsize (self, '-10 -9 0', '11 9 9');
 };
 
 
@@ -1601,7 +1601,7 @@ void() weapon_supershotgun =
     self.weapon = IT_SAWED_OFF;
     self.netname = "Sawed-off";
     self.touch = weapon_touch;
-    setsize (self, '-19 -4 0', '17 4 14');
+    setsize (self, '-16 -16 0', '16 16 56');
 
     // Precache the necessary sounds
     precache_sound ("weapons/shotgun/shotcock.wav");  // shell ejection
@@ -1651,7 +1651,7 @@ void() weapon_supernailgun =
     self.weapon = IT_SPRAY_CAN;
     self.netname = "Spray Can";
     self.touch = weapon_touch;
-    setsize (self, '-16 -16 0', '16 16 56');
+    setsize (self, '-8 -8 0', '8 8 32');
 
     // Precache the necessary sounds
 //    precache_sound ("weapons/spraycan/burstflm.wav");
@@ -1665,9 +1665,11 @@ void() weapon_supernailgun =
     StartItem ();
 };
 
-/*QUAKED weapon_grenadelauncher (0 .5 .8) (-16 -16 0) (16 16 32)
-*/
 
+// FIXME: weapon_grenadelauncher & item_tnt have a lot of
+//        things in common. We should merge them in some way
+
+// Case of TNT
 void() weapon_grenadelauncher =
 {
     precache_model ("progs/v_rock.mdl");
@@ -1676,7 +1678,7 @@ void() weapon_grenadelauncher =
 
     setmodel (self, "progs/g_rock.mdl");
     self.weapon = IT_TNT;
-    self.netname = "Dynamite";
+    self.netname = "Case of TNT";
     self.touch = weapon_touch;
     setsize (self, '-16 -16 0', '16 16 56');
 
@@ -1690,9 +1692,6 @@ void() weapon_grenadelauncher =
     StartItem ();
 };
 
-// FIXME: weapon_grenadelauncher & item_tnt have a lot of
-//        things in common. We should merge them in some way
-
 //  TNT Bundle model
 void() item_tnt =
 {
@@ -1702,9 +1701,9 @@ void() item_tnt =
 
     setmodel (self, "progs/i_tnt.mdl");
     self.weapon = IT_TNT;
-    self.netname = "Dynamite";
+    self.netname = "Bundle of TNT";
     self.touch = weapon_touch;
-    setsize (self, '0 0 0', '32 32 32');
+    setsize (self, '-8 -8 0', '8 8 32');
 
     // Precache the necessary sounds
     PsychoCaleb_Precache ();
@@ -1728,7 +1727,7 @@ void() weapon_proximity =
     self.weapon = IT_PROXIMITY_BOMB;
     self.netname = "Proximity Bomb";
     self.touch = weapon_touch;
-    setsize (self, '0 0 0', '32 32 32');
+    setsize (self, '-8 -8 0', '8 8 32');
 
     // Precache the necessary sounds
     PsychoCaleb_Precache ();
@@ -1750,10 +1749,11 @@ void() weapon_remote =
     self.weapon = IT_REMOTE_DETONATOR;
     self.netname = "Remote Detonator";
     self.touch = weapon_touch;
-    setsize (self, '0 0 0', '32 32 32');
+    setsize (self, '-8 -8 0', '8 8 32');
 
     // Precache the necessary sounds
     PsychoCaleb_Precache ();
+    precache_sound ("weapons/tnt/remdet.wav");   // bomb triggered
     precache_sound ("weapons/tnt/remfire.wav");  // remote triggered
     precache_sound ("weapons/tnt/tnttoss.wav");  // throw sound
 
@@ -2123,58 +2123,6 @@ void() item_soul =
     StartItem ();
 };
 
-// Rewritten to use 'item_*' ammo boxes.
-// Some levels such as dm5.bsp use this function.
-
-/*QUAKED item_weapon (0 .5 .8) (0 0 0) (32 32 32) shotgun rocket spikes big
-DO NOT USE THIS!!!! IT WILL BE REMOVED!
-*/
-
-//-------------------------------
-// Spawnflags for 'item_weapon'.
-//-------------------------------
-#define WEAPON_SHOTGUN  1
-#define WEAPON_ROCKET   2
-#define WEAPON_SPIKES   4
-#define WEAPON_BIG      8
-
-void() item_weapon =
-{
-    local   float   osf;    // Short for original spawnflags.
-
-    osf = self.spawnflags;
-
-    // Change spawnflags for use with the other ammo items.
-    if (self.spawnflags & WEAPON_BIG)
-        self.spawnflags = AMMO_BIG;
-    else
-        self.spawnflags = 0;
-
-    if (osf & WEAPON_SHOTGUN)
-    {
-        self.classname = "item_shells";
-        item_shells ();
-        return;
-    }
-    if (osf & WEAPON_ROCKET)
-    {
-        self.classname = "item_rockets";
-        item_rockets ();
-        return;
-    }
-    if (osf & WEAPON_SPIKES)
-    {
-        self.classname = "item_spikes";
-        item_spikes ();
-        return;
-    }
-
-    dprint ("Undefined ammo at: ");
-    dprint (vtos(self.origin));
-    dprint ("\n");
-    remove (self);
-};
-
 
 /*
 ===============================================================================
@@ -2397,7 +2345,7 @@ void() item_artifact_invulnerability =
     self.netname = "Death mask";
     self.effects = self.effects | EF_RED;
     self.items = IT_INVULNERABILITY;
-    setsize (self, '-4 -12 -0', '2 12 30');
+    setsize (self, '-4 -12 0', '2 12 30');
     StartItem ();
 };
 

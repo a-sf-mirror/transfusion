@@ -133,9 +133,6 @@ void() plat_trigger_use =
 
 void() plat_crush =
 {
-//dprint ("plat_crush\n");
-
-// FIXME:  PM -- Does squishing via plats (ala Doom) even damage in Blood?
     other.deathtype = "squish";
     T_Damage (other, self, self, 1, DF_BODY, "squish");
 

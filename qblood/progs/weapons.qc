@@ -921,7 +921,6 @@ An attack impulse can be triggered now
 void() W_Attack =
 {
     makevectors (self.v_angle);    // calculate forward angle for velocity
-    self.show_hostile = time + 1;  // wake monsters up
 
     if (self.weapon == IT_PITCHFORK)
         Fork_Attack ();
@@ -1368,11 +1367,12 @@ void() W_WeaponFrame =
     if (time < self.attack_finished)
         return;
 
-    if (! W_AmmoAvailable () && self.player_state != PS_HOLD_FIRE)
-    {
-        W_SwitchToWeapon (W_BestWeapon ());
-        return;
-    }
+    if (! W_AmmoAvailable ())
+        if (self.player_state != PS_HOLD_FIRE)
+        {
+            W_SwitchToWeapon (W_BestWeapon ());
+            return;
+        }
 
     Impulses_Player ();
 

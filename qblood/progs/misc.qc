@@ -215,42 +215,6 @@ void() barrel_explode =
 };
 
 
-/*QUAKED misc_explobox (0 .5 .8) (0 0 0) (32 32 64)
-TESTING THING
-*/
-
-void() misc_explobox =
-{
-    local float oldz;
-
-    self.solid = SOLID_BBOX;
-    self.movetype = MOVETYPE_NONE;
-    precache_model ("maps/b_explob.bsp");
-    setmodel (self, "maps/b_explob.bsp");
-    setsize (self, '0 0 0', '32 32 64');
-    precache_sound ("weapons/napalm/explodfl.wav");
-    if (!self.dmg)
-        self.dmg = 240;
-    self.health = 20;
-    self.th_die = barrel_explode;
-    self.takedamage = DAMAGE_AIM;
-    self.touch = SUB_SolidTouch;
-
-    self.origin_z = self.origin_z + 2;
-    oldz = self.origin_z;
-    droptofloor();
-    if (oldz - self.origin_z > 250)
-    {
-        dprint ("item fell out of level at ");
-        dprint (vtos(self.origin));
-        dprint ("\n");
-        remove(self);
-    }
-};
-
-
-
-
 /*QUAKED misc_explobox2 (0 .5 .8) (0 0 0) (32 32 64)
 Smaller exploding box, REGISTERED ONLY
 */
@@ -269,6 +233,7 @@ void() misc_explobox2 =
         self.dmg = 240;
     self.health = 20;
     self.th_die = barrel_explode;
+    self.use = barrel_explode;
     self.takedamage = DAMAGE_AIM;
     self.touch = SUB_SolidTouch;
 

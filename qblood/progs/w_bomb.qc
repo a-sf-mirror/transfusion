@@ -543,14 +543,15 @@ void() W_ActivateRemoteBombs =
     grenadeEnt = find (world, classname, "grenade");
     while (grenadeEnt)
     {
-        if (grenadeEnt.netname == "Remote Detonator" && grenadeEnt.owner == self)
-        {
-            sound (self, CHAN_BODY, "weapons/tnt/remfire.wav", 1, ATTN_NORM);
-            tempEnt = self;
-            self = grenadeEnt;
-            GrenadeExplode ();
-            self = tempEnt;
-        }
+        if (grenadeEnt.owner == self)
+            if (grenadeEnt.netname == "Remote Detonator")
+            {
+                sound (grenadeEnt, CHAN_BODY, "weapons/tnt/remdet.wav", 1, ATTN_NORM);
+                tempEnt = self;
+                self = grenadeEnt;
+                GrenadeExplode ();
+                self = tempEnt;
+            }
         grenadeEnt = find (grenadeEnt, classname, "grenade");
     }
 
@@ -887,7 +888,6 @@ void() Bomb_Fire =
     newmis.think     = BombThink;
 
     setorigin (newmis, self.origin);
-    setsize (newmis, '0 0 0', '0 0 0');
 
     self.player_state = PS_FIRE;
 
@@ -945,6 +945,7 @@ void() Bomb_Fire =
     }
 
     setmodel (newmis, newmis.model);
+    setsize (newmis, '0 0 0', '0 0 0');
 
     // If we have no more dynamite, we "lose" the weapon
     // (expect for remote detonators: we always have the remote)

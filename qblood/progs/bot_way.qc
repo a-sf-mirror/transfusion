@@ -245,7 +245,6 @@ entity(vector org) make_waypoint =
     point.items = -1;
     setorigin(point, org);
 
-    setsize(point, VEC_HULL_MIN, VEC_HULL_MAX);
     waypoints = waypoints + 1;
     if (!way_head)
     {
@@ -262,6 +261,7 @@ entity(vector org) make_waypoint =
     point.count = waypoints;
     if (waypoint_mode > WM_LOADED) // editor modes
         setmodel(point, "progs/s_bubble.spr");
+    setsize(point, VEC_HULL_MIN, VEC_HULL_MAX);
     return point;
 };
 

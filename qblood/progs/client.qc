@@ -585,7 +585,6 @@ void() PutClientInServer =
     self.takedamage = DAMAGE_AIM;
     self.solid = SOLID_SLIDEBOX;
     self.movetype = MOVETYPE_WALK;
-    self.show_hostile = 0;
     self.max_health = 100;
     self.flags = FL_CLIENT;
     self.air_finished = time + 12;
@@ -901,12 +900,12 @@ void() WaterMove =
     {
         if (self.air_finished < time)
             sound (self, CHAN_VOICE, "foley/undchoke.wav", 1, ATTN_NORM);
-        else if (self.air_finished < time + 9)
+        else if (self.air_finished < time + 6)
             sound (self, CHAN_VOICE, "foley/gasp.wav", 1, ATTN_NORM);
         self.air_finished = time + 12;
         self.dmg = 2;
         if (self.dive_on)
-            Use_DivingSuit ();  // Turn of diving suit.
+            Use_DivingSuit ();  // Turn off diving suit.
     }
     else if (self.air_finished < time)
     {   // drown!

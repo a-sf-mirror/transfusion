@@ -54,7 +54,7 @@ void() door_go_up;
 void() door_blocked =
 {
     // Used to do self.dmg for damage.
-    T_Damage (other, self, self, other.health + 1, DF_NO_PROTECT, "squish");
+    T_Damage (other, self, self, other.health + 10, DF_NO_PROTECT, "squish");
 
 // if a door has a negative wait, it would never come back if blocked,
 // so let it just squash the object to death real fast
@@ -693,7 +693,7 @@ void () secret_blocked =
     other.deathtype = "squish";  // FIXME: is it still useful (New T_Damage is here now) ?
 
     // Used to do self.dmg for damage.
-    T_Damage (other, self, self, other.health + 1, DF_NO_PROTECT, "squish");
+    T_Damage (other, self, self, other.health + 10, DF_NO_PROTECT, "squish");
 };
 
 /*

@@ -1,7 +1,10 @@
 // Additional BloodBath entities and crap
-// Started by Jeff "Alastair" Dennis (jdennis97@home.com)
-// Appended by Tim "protoplasmatic" Hale (timothyhale@hotmail.com)
-// Appended and corrected by Dave "Darth Linux" Turner (darth_linux@planetblood.com)
+//
+// Authors: Jeff "Alastair" Dennis (jdennis97@home.com)
+//          Tim "protoplasmatic" Hale (timothyhale@hotmail.com)
+//          Dave "Darth Linux" Turner (darth_linux@planetblood.com)
+//          Mathieu "Elric" Olivier (elric@planetblood.com)
+//
 // BloodBath can be found at http://www.planetblood.com/qblood/
 
 //
@@ -13,11 +16,11 @@
 	message(string) : "LEVELNAME \n by MAPPER NAME \n http://www.planetblood.com/qblood/"
 	worldtype(choices) : "Ambience" : 0 =
 	[
-		0 : "Medieval"		
-		1 : "Runic (metal)"		
+		0 : "Medieval"
+		1 : "Runic (metal)"
 		2 : "Present (base)"
 	]
-	sounds(integer) : "CD track to play" : 1	
+	sounds(integer) : "CD track to play" : 1
 	light(integer) : "100"
 ]
 
@@ -25,9 +28,9 @@
 // base marker definitions
 //
 @baseclass = Appearflags [
-	spawnflags(Flags) =	
+	spawnflags(Flags) =
 	[
-		256 : "Not in Pink on the Inside" : 0		
+		256 : "Not in Pink on the Inside" : 0
 		512 : "Not in Lightly Broiled" : 0
 		1024 : "Not in Well Done" : 0
 		2048 : "Not in BloodBath" : 0
@@ -168,7 +171,10 @@
 @PointClass base(Appearflags) = misc_fireball : "Small fireball"
 	[ speed(integer) : "Speed" : 40 ]
 
-@PointClass = misc_explobox2 : "TNT Barrel" []
+@PointClass size(-16 -16 0, 16 16 32) base(Targetname)= misc_explobox2 : "TNT Barrel"
+[
+	dmg(integer) : "Damage" : 240
+]
 
 // 
 // ambient sounds
@@ -182,7 +188,7 @@
 @PointClass = ambient_suck_wind : "Wind sound" []
 @PointClass = ambient_swamp1 : "Frogs croaking" []
 @PointClass = ambient_swamp2 : "Frogs croaking B" []
-@PointClass = ambient_thunder : "Thunder sound" []
+@PointClass = ambient_thunder : "Loud wind rush" []
 @PointClass = ambient_amb2 : "Humming, violin sound" []
 @PointClass = ambient_amb3 : "Underwater Music" []
 @PointClass = ambient_amb4 : "Ominous Cello Note" []
@@ -269,6 +275,8 @@
 @PointClass = ambient_drip2 : "More water dripping" []
 @PointClass = ambient_drip5 : "Still more water dripping" []
 @PointClass = ambient_laugh : "Crazy laugh used in Area 15" []
+@PointClass = ambient_chant3lp : "Greogorian like chanting" []
+
 //
  // moving things
 //
@@ -481,25 +489,27 @@
 // BloodBath Weapons
 //
 
-@baseclass size(-16 -16 0, 16 16 32) color(0 0 200) base(Appearflags) = Weapon []
+@baseclass size(-16 -16 0, 16 16 56) color(0 0 200) base(Appearflags) = Weapon []
 
 @PointClass base(Weapon) = weapon_flaregun : "Flare Gun" []
 @PointClass base(Weapon) = weapon_supershotgun : "Sawed-off Shotgun" []
 @PointClass base(Weapon) = weapon_nailgun : "Tommy Gun" []
-@PointClass base(Weapon) = weapon_rocketlauncher : "Napalm Launcher" []
 @PointClass base(Weapon) = weapon_grenadelauncher : "Case of TNT" []
-@PointClass base(Weapon) = weapon_proximity : "Proximity Detonator" []
-@PointClass base(Weapon) = weapon_remote : "Remote Detonator" []
-@PointClass base(Weapon) = weapon_supernailgun : "Spray Can" []
+@PointClass base(Weapon) = weapon_rocketlauncher : "Napalm Launcher" []
 @PointClass base(Weapon) = weapon_voodoodoll : "Voodoo Doll" []
 @PointClass base(Weapon) = weapon_lifeleech : "Life Leech" []
 @PointClass base(Weapon) = weapon_lightning : "Tesla Cannon" []
+
+@PointClass base(Weapon) size(-8 -8 0, 8 8 32) = item_tnt : "Bundle of TNT" []
+@PointClass base(Weapon) size(-8 -8 0, 8 8 32) = weapon_proximity : "Proximity Detonator" []
+@PointClass base(Weapon) size(-8 -8 0, 8 8 32) = weapon_remote : "Remote Detonator" []
+@PointClass base(Weapon) size(-8 -8 0, 8 8 32) = weapon_supernailgun : "Spray Can" []
 
 //
 // BloodBath Ammunitions
 //
 
-@baseclass size(32 32 32) color(80 0 200) base(Appearflags) = Ammo
+@baseclass size(0 0 0, 32 32 56) color(80 0 200) base(Appearflags) = Ammo
 [
 	spawnflags(flags) =
  	[
@@ -511,7 +521,6 @@
 @PointClass base(Ammo) = item_shells : "Box of Shotgun Shells" []
 @PointClass base(Ammo) = item_spikes : "Full Drum of Bullets" []
 @PointClass base(Ammo) = item_rockets : "Gasoline Can" []
-@PointClass base(Ammo) = item_tnt : "Bundle of TNT" []
 @PointClass base(Ammo) = item_cells : "Battery" []
 @PointClass base(Ammo) = item_soul : "Trapped Soul" []
 
@@ -519,10 +528,10 @@
 // BloodBath Powerups
 //
 
-@PointClass base(Appearflags) =
+@PointClass base(Appearflags) size(-7 -11 -1, 7 11 19) =
  	item_artifact_bag : "Doctor's Bag" []
 
-@PointClass size(-16 -16 0, 16 16 16) base(Appearflags) = item_health : "Health pak" 
+@PointClass size(0 0 0, 32 32 56) base(Appearflags) = item_health : "Health pak" 
 [
 	spawnflags(flags) =
  	[
@@ -531,31 +540,28 @@
 	]
 ]
 
-@PointClass base(Appearflags) =
+@PointClass size(-3 -6 -2, 6 7 23) base(Appearflags) =
  	item_artifact_invisibility : "Cloak of Invisibility" []
 
-@PointClass base(Appearflags) =
+@PointClass size(-11 -10 -1, 4 10 19) base(Appearflags) =
  	item_artifact_boots : "Boots of Jumping" []
 
-@PointClass base(Appearflags) =
+@PointClass size(-16 -7 -2, 18 7 18) base(Appearflags) =
  	item_artifact_super_damage : "Guns Akimbo" []
 
-@PointClass base(Appearflags) =
+@PointClass size(-9 -13 -3, 8 13 74) base(Appearflags) =
  	item_artifact_envirosuit : "Diving Suit" []
 
-@PointClass base(Appearflags) =
+@PointClass size(-7 -7 -1, 7 7 14) base(Appearflags) =
  	item_artifact_crystal : "Crystal Ball" []
 
-@PointClass base(Appearflags) =
+@PointClass size(-7 -7 0, 7 11 16) base(Appearflags) =
  	item_artifact_reflect : "Reflective Shots" []
 
-@PointClass base(Appearflags) =
+@PointClass size(-10 -9 0, 11 9 9) base(Appearflags) =
  	item_artifact_vision : "Beast Vision" []
 
-@PointClass base(Appearflags) =
- 	item_artifact_shadow : "Shadow Cloak" []
-
-@PointClass base(Appearflags) =
+@PointClass size(-4 -12 0, 2 12 30) base(Appearflags) =
  	item_artifact_invulnerability : "Death Mask" []
 
 //
@@ -579,16 +585,16 @@
 // BloodBath Armor
 //
 
-@PointClass size(-16 -16 -24, 16 16 32) base(Appearflags) =
- 	item_armorInv : "Super Armor" []
-@PointClass size(-16 -16 -24, 16 16 32) base(Appearflags) =
- 	item_armor4 : "Spirit Armor" []
-@PointClass size(-16 -16 -24, 16 16 32) base(Appearflags) =
- 	item_armor2 : "Fire armor" []
-@PointClass size(-16 -16 -24, 16 16 32) base(Appearflags) =
- 	item_armor1 : "Body Armor" []
-@PointClass size(-16 -16 -24, 16 16 32) base(Appearflags) =
+@PointClass size(-7 -18 0, 10 18 38) base(Appearflags) =
  	item_armor0 : "Basic Armor" []
+@PointClass size(-2 -17 0, 4 19 37) base(Appearflags) =
+ 	item_armor4 : "Spirit Armor" []
+@PointClass size(-1 -18 0, 6 19 45) base(Appearflags) =
+ 	item_armor1 : "Body Armor" []
+@PointClass size(-7 -12 0, 7 10 37) base(Appearflags) =
+ 	item_armor2 : "Fire armor" []
+@PointClass size(-12 -17 0, 12 19 42) base(Appearflags) =
+ 	item_armorInv : "Super Armor" []
 
 //
 // BloodBath Monsters
@@ -652,7 +658,17 @@
 @PointClass size(-12 -15 0, 12 17 25) = obj_chest2 : "Rounded Chest" []
 @PointClass size(-12 -16 -1, 12 16 22) = obj_chest3 : "Squared Chest" []
 @PointClass size(-8 -11 -11, 7 11 12) = obj_clueb : "Nice Book" []
-@PointClass size(-37 -17 -2, 39 17 13) = obj_corps2 : "Corpse, Face Up - 5 skins" []
+@PointClass size(-37 -17 -2, 39 17 13) = obj_corps2 : "Corpse, Face Up"
+[
+	skin(Choices) : "Skin" : 0 =
+	[
+		0 : "Human 1"
+		1 : "Human 2"
+		2 : "Human 3"
+		3 : "Human 4"
+		4 : "Statue"
+	]
+]
 @PointClass size(-3 -12 -19, 3 12 21) = obj_cross : "Tilted Cross" []
 @PointClass size(-1 -4 -12, 1 3 12) = obj_cskey : "Chrome Skeleton Key" []
 @PointClass size(-12 -5 -21, 14 5 34) = obj_eflmtrch : "Egyptian Torch" []
@@ -691,8 +707,32 @@
 @PointClass size(-8 -11 -11, 7 11 12) = obj_mage : "Another Book" []
 @PointClass size(-3 -7 -26, 3 7 27) = obj_shovel : "A Shovel" []
 @PointClass size(-32 -21 -0, 24 20 34) = obj_cauldron : "A Boiling Cauldron" []
-@PointClass size(-14 -20 -14, 14 20 39) = obj_barrel : "Barrel - 4 skins" []
-@PointClass size(-11 -7 -1, 14 8 28) = obj_brainjar : "Jar with brain in it - 2 skins" []
+@PointClass size(-14 -20 -14, 14 20 39) = obj_barrel : "Barrel"
+[
+	skin(Choices) : "Skin" : 1 =
+	[
+		0 : "TNT (don't use)"
+		1 : "Wine"
+		2 : "Zombie Head"
+		3 : "Waste"
+	]
+]
+@PointClass size(-11 -7 -1, 14 8 28) = obj_brainjar : "Jar with brain in it"
+[
+	skin(Choices) : "Skin" : 0 =
+	[
+		0 : "Green fluid"
+		1 : "Red fluid"
+	]
+]
+@PointClass size(-14 -14 -1, 14 14 36) = obj_drum : "Drum-type barrel"
+[
+	skin(Choices) : "Skin" : 0 =
+	[
+		0 : "Zombie head with blood"
+		1 : "Green slime"
+	]
+]
 
 //
 // BloodBath MISC
@@ -702,8 +742,9 @@
 @SolidClass base(Target, Targetname) = sentry_detect_crypt : "Howling sound for The Crypt (Blood2)" []
 @SolidClass base(Target, Targetname) = exploding_wall : "Exploding Wall"
 [	
-health(integer) : "Health (shootable if > 0)"	skin(choices) : "Skin" : 0 =
- 	[
+	health(integer) : "Health (shootable if > 0)"
+	skin(choices) : "Skin" : 0 =
+	[
 		0: "Grey concrete"
 		1: "Brown concrete"
 		2: "Red/Brown bricks"

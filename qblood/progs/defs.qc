@@ -432,9 +432,6 @@ float team2score;
 .float      invisible_time, invisible_sound;
 .float      fly_sound;
 
-.float      show_hostile;   // set to time+0.2 whenever a client fires a
-                            // weapon or takes damage.  Used to alert
-                            // monsters that otherwise would let the player go
 .float      jump_flag;      // player jump flag
 .float      swim_flag;      // player swimming sound flag
 .float      air_finished;   // when time > air_finished, start drowning

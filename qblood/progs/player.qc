@@ -41,6 +41,9 @@ float(void() idleFunction) player_idleWeapon =
         return FALSE;
     #endif
 
+    self.nextthink = time + 0.1;
+    self.think = idleFunction;
+
     if (self.player_state != PS_HOLD_FIRE && self.player_state != PS_MENU)
     {
         self.weaponframe = 0;
@@ -51,9 +54,6 @@ float(void() idleFunction) player_idleWeapon =
         else
             self.player_state = PS_IDLE;
     }
-
-    self.nextthink = time + 0.1;
-    self.think = idleFunction;
 
     return TRUE;
 };
@@ -474,7 +474,7 @@ void(string gibname, float dm) ThrowGib =
     new.avelocity_z = random()*600;
     new.think = SUB_Remove;
     new.ltime = time;
-    new.nextthink = time + 10 + random()*10;
+    new.nextthink = time + 5 + random()*7;
     new.frame = 0;
     new.flags = 0;
 };
@@ -786,16 +786,23 @@ void() PlayerDie =
     #endif
 };
 
+// used by kill command and disconnect command
 void() set_suicide_frame =
 {
-    // used by kill command and disconnect command
-    if (self.model != "progs/player.mdl")
-        return; // already gibbed
-    #ifdef QUAKEWORLD
-    self.frame = $deatha11;
-    #else
-    self.frame = $deatha6;
-    #endif
+    if (self.model == "progs/player.mdl")
+    {
+        #ifdef QUAKEWORLD
+        self.frame = $deatha11;
+        #else
+        self.frame = $deatha6;
+        #endif
+    }
+    else if (self.observer)
+    {
+        self.model = string_null;
+        self.modelindex = 0;
+    }
+
     self.solid = SOLID_NOT;
     self.movetype = MOVETYPE_TOSS;
     self.deadflag = DEAD_DEAD;
