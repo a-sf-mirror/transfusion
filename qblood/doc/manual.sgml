@@ -6,7 +6,7 @@
    <title> Transfusion manual
    <author> Mathieu Olivier and Dave Turner
       <tt>&lt;{elric,darth_linux}@planetblood.com&gt;</tt>
-   <date>v0.9.0, October 6, 2002
+   <date>v0.9.1, October 11, 2002
    <abstract>
       This manual covers installation and usage of the
       <ref id="links" name="Transfusion"> game.
@@ -450,6 +450,9 @@
          alias map3 "changelevel cpbb01"
          alias map4 "changelevel crypt"
          </verb>
+
+         This file is reloaded each time the server starts a map, so you can
+         safely modify it without having to restart your server.
 
          Note that the <ref id="menu" name="voting system"> still works
          correctly even if the server administrator defines a map cycling list.

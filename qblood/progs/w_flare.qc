@@ -149,6 +149,10 @@ void() FlareTouch =
     self.voided = 1;
     #endif
 
+    // REMOVEME: temporary workaround for a bug in DP
+    // DP seems to "reuse" the entity without resetting the light properties
+    self.effects = 0;
+
     if (pointcontents(self.origin) == CONTENT_SKY)
     {
         remove(self);
@@ -229,6 +233,9 @@ void() AltFlareTouch =
         return;
     self.voided = 1;
     #endif
+
+    // REMOVEME: temporary workaround for a bug in DP
+    self.effects = 0;
 
     if (pointcontents(self.origin) == CONTENT_SKY)
     {
@@ -311,6 +318,9 @@ void() AltFlareSplit =
 
         loop = loop - 1;
     }
+
+    // REMOVEME: temporary workaround for a bug in DP
+    self.effects = 0;
 
     // Remove the old flare.
     remove (self);

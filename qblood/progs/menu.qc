@@ -276,14 +276,16 @@ void(float vote, string newmap) Vote_AddMapVote =
 #define MENU_VOTE_MAP_BLOOD_SP      11
 #define MENU_VOTE_MAP_BLOODPACKS    12  // Plasma Pack + Cryptic Passage
 #define MENU_VOTE_MAP_BLOOD2        13
-#define MENU_VOTE_MAP_CUSTOM        14
+#define MENU_VOTE_MAP_TRANSFUSION   14
+#define MENU_VOTE_MAP_CONVERSIONS   15
 
 // The groups of maps
-#define MAPS_BLOOD      0
-#define MAPS_BLOOD_SP   10
-#define MAPS_BLOODPACKS 40  // Plasma Pack + Cryptic Passage
-#define MAPS_BLOOD2     60
-#define MAPS_CUSTOM     80
+#define MAPS_BLOOD          0
+#define MAPS_BLOOD_SP       10
+#define MAPS_BLOODPACKS     40  // Plasma Pack + Cryptic Passage
+#define MAPS_BLOOD2         60
+#define MAPS_TRANSFUSION    80
+#define MAPS_CONVERSIONS    100
 
 // Options
 // All values must be powers of 2
@@ -321,7 +323,8 @@ void() Menu_Draw =
                 "2) Blood Single Player maps\n"
                 "3) Blood Add-ons maps\n"
                 "4) Blood 2 maps\n"
-                "5) Custom maps\n"
+                "5) Transfusion maps\n"
+                "6) Converted maps\n"
                 "\n"
                 "10) Go back to main menu\n");
     }
@@ -435,15 +438,22 @@ void() Menu_Draw =
                 "\n"
                 "10) Go back to map menu\n");
     }
-    else if (self.menu_index == MENU_VOTE_MAP_CUSTOM)
+    else if (self.menu_index == MENU_VOTE_MAP_TRANSFUSION)
     {
         Sprint (self, PRINT_HIGH,
                 "Vote for a map:\n"
-                "1) bb3_2k1   Bodies Infusion           | 2) dcamp     DeathCamp\n"
-                "3) dranzbb6  Black Coffee              | 4) highnoon  HighNoon\n"
-                "5) qbb1      The Confluence            | 6) qbb2      KathartiK\n"
-                "7) qbb3      Caleb's Woodland Retreat  | 8) qe1m7     The House of Chthon\n"
-                "9) simple    Dead Simple\n"
+                "1) bb3_2k1   Bodies Infusion  | 2) dcamp  DeathCamp\n"
+                "3) highnoon  HighNoon         | 4) qbb1   The Confluence\n"
+                "5) qbb2      KathartiK        | 6) qbb3   Caleb's Woodland Retreat\n"
+                "\n"
+                "10) Go back to map menu\n");
+    }
+    else if (self.menu_index == MENU_VOTE_MAP_CONVERSIONS)
+    {
+        Sprint (self, PRINT_HIGH,
+                "Vote for a map:\n"
+                "1) dranzbb6  Black Coffee         | 2) fragm   Frag'M\n"
+                "3) qe1m7     The House of Chthon  | 4) simple  Dead Simple\n"
                 "\n"
                 "10) Go back to map menu\n");
     }
@@ -803,12 +813,12 @@ void() Menu_HandleVoteMapBlood2 =
 
 /*
 ====================
-Menu_HandleVoteMapCustom
+Menu_HandleVoteMapTransfusion
 
-Handles the impulses when the client is in the Custom menu
+Handles the impulses when the client is in the Transfusion menu
 ====================
 */
-void() Menu_HandleVoteMapCustom =
+void() Menu_HandleVoteMapTransfusion =
 {
     local string newmap;
 
@@ -825,18 +835,53 @@ void() Menu_HandleVoteMapCustom =
     else if (self.impulse == 2)
         newmap = "dcamp";
     else if (self.impulse == 3)
-        newmap = "dranzbb6";
-    else if (self.impulse == 4)
         newmap = "highnoon";
-    else if (self.impulse == 5)
+    else if (self.impulse == 4)
         newmap = "qbb1";
-    else if (self.impulse == 6)
+    else if (self.impulse == 5)
         newmap = "qbb2";
-    else if (self.impulse == 7)
+    else if (self.impulse == 6)
         newmap = "qbb3";
-    else if (self.impulse == 8)
+    else
+    {
+        Sprint (self, PRINT_HIGH, "\n===== INVALID COMMAND =====\n\n");
+        Menu_Draw ();
+        return;
+    }
+
+    // Validate the vote
+    Vote_AddMapVote (MAPS_TRANSFUSION + self.impulse, newmap);
+
+    self.player_state = PS_IDLE;  // exit the menu
+};
+
+
+/*
+====================
+Menu_HandleVoteMapConversions
+
+Handles the impulses when the client is in the Conversions menu
+====================
+*/
+void() Menu_HandleVoteMapConversions =
+{
+    local string newmap;
+
+    // If we want to go back to map menu
+    if (self.impulse == 10)
+    {
+        self.menu_index = MENU_VOTE_MAP;
+        Menu_Draw ();
+        return;
+    }
+
+    if (self.impulse == 1)
+        newmap = "dranzbb6";
+    else if (self.impulse == 2)
+        newmap = "fragm";
+    else if (self.impulse == 3)
         newmap = "qe1m7";
-    else if (self.impulse == 9)
+    else if (self.impulse == 4)
         newmap = "simple";
     else
     {
@@ -846,7 +891,7 @@ void() Menu_HandleVoteMapCustom =
     }
 
     // Validate the vote
-    Vote_AddMapVote (MAPS_CUSTOM + self.impulse, newmap);
+    Vote_AddMapVote (MAPS_CONVERSIONS + self.impulse, newmap);
 
     self.player_state = PS_IDLE;  // exit the menu
 };
@@ -879,7 +924,9 @@ void() Menu_HandleVoteMap =
     else if (self.impulse == 4)
         self.menu_index = MENU_VOTE_MAP_BLOOD2;
     else if (self.impulse == 5)
-        self.menu_index = MENU_VOTE_MAP_CUSTOM;
+        self.menu_index = MENU_VOTE_MAP_TRANSFUSION;
+    else if (self.impulse == 6)
+        self.menu_index = MENU_VOTE_MAP_CONVERSIONS;
     else
         Sprint (self, PRINT_HIGH, "\n===== INVALID COMMAND =====\n\n");
 
@@ -1127,8 +1174,10 @@ void() Menu_Update =
         Menu_HandleVoteMapBloodPacks ();
     else if (self.menu_index == MENU_VOTE_MAP_BLOOD2)
         Menu_HandleVoteMapBlood2 ();
-    else if (self.menu_index == MENU_VOTE_MAP_CUSTOM)
-        Menu_HandleVoteMapCustom ();
+    else if (self.menu_index == MENU_VOTE_MAP_TRANSFUSION)
+        Menu_HandleVoteMapTransfusion ();
+    else if (self.menu_index == MENU_VOTE_MAP_CONVERSIONS)
+        Menu_HandleVoteMapConversions ();
 
     self.impulse = 0;
 };

@@ -175,6 +175,8 @@ void() barrel_damage =
         self.origin = tempEnt.origin;
     }
 
+    KillBurner (self);
+
     setorigin (self, self.origin + '0 0 32');
     T_RadiusDamage (self, self, self.dmg, world, string_null);
 
