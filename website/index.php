@@ -25,6 +25,11 @@
 	<h2 id="news-section" class="section">News</h2>
 	<ul>
 		<li>
+			<span class="title">February 24, 2004:</span> (by Elric)<br />
+			I am finally out of the project for good. Many thanks to all the guys who contributed to
+			Transfusion, or supported it one way or another. It has been a great experience to me.<p />
+		</li>
+		<li>
 			<span class="title">January 22, 2004:</span> (by Elric)<br />
 			Some code and binary snapshots have been uploaded. We try to cook a new release for ASAP.
 			Stay tuned and pray: it may well be the last release this project will ever produce.<p />
