@@ -33,8 +33,14 @@ PLAYER
 
 void() player_run;
 
-void() player_idleWeapon =
+float(void() idleFunction) player_idleWeapon =
 {
+    #ifndef QUAKEWORLD
+    // Do NOTHING  when on the BOD
+    if (self.player_state == PS_BRINK_OF_DEATH)
+        return FALSE;
+    #endif
+
     if (self.player_state != PS_HOLD_FIRE && self.player_state != PS_MENU)
     {
         self.weaponframe = 0;
@@ -45,14 +51,17 @@ void() player_idleWeapon =
         else
             self.player_state = PS_IDLE;
     }
+
+    self.nextthink = time + 0.1;
+    self.think = idleFunction;
+
+    return TRUE;
 };
 
 void() player_stand =
 {
-    self.nextthink = time + 0.1;
-    self.think = player_stand;
-
-    player_idleWeapon ();
+    if (!player_idleWeapon (player_stand))
+        return;
 
     if (self.velocity_x || self.velocity_y)
     {
@@ -85,10 +94,8 @@ void() player_stand =
 
 void() player_run =
 {
-    self.nextthink = time + 0.1;
-    self.think = player_run;
-
-    player_idleWeapon ();
+    if (!player_idleWeapon (player_run))
+        return;
 
     if (!self.velocity_x && !self.velocity_y)
     {
@@ -137,7 +144,7 @@ void() player_bod5  = [$fall5, player_bod6 ] {};
 void() player_bod6  = [$fall6, player_bod7 ] {};
 void() player_bod7  = [$fall7, player_bod8 ] {};
 void() player_bod8  = [$fall8, player_bod9 ] {};
-void() player_bod9  = [$fall9, player_bod10] {};
+void() player_bod9  = [$fall9, player_bod10] {self.takedamage = DAMAGE_AIM;};
 void() player_bod10 = [$sway1, player_bod11] {};
 void() player_bod11 = [$sway2, player_bod12] {};
 void() player_bod12 = [$sway3, player_bod13] {};
@@ -152,9 +159,9 @@ void() player_bod_die2 = [$deathc2, player_bod_die3] {};
 void() player_bod_die3 = [$deathc3, player_bod_die4] {};
 void() player_bod_die4 = [$deathc4, player_bod_die4] {PlayerDead();};
 
-void() player_bod_dieh1 = [$deathc1, player_bod_dieh2] {};
-void() player_bod_dieh2 = [$deathc2, player_bod_dieh3] {};
-void() player_bod_dieh3 = [$deathc3, player_bod_dieh3] {PlayerDead();};
+void() player_bod_dieh1 = [$deathb1, player_bod_dieh2] {};
+void() player_bod_dieh2 = [$deathb2, player_bod_dieh3] {};
+void() player_bod_dieh3 = [$deathb3, player_bod_dieh3] {PlayerDead();};
 
 
 void(entity player, entity attacker) Player_BrinkOfDeath =
@@ -164,13 +171,18 @@ void(entity player, entity attacker) Player_BrinkOfDeath =
     player.player_state = PS_BRINK_OF_DEATH;
 
     player.health = 1;  // 0 toggles the dead view on the client
+
+    // We make the BODed player invincible for 1 sec
+    // so that attackers will have the time to stop firing
+    player.takedamage = DAMAGE_NO;
+
     oself = self;
     self = player;
     player_bod1 ();
     self = oself;
     player.weaponmodel = "";
 
-    player.t_length = time + 10;  // the effect will last 10 sec
+    player.t_length = time + 15;  // the effect will last 15 sec
     sound (player, CHAN_VOICE, "thevoice/vo15.wav", 1, ATTN_NONE);
     centerprint (player, "YOU ARE ON THE BRINK OF DEATH!!");
     // If there's a real attacker (not a BOD triggered by cheat code)
@@ -514,7 +526,9 @@ void() HeadTouch =
     self.velocity_x = other.velocity_x * 3 + 50 * random();
     self.velocity_y = other.velocity_y * 3 + 50 * random();
     self.velocity_z = 300 + 160 * random() + (other.velocity_y + other.velocity_x) * 0.30;
-    self.avelocity = crandom() * '0 600 0';
+    self.avelocity_x = crandom() * 600;
+    self.avelocity_y = crandom() * 600;
+    self.avelocity_z = crandom() * 600;
 
     self.flags = self.flags - (self.flags & FL_ONGROUND);
 };
@@ -561,7 +575,9 @@ void(string gibname, float dm) ThrowHead =
     setsize (self, '-10 -13 -3', '12 6 18');
     self.velocity = VelocityForDamage (dm);
     self.origin_z = self.origin_z - 24;
-    self.avelocity = crandom() * '0 600 0';
+    self.avelocity_x = crandom() * 600;
+    self.avelocity_y = crandom() * 600;
+    self.avelocity_z = crandom() * 600;
 };
 
 
@@ -758,7 +774,10 @@ void() PlayerDie =
     {
         // If the head is removed in the process
         if (self.health < -20)
+        {
+            ThrowHead ("progs/h_player.mdl", self.health);
             player_bod_die1 ();
+        }
         else
             player_bod_dieh1 ();
     }

@@ -19,6 +19,7 @@
 
 
 #include "common.qh"
+#include "player.qh"
 
 
 // flag status used in cnt field of flag
@@ -276,28 +277,23 @@ void() CTF_FlagThink =
     v_z = (-1) * v_z; // reverse z component
 
     f = 14;
-    if (self.owner.frame >= 29 && self.owner.frame <= 40) {
-        if (self.owner.frame >= 29 && self.owner.frame <= 34) { //axpain
-            if      (self.owner.frame == 29) f = f + 2;
-            else if (self.owner.frame == 30) f = f + 8;
-            else if (self.owner.frame == 31) f = f + 12;
-            else if (self.owner.frame == 32) f = f + 11;
-            else if (self.owner.frame == 33) f = f + 10;
-            else if (self.owner.frame == 34) f = f + 4;
-        } else if (self.owner.frame >= 35 && self.owner.frame <= 40) { // pain
-            if      (self.owner.frame == 35) f = f + 2;
-            else if (self.owner.frame == 36) f = f + 10;
-            else if (self.owner.frame == 37) f = f + 10;
-            else if (self.owner.frame == 38) f = f + 8;
-            else if (self.owner.frame == 39) f = f + 4;
-            else if (self.owner.frame == 40) f = f + 2;
+    if (self.owner.frame >= $pitchpain1 && self.owner.frame <= $pain5) {
+        if (self.owner.frame >= $pitchpain1 && self.owner.frame <= $pitchpain5) {
+            if      (self.owner.frame == $pitchpain1) f = f + 2;
+            else if (self.owner.frame == $pitchpain2) f = f + 8;
+            else if (self.owner.frame == $pitchpain3) f = f + 12;
+            else if (self.owner.frame == $pitchpain4) f = f + 10;
+            else if (self.owner.frame == $pitchpain5) f = f + 4;
+        } else if (self.owner.frame >= $pain1 && self.owner.frame <= $pain5) {
+            if      (self.owner.frame == $pain1) f = f + 2;
+            else if (self.owner.frame == $pain2) f = f + 10;
+            else if (self.owner.frame == $pain3) f = f + 10;
+            else if (self.owner.frame == $pain4) f = f + 8;
+            else if (self.owner.frame == $pain5) f = f + 2;
         }
-    } else if (self.owner.frame >= 103 && self.owner.frame <= 118) {
-        if      (self.owner.frame >= 103 && self.owner.frame <= 104) f = f + 6;  //nailattack
-        else if (self.owner.frame >= 105 && self.owner.frame <= 106) f = f + 6;  //light
-        else if (self.owner.frame >= 107 && self.owner.frame <= 112) f = f + 7;  //rocketattack
-        else if (self.owner.frame >= 112 && self.owner.frame <= 118) f = f + 7;  //shotattack
     }
+    else if (self.owner.frame >= $attack1 && self.owner.frame <= $attack2) f = f + 6;
+
     self.origin = e.origin + '0 0 -16' - f*v + v_right * 22;
     self.angles = e.angles + '0 0 -45';
     setorigin (self, self.origin);

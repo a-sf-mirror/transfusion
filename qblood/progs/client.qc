@@ -1443,6 +1443,8 @@ void() PlayerPostThink =
     {
         if (self.t_length < time)
             Player_LiveAgain ();
+        ResetIdle (self);
+        return;
     }
     #endif
 

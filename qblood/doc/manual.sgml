@@ -5,7 +5,7 @@
 
    <title> BloodBath manual
    <author> Mathieu Olivier <tt>&lt;elric@planetblood.com&gt;</tt>
-   <date>v?.?.? (development), March 18, 2002
+   <date>v?.?.? (development), April 3, 2002
    <abstract>
       This manual covers <url url="http://www.planetblood.com/qblood/"
       name="BloodBath"> installation and usage.
@@ -106,23 +106,30 @@
       but one has a normal fire and a secondary fire, also known as altfire.
       Most of the time, it's a deadlier mode that consumes more ammo.
       <descrip>
-         <tag>Pitch Fork</tag> your starting weapon. Deadly. No altfire mode.
+         <tag>Pitch Fork</tag> Your starting weapon. Deadly. No altfire mode.
          <tag>Flare Gun</tag> ...
-         <tag>Shotgun</tag> no description needed I think. Altfire makes you
+         <tag>Shotgun</tag> No description is needed I think. Altfire makes you
          fire both shells.
-         <tag>Tommy Gun</tag> the machinegun you've surely already seen in old
+         <tag>Tommy Gun</tag> The machinegun you've surely already seen in old
          gangster movies. The altfire moves your gun horizontaly while
          firing.
-         <tag>Napalm Launcher</tag> a kind of rocket launcher, except that it
+         <tag>Napalm Launcher</tag> A kind of rocket launcher, except that it
          throws napalm balls. The alftire mode is a surprise...
          <tag>TNT / Proximity Bombs / Remote Detonators</tag> ...
-         <tag>Spray Can</tag> ...
-         <tag>Tesla Cannon</tag> ...
-         <tag>Voodoo Doll</tag> this magical weapon causes spiritual damage to
+         <tag>Spray Can</tag> A kind of flame-thrower. Cans make good replacements
+         for TNT in altfire mode.
+         <tag>Tesla Cannon</tag> Capable of throwing electric jolts at a very
+         high rate, the tesla cannon is a feared weapon. Its altfire mode
+         delivers an huge (and explosive) electric jolt.
+         <tag>Life Leech</tag> This powerful magical weapon can be used either
+         as a spiritual ball launcher, or as a sentry in altfire mode. The leech
+         never runs out of ammo: it has unlimited ammo in sentry mode, and if it
+         has no more soul to consume in normal mode, it will steal your life to
+         fuel itself!
+         <tag>Voodoo Doll</tag> This magical weapon causes spiritual damage to
          your opponent. But beware: miss him and you'll be the one who will
          take the pain! The altfire consumes all your ammo in one powerful
          spiritual blow.
-         <tag>Life Leech</tag> ...
       </descrip>
    </sect>
 
@@ -148,9 +155,9 @@
    <!-- Brink Of Death -->
 
    <sect><heading>Brink Of Death<label id="BOD"><p>
-      When a player reaches exactly 0 HP, he is on the brink of death, but not
-      dead yet. If nobody finishes him, he will be able to come back to life
-      after a dozen of seconds, at 1 HP.
+      When a player's HP reaches between 1 and -1, he is on the brink of death,
+      but not dead (yet). If nobody finishes him, he will be able to come back
+      to life after 15 seconds, at 1 HP.
 
       A player can't put himself on the BOD. It also doesn't apply to someone
       who's on fire.

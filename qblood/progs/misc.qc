@@ -189,7 +189,7 @@ void() light_flame_small_white =
 void() barrel_damage =
 {
     setorigin (self, self.origin + '0 0 32');
-    T_RadiusDamage (self, self, 160, world, string_null);
+    T_RadiusDamage (self, self, self.dmg, world, string_null);
 
     #ifdef QUAKEWORLD
     WriteByte (MSG_MULTICAST, SVC_TEMPENTITY);
@@ -229,6 +229,8 @@ void() misc_explobox =
     setmodel (self, "maps/b_explob.bsp");
     setsize (self, '0 0 0', '32 32 64');
     precache_sound ("weapons/napalm/explodfl.wav");
+    if (!self.dmg)
+        self.dmg = 240;
     self.health = 20;
     self.th_die = barrel_explode;
     self.takedamage = DAMAGE_AIM;
@@ -263,6 +265,8 @@ void() misc_explobox2 =
     setmodel (self, "progs/barrel.mdl"); // maps/b_exbox2.bsp");
     setsize (self, '-16 -16 0', '16 16 32');
     precache_sound ("weapons/napalm/explodfl.wav");
+    if (!self.dmg)
+        self.dmg = 240;
     self.health = 20;
     self.th_die = barrel_explode;
     self.takedamage = DAMAGE_AIM;

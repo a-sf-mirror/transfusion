@@ -262,7 +262,7 @@ void(vector org, vector dir, float mspeed) Tesla_LaunchJolt =
     jolt.angles     = vectoangles (jolt.velocity);
     if (self.player_state == PS_ALTFIRE)
     {
-        jolt.dmg    = 170;
+        jolt.dmg    = 180;
         jolt.model  = "progs/bolt2.mdl";
         jolt.style  = TESLA_BIGJOLT;
         setorigin (jolt, org);

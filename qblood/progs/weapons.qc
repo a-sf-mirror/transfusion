@@ -737,7 +737,10 @@ void(float newWeapon) W_SwitchToWeapon =
 
     // If the new weapon is already the current one
     if (self.weapon == newWeapon)
+    {
+        self.newweapon = 0;
         return;
+    }
 
     self.newweapon = newWeapon;
     self.player_state = PS_HOLSTER;

@@ -329,8 +329,8 @@ void(entity targ, entity inflictor, entity attacker, float damage, float dflags,
     if (targ.health <= 0)
     {
         #ifndef QUAKEWORLD  // No BOD in QW
-        // If a player reaches exactly 0 HP (Brink Of Death)
-        if (targ.health == 0 && targ.classname == "player")
+        // If a player reaches between -1 and 1 HP (Brink Of Death)
+        if (targ.health >= -1 && targ.health <= 1 && targ.classname == "player")
         {
             // If he wasn't already on the Brink Of Death
             // and if he doesn't kill himself

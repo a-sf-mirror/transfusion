@@ -200,17 +200,6 @@ void() PrecacheSounds =
     precache_sound ("misc/null.wav");              // null sound (used as a placeholder, and to stop sounds)
     precache_sound ("player/slimbrn2.wav");
     precache_sound ("player/taunts/t1010.wav");    // "I live ... again !"
-
-/* *** We don't use them yet (may not be needed here actually) ***
-    precache_sound ("player/quips/1028.wav");      // "Nevermore" e1m1
-    precache_sound ("player/quips/1062.wav");      // "I like my hands bloody" e1m1
-    precache_sound ("player/quips/1024.wav");      // "Open for business" e1m1
-    precache_sound ("ambience/riff1.wav");         // chapel organ sound for e1m1 secret
-*/
-
-// these are needed and in production by RPG    
-    precache_sound ("ambience/qstndr2.wav");       // for door in cpbb03
-    precache_sound ("ambience/slidstp1.wav");      // for door in cpbb03
 };
 
 
@@ -445,11 +434,15 @@ void(float corpseHealth, void() corpseToGib) BecomeCorpse =
     // Note: only player's heads can be into this function
     if (self.classname != "head")
     {
+        local vector minBbox, maxBbox;
+
+        minBbox = VEC_HULL_MIN;
+        maxBbox = VEC_HULL_MAX;
+        maxBbox_z = minBbox_z + 5;
+        setsize (self, minBbox, maxBbox);
+
         self.touch = SUB_SolidTouch;
         self.solid = SOLID_BBOX;
-
-        setsize (self, '-32 -32 -24', '32 32 -19');
-
         self.classname = "corpse";
     }
 };
