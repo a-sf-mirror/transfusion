@@ -344,8 +344,8 @@ void() Menu_Draw =
                 "Vote for a map:\n"
                 "1) bb1  The Stronghold  | 2) bb2  Winter Wonderland\n"
                 "3) bb3  Bodies          | 4) bb4  The Tower\n"
-                "5) bb5  Click!          | 6) bb6  Twin Fortress\n"
-                "7) bb7  Midgard         | 8) bb8  Fun With Heads\n"
+                "5) bb5  Click!          | 6) bb7  Midgard\n"
+                "7) bb8  Fun With Heads\n"
                 "\n"
                 "10) Go back to map menu\n");
     }
@@ -354,7 +354,7 @@ void() Menu_Draw =
         Sprint (self, PRINT_HIGH,
                 "Vote for a map:\n"
                 "1) dm2      Power!               | 2) dm3  Area 15\n"
-                "3) bb3_2k1  Bodies Classic\n"
+                "3) bb3_2k1  Bodies Infusion\n"
                 "4) qe1m7    The House of Chthon\n"
                 "\n"
                 "10) Go back to map menu\n");
@@ -569,10 +569,8 @@ void() Menu_HandleVoteMapBB =
     else if (self.impulse == 5)
         newmap = "bb5";
     else if (self.impulse == 6)
-        newmap = "bb6";
-    else if (self.impulse == 7)
         newmap = "bb7";
-    else if (self.impulse == 8)
+    else if (self.impulse == 7)
         newmap = "bb8";
 
     // Validate the vote
