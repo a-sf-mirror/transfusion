@@ -1584,14 +1584,14 @@ void() weapon_lightning =
     setsize (self, '-16 -16 0', '16 16 56');
 
     // Precache the necessary sounds
-/*
-    precache_sound ("weapons/tesla/taltac3.wav");
-    precache_sound ("weapons/tesla/tesaltf2.wav");
+
+//    precache_sound ("weapons/tesla/taltac3.wav");
+//    precache_sound ("weapons/tesla/tesaltf2.wav");
     precache_sound ("weapons/tesla/tesaltfr.wav");
     precache_sound ("weapons/tesla/tesaltht.wav");
     precache_sound ("weapons/tesla/tesla1.wav");
-*/
-    precache_sound ("weapons/tesla/teslaz~1.wav");
+
+//    precache_sound ("weapons/tesla/teslaz~1.wav");
 //    precache_sound ("weapons/tesla/teslaz~2.wav");
     precache_sound ("weapons/tesla/tessngfr.wav");
 //    precache_sound ("weapons/tesla/tessnght.wav");  // Hit
