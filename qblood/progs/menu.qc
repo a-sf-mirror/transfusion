@@ -1087,6 +1087,8 @@ Initialize the menu for the current client and show it
 */
 void() Menu_Start =
 {
+	if (gametype == GT_SINGLE_PLAYER)
+		return; //can only access the menu from bloodbath or coop
     // We can only access the menu if we're idle
     if (self.player_state != PS_IDLE)
     {
