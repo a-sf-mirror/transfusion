@@ -252,6 +252,8 @@ void() worldspawn =
     precache_sound ("ambience/sizzle.wav");      // smelt on slime
     precache_sound ("foley/swimuw.wav"); // diving suit engage sound
 
+    precache_sound ("player/taunts/t1010.wav");  // "I live ... again !"
+
 // player gib sounds
     precache_sound ("butcher/fzomdie1.wav");
     precache_sound ("butcher/fzomdie2.wav");

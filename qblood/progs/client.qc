@@ -69,14 +69,12 @@ void() SetChangeParms =
     self.items  = self.items  - (self.items  & (IT_INVISIBILITY | IT_INVULNERABILITY | IT_SUIT | IT_QUAD));
     self.items2 = self.items2 - (self.items2 & (IT2_KEY1 | IT2_KEY2));
 
-    // PM:  Recharge inventory, except for first-aid.
+    // Recharge inventory, except for first-aid.
     InvenRecharge ();
 
-// cap super health
+    // cap super health
     if (self.health > 200)
         self.health = 200;
-    if (self.health < 1)
-        self.health = 100;
     parm1 = self.items;
     parm2 = self.health;
     parm3 = self.ammo_shells;
@@ -111,11 +109,9 @@ void() SetNewParms =
 
 void() DecodeLevelParms =
 {
-    if (serverflags)
-    {
-        if (world.model == "maps/start.bsp")
-            SetNewParms ();     // take away all stuff on starting new episode
-    }
+    // take away all stuff on starting new episode
+    if (serverflags && world.model == "maps/start.bsp")
+        SetNewParms ();
 
     self.items          = parm1;
     self.health         = parm2;
@@ -153,7 +149,7 @@ entity() FindIntermission =
     local   entity spot;
     local   float cyc;
 
-// look for info_intermission first
+    // look for info_intermission first
     spot = find (world, classname, "info_intermission");
     if (spot)
     {   // pick a random one
@@ -168,7 +164,7 @@ entity() FindIntermission =
         return spot;
     }
 
-// then look for the start position
+    // then look for the start position
     spot = find (world, classname, "info_player_start");
     if (spot)
         return spot;
@@ -186,28 +182,23 @@ entity() FindIntermission =
 
 void() GotoNextMap =
 {
-    #ifdef QUAKEWORLD
-    local string newmap;
-
-    //ZOID: 12-13-96, samelevel is overloaded, only 1 works for same level
-    if (cvar("samelevel") == 1)     // if samelevel is set, stay on same level
+    // if samelevel is set, stay on same level
+    if (cvar("samelevel"))
         changelevel (mapname);
-    else {
-        // configurable map lists, see if the current map exists as a
-        // serverinfo/localinfo var
+    else
+    {
+        #ifdef QUAKEWORLD
+        local string newmap;
+
+        // QW supports a configurable map list
+        // see if the current map exists as a serverinfo / localinfo var
         newmap = infokey(world, mapname);
         if (newmap != "")
             changelevel (newmap);
         else
+        #endif
             changelevel (nextmap);
     }
-
-    #else
-    if (cvar("samelevel"))  // if samelevel is set, stay on same level
-        changelevel (mapname);
-    else
-        changelevel (nextmap);
-    #endif
 };
 
 
@@ -236,12 +227,32 @@ void() ExitIntermission =
             if (!cvar("registered"))
             {
                 WriteByte (MSG_ALL, SVC_FINALE);
-                WriteString (MSG_ALL, "As the corpse of the monstrous entity\nChthon sinks back into the lava whence\nit rose, you grip the Rune of Earth\nMagic tightly. Now that you have\nconquered the Dimension of the Doomed,\nrealm of Earth Magic, you are ready to\ncomplete your task in the other three\nhaunted lands of Quake. Or are you? If\nyou don't register Quake, you'll never\nknow what awaits you in the Realm of\nBlack Magic, the Netherworld, and the\nElder World!");
+                WriteString (MSG_ALL, "As the corpse of the monstrous entity\n"
+                                      "Chthon sinks back into the lava whence\n"
+                                      "it rose, you grip the Rune of Earth\n"
+                                      "Magic tightly. Now that you have\n"
+                                      "conquered the Dimension of the Doomed,\n"
+                                      "realm of Earth Magic, you are ready to\n"
+                                      "complete your task in the other three\n"
+                                      "haunted lands of Quake. Or are you? If\n"
+                                      "you don't register Quake, you'll never\n"
+                                      "know what awaits you in the Realm of\n"
+                                      "Black Magic, the Netherworld, and the\n"
+                                      "Elder World!");
             }
             else
             {
                 WriteByte (MSG_ALL, SVC_FINALE);
-                WriteString (MSG_ALL, "As the corpse of the monstrous entity\nChthon sinks back into the lava whence\nit rose, you grip the Rune of Earth\nMagic tightly. Now that you have\nconquered the Dimension of the Doomed,\nrealm of Earth Magic, you are ready to\ncomplete your task. A Rune of magic\npower lies at the end of each haunted\nland of Quake. Go forth, seek the\ntotality of the four Runes!");
+                WriteString (MSG_ALL, "As the corpse of the monstrous entity\n"
+                                      "Chthon sinks back into the lava whence\n"
+                                      "it rose, you grip the Rune of Earth\n"
+                                      "Magic tightly. Now that you have\n"
+                                      "conquered the Dimension of the Doomed,\n"
+                                      "realm of Earth Magic, you are ready to\n"
+                                      "complete your task. A Rune of magic\n"
+                                      "power lies at the end of each haunted\n"
+                                      "land of Quake. Go forth, seek the\n"
+                                      "totality of the four Runes!");
             }
             return;
         }
@@ -252,7 +263,19 @@ void() ExitIntermission =
             WriteByte (MSG_ALL, 3);
 
             WriteByte (MSG_ALL, SVC_FINALE);
-            WriteString (MSG_ALL, "The Rune of Black Magic throbs evilly in\nyour hand and whispers dark thoughts\ninto your brain. You learn the inmost\nlore of the Hell-Mother; Shub-Niggurath!\nYou now know that she is behind all the\nterrible plotting which has led to so\nmuch death and horror. But she is not\ninviolate! Armed with this Rune, you\nrealize that once all four Runes are\ncombined, the gate to Shub-Niggurath's\nPit will open, and you can face the\nWitch-Goddess herself in her frightful\notherworld cathedral.");
+            WriteString (MSG_ALL, "The Rune of Black Magic throbs evilly in\n"
+                                  "your hand and whispers dark thoughts\n"
+                                  "into your brain. You learn the inmost\n"
+                                  "lore of the Hell-Mother; Shub-Niggurath!\n"
+                                  "You now know that she is behind all the\n"
+                                  "terrible plotting which has led to so\n"
+                                  "much death and horror. But she is not\n"
+                                  "inviolate! Armed with this Rune, you\n"
+                                  "realize that once all four Runes are\n"
+                                  "combined, the gate to Shub-Niggurath's\n"
+                                  "Pit will open, and you can face the\n"
+                                  "Witch-Goddess herself in her frightful\n"
+                                  "otherworld cathedral.");
             return;
         }
         else if (world.model == "maps/e3m6.bsp")
@@ -262,7 +285,17 @@ void() ExitIntermission =
             WriteByte (MSG_ALL, 3);
 
             WriteByte (MSG_ALL, SVC_FINALE);
-            WriteString (MSG_ALL, "The charred viscera of diabolic horrors\nbubble viscously as you seize the Rune\nof Hell Magic. Its heat scorches your\nhand, and its terrible secrets blight\nyour mind. Gathering the shreds of your\ncourage, you shake the devil's shackles\nfrom your soul, and become ever more\nhard and determined to destroy the\nhideous creatures whose mere existence\nthreatens the souls and psyches of all\nthe population of Earth.");
+            WriteString (MSG_ALL, "The charred viscera of diabolic horrors\n"
+                                  "bubble viscously as you seize the Rune\n"
+                                  "of Hell Magic. Its heat scorches your\n"
+                                  "hand, and its terrible secrets blight\n"
+                                  "your mind. Gathering the shreds of your\n"
+                                  "courage, you shake the devil's shackles\n"
+                                  "from your soul, and become ever more\n"
+                                  "hard and determined to destroy the\n"
+                                  "hideous creatures whose mere existence\n"
+                                  "threatens the souls and psyches of all\n"
+                                  "the population of Earth.");
             return;
         }
         else if (world.model == "maps/e4m7.bsp")
@@ -272,7 +305,23 @@ void() ExitIntermission =
             WriteByte (MSG_ALL, 3);
 
             WriteByte (MSG_ALL, SVC_FINALE);
-            WriteString (MSG_ALL, "Despite the awful might of the Elder\nWorld, you have achieved the Rune of\nElder Magic, capstone of all types of\narcane wisdom. Beyond good and evil,\nbeyond life and death, the Rune\npulsates, heavy with import. Patient and\npotent, the Elder Being Shub-Niggurath\nweaves her dire plans to clear off all\nlife from the Earth, and bring her own\nfoul offspring to our world! For all the\ndwellers in these nightmare dimensions\nare her descendants! Once all Runes of\nmagic power are united, the energy\nbehind them will blast open the Gateway\nto Shub-Niggurath, and you can travel\nthere to foil the Hell-Mother's plots\nin person.");
+            WriteString (MSG_ALL, "Despite the awful might of the Elder\n"
+                                  "World, you have achieved the Rune of\n"
+                                  "Elder Magic, capstone of all types of\n"
+                                  "arcane wisdom. Beyond good and evil,\n"
+                                  "beyond life and death, the Rune\n"
+                                  "pulsates, heavy with import. Patient and\n"
+                                  "potent, the Elder Being Shub-Niggurath\n"
+                                  "weaves her dire plans to clear off all\n"
+                                  "life from the Earth, and bring her own\n"
+                                  "foul offspring to our world! For all the\n"
+                                  "dwellers in these nightmare dimensions\n"
+                                  "are her descendants! Once all Runes of\n"
+                                  "magic power are united, the energy\n"
+                                  "behind them will blast open the Gateway\n"
+                                  "to Shub-Niggurath, and you can travel\n"
+                                  "there to foil the Hell-Mother's plots\n"
+                                  "in person.");
             return;
         }
 
@@ -290,7 +339,17 @@ void() ExitIntermission =
         if ( (serverflags&15) == 15)
         {
             WriteByte (MSG_ALL, SVC_FINALE);
-            WriteString (MSG_ALL, "Now, you have all four Runes. You sense\ntremendous invisible forces moving to\nunseal ancient barriers. Shub-Niggurath\nhad hoped to use the Runes Herself to\nclear off the Earth, but now instead,\nyou will use them to enter her home and\nconfront her as an avatar of avenging\nEarth-life. If you defeat her, you will\nbe remembered forever as the savior of\nthe planet. If she conquers, it will be\nas if you had never been born.");
+            WriteString (MSG_ALL, "Now, you have all four Runes. You sense\n"
+                                  "tremendous invisible forces moving to\n"
+                                  "unseal ancient barriers. Shub-Niggurath\n"
+                                  "had hoped to use the Runes Herself to\n"
+                                  "clear off the Earth, but now instead,\n"
+                                  "you will use them to enter her home and\n"
+                                  "confront her as an avatar of avenging\n"
+                                  "Earth-life. If you defeat her, you will\n"
+                                  "be remembered forever as the savior of\n"
+                                  "the planet. If she conquers, it will be\n"
+                                  "as if you had never been born.");
             return;
         }
 
@@ -391,12 +450,7 @@ void() changelevel_touch =
         return;
 
     // if "noexit" is set, blow up the player trying to leave
-    #ifdef QUAKEWORLD
-    //ZOID, 12-13-96, noexit isn't supported in QW.  Overload samelevel
-    if ((cvar("samelevel") == 2) || ((cvar("samelevel") == 3) && (mapname != "start")))
-    #else
     if ((cvar("noexit") == 1) || ((cvar("noexit") == 2) && (mapname != "start")))
-    #endif
     {
         T_Damage (other, self, self, 50000);
         return;
@@ -631,14 +685,14 @@ void() PutClientInServer =
     self.th_die = PlayerDie;
 
     self.deadflag = DEAD_NO;
-// paustime is set by teleporters to keep the player from moving a while
+    // paustime is set by teleporters to keep the player from moving a while
     self.pausetime = 0;
 
     self.origin = spot.origin + '0 0 1';
     self.angles = spot.angles;
     self.fixangle = TRUE;       // turn this way immediately
 
-// oh, this is a hack!
+    // Hack to get the eyes model index
     setmodel (self, "progs/eyes.mdl");
     modelindex_eyes = self.modelindex;
 
@@ -648,9 +702,6 @@ void() PutClientInServer =
     setsize (self, VEC_HULL_MIN, VEC_HULL_MAX);
 
     self.view_ofs = '0 0 22';
-
-    // Mod - Xian (May.20.97)
-    // Bug where player would have velocity from their last kill
     self.velocity = '0 0 0';
 
     player_stand1 ();
@@ -1278,9 +1329,7 @@ void() CheckPowerups =
         }
     }
 
-// removed quake suit check.
-
-    // PM:  Check inventory items.
+    // Check inventory items.
     InvenCheck ();
 };
 
@@ -1358,10 +1407,13 @@ void() ClientConnect =
     Bprint (PRINT_HIGH, self.netname);
     Bprint (PRINT_HIGH, " lives again!\n"); // entered the game
 
-    sound (self, CHAN_AUTO, "thevoice/vo1.wav", 1, ATTN_NORM); //Let the Bloodbath Begin!
-
     if (deathmatch)
+    {
+        sound (self, CHAN_AUTO, "thevoice/vo1.wav", 1, ATTN_NORM); //Let the Bloodbath Begin!
         self.do_observer = 1;
+    }
+    else
+        sound (self, CHAN_AUTO, "player/taunts/t1010.wav", 1, ATTN_NORM);  // I live ... again!
 
     // a client connecting during an intermission can cause problems
     if (intermission_running)
@@ -1528,7 +1580,7 @@ void(entity attacker) ClientObituary =
             attacker.frags = attacker.frags - 1;
 
             #ifdef QUAKEWORLD
-            //ZOID 12-13-96:  killing a teammate logs as suicide
+            // killing a teammate logs as suicide
             logfrag (attacker, attacker);
             #endif
             return;
@@ -1537,7 +1589,6 @@ void(entity attacker) ClientObituary =
         {
             // all new obituary logic starts here
             // no weapon associations, just random message and Announcer voice
-            // 5 14 2001 dturner
             #ifdef QUAKEWORLD
             logfrag (attacker, self);
             #endif

@@ -3,8 +3,6 @@
 
     spectator functions
 
-    PURPOSE
-
     Copyright (C) 1996-1997  Id Software, Inc.
 
     This program is free software; you can redistribute it and/or
@@ -26,16 +24,6 @@
         Boston, MA  02111-1307, USA
 
 */
-
-// Added Aug11'97 by Zoid <zoid@idsoftware.com>
-//
-// These functions are called from the server if they exist.
-// Note that Spectators only have one think since they movement code doesn't
-// track them much.  Impulse commands work as usual, but don't call
-// the regular ImpulseCommand handler in weapons.qc since Spectators don't
-// have any weapons and things can explode.
-//
-//   --- Zoid.
 
 
 #include "common.qh"
@@ -83,8 +71,7 @@ void() SpectatorImpulseCommand =
 {
     if (self.impulse == 1) {
         // teleport the spectator to the next spawn point
-        // note that if the spectator is tracking, this doesn't do
-        // much
+        // note that if the spectator is tracking, this doesn't do much
         self.goalentity = find(self.goalentity, classname, "info_player_deathmatch");
         if (self.goalentity == world)
             self.goalentity = find(self.goalentity, classname, "info_player_deathmatch");
