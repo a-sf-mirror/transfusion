@@ -407,6 +407,7 @@ float team2score;
 .float      vote_gametype;
 .float      vote_fraglimit;
 .float      vote_timelimit;
+.float      vote_warmup;
 .float      vote_options;
 
 // Observer

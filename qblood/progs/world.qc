@@ -230,15 +230,17 @@ void() worldspawn =
     if (qcextensions)
         if (checkextension ("DP_REGISTERCVAR"))
         {
+            registercvar ("g_lockTeams", "0");
             registercvar ("g_warmup", "0");
-            registercvar ("g_weaponStay", "0");
+            registercvar ("g_weaponsStay", "0");
             registercvar ("sv_allowCheat", "0");
             registercvar ("sv_disable", "0");
         }
 
     // Some engines create them on the fly
+    cvar ("g_lockTeams");
     doWarmup = cvar ("g_warmup");
-    cvar ("g_weaponStay");
+    cvar ("g_weaponsStay");
     cvar ("sv_allowCheat");
     cvar ("sv_disable");
 
@@ -416,6 +418,8 @@ void() World_EndWarmup =
 
     local entity ent, tempEnt;
 
+    Bprint (PRINT_HIGH, "Resetting level...\n");
+
     tempEnt = self;
 
     // Reset all entities
@@ -455,7 +459,6 @@ void() World_EndWarmup =
 
     warmup_done = TRUE;
     warmup_counttime = 0;
-    warmup_endtime = 0;
 };
 
 
@@ -523,7 +526,7 @@ void() World_StartWarmup =
     warmup_endtime = time + duration;
     warmup_counttime = time + duration - (floor (duration / 5) * 5);
 
-    Bprint (PRINT_HIGH, "BEGINNING WARMUP (");
+    Bprint (PRINT_HIGH, "WARMUP STARTED (");
     str = ftos (duration);
     Bprint (PRINT_HIGH, str);
     Bprint (PRINT_HIGH, " sec)\n");
@@ -544,6 +547,7 @@ void() World_StopWarmup =
         return;
 
     warmup_endtime = 0;
+    Bprint (PRINT_HIGH, "WARMUP CANCELED\n");
 };
 
 

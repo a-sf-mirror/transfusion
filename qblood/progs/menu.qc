@@ -126,22 +126,49 @@ void(string newTimelimit) Vote_ChangeTimelimit =
 
 /*
 ====================
-Vote_ChangeOptions
+Vote_ChangeWarmup
 
-Used when the vote for an option is passed
+Used when the vote for a warmup duration is passed
 ====================
 */
-void(string newOptions) Vote_ChangeOptions =
+void(string newDuration) Vote_ChangeWarmup =
 {
-    Bprint (PRINT_HIGH, "ш Vote passed. New options: g_weaponStay = ");  // "[ Vote passed ..."
-    Bprint (PRINT_HIGH, newOptions);
-    Bprint (PRINT_HIGH, " щ\n");  // " ]\n"
+    Bprint (PRINT_HIGH, "ш Vote passed. New warmup duration: ");  // "[ Vote passed ..."
+    Bprint (PRINT_HIGH, newDuration);
+    Bprint (PRINT_HIGH, " secondes щ\n");  // " secondes ]\n"
 
-    cvar_set ("g_weaponStay", newOptions);
+    cvar_set ("g_warmup", newDuration);
 
     // Test if the engine support creation of new cvars by progs
-    if (newOptions == "1")
-        if (cvar ("g_weaponStay") != 1)
+    if (newDuration != "0")
+        if (cvar ("g_warmup") == 0)
+            Bprint (PRINT_HIGH, "варнинг╨ the engine doesn't support dynamic cvar creation. Can't change warmup duration\n");  // "WARNING ..."
+};
+
+
+/*
+====================
+Vote_ChangeOption
+
+Used when the vote for toggling an option is passed
+====================
+*/
+void(string cvarName) Vote_ChangeOption =
+{
+    local string newValue;
+
+    newValue = ftos (! cvar (cvarName));
+    Bprint (PRINT_HIGH, "ш Vote passed. New option: \"");  // "[ Vote passed ..."
+    Bprint (PRINT_HIGH, cvarName);
+    Bprint (PRINT_HIGH, "\" = ");
+    Bprint (PRINT_HIGH, newValue);
+    Bprint (PRINT_HIGH, " щ\n");  // " ]\n"
+
+    cvar_set (cvarName, newValue);
+
+    // Test if the engine support creation of new cvars by progs
+    if (newValue == "1")
+        if (cvar (cvarName) != 1)
             Bprint (PRINT_HIGH, "варнинг╨ the engine doesn't support dynamic cvar creation. Can't change option\n");  // "WARNING ..."
 };
 
@@ -177,7 +204,7 @@ Vote_IsPassed
 Check if a vote is passed
 ====================
 */
-float(.float vote_field, float value) Vote_IsPassed =
+float(.float vote_field, float bitmask, float value) Vote_IsPassed =
 {
     local entity player;
     local float VoteTotal;
@@ -193,11 +220,12 @@ float(.float vote_field, float value) Vote_IsPassed =
         #ifdef FRIKBOT
         if (player.ishuman == TRUE && player.b_clientno != -1)
         #else
-        if (player.classname == "player" || player.classname == "observer")
+        if (player.classname == "player" || player.classname == "observer" ||
+            (player.classname == "head" && ! player.takedamage))
         #endif
         {
             VoteTotal = VoteTotal + 1;
-            if (player.vote_field == value)
+            if ((player.vote_field & bitmask) == value)
                 VoteCount = VoteCount + 1;
         }
 
@@ -239,7 +267,7 @@ void(float vote, string newmap) Vote_AddMapVote =
     Bprint (PRINT_HIGH, " щ\n");  // " ]\n"
 
     // If the vote is passed
-    if (Vote_IsPassed (vote_map, vote))
+    if (Vote_IsPassed (vote_map, 255, vote))
         Vote_ChangeMap (newmap);
 };
 
@@ -252,18 +280,23 @@ void(float vote, string newmap) Vote_AddMapVote =
 #define MENU_VOTE_GAMETYPE  2
 #define MENU_VOTE_FRAGLIMIT 3
 #define MENU_VOTE_TIMELIMIT 4
-#define MENU_VOTE_OPTIONS   5
+#define MENU_VOTE_WARMUP    5
+#define MENU_VOTE_OPTIONS   6
 
 #define MENU_VOTE_MAP_BLOOD         10
 #define MENU_VOTE_MAP_BLOODPACKS    11  // Plasma Pack + Cryptic Passage
 #define MENU_VOTE_MAP_BLOOD2        12
 #define MENU_VOTE_MAP_BLOODBATH     13
 
-// The map groups
+// The groups of maps
 #define MAPS_BLOOD      0
 #define MAPS_BLOODPACKS 10  // Plasma Pack + Cryptic Passage
 #define MAPS_BLOOD2     20
 #define MAPS_BLOODBATH  30
+
+// Options
+#define OPTION_WEAPONS_STAY    1
+#define OPTION_LOCK_TEAMS      2
 
 
 /*
@@ -282,7 +315,8 @@ void() Menu_Draw =
                 "2) Vote for a game type\n"
                 "3) Vote for the frag limit\n"
                 "4) Vote for the time limit\n"
-                "5) Vote for an option\n"
+                "5) Vote for the warmup duration\n"
+                "6) Vote for an option\n"
                 "\n"
                 "10) Exit menu\n");
     }
@@ -341,11 +375,28 @@ void() Menu_Draw =
                 "\n"
                 "10) Go back to main menu\n");
     }
+    else if (self.menu_index == MENU_VOTE_WARMUP)
+    {
+        Sprint (self, PRINT_HIGH,
+                "Vote for the warmup duration:\n"
+                "1) 0 secondes (no warmup)\n"
+                "2) 10 secondes\n"
+                "3) 20 secondes\n"
+                "4) 30 secondes\n"
+                "5) 45 secondes\n"
+                "6) 60 secondes\n"
+                "7) 90 secondes\n"
+                "8) 120 secondes\n"
+                "9) 180 secondes\n"
+                "\n"
+                "10) Go back to main menu\n");
+    }
     else if (self.menu_index == MENU_VOTE_OPTIONS)
     {
         Sprint (self, PRINT_HIGH,
                 "Vote for an option:\n"
-                "1) Toggle \"weapon stay\"\n"
+                "1) Toggle \"weapons stay\"\n"
+                "2) Toggle \"lock teams\"\n"
                 "\n"
                 "10) Go back to main menu\n");
     }
@@ -443,6 +494,14 @@ void() Menu_HandleMain =
         else
             self.menu_index = MENU_VOTE_TIMELIMIT;
     }
+    else if (self.impulse == MENU_VOTE_WARMUP)
+    {
+        // If warmup limit voting is disabled
+        if (cvar ("sv_disable") & SV_DISABLE_VOTE_WARMUP)
+            Sprint (self, PRINT_HIGH, "\n===== Warmup duration voting is disabled on this server =====\n\n");
+        else
+            self.menu_index = MENU_VOTE_WARMUP;
+    }
     else if (self.impulse == MENU_VOTE_OPTIONS)
     {
         // If time limit voting is disabled
@@ -510,7 +569,7 @@ void() Menu_HandleVoteFraglimit =
     Bprint (PRINT_HIGH, " щ\n");  // " ]\n"
 
     // If the vote is passed
-    if (Vote_IsPassed (vote_fraglimit, self.impulse))
+    if (Vote_IsPassed (vote_fraglimit, 255, self.impulse))
         Vote_ChangeFraglimit (fl);
 
     self.player_state = PS_IDLE;  // exit the menu
@@ -553,7 +612,7 @@ void() Menu_HandleVoteGametype =
     Bprint (PRINT_HIGH, " щ\n");  // " ]\n"
 
     // If the vote is passed
-    if (Vote_IsPassed (vote_gametype, self.impulse))
+    if (Vote_IsPassed (vote_gametype, 255, self.impulse))
         Vote_ChangeGametype (self.vote_gametype);
 
     self.player_state = PS_IDLE;  // exit the menu
@@ -782,6 +841,10 @@ Handles the impulses when the client is in the option menu
 */
 void() Menu_HandleVoteOptions =
 {
+    local string cvarName;
+    local float option;
+    local float newValue;
+
     // If we want to go back to main menu
     if (self.impulse == 10)
     {
@@ -790,22 +853,38 @@ void() Menu_HandleVoteOptions =
         return;
     }
 
-    // If the command is invalid
-    if (self.impulse > 1 )
+    if (self.impulse == 1)
+    {
+        cvarName = "g_weaponsStay";
+        option = OPTION_WEAPONS_STAY;
+    }
+    else if (self.impulse == 2)
+    {
+        cvarName = "g_lockTeams";
+        option = OPTION_LOCK_TEAMS;
+    }
+    else
     {
         Sprint (self, PRINT_HIGH, "\n===== INVALID COMMAND =====\n\n");
         Menu_Draw ();
         return;
     }
 
-    self.vote_options = ! cvar ("g_weaponStay");
+    newValue = ! cvar (cvarName);
+    if (newValue)
+        self.vote_options = self.vote_options | option;
+    else
+        self.vote_options = self.vote_options - (self.vote_options & option);
+
     Bprint (PRINT_HIGH, "ш ");  // "[ "
     Bprint (PRINT_HIGH, self.netname);
-    Bprint (PRINT_HIGH, " votes for toggling \"weapon stay\" щ\n");  // " ]\n"
+    Bprint (PRINT_HIGH, " votes for toggling \"");
+    Bprint (PRINT_HIGH, cvarName);
+    Bprint (PRINT_HIGH, "\" щ\n");  // " ]\n"
 
     // If the vote is passed
-    if (Vote_IsPassed (vote_options, self.vote_options))
-        Vote_ChangeOptions (ftos (self.vote_options));
+    if (Vote_IsPassed (vote_options, option, option * newValue))
+        Vote_ChangeOption (cvarName);
 
     self.player_state = PS_IDLE;  // exit the menu
 };
@@ -863,8 +942,67 @@ void() Menu_HandleVoteTimelimit =
     Bprint (PRINT_HIGH, " щ\n");  // " ]\n"
 
     // If the vote is passed
-    if (Vote_IsPassed (vote_timelimit, self.impulse))
+    if (Vote_IsPassed (vote_timelimit, 255, self.impulse))
         Vote_ChangeTimelimit (tl);
+
+    self.player_state = PS_IDLE;  // exit the menu
+};
+
+
+/*
+====================
+Menu_HandleVoteWarmup
+
+Handles the impulses when the client is in the warmup menu
+====================
+*/
+void() Menu_HandleVoteWarmup =
+{
+    local string duration;
+
+    // If we want to go back to main menu
+    if (self.impulse == 10)
+    {
+        self.menu_index = MENU_MAIN;
+        Menu_Draw ();
+        return;
+    }
+
+    if (self.impulse == 1)
+        duration = "0";
+    else if (self.impulse == 2)
+        duration = "10";
+    else if (self.impulse == 3)
+        duration = "20";
+    else if (self.impulse == 4)
+        duration = "30";
+    else if (self.impulse == 5)
+        duration = "45";
+    else if (self.impulse == 6)
+        duration = "60";
+    else if (self.impulse == 7)
+        duration = "90";
+    else if (self.impulse == 8)
+        duration = "120";
+    else if (self.impulse == 9)
+        duration = "180";
+    else
+    {
+        Sprint (self, PRINT_HIGH, "\n===== INVALID COMMAND =====\n\n");
+        Menu_Draw ();
+        return;
+    }
+
+    self.vote_warmup = self.impulse;
+    Bprint (PRINT_HIGH, "ш ");  // "[ "
+    Bprint (PRINT_HIGH, self.netname);
+    Bprint (PRINT_HIGH, " votes for a new warmup duration: ");
+    Bprint (PRINT_HIGH, duration);
+    Bprint (PRINT_HIGH, " secondes щ\n");  // " ]\n"
+
+    // If the vote is passed
+    if (Vote_IsPassed (vote_warmup, 255, self.impulse))
+        Vote_ChangeWarmup (duration);
 
     self.player_state = PS_IDLE;  // exit the menu
 };
@@ -917,6 +1055,8 @@ void() Menu_Update =
         Menu_HandleVoteFraglimit ();
     else if (self.menu_index == MENU_VOTE_TIMELIMIT)
         Menu_HandleVoteTimelimit ();
+    else if (self.menu_index == MENU_VOTE_WARMUP)
+        Menu_HandleVoteWarmup ();
     else if (self.menu_index == MENU_VOTE_OPTIONS)
         Menu_HandleVoteOptions ();
     else if (self.menu_index == MENU_VOTE_MAP_BLOOD)

@@ -139,7 +139,10 @@ void(float damage) Voodoo_ApplyDamage =
     }
     // Else, WE take the damage
     else
+    {
         targ = self;
+        damage = 1;
+    }
 
     // We don't consume ammo if we don't hit a target (except for altfire)
     if (self.player_state == PS_ALTFIRE)

@@ -178,24 +178,30 @@ void() Impulses_Observer =
     else
     {
         if (self.button0 || self.button2)
-            centerprint (self, "Type:\nimpulse 1 for joining the RED team\nimpulse 2 for joining the BLUE team\n");
+            centerprint (self, "Type:\nimpulse 1 for joining the RED team\nimpulse 2 for joining the BLUE team");
         else if (self.impulse == 1 || self.impulse == 2)
         {
-            // Choose the color...
-            if (self.impulse == 1)
-            {
-                self.team = TEAM_COLOR1;
-                centerprint (self, "You have joined the RED team");
-            }
+            // If a warmup has been done, the teams may be locked now
+            if (warmup_done && warmup_endtime && cvar ("g_lockTeams"))
+                centerprint (self, "You can't join a team\nThey have been locked after the warmup");
             else
             {
-                self.team = TEAM_COLOR2;
-                centerprint (self, "You have joined the BLUE team");
-            }
+                // Choose the color...
+                if (self.impulse == 1)
+                {
+                    self.team = TEAM_COLOR1;
+                    centerprint (self, "You have joined the RED team");
+                }
+                else
+                {
+                    self.team = TEAM_COLOR2;
+                    centerprint (self, "You have joined the BLUE team");
+                }
 
-            // ...and join the game
-            self.observer = 0;
-            respawn (FALSE);
+                // ...and join the game
+                self.observer = 0;
+                respawn (FALSE);
+            }
         }
     }
 

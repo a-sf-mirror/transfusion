@@ -43,18 +43,6 @@ void() SUB_regen =
 };
 
 
-
-/*QUAKED noclass (0 0 0) (-8 -8 -8) (8 8 8)
-prints a warning message when spawned
-*/
-void() noclass =
-{
-    dprint ("noclass spawned at");
-    dprint (vtos(self.origin));
-    dprint ("\n");
-    remove (self);
-};
-
 void() q_touch =
 {
     local entity    stemp;
@@ -111,6 +99,7 @@ void(float timeleft) DropQuad =
     item.touch = q_touch;
     item.nextthink = time + timeleft;    // remove it with the time left on it
     item.think = SUB_Remove;
+    item.reset = SUB_Remove;
 };
 
 void() r_touch =
@@ -166,6 +155,7 @@ void(float timeleft) DropRing =
     item.touch = r_touch;
     item.nextthink = time + timeleft;    // remove after 30 seconds
     item.think = SUB_Remove;
+    item.reset = SUB_Remove;
 };
 
 
@@ -1434,7 +1424,7 @@ void() weapon_touch =
     if (other.health <= 0)
         return;
 
-    if (cvar ("g_weaponStay"))
+    if (cvar ("g_weaponsStay"))
         leave = 1;
     else
         leave = 0;

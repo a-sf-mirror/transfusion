@@ -1482,6 +1482,14 @@ void() ClientConnect =
     sound (self, CHAN_AUTO, "thevoice/vo1.wav", 1, ATTN_NORM); // Let the Bloodbath Begin!
     self.do_observer = 1;
 
+    // Reset the votes
+    self.vote_map = 0;
+    self.vote_gametype = 0;
+    self.vote_fraglimit = 0;
+    self.vote_timelimit = 0;
+    self.vote_warmup = 0;
+    self.vote_options = 0;
+
     // a client connecting during an intermission can cause problems
     if (intermission_running)
         GotoNextMap ();

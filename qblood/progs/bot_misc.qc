@@ -527,13 +527,12 @@ void() KickABot =
     {
         if (!(ty.ishuman))
         {
-
             BotDisconnect(ty);
             ty.ishuman = TRUE;
-            ty = world;
+            return;
         }
-        else
-            ty = find(ty, classname, "player");
+
+        ty = find(ty, classname, "player");
     }
 
 };

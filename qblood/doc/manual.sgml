@@ -6,7 +6,7 @@
    <title> BloodBath manual
    <author> Mathieu Olivier <tt>&lt;elric@planetblood.com&gt;</tt> and
    Dave Turner <tt>&lt;darth_linux@planetblood.com&gt;</tt>
-   <date>v?.?.? (development), April 12, 2002
+   <date>v?.?.? (development), April 14, 2002
    <abstract>
       This manual covers installation and usage of the
       <url url="http://www.planetblood.com/qblood/" name="BloodBath"> game.
@@ -17,15 +17,15 @@
 
    <sect><heading>Introduction<p>
       The qBlood Project aims to recreate an old DOS game from Monolith
-      Productions called Blood, using the Quake engine. Although qBlood will switch
-      to the Quake 2 engine soon, we have decided to release our current work under
-      the name "BloodBath".
+      Productions called Blood, using the Quake engine. Although qBlood will
+      switch to the Quake 2 engine soon, we have decided to release our current
+      work under the name "BloodBath".
 
-      It looks like a simple <it>mod</it>, but actually, you don't need any Quake data
-      to run it. In fact, BloodBath is a complete total conversion of the
-      multiplayer aspect of Blood. The original Blood is a remarkable game, and
-      the qBlood team hopes you'll have as much fun playing it as we had playing
-      Blood.
+      It looks like a simple <it>mod</it>, but actually, you don't need any
+      Quake data to run it. In fact, BloodBath is a complete total conversion
+      of the multiplayer aspect of Blood. The original Blood is a remarkable
+      game, and the qBlood team hopes you'll have as much fun playing it as we
+      had playing Blood.
 
       Obviously, you'll be more at ease if you already know Blood and/or Quake.
       Even if it's not the case, don't worry: you should be able to find in
@@ -83,12 +83,13 @@
          <itemize>
             <item> impulses 1 to 9, and impulse 17: select a weapon
             <item> impulses 10 and 11: cycle to next/previous weapon
-            <item> impulse 12: secondary fire (equivalent to the "+button3" command)
+            <item> impulse 12: secondary fire (equivalent to the "+button3"
+            command)
             <item> impulse 13: use the currently selected item
             <item> impulses 14 and 15: select previous/next item
             <item> impulse 16: view the current value of the next armor type
             <item> impulse 20: become an observer (only allowed when dead)
-            <item> impulse 50: enter the <ref id="voting menu" name="voting menu">
+            <item> impulse 50: enter the <ref id="menu" name="voting menu">
             <item> impulse 100: add a bot (to the red team if available)
             <item> impulse 101: add a bot (to the blue team if available)
             <item> impulse 102: kick a bot
@@ -108,7 +109,7 @@
             <item> impulse 252: Burn yourself !
             <item> impulse 253: Give all inventory items
             <item> impulse 254: Put you on the <ref id="BOD" name="Brink Of Death">
-            <item> impulse 255: Give <ref id="Akimbo" name="Guns Akimbo">
+            <item> impulse 255: Give <ref id="akimbo" name="Guns Akimbo">
          </itemize>
       </sect1>
 
@@ -126,242 +127,251 @@
       </sect1>
    </sect>
 
-   <!-- Weapons -->
+   <!-- Bloody stuff -->
 
-   <sect><heading>Weapons<p>
-      You have 12 differents weapons at your disposal in BloodBath. Aside from
-      the Pitchfork, each of them has a normal fire and a secondary fire, also
-      known as altfire. Most of the time, it's a deadlier mode that consumes
-      more ammo.
-      <descrip>
-         <tag>Pitch Fork</tag> This handy tool can be very effective if you can
-         get close enough to your foes to use it on them. It doesn't need ammo,
-         so you'll always have it to fall back on if you need it.
+   <sect><heading>Bloody stuff<p>
+      <sect1><heading>Weapons<p>
+         You have 12 differents weapons at your disposal in BloodBath. Aside
+         from the Pitchfork, each of them has a normal fire and a secondary
+         fire, also known as altfire. Most of the time, it's a deadlier mode
+         that consumes more ammo.
+         <descrip>
+            <tag>Pitch Fork</tag> This handy tool can be very effective if you
+            can get close enough to your foes to use it on them. It doesn't
+            need ammo, so you'll always have it to fall back on if you need it.
 
-         Ammo: None. No altfire mode.
-         <tag>Flare Gun</tag> Fires burning projectiles that lodge easily in
-         flesh and continue to burn for a short period of time. Unless you dive
-         into water, you'll take damage until the flare burns itself out, by
-         which time it may be too late. The alternative fire launches a
-         starburst flare that douses a large area with flames. Can provide
-         effective crowd control.
+            Ammo: None. No altfire mode.
+            <tag>Flare Gun</tag> Fires burning projectiles that lodge easily in
+            flesh and continue to burn for a short period of time. Unless you
+            dive into water, you'll take damage until the flare burns itself
+            out, by which time it may be too late. The alternative fire
+            launches a starburst flare that douses a large area with flames.
+            Can provide effective crowd control.
 
-         Powered up by Guns Akimbo. Ammo: Flares.
-         <tag>Sawed-off Shotgun</tag> A trusty companion if ever there was one.
-         It doesn't have great range, but it packs a hell of a wallop up close.
-         Can be fired either a barrel at a time or both at once for extra
-         damage.
+            Powered up by Guns Akimbo. Ammo: Flares.
+            <tag>Sawed-off Shotgun</tag> A trusty companion if ever there was
+            one. It doesn't have great range, but it packs a hell of a wallop
+            up close. Can be fired either a barrel at a time or both at once
+            for extra damage.
 
-         Powered up by Guns Akimbo. Ammo: Shotgun shells.
-         <tag>Thompson's Machine Gun</tag> The Tommy Gun is a favorite of the
-         Cabal for its rapid rate of fire and impressive accuracy. On the down
-         side, it chews up ammo quickly. The alternative mode is a strafing
-         attack that covers a wider area with twice as many bullets, which is
-         an effective way to clear out a room.
+            Powered up by Guns Akimbo. Ammo: Shotgun shells.
+            <tag>Thompson's Machine Gun</tag> The Tommy Gun is a favorite of
+            the Cabal for its rapid rate of fire and impressive accuracy. On
+            the down side, it chews up ammo quickly. The alternative mode is a
+            strafing attack that covers a wider area with twice as many
+            bullets, which is an effective way to clear out a room.
 
-         Powered up by Guns Akimbo. Ammo: Bullet drums.
-         <tag>Incinerator</tag> This monstrous weapon launches a huge ball of
-         flaming napalm at an extremely high velocity. If the initial explosion
-         doesn't kill your enemy, the burning probably will. Best used with
-         extreme caution, especially in tight areas. The alt-fire launches
-         several napalm projectiles, covering a wider area but also chewing up
-         a lot more ammo.
+            Powered up by Guns Akimbo. Ammo: Bullet drums.
+            <tag>Incinerator</tag> This monstrous weapon launches a huge ball
+            of flaming napalm at an extremely high velocity. If the initial
+            explosion doesn't kill your enemy, the burning probably will. Best
+            used with extreme caution, especially in tight areas. The alt-fire
+            launches several napalm projectiles, covering a wider area but also
+            chewing up a lot more ammo.
 
-         Powered up by Guns Akimbo. Ammo: Gasoline cans.
-         <tag>Dynamite Bundle</tag> Light one up and chuck it at a group of
-         zombies and you'll be rewarded with red rain and chunks of rotted
-         flesh on the brim of your hat. The longer you hold down the fire
-         button, the farther you'll throw the bundle. Watch the meter on the
-         status bar to gauge the distance. The primary mode explodes on impact,
-         while the alternative mode will burn all the way down before it
-         explodes, making for some interesting traps.
+            Powered up by Guns Akimbo. Ammo: Gasoline cans.
+            <tag>Dynamite Bundle</tag> Light one up and chuck it at a group of
+            zombies and you'll be rewarded with red rain and chunks of rotted
+            flesh on the brim of your hat. The longer you hold down the fire
+            button, the farther you'll throw the bundle. Watch the meter on the
+            status bar to gauge the distance. The primary mode explodes on
+            impact, while the alternative mode will burn all the way down
+            before it explodes, making for some interesting traps.
 
-         Ammo: Dynamite bundle.
-         <tag>Remote Detonator</tag> Remotes work like dynamite bundles, except
-         that you can detonate them at will. You can bounce them off walls or
-         ceilings if you're afraid to peek around a corner. The alternative
-         fire drops a remote at your feet, and you can hit the alt-fire key
-         again to place additional remotes without detonating those you've
-         already placed.
+            Ammo: Dynamite bundle.
+            <tag>Remote Detonator</tag> Remotes work like dynamite bundles,
+            except that you can detonate them at will. You can bounce them off
+            walls or ceilings if you're afraid to peek around a corner. The
+            alternative fire drops a remote at your feet, and you can hit the
+            alt-fire key again to place additional remotes without detonating
+            those you've already placed.
 
-         Ammo: Remote detonator.
-         <tag>Proximity Detonator</tag> These are by far the nastiest
-         explosives you'll come across. You can scatter them around and concern
-         yourself with other matters. As soon as someone steps near one, you'll
-         hear a far-off boom and accompanying shrieks of agony. Use the
-         alt-fire to drop them at your feet. Also, remember where you've
-         dropped proximities or you may fall prey to your own trap.
+            Ammo: Remote detonator.
+            <tag>Proximity Detonator</tag> These are by far the nastiest
+            explosives you'll come across. You can scatter them around and
+            concern yourself with other matters. As soon as someone steps near
+            one, you'll hear a far-off boom and accompanying shrieks of agony.
+            Use the alt-fire to drop them at your feet. Also, remember where
+            you've dropped proximities or you may fall prey to your own trap.
 
-         Ammo: Proximity detonator.
-         <tag>Aerosol Can</tag> Hairspray may not seem like the most daunting
-         weapon, but apply it to a cigarette lighter and you've got an instant
-         flamethrower (don't try this at home). While its range is rather
-         limited, its effectiveness is quite impressive. You can also light one
-         up like a Molotov cocktail and toss it into a group of adversaries.
-         Hit alt-fire a second time after igniting a can to drop it at your
-         feet-it will explode once it burns down.
+            Ammo: Proximity detonator.
+            <tag>Aerosol Can</tag> Hairspray may not seem like the most
+            daunting weapon, but apply it to a cigarette lighter and you've got
+            an instant flamethrower (don't try this at home). While its range
+            is rather limited, its effectiveness is quite impressive. You can
+            also light one up like a Molotov cocktail and toss it into a group
+            of adversaries. Hit alt-fire a second time after igniting a can to
+            drop it at your feet-it will explode once it burns down.
 
-         Ammo: Aerosol Can.
-         <tag>Tesla Cannon</tag> This powerful prototype weapon packs a mighty
-         load of amperage. Nikola Tesla would be proud. Press alt-fire and the
-         Tesla cannon charges up, and releases a powerful electrical blast.
+            Ammo: Aerosol Can.
+            <tag>Tesla Cannon</tag> This powerful prototype weapon packs a
+            mighty load of amperage. Nikola Tesla would be proud. Press
+            alt-fire and the Tesla cannon charges up, and releases a powerful
+            electrical blast.
 
-         Powered up by Guns Akimbo. Ammo: Batteries.
-         <tag>Life Leech</tag> This artifact draws its power from the life
-         energy of your foes. Run out of ammo and it saps your own strength!
-         Press alt-fire to set the Life Leech down. It will automatically fire
-         at anything that comes into its sights.
+            Powered up by Guns Akimbo. Ammo: Batteries.
+            <tag>Life Leech</tag> This artifact draws its power from the life
+            energy of your foes. Run out of ammo and it saps your own strength!
+            Press alt-fire to set the Life Leech down. It will automatically
+            fire at anything that comes into its sights.
 
-         Ammo: Trapped Souls.
-         <tag>Voodoo Doll</tag> The power of the voodoo doll is immense, but
-         far subtler than that of a firearm. Hit alt-fire to unlease a more
-         powerful supernatural attack at the expense using up the entire doll).
+            Ammo: Trapped Souls.
+            <tag>Voodoo Doll</tag> The power of the voodoo doll is immense, but
+            far subtler than that of a firearm. Hit alt-fire to unlease a more
+            powerful supernatural attack at the expense using up the entire
+            doll).
 
-         Ammo: Voodoo doll.
-      </descrip>
+            Ammo: Voodoo doll.
+         </descrip>
+      </sect1>
+
+      <sect1><heading>Health &amp; Armor<p>
+         <descrip>
+            <tag>Life Essence</tag> Boosts your health by 20 points, up to 100.
+            <tag>Medicine Patch</tag> Boosts your health by 50 points, up to
+            100.
+            <tag>Life Seed</tag> Adds 100 points to your health, up to 200
+            total.
+            <tag>Body Armor</tag> Adds 100 body armor. Protects from bullets,
+            shells, and concussion effects from explosives.
+            <tag>Fire Armor</tag> Adds 100 fire resistant armor, which is
+            useful against flares, flaming aerosol, and the residual effects of
+            dynamite and napalm.
+            <tag>Spirit Armor</tag> Adds 100 spiritual armor, which will absorb
+            damage from the Voodoo Doll and Life Leech.
+            <tag>Super Armor</tag> Adds 200 points of body, fire, and spirit
+            armor.
+            <tag>Basic Armor</tag> Adds 50 of each type of armor.
+         </descrip>
+      </sect1>
+
+      <sect1><heading>Items &amp; Powerups<p>
+         <descrip>
+            <tag>Death Mask</tag> Provides temporary invulnerability to all
+            attacks. Note that you are still susceptible to physics, which means
+            a dynamite blast may hurl you off a cliff.
+            <tag>Jump Boots</tag> Enable you to jump much higher than normal.
+            Useful for those hard to reach places or crossing chasms the easy
+            way.
+            <tag>Cloak of Invisibility</tag> The cloak will hide you from your
+            enemies. That is, until you decide to attack them, even then they
+            will have a hard time attacking you. Definately, one of the more
+            useful power-ups in the game.
+            <tag>Dr.'s Bag</tag> Will restore up to 100 points of health when
+            activated. The unused medicine will remain in your inventory until
+            used up. Keep this item handy!
+            <tag>Guns akimbo<label id="akimbo"></tag> Gives you double-fisted
+            killing power with one-handed weapons, such as the shotgun, flare
+            gun, and Tommy gun. Lasts 30 seconds.
+            <tag>Reflective Shots</tag> This powerup causes bullets to bounce
+            back at your attacker. You are still susceptible to flares and
+            explosives, so be careful.
+         </descrip>
+      </sect1>
    </sect>
 
-   <!-- Health & Armor -->
+   <!-- Advanced usage -->
 
-   <sect><heading>Health &amp; Armor<p>
-      <descrip>
-         <tag>Life Essence</tag> Boosts your health by 20 points, up to 100.
-         <tag>Medicine Patch</tag> Boosts your health by 50 points, up to 100.
-         <tag>Life Seed</tag> Adds 100 points to your health, up to 200 total.
-         <tag>Body Armor</tag> Adds 100 body armor. Protects from bullets,
-         shells, and concussion effects from explosives.
-         <tag>Fire Armor</tag> Adds 100 fire resistant armor, which is useful
-         against flares, flaming aerosol, and the residual effects of dynamite
-         and napalm.
-         <tag>Spirit Armor</tag> Adds 100 spiritual armor, which will absorb
-         damage from the Voodoo Doll and Life Leech.
-         <tag>Super Armor</tag> Adds 200 points of body, fire, and spirit armor.
-         <tag>Basic Armor</tag> Adds 50 of each type of armor.
-      </descrip>
-   </sect>
+   <sect><heading>Advanced usage<p>
+      <sect1><heading>Brink Of Death<label id="BOD"><p>
+         Sometimes you'll knock BloodBath opponents to their knees instead of
+         killing them outright. The victim spends several moments swaying,
+         poised between life and death. If no one reacts, the victim will slump
+         over and die, earning you a point. Of course, because your victim is
+         helpless, you'll have a moment or two to gloat. You may end the
+         torture swiftly by blowing the victim's head off. You may also draw it
+         out by tossing a lit bundle of dynamite on the ground nearby. Be
+         careful, though. Victims bring themselves back from the brink of death
+         after a dozen secondes.
 
-   <!-- Items -->
+         You'll recognize the brink of death by the sudden inability to move
+         and the removal of your weapons. When this happens, hammer away on
+         that jump button and pray. A player can't put himself on the BOD.
+         Also, it doesn't apply to someone who's on fire.
+      </sect1>
 
-   <sect><heading>Items &amp; Powerups<p>
-      <descrip>
-         <tag>Death Mask</tag> Provides temporary invulnerability to all
-         attacks. Note that you are still susceptible to physics, which means
-         a dynamite blast may hurl you off a cliff.
-         <tag>Jump Boots</tag> Enable you to jump much higher than normal.
-         Useful for those hard to reach places or crossing chasms the easy way.
-         <tag>Cloak of Invisibility</tag> The cloak will hide you from your
-         enemies. That is, until you decide to attack them, even then they will
-         have a hard time attacking you. Definately, one of the more useful
-         power-ups in the game.
-         <tag>Dr.'s Bag</tag> Will restore up to 100 points of health when
-         activated. The unused medicine will remain in your inventory until
-         used up. Keep this item handy!
-         <tag>Guns akimbo<label id="Akimbo"></tag> Gives you double-fisted
-         killing power with one-handed weapons, such as the shotgun, flare gun,
-         and Tommy gun. Lasts 30 seconds.
-         <tag>Reflective Shots</tag> This powerup causes bullets to bounce
-         back at your attacker. You are still susceptible to flares and
-         explosives, so be careful.
-      </descrip>
-   </sect>
+      <sect1><heading>Warmup<label id="warmup"><p>
+         The warmup is a short period of time before the fight actually begins.
+         The idea behind this system is to make sure all players start at the
+         same time so that no guy gets all the stuff before someone else even
+         enters play. Also it lets the time to players who don't know the map
+         yet to explore it a little bit.
 
-   <!-- Brink Of Death -->
+         You control the amount of time dedicated to the warmup by setting the
+         <ref id="g_warmup" name="g_warmup"> cvar to a value in secondes. A
+         server will wait after at least 2 players (of different teams if any)
+         have entered the game to start the countdown. It will then reset the
+         map and respawn all players. Be sure to set it to a non-zero value
+         before starting the map, or you won't have any warmup at all.
 
-   <sect><heading>Brink Of Death<label id="BOD"><p>
-      Sometimes you'll knock BloodBath opponents to their knees instead of
-      killing them outright. The victim spends several moments swaying, poised
-      between life and death. If no one reacts, the victim will slump over and
-      die, earning you a point. Of course, because your victim is helpless,
-      you'll have a moment or two to gloat. You may end the torture swiftly by
-      blowing the victim's head off. You may also draw it out by tossing a lit
-      bundle of dynamite on the ground nearby. Be careful, though. Victims may
-      bring themselves back from the brink of death by repeatedly hitting the
-      jump button.
+         Of course, no frag can be taken during warmup.
+      </sect1>
 
-      You'll recognize the brink of death by the sudden inability to move and
-      the removal of your weapons. When this happens, hammer away on that jump
-      button and pray. A player can't put himself on the BOD. Also, it doesn't
-      apply to someone who's on fire.
-   </sect>
+      <sect1><heading>Voting menu<label id="menu"><p>
+         The voting menu is a mecanism that allows players to change server
+         settings via votes. For the moment, the available settings are: map,
+         game type, frag limit, time limit, warmup duration, and options.
 
-   <!-- Warmup -->
+         To enter the menu, you must use "impulse 50" while idle. The menu is
+         entirely based on impulse commands. To enter into a submenu or vote
+         for something, just send the impulse number corresponding to your
+         choice. Once you have voted, you will be exited from the menu
+         automatically, but until you vote or you explicitely exit the menu,
+         all your impulses will be handled by it.
 
-   <sect><heading>Warmup<p>
-      The warmup is a short period of time before the fight actually begins. The
-      idea behind this system is to make sure all players start at the same time
-      so that no guy gets all the stuff before someone else even enters play.
-      Also it lets the time to players who don't know the map yet to explore it
-      a little bit.
+         Observers don't have access to the menu.
+      </sect1>
 
-      You control the amount of time dedicated to the warmup by setting the
-      "g_warmup" cvar to a value in secondes. For instance, a server with
-      "g_warmup" set to "25" will wait 25 secondes after at least 2 players (of
-      different teams if any) have entered the game to start. It will then
-      reset the map and respawn all players. Of course, no frag can be taken
-      during warmup.
+      <sect1><heading>Cvars<p>
+         You'll find in BloodBath quite a lot of the usual cvars from Quake. We
+         have already talked about "deathmatch", "teamplay", "fraglimit" and
+         "timelimit"; but you'll also find "skill" for setting the bots skill.
 
-      Setting "g_warmup" to "0" means no warmup at all. Be sure to set it
-      before starting the map, or you won't have any time for the warmup.
-   </sect>
-
-   <!-- Voting menu -->
-
-   <sect><heading>Voting menu<label id="voting menu"><p>
-      The voting menu is a mecanism that allows players to change server
-      settings via votes. For the moment, the available settings are: map, game
-      type, frag limit and time limit.
-
-      To enter the menu, you must use "impulse 50" while idle. The menu is
-      entirely based on impulse commands. To enter into a submenu or vote for
-      something, just send the impulse number corresponding to your choice.
-      Once you have voted, you will be exited from the menu automatically, but
-      until you vote or you explicitely exit the menu, all your impulses will
-      be handled by it.
-
-      Observers don't have access to the menu.
-   </sect>
-
-   <!-- Cvars -->
-
-   <sect><heading>Cvars<p>
-      You'll find in BloodBath quite a lot of the usual cvars from Quake. We
-      have already talked about "deathmatch", "teamplay", "fraglimit" and
-      "timelimit"; but you'll also find "skill" for setting the bots skill.
-
-      BloodBath has a few specific cvars that you may want to use if you host
-      a server:
-     <itemize>
-        <item> "g_weaponStay": if set, weapons don't disappear when taken, but
-        you can't take a weapon more than once (equivalent to "Doom Old
-        DeathMatch" and "Quake DM 3")
-        <item> "sv_allowCheat": enable a few more client impulses, which may be
-        used to CHEAT one way or another, and MAY CRASH THE GAME under some
-        conditions. You have been warned.
-        <item> "sv_disable": a set of flags that allow a server administrator
-        to keep his server under control despite the voting system. Its value
-        must be set by adding the following numbers: 1 to disable bots, 2 to
-        disable map voting, 4 to disable game type voting, 8 to disable frag
-        limit voting, 16 to disable time limit voting, and 32 to disable options
-        voting. For example, setting "sv_disable" to 5 (1+4) will ensure your
-        server won't have bots and won't change its initial game type.
-     </itemize>
-     Your server must have a "set" command, or an automatic cvar creation at
-     progs request, to allow you to use the new cvars though. It's not the case
-     of the original Quake binaries and of quite a lot of more modern versions
-     of the Quake engine. Be sure to check that.
+         BloodBath has a few specific cvars that you may want to use if you host
+         a server:
+         <itemize>
+            <item> "g_lockTeams": if set during a teamplay, the end of the
+            <ref id="warmup" name="warmup"> locks the teams so that no new
+            player can join them until the end of the match.
+            <item> "g_warmup"<label id="g_warmup">: if set to a non-zero value,
+            it indicates the duration of the <ref id="warmup" name="warmup">
+            in secondes. If set to 0, the warmup is disabled.
+            <item> "g_weaponsStay": if set, weapons don't disappear when taken,
+            but you can't take a weapon more than once (equivalent to "Doom Old
+            DeathMatch" and "Quake DM 3")
+            <item> "sv_allowCheat": enable a few more client impulses, which
+            may be used to CHEAT one way or another, and MAY CRASH THE GAME
+            under some conditions. You have been warned.
+            <item> "sv_disable": a set of flags that allow a server
+            administrator to keep his server under control despite the voting
+            system. Its value must be set by adding the following numbers: 1 to
+            disable bots, 2 to disable map voting, 4 to disable game type
+            voting, 8 to disable frag limit voting, 16 to disable time limit
+            voting, 32 to disable warmup duration voting, and 64 to disable
+            options voting. For example, setting "sv_disable" to 5 (1+4) will
+            ensure your server won't have bots and won't change its initial
+            game type.
+         </itemize>
+         Your server must have a "set" command, or an automatic cvar creation
+         at progs request, to allow you to use the new cvars though. It's not
+         the case of the original Quake binaries and of quite a lot of more
+         modern versions of the Quake engine. Be sure to check that.
+      </sect1>
    </sect>
 
    <!-- FAQ -->
 
    <sect><heading>Frequently Asked Questions<p>
       <descrip>
-         <tag>I can't spawn bots (server is full) / nobody can join my NQ server</tag>
-         You may have forgotten to put "-listen 8" or more in Quake's command line
-         ("-dedicated 8" for a dedicated server). By default, Quake allows only 1
-         client into the game. That's why you must explicitely start a multiplayer
-         game with the menu or add a "-listen" or "-dedicated" argument to your
-         command line to tell Quake you want more clients.
-         <tag>BloodBath exits with: <em>Z_Malloc: failed on allocation of XXX bytes</em></tag>
+         <tag>I can't spawn bots (server is full) / nobody can join my NQ
+         server</tag>
+         You may have forgotten to put "-listen 8" or more in Quake's command
+         line ("-dedicated 8" for a dedicated server). By default, Quake allows
+         only 1 client into the game. That's why you must explicitely start a
+         multiplayer game with the menu or add a "-listen" or "-dedicated"
+         argument to your command line to tell Quake you want more clients.
+         <tag>BloodBath exits with: <em>Z_Malloc: failed on allocation of XXX
+         bytes</em></tag>
          The engine hasn't allocated enough "zone" memory. You can change this
          with the "-zone" command line argument. With most engines, "-zone 256"
          will be enough, but some of them may require more (try 512).

@@ -646,7 +646,7 @@ void() ClientDisconnected =
         active_clients1 = active_clients1 - (active_clients1 & ClientBitFlag(self.b_clientno));
 
     // If it's a real player, reset the client number
-    if (self.ishuman = TRUE)
+    if (self.ishuman)
         self.b_clientno = -1;
 };
 /*
@@ -1267,6 +1267,9 @@ void() WaypointWatch =
 
 void() BotFrame =
 {
+    if (intermission_running)
+        return;
+
     local float num;
     #ifdef QUAKEWORLD
     local string h;

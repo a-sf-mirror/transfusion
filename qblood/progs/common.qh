@@ -153,7 +153,8 @@
 #define SV_DISABLE_VOTE_GAME    4
 #define SV_DISABLE_VOTE_FRAG    8
 #define SV_DISABLE_VOTE_TIME    16
-#define SV_DISABLE_VOTE_OPTIONS 32
+#define SV_DISABLE_VOTE_WARMUP  32
+#define SV_DISABLE_VOTE_OPTIONS 64
 
 // point content values
 #define CONTENT_EMPTY   -1

@@ -348,7 +348,7 @@ entity(float closeness) SUB_GetPointedPlayer =
 
     // Temp vars.
     local vector diff, point;
-    local float currclose;
+    local float currclose, length;
     local string s1, s2, s3;
 
     // Normalize self.angles so we can do a length-independent
@@ -363,6 +363,7 @@ entity(float closeness) SUB_GetPointedPlayer =
         // Get a vector pointing from the viewer to the current
         // player under consideration
         diff = e.origin - self.origin;
+        length = vlen (diff);
 
         // Normalize it since we only care where he's pointing,
         // not how far away the guy is.
@@ -373,7 +374,7 @@ entity(float closeness) SUB_GetPointedPlayer =
         diff = diff - point;
 
         // The length is going to be our definition of closeness
-        currclose = vlen (diff);
+        currclose = vlen (diff) * length / 500;
         traceline (self.origin, e.origin, FALSE, self);
         if (trace_ent == e && (closeness == -1 || currclose < closeness)) {
             closeness = currclose;
