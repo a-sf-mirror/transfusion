@@ -86,7 +86,7 @@ void() door_hit_bottom =
 
 void() door_go_down =
 {
-dprint ("door_go_down\n");
+    //dprint ("door_go_down\n");
     sound (self, CHAN_VOICE, self.noise2, 1, ATTN_NORM);
     if (self.max_health)
     {
@@ -100,7 +100,7 @@ dprint ("door_go_down\n");
 
 void() door_go_up =
 {
-dprint ("door_go_up\n");
+    //dprint ("door_go_up\n");
     if (self.state == STATE_UP)
         return;     // allready going up
 
@@ -128,7 +128,7 @@ ACTIVATION FUNCTIONS
 
 void() door_fire =
 {
-dprint ("door_fire\n");
+    //dprint ("door_fire\n");
     local entity    oself;
     local entity    starte;
 
@@ -172,7 +172,7 @@ dprint ("door_fire\n");
 
 void() door_use =
 {
-dprint ("door_use\n");
+    //dprint ("door_use\n");
     local entity oself;
 
     self.message = "";          // door message are for touch only
@@ -204,7 +204,7 @@ void() door_trigger_touch =
 
 void() door_killed =
 {
-dprint ("door_killed\n");
+    //dprint ("door_killed\n");
     local entity oself;
 
     oself = self;

@@ -777,19 +777,25 @@ void() PlayerJump =
     self.button2 = 0;
     sound (self, CHAN_BODY, "foley/jump.wav", 1, ATTN_NORM);  // player jumping sound
 
-    #ifndef QUAKEWORLD
     local   float   jump;
 
-    jump = 350;     // quake = 270
+    #ifndef QUAKEWORLD
+    jump = 350;     // quake value was 270
+    #else
+    jump = 80;     // quake will add 270 to that
+    #endif
 
     // Boots let player jump about 4x as high.
     // NOTE:  max height = v0^2 / 2g.
     if (self.boots_on)
-        jump = jump * 2;
+        #ifndef QUAKEWORLD
+        jump = jump + 320;
+        #else
+        jump = jump + 600;
+        #endif
 
     self.flags = self.flags - FL_ONGROUND;  // don't stairwalk
     self.velocity_z = self.velocity_z + jump;
-    #endif
 };
 
 
@@ -1391,8 +1397,6 @@ void() ClientDisconnect =
     sound (self, CHAN_BODY, "thevoice/vo2.wav", 1, ATTN_NONE);
     CTF_PlayerDropFlag ();
     set_suicide_frame ();
-
-    self.ishuman = 0;
 };
 
 /*

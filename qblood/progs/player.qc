@@ -34,7 +34,7 @@ void() player_run;
 
 void()  player_stand1 =[    $axstnd1,   player_stand1   ]
 {
-    if (self.player_state != PS_HOLD_FIRE)
+    if (self.player_state != PS_HOLD_FIRE && self.player_state != PS_MENU)
         self.weaponframe = 0;
 
     if (self.velocity_x || self.velocity_y)
@@ -367,7 +367,6 @@ void(string gibname, float dm) ThrowHead =
     setmodel (self, gibname);
     self.frame = 0;
     self.skin = 0;
-    self.nextthink = -1;
     self.movetype = MOVETYPE_BOUNCE;
 
     // A player's head is invulnerable until this player respawns
@@ -381,7 +380,10 @@ void(string gibname, float dm) ThrowHead =
         self.think = SUB_Remove;
     }
     else
+    {
         self.takedamage = DAMAGE_NO;
+        self.nextthink = -1;
+    }
 
     // Clean all
     // if a monsters death sets off a trigger then dont let the corpses death do the same
@@ -578,10 +580,7 @@ void() PlayerDie =
         return;
     }
 
-    i = cvar("temp1");
-    if (!i)
-        i = 1 + floor(random()*6);
-
+    i = 1 + floor(random()*6);
     if (i == 1)
         player_diea1();
     else if (i == 2)

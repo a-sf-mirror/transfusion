@@ -197,8 +197,6 @@ void() ObserverThink =
     local float invcos,nv,nvp,nvpmax,nvs,nsp,sp,svz;
     local vector f,vp,vs;
 
-    self.weaponmodel = "";
-    self.weaponframe = 0;
     self.flags = self.flags | FL_ONGROUND;
     #ifdef QUAKEWORLD
     // REMOVEME / FIXME: QW somehow changes movetype to MOVETYPE_WALK regularly
@@ -255,8 +253,10 @@ void(entity player) BecomeObserver =
     player.deadflag         = DEAD_NO;
     player.player_state     = PS_IDLE;
     player.team             = 0;
+    player.nextthink        = -1;
 
     player.skin = 0;
+    player.frame = 0;
     setmodel (player, "progs/eyes.mdl");
     setsize (player, '-10 -10 -20', '10 10 28');
 
