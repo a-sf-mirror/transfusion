@@ -1638,7 +1638,7 @@ void(entity attacker) ClientObituary =
             // Beaten like a Cur
             if (rnum <= 1)
             {
-                deathstring = " beaten ";
+                deathstring = " beat ";
                 deathstring2 = " like a cur";
                 self.noise1 = "thevoice/vo39.wav";
             }
@@ -1657,7 +1657,8 @@ void(entity attacker) ClientObituary =
             // Dog meat
             else if (rnum <= 4)
             {
-                deathstring = " made dog meat with ";
+                deathstring = " butchered ";
+                deathstring2 = " into dog meat";
                 self.noise1 = "thevoice/vo36.wav";
             }
             // Excellent!
@@ -1669,7 +1670,7 @@ void(entity attacker) ClientObituary =
             // Fine work
             else if (rnum <= 6)
             {
-                deathstring = " did a fine work on ";
+                deathstring = " made a fine work of ";
                 self.noise1 = "thevoice/vo22.wav";
             }
             // Good one
@@ -1682,8 +1683,7 @@ void(entity attacker) ClientObituary =
             // He shoots! He scores!
             else if (rnum <= 8)
             {
-                deathstring = " shot at ";
-                deathstring2 = " and scored!";
+                deathstring = " scored on ";
                 self.noise1 = "thevoice/vo33.wav";
             }
             // Hosed!
@@ -1713,7 +1713,7 @@ void(entity attacker) ClientObituary =
             // Punishment delivered
             else if (rnum <= 13)
             {
-                deathstring = " delivered punishment to ";
+                deathstring = " punished ";
                 self.noise1 = "thevoice/vo30.wav";
             }
             // Ripped 'em loose
@@ -1739,6 +1739,7 @@ void(entity attacker) ClientObituary =
             else if (rnum <= 17)
             {
                 deathstring = " spilt ";
+                deathstring2 = "'s blood";
                 self.noise1 = "thevoice/vo34.wav";
             }
             // Sprayed!
@@ -1756,7 +1757,8 @@ void(entity attacker) ClientObituary =
             // Talented!
             else if (rnum <= 20)
             {
-                deathstring = " showed his talent to ";
+                deathstring = " dazzled ";
+                deathstring2 = " with his talent";
                 self.noise1 = "thevoice/vo19.wav";
             }
             // Toasted!
@@ -1787,7 +1789,7 @@ void(entity attacker) ClientObituary =
             else if (rnum <= 25)
             {
                 deathstring = " made ";
-                deathstring2 = " suffered scrotum separation";
+                deathstring2 = " suffer scrotum separation";
                 self.noise1 = "thevoice/vo9.wav";
             }
             // Excrement
@@ -1807,7 +1809,7 @@ void(entity attacker) ClientObituary =
             else if (rnum <= 28)
             {
                 deathstring = " vented ";
-                deathstring2 = " spleen";
+                deathstring2 = "'s spleen";
                 self.noise1 = "thevoice/vo42.wav";
             }
             else if (rnum <= 29)
