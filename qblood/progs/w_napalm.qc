@@ -28,6 +28,7 @@ void() Napalm_Fire;
 
 // ----- Napalm launcher models ----- //
 
+#ifndef NEW_MODELS
 // Normal model
 $modelname v_rock2
 
@@ -47,6 +48,25 @@ $frame napalm_draw1 napalm_draw2 napalm_draw3 napalm_draw4
 
 // holster
 $frame napalm_holster1 napalm_holster2 napalm_holster3 napalm_holster4
+
+
+#else
+// Normal model
+$modelname v_napalm
+
+// idle
+$frame napalm_idle1
+
+// draw
+$frame napalm_draw1 napalm_draw2 napalm_draw3
+
+// fire & altfire
+$frame napalm_fire1 napalm_fire2 napalm_fire3 napalm_fire4 napalm_fire5
+$frame napalm_fire6
+
+// holster
+$frame napalm_holster1 napalm_holster2 napalm_holster3
+#endif
 
 
 // Akimbo model
@@ -100,15 +120,23 @@ void() player_aknapalm6 = [$attack2, player_run      ]
 // Normal draw
 void() player_napalmdraw1 = [$attack2, player_napalmdraw2] { self.weaponframe = $napalm_draw1; };
 void() player_napalmdraw2 = [$attack2, player_napalmdraw3] { self.weaponframe = $napalm_draw2; };
+#ifndef NEW_MODELS
 void() player_napalmdraw3 = [$attack2, player_napalmdraw4] { self.weaponframe = $napalm_draw3; };
 void() player_napalmdraw4 = [$attack2, player_run        ] { self.weaponframe = $napalm_draw4; };
+#else
+void() player_napalmdraw3 = [$attack2, player_run        ] { self.weaponframe = $napalm_draw3; };
+#endif
 
 // Normal holster
 void() player_napalmholst1 = [$attack2, player_napalmholst2] { self.weaponframe = $napalm_holster1; };
 void() player_napalmholst2 = [$attack2, player_napalmholst3] { self.weaponframe = $napalm_holster2; };
 void() player_napalmholst3 = [$attack2, player_napalmholst4] { self.weaponframe = $napalm_holster3; };
+#ifndef NEW_MODELS
 void() player_napalmholst4 = [$attack2, player_napalmholst5] { self.weaponframe = $napalm_holster4; };
 void() player_napalmholst5 = [$attack2, player_run         ] { W_DrawWeapon (self.newweapon); };
+#else
+void() player_napalmholst4 = [$attack2, player_run         ] { W_DrawWeapon (self.newweapon); };
+#endif
 
 // Akimbo draw
 void() player_aknapalmdraw1 = [$attack2, player_aknapalmdraw2] { self.weaponframe = $anapalm_draw1; };
@@ -370,7 +398,11 @@ void() Napalm_Draw =
     }
     else
     {
+        #ifndef NEW_MODELS
         self.attack_finished = time + 0.5;
+        #else
+        self.attack_finished = time + 0.4;
+        #endif
         player_napalmdraw1 ();
     }
 };
@@ -392,7 +424,11 @@ void() Napalm_Holster =
     }
     else
     {
+        #ifndef NEW_MODELS
         self.attack_finished = time + 0.5;
+        #else
+        self.attack_finished = time + 0.4;
+        #endif
         player_napalmholst1 ();
     }
 };
@@ -414,7 +450,11 @@ void() Napalm_UpdateView =
     }
     else
     {
+        #ifndef NEW_MODELS
         self.weaponmodel = "progs/v_rock2.mdl";
+        #else
+        self.weaponmodel = "models/weapons/v_napalm.md3";
+        #endif
         self.items = self.items - (self.items & IT_GUNS_AKIMBO);
     }
 };

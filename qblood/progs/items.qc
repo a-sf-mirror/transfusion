@@ -1670,10 +1670,11 @@ void() weapon_remote =
 // Napalm Launcher
 void() weapon_rocketlauncher =
 {
-    precache_model ("progs/v_rock2.mdl");
     #ifndef NEW_MODELS
+    precache_model ("progs/v_rock2.mdl");
     precache_model ("progs/g_rock2.mdl");
     #else
+    precache_model ("models/weapons/v_napalm.md3");
     precache_model ("models/weapons/g_napalm.md3");
     #endif
     precache_model ("progs/v_arock2.mdl");
