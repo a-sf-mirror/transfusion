@@ -318,7 +318,7 @@ void() Menu_Draw =
         Sprint (self, PRINT_HIGH,
                 "Choose a map group:\n"
                 "1) Blood maps\n"
-                "2) Blood Single-Player maps\n"
+                "2) Blood Single Player maps\n"
                 "3) Blood Add-ons maps\n"
                 "4) Blood 2 maps\n"
                 "5) Custom maps\n"
@@ -410,7 +410,7 @@ void() Menu_Draw =
     {
         Sprint (self, PRINT_HIGH,
                 "Vote for a map:\n"
-                "1) e1m1  Cradle to Grave  | 2) e1m2  Wrong Side Of The Tracks\n"
+                "1) e1m1  Cradle to Grave  | 2) e1m2  Wrong Side of the Tracks\n"
                 "3) e1m7  Altar of Stone\n"
                 "\n"
                 "10) Go back to map menu\n");
@@ -440,7 +440,7 @@ void() Menu_Draw =
         Sprint (self, PRINT_HIGH,
                 "Vote for a map:\n"
                 "1) bb3_2k1   Bodies Infusion           | 2) dcamp     DeathCamp\n"
-				"3) dranzbb6  Black Coffee              | 4) highnoon  HighNoon\n"
+                "3) dranzbb6  Black Coffee              | 4) highnoon  HighNoon\n"
                 "5) qbb1      The Confluence            | 6) qbb2      KathartiK\n"
                 "7) qbb3      Caleb's Woodland Retreat  | 8) qe1m7     The House of Chthon\n"
                 "9) simple    Dead Simple\n"
