@@ -271,8 +271,6 @@ void() player_doll2 = [$light2, player_doll1] { player_doll (); };
 
 void() player_light =
 {
-    muzzleflash ();
-
     if ((!self.button0 && !self.button1 && self.impulse != 12) || intermission_running || self.ammo_cells < 1)
     {
         player_run ();
@@ -281,13 +279,6 @@ void() player_light =
     self.weaponframe = self.weaponframe + 1;
     if (self.weaponframe == 5)
         self.weaponframe = 1;
-    SuperDamageSound ();
-//    sound (self, CHAN_AUTO, "weapons/tesla/taltac3.wav", 1, ATTN_NORM);
-    W_FireLightning ();
-
-    self.attack_finished = time + 0.2;
-
-    self.impulse = 0;  // REMOVEME as soon as the altfire will no longer be bind to an impulse
 };
 
 void() player_light1 = [$light1, player_light2] { player_light (); };

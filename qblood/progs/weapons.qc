@@ -89,7 +89,7 @@ void() W_Precache =
 //    precache_sound ("weapons/lstart.wav");
 
     PM_PrecacheFire ();  // why is this *here* and what does it do? D_L
-    
+
     precache_sound ("weapons/napalm/explodfs.wav"); // For alt-flares.
 //  PM:  Currently here so alt-napalm won't crash in levels without
 //       incinerator.  Should remove later.
@@ -1130,17 +1130,16 @@ void(entity attacker, vector org, vector dir, float mspeed, float big) PM_Launch
     jolt.solid      = SOLID_BBOX;
     jolt.classname  = "tesla";
     jolt.velocity   = dir * mspeed;
-    jolt.avelocity  = '300 300 300';
     jolt.angles     = vectoangles(dir);
     if (big)
     {
-        jolt.dmg        = 170;
-        jolt.model      = "progs/bolt2.mdl";
+        jolt.dmg    = 170;
+        jolt.model  = "progs/bolt2.mdl";
     }
     else
     {
-        jolt.dmg        = 25; // note, altfire = 170;
-        jolt.model      = "progs/bolt.mdl";
+        jolt.dmg    = 25;
+        jolt.model  = "progs/bolt.mdl";
     }
     jolt.style      = big;
     jolt.touch      = PM_TeslaTouch;
@@ -1159,6 +1158,10 @@ void() W_FireLightning =
 
     if (self.ammo_cells < 1)
         return;
+
+    muzzleflash ();
+    SuperDamageSound ();
+//    sound (self, CHAN_AUTO, "weapons/tesla/taltac3.wav", 1, ATTN_NORM);
 
     #ifndef QUAKEWORLD
     self.punchangle_x = -2;
@@ -1188,18 +1191,23 @@ void() W_FireLightning =
     }
     self.currentammo = self.ammo_cells;
 
-    org = self.origin + '0 0 18'; //FIXME - where is the right origin? D_L
-
     // PM:  This is for the plasma gun-wannabe mode.
     local   vector  dir;
     local   float   mspeed;
 
     if (big)
+    {
+        self.attack_finished = time + 1.256;
         mspeed = 2500;
+    }
     else
-        mspeed = 1000;
+    {
+        self.attack_finished = time + 0.1;
+        mspeed = 1500;
+    }
     makevectors (self.v_angle);
     dir = aim(self, mspeed);
+    org = self.origin + v_forward * 50;
 
     PM_LaunchJolt (self, org, dir, mspeed, big);
 };
@@ -2018,8 +2026,10 @@ void() W_Attack =
     }
     else if (self.weapon == IT_LIGHTNING)
     {
-        self.attack_finished = time + 0.1;
+        W_FireLightning ();
         player_light1();
+
+        self.impulse = 0;  // REMOVEME as soon as the altfire will no longer be bind to an impulse
     }
     else if (self.weapon == IT_VOODOO_DOLL)
     {

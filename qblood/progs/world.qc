@@ -300,7 +300,7 @@ void() worldspawn =
     precache_sound ("player/songs/vo3034.wav");
     precache_sound ("player/songs/vo3035.wav");
     precache_sound ("player/songs/vo3039.wav");
-    
+
     // player death sounds
     precache_sound ("player/die1.wav");
     precache_sound ("player/die2.wav");
@@ -585,13 +585,13 @@ void() GibPlayerCorpse =
     if (deathmatch)
     {
     #endif
-	    Bprint (PRINT_MEDIUM, self.enemy.netname);
-	    Bprint (PRINT_MEDIUM, " desecrated ");
-	    Bprint (PRINT_MEDIUM, self.netname);
-	    Bprint (PRINT_MEDIUM, "'s corpse\n");
+        Bprint (PRINT_MEDIUM, self.enemy.netname);
+        Bprint (PRINT_MEDIUM, " desecrated ");
+        Bprint (PRINT_MEDIUM, self.netname);
+        Bprint (PRINT_MEDIUM, "'s corpse\n");
     #ifndef QUAKEWORLD
-	}
-	#endif
+    }
+    #endif
 
     remove (self);
 };
