@@ -66,6 +66,7 @@ $modelname v_proxy
 // idle
 $frame proxy_idle1
 
+#ifndef NEW_MODELS
 // throw
 $frame proxy_throw1  proxy_throw2 proxy_throw3 proxy_throw4 proxy_throw5
 $frame proxy_throw6  proxy_throw7
@@ -76,6 +77,18 @@ $frame proxy_draw1 proxy_draw2 proxy_draw3 proxy_draw4
 // holster
 $frame proxy_holster1 proxy_holster2 proxy_holster3 proxy_holster4
 
+#else
+// draw
+$frame proxy_draw1 proxy_draw2 proxy_draw3
+
+// throw
+$frame proxy_throw1  proxy_throw2 proxy_throw3 proxy_throw4 proxy_throw5
+$frame proxy_throw6  proxy_throw7
+
+// holster
+$frame proxy_holster1 proxy_holster2 proxy_holster3
+#endif
+
 
 // ----- Remote Detonator model ----- //
 
@@ -84,6 +97,7 @@ $modelname v_remote
 // idle
 $frame remote_idle1
 
+#ifndef NEW_MODELS
 // throw
 $frame remote_throw1  remote_throw2 remote_throw3 remote_throw4 remote_throw5
 $frame remote_throw6  remote_throw7
@@ -96,6 +110,27 @@ $frame remote_draw1 remote_draw2 remote_draw3 remote_draw4
 
 // holster
 $frame remote_holster1 remote_holster2 remote_holster3 remote_holster4
+
+#else
+// draw
+$frame remote_draw1 remote_draw2 remote_draw3
+
+// half draw
+$frame remote_drawhlf1 remote_drawhlf2 remote_drawhlf3
+
+// throw
+$frame remote_throw1  remote_throw2 remote_throw3 remote_throw4 remote_throw5
+$frame remote_throw6  remote_throw7
+
+// fire
+$frame remote_fire1 remote_fire2 remote_fire3
+
+// holster
+$frame remote_holster1 remote_holster2 remote_holster3
+
+// holster
+$frame remote_hlsthlf1 remote_hlsthlf2 remote_hlsthlf3
+#endif
 
 
 // ----- Player related code ----- //
@@ -188,28 +223,44 @@ void() player_tntholster5 = [$attack2, player_run        ] { W_DrawWeapon (self.
 // Proximity bomb draw
 void() player_proxydraw1 = [$attack2, player_proxydraw2] { self.weaponframe = $proxy_draw1; };
 void() player_proxydraw2 = [$attack2, player_proxydraw3] { self.weaponframe = $proxy_draw2; };
+#ifndef NEW_MODELS
 void() player_proxydraw3 = [$attack2, player_proxydraw4] { self.weaponframe = $proxy_draw3; };
 void() player_proxydraw4 = [$attack2, player_run       ] { self.weaponframe = $proxy_draw4; };
+#else
+void() player_proxydraw3 = [$attack2, player_run       ] { self.weaponframe = $proxy_draw3; };
+#endif
 
 // Proximity bomb holster
 void() player_proxyholster1 = [$attack2, player_proxyholster2] { self.weaponframe = $proxy_holster1; };
 void() player_proxyholster2 = [$attack2, player_proxyholster3] { self.weaponframe = $proxy_holster2; };
 void() player_proxyholster3 = [$attack2, player_proxyholster4] { self.weaponframe = $proxy_holster3; };
+#ifndef NEW_MODELS
 void() player_proxyholster4 = [$attack2, player_proxyholster5] { self.weaponframe = $proxy_holster4; };
 void() player_proxyholster5 = [$attack2, player_run          ] { W_DrawWeapon (self.newweapon); };
+#else
+void() player_proxyholster4 = [$attack2, player_run          ] { W_DrawWeapon (self.newweapon); };
+#endif
 
 // Remote detonator draw
 void() player_remotedraw1 = [$attack2, player_remotedraw2] { self.weaponframe = $remote_draw1; };
 void() player_remotedraw2 = [$attack2, player_remotedraw3] { self.weaponframe = $remote_draw2; };
+#ifndef NEW_MODELS
 void() player_remotedraw3 = [$attack2, player_remotedraw4] { self.weaponframe = $remote_draw3; };
 void() player_remotedraw4 = [$attack2, player_run        ] { self.weaponframe = $remote_draw4; };
+#else
+void() player_remotedraw3 = [$attack2, player_run        ] { self.weaponframe = $remote_draw3; };
+#endif
 
 // Remote detonator holster
 void() player_remoteholster1 = [$attack2, player_remoteholster2] { self.weaponframe = $remote_holster1; };
 void() player_remoteholster2 = [$attack2, player_remoteholster3] { self.weaponframe = $remote_holster2; };
 void() player_remoteholster3 = [$attack2, player_remoteholster4] { self.weaponframe = $remote_holster3; };
+#ifndef NEW_MODELS
 void() player_remoteholster4 = [$attack2, player_remoteholster5] { self.weaponframe = $remote_holster4; };
 void() player_remoteholster5 = [$attack2, player_run           ] { W_DrawWeapon (self.newweapon); };
+#else
+void() player_remoteholster4 = [$attack2, player_run           ] { W_DrawWeapon (self.newweapon); };
+#endif
 
 // Light a TNT
 void() player_lighttnt1 = [$attack2, player_lighttnt2] { self.weaponframe = $tnt_fire1; };
@@ -881,7 +932,11 @@ void() Bomb_Fire =
         newmis.dmg = DMG_PROXIMITY_BOMB;
         newmis.avelocity = '0 300 0';
         newmis.angles = '0 0 0';
+        #ifndef NEW_MODELS
         newmis.model = "progs/grd_prox.mdl";
+        #else
+        newmis.model = "models/weapons/grenades/gr_proxy.md3";
+        #endif
     }
     // else if we fire a remote detonator
     else if (self.weapon == IT_REMOTE_DETONATOR)
@@ -890,7 +945,11 @@ void() Bomb_Fire =
         newmis.dmg = DMG_REMOTE_DETONATOR;
         newmis.avelocity = '0 300 0';
         newmis.angles = '0 0 0';
+        #ifndef NEW_MODELS
         newmis.model = "progs/grd_remo.mdl";
+        #else
+        newmis.model = "models/weapons/grenades/gr_remote.md3";
+        #endif
     }
     // Else, it's TNT or a spray can!
     else
@@ -905,7 +964,11 @@ void() Bomb_Fire =
         {
             newmis.netname   = "Lit Spray Can";
             newmis.dmg       = DMG_SPRAY_CAN;
+            #ifndef NEW_MODELS
             newmis.model     = "progs/grd_aero.mdl";
+            #else
+            newmis.model     = "models/weapons/grenades/gr_aerosol.md3";
+            #endif
             newmis.angles    = '0 -300 0';
             if (newmis.style == TNT_TYPE_NORMAL)
                 newmis.avelocity = '150 150 150';
@@ -918,7 +981,11 @@ void() Bomb_Fire =
         {
             newmis.netname   = "TNT";
             newmis.dmg       = DMG_TNT;
+            #ifndef NEW_MODELS
             newmis.model     = "progs/grd_bund.mdl";
+            #else
+            newmis.model     = "models/weapons/grenades/gr_tnt.md3";
+            #endif
             newmis.avelocity = '300 300 300';
             newmis.angles    = vectoangles(newmis.velocity);
         }
@@ -1050,7 +1117,11 @@ void() Proxy_Draw =
 
     Proxy_UpdateView ();
 
+    #ifndef NEW_MODELS
     self.attack_finished = time + 0.5;
+    #else
+    self.attack_finished = time + 0.4;
+    #endif
     player_proxydraw1 ();
 };
 
@@ -1064,7 +1135,11 @@ Holster code for the proximity bomb
 */
 void() Proxy_Holster =
 {
+    #ifndef NEW_MODELS
     self.attack_finished = time + 0.5;
+    #else
+    self.attack_finished = time + 0.4;
+    #endif
     player_proxyholster1 ();
 };
 
@@ -1078,7 +1153,11 @@ Choose the right proximity bomb model to display
 */
 void() Proxy_UpdateView =
 {
+    #ifndef NEW_MODELS
     self.weaponmodel = "progs/v_proxy.mdl";
+    #else
+    self.weaponmodel = "models/weapons/v_proxy.md3";
+    #endif
     self.items = self.items - (self.items & IT_GUNS_AKIMBO);
 };
 
@@ -1112,7 +1191,11 @@ void() Remote_Draw =
 
     Remote_UpdateView ();
 
+    #ifndef NEW_MODELS
     self.attack_finished = time + 0.5;
+    #else
+    self.attack_finished = time + 0.4;
+    #endif
 
     // If we have just the remote
     if (self.currentammo == 0)
@@ -1135,7 +1218,11 @@ Holster code for the remote detonator
 */
 void() Remote_Holster =
 {
+    #ifndef NEW_MODELS
     self.attack_finished = time + 0.5;
+    #else
+    self.attack_finished = time + 0.4;
+    #endif
     player_remoteholster1 ();
 };
 
@@ -1149,6 +1236,10 @@ Choose the right remote detonator model to display
 */
 void() Remote_UpdateView =
 {
+    #ifndef NEW_MODELS
     self.weaponmodel = "progs/v_remote.mdl";
+    #else
+    self.weaponmodel = "models/weapons/v_remote.md3";
+    #endif
     self.items = self.items - (self.items & IT_GUNS_AKIMBO);
 };

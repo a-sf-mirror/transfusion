@@ -1640,10 +1640,11 @@ void() weapon_supernailgun =
     precache_model ("progs/v_nail2.mdl");
     #ifndef NEW_MODELS
     precache_model ("progs/g_nail2.mdl");
+    precache_model ("progs/grd_aero.mdl");
     #else
     precache_model ("models/ammo/g_aerosol.md3");
+    precache_model ("models/weapons/grenades/gr_aerosol.md3");
     #endif
-    precache_model ("progs/grd_aero.mdl");
 
     #ifndef NEW_MODELS
     setmodel (self, "progs/g_nail2.mdl");
@@ -1673,7 +1674,11 @@ void() weapon_supernailgun =
 void() item_tnt_common =
 {
     precache_model ("progs/v_rock.mdl");
+    #ifndef NEW_MODELS
     precache_model ("progs/grd_bund.mdl");
+    #else
+    precache_model ("models/weapons/grenades/gr_tnt.md3");
+    #endif
 
     precache_model (self.model);
     setmodel (self, self.model);
@@ -1722,13 +1727,15 @@ void() item_tnt =
 // Proximity bombs
 void() weapon_proximity =
 {
-    precache_model ("progs/v_proxy.mdl");
     #ifndef NEW_MODELS
+    precache_model ("progs/v_proxy.mdl");
     precache_model ("progs/g_proxy.mdl");
-    #else
-    precache_model ("models/weapons/g_proxy.md3");
-    #endif
     precache_model ("progs/grd_prox.mdl");
+    #else
+    precache_model ("models/weapons/v_proxy.md3");
+    precache_model ("models/weapons/g_proxy.md3");
+    precache_model ("models/weapons/grenades/gr_proxy.md3");
+    #endif
 
     #ifndef NEW_MODELS
     setmodel (self, "progs/g_proxy.mdl");
@@ -1754,19 +1761,18 @@ void() weapon_proximity =
 // Remote detonators
 void() weapon_remote =
 {
+    #ifndef NEW_MODELS
     precache_model ("progs/v_remote.mdl");
-    #ifndef NEW_MODELS
-    precache_model ("progs/g_remote.mdl");
-    #else
-    precache_model ("models/weapons/g_remote.md3");
-    #endif
     precache_model ("progs/grd_remo.mdl");
-
-    #ifndef NEW_MODELS
+    precache_model ("progs/g_remote.mdl");
     setmodel (self, "progs/g_remote.mdl");
     #else
+    precache_model ("models/weapons/v_remote.md3");
+    precache_model ("models/weapons/grenades/gr_remote.md3");
+    precache_model ("models/weapons/g_remote.md3");
     setmodel (self, "models/weapons/g_remote.md3");
     #endif
+
     self.weapon = IT_REMOTE_DETONATOR;
     self.netname = "Remote Detonator";
     self.touch = weapon_touch;
