@@ -370,6 +370,9 @@ float map_cycle;
 // QuakeC extensions
 .float      button3;        // altfire; DP_INPUTBUTTONS extension
 .float      alpha;          // controls opacity of the entity (0.0 or 1.0 is solid, -1 is invisible); DP_ENT_ALPHA extension
+.float      glow_color;     // Glowing light effect, paletted color (note: 0 and 254 are white); DP_ENT_GLOW extension
+.float      glow_size;      // 0 or higher (Darkplaces imposes a 1020 limit); DP_ENT_GLOW extension
+.float      glow_trail;     // If true, leave a trail of particles of the same color as the light; DP_ENT_GLOW extension
 
 
 //

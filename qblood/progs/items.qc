@@ -951,6 +951,18 @@ void() item_health =
         self.healamount = 20;
         self.netname = "Life Essence";
         self.healtype = 1;
+
+        // If flashy effects are allowed, make it glow
+        if (cvar ("g_flashyEffects"))
+        {
+            // Only available if the engine supports the DP_ENT_GLOW extension
+            if (qcextensions)
+                if (checkextension ("DP_ENT_GLOW"))
+                {
+                    self.glow_color = 250;  // 250 = red in Quake palette
+                    self.glow_size = 50;
+                }
+        }
     }
     else if (self.spawnflags & H_LIFE_SEED)
     {
