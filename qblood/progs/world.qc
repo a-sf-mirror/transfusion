@@ -298,19 +298,19 @@ void() worldspawn =
     // Gibs and other stuff
     precache_model ("progs/bitogore.mdl");
     precache_model ("progs/h_player.mdl");
-    precache_model ("progs/gib1.mdl");
-    precache_model ("progs/gib2.mdl");
-    precache_model ("progs/gib3.mdl");
+    precache_model ("models/objects/gib1.md3");
+    precache_model ("models/objects/gib2.md3");
+    precache_model ("models/objects/gib3.md3");
     precache_model ("progs/m_arm.mdl");
-    precache_model ("progs/m_brain.mdl");
+    precache_model ("models/objects/m_brain.md3");
     precache_model ("progs/m_chest.mdl");
     precache_model ("progs/m_farm.mdl");
     precache_model ("progs/m_fist.mdl");
-    precache_model ("progs/m_foot.mdl");
-    precache_model ("progs/m_guts.mdl");
-    precache_model ("progs/m_leg.mdl");
-    precache_model ("progs/i_eyebal.mdl");
-    precache_model ("progs/i_sevhnd.mdl");
+    precache_model ("models/objects/m_foot.md3");
+    precache_model ("models/objects/m_guts.md3");
+    precache_model ("models/objects/m_leg.md3");
+    precache_model ("models/objects/m_eyeball.md3");
+    precache_model ("models/objects/m_hand.md3");
 
     precache_model ("progs/s_explod.spr");  // napalm sprite explosion
 

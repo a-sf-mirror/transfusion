@@ -619,15 +619,15 @@ void () wall_killed =
         {
             if (self.skin > 4)
             {
-                ThrowRubble ("progs/glass1.mdl", self.health);
-                ThrowRubble ("progs/glass2.mdl", self.health);
-                ThrowRubble ("progs/glass3.mdl", self.health);
+                ThrowRubble ("models/objects/glass1.md3", self.health);
+                ThrowRubble ("models/objects/glass2.md3", self.health);
+                ThrowRubble ("models/objects/glass3.md3", self.health);
             }
             else
             {
-                ThrowRubble ("progs/rubble1.mdl", self.health);
-                ThrowRubble ("progs/rubble2.mdl", self.health);
-                ThrowRubble ("progs/rubble3.mdl", self.health);
+                ThrowRubble ("models/objects/rubble1.md3", self.health);
+                ThrowRubble ("models/objects/rubble2.md3", self.health);
+                ThrowRubble ("models/objects/rubble3.md3", self.health);
             }
 
             nbRubbles = nbRubbles - 1;
@@ -705,15 +705,15 @@ void() exploding_wall =
     {
         if (self.skin > 4)  // if skin is set to glass, use the glass shards instead - d.turner
         {
-            precache_model ("progs/glass1.mdl");
-            precache_model ("progs/glass2.mdl");
-            precache_model ("progs/glass3.mdl");
+            precache_model ("models/objects/glass1.md3");
+            precache_model ("models/objects/glass2.md3");
+            precache_model ("models/objects/glass3.md3");
         }
         else
         {
-            precache_model ("progs/rubble1.mdl");
-            precache_model ("progs/rubble2.mdl");
-            precache_model ("progs/rubble3.mdl");
+            precache_model ("models/objects/rubble1.md3");
+            precache_model ("models/objects/rubble2.md3");
+            precache_model ("models/objects/rubble3.md3");
         }
     }
 

@@ -147,7 +147,7 @@ void(vector orig) Tommy_SpawnShell =
     shell = spawn ();
     shell.owner = self;
 
-    shell.mdl = "progs/tommyshl.mdl";
+    shell.mdl = "models/weapons/objects/bulletshell.md3";
     if (random() < 0.5)
         shell.noise = "weapons/shtshl.wav";
     else

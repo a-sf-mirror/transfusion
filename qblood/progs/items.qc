@@ -1388,9 +1388,9 @@ void() weapon_flaregun =
 void() weapon_sawedoff =
 {
     precache_model ("models/weapons/v_shot.md3");
-    precache_model ("models/weapons/ga_shot.md3");  // akimbo model
+    precache_model ("models/weapons/ga_shot.md3");              // akimbo model
     precache_model ("models/weapons/g_shot.md3");
-    precache_model ("progs/shotshl.mdl");   // shotgun shell
+    precache_model ("models/weapons/objects/shotshell.md3");    // shotgun shell
 
     setmodel (self, "models/weapons/g_shot.md3");
     self.weapon = IT_SAWED_OFF;
@@ -1414,9 +1414,9 @@ void() weapon_sawedoff =
 void() weapon_tommygun =
 {
     precache_model ("models/weapons/v_tommy.md3");
-    precache_model ("models/weapons/ga_tommy.md3");  // akimbo model
+    precache_model ("models/weapons/ga_tommy.md3");             // akimbo model
     precache_model ("models/weapons/g_tommy.md3");
-    precache_model ("progs/tommyshl.mdl");  // tommy gun shell
+    precache_model ("models/weapons/objects/bulletshell.md3");  // tommy gun shell
 
     setmodel (self, "models/weapons/g_tommy.md3");
     self.weapon = IT_TOMMYGUN;

@@ -278,9 +278,9 @@ void () butcher_die =
 	{
 		sound (self, CHAN_VOICE, "player/udeath.wav", 1, ATTN_NORM);
 		ThrowHead (self.health);  // FIXME: At some point need to drop butcher head
-		ThrowGib ("progs/gib1.mdl", self.health);
-		ThrowGib ("progs/gib2.mdl", self.health);
-		ThrowGib ("progs/gib3.mdl", self.health);
+		ThrowGib ("models/objects/gib1.md3", self.health);
+		ThrowGib ("models/objects/gib2.md3", self.health);
+		ThrowGib ("models/objects/gib3.md3", self.health);
 		return;
 	}
 	sound (self, CHAN_VOICE, "blob/death1.wav", 1, ATTN_NORM);

@@ -388,7 +388,7 @@ Function called when a head "dies"
 void() HeadDie =
 {
     sound (self, CHAN_ITEM, "misc/gibsq.wav", 1, ATTN_NORM);
-    ThrowGib ("progs/m_brain.mdl", self.health);
+    ThrowGib ("models/objects/m_brain.md3", self.health);
     remove (self);
 };
 
@@ -471,8 +471,8 @@ void() RandomHumanGibs =
 // m_foot = looks like a bloody shoe?
 // m_guts = intestines
 // m_leg = femur with meat
-// i_eyebal = severed eyeball
-// i_sevhnd = severed hand
+// m_eyeball = severed eyeball
+// m_hand = severed hand
 //
 
     local   float   gibs, r;
@@ -481,21 +481,21 @@ void() RandomHumanGibs =
     if (random () < 0.75)
         ThrowGib ("progs/m_chest.mdl", self.health);
     if (random () < 0.25)
-        ThrowGib ("progs/gib3.mdl", self.health);
+        ThrowGib ("models/objects/gib3.md3", self.health);
 
     // throw eyes
     r = random ();
     if (r > 0.33)
-        ThrowGib ("progs/i_eyebal.mdl", self.health);
+        ThrowGib ("models/objects/m_eyeball.md3", self.health);
     if (r > 0.66)
-        ThrowGib ("progs/i_eyebal.mdl", self.health);
+        ThrowGib ("models/objects/m_eyeball.md3", self.health);
 
     // throw guts
     r = random ();
     if (r > 0.33)
-        ThrowGib ("progs/m_guts.mdl", self.health);
+        ThrowGib ("models/objects/m_guts.md3", self.health);
     if (r > 0.66)
-        ThrowGib ("progs/m_guts.mdl", self.health);
+        ThrowGib ("models/objects/m_guts.md3", self.health);
 
     // throw arms / hands
     gibs = 2;
@@ -509,7 +509,7 @@ void() RandomHumanGibs =
         else if (r < 0.6)
             ThrowGib ("progs/m_arm.mdl", self.health);
         else if (r < 0.8)
-            ThrowGib ("progs/i_sevhnd.mdl", self.health);
+            ThrowGib ("models/objects/m_hand.md3", self.health);
         gibs = gibs - 1;
     }
 
@@ -519,9 +519,9 @@ void() RandomHumanGibs =
     {
         r = random();
         if (r < 0.33)
-            ThrowGib ("progs/m_leg.mdl", self.health);
+            ThrowGib ("models/objects/m_leg.md3", self.health);
         else if (r < 66)
-            ThrowGib ("progs/m_foot.mdl", self.health);
+            ThrowGib ("models/objects/m_foot.md3", self.health);
         gibs = gibs - 1;
     }
 };

@@ -166,7 +166,7 @@ void() Shot_SpawnShell =
     // 1st shell
     shell = spawn ();
     shell.owner = self;
-    shell.mdl   = "progs/shotshl.mdl";
+    shell.mdl   = "models/weapons/objects/shotshell.md3";
     shell.noise = "weapons/shtshl2.wav";
 
     setorigin (shell, self.origin + v_forward * 15);
