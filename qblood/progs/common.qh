@@ -211,7 +211,9 @@
 #define MSG_MULTICAST   4  // for multicast() call
 #endif
 
+
 #ifdef QUAKEWORLD
+
 // message levels
 #define PRINT_LOW       0  // pickup messages
 #define PRINT_MEDIUM    1  // death messages
@@ -225,7 +227,9 @@
 #define MULTICAST_ALL_R 3  // every client, reliable
 #define MULTICAST_PHS_R 4  // within hearing, reliable
 #define MULTICAST_PVS_R 5  // within sight, reliable
-#endif
+
+#endif  // #ifdef QUAKEWORLD
+
 
 // attack state
 #define AS_STRAIGHT 1

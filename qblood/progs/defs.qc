@@ -277,6 +277,8 @@ entity  damage_attacker;    // set by T_Damage
 entity  damage_inflictor;
 float   framecount;
 
+float   recursioncount;  // used to avoid stack overflow with explosions
+
 //
 // cvars checked each frame
 //

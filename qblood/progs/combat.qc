@@ -120,6 +120,8 @@ void(entity targ, entity attacker) Killed =
 };
 
 
+#define MAX_RECURSION_COUNT 6
+
 /*
 ============
 T_Damage
@@ -141,6 +143,11 @@ void(entity targ, entity inflictor, entity attacker, float damage) T_Damage=
 
     if (!targ.takedamage)
         return;
+
+    // If we are at the maximum recursion deep supported, just return
+    if (recursioncount >= MAX_RECURSION_COUNT)
+        return;
+    recursioncount = recursioncount + 1;
 
 // used by buttons and triggers to set activator for target firing
     damage_attacker = attacker;
@@ -200,7 +207,11 @@ void(entity targ, entity inflictor, entity attacker, float damage) T_Damage=
 
 // check for godmode or invincibility
     if (targ.flags & FL_GODMODE)
+    {
+        // Decrease the recursion count
+        recursioncount = recursioncount - 1;
         return;
+    }
     if (targ.invincible_finished >= time)
     {
         if (self.invincible_sound < time)
@@ -208,6 +219,8 @@ void(entity targ, entity inflictor, entity attacker, float damage) T_Damage=
             sound (targ, CHAN_ITEM, "bludbath/powerup.wav", 1, ATTN_NORM);
             self.invincible_sound = time + 2;
         }
+        // Decrease the recursion count
+        recursioncount = recursioncount - 1;
         return;
     }
 
@@ -218,18 +231,21 @@ void(entity targ, entity inflictor, entity attacker, float damage) T_Damage=
     attackerteam = infokey(attacker, "team");
     targteam = infokey(targ, "team");
 
-    if ((teamplay == 1) && (targteam == attackerteam) &&
-        (attacker.classname == "player") && (attackerteam != "") &&
-        inflictor.classname !="door")
+    if ((teamplay == 1 || (teamplay == 3 && targ != attacker)) &&
+        attacker.classname == "player" && attackerteam != "" &&
+        targteam == attackerteam       && inflictor.classname !="door"   )
+    {
+        // Decrease the recursion count
+        recursioncount = recursioncount - 1;
         return;
-
-    if ((teamplay == 3) && (targteam == attackerteam) &&
-        (attacker.classname == "player") && (attackerteam != "") &&
-        (targ != attacker)&& inflictor.classname !="door")
-        return;
+    }
     #else
     if ( (teamplay == 1) && (targ.team > 0)&&(targ.team == attacker.team) )
+    {
+        // Decrease the recursion count
+        recursioncount = recursioncount - 1;
         return;
+    }
     #endif
 
 // do the damage
@@ -238,6 +254,9 @@ void(entity targ, entity inflictor, entity attacker, float damage) T_Damage=
     if (targ.health <= 0)
     {
         Killed (targ, attacker);
+
+        // Decrease the recursion count
+        recursioncount = recursioncount - 1;
         return;
     }
 
@@ -274,6 +293,9 @@ void(entity targ, entity inflictor, entity attacker, float damage) T_Damage=
     }
 
     self = oldself;
+
+    // Decrease the recursion count
+    recursioncount = recursioncount - 1;
 };
 
 /*

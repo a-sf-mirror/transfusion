@@ -101,9 +101,15 @@ void() plat_center_touch =
 
     self = self.enemy;
     if (self.state == STATE_BOTTOM)
+    {
+        if (self.cnt > time)
+            return; // delay until going up again
         plat_go_up ();
-    else if (self.state == STATE_TOP)
-        self.nextthink = self.ltime + 1;    // delay going down
+        #ifndef QUAKEWORLD
+        return;
+        #endif
+    }
+    self.cnt = time + 2;
 };
 
 void() plat_outside_touch =

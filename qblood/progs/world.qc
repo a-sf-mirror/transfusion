@@ -25,6 +25,9 @@ void() main =
 {
     dprint ("main function\n");
 
+    // Initialize the recursion counter
+    recursioncount = 0;
+
     // these are just commands to the prog compiler to copy these files
 
     precache_file ("progs.dat");

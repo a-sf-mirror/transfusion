@@ -43,7 +43,7 @@ void() W_Precache =
     precache_sound ("weapons/flaregun/flarair2.wav");
 */
     precache_sound ("weapons/flaregun/flaref.wav");  // Flaregun fire
-//    precache_soud ("weapons/flaregun/flarefuw.wav");
+//    precache_sound ("weapons/flaregun/flarefuw.wav");
 
     // dynamite bundles/proximity/remote detonators
     precache_sound ("weapons/tnt/tntfuse.wav");  // tnt lighted
@@ -71,7 +71,11 @@ void() W_Precache =
     precache_sound ("weapons/voodoodl/voochant.wav");
     precache_sound ("weapons/voodoodl/voolaugh.wav");
 */
+
+    // REMOVEME as soon as we have voodoo items directly in maps
+    // because the sound is also precached in item_voodoo
     precache_sound ("weapons/voodoodl/voostab.wav");
+
 /*    
     // common sounds - some are in the C code, some aren't
     precache_sound ("weapons/bflesh.wav");
@@ -1658,6 +1662,8 @@ void() CheatCommand =
         IT_VOODOO_DOLL |
         IT_KEY1 | IT_KEY2;
 
+    // FIXME: we should precache all the weapons sounds
+
     self.weapon = IT_ROCKET_LAUNCHER;
     self.impulse = 0;
     W_SetCurrentAmmo ();
@@ -1706,11 +1712,11 @@ void() CycleWeaponCommand =
         }
         else if (self.weapon == IT_NAILGUN)
         {
-            self.weapon = IT_SUPER_NAILGUN;
-            if (self.ammo_nails < 2)
+            self.weapon = IT_ROCKET_LAUNCHER;
+            if (self.ammo_rockets < 1)
                 am = 1;
         }
-        else if (self.weapon == IT_SUPER_NAILGUN)
+        else if (self.weapon == IT_ROCKET_LAUNCHER)
         {
             self.weapon = IT_GRENADE_LAUNCHER;
             if (self.ammo_rockets < 1)
@@ -1718,11 +1724,11 @@ void() CycleWeaponCommand =
         }
         else if (self.weapon == IT_GRENADE_LAUNCHER || self.weapon == IT_PROXIMITY_BOMB)
         {
-            self.weapon = IT_ROCKET_LAUNCHER;
-            if (self.ammo_rockets < 1)
+            self.weapon = IT_SUPER_NAILGUN;
+            if (self.ammo_nails < 2)
                 am = 1;
         }
-        else if (self.weapon == IT_ROCKET_LAUNCHER)
+        else if (self.weapon == IT_SUPER_NAILGUN)
         {
             self.weapon = IT_LIGHTNING;
             if (self.ammo_cells < 1)
@@ -1769,11 +1775,11 @@ void() CycleWeaponReverseCommand =
         }
         else if (self.weapon == IT_LIGHTNING)
         {
-            self.weapon = IT_ROCKET_LAUNCHER;
-            if (self.ammo_rockets < 1)
+            self.weapon = IT_SUPER_NAILGUN;
+            if (self.ammo_nails < 2)
                 am = 1;
         }
-        else if (self.weapon == IT_ROCKET_LAUNCHER)
+        else if (self.weapon == IT_SUPER_NAILGUN)
         {
             self.weapon = IT_GRENADE_LAUNCHER;
             if (self.ammo_rockets < 1)
@@ -1781,11 +1787,11 @@ void() CycleWeaponReverseCommand =
         }
         else if (self.weapon == IT_GRENADE_LAUNCHER || self.weapon == IT_PROXIMITY_BOMB)
         {
-            self.weapon = IT_SUPER_NAILGUN;
-            if (self.ammo_nails < 2)
+            self.weapon = IT_ROCKET_LAUNCHER;
+            if (self.ammo_rockets < 1)
                 am = 1;
         }
-        else if (self.weapon == IT_SUPER_NAILGUN)
+        else if (self.weapon == IT_ROCKET_LAUNCHER)
         {
             self.weapon = IT_NAILGUN;
             if (self.ammo_nails < 1)
