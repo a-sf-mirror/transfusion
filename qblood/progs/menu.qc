@@ -273,15 +273,17 @@ void(float vote, string newmap) Vote_AddMapVote =
 #define MENU_VOTE_OPTIONS   6
 
 #define MENU_VOTE_MAP_BLOOD         10
-#define MENU_VOTE_MAP_BLOODPACKS    11  // Plasma Pack + Cryptic Passage
-#define MENU_VOTE_MAP_BLOOD2        12
-#define MENU_VOTE_MAP_CUSTOM        13
+#define MENU_VOTE_MAP_BLOOD_SP      11
+#define MENU_VOTE_MAP_BLOODPACKS    12  // Plasma Pack + Cryptic Passage
+#define MENU_VOTE_MAP_BLOOD2        13
+#define MENU_VOTE_MAP_CUSTOM        14
 
 // The groups of maps
 #define MAPS_BLOOD      0
-#define MAPS_BLOODPACKS 20  // Plasma Pack + Cryptic Passage
-#define MAPS_BLOOD2     40
-#define MAPS_CUSTOM     60
+#define MAPS_BLOOD_SP   10
+#define MAPS_BLOODPACKS 40  // Plasma Pack + Cryptic Passage
+#define MAPS_BLOOD2     60
+#define MAPS_CUSTOM     80
 
 // Options
 // All values must be powers of 2
@@ -315,10 +317,11 @@ void() Menu_Draw =
     {
         Sprint (self, PRINT_HIGH,
                 "Choose a map group:\n"
-                "1) Blood Episode maps\n"
-                "2) Blood Add-on Mission maps\n"
-                "3) Blood 2 maps\n"
-                "4) Custom maps\n"
+                "1) Blood maps\n"
+                "2) Blood Single-Player maps\n"
+                "3) Blood Add-ons maps\n"
+                "4) Blood 2 maps\n"
+                "5) Custom maps\n"
                 "\n"
                 "10) Go back to main menu\n");
     }
@@ -396,13 +399,21 @@ void() Menu_Draw =
     {
         Sprint (self, PRINT_HIGH,
                 "Vote for a map:\n"
-                "1) bb1   The Stronghold   |  2) bb2   Winter Wonderland\n"
-                "3) bb3   Bodies           |  4) bb4   The Tower\n"
-                "5) bb5   Click!           |  6) bb6   Twin Fortress\n"
-                "7) bb7   Midgard          |  8) bb8   Fun With Heads\n"
-                "9) e1m1  Cradle to Grave  | 10) e1m7  Altar of Stone\n"
+                "1) bb1  The Stronghold  | 2) bb2  Winter Wonderland\n"
+                "3) bb3  Bodies          | 4) bb4  The Tower\n"
+                "5) bb5  Click!          | 6) bb6  Twin Fortress\n"
+                "7) bb7  Midgard         | 8) bb8  Fun With Heads\n"
                 "\n"
-                "11) Go back to map menu\n");
+                "10) Go back to map menu\n");
+    }
+    else if (self.menu_index == MENU_VOTE_MAP_BLOOD_SP)
+    {
+        Sprint (self, PRINT_HIGH,
+                "Vote for a map:\n"
+                "1) e1m1  Cradle to Grave  | 2) e1m2  Wrong Side Of The Tracks\n"
+                "3) e1m7  Altar of Stone\n"
+                "\n"
+                "10) Go back to map menu\n");
     }
     else if (self.menu_index == MENU_VOTE_MAP_BLOODPACKS)
     {
@@ -428,10 +439,11 @@ void() Menu_Draw =
     {
         Sprint (self, PRINT_HIGH,
                 "Vote for a map:\n"
-                "1) bb3_2k1  Bodies Infusion           | 2) dranzbb6  Black Coffee\n"
-                "3) qbb1     The Confluence            | 4) qbb2      KathartiK\n"
-                "5) qbb3     Caleb's Woodland Retreat  | 6) qe1m7     The House of Chthon\n"
-                "7) simple   Dead Simple\n"
+                "1) bb3_2k1   Bodies Infusion           | 2) dcamp     DeathCamp\n"
+				"3) dranzbb6  Black Coffee              | 4) highnoon  HighNoon\n"
+                "5) qbb1      The Confluence            | 6) qbb2      KathartiK\n"
+                "7) qbb3      Caleb's Woodland Retreat  | 8) qe1m7     The House of Chthon\n"
+                "9) simple    Dead Simple\n"
                 "\n"
                 "10) Go back to map menu\n");
     }
@@ -625,7 +637,7 @@ void() Menu_HandleVoteMapBlood =
     local string newmap;
 
     // If we want to go back to map menu
-    if (self.impulse == 11)
+    if (self.impulse == 10)
     {
         self.menu_index = MENU_VOTE_MAP;
         Menu_Draw ();
@@ -648,10 +660,6 @@ void() Menu_HandleVoteMapBlood =
         newmap = "bb7";
     else if (self.impulse == 8)
         newmap = "bb8";
-    else if (self.impulse == 9)
-        newmap = "e1m1";
-    else if (self.impulse == 10)
-        newmap = "e1m7";
     else
     {
         Sprint (self, PRINT_HIGH, "\n===== INVALID COMMAND =====\n\n");
@@ -661,6 +669,45 @@ void() Menu_HandleVoteMapBlood =
 
     // Validate the vote
     Vote_AddMapVote (MAPS_BLOOD + self.impulse, newmap);
+
+    self.player_state = PS_IDLE;  // exit the menu
+};
+
+
+/*
+====================
+Menu_HandleVoteMapBloodSP
+
+Handles the impulses when the client is in the Blood Single-Player maps menu
+====================
+*/
+void() Menu_HandleVoteMapBloodSP =
+{
+    local string newmap;
+
+    // If we want to go back to map menu
+    if (self.impulse == 10)
+    {
+        self.menu_index = MENU_VOTE_MAP;
+        Menu_Draw ();
+        return;
+    }
+
+    if (self.impulse == 1)
+        newmap = "e1m1";
+    else if (self.impulse == 2)
+        newmap = "e1m2";
+    else if (self.impulse == 3)
+        newmap = "e1m7";
+    else
+    {
+        Sprint (self, PRINT_HIGH, "\n===== INVALID COMMAND =====\n\n");
+        Menu_Draw ();
+        return;
+    }
+
+    // Validate the vote
+    Vote_AddMapVote (MAPS_BLOOD_SP + self.impulse, newmap);
 
     self.player_state = PS_IDLE;  // exit the menu
 };
@@ -776,16 +823,20 @@ void() Menu_HandleVoteMapCustom =
     if (self.impulse == 1)
         newmap = "bb3_2k1";
     else if (self.impulse == 2)
-        newmap = "dranzbb6";
+        newmap = "dcamp";
     else if (self.impulse == 3)
-        newmap = "qbb1";
+        newmap = "dranzbb6";
     else if (self.impulse == 4)
-        newmap = "qbb2";
+        newmap = "highnoon";
     else if (self.impulse == 5)
-        newmap = "qbb3";
+        newmap = "qbb1";
     else if (self.impulse == 6)
-        newmap = "qe1m7";
+        newmap = "qbb2";
     else if (self.impulse == 7)
+        newmap = "qbb3";
+    else if (self.impulse == 8)
+        newmap = "qe1m7";
+    else if (self.impulse == 9)
         newmap = "simple";
     else
     {
@@ -822,10 +873,12 @@ void() Menu_HandleVoteMap =
     if (self.impulse == 1)
         self.menu_index = MENU_VOTE_MAP_BLOOD;
     else if (self.impulse == 2)
-        self.menu_index = MENU_VOTE_MAP_BLOODPACKS;
+        self.menu_index = MENU_VOTE_MAP_BLOOD_SP;
     else if (self.impulse == 3)
-        self.menu_index = MENU_VOTE_MAP_BLOOD2;
+        self.menu_index = MENU_VOTE_MAP_BLOODPACKS;
     else if (self.impulse == 4)
+        self.menu_index = MENU_VOTE_MAP_BLOOD2;
+    else if (self.impulse == 5)
         self.menu_index = MENU_VOTE_MAP_CUSTOM;
     else
         Sprint (self, PRINT_HIGH, "\n===== INVALID COMMAND =====\n\n");
@@ -1068,6 +1121,8 @@ void() Menu_Update =
         Menu_HandleVoteOptions ();
     else if (self.menu_index == MENU_VOTE_MAP_BLOOD)
         Menu_HandleVoteMapBlood ();
+    else if (self.menu_index == MENU_VOTE_MAP_BLOOD_SP)
+        Menu_HandleVoteMapBloodSP ();
     else if (self.menu_index == MENU_VOTE_MAP_BLOODPACKS)
         Menu_HandleVoteMapBloodPacks ();
     else if (self.menu_index == MENU_VOTE_MAP_BLOOD2)
