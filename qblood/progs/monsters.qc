@@ -21,19 +21,6 @@
 #include "common.qh"
 
 
-/* ALL MONSTERS SHOULD BE 1 0 0 IN COLOR */
-
-// name =[framenum, nexttime, nextthink] {code}
-// expands to:
-// name ()
-// {
-//      self.frame=framenum;
-//      self.nextthink = time + nexttime;
-//      self.think = nextthink
-//      <code>
-// };
-
-
 /*
 ================
 monster_use
@@ -54,8 +41,7 @@ void() monster_use =
     if (activator.classname != "player")
         return;
 
-// delay reaction so if the monster is teleported, its sound is still
-// heard
+	// delay reaction so if the monster is teleported, its sound is still heard
     self.enemy = activator;
     self.nextthink = time + 0.1;
     self.think = FoundTarget;
@@ -96,7 +82,7 @@ void() walkmonster_start_go =
             dprint (vtos(self.origin));
             dprint ("\n");
         }
-// this used to be an objerror
+		// this used to be an objerror
         if (self.movetarget.classname == "path_corner")
             self.th_walk ();
         else
@@ -109,15 +95,15 @@ void() walkmonster_start_go =
         self.th_stand ();
     }
 
-// spread think times so they don't all happen at same time
+	// spread think times so they don't all happen at same time
     self.nextthink = self.nextthink + random()*0.5;
 };
 
 
 void() walkmonster_start =
 {
-// delay drop to floor to make sure all doors have been spawned
-// spread think times so they don't all happen at same time
+	// delay drop to floor to make sure all doors have been spawned
+	// spread think times so they don't all happen at same time
     self.nextthink = self.nextthink + random()*0.5;
     self.think = walkmonster_start_go;
     total_monsters = total_monsters + 1;
@@ -127,28 +113,23 @@ void() walkmonster_start =
 	precache_sound ("items/pickheal.wav");
 	
 	// Needed for random weapon / ammo drops	
-	
 	if (self.classname == "monster_browncultist")
 	{
-	    // Ammo
 	    precache_model ("models/ammo/a_fewshell.md3");		
 		precache_sawedoff();	 
 	}
 	else if (self.classname == "monster_blackcultist")
 	{
-	    // Ammo
 	    precache_model ("models/ammo/a_fewbullet.md3");		
 	    precache_tommygun();
 	}
 	else if (self.classname == "monster_greencultist")
 	{
-	    // Ammo
 		precache_model ("models/ammo/a_tnt.md3");
 	    precache_tnt();
 	}
 	else if (self.classname == "monster_bluecultist")
 	{
-	    // Ammo
 	    precache_model ("models/ammo/a_battery.md3");
 		precache_teslacannon();
 	}
