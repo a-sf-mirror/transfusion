@@ -25,6 +25,15 @@
 	<h2 id="news-section" class="section">News</h2>
 	<ul>
 		<li>
+			<span class="title">September 9, 2004:</span> (by Elric)<br />
+			In case you missed <a href="http://sourceforge.net/mailarchive/forum.php?thread_id=5531111&forum_id=2317">the
+			announcement</a>, Transfusion 1.1-beta3 is out. You can get it from
+			<a href="http://sourceforge.net/project/showfiles.php?group_id=22136">the files page</a>.<br />
+			I'm currently updating the <a href="bloodsource.php">BloodSource</a> and <a href="rebuild.php">ReBUILD</a>
+			pages with additional information from my backup of the now defunct BloodSource home page.
+			More to come very soon.<p />
+		</li>
+		<li>
 			<span class="title">August 26, 2004:</span> (by Elric)<br />
 			I just discovered today that <a href="http://www.planetblood.com/bloodsource/">the BloodSource website</a>
 			seems to have been removed from PlanetBlood.com. Fortunately, I have a backup of the whole site, so I'll
@@ -103,15 +112,15 @@
 	topic, you may want to send a mail directly to one of the 3 project leaders:<br />
 	<ul>
 		<li>
-			<a href="mailto:cruaich@yahoo.com">Christopher "Cruaich" Steele</a>
+			<a href="mailto:cruaich (at) yahoo.com">Christopher "Cruaich" Steele</a>
 			(Project Coordinator): any question not purely about art or programming
 		</li>
 		<li>
-			<a href="mailto:kazashi@users.sourceforge.net">Luke "Kazashi" Ashdown</a>
+			<a href="mailto:kazashi (at) users.sourceforge.net">Luke "Kazashi" Ashdown</a>
 			(Lead Artist): any art / design topic
 		</li>
 		<li>
-			<a href="mailto:timhale@planetblood.com">Timothy "protoplasmatic" Hale</a>
+			<a href="mailto:timhale (at) planetblood.com">Timothy "protoplasmatic" Hale</a>
 			(Lead Programmer): any programming topic
 		</li>
 	</ul>

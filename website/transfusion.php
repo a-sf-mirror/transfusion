@@ -21,7 +21,7 @@
 	The game name has changed a second time to "Transfusion" after we talked with Infogrames
 	(now Atari) about the Blood trademark and copyrights.<br />
 	Transfusion is a standalone game, but it can also be played as a Quake 1 / QW mod
-	until version 1.01 included. If you have one of these old versions and wants to do so,
+	until version 1.01 included. If you have one of these old versions and want to do so,
 	please take a look at the manual provided with each release for the detailed
 	instructions.<br />
 </div>
@@ -32,12 +32,11 @@
 	Quake 1 uses "progs.dat" as the	bytecode for storing the game behaviour. This file is
 	created thanks to BQCC and our source code, which can be found in the "progs" directory.
 	The code is composed of plain text files with a ".qc" or ".qh" suffix. The whole source
-	is indented at 4 columns with spaces (no tabs) and quite well commented.<br />
+	is indented at 4 columns with spaces (no tabs, in theory) and quite well commented.<br />
 	It incorporates code from <a href="http://www.inside3d.com/frikbot/">FrikBotX</a>.
 	You can disable bot support at compile time with the NO_FRIKBOT preprocessor define
 	(add "-d NO_FRIKBOT" at the BQCC command line). If you want a bot-free game code for
-	some reason, and probably also gain a few FPS in the process, you can rebuild it very
-	easily.<br />
+	some reason, you can rebuild it very easily.<br />
 </div>
 
 <!-- BQCC -->
@@ -58,7 +57,7 @@
 	that BQCC code is perfect of course, and so if someone wants to take
 	the time to work seriously on it, to do some optimizations or add some
 	nice new features, let us know.<br />
-	BQCC is known to compile and run on Win32, Linux and OpenBSD. In fact,
+	BQCC is known to compile and run on Win32 systems, Linux and OpenBSD. In fact,
 	it should work on most operating systems, either as-is or with very few
 	changes.<br />
 </div>
@@ -76,10 +75,10 @@
 	home page at <a href="http://icculus.org/twilight/darkplaces/">this address</a>.
 	Binaries of the Transfusion version can be found in the
 	<a href="snapshots.php">snapshots directory</a> in "qblood-bin-*" ZIP files.
-	Darkplaces compiles and runs on at least Win32 and Linux.<br />
+	Darkplaces compiles and runs on at least Win32 systems and Linux.<br />
 	So far, we have absolutely no intention to get the DarkPlaces source code into
-	our own CVS tree to maintain our own engine. We don't say it will never happen
-	though, but it's very unlikely.<br />
+	our own CVS tree to maintain our own engine. We don't say it will never happen,
+	but it's extremely unlikely.<br />
 </div>
 
 <br />

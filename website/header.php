@@ -28,7 +28,6 @@
 	<meta http-equiv="content-type" content="text/html; charset=ISO-8859-1" />
 	<link rel="icon" href="images/qblood_icon.png" type="image/png" />
 	<link rel="SHORTCUT ICON" href="favicon.ico" />
-	<link rev="made" href="mailto:elric@planetblood.com" />
 	<style type="text/css">
 	<!--
 		body {
@@ -96,7 +95,7 @@
 		<tr valign="top">
 			<td align="center" valign="middle">
 				<a href="images/scr_win32.jpg">
-					<img src="images/min_scr_win32.jpg" alt="Transfusion on Win32" />
+					<img src="images/min_scr_win32.jpg" alt="Transfusion on Win32" title="Transfusion on Win32" />
 				</a>
 			</td>
 			<td align="center" valign="middle">
@@ -112,7 +111,7 @@
 			</td>
 			<td align="center" valign="middle">
 				<a href="images/scr_linux.jpg">
-					<img src="images/min_scr_linux.jpg" alt="Transfusion on Linux" />
+					<img src="images/min_scr_linux.jpg" alt="Transfusion on Linux" title="Transfusion on Linux" />
 				</a>
 			</td>
 		</tr>
@@ -152,7 +151,7 @@
 					$nb_links = 0;
 					while (list ($link_name, $link_props) = each ($page_links)) {
 						if ($nb_links)
-							echo ("				&nbsp;::&nbsp;\n");
+							echo ("				&nbsp;::&nbsp;\n\t\t\t\t");
 						$nb_links++;
 
 						echo ("<a href=\"" . $page_links[$link_name]["Address"] . "\">" . $page_links[$link_name]["Text"] . "</a>\n");

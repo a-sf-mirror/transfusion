@@ -1,6 +1,6 @@
 <?php
-	$page_title = "ReBUILD";
-	$page_topic = "ReBUILD";
+	$page_title = "The ReBUILD Project";
+	$page_topic = "The ReBUILD Project";
 	$page_cvs = "rebuild";
 	$page_links = array (
 		"Introduction" => array ("Address" => "#introduction-section", "Text" => "Introduction")
