@@ -35,7 +35,7 @@
 		<surname>Olivier</surname>
 		<affiliation>
 			<address>
-				<email>elric@planetblood.com</email>
+				<email>elric at planetblood dot com</email>
 			</address>
 		</affiliation>
 	</author>
@@ -45,7 +45,17 @@
 		<surname>Turner</surname>
 		<affiliation>
 			<address>
-				<email>darth_linux@planetblood.com</email>
+				<email>darth_linux at planetblood dot com</email>
+			</address>
+		</affiliation>
+	</author>
+
+	<author>
+		<firstname>Luke</firstname>
+		<surname>Ashdown</surname>
+		<affiliation>
+			<address>
+				<email>kazashi at users dot sourceforge dot net</email>
 			</address>
 		</affiliation>
 	</author>
@@ -64,8 +74,8 @@
 
 <sect1><title>Introduction</title>
  
-<para>The Transfusion Project aims to recreate an old DOS game from Monolith
-Productions called Blood, using the Quake engine.</para>
+<para>The Transfusion Project aims to recreate an old DOS game, from Monolith
+Productions, called Blood, using the Quake engine.</para>
 
 <para>You may think it's a simple <emphasis>mod</emphasis>, but actually, you
 don't need any Quake data to run it. In fact, Transfusion is a complete total
@@ -84,9 +94,9 @@ manual all you need to know about Transfusion.</para>
 
 <sect1><title>Installation</title>
 
-<para>If you read this manual, chances are that you have already installed
-Transfusion on your machine. If it's not the case though, don't worry, it's
-extremely easy. If you are lucky enough to use a Transfusion installer program,
+<para>If you are reading this manual, chances are that you have already
+installed Transfusion on your machine. If it's not the case though, don't worry,
+it's easy. If you are lucky enough to use a Transfusion installer program,
 just follow the steps as with any other installer program. If you have an
 archive file, such as a ZIP file for instance, extract its contents in a new,
 clean directory. That's it. You can launch the game now.</para>
@@ -99,17 +109,17 @@ clean directory. That's it. You can launch the game now.</para>
 	machine, or a poor network connection, or because of drivers with no OpenGL
 	support or even a video card with no 3D acceleration.</para>
 
-	<para>If you are in this case, you will be happy to know that old versions
-	of Transfusion, up to version 1.01 included, can actually be run using any
-	Quake compatible engine, as a simple mod. Theorically, all you have to do
-	is to copy the "transfusion" subdirectory (the one which contains the PAK
-	files) into your Quake directory. Or copy a Quake binary in the Transfusion
-	installation directory, for that matters.</para>
+	<para>If you are one of these people, you will be happy to know that old
+	versions of Transfusion, up to version 1.01 included, can be run using any
+	Quake compatible engine, as a simple mod to the game. Theorically, all you
+	have to do is to copy the "transfusion" subdirectory (the one which contains
+	the PAK files) into your Quake directory. Or copy a Quake binary in the
+	Transfusion installation directory, for that matter.</para>
 
-	<para>Be aware that most Quake 1 compatible engines will requier the Quake
+	<para>Be aware that most Quake 1 compatible engines will requier the Quake's
 	original data, despite the fact that Transfusion doesn't need them. So you
-	may also want to have the "id1" directory by the side of the "transfusion"
-	data directory.</para>
+	may also want to have the "id1" directory included next to your
+	"transfusion" data directory.</para>
 
 	<para>To launch Quake using Transfusion as a mod, type the following command
 	line: "winquake -game transfusion", if your Quake engine is named "winquake"
@@ -117,27 +127,33 @@ clean directory. That's it. You can launch the game now.</para>
 	renderer have a few visual bugs, in particular), but the gameplay should be
 	very similar to the one we intended to create.</para>
 
+	<para>After version 1.01, Transfusion exclusively uses the DarkPlaces
+	engine, allowing us access to many more features at the expense of
+	compatibility with other Quake engines. This means that the above procedure
+	will most likely <emphasis>not</emphasis> work, and no official support will
+	be given in an attempt to get it to work.</para>
+
 	</sect2>
 
 
 	<sect2><title>Transfusion and QuakeWorld</title>
 
-	<para>If you want to play on the internet and that your computer can't run
+	<para>If you want to play on the internet and your computer can't run
 	our engine, then you will have to use a QuakeWorld based engine. Bad
 	news...</para>
 
-	<para>First, make sure you <emphasis>really</emphasis> want to play Transfusion on the
-	internet and that there's <emphasis>no way</emphasis> to use our engine on your
-	machine. I insist because 1- it's not easy to install and use
-	Transfusion with QuakeWorld, and 2- the gameplay is significantly
+	<para>First, make sure you <emphasis>really</emphasis> want to play
+	Transfusion on the internet and that there's <emphasis>no way</emphasis> to
+	use our engine on your machine. I insist because 1- it's not easy to install
+	and use Transfusion with QuakeWorld, and 2- the gameplay is significantly
 	different and some features are missing.</para>
 
 	<para>Now that you are sure you want to give it a try, start by getting a
 	copy of a good QuakeWorld based engine (<link linkend="links">ZQuake</link>
 	is the best choice in my opinion). Then, (re)install Transfusion
-	version 1.0 or 1.01 (later versions don't support QuakeWorld) with
-	the QuakeWorld support if you haven't done it previously. You will get
-	a "qw" directory in your install directory. This "qw" directory
+	version 1.0 or 1.01 (later versions <emphasis>don't</emphasis> support
+	QuakeWorld) with the QuakeWorld support if you haven't done it previously.
+	You will get a "qw" directory in your install directory. This "qw" directory
 	contains 2 PAK files. The first one, "pak0.pak", will stay in this
 	directory. The other one must be moved to the "transfusion"
 	subdirectory when you play Transfusion with QuakeWorld, <emphasis>but only
@@ -169,8 +185,8 @@ clean directory. That's it. You can launch the game now.</para>
         is standard Free For All Deathmatch play. Everyone is your enemy -
         kill them all.</para></listitem>
 
-		<listitem><para>Team BloodBath (deathmatch = 0 or 1, and teamplay = 1 or 2):
-		Divides the game into two teams who are pitted against each other.
+		<listitem><para>Team BloodBath (deathmatch = 0 or 1, and teamplay = 1 or
+		2): Divides the game into two teams who are pitted against each other.
 		When setting Teamplay to 1, team members are impervious to Friendly
 		Fire, while setting Teamplay to 2 leaves you vulnerable to shots
 		from your team mates.</para></listitem>
@@ -180,6 +196,10 @@ clean directory. That's it. You can launch the game now.</para>
 		to 2 activates friendly fire.</para></listitem>
 	</itemizedlist>
 	
+	<para>Single Player mode is planned for the future, however as of version
+	1.1 it is only rudimentary (no monsters/entities), and not generally
+	accessible as a game mode.</para>
+
 	</sect2>
 
 
@@ -201,7 +221,7 @@ clean directory. That's it. You can launch the game now.</para>
 		<listitem><para>impulse 27: identify the player you're aiming at</para></listitem>
 		<listitem><para>impulse 35: select the proximity bombs</para></listitem>
 		<listitem><para>impulse 36: select the remote detonators</para></listitem>
-		<listitem><para>impulse 40: select the <link linkend="dr_bag">Dr.'s Bag</link></para></listitem>
+		<listitem><para>impulse 40: select the <link linkend="dr_bag">Dr's Bag</link></para></listitem>
 		<listitem><para>impulse 41: select the Crystal Ball</para></listitem>
 		<listitem><para>impulse 42: select the Beast Vision</para></listitem>
 		<listitem><para>impulse 43: select the <link linkend="boots">Jump Boots</link></para></listitem>
@@ -214,9 +234,10 @@ clean directory. That's it. You can launch the game now.</para>
 
 	<para>All those impulses are considered cheats (not available in multiplayer
 	games, except if the server has the "sv_cheats" cvar set to a
-	non-zero value). <emphasis>WARNING</emphasis>: although it's very unlikely, it may
-	be possible that some of them <emphasis>crash the game</emphasis> under certain
-	conditions. Be fully aware of that if you allow cheats on your server.</para>
+	non-zero value). <emphasis>WARNING</emphasis>: although it's very unlikely,
+	it may be possible that some of them <emphasis>crash the game</emphasis>
+	under certain conditions. Be fully aware of that if you allow cheats on your
+	server.</para>
 
 	<itemizedlist>
 		<listitem><para>impulse 53: botcam mode (unavailable in QuakeWorld)</para></listitem>
@@ -257,7 +278,7 @@ clean directory. That's it. You can launch the game now.</para>
 			<listitem><para>Some Transfusion levels feature teleporters.
             Learn to use these teleporters to get around levels quickly.
             Teleporter destinations generally appear as animated markers on
-            the floor. Stay away from these in a crowded game - someone might
+            the floor. Stay away from these in a crowded game -- someone might
             teleport right into you, killing you instantly.</para></listitem>
 		</varlistentry>
 
@@ -268,13 +289,13 @@ clean directory. That's it. You can launch the game now.</para>
 
 	<sect2 id="bots"><title>Bots</title>
 
-	<para>Bots are fake players controled by a simple AI code. Transfusion bots
+	<para>Bots are fake players controlled by a simple AI code. Transfusion bots
 	are heavily based on FrikBotX source code, a Quake mod that provides
 	its bot system as a separate piece of code.</para>
 
-	<para>The bots are easy to use. Take a look at the <link linkend="impulses">impulse
-	list</link> to see the few ones you'll have to use to
-	spawn and remove bots.</para>
+	<para>The bots are easy to use. Take a look at the
+	<link linkend="impulses">impulse list</link> to see the few ones you'll have
+	to use to spawn and remove bots.</para>
 
 	<para>Bots count as normal players, so if you can't spawn bots (message:
 	"server is full") or if nobody can join your server, you have probably
@@ -285,8 +306,8 @@ clean directory. That's it. You can launch the game now.</para>
 	multiplayer game with the menu or add a "-listen" or "-dedicated"
 	argument to your command line to tell Quake you want more clients.</para>
 
-	<para>You can't fill a server with bots. Transfusion will always let one slot
-	free so that a new human player can come into the game. If a new player
+	<para>You can't fill a server with bots. Transfusion will always let one
+	slot free so that a new human player can come into the game. If a new player
 	comes and takes the last free slot, a bot will be kicked automatically
 	to free another slot if possible.</para>
 
@@ -322,7 +343,7 @@ clean directory. That's it. You can launch the game now.</para>
 
 	<sect2><title>Weapons</title>
 
-	<para>You have 12 differents weapons at your disposal in Transfusion. Aside
+	<para>You have 12 different weapons at your disposal in Transfusion. Aside
 	from the Pitchfork, each of them has a normal fire and a secondary
 	fire, also known as altfire. Most of the time, it's a deadlier mode
 	that consumes more ammo.</para>
@@ -334,7 +355,8 @@ clean directory. That's it. You can launch the game now.</para>
 			<listitem>
 			<para>This handy tool can be very effective if you
             can get close enough to your foes to use it on them. It doesn't
-            need ammo, so you'll always have it to fall back on if you need it.</para>
+            need ammo, so you'll always have it to fall back on if you need
+			it.</para>
 
 			<para>Ammo: None. No altfire mode.</para>
 			</listitem>
@@ -423,7 +445,8 @@ clean directory. That's it. You can launch the game now.</para>
             concern yourself with other matters. As soon as someone steps near
             one, you'll hear a far-off boom and accompanying shrieks of agony.
             Use the alt-fire to drop them at your feet. Also, remember where
-            you've dropped proximities or you may fall prey to your own trap.</para>
+            you've dropped proximities or you may fall prey to your own
+			trap.</para>
 
 			<para>Ammo: Proximity detonator.</para>
 			</listitem>
@@ -492,17 +515,20 @@ clean directory. That's it. You can launch the game now.</para>
 
 		<varlistentry>
 			<term>Life Essence</term>
-			<listitem><para>Boosts your health by 20 points, up to 100.</para></listitem>
+			<listitem><para>Boosts your health by 20 points, up to
+			100.</para></listitem>
 		</varlistentry>
 
 		<varlistentry>
 			<term>Medicine Patch</term>
-			<listitem><para>Boosts your health by 50 points, up to 100.</para></listitem>
+			<listitem><para>Boosts your health by 50 points, up to
+			100.</para></listitem>
 		</varlistentry>
 
 		<varlistentry>
 			<term>Life Seed</term>
-			<listitem><para>Adds 100 points to your health, up to 200 total.</para></listitem>
+			<listitem><para>Adds 100 points to your health, up to 200
+			total.</para></listitem>
 		</varlistentry>
 
 		<varlistentry>
@@ -526,7 +552,8 @@ clean directory. That's it. You can launch the game now.</para>
 
 		<varlistentry>
 			<term>Super Armor</term>
-			<listitem><para>Adds 200 points of body, fire, and spirit armor.</para></listitem>
+			<listitem><para>Adds 200 points of body, fire, and spirit
+			armor.</para></listitem>
 		</varlistentry>
 
 		<varlistentry>
@@ -561,12 +588,12 @@ clean directory. That's it. You can launch the game now.</para>
 			<term>Cloak of Invisibility</term>
 			<listitem><para>The cloak will hide you from your
 			enemies. That is, until you decide to attack them, even then they
-			will have a hard time attacking you. Definately, one of the more
+			will have a hard time attacking you. Definitely, one of the more
 			useful power-ups in the game.</para></listitem>
 		</varlistentry>
 
 		<varlistentry id="dr_bag">
-			<term>Dr.'s Bag</term>
+			<term>Dr's Bag</term>
 			<listitem><para>Will restore up to 100 points of health when
 			activated. The unused medicine will remain in your inventory until
 			used up. Keep this item handy!</para></listitem>
@@ -606,7 +633,7 @@ clean directory. That's it. You can launch the game now.</para>
 	yet to explore it a little bit.</para>
 
 	<para>You control the amount of time dedicated to the warmup by setting the
-	<link linkend="g_warmup">g_warmup</link> cvar to a value in secondes. A
+	<link linkend="g_warmup">g_warmup</link> cvar to a value in seconds. A
 	server will wait after at least 2 players (of different teams if any)
 	have entered the game to start the countdown. It will then reset the
 	map and respawn all players. Be sure to set it to a non-zero value
@@ -619,7 +646,7 @@ clean directory. That's it. You can launch the game now.</para>
 
 	<sect2 id="menu"><title>Voting menu</title>
 
-	<para>The voting menu is a mecanism that allows players to change server
+	<para>The voting menu is a mechanism that allows players to change server
 	settings via votes. For the moment, the available settings are: map,
 	game type, frag limit, time limit, warmup duration, and options.</para>
 
@@ -627,7 +654,7 @@ clean directory. That's it. You can launch the game now.</para>
 	entirely based on impulse commands. To enter into a submenu or vote
 	for something, just send the impulse number corresponding to your
 	choice. Once you have voted, you will be exited from the menu
-	automatically, but until you vote or you explicitely exit the menu,
+	automatically, but until you vote or you explicitly exit the menu,
 	all your impulses will be handled by it.</para>
 
 	<para>Observers don't have access to the menu.</para>
@@ -648,19 +675,20 @@ clean directory. That's it. You can launch the game now.</para>
 	host a server:</para>
 
 	<itemizedlist>
-		<listitem><para>"g_flashyEffects": turn on/off some flashy effects. Some of
-		them may actually be changed only after restarting the map.</para></listitem>
+		<listitem><para>"g_flashyEffects": turn on/off some flashy effects. Some
+		of them may actually be changed only after restarting the
+		map.</para></listitem>
 		<listitem><para>"g_lockTeams": if set during a teamplay, the end of the
 		<link linkend="warmup">warmup</link> locks the teams so that no new
 		player can join them until the end of the match.</para></listitem>
 		<listitem id="g_warmup"><para>"g_warmup": if set to a non-zero value,
 		it indicates the duration of the <link linkend="warmup">warmup</link>
-		in secondes. If set to 0, the warmup is disabled.</para></listitem>
-		<listitem><para>"g_weaponStay": if set, weapons don't disappear when taken,
-		but you can't take a weapon more than once (equivalent to "Doom Old
-		DeathMatch" and "Quake DM 3").</para></listitem>
-		<listitem><para>"sv_cheats": enable a few client impulses which may be used
-		to cheat one way or another.</para></listitem>
+		in seconds. If set to 0, the warmup is disabled.</para></listitem>
+		<listitem><para>"g_weaponStay": if set, weapons don't disappear when
+		taken, but you can't take a weapon more than once (equivalent to "Doom
+		Old DeathMatch" and "Quake DM 3").</para></listitem>
+		<listitem><para>"sv_cheats": enable a few client impulses which may be
+		used to cheat one way or another.</para></listitem>
 		<listitem><para>"sv_disable": a set of flags that allow a server
 		administrator to keep his server under control despite the voting
 		system. Its value must be set by adding the following numbers: 1 to
@@ -714,7 +742,7 @@ clean directory. That's it. You can launch the game now.</para>
 
 	<sect2 id="map_cycling"><title>Map cycling</title>
 
-	<para>Transfusion supports a map cycling mecanism which is very similar to
+	<para>Transfusion supports a map cycling mechanism which is very similar to
 	the system used by several popular Quake mods, including FrikBotX and
 	Omicron bots. It is based on a script file ("maps.cfg"), a cvar
 	("samelevel"), and a few console aliases. Basically, you have to write
@@ -759,41 +787,67 @@ clean directory. That's it. You can launch the game now.</para>
 	<varlistentry>
 		<term>I just replaced a PAK file and some of the objects look all
 		messed up</term>
-		<listitem><para>Delete the "glquake" directory inside all of your Quake directories
-		and run Transfusion again.</para></listitem>
+		<listitem><para>Delete the "glquake" directory inside all of your Quake
+		directories and run Transfusion again.</para></listitem>
 	</varlistentry>
 
 	<varlistentry>
 		<term>Why didn't you use another engine to make Transfusion?</term>
-		<listitem><para>Because in order to make the necessary AI, physic and logic changes to
-		the game so that it feels and behaves like Blood, we need direct access
-		to the engine source code, not just the "game.dll" or game code, or
-		whatever you want to refer to it as. Making a "game.dll" only lets you
-		change some things, and they aren't enough things to do a total
-		conversion correctly (in our opinion). Therefore, we chose the Quake 1
-		engine, since we have complete control over every aspect of the game.
-		We felt it outweighed the other limitations of the Quake engine (low
-		count polys, lower resolution, lack of things like colored lights,
+		<listitem><para>Because in order to make the necessary AI, physic and
+		logic changes to the game so that it feels and behaves like Blood, we
+		need direct access to the engine source code, not just the "game.dll" or
+		game code, or whatever you want to refer to it as. Making a "game.dll"
+		only lets you change some things, and they aren't enough things to do a
+		total conversion correctly (in our opinion). Therefore, we chose the
+		Quake 1 engine, since we have complete control over every aspect of the
+		game. We felt it outweighed the other limitations of the Quake engine
+		(low count polys, lower resolution, lack of things like colored lights,
 		etc). Also, the Quake engine is licensed under the GNU GPL - which
 		means we are free to change it without paying anyone a dime... To use
-		the Quake 3 engine or the Unreal engine would have required us to
-		purchase a license, something we don't have the money to do.</para></listitem>
+		the Quake 3/Unreal/Doom 3/Half-Life 2 engine would require us to
+		purchase a license, something we don't have the money to
+		do.</para></listitem>
 	</varlistentry>
 
 	<varlistentry>
-		<term>Transfusion exits with: <emphasis>Z_Malloc: failed on allocation of XXX
-		bytes</emphasis></term>
-		<listitem><para>The engine hasn't allocated enough "zone" memory. You can change this
-		with the "-zone" command line argument. With most engines, "-zone 256"
-		will be enough, but some of them may require more (try 512).</para></listitem>
+		<term>Aren't you breaking the law by using Blood's art and
+		design?</term>
+		<listitem><para>NOPE :) Monolith Productions and Infogrames owns all
+		intellectual property rights to the Blood franchise. Jason Hall, the
+		Monolith's CEO, has given us his blessing and we've even received help
+		from Matt Saettler and Nick Newhard who lead the original Blood
+		development team. As far as Infogrames/Atari Inc, who claim ownership of
+		the Blood trademark, they have agreed to leave us alone given the
+		non-commercial status of our project, mostly as long as our project name
+		doesn't refer directly to the Blood trademark. That's why this project
+		is called "Transfusion" (you may have heard about us as "qBlood" or
+		"BloodBath" previously).</para></listitem>
+	</varlistentry>
+
+	<varlistentry>
+		<term>Transfusion exits with: <emphasis>Z_Malloc: failed on allocation
+		of XXX bytes</emphasis></term>
+		<listitem><para>The engine hasn't allocated enough "zone" memory. You
+		can change this with the "-zone" command line argument. With most
+		engines, "-zone 256" will be enough, but some of them may require more
+		(try 512).</para></listitem>
+	</varlistentry>
+
+	<varlistentry>
+		<term>I can't crouch! The original game allowed me to, why can't I do it
+		here.</term>
+		<listitem><para>Crouching is not yet supported in Transfusion (as it
+		was not originally included in Quake), however it is in the process of
+		being implemented and will appear in a future release.</para></listitem>
 	</varlistentry>
 
 	<varlistentry>
 		<term>I want to contribute to the Transfusion Project</term>
-		<listitem><para>It's very simple. Start doing a quick tour through our 2 websites to
-		be sure to know all the basic informations you may need. Then, contact
-		the Project Coordinator and either the Lead Artist or the Lead
-		Programmer, depending on what you want to contribute.</para></listitem>
+		<listitem><para>It's very simple. Start doing a quick tour through our 2
+		websites to be sure to find all the basic information you may need.
+		Then, contact the Project Coordinator and either the Lead Artist or the
+		Lead Programmer, depending on what you want to
+		contribute.</para></listitem>
 	</varlistentry>
 
 </variablelist>
@@ -814,10 +868,12 @@ clean directory. That's it. You can launch the game now.</para>
 	on SourceForge.net</ulink>: our development page</para></listitem>
 
 	<listitem><para><ulink url="http://icculus.org/twilight/darkplaces/">The
-	DarkPlaces engine</ulink>: the engine we recommend and provide</para></listitem>
+	DarkPlaces engine</ulink>: the engine we recommend and
+	provide</para></listitem>
 
-	<listitem><para><ulink url="http://www.inside3d.com/frikbot/">FrikBotX</ulink>:
-	where our bots come from</para></listitem>
+	<listitem><para>
+	<ulink url="http://www.inside3d.com/frikbot/">FrikBotX</ulink>: where our
+	bots come from</para></listitem>
 
 	<listitem><para><ulink url="http://zquake.frag.ru/">ZQuake</ulink>: arguably
 	the best QuakeWorld based engine</para></listitem>
