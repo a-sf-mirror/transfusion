@@ -719,8 +719,8 @@ void() weapon_nailgun =
     // Precache the necessary sounds
     precache_sound ("weapons/tommygun/_tom.wav");  // Fire
 //    precache_sound ("weapons/tommygun/tomcock.wav");  // Out of bullet noise
-    precache_sound ("weapons/shtshl.wav");   // shell hitting ground
-    precache_sound ("weapons/shtshl3.wav");  // shell hitting ground (2nd)
+    precache_sound ("weapons/mtshls.wav");   // shell hitting ground
+    precache_sound ("weapons/shtshl.wav");  // shell hitting ground (2nd)
 
     StartItem ();
 };
