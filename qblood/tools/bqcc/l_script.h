@@ -156,16 +156,12 @@ typedef struct script_s
 
 //read a token from the script
 int PS_ReadToken(script_t *script, token_t *token);
-//returns the next character of the read white space, returns NULL if none
-char PS_NextWhiteSpaceChar(script_t *script);
 //remove any leading and trailing double quotes from the token
 void StripDoubleQuotes(char *string);
 //read a possible signed floating point number
 double ReadSignedFloat(script_t *script);
 //set an array with punctuations (default C/C++ set)
 void SetScriptPunctuations(script_t *script);
-//reset a script
-void ResetScript(script_t *script);
 //returns true if at the end of the script
 int EndOfScript(script_t *script);
 //returns a pointer to the punctuation with the given number

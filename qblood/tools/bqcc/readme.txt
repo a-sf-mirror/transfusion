@@ -3,7 +3,7 @@ For other informations, take a look at "qcc.txt" and "meqcc.txt", included
 into this package.
 
 Changes since MeQCC v1.4:
-  * v0.2.0cvs
+  * v0.2.0
     - BQCC used OP_STORE_V for copying any function parameter. It now use
     OP_STORE_F when appropriate (it saves a few CPU cycles)
     - the "-src" option has been removed (broken and useless)

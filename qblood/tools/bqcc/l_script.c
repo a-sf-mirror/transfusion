@@ -718,24 +718,6 @@ int PS_ReadToken(script_t *script, token_t *token)
 
 
 //============================================================================
-// returns the next character of the read white space, returns NULL if none
-//
-// Parameter:				-
-// Returns:					-
-// Changes Globals:		-
-//============================================================================
-char PS_NextWhiteSpaceChar(script_t *script)
-{
-	if (script->whitespace_p != script->endwhitespace_p)
-	{
-		return *script->whitespace_p++;
-	} //end if
-	else
-	{
-		return 0;
-	} //end else
-} //end of the function PS_NextWhiteSpaceChar
-//============================================================================
 //
 // Parameter:				-
 // Returns:					-
@@ -752,23 +734,6 @@ void StripDoubleQuotes(char *string)
 		string[strlen(string)-1] = '\0';
 	} //end if
 } //end of the function StripDoubleQuotes
-
-
-void ResetScript(script_t *script)
-{
-	script->script_p = script->buffer;
-	script->lastscript_p = script->buffer;
-	script->whitespace_p = NULL;
-	script->endwhitespace_p = NULL;
-
-	script->tokenavailable = 0;
-
-	script->line = 1;
-	script->lastline = 1;
-
-	// Clear the saved token
-	memset (&script->token, 0, sizeof (token_t));
-}
 
 
 //============================================================================

@@ -212,48 +212,35 @@ void InitData (void)
 
 /*
 =================
-ClearString
-=================
-*/
-void ClearString(char *name)
-{
-	int len;
-	len = strlen(name);
-	memset(name, 0, len);
-} //end of the function ClearString
-
-
-/*
-=================
 MandatoryFunction
 
 returns true if the function name is mandatory
 =================
 */
-char *mandatoryfunctions[] =
-{
-	"main",
-	"StartFrame",
-	"PlayerPreThink",
-	"PlayerPostThink",
-	"ClientKill",
-	"ClientConnect",
-	"PutClientInServer",
-	"ClientDisconnect",
-	"SetNewParms",
-	"SetChangeParms",
-	""
-};
-
 int MandatoryFunction(char *name)
 {
-	int i;
-	for (i = 0; strlen(mandatoryfunctions[i]); i++)
+	const char *mandatoryfunctions [] =
 	{
-		if (!stricmp(mandatoryfunctions[i], name)) return 1;
-	} //end if
+		"main",
+		"StartFrame",
+		"PlayerPreThink",
+		"PlayerPostThink",
+		"ClientKill",
+		"ClientConnect",
+		"PutClientInServer",
+		"ClientDisconnect",
+		"SetNewParms",
+		"SetChangeParms",
+		""
+	};
+	int i;
+
+	for (i = 0; mandatoryfunctions[i][0] != '\0'; i++)
+		if (!stricmp (mandatoryfunctions[i], name))
+			return 1;
+
 	return 0;
-} //end of the function MandatoryFunction
+}
 
 
 /*
@@ -888,7 +875,7 @@ int main (int argc, char **argv)
 
 	Log_Open("bqcc.log");
 
-	Log_Print("\nBloody QuakeC compiler v0.2.0cvs, %s %s\n", __DATE__, __TIME__);
+	Log_Print("\nBloody QuakeC compiler v0.2.0, %s %s\n", __DATE__, __TIME__);
 	Log_Print("BQCC is based on MrElusive's QuakeC compiler v1.4\n");
 	Log_Print("This compiler is not supported by id Software.\n");
 	Log_Print("bqcc -help for info.\n\n");
