@@ -1642,14 +1642,16 @@ void() W_FireGrenade =
         newmis.pausetime = time + 2.5;
         newmis.think = ProximBombThink;
         newmis.think1 = ProximBombArmed;
-        newmis.netname = "proximity bomb";
+        newmis.netname = "Proximity Bomb";
         newmis.dmg = DMG_PROXIMITY_BOMB;
+        newmis.model = "progs/v_proxy.mdl";
     }
     // else if we fire a remote detonator
     else if (self.weapon == IT_REMOTE_DETONATOR)
     {
-        newmis.netname = "remote detonator";
+        newmis.netname = "Remote Detonator";
         newmis.dmg = DMG_REMOTE_DETONATOR;
+        newmis.model = "progs/v_remote.mdl";
 
         // We switch to the remote model / frames
         self.weaponmodel = "";  // FIXME: we don't have the remote model / frames yet
@@ -1669,15 +1671,17 @@ void() W_FireGrenade =
             newmis.netname = "Lit Spray Can";
             newmis.dmg     = DMG_SPRAY_CAN;
             self.weaponframe = 0;  // reset the weapon view
+            // newmis.model   = "progs/v_spray.mdl"; //FIXME - this is only for alt-fire
         }
         else
         {
             newmis.netname = "TNT";
             newmis.dmg     = DMG_TNT;
+            newmis.model   = "progs/v_tnt.mdl";
         }
     }
 
-    setmodel (newmis, "progs/grenade.mdl");
+    setmodel (newmis, newmis.model);
     setsize (newmis, '-1 -1 -1', '1 1 1');
     setorigin (newmis, self.origin);
 

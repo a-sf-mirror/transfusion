@@ -192,6 +192,18 @@ $frame situp1 situp2 situp3
 // alt-fire mode
 $frame fire1 fire2 fire3 fire4 fire5
 
+$modelname v_tnt
+$cd id1/models/v_tnt
+$origin 0 0 54
+$base base
+$skin skin
+$framegroupstart
+$frame frame1 0.6
+$frame frame2 0.6
+$frame frame3 0.6
+$frame frame4 0.7
+$framegroupend
+
 
 /*
 ===============================================================================

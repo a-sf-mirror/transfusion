@@ -340,7 +340,10 @@ void() worldspawn =
     precache_model ("progs/bolt3.mdl");     // for boss shock
 
     precache_model ("progs/missile.mdl");  // napalm regular fire
-    precache_model ("progs/grenade.mdl");
+    precache_model ("progs/v_tnt.mdl"); // regular tnt
+    precache_model ("progs/v_remote.mdl"); // remote detonator
+    precache_model ("progs/v_proxy.mdl"); // proximity bomb
+//    precache_model ("progs/v_spray.mdl"); // alt-fire spray can
     precache_model ("progs/spike.mdl");
     precache_model ("progs/s_spike.mdl");
 
