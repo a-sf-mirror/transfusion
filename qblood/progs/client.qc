@@ -1483,7 +1483,14 @@ void() ClientDisconnect =
 
     // If the player has a Leech Sentry, destroy it
     if (self.leech_sentry)
-        self.leech_sentry.th_die ();
+    {
+        local entity theplayer;
+
+        theplayer = self;
+        self = self.leech_sentry;
+        self.th_die ();
+        self = theplayer;
+    }
 
     #ifdef FRIKBOT
     ClientDisconnected();
