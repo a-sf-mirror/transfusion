@@ -113,7 +113,7 @@ void() player_run;
 void()  player_stand1 =[    $axstnd1,   player_stand1   ]
 {
     // Don't reset the weapon frame if we're holding a lit spray can
-    if (self.weapon != IT_SUPER_NAILGUN || self.weaponframe != 19)
+    if (self.weapon != IT_SUPER_NAILGUN || self.weaponframe != 5)
         self.weaponframe=0;
     if (self.velocity_x || self.velocity_y)
     {
@@ -140,7 +140,7 @@ void()  player_stand1 =[    $axstnd1,   player_stand1   ]
 void()  player_run =[   $rockrun1,  player_run  ]
 {
     // Don't reset the weapon frame if we're holding a lit spray can
-    if (self.weapon != IT_SUPER_NAILGUN || self.weaponframe != 19)
+    if (self.weapon != IT_SUPER_NAILGUN || self.weaponframe != 5)
         self.weaponframe = 0;
 
     if (!self.velocity_x && !self.velocity_y)
@@ -264,7 +264,7 @@ void() player_supernail =
 
     muzzleflash ();
 
-    self.weaponframe = 3;
+    self.weaponframe = 1;
 
     W_FireSuperSpikes ();
     self.attack_finished = time + 0.2;
@@ -273,10 +273,10 @@ void() player_supernail =
 void() player_supernail1 = [$nailatt1, player_supernail2] { player_supernail (); };
 void() player_supernail2 = [$nailatt2, player_supernail1] { player_supernail (); };
 
-void() player_lightcan1 = [$shotatt1, player_lightcan2] {self.weaponframe = 16;};
-void() player_lightcan2 = [$shotatt1, player_lightcan3] {self.weaponframe = 17;};
-void() player_lightcan3 = [$shotatt1, player_lightcan4] {self.weaponframe = 18;};
-void() player_lightcan4 = [$shotatt1, player_run      ] {self.weaponframe = 19;};
+void() player_lightcan1 = [$shotatt1, player_lightcan2] {self.weaponframe = 2;};
+void() player_lightcan2 = [$shotatt1, player_lightcan3] {self.weaponframe = 3;};
+void() player_lightcan3 = [$shotatt1, player_lightcan4] {self.weaponframe = 4;};
+void() player_lightcan4 = [$shotatt1, player_run      ] {self.weaponframe = 5;};
 
 //============================================================================
 

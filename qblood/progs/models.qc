@@ -130,20 +130,20 @@ $cd id1/models/v_nail2
 $origin 0 0 54
 $base base
 $skin skin
-// idle (0 -> 2)
+// idle (animation; 3 frames)
 $frame idle1 idle2 idle3
-// fire (3)
+// fire (1)
 $frame fire1
-// draw (4 -> 11)
-$frame draw1 draw2 draw3 draw4 draw5 draw6 draw7 draw8
-// draw_half (12 -> 15)
-$frame draw_half1 draw_half2 draw_half3 draw_half4
-// alt (16 -> 19: lit; 20 -> 22: thrown; 23 - 24: reload)
+// alt (2 -> 5: lit; 6 -> 8: thrown; 9 - 10: reload)
 $frame alt1 alt2 alt3 alt4 alt5 alt6 alt7 alt8 alt9
-// holster
-$frame holster1 holster2 holster3 holster4
-// holster_half
+// draw_half (11 -> 14)
+$frame draw_half1 draw_half2 draw_half3 draw_half4
+// draw (15 -> 22)
+$frame draw1 draw2 draw3 draw4 draw5 draw6 draw7 draw8
+// holster_half (23 -> 26)
 $frame holster_half1 holster_half2 holster_half3 holster_half4
+// holster (27 -> 30)
+$frame holster1 holster2 holster3 holster4
 
 
 $modelname v_nail
