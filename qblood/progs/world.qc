@@ -571,6 +571,18 @@ void() GibPlayerCorpse =
 
     sound (self, CHAN_ITEM, "misc/gibsq.wav", 1, ATTN_NORM);
 
+    #ifndef QUAKEWORLD
+    if (deathmatch)
+    {
+    #endif
+	    Bprint (PRINT_MEDIUM, self.enemy.netname);
+	    Bprint (PRINT_MEDIUM, " desecrated ");
+	    Bprint (PRINT_MEDIUM, self.netname);
+	    Bprint (PRINT_MEDIUM, "'s corpse\n");
+    #ifndef QUAKEWORLD
+	}
+	#endif
+
     remove (self);
 };
 
@@ -594,6 +606,7 @@ void(entity ent) CloneCorpse =
     // Copy the entity characteristics
     clone = spawn ();
     clone.classname = ent.classname;
+    clone.netname = ent.netname;
     clone.angles = ent.angles;
     clone.model = ent.model;
     clone.modelindex = ent.modelindex;
