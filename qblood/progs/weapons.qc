@@ -641,7 +641,7 @@ void() SpawnBouncingNapalmBall =
     newmis.angles = vectoangles(newmis.velocity);
 
     // set missile duration
-    newmis.nextthink = time + 1.25;
+    newmis.nextthink = time + 1 + random();
 
     newmis.touch = GrenadeTouch;
     newmis.think = GrenadeExplode;
@@ -650,7 +650,9 @@ void() SpawnBouncingNapalmBall =
 
     setmodel (newmis, "progs/naltball.mdl");
     setsize (newmis, '-1 -1 -1', '1 1 1');
-    setorigin (newmis, self.origin);
+
+    // spawn the ball just behind the missile
+    setorigin (newmis, self.origin - v_forward);
 };
 
 
@@ -701,6 +703,7 @@ void() T_MissileTouch =
     self.origin = self.origin - 8*normalize(self.velocity);
 
     // Spawn bouncing napalm balls
+    makevectors (self.v_angle);
     ind = 0;
     while (ind < self.cnt)
     {
