@@ -30,6 +30,9 @@ void(float damage) Voodoo_ApplyDamage;
 
 $modelname v_voodoo
 
+// idle
+$frame voodoo_idle1
+
 // stab stomach (0 -> 3)
 $frame voodoo_stomach1 voodoo_stomach2 voodoo_stomach3 voodoo_stomach4
 
@@ -48,6 +51,12 @@ $frame voodoo_situp1 voodoo_situp2 voodoo_situp3
 // alt-fire mode (19 -> 26)
 $frame voodoo_altfire1 voodoo_altfire2 voodoo_altfire3 voodoo_altfire4 voodoo_altfire5
 $frame voodoo_altfire6 voodoo_altfire7 voodoo_altfire8
+
+// draw
+$frame voodoo_draw1 voodoo_draw2 voodoo_draw3 voodoo_draw4
+
+// holster
+$frame voodoo_holster1 voodoo_holster2 voodoo_holster3 voodoo_holster4
 
 
 // ----- Player related code ----- //
@@ -85,12 +94,17 @@ void() player_altvoodoo7 = [$attack1, player_altvoodoo8] { self.weaponframe = $v
 void() player_altvoodoo8 = [$attack1, player_run       ] { self.weaponframe = $voodoo_altfire8; };
 
 // Normal draw
-// NOTE: no animation to play for now
-void() player_voodoodraw1 = [$attack1, player_run] { self.weaponframe = 0; };
+void() player_voodoodraw1 = [$attack1, player_voodoodraw2] { self.weaponframe = $voodoo_draw1; };
+void() player_voodoodraw2 = [$attack1, player_voodoodraw3] { self.weaponframe = $voodoo_draw2; };
+void() player_voodoodraw3 = [$attack1, player_voodoodraw4] { self.weaponframe = $voodoo_draw3; };
+void() player_voodoodraw4 = [$attack1, player_run        ] { self.weaponframe = $voodoo_draw4; };
 
 // Normal holster
-// NOTE: no animation to play for now
-void() player_voodooholster1 = [$attack1, player_run] { W_DrawWeapon (self.newweapon); };
+void() player_voodooholster1 = [$attack1, player_voodooholster2] { self.weaponframe = $voodoo_holster1; };
+void() player_voodooholster2 = [$attack1, player_voodooholster3] { self.weaponframe = $voodoo_holster2; };
+void() player_voodooholster3 = [$attack1, player_voodooholster4] { self.weaponframe = $voodoo_holster3; };
+void() player_voodooholster4 = [$attack1, player_voodooholster5] { self.weaponframe = $voodoo_holster4; };
+void() player_voodooholster5 = [$attack1, player_run           ] { W_DrawWeapon (self.newweapon); };
 
 
 //============================================================================
@@ -238,7 +252,7 @@ void() Voodoo_Draw =
 
     Voodoo_UpdateView ();
 
-    self.attack_finished = time + 0.1;
+    self.attack_finished = time + 0.5;
     player_voodoodraw1 ();
 };
 
@@ -252,7 +266,7 @@ Holster code for the voodoo doll
 */
 void() Voodoo_Holster =
 {
-    self.attack_finished = time + 0.1;
+    self.attack_finished = time + 0.5;
     player_voodooholster1 ();
 };
 

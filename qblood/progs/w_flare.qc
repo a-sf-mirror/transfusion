@@ -31,8 +31,17 @@ void() Flare_Fire;
 // Normal model
 $modelname v_shot
 
+// idle
+$frame flare_idle1
+
 // fire
 $frame flare_fire1 flare_fire2 flare_fire3 flare_fire4
+
+// draw
+$frame flare_draw1 flare_draw2 flare_draw3 flare_draw4
+
+// holster
+$frame flare_holster1 flare_holster2 flare_holster3 flare_holster4
 
 
 // Akimbo model
@@ -53,13 +62,13 @@ $frame aflare_holster6
 // ----- Player related code ----- //
 
 // Normal fire
-void() player_flare1 = [$attack1, player_flare2] { self.weaponframe = $flare_fire1; muzzleflash(); };
-void() player_flare2 = [$attack1, player_flare3] { self.weaponframe = $flare_fire2; };
+void() player_flare1 = [$attack1, player_flare2] { self.weaponframe = $flare_fire1; };
+void() player_flare2 = [$attack1, player_flare3] { self.weaponframe = $flare_fire2; muzzleflash(); Flare_Fire (); };
 void() player_flare3 = [$attack2, player_flare4] { self.weaponframe = $flare_fire3; };
 void() player_flare4 = [$attack2, player_run   ] { self.weaponframe = $flare_fire4; };
 
 // Akimbo fire
-void() player_akflare1 = [$attack1, player_akflare2] { self.weaponframe = $aflare_fire2; muzzleflash (); };
+void() player_akflare1 = [$attack1, player_akflare2] { self.weaponframe = $aflare_fire2; muzzleflash (); Flare_Fire (); };
 void() player_akflare2 = [$attack2, player_akflare3] { self.weaponframe = $aflare_fire3; };
 void() player_akflare3 = [$attack1, player_akflare4] { self.weaponframe = $aflare_fire4; muzzleflash (); Flare_Fire (); };
 void() player_akflare4 = [$attack2, player_run     ]
@@ -75,12 +84,17 @@ void() player_akflare4 = [$attack2, player_run     ]
 };
 
 // Normal draw
-// NOTE: no animation to play for now
-void() player_flaredraw1 = [$attack1, player_run] { self.weaponframe = 0; };
+void() player_flaredraw1 = [$attack1, player_flaredraw2] { self.weaponframe = $flare_draw1; };
+void() player_flaredraw2 = [$attack1, player_flaredraw3] { self.weaponframe = $flare_draw2; };
+void() player_flaredraw3 = [$attack1, player_flaredraw4] { self.weaponframe = $flare_draw3; };
+void() player_flaredraw4 = [$attack1, player_run       ] { self.weaponframe = $flare_draw4; };
 
 // Normal holster
-// NOTE: no animation to play for now
-void() player_flareholster1 = [$attack1, player_run] { W_DrawWeapon (self.newweapon); };
+void() player_flareholster1 = [$attack1, player_flareholster2] { self.weaponframe = $flare_holster1; };
+void() player_flareholster2 = [$attack1, player_flareholster3] { self.weaponframe = $flare_holster2; };
+void() player_flareholster3 = [$attack1, player_flareholster4] { self.weaponframe = $flare_holster3; };
+void() player_flareholster4 = [$attack1, player_flareholster5] { self.weaponframe = $flare_holster4; };
+void() player_flareholster5 = [$attack1, player_run          ] { W_DrawWeapon (self.newweapon); };
 
 // Akimbo draw
 void() player_akflaredraw1 = [$attack1, player_akflaredraw2] { self.weaponframe = $aflare_draw1; };
@@ -491,8 +505,6 @@ void() Flare_Attack =
         player_flare1 ();
         self.attack_finished = time + 0.5;
     }
-
-    Flare_Fire ();
 };
 
 
@@ -518,7 +530,7 @@ void() Flare_Draw =
     }
     else
     {
-        self.attack_finished = time + 0.1;
+        self.attack_finished = time + 0.5;
         player_flaredraw1 ();
     }
 };
@@ -540,7 +552,7 @@ void() Flare_Holster =
     }
     else
     {
-        self.attack_finished = time + 0.1;
+        self.attack_finished = time + 0.5;
         player_flareholster1 ();
     }
 };
