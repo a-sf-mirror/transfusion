@@ -475,7 +475,7 @@ entity(string spawnclass) Cl_GetRandomSpawnPoint =
     // If there's no free spot, we will have to telefrag someone...
     if (! freespots)
     {
-        totalspots = floor (random () * totalspots);
+        totalspots = rint (random () * (totalspots - 1));  // totalspots = (number between 0 and totalspots - 1)
         spot = find (world, classname, spawnclass);
         while (totalspots > 0)
         {
@@ -486,7 +486,7 @@ entity(string spawnclass) Cl_GetRandomSpawnPoint =
     }
 
     // Choose one of the free spots at random
-    freespots = ceil (random () * freespots);
+    freespots = rint ((random () * (freespots - 1)) + 1);  // freespots = (number between 1 and freespots)
     spot = world;
     while (freespots > 0)
     {
