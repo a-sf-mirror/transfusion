@@ -1355,16 +1355,9 @@ void() PlayerPostThink =
     local   float   mspeed, aspeed;
     local   float   r;
 
-    if (self.view_ofs == '0 0 0')
-        return;     // intermission or finale
-    if (self.deadflag)
+    // if we're not allowed to act (in intermission, or dead, or observer)
+    if (self.view_ofs == '0 0 0' || self.deadflag || self.observer)
         return;
-
-    if (self.observer)
-    {
-        self.modelindex = modelindex_player;  // from CheckPowerups(); the rest is useless
-        return;
-    }
 
     // check to see if player landed and play landing sound
     // no damage taken if not > 300 units high
