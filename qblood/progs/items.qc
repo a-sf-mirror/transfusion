@@ -1347,8 +1347,9 @@ void() weapon_spraycan =
     // Precache the necessary sounds
     precache_sound ("weapons/spraycan/spraycan.wav");  // lighted spray can
     precache_sound ("weapons/spraycan/sprayfir.wav");  // fire
-    precache_sound ("weapons/tnt/lighter.wav");  // = zipopen.wav + ziplight.wav
+    precache_sound ("weapons/tnt/lighter.wav");        // = zipopen.wav + ziplight.wav
     precache_sound ("weapons/tnt/zipclose.wav");
+    precache_sound ("weapons/napalm/explodcl.wav");    // alt-fire detonation
 
     precache_model ("progs/sprayfir.spr");
 
@@ -1365,10 +1366,11 @@ void() precache_tnt =
 	
     // Precache the necessary sounds
     PsychoCaleb_Precache ();
-    precache_sound ("weapons/tnt/lighter.wav");  // = zipopen.wav + ziplight.wav
-    precache_sound ("weapons/tnt/tntfuse.wav");  // tnt lit
-    precache_sound ("weapons/tnt/tnttoss.wav");  // throw sound
+    precache_sound ("weapons/tnt/lighter.wav");      // = zipopen.wav + ziplight.wav
+    precache_sound ("weapons/tnt/tntfuse.wav");      // tnt lit
+    precache_sound ("weapons/tnt/tnttoss.wav");      // throw sound
     precache_sound ("weapons/tnt/zipclose.wav");
+    precache_sound ("weapons/napalm/explodcl.wav");  // detonation
 
 };
 
@@ -1428,9 +1430,10 @@ void() weapon_proximity =
 
     // Precache the necessary sounds
     PsychoCaleb_Precache ();
-    precache_sound ("weapons/tnt/proxarm.wav");  // proximity bomb armed
-    precache_sound ("weapons/tnt/proxdet.wav");  // proximity bomb triggered
-    precache_sound ("weapons/tnt/tnttoss.wav");  // throw sound
+    precache_sound ("weapons/tnt/proxarm.wav");      // proximity bomb armed
+    precache_sound ("weapons/tnt/proxdet.wav");      // proximity bomb triggered
+    precache_sound ("weapons/tnt/tnttoss.wav");      // throw sound
+    precache_sound ("weapons/napalm/explodcl.wav");  // detonation
 
     available_weapons = available_weapons | IT_PROXIMITY_BOMB;
 
@@ -1452,10 +1455,10 @@ void() weapon_remote =
 
     // Precache the necessary sounds
     PsychoCaleb_Precache ();
-    precache_sound ("weapons/tnt/remdet.wav");   // bomb triggered
-    precache_sound ("weapons/tnt/remfire.wav");  // remote triggered
-    precache_sound ("weapons/tnt/tnttoss.wav");  // throw sound
-
+    precache_sound ("weapons/tnt/remdet.wav");       // bomb triggered
+    precache_sound ("weapons/tnt/remfire.wav");      // remote triggered
+    precache_sound ("weapons/tnt/tnttoss.wav");      // throw sound
+    precache_sound ("weapons/napalm/explodcl.wav");  // detonation / impact
     available_weapons = available_weapons | IT_REMOTE_DETONATOR;
 
     StartItem ();
@@ -1479,7 +1482,8 @@ void() weapon_napalmlauncher =
 
     // Precache the necessary sounds
     PsychoCaleb_Precache ();
-    precache_sound ("weapons/napalm/blaster.wav");  // Shot
+    precache_sound ("weapons/napalm/blaster.wav");   // Shot
+    precache_sound ("weapons/napalm/explodcl.wav");  // Impact
 
     available_weapons = available_weapons | IT_NAPALM_LAUNCHER;
 

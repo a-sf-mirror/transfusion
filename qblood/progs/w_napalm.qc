@@ -201,6 +201,9 @@ void() T_MissileTouch =
     // was done in the impact
     BurnRadius (self, 160, self.dmg * 0.75, self.dmg * 0.5, other);
 
+    // Make detonation sound
+    sound (self, CHAN_AUTO, "weapons/napalm/explodcl.wav", 1, ATTN_NORM);
+
     PsychoCaleb (self.owner);
 
     self.origin = self.origin - 8 * normalize (self.velocity);
