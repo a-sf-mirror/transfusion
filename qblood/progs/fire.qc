@@ -34,36 +34,19 @@
 
 //  Frame Macros for modified 'flame2.mdl'.
 $modelname flame2
-$cd id1/models/flame2
-$origin 0 0 12
-$base base
-$skin skin
 
 // These are grouped scenes.
-$frame  flame
-$frame  flameb
+$frame flame
+$frame flameb
 
 // These scenes are not grouped.
-$frame  ember1 ember2 ember3 ember4 ember5 ember6
+$frame ember1 ember2 ember3 ember4 ember5 ember6
 
 
 //==========================================================================
 //  General Fire Code
 
 //==========================================================================
-
-//------------------------------------------------------------------------//
-//  This makes an entity do a think function right now.
-//------------------------------------------------------------------------//
-void(entity ent, void() thinkst) Think =
-{
-    local   entity  oself;
-
-    oself = self;
-    self = ent;
-    thinkst ();
-    self = oself;
-};
 
 //------------------------------------------------------------------------//
 //  This checks if a given point in space is in water.
@@ -241,10 +224,27 @@ void()  m_ember5 =[   $ember5,    m_ember6] {};
 void()  m_ember6 =[   $ember6,    SUB_Remove] {};
 
 //------------------------------------------------------------------------//
-//  This makes flaming embers rise from a burning victim.
+//  MakeEmbers makes flaming embers rise from a burning victim.
 //
-//  NOTE:  Assumes 'self' == flame generator!
+//  NOTE: It assumes 'self' == flame generator!
 //------------------------------------------------------------------------//
+void() FlameThink =
+{
+    self.nextthink  = time + 0.1;
+
+    if (self.frame < 13)
+        self.frame = self.frame + 1;
+    else
+        self.frame = 0;
+
+    self.alpha = self.alpha - 0.1;
+    if (self.alpha <= 0.1)
+    {
+        self.think = SUB_Remove;
+        self.velocity = '0 0 0';
+    }
+};
+
 void() MakeEmbers =
 {
     local   entity  fire;       // The new fire that will be created.
@@ -264,25 +264,21 @@ void() MakeEmbers =
 
     // Create the fire.
     fire = spawn();
-    setmodel (fire, "progs/flame2.mdl");
+    setmodel (fire, "progs/flame.spr");
     setsize (fire, '0 0 0', '0 0 0');
     setorigin (fire, spot);
 
     fire.solid      = SOLID_NOT;
     fire.takedamage = DAMAGE_NO;
-    fire.frame      = $ember1;
     fire.owner      = self.enemy;
     fire.movetype   = MOVETYPE_FLY;
     fire.velocity   = '0 0 100';
 
     // Animate the flame.
-    r = random() * 3;
-    if (r > 2)
-        Think (fire, m_ember3);
-    else if (r > 1)
-        Think (fire, m_ember2);
-    else
-        Think (fire, m_ember1);
+    fire.frame      = rint (13 * random ());
+    fire.alpha      = 1;
+    fire.think      = FlameThink;
+    fire.nextthink  = time + 0.1;
 };
 
 //------------------------------------------------------------------------//

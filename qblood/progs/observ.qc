@@ -267,6 +267,7 @@ void() ObserverThink =
 void(entity player) BecomeObserver =
 {
     player.health           = 999;
+    player.armorvalue       = 0;
     player.takedamage       = DAMAGE_NO;
     player.solid            = SOLID_NOT;
     player.movetype         = MOVETYPE_FLY;
@@ -283,6 +284,7 @@ void(entity player) BecomeObserver =
     player.weaponmodel = "";
     player.weaponframe = 0;
     player.weapon      = 0;
+    player.currentammo = 0;
 
     player.observer    = 1;
     player.do_observer = 0;

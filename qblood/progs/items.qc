@@ -1382,6 +1382,7 @@ void() weapon_flaregun =
 
     // precache the necessary sounds
     PsychoCaleb_Precache ();
+    precache_model ("progs/flame2.mdl");
     precache_sound ("weapons/flaregun/flaref.wav");
     precache_sound ("weapons/napalm/explodfs.wav");  // For alt-flares
 

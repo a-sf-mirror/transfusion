@@ -304,7 +304,10 @@ void() worldspawn =
     // It's time to precache...
     PrecacheSounds ();
 
-    precache_model ("progs/flame2.mdl");  // FIXME:  Maybe place elsewhere with flaregun item code.
+    precache_model ("progs/flame.spr");     // Used for people on fire
+    #ifndef QUAKEWORLD
+    precache_model ("progs/flame2.mdl");    // Used for embers during explosions (not available in QW)
+    #endif
     precache_model ("progs/s_oldexp.spr");
 
     // WARNING: these models are referenced by the engine itself
