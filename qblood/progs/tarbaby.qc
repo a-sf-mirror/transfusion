@@ -197,13 +197,23 @@ void()  tbaby_die2  =[  $exp,       tbaby_run1  ]
     sound (self, CHAN_VOICE, "blob/death1.wav", 1, ATTN_NORM);
     self.origin = self.origin - 8*normalize(self.velocity);
 
+    #ifdef QUAKEWORLD
+    WriteByte (MSG_MULTICAST, SVC_TEMPENTITY);
+    WriteByte (MSG_MULTICAST, TE_EXPLOSION);
+    WriteCoord (MSG_MULTICAST, self.origin_x);
+    WriteCoord (MSG_MULTICAST, self.origin_y);
+    WriteCoord (MSG_MULTICAST, self.origin_z);
+    multicast (self.origin, MULTICAST_PHS);
+    remove(self);
+
+    #else
     WriteByte (MSG_BROADCAST, SVC_TEMPENTITY);
-    WriteByte (MSG_BROADCAST, TE_TAREXPLOSION);
+    WriteByte (MSG_BROADCAST, TE_EXPLOSION);
     WriteCoord (MSG_BROADCAST, self.origin_x);
     WriteCoord (MSG_BROADCAST, self.origin_y);
     WriteCoord (MSG_BROADCAST, self.origin_z);
-
     BecomeExplosion ();
+    #endif
 };
 
 //=============================================================================

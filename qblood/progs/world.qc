@@ -476,6 +476,7 @@ void() StartFrame =
     timelimit = cvar("timelimit") * 60;
     fraglimit = cvar("fraglimit");
     deathmatch = cvar("deathmatch");
+    coop = cvar("coop");
     skill = cvar("skill");
 
     framecount = framecount + 1;

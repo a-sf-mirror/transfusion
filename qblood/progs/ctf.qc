@@ -42,16 +42,11 @@ void(entity flg) RegenFlag =
 {
     flg.movetype = MOVETYPE_TOSS;
     flg.solid = SOLID_TRIGGER;
-    #ifdef QUAKEWORLD
-    setmodel(flg, flg.mdl);
-    #endif
     setorigin(flg, flg.oldorigin);
     flg.angles = flg.mangle;
     flg.cnt = FLAG_AT_BASE; // it's at home base
     flg.owner = world;
-    #ifdef QUAKEWORLD
     flg.velocity = '0 0 0';
-    #endif
     sound (flg, CHAN_VOICE, "bludbath/respawn2.wav", 1, ATTN_NORM); // play respawn sound
 };
 
@@ -163,9 +158,7 @@ void() CTF_FlagTouch =
 
     // pick up the flag
     self.cnt = FLAG_CARRIED;
-    #ifndef QUAKEWORLD
     self.movetype = MOVETYPE_NOCLIP;
-    #endif
     self.solid = SOLID_NOT;
     self.owner = other;
 
@@ -174,7 +167,6 @@ void() CTF_FlagTouch =
         self.owner.effects = self.owner.effects | EF_FLAG1;
     else // must be other team
         self.owner.effects = self.owner.effects | EF_FLAG2;
-    setmodel(self, "");
     #endif
 
     p = find(world, classname, "player");
@@ -217,9 +209,6 @@ void(entity flg) TeamDropFlag =
     flg.flags = FL_ITEM;
     flg.solid = SOLID_TRIGGER;
     flg.movetype = MOVETYPE_TOSS;
-    #ifdef QUAKEWORLD
-    setmodel(flg, flg.mdl);
-    #endif
     setsize(flg, '-16 -16 0', '16 16 74');
 
     // return it after so long
@@ -266,7 +255,6 @@ void() CTF_FlagThink =
     if (self.cnt != FLAG_CARRIED)
         objerror("Flag in invalid state\n");
 
-    #ifndef QUAKEWORLD
     e = self.owner;
     if ((e.classname != "player") || (e.deadflag)) {
         TeamDropFlag(self);
@@ -303,7 +291,6 @@ void() CTF_FlagThink =
     self.angles = e.angles + '0 0 -45';
     setorigin (self, self.origin);
     self.nextthink = time + 0.01;
-    #endif
 };
 
 

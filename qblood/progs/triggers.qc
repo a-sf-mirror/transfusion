@@ -369,14 +369,11 @@ void() tdeath_touch =
             return;
         }
 
-        #ifndef QUAKEWORLD
         if (self.owner.classname != "player")
         {   // other monsters explode themselves
             T_Damage (self.owner, self, self, 50000);
             return;
         }
-        #endif
-
     }
 
     if (other.health)
@@ -518,7 +515,6 @@ trigger_setskill
 ==============================================================================
 */
 
-#ifndef QUAKEWORLD
 void() trigger_skill_touch =
 {
     if (other.classname != "player")
@@ -526,7 +522,6 @@ void() trigger_skill_touch =
 
     cvar_set ("skill", self.message);
 };
-#endif
 
 /*QUAKED trigger_setskill (.5 .5 .5) ?
 sets skill level to the value of "message".
@@ -534,12 +529,8 @@ Only used on start map.
 */
 void() trigger_setskill =
 {
-    #ifdef QUAKEWORLD
-    remove (self);
-    #else
     InitTrigger ();
     self.touch = trigger_skill_touch;
-    #endif
 };
 
 

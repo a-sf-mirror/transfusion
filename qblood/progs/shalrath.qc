@@ -215,7 +215,13 @@ void() ShalMissile =
     if (flytime < 0.1)
         flytime = 0.1;
 
+    #ifdef QUAKEWORLD
+    WriteByte (MSG_MULTICAST, SVC_MUZZLEFLASH);
+    WriteEntity (MSG_MULTICAST, self);
+    multicast (self.origin, MULTICAST_PVS);
+    #else
     self.effects = self.effects | EF_MUZZLEFLASH;
+    #endif
     sound (self, CHAN_WEAPON, "shalrath/attack2.wav", 1, ATTN_NORM);
 
     missile = spawn ();
@@ -264,17 +270,23 @@ void() ShalMissileTouch =
     T_RadiusDamage (self, self.owner, 40, world, "");
     sound (self, CHAN_WEAPON, "weapons/napalm/explodfl.wav", 1, ATTN_NORM);
 
+    #ifdef QUAKEWORLD
+    WriteByte (MSG_MULTICAST, SVC_TEMPENTITY);
+    WriteByte (MSG_MULTICAST, TE_EXPLOSION);
+    WriteCoord (MSG_MULTICAST, self.origin_x);
+    WriteCoord (MSG_MULTICAST, self.origin_y);
+    WriteCoord (MSG_MULTICAST, self.origin_z);
+    multicast (self.origin, MULTICAST_PHS);
+    remove(self);
+
+    #else
     WriteByte (MSG_BROADCAST, SVC_TEMPENTITY);
     WriteByte (MSG_BROADCAST, TE_EXPLOSION);
     WriteCoord (MSG_BROADCAST, self.origin_x);
     WriteCoord (MSG_BROADCAST, self.origin_y);
     WriteCoord (MSG_BROADCAST, self.origin_z);
-
-    self.velocity = '0 0 0';
-    self.touch = SUB_Null;
-    setmodel (self, "progs/s_explod.spr");
-    self.solid = SOLID_NOT;
-    s_explode1 ();
+    BecomeExplosion ();
+    #endif
 };
 
 //=================================================================

@@ -260,9 +260,7 @@ void        end_sys_fields;         // flag for structure dumping
 // globals
 //
 float   movedist;
-#ifndef QUAKEWORLD
 float   gameover;       // set when a rule exits
-#endif
 
 string  string_null;    // null string, nothing should be held here
 float   empty_float;
@@ -298,6 +296,7 @@ entity team2_lastspawn;
 #ifdef QUAKEWORLD
 float       teamplay;
 float       deathmatch;
+float       coop;
 #endif
 float       timelimit;
 float       fraglimit;

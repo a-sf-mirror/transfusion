@@ -217,7 +217,13 @@ void() Wiz_FastFire =
 
     if (self.owner.health > 0)
     {
+        #ifdef QUAKEWORLD
+        WriteByte (MSG_MULTICAST, SVC_MUZZLEFLASH);
+        WriteEntity (MSG_MULTICAST, self.owner);
+        multicast (self.owner.origin, MULTICAST_PVS);
+        #else
         self.owner.effects = self.owner.effects | EF_MUZZLEFLASH;
+        #endif
 
         makevectors (self.enemy.angles);
         dst = self.enemy.origin - 13*self.movedir;

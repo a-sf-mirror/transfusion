@@ -68,7 +68,13 @@ void() enforcer_fire =
 {
     local vector org;
 
+    #ifdef QUAKEWORLD
+    WriteByte (MSG_MULTICAST, SVC_MUZZLEFLASH);
+    WriteEntity (MSG_MULTICAST, self);
+    multicast (self.origin, MULTICAST_PVS);
+    #else
     self.effects = self.effects | EF_MUZZLEFLASH;
+    #endif
     makevectors (self.angles);
 
     org = self.origin + v_forward * 30 + v_right * 8.5 + '0 0 16';

@@ -37,9 +37,7 @@ void() T_MissileTouch;
 void() info_player_start;
 void(entity attacker) ClientObituary;
 void(entity inflictor, entity attacker, float damage, entity ignore, string dtype) T_RadiusDamage;
-#ifndef QUAKEWORLD
 void() monster_death_use;
-#endif
 
 
 //============================================================================
@@ -122,9 +120,7 @@ void(entity targ, entity attacker) Killed =
     self.touch = SUB_Null;
     self.effects = 0;
 
-    #ifndef QUAKEWORLD
     monster_death_use();
-    #endif
 
     self.th_die ();
 
@@ -142,7 +138,6 @@ The damage is coming from inflictor, but get mad at attacker
 This should be the only function that ever reduces health.
 ============
 */
-#ifndef QUAKEWORLD
 // PM:  Support function that checks if both sides are friendly enough.
 float(entity victim, entity attacker) PM_MonsterAlly =
 {
@@ -177,7 +172,6 @@ float(entity victim, entity attacker) PM_GetMad =
     // Fight back!
     return TRUE;
 };
-#endif
 
 // PM:  Blood's armor damage protection algorithm, or close to it.
 float(entity targ, float armour, float damage) PM_ArmorSave =
@@ -225,10 +219,6 @@ void(entity targ, entity inflictor, entity attacker, float damage, float dflags,
     local   float   take;
     local   float   protected;  // PM:  Boolean for invulnerability.
 
-    #ifdef QUAKEWORLD
-    local   string  attackerteam, targteam;
-    #endif
-
     if (!targ.takedamage)
         return;
 
@@ -247,7 +237,6 @@ void(entity targ, entity inflictor, entity attacker, float damage, float dflags,
         if (inflictor.classname != "door")
             damage = damage * 4;
 
-    #ifndef QUAKEWORLD
     if (dflags & DF_RADIUS)
     {
         // shambler takes half damage from all explosions
@@ -259,7 +248,6 @@ void(entity targ, entity inflictor, entity attacker, float damage, float dflags,
     if (!deathmatch)
         if (targ.classname == "player")
             damage = damage * (1 + (cvar("skill") * 0.4));
-    #endif
 
     // Save fractions for later use.
     take = damage + targ.remain_dmg;
@@ -308,16 +296,18 @@ void(entity targ, entity inflictor, entity attacker, float damage, float dflags,
         {
             // Team play avoidance.
             #ifdef QUAKEWORLD
+            local   string  attackerteam, targteam;
+
             //ZOID 12-13-96: self.team doesn't work in QW.  Use keys
             attackerteam = infokey(attacker, "team");
             targteam = infokey(targ, "team");
 
-            if ((teamplay == 1 || (teamplay == 3 && targ != attacker)) &&
-            attacker.classname == "player" && attackerteam != "" &&
-            targteam == attackerteam       && inflictor.classname !="door"   )
+            if (targteam == attackerteam && attackerteam != "" &&
             #else
-            if ( (teamplay == 1) && (targ.team > 0)&&(targ.team == attacker.team) )
+            if (targ.team == attacker.team &&
             #endif
+            (teamplay == 1 || (teamplay == 3 && targ != attacker)) &&
+            attacker.classname == "player" && inflictor.classname !="door")
                 protected = TRUE;
         }
     }
@@ -413,7 +403,6 @@ void(entity targ, entity inflictor, entity attacker, float damage, float dflags,
     oldself = self;
     self = targ;
 
-    #ifndef QUAKEWORLD
     if ( (self.flags & FL_MONSTER) && attacker != world)
         if (!(dflags & DF_MIN_PAIN) || !self.enemy)
             if (PM_GetMad (self, attacker))
@@ -423,7 +412,6 @@ void(entity targ, entity inflictor, entity attacker, float damage, float dflags,
                 self.enemy = attacker;
                 FoundTarget ();
             }
-    #endif
 
     if (self.th_pain)
     {
@@ -435,11 +423,9 @@ void(entity targ, entity inflictor, entity attacker, float damage, float dflags,
 
         self.th_pain (attacker, take);
 
-        #ifndef QUAKEWORLD
         // nightmare mode monsters don't go into pain frames often
         if (skill == 3)
             self.pain_finished = time + 5;
-        #endif
     }
 
     self = oldself;

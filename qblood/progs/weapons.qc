@@ -917,10 +917,8 @@ void() T_MissileTouch =
     if (other.health)
     {
         other.deathtype = "rocket";
-        #ifndef QUAKEWORLD
         if (other.classname == "monster_shambler")
             damg = damg * 0.5;  // mostly immune
-        #endif
 //        T_Damage (other, self, self.owner, damg );
         PM_BurnDamage (other, self, damg*0.75, damg*0.25);
     }
@@ -1285,11 +1283,7 @@ void() W_UseVoodooDoll =
     traceline (src, src + dir*2048, FALSE, self);
 
     // If we had a target that can be damaged and seems alive
-    #ifdef QUAKEWORLD
-    if (trace_fraction != 1.0 && trace_ent.takedamage && trace_ent.classname == "player")
-    #else
     if (trace_fraction != 1.0 && trace_ent.takedamage && ((trace_ent.flags & FL_MONSTER) || trace_ent.classname == "player"))
-    #endif
     {
         org = trace_endpos - dir*4;
 
@@ -2152,7 +2146,6 @@ void() W_ChangeWeapon =
 };
 
 
-#ifndef QUAKEWORLD
 /*
 ============
 CheatCommand
@@ -2160,9 +2153,6 @@ CheatCommand
 */
 void() CheatCommand =
 {
-    if (deathmatch || coop)
-        return;
-
     self.ammo_rockets = 100;
     self.ammo_nails = 200;
     self.ammo_shells = 100;
@@ -2186,7 +2176,6 @@ void() CheatCommand =
     self.impulse = 0;
     W_SetCurrentAmmo ();
 };
-#endif
 
 
 /*
@@ -2354,19 +2343,14 @@ void() CycleWeaponReverseCommand =
 };
 
 
-#ifndef QUAKEWORLD
 void() QuadCheat =
 {
-    if (deathmatch || coop)
-        return;
-
     self.super_time = 1;
     self.super_damage_finished = time + 30;
 // PM:  Guns Akimbo no longer uses IT_QUAD.
     Sprint (self, PRINT_MEDIUM, "tequila\n");
     dprint ("quad cheat\n");
 };
-#endif
 
 //========================================================================
 
@@ -2611,25 +2595,27 @@ void() ImpulseCommands =
         else if (self.impulse == 16)
             PM_ArmorTest ();
 
-        #ifndef QUAKEWORLD
-        else if (self.impulse == 251)
+        // Cheat codes are not allowed in multiplayer
+        else if (!deathmatch && !coop)
         {
-            Sprint (self, PRINT_MEDIUM, "griswold -- You have full armor.\n");
-            self.armor_fire = self.armor_body = self.armor_mind = self.armorvalue = 200;
-            self.items = self.items - (self.items & (IT_ARMOR1 | IT_ARMOR2 | IT_ARMOR3)) + IT_ARMOR2;
+            if (self.impulse == 251)
+            {
+                Sprint (self, PRINT_MEDIUM, "griswold -- You have full armor.\n");
+                self.armor_fire = self.armor_body = self.armor_mind = self.armorvalue = 200;
+                self.items = self.items - (self.items & (IT_ARMOR1 | IT_ARMOR2 | IT_ARMOR3)) + IT_ARMOR2;
+            }
+            else if (self.impulse == 252)
+            {
+                Sprint (self, PRINT_MEDIUM, "mcgee -- You're fired!\n");
+                PM_Ignite (self, self, 200);
+            }
+            else if (self.impulse == 253)
+                InvenCheat ();
+            else if (self.impulse == 254)
+                CheatCommand ();
+            else if (self.impulse == 255)
+                QuadCheat ();
         }
-        else if (self.impulse == 252)
-        {
-            Sprint (self, PRINT_MEDIUM, "mcgee -- You're fired!\n");
-            PM_Ignite (self, self, 200);
-        }
-        else if (self.impulse == 253)
-            InvenCheat ();
-        else if (self.impulse == 254)
-            CheatCommand ();
-        else if (self.impulse == 255)
-            QuadCheat ();
-        #endif
     }
 
     // Commands allowed to observers

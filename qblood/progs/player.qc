@@ -246,8 +246,8 @@ void() player_altnail =
     muzzleflash ();
 
     self.weaponframe = self.weaponframe + 1;
-	if (self.weaponframe == 14 || self.weaponframe == 1)
-		self.weaponframe = 8;
+    if (self.weaponframe == 14 || self.weaponframe == 1)
+        self.weaponframe = 8;
     W_FireSpikes ();
     self.attack_finished = time + 0.1;
 };
@@ -720,10 +720,8 @@ void() PlayerDie =
 
     self.items = self.items - (self.items & IT_INVISIBILITY);
 
-    #ifndef QUAKEWORLD
     if (deathmatch || coop)
     {
-    #endif
         if (self.super_damage_finished > 0)
         {
             DropQuad (self.super_damage_finished - time);
@@ -747,9 +745,7 @@ void() PlayerDie =
         DropBackpack();
 
         CTF_PlayerDropFlag ();
-    #ifndef QUAKEWORLD
     }
-    #endif
 
     self.invisible_finished = 0;    // don't die as eyes
     self.invincible_finished = 0;

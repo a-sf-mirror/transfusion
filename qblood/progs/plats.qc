@@ -105,9 +105,6 @@ void() plat_center_touch =
         if (self.cnt > time)
             return; // delay until going up again
         plat_go_up ();
-        #ifndef QUAKEWORLD
-        return;
-        #endif
     }
     self.cnt = time + 2;
 };

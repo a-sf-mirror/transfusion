@@ -303,7 +303,6 @@ void() SUB_UseTargets =
 
 };
 
-#ifndef QUAKEWORLD
 /*
 
 in nightmare mode, all attack_finished times become 0
@@ -331,7 +330,6 @@ void (void() thinkst) SUB_CheckRefire =
     self.cnt = 1;
     self.think = thinkst;
 };
-#endif
 
 
 /*

@@ -211,7 +211,6 @@ void() GotoNextMap =
 };
 
 
-#ifndef QUAKEWORLD
 void() ExitIntermission =
 {
 // skip any text in deathmatch
@@ -299,7 +298,6 @@ void() ExitIntermission =
 
     GotoNextMap();
 };
-#endif
 
 /*
 ============
@@ -316,11 +314,7 @@ void() IntermissionThink =
     if (!self.button0 && !self.button1 && !self.button2)
         return;
 
-    #ifdef QUAKEWORLD
-    GotoNextMap ();
-    #else
     ExitIntermission ();
-    #endif
 };
 
 /*
@@ -338,11 +332,9 @@ void() execute_changelevel =
     intermission_running = 1;
 
 // enforce a wait time before allowing changelevel
-    #ifndef QUAKEWORLD
     if (! deathmatch)
         intermission_exittime = time + 2;
     else
-    #endif
         intermission_exittime = time + 5;
 
     pos = FindIntermission ();
@@ -410,27 +402,21 @@ void() changelevel_touch =
         return;
     }
 
-    #ifndef QUAKEWORLD
     if (coop || deathmatch)
     {
-    #endif
         Bprint (PRINT_HIGH, other.netname);
         Bprint (PRINT_HIGH," checked out for good\n");
-    #ifndef QUAKEWORLD
     }
-    #endif
 
     nextmap = self.map;
 
     SUB_UseTargets ();
 
-    #ifndef QUAKEWORLD
     if ( (self.spawnflags & 1) && (deathmatch == 0) )
     {   // NO_INTERMISSION
         GotoNextMap();
         return;
     }
-    #endif
 
     self.touch = SUB_Null;
 
@@ -466,7 +452,6 @@ void() set_suicide_frame;
 // called by ClientKill and DeadThink
 void() respawn =
 {
-    #ifndef QUAKEWORLD
     if (coop)
     {
         // make a copy of the dead body for appearances sake
@@ -478,20 +463,16 @@ void() respawn =
     }
     else if (deathmatch)
     {
-    #endif
         // make a copy of the dead body for appearances sake
         CloneCorpse (self);
         // set default spawn parms
         SetNewParms ();
         // respawn
         PutClientInServer ();
-    #ifndef QUAKEWORLD
     }
     else
-    {   // restart the entire server
+        // restart the entire server
         localcmd ("restart\n");
-    }
-    #endif
 };
 
 
@@ -540,10 +521,8 @@ entity() SelectSpawnPoint =
         return lastspawn;
 
     // If we're in a deathmatch
-    #ifndef QUAKEWORLD
     if (deathmatch)
     {
-    #endif
         local float totalspots;
 
         // If it's a CTF game, try to spawn on one of the team's points
@@ -574,7 +553,6 @@ entity() SelectSpawnPoint =
             }
             return lastspawn;
         }
-    #ifndef QUAKEWORLD
     }
 
     // If we're in a SP coop game
@@ -594,7 +572,6 @@ entity() SelectSpawnPoint =
         if (lastspawn)
             return lastspawn;
     }
-    #endif
 
     // We haven't found a suitable spawn point, so we take the SP one
     lastspawn = find (world, classname, "info_player_start");
@@ -607,64 +584,6 @@ entity() SelectSpawnPoint =
 
 void() DecodeLevelParms;
 void() PlayerDie;
-
-
-#ifdef QUAKEWORLD
-/*
-===========
-ValidateUser
-
-FIXME: molivier: What is this function ? It seems to be unused ? It could be CTF stuff.
-============
-*
-float(entity e) ValidateUser =
-{
-    local string    s;
-    local string    userclan;
-    local float     rank, rankmin, rankmax;
-
-//
-// if the server has set "clan1" and "clan2", then it
-// is a clan match that will allow only those two clans in
-//
-    s = serverinfo("clan1");
-    if (s)
-    {
-        userclan = masterinfo(e,"clan");
-        if (s == userclan)
-            return true;
-        s = serverinfo("clan2");
-        if (s == userclan)
-            return true;
-        return false;
-    }
-
-//
-// if the server has set "rankmin" and/or "rankmax" then
-// the users rank must be between those two values
-//
-    s = masterinfo (e, "rank");
-    rank = stof (s);
-
-    s = serverinfo("rankmin");
-    if (s)
-    {
-        rankmin = stof (s);
-        if (rank < rankmin)
-            return false;
-    }
-    s = serverinfo("rankmax");
-    if (s)
-    {
-        rankmax = stof (s);
-        if (rankmax < rank)
-            return false;
-    }
-
-    return true;
-};
-*/
-#endif
 
 
 /*
@@ -742,15 +661,11 @@ void() PutClientInServer =
         return;
     }
 
-    #ifndef QUAKEWORLD
     if (deathmatch || coop)
     {
-    #endif
         makevectors(self.angles);
         spawn_tfog (self.origin + v_forward*20);
-    #ifndef QUAKEWORLD
     }
-    #endif
 
     spawn_tdeath (self.origin, self);
 
@@ -871,9 +786,7 @@ void() NextLevel =
     }
 
     nextmap = o.map;
-    #ifndef QUAKEWORLD
     gameover = TRUE;
-    #endif
 
     if (o.nextthink < time)
     {
@@ -891,10 +804,8 @@ Exit deathmatch games upon conditions
 */
 void() CheckRules =
 {
-    #ifndef QUAKEWORLD
     if (gameover)   // someone else quit the game already
         return;
-    #endif
 
     if (timelimit && time >= timelimit)
     {
@@ -1449,18 +1360,12 @@ void() ClientConnect =
 
     sound (self, CHAN_AUTO, "thevoice/vo1.wav", 1, ATTN_NORM); //Let the Bloodbath Begin!
 
-    #ifndef QUAKEWORLD
     if (deathmatch)
-    #endif
         self.do_observer = 1;
 
     // a client connecting during an intermission can cause problems
     if (intermission_running)
-        #ifdef QUAKEWORLD
-        GotoNextMap ();
-        #else
         ExitIntermission ();
-        #endif
 };
 
 
@@ -1473,12 +1378,10 @@ called when a player disconnects from a server
 */
 void() ClientDisconnect =
 {
-    #ifndef QUAKEWORLD
-    if (gameover)
-        return;
     // if the level end trigger has been activated, just return
     // since they aren't *really* leaving
-    #endif
+    if (gameover)
+        return;
 
     // let everyone else know
     Bprint (PRINT_HIGH, self.netname);
@@ -1947,46 +1850,44 @@ void(entity attacker) ClientObituary =
         Bprint (PRINT_MEDIUM, self.netname);
         self.frags = self.frags - 1;
 
-        #ifndef QUAKEWORLD
         // killed by a monster?
         if (attacker.flags & FL_MONSTER)
         {
             if (attacker.classname == "monster_army")
-                bprint (" was shot by a Grunt\n");
+                Bprint (PRINT_MEDIUM, " was shot by a Grunt\n");
             if (attacker.classname == "monster_demon1")
-                bprint (" was eviscerated by a Fiend\n");
+                Bprint (PRINT_MEDIUM, " was eviscerated by a Fiend\n");
             if (attacker.classname == "monster_dog")
-                bprint (" was mauled by a Rottweiler\n");
+                Bprint (PRINT_MEDIUM, " was mauled by a Rottweiler\n");
             if (attacker.classname == "monster_dragon")
-                bprint (" was fried by a Dragon\n");
+                Bprint (PRINT_MEDIUM, " was fried by a Dragon\n");
             if (attacker.classname == "monster_enforcer")
-                bprint (" was blasted by an Enforcer\n");
+                Bprint (PRINT_MEDIUM, " was blasted by an Enforcer\n");
             if (attacker.classname == "monster_fish")
-                bprint (" was fed to the Rotfish\n");
+                Bprint (PRINT_MEDIUM, " was fed to the Rotfish\n");
             if (attacker.classname == "monster_hell_knight")
-                bprint (" was slain by a Death Knight\n");
+                Bprint (PRINT_MEDIUM, " was slain by a Death Knight\n");
             if (attacker.classname == "monster_knight")
-                bprint (" was slashed by a Knight\n");
+                Bprint (PRINT_MEDIUM, " was slashed by a Knight\n");
             if (attacker.classname == "monster_ogre")
-                bprint (" was destroyed by an Ogre\n");
+                Bprint (PRINT_MEDIUM, " was destroyed by an Ogre\n");
             if (attacker.classname == "monster_oldone")
-                bprint (" became one with Shub-Niggurath\n");
+                Bprint (PRINT_MEDIUM, " became one with Shub-Niggurath\n");
             if (attacker.classname == "monster_shalrath")
-                bprint (" was exploded by a Vore\n");
+                Bprint (PRINT_MEDIUM, " was exploded by a Vore\n");
             if (attacker.classname == "monster_shambler")
-                bprint (" was smashed by a Shambler\n");
+                Bprint (PRINT_MEDIUM, " was smashed by a Shambler\n");
             if (attacker.classname == "monster_tarbaby")
-                bprint (" was slimed by a Spawn\n");
+                Bprint (PRINT_MEDIUM, " was slimed by a Spawn\n");
             if (attacker.classname == "monster_vomit")
-                bprint (" was vomited on by a Vomitus\n");
+                Bprint (PRINT_MEDIUM, " was vomited on by a Vomitus\n");
             if (attacker.classname == "monster_wizard")
-                bprint (" was scragged by a Scrag\n");
+                Bprint (PRINT_MEDIUM, " was scragged by a Scrag\n");
             if (attacker.classname == "monster_zombie")
-                bprint (" joins the Zombies\n");
+                Bprint (PRINT_MEDIUM, " joins the Zombies\n");
 
             return;
         }
-        #endif
 
         // hell if I know; he's just dead!!!
         Bprint (PRINT_MEDIUM," died\n");

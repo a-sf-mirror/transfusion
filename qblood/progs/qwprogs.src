@@ -2,6 +2,8 @@
 
 defs.qc
 subs.qc
+fight.qc
+ai.qc
 fire.qc
 inven.qc
 combat.qc
@@ -12,11 +14,28 @@ observ.qc
 client.qc
 spectate.qc
 player.qc
+monsters.qc
 doors.qc
 buttons.qc
 triggers.qc
 plats.qc
 misc.qc
 
-server.qc
+ogre.qc
+demon.qc
+shambler.qc
+knight.qc
+soldier.qc
+wizard.qc
+dog.qc
+zombie.qc
+boss.qc
+
+tarbaby.qc		// registered
+hknight.qc		// registered
+fish.qc			// registered
+shalrath.qc		// registered
+enforcer.qc		// registered
+oldone.qc		// registered
+
 ctf.qc

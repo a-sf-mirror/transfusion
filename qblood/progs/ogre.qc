@@ -78,17 +78,23 @@ void() OgreGrenadeExplode =
     T_RadiusDamage (self, self.owner, 40, world, "grenade");
     sound (self, CHAN_VOICE, "weapons/napalm/explodcs.wav", 1, ATTN_NORM);
 
+    #ifdef QUAKEWORLD
+    WriteByte (MSG_MULTICAST, SVC_TEMPENTITY);
+    WriteByte (MSG_MULTICAST, TE_EXPLOSION);
+    WriteCoord (MSG_MULTICAST, self.origin_x);
+    WriteCoord (MSG_MULTICAST, self.origin_y);
+    WriteCoord (MSG_MULTICAST, self.origin_z);
+    multicast (self.origin, MULTICAST_PHS);
+    remove(self);
+
+    #else
     WriteByte (MSG_BROADCAST, SVC_TEMPENTITY);
     WriteByte (MSG_BROADCAST, TE_EXPLOSION);
     WriteCoord (MSG_BROADCAST, self.origin_x);
     WriteCoord (MSG_BROADCAST, self.origin_y);
     WriteCoord (MSG_BROADCAST, self.origin_z);
-
-    self.velocity = '0 0 0';
-    self.touch = SUB_Null;
-    setmodel (self, "progs/s_explod.spr");
-    self.solid = SOLID_NOT;
-    s_explode1 ();
+    BecomeExplosion ();
+    #endif
 };
 
 void() OgreGrenadeTouch =
@@ -114,7 +120,13 @@ void() OgreFireGrenade =
 {
     local   entity missile, mpuff;
 
+    #ifdef QUAKEWORLD
+    WriteByte (MSG_MULTICAST, SVC_MUZZLEFLASH);
+    WriteEntity (MSG_MULTICAST, self);
+    multicast (self.origin, MULTICAST_PVS);
+    #else
     self.effects = self.effects | EF_MUZZLEFLASH;
+    #endif
 
     sound (self, CHAN_WEAPON, "weapons/tnt/tntfuse.wav", 1, ATTN_NORM);
 

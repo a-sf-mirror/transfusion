@@ -825,10 +825,8 @@ void() powerup_touch =
     Sprint (other, PRINT_LOW,  self.netname);
     Sprint (other, PRINT_LOW, "\n");
 
-    #ifndef QUAKEWORLD
     if (deathmatch)
     {
-    #endif
         self.mdl = self.model;
 
         if ((self.classname == "item_artifact_invulnerability") ||
@@ -838,9 +836,7 @@ void() powerup_touch =
             self.nextthink = time + 60;
 
         self.think = SUB_regen;
-    #ifndef QUAKEWORLD
     }
-    #endif
 
     sound (other, CHAN_VOICE, self.noise, 1, ATTN_NORM);
     stuffcmd (other, "bf\n");
@@ -1381,26 +1377,10 @@ void() weapon_touch =
     local   float   leave;
     local   entity  stemp;
 
-    #ifdef QUAKEWORLD
-    // For client weapon_switch
-    local   float   w_switch;
-    #endif
-
     if (!(other.flags & FL_CLIENT))
         return;
 
-    #ifdef QUAKEWORLD
-    if ((stof(infokey(other,"w_switch"))) == 0)
-        w_switch = 8;
-    else
-        w_switch = stof(infokey(other,"w_switch"));
-    #endif
-
-    if (cvar ("g_weaponStay")
-    #ifndef QUAKEWORLD
-        || (!deathmatch && coop)  // Always leave weapons on SP coop
-    #endif
-       )
+    if (cvar ("g_weaponStay") || (!deathmatch && coop))  // Always leave weapons on SP coop
         leave = 1;
     else
         leave = 0;
@@ -1465,16 +1445,13 @@ void() weapon_touch =
         objerror ("weapon_touch: unknown classname");
 
 
-    #ifndef QUAKEWORLD
     //ZOID--remove unnessary msgs
-    if (!deathmatch) {
-    #endif
+    if (!deathmatch)
+    {
         Sprint (other, PRINT_LOW, "Picked up ");
         Sprint (other, PRINT_LOW, self.netname);
         Sprint (other, PRINT_LOW, "\n");
-    #ifndef QUAKEWORLD
     }
-    #endif
 
 // weapon touch sound
     sound (other, CHAN_ITEM, "items/weaponup.wav", 1, ATTN_NORM);
@@ -1489,23 +1466,10 @@ void() weapon_touch =
     stemp = self;
     self = other;
 
-    #ifdef QUAKEWORLD
-    if ( WeaponCode(new) <= w_switch )
-    {
-        if (self.flags & FL_INWATER)
-        {
-            if (new != IT_LIGHTNING)
-                Deathmatch_Weapon (old, new);
-        }
-        else
-            Deathmatch_Weapon (old, new);
-    }
-    #else
     if (!deathmatch)
         self.weapon = new;
     else
         Deathmatch_Weapon (old, new);
-    #endif
 
     W_SetCurrentAmmo();
 
@@ -1517,9 +1481,7 @@ void() weapon_touch =
     // remove it in single player, or setup for respawning in deathmatch
     self.model = string_null;
     self.solid = SOLID_NOT;
-    #ifndef QUAKEWORLD
     if (deathmatch)
-    #endif
         self.nextthink = time + 30;
     self.think = SUB_regen;
 
@@ -1674,14 +1636,9 @@ void() weapon_lightning =
 //    precache_sound ("weapons/tesla/tesaltf2.wav");
     precache_sound ("weapons/tesla/tessngfr.wav"); //single fire
     precache_sound ("weapons/tesla/tessnght.wav"); //single hit
-//    precache_sound ("weapons/tesla/tesaltfr.wav");
- // alt fire
-    precache_sound ("weapons/tesla/tesaltht.wav");
- //alt hit
-//    precache_sound ("weapons/tesla/tesla1.wav");
- // alt charge up
-
-
+//    precache_sound ("weapons/tesla/tesaltfr.wav"); // alt fire
+    precache_sound ("weapons/tesla/tesaltht.wav"); //alt hit
+//    precache_sound ("weapons/tesla/tesla1.wav"); // alt charge up
     precache_sound ("weapons/tesla/tessuper.wav"); //new alt fire charge up and fire
 
     StartItem ();
@@ -1933,77 +1890,56 @@ void() item_cells =
 };
 
 
+// PM:  Rewritten to use 'item_*' ammo boxes.
+//      Some levels such as dm5.bsp use this function.
+
 /*QUAKED item_weapon (0 .5 .8) (0 0 0) (32 32 32) shotgun rocket spikes big
 DO NOT USE THIS!!!! IT WILL BE REMOVED!
 */
 
+//-------------------------------
+// Spawnflags for 'item_weapon'.
+//-------------------------------
 #define WEAPON_SHOTGUN  1
 #define WEAPON_ROCKET   2
 #define WEAPON_SPIKES   4
 #define WEAPON_BIG      8
+//-------------------------------
 void() item_weapon =
 {
-    self.touch = ammo_touch;
+    local   float   osf;    // Short for original spawnflags.
 
-    if (self.spawnflags & WEAPON_SHOTGUN)
+    osf = self.spawnflags;
+
+    // Change spawnflags for use with the other ammo items.
+    if (self.spawnflags & WEAPON_BIG)
+        self.spawnflags = AMMO_BIG;
+    else
+        self.spawnflags = 0;
+
+    if (osf & WEAPON_SHOTGUN)
     {
-        if (self.spawnflags & WEAPON_BIG)
-        {
-            precache_model ("progs/i_boxshl.mdl");
-            setmodel (self, "progs/i_boxshl.mdl");
-            self.netname = "box of shotgun shells";
-            self.aflag = 15;
-        }
-        else
-        {
-            precache_model ("progs/i_fewshl.mdl");
-            setmodel (self, "progs/i_fewshl.mdl");
-            self.netname = "4 shotgun shells";
-            self.aflag = 4;
-        }
-        self.weapon = 1;
+        self.classname = "item_shells";
+        item_shells ();
+        return;
+    }
+    if (osf & WEAPON_ROCKET)
+    {
+        self.classname = "item_rockets";
+        item_rockets ();
+        return;
+    }
+    if (osf & WEAPON_SPIKES)
+    {
+        self.classname = "item_spikes";
+        item_spikes ();
+        return;
     }
 
-    if (self.spawnflags & WEAPON_SPIKES)
-    {
-        if (self.spawnflags & WEAPON_BIG)
-        {
-            precache_model ("progs/i_drum.mdl");
-            setmodel (self, "progs/i_drum.mdl");
-            self.netname = "full drum of bullets";
-            self.aflag = 100;
-        }
-        else
-        {
-            precache_model ("progs/i_fewblt.mdl");
-            setmodel (self, "progs/i_fewblt.mdl");
-            self.netname = "a few bullets";
-            self.aflag = 15;
-        }
-        self.weapon = 2;
-
-    }
-
-    if (self.spawnflags & WEAPON_ROCKET)
-    {
-        if (self.spawnflags & WEAPON_BIG)
-        {
-            precache_model ("progs/i_gascan.mdl");
-            setmodel (self, "progs/i_gascan.mdl");
-            self.aflag = 6;
-        }
-        else
-        {
-            precache_model ("progs/i_gascan.mdl");
-            setmodel (self, "progs/i_gascan.mdl");
-            self.aflag = 6;
-        }
-        self.weapon = 3;
-        self.netname = "gasoline can";
-    }
-
-    setsize (self, '0 0 0', '32 32 56');
-    StartItem ();
+    dprint ("Undefined ammo at: ");
+    dprint (vtos(self.origin));
+    dprint ("\n");
+    remove (self);
 };
 
 
@@ -2035,17 +1971,13 @@ local float     best;
     sound (other, CHAN_ITEM, self.noise, 1, ATTN_NORM);
     stuffcmd (other, "bf\n");
 // PM:  Changed to .items2 since that is where key bits are stored.
-    other.items = other.items2 | self.items2;
+    other.items2 = other.items2 | self.items2;
 
-    #ifndef QUAKEWORLD
     if (!coop)
     {
-    #endif
         self.solid = SOLID_NOT;
         self.model = string_null;
-    #ifndef QUAKEWORLD
     }
-    #endif
 
     activator = other;
     SUB_UseTargets();               // fire all targets / killtargets
@@ -2315,14 +2247,6 @@ void() BackpackTouch =
     local   float   best, old, new;
     local   entity  stemp;
     local   float   acount;
-    #ifdef QUAKEWORLD
-    local   float   b_switch;
-
-    if ((stof(infokey(other,"b_switch"))) == 0)
-        b_switch = 8;
-    else
-        b_switch = stof(infokey(other,"b_switch"));
-    #endif
 
     if (other.classname != "player")
         return;
@@ -2418,27 +2342,10 @@ void() BackpackTouch =
     self = other;
 
 // change to the weapon
-    #ifdef QUAKEWORLD
-    if ( WeaponCode(new) <= b_switch )
-    {
-        if (self.flags & FL_INWATER)
-        {
-            if (new != IT_LIGHTNING)
-            {
-                Deathmatch_Weapon (old, new);
-            }
-        }
-        else
-        {
-            Deathmatch_Weapon (old, new);
-        }
-    }
-    #else
     if (!deathmatch)
         self.weapon = new;
     else
         Deathmatch_Weapon (old, new);
-    #endif
 
     W_SetCurrentAmmo ();
 };

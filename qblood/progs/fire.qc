@@ -116,8 +116,7 @@ void(entity victim, entity attacker, float burn) PM_Ignite;
 void(entity ent) PM_RemoveFlares;
 void() muzzleflash;
 
-#ifndef QUAKEWORLD
-//----------------------------------------------------/ New Code /--------//
+//------------------------------------------------------------------------//
 //  This checks if entity resists fire.
 //------------------------------------------------------------------------//
 float(entity ent) PM_FireResistant =
@@ -128,20 +127,17 @@ float(entity ent) PM_FireResistant =
     // Everything not listed takes normal damage from fire.
     return FALSE;
 };
-#endif
 
-//----------------------------------------------------/ New Code /--------//
+//------------------------------------------------------------------------//
 //  This inflicts standard fire damage like in Blood.
 //------------------------------------------------------------------------//
 void(entity targ, entity inflictor, entity attacker) PM_FireDamage =
 {
-    #ifndef QUAKEWORLD
     if (!PM_FireResistant (targ))
-    #endif
         T_NewDamage (targ, inflictor, attacker, 0.75, DF_FIRE | DF_MIN_PAIN, "fire");
 };
 
-//----------------------------------------------------/ New Code /--------//
+//------------------------------------------------------------------------//
 //  This damages a single entity and possibly sets it on fire.
 //------------------------------------------------------------------------//
 void(entity victim, entity fire, float damage, float burn) PM_BurnDamage =
@@ -155,7 +151,7 @@ void(entity victim, entity fire, float damage, float burn) PM_BurnDamage =
         T_NewDamage (victim, fire, fire.owner, damage, DF_FIRE, fire.deathtype);
 };
 
-//----------------------------------------------------/ New Code /--------//
+//------------------------------------------------------------------------//
 //  This damages and ignites entities within a certain radius.
 //
 //  NOTE:  Targets take damage multipled by a fraction equal to
@@ -269,7 +265,7 @@ float(entity ent) PM_IsBurning =
     return ent.burner;
 };
 
-//----------------------------------------------------/ New Code /--------//
+//------------------------------------------------------------------------//
 //  These animate the embers that rise from a burning entity.
 //------------------------------------------------------------------------//
 void()  m_ember1 =[   $ember1,    m_ember2] {};
@@ -279,7 +275,7 @@ void()  m_ember4 =[   $ember4,    m_ember5] {};
 void()  m_ember5 =[   $ember5,    m_ember6] {};
 void()  m_ember6 =[   $ember6,    SUB_Remove] {};
 
-//----------------------------------------------------/ New Code /--------//
+//------------------------------------------------------------------------//
 //  This makes flaming embers rise from a burning victim.
 //
 //  NOTE:  Assumes 'self' == flame generator!
@@ -290,11 +286,6 @@ void() PM_MakeEmbers =
     local   vector  spot;       // The spot where the new fire will appear.
     local   float   loop, r;
 
-    #ifdef QUAKEWORLD
-    if ((floor(time * 10) & 3) == 0)
-        return;     // No flames on each 4th frame.
-    loop = 1;
-    #else
     if (deathmatch || coop)
     {
         // In netgames, keep flames down to a minimum.
@@ -313,7 +304,6 @@ void() PM_MakeEmbers =
     }
     else
         loop = 1;
-    #endif
 
     while (loop > 0)
     {
@@ -455,9 +445,8 @@ void(entity victim, entity attacker, float burn) PM_Ignite =
 
 // NOTE:  Used by monsters only.
 
-#ifndef QUAKEWORLD
 void() PM_BecomeOldExplosion;
-//----------------------------------------------------/ New Code /--------//
+//------------------------------------------------------------------------//
 //  The creates an explosion entity from scratch.
 //------------------------------------------------------------------------//
 void(vector spot) PM_MakeExplosion =
@@ -472,7 +461,7 @@ void(vector spot) PM_MakeExplosion =
     PM_Think (e, PM_BecomeOldExplosion);
 };
 
-//----------------------------------------------------/ New Code /--------//
+//------------------------------------------------------------------------//
 //  This makes the death flame produce a little smoke and embers
 //  before it disappears.
 //------------------------------------------------------------------------//
@@ -497,7 +486,9 @@ void() PM_DeathFlameDying =
     ftime = floor(time * 10);
     if (ftime & 1)
     {
+        #ifndef QUAKEWORLD
         particle (spot, '0 0 100', 6, 5);
+        #endif
         if (!PM_VecInWater (spot))
             if ((ftime & 2) || (random() < 0.5))
                 PM_MakeEmbers ();
@@ -506,7 +497,7 @@ void() PM_DeathFlameDying =
     self.nextthink = time + 0.1;
 };
 
-//----------------------------------------------------/ New Code /--------//
+//------------------------------------------------------------------------//
 //  This checks if the death flame should stop burning.
 //------------------------------------------------------------------------//
 float() PM_EndDeathFlame =
@@ -524,7 +515,7 @@ float() PM_EndDeathFlame =
     return FALSE;
 };
 
-//----------------------------------------------------/ New Code /--------//
+//------------------------------------------------------------------------//
 //  This makes the death flame burn.
 //------------------------------------------------------------------------//
 void() PM_DeathFlameThink =
@@ -552,7 +543,9 @@ void() PM_DeathFlameThink =
     setorigin (self, spot);
 
     // Make a thin trail of smoke above the flame, plus a few embers.
+    #ifndef QUAKEWORLD
     particle (spot + '0 0 24', '0 0 100', 6, 5);
+    #endif
     if (floor(time * 10) & 1)
         PM_MakeEmbers ();
 
@@ -569,7 +562,9 @@ void() PM_DeathFlameThink =
             setmodel (self, string_null);
             sound (self, CHAN_AUTO, "player/slimbrn2.wav", 1, ATTN_NORM);
         }
+        #ifndef QUAKEWORLD
         particle (spot, '0 0 100', 6, 50);
+        #endif
     }
     else
     {
@@ -596,7 +591,7 @@ void() PM_DeathFlameThink =
     self.nextthink = time + 0.1;
 };
 
-//----------------------------------------------------/ New Code /--------//
+//------------------------------------------------------------------------//
 //  This spawns a large burning flame on a dying target.  This should
 //  be called ONLY from the target's 'th_die()' function.
 //
@@ -643,7 +638,6 @@ void(vector offset) PM_DeathFlame =
     // Play some sound.
     sound (fire, CHAN_AUTO, "weapons/flaregun/burstflm.wav", 1, ATTN_NORM);
 };
-#endif
 
 
 ////////////////////////////////////////////////////////////////////////////
@@ -684,7 +678,7 @@ void() PM_EmberThink =
     self.nextthink = time + 0.1;
 };
 
-//----------------------------------------------------/ New Code /--------//
+//------------------------------------------------------------------------//
 //  This throws a shower of embers.
 //------------------------------------------------------------------------//
 void(float ents) PM_ThrowEmbers =
@@ -699,10 +693,8 @@ void(float ents) PM_ThrowEmbers =
     local   float   loop;
 
     // Make fewer embers in netgames.
-    #ifndef QUAKEWORLD
     if (deathmatch || coop)
         ents = floor(ents * 0.5);
-    #endif
 
     loop = ents * 6;
     while (loop > 0)
@@ -732,11 +724,9 @@ void(float ents) PM_ThrowEmbers =
             fire.angles = vectoangles(dir) + '90 0 0';
 
             // Make embers disappear faster in netgames.
-            #ifndef QUAKEWORLD
             if (deathmatch || coop)
                 fire.pausetime = time + random();
             else
-            #endif
                 fire.pausetime = time + 3 + random() * 2;
 
             fire.touch = SUB_Remove;
@@ -756,7 +746,7 @@ void(float ents) PM_ThrowEmbers =
 //==========================================================================
 //  Standard Flares
 
-//----------------------------------------------------/ New Code /--------//
+//------------------------------------------------------------------------//
 //  This removes all flares from a single entity.
 //  This should be called when a player disconnects from the server.
 //------------------------------------------------------------------------//
@@ -777,7 +767,7 @@ void(entity ent) PM_RemoveFlares =
     }
 };
 
-//----------------------------------------------------/ New Code /--------//
+//------------------------------------------------------------------------//
 //  This causes the flare to emit sparks.
 //------------------------------------------------------------------------//
 void() PM_FlareSpark =
@@ -793,7 +783,7 @@ void() PM_FlareSpark =
     #endif
 };
 
-//----------------------------------------------------/ New Code /--------//
+//------------------------------------------------------------------------//
 //  This makes the flare stick to its target.
 //
 //  FIXME:  If the game has client prediction, the flare can appear to
