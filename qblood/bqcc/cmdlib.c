@@ -97,7 +97,7 @@ skipwhite:
 
 
 
-#if defined(UNIX) || defined(unix)
+#if defined(__unix__)
 /*
 ================
 filelength
@@ -131,7 +131,7 @@ int tell (int handle)
 {
    return lseek (handle, 0, SEEK_CUR);
 }
-#endif  // #if defined(UNIX) || defined(unix)
+#endif  // #if defined(__unix__)
 
 
 /*

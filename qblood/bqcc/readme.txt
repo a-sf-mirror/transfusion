@@ -2,7 +2,12 @@ Bloody QCC is a modified version of MeQCC (Mr Elusive's QuakeC Compiler) v1.4.
 For other informations, take a look at "qcc.txt" and "meqcc.txt", included
 into this package.
 
-Changes regarding MeQCC v1.4:
+Changes since MeQCC v1.4:
+  * v0.1.1
+    - Some code tweaking to make it compile on OpenBSD. Other Unixes should
+    work without changes too.
+    - ...
+
   * v0.1.0
     - You can now use several frame lists (up to 4 for now) in a single source
     file if you name them with "$modelname". If you don't name the first

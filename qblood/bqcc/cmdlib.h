@@ -13,12 +13,11 @@
 #include <ctype.h>
 #include <sys/types.h>
 #include <sys/stat.h>
-//#include <sys/file.h>
 #include <fcntl.h>
 #include <stdarg.h>
 #include <time.h>
 
-#if defined(UNIX) || defined(unix)
+#if defined(__unix__)
 #include <unistd.h>
 
 int filelength (int handle);
