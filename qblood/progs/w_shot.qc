@@ -67,21 +67,33 @@ $frame ashot_holster6 ashot_holster7
 
 // ----- Player related code ----- //
 
-// Normal shot
-void() player_shot1 = [$attack1, player_shot2] { self.weaponframe = $shot_fire1; muzzleflash (); };
-void() player_shot2 = [$attack2, player_run  ] { self.weaponframe = $shot_fire2; Shot_SpawnShell (); };
-
-// Altfire shot
-void() player_altshot1 = [$attack1, player_altshot2] { self.weaponframe = $shot_alt1; muzzleflash (); };
-void() player_altshot2 = [$attack1, player_altshot3] { self.weaponframe = $shot_alt2; };
-void() player_altshot3 = [$attack2, player_run     ] { self.weaponframe = $shot_alt3; Shot_SpawnShell (); };
-
 // Reload
 void() player_reloadshot1  = [$attack1, player_reloadshot2 ] { self.weaponframe = $shot_reload1; };
 void() player_reloadshot2  = [$attack1, player_reloadshot3 ] { self.weaponframe = $shot_reload2; };
-void() player_reloadshot3  = [$attack1, player_reloadshot4 ] { self.weaponframe = $shot_reload3; };
+void() player_reloadshot3  = [$attack1, player_reloadshot4 ] { self.weaponframe = $shot_reload3; Shot_SpawnShell (); };
 void() player_reloadshot4  = [$attack1, player_reloadshot5 ] { self.weaponframe = $shot_reload4; };
 void() player_reloadshot5  = [$attack1, player_run         ] { self.weaponframe = $shot_reload5; };
+
+// Normal shot
+void() player_shot1 = [$attack1, player_shot2] { self.weaponframe = $shot_fire1; muzzleflash (); };
+void() player_shot2 = [$attack2, player_run  ]
+{
+    self.weaponframe = $shot_fire2;
+    if ((self.currentammo & 1) == 0)
+    {
+        self.think = player_reloadshot1;
+        self.attack_finished = time + 0.6;
+    }
+};
+
+// Altfire shot
+void() player_altshot1 = [$attack1, player_altshot2   ] { self.weaponframe = $shot_alt1; muzzleflash (); };
+void() player_altshot2 = [$attack1, player_altshot3   ] { self.weaponframe = $shot_alt2; };
+void() player_altshot3 = [$attack2, player_reloadshot1]
+{
+    self.weaponframe = $shot_alt3;
+    self.attack_finished = time + 0.6;
+};
 
 // Akimbo shot
 void() player_akshot1 = [$attack1, player_akshot2] { self.weaponframe = $ashot_fire1; };
@@ -167,9 +179,6 @@ void() Shot_SpawnShell =
         shell2.velocity = (crandom () + 1) * v_forward * 30 + v_up * (220 + crandom () * 10) - v_right * crandom () * 30;
         DropShell (shell2);
 
-        // play the reload scene at the next frame
-        self.think = player_reloadshot1;
-        self.attack_finished = time + 1.1;
         sound (shell, CHAN_WEAPON, "weapons/shotgun/shotcock.wav", 1, ATTN_NORM);
     }
 };
