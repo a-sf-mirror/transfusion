@@ -1002,14 +1002,14 @@ void() item_spikes =
 
     if (self.spawnflags & AMMO_BIG)
     {
-        precache_model ("maps/b_nail1.bsp");
-        setmodel (self, "maps/b_nail1.bsp");
+        precache_model ("progs/i_drum.mdl");
+        setmodel (self, "progs/i_drum.mdl");
         self.aflag = 50;
     }
     else
     {
-        precache_model ("maps/b_nail0.bsp");
-        setmodel (self, "maps/b_nail0.bsp");
+        precache_model ("progs/i_drum.mdl");
+        setmodel (self, "progs/i_drum.mdl");
         self.aflag = 25;
     }
     self.weapon = 2;
@@ -1053,14 +1053,14 @@ void() item_cells =
 
     if (self.spawnflags & AMMO_BIG)
     {
-        precache_model ("maps/b_batt1.bsp");
-        setmodel (self, "maps/b_batt1.bsp");
+        precache_model ("progs/i_teschg.mdl");
+        setmodel (self, "progs/i_teschg.mdl");
         self.aflag = 12;
     }
     else
     {
-        precache_model ("maps/b_batt0.bsp");
-        setmodel (self, "maps/b_batt0.bsp");
+        precache_model ("progs/i_teschg.mdl");
+        setmodel (self, "progs/i_teschg.mdl");
         self.aflag = 6;
     }
     self.weapon = 4;
@@ -1104,14 +1104,14 @@ void() item_weapon =
     {
         if (self.spawnflags & WEAPON_BIG)
         {
-            precache_model ("maps/b_nail1.bsp");
-            setmodel (self, "maps/b_nail1.bsp");
+            precache_model ("progs/i_drum.mdl");
+            setmodel (self, "progs/i_drum.mdl");
             self.aflag = 40;
         }
         else
         {
-            precache_model ("maps/b_nail0.bsp");
-            setmodel (self, "maps/b_nail0.bsp");
+            precache_model ("progs/i_drum.mdl");
+            setmodel (self, "progs/i_drum.mdl");
             self.aflag = 20;
         }
         self.weapon = 2;
