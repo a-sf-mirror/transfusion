@@ -502,6 +502,7 @@ void() Bomb_Explode =
     PsychoCaleb (self.owner);
 
     T_RadiusDamage (self, self.owner, self.dmg, world, "grenade");
+    KillBurner (self);
 
     #ifdef QUAKEWORLD
     WriteByte (MSG_MULTICAST, SVC_TEMPENTITY);

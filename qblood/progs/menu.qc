@@ -425,7 +425,7 @@ void() Menu_Draw =
                 "Vote for a map:\n"
                 "1) cpbb01  Crypt of Despair      | 2) cpbb03  Unholy Cathedral\n"
                 "3) dm1     Monolith Building 11  | 4) dm2     Power!\n"
-                "5) dm3     Area 15               | 6) e6m1    Welcome to your Life\n"
+                "5) dm3     Area 15               | 6) e6m1    Welcome to Your Life\n"
                 "7) e6m8    Beauty and the Beast\n"
                 "\n"
                 "10) Go back to map menu\n");
