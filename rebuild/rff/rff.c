@@ -3,10 +3,10 @@
 //
 // Read and extract the contents of a RFF file
 //
-// Version 0.1.0 alpha
+// Version 0.1
 //
 
-/* Copyright (C) 2001-2003  Mathieu Olivier <elric@planetblood.com>
+/* Copyright (C) 2001-2004  Mathieu Olivier
  *
  * This program is free software; you can redistribute it and/or modify
  * it under the terms of the GNU General Public License as published by
@@ -59,7 +59,7 @@
 /* ----------------- */
 
 // Current version of this software
-#define VERSION "0.1.0 alpha"
+#define VERSION "0.1"
 
 // Default size of Buffer in Kb
 #define DEFAULT_BUFFER_SIZE 4
@@ -436,10 +436,8 @@ int main (int ArgC, char* ArgV [])
 
     // Header
     printf ("\n"
-            "RFF version " VERSION " by Mathieu Olivier <elric@planetblood.com>\n"
-            "==================================================================\n"
-            "\n"
-           );
+            "RFF version " VERSION " by Mathieu Olivier\n"
+            "==================================\n\n");
 
     // Check arguments
     Ind = ParseArg (ArgC, (const char**)ArgV);
@@ -448,12 +446,12 @@ int main (int ArgC, char* ArgV [])
         printf ("Syntax: rff <command> [options] <RFF file> [files ...]\n"
                 "   Command:\n"
                 "      'l': Print the list of files which are packed in the RFF file\n"
-                "      'x': Extract files (doesn't yet support jokers characters: '*' and '?')\n"
+                "      'x': Extract files (doesn't support jokers characters: '*' and '?')\n"
                 "\n"
                 "   Options:\n"
                 "      '-a': Extract ALL files\n"
-                "      '-b<buffer size>': set the extraction buffer size in Kb (default: %u Kb)\n"
-                "      '-v': Give the maximum amount of informations during the process\n"
+                "      '-b<buffer size>': Extraction buffer size in Kb (default: %u Kb)\n"
+                "      '-v': Verbose mode\n"
                 "\n",
                 DEFAULT_BUFFER_SIZE
                );

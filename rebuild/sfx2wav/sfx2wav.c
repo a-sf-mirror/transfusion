@@ -6,7 +6,7 @@
 // Version 0.0
 //
 
-/* Copyright (C) 2001  Mathieu Olivier  <elric@planetblood.com>
+/* Copyright (C) 2001  Mathieu Olivier
  *
  * This program is free software; you can redistribute it and/or modify
  * it under the terms of the GNU General Public License as published by
@@ -317,8 +317,8 @@ int main (int ArgC, char* ArgV [])
 
     // Header
     printf ("\n"
-            "Sfx2Wav version " VERSION " by Mathieu Olivier  <elric@planetblood.com>\n"
-            "===============================================================\n"
+            "Sfx2Wav version " VERSION " by Mathieu Olivier\n"
+            "======================================\n"
             "\n"
            );
 
