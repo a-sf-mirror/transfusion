@@ -34,6 +34,7 @@
 #define GT_BLOODBATH          0  // free for all
 #define GT_TEAM_BLOODBATH     1  // 1 team VS 1 team  (NOTE: should we add support for more than 2 teams ?)
 #define GT_CAPTURE_THE_FLAG   2  // 1 team VS 1 team
+#define GT_COOPERATIVE        3  // UNUSED until we reimplement the SP modes
 
 // edict.flags
 #define FL_FLY              1

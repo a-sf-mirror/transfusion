@@ -38,3 +38,8 @@ triggers.qc
 plats.qc
 misc.qc
 ctf.qc
+
+fight.qc
+ai.qc
+monsters.qc
+m_butcher.qc

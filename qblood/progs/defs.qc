@@ -380,12 +380,22 @@ float map_cycle;
 //
 // monster ai
 //
+.void()     th_stand;
+.void()     th_walk;
+.void()     th_run;
+.void()     th_missile;
+.void()     th_melee;
 .void(entity attacker, float damage) th_pain;
 .void()     th_die;
 
+.entity     oldenemy;   // mad at this player before taking damage
+
 .float      speed;
 
+.float      lefty;
+
 .float      search_time;
+.float      attack_state;
 
 
 //
@@ -424,6 +434,11 @@ float map_cycle;
 .float      invisible_time, invisible_sound;
 .float      fly_sound;
 
+.float	    show_hostile;   // set to time+0.2 whenever a client fires a
+                            // weapon or takes damage.  Used to alert
+                            // monsters that otherwise would let the player go
+                            // FIXME: check that we set it somewhere and use it
+
 .float      jump_flag;      // player jump flag
 .float      swim_flag;      // player swimming sound flag
 .float      air_finished;   // when time > air_finished, start drowning
@@ -454,7 +469,7 @@ float map_cycle;
 // monsters
 //
 .float      pausetime;
-
+.entity     movetarget;
 
 //
 // doors
