@@ -978,8 +978,8 @@ void() health_touch =
 
     Sprint(other, PRINT_LOW, "Picked up ");
     s = ftos(self.healamount);
-    Sprint(other, PRINT_LOW, s);
     Sprint(other, PRINT_LOW, self.netname);
+    Sprint(other, PRINT_LOW, " \n");
 
 // health touch sound
     sound(other, CHAN_ITEM, self.noise, 1, ATTN_NORM);
@@ -1087,6 +1087,29 @@ void() armor_touch =
     SUB_UseTargets();               // fire all targets / killtargets
 };
 
+// Basic Armor
+// FIXME: merge with real armor code when damage types are coded
+
+void() item_armor0 =
+    {
+    precache_model("progs/i_arm_bs.mdl");
+    setmodel(self, "progs/i_arm_bs.mdl");
+    
+    setsize (self, '0 0 0', '32 32 56');
+    StartItem ();
+    };
+
+// Spirit Armor
+// FIXME: merge with real armor code when damage types are coded
+
+void() item_armor4 =
+    {
+    precache_model("progs/i_arm_sp.mdl");
+    setmodel(self, "progs/i_arm_sp.mdl");
+    
+    setsize (self, '0 0 0', '32 32 56');
+    StartItem ();
+    };
 
 /*QUAKED item_armor1 (0 .5 .8) (-16 -16 0) (16 16 32)
 */
