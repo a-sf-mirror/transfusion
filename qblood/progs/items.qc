@@ -102,7 +102,7 @@ void(float timeleft) DropQuad =
     item.movetype = MOVETYPE_TOSS;
     item.noise = "bludbath/powerup.wav";
     setmodel (item, "progs/quaddama.mdl");
-    setsize (item, '-16 -16 -24', '16 16 32');
+    setsize (item, '-16 -7 -2', '18 7 18');
     item.touch = q_touch;
     item.nextthink = time + timeleft;    // remove it with the time left on it
     item.think = SUB_Remove;
@@ -1600,7 +1600,7 @@ void() weapon_supershotgun =
     self.weapon = IT_SAWED_OFF;
     self.netname = "Sawed-off";
     self.touch = weapon_touch;
-    setsize (self, '-16 -16 0', '16 16 56');
+    setsize (self, '-19 -4 3', '17 4 14');
 
     // Precache the necessary sounds
     precache_sound ("weapons/shotgun/shotcock.wav");  // shell ejection
@@ -2458,7 +2458,7 @@ void() item_artifact_invisibility =
 };
 
 
-/*QUAKED item_artifact_super_damage (0 .5 .8) (-18 -11 -33) (19 11 9)
+/*QUAKED item_artifact_super_damage (0 .5 .8) (-16 -7 -2) (18 7 18)
 The next attack from the player will do 4x damage
 */
 void() item_artifact_super_damage =
@@ -2472,6 +2472,6 @@ void() item_artifact_super_damage =
 
     self.netname = "Guns Akimbo";
 
-    setsize (self, '-16 -16 -24', '16 16 32');
+    setsize (self, '-16 -7 -2', '18 7 18');
     StartItem ();
 };
