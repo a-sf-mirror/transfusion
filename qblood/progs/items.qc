@@ -95,7 +95,7 @@ void(float timeleft) Akimbo_Drop =
     item.movetype = MOVETYPE_TOSS;
     item.noise = "bludbath/powerup.wav";
     setmodel (item, "progs/quaddama.mdl");
-    setsize (item, '-16 -7 -2', '18 7 18');
+    setsize (item, '-16 -16 -2', '16 16 54');
     item.touch = Akimbo_Touch;
     item.nextthink = time + timeleft;    // remove it with the time left on it
     item.think = SUB_Remove;
@@ -730,7 +730,7 @@ void() obj_tree =
     precache_model("progs/tree.mdl");
     setmodel(self, "progs/tree.mdl");
 
-    setsize (self, '-44 -74 0', '89 45 208');
+    setsize (self, '-16 -16 -32', '16 16 32');
     StartObject ();
 };
 
@@ -740,7 +740,7 @@ void() obj_tree2 =
     precache_model("progs/tree2.mdl");
     setmodel(self, "progs/tree2.mdl");
 
-    setsize (self, '-138 -131 -20', '118 106 224');
+    setsize (self, '-16 -16 -32', '16 16 32');
     StartObject ();
 };
 
@@ -832,7 +832,7 @@ void() obj_shovel =
     precache_model("progs/shovl.mdl");
     setmodel(self, "progs/shovl.mdl");
 
-    setsize (self, '-3 -7 -26', '3 7 27');
+    setsize (self, '-16 -16 -16', '16 16 16');
     StartObject ();
 };
 
