@@ -829,6 +829,9 @@ void() item_artifact_crystal =
 void() item_artifact_reflect =
 {
     self.model = "progs/i_reflct.mdl";
+    #ifdef QUAKEWORLD
+    self.effects = self.effects | EF_BLUE;
+    #endif
     item_lure ();
 };
 
@@ -903,6 +906,9 @@ void() item_health =
         self.healamount = 15;
         self.netname = "Life Essence"
 ;
+        #ifdef QUAKEWORLD
+        self.effects = self.effects | EF_RED; 
+	#endif
         self.healtype = 1;
     }
     else if (self.spawnflags & H_MEGA)
@@ -1067,9 +1073,11 @@ void() armor_touch =
 
 void() item_armor0 =
     {
+    self.touch = armor_touch;
     precache_model("progs/i_arm_bs.mdl");
     setmodel(self, "progs/i_arm_bs.mdl");
 
+    //self.skin = 0;
     setsize (self, '0 0 0', '32 32 56');
     StartItem ();
     };
@@ -1079,9 +1087,11 @@ void() item_armor0 =
 
 void() item_armor4 =
     {
+    self.touch = armor_touch;
     precache_model("progs/i_arm_sp.mdl");
     setmodel(self, "progs/i_arm_sp.mdl");
 
+    //self.skin = 0;
     setsize (self, '0 0 0', '32 32 56');
     StartItem ();
     };
@@ -1094,7 +1104,7 @@ void() item_armor1 =
     self.touch = armor_touch;
     precache_model ("progs/i_arm_bd.mdl");
     setmodel (self, "progs/i_arm_bd.mdl");
-    self.skin = 0;
+    //self.skin = 0;
     setsize (self, '-16 -16 0', '16 16 56');
     StartItem ();
 };
@@ -1105,9 +1115,9 @@ void() item_armor1 =
 void() item_armor2 =
 {
     self.touch = armor_touch;
-    precache_model ("progs/armor.mdl");
-    setmodel (self, "progs/armor.mdl");
-    self.skin = 1;
+    precache_model ("progs/i_arm_fr.mdl");
+    setmodel (self, "progs/i_arm_fr.mdl");
+    //self.skin = 0;
     setsize (self, '-16 -16 0', '16 16 56');
     StartItem ();
 };
@@ -1118,9 +1128,9 @@ void() item_armor2 =
 void() item_armorInv =
 {
     self.touch = armor_touch;
-    precache_model ("progs/armor.mdl");
-    setmodel (self, "progs/armor.mdl");
-    self.skin = 2;
+    precache_model ("progs/i_arm_su.mdl");
+    setmodel (self, "progs/i_arm_su.mdl");
+    //self.skin = 0;
     setsize (self, '-16 -16 0', '16 16 56');
     StartItem ();
 };
