@@ -21,22 +21,58 @@
 #include "player.qh"
 
 
+void() Flare_Fire;
+
+
 //============================================================================
 
 // ----- Flaregun model ----- //
 
+// Normal model
 $modelname v_shot
 
 // fire
 $frame flare_fire1 flare_fire2 flare_fire3 flare_fire4
 
 
+// Akimbo model
+$modelname v_aflare
+
+// fire
+$frame aflare_fire1 aflare_fire2 aflare_fire3 aflare_fire4 aflare_fire5
+
+// draw
+$frame aflare_draw1 aflare_draw2 aflare_draw3 aflare_draw4 aflare_draw5
+$frame aflare_draw6
+
+// holster
+$frame aflare_holster1 aflare_holster2 aflare_holster3 aflare_holster4 aflare_holster5
+$frame aflare_holster6
+
+
 // ----- Player related code ----- //
 
+// Normal fire
 void() player_flare1 = [$shotatt1, player_flare2] { self.weaponframe = $flare_fire1; muzzleflash(); };
 void() player_flare2 = [$shotatt2, player_flare3] { self.weaponframe = $flare_fire2; };
 void() player_flare3 = [$shotatt3, player_flare4] { self.weaponframe = $flare_fire3; };
-void() player_flare4 = [$shotatt4, player_run  ]  { self.weaponframe = $flare_fire4; };
+void() player_flare4 = [$shotatt4, player_run   ] { self.weaponframe = $flare_fire4; };
+
+// Akimbo fire
+void() player_akflare1 = [$shotatt1, player_akflare2] { self.weaponframe = $aflare_fire2; muzzleflash (); };
+void() player_akflare2 = [$shotatt2, player_akflare3] { self.weaponframe = $aflare_fire3; };
+void() player_akflare3 = [$shotatt1, player_akflare4] { self.weaponframe = $aflare_fire4; Flare_Fire (); };
+void() player_akflare4 = [$shotatt4, player_run     ]
+{
+    // If we don't have enough ammo anymore, drop the guns akimbo
+    if ((self.items & IT_GUNS_AKIMBO) && self.currentammo < 2)
+    {
+        Flare_UpdateView ();
+        self.weaponframe = $aflare_fire1;
+    }
+    else
+        self.weaponframe = $aflare_fire5;
+};
 
 // Normal draw
 // NOTE: no animation to play for now
@@ -45,6 +81,17 @@ void() player_flaredraw1 = [$shotatt1, player_run] { self.weaponframe = 0; };
 // Normal holster
 // NOTE: no animation to play for now
 void() player_flareholster1 = [$shotatt1, player_run] { W_DrawWeapon (self.newweapon); };
+
+// Akimbo draw
+void() player_akflaredraw1 = [$shotatt1, player_akflaredraw2] { self.weaponframe = $aflare_draw1; };
+void() player_akflaredraw2 = [$shotatt1, player_akflaredraw3] { self.weaponframe = $aflare_draw3; };
+void() player_akflaredraw3 = [$shotatt1, player_run         ] { self.weaponframe = $aflare_draw5; };
+
+// Akimbo holster
+void() player_akflareholst1 = [$shotatt1, player_akflareholst2] { self.weaponframe = $aflare_holster1; };
+void() player_akflareholst2 = [$shotatt1, player_akflareholst3] { self.weaponframe = $aflare_holster3; };
+void() player_akflareholst3 = [$shotatt1, player_akflareholst4] { self.weaponframe = $aflare_holster5; };
+void() player_akflareholst4 = [$shotatt1, player_run          ] { W_DrawWeapon (self.newweapon); };
 
 
 //============================================================================
@@ -142,7 +189,7 @@ void() FlareThink =
 
         // Do burn damage if not already burning.
         if (!self.enemy.burner)
-            FireDamage (self.enemy, self, self.owner);
+            FireDamage (self.enemy, self, self.owner, DF_FIRE);
     }
 
     self.nextthink = nextframe;
@@ -177,7 +224,7 @@ void() FlareTouch =
     if (other.takedamage)
     {
         // Just set the target on fire.
-        BurnDamage (other, self, 0, self.dmg);
+        BurnDamage (other, self, 0, DF_FIRE, self.dmg);
     }
 
     FlareSpark ();   // Throw a few sparks.
@@ -254,7 +301,7 @@ void() AltFlareTouch =
     BurnRadius (self, self.dmg, self.cnt, other);
     self.origin = self.origin - 8*normalize(self.velocity);
     if (other.takedamage)
-        BurnDamage (other, self, self.dmg, self.cnt);
+        BurnDamage (other, self, self.dmg, DF_FIRE, self.cnt);
 
     // Make some fire.
     self.solid = SOLID_NOT;     // So embers can't touch 'self'.
@@ -406,15 +453,13 @@ void() Flare_Fire =
     orig = self.origin + v_forward * 8 + '0 0 16';
 
     // If we want to (and can) launch alt-flares
-    if ((self.impulse == 12 || self.button1) && self.ammo_flares >= 8)
+    if (self.player_state == PS_ALTFIRE && self.ammo_flares >= 8)
     {
-        self.player_state = PS_ALTFIRE;
         self.currentammo = self.ammo_flares = self.ammo_flares - 8;
         FireAltFlares (self, orig, dir, mspeed, 10, 50);
         return;
     }
 
-    self.player_state = PS_FIRE;
     self.currentammo = self.ammo_flares = self.ammo_flares - 1;
     FireFlare (self, orig, dir, mspeed);
 };
@@ -429,9 +474,25 @@ Attack code for the flaregun
 */
 void() Flare_Attack =
 {
-    player_flare1 ();
+    // Normal fire or altfire?
+    if (self.impulse == 12 || self.button1)
+        self.player_state = PS_ALTFIRE;
+    else
+        self.player_state = PS_FIRE;
+
+    // If we have guns akimbo
+    if (self.items & IT_GUNS_AKIMBO)
+    {
+        player_akflare1 ();
+        self.attack_finished = time + 0.6;
+    }
+    else
+    {
+        player_flare1 ();
+        self.attack_finished = time + 0.5;
+    }
+
     Flare_Fire ();
-    self.attack_finished = time + 0.5;
 };
 
 
@@ -450,8 +511,16 @@ void() Flare_Draw =
 
     Flare_UpdateView ();
 
-    self.attack_finished = time + 0.1;
-    player_flaredraw1 ();
+    if (self.items & IT_GUNS_AKIMBO)
+    {
+        self.attack_finished = time + 0.4;
+        player_akflaredraw1 ();
+    }
+    else
+    {
+        self.attack_finished = time + 0.1;
+        player_flaredraw1 ();
+    }
 };
 
 
@@ -464,8 +533,16 @@ Holster code for the flaregun
 */
 void() Flare_Holster =
 {
-    self.attack_finished = time + 0.1;
-    player_flareholster1 ();
+    if (self.items & IT_GUNS_AKIMBO)
+    {
+        self.attack_finished = time + 0.4;
+        player_akflareholst1 ();
+    }
+    else
+    {
+        self.attack_finished = time + 0.1;
+        player_flareholster1 ();
+    }
 };
 
 
@@ -478,6 +555,14 @@ Choose the right flaregun model to display
 */
 void() Flare_UpdateView =
 {
-    self.weaponmodel = "progs/v_shot.mdl";
-    self.items = self.items - (self.items & IT_GUNS_AKIMBO);
+    if (self.akimbo_finished > time && self.currentammo >= 2)
+    {
+        self.weaponmodel = "progs/v_aflare.mdl";
+        self.items = self.items | IT_GUNS_AKIMBO;
+    }
+    else
+    {
+        self.weaponmodel = "progs/v_shot.mdl";
+        self.items = self.items - (self.items & IT_GUNS_AKIMBO);
+    }
 };

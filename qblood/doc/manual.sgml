@@ -177,8 +177,8 @@
         must be set by adding the following numbers: 1 to disable bots, 2 to
         disable map voting, 4 to disable game type voting, 8 to disable frag
         limit voting, 16 to disable time limit voting, and 32 to disable options
-		voting. For example, setting "sv_disable" to 5 (1+4) will ensure your
-		server won't have bots and won't change its initial game type.<p>
+        voting. For example, setting "sv_disable" to 5 (1+4) will ensure your
+        server won't have bots and won't change its initial game type.<p>
      </itemize>
      Your server must have the "set" command to use the new cvars though. It's
      not the case of the original QW server and even of a few modern versions.

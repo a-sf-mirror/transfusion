@@ -424,6 +424,89 @@ float(vector v) CheckSpawnPoint =
     return FALSE;
 };
 
+
+/*
+====================
+Cl_IsSpawnSpotFree
+
+Test whether or not someone is on the spawn point
+====================
+*/
+float(entity spot) Cl_IsSpawnSpotFree =
+{
+    local entity thing;
+
+    thing = findradius (spot.origin, 32);
+    while (thing)
+    {
+        if (thing.classname == "player")
+            return FALSE;
+        thing = thing.chain;
+    }
+
+    return TRUE;
+};
+
+
+/*
+====================
+Cl_GetRandomSpawnPoint
+
+Select a random spawn point. Avoid telefragging when possible
+====================
+*/
+entity(string spawnclass) Cl_GetRandomSpawnPoint =
+{
+    local entity spot;
+    local float freespots, totalspots;
+
+    // Count the spots
+    freespots = totalspots = 0;
+    spot = find (world, classname, spawnclass);
+    while (spot)
+    {
+        totalspots = totalspots + 1;
+        if (Cl_IsSpawnSpotFree (spot))
+        {
+            spot.cnt = 1;  // mark the spot as "free" so we won't do the test twice
+            freespots = freespots + 1;
+        }
+        else
+            spot.cnt = 0;
+
+        spot = find (spot, classname, spawnclass);
+    }
+
+    // If there's no spawn point with this classname
+    if (! totalspots)
+        return world;
+
+    // If there's no free spot, we will have to telefrag someone...
+    if (! freespots)
+    {
+        totalspots = floor (random () * totalspots);
+        spot = find (world, classname, spawnclass);
+        while (totalspots > 0)
+        {
+            totalspots = totalspots - 1;
+            spot = find (spot, classname, spawnclass);
+        }
+        return spot;
+    }
+
+    // Choose one of the free spots at random
+    freespots = ceil (random () * freespots);
+    spot = world;
+    while (freespots > 0)
+    {
+        spot = find (spot, classname, spawnclass);
+        if (spot.cnt)
+            freespots = freespots - 1;
+    }
+    return spot;
+};
+
+
 /*
 ============
 SelectSpawnPoint
@@ -433,50 +516,28 @@ Returns the entity to spawn at
 */
 entity() SelectSpawnPoint =
 {
-    local float totalspots;
+    local entity spawnpoint;
 
     // If it's a team based game, try to spawn on one of the team's points
     if (gametype != GT_BLOODBATH)
     {
         if (self.team == TEAM_COLOR1)
         {
-            team1_lastspawn = find(team1_lastspawn, classname, "info_player_team1");
-            if (! team1_lastspawn)
-                team1_lastspawn = find(team1_lastspawn, classname, "info_player_team1");
-            if (team1_lastspawn)
-                return team1_lastspawn;
-
+            spawnpoint = Cl_GetRandomSpawnPoint ("info_player_team1");
+            if (spawnpoint)
+                return spawnpoint;
         }
         else if (self.team == TEAM_COLOR2)
         {
-            team2_lastspawn = find(team2_lastspawn, classname, "info_player_team2");
-            if (! team2_lastspawn)
-                team2_lastspawn = find(team2_lastspawn, classname, "info_player_team2");
-            if (team1_lastspawn)
-                return team2_lastspawn;
+            spawnpoint = Cl_GetRandomSpawnPoint ("info_player_team2");
+            if (spawnpoint)
+                return spawnpoint;
         }
     }
 
-    // Get a list of all DM spots
-    totalspots = 0;
-    lastspawn = find (world, classname, "info_player_deathmatch");
-    while (lastspawn)
-    {
-        totalspots = totalspots + 1;
-        lastspawn = find (lastspawn, classname, "info_player_deathmatch");
-    }
-
-    // Choose one at random
-    if (totalspots > 0)
-    {
-        totalspots = rint((random() * (totalspots - 1)));
-        lastspawn = find (world, classname, "info_player_deathmatch");
-        while (totalspots > 0) {
-            totalspots = totalspots - 1;
-            lastspawn = find (lastspawn, classname, "info_player_deathmatch");
-        }
-        return lastspawn;
-    }
+    spawnpoint = Cl_GetRandomSpawnPoint ("info_player_deathmatch");
+    if (spawnpoint)
+        return spawnpoint;
 
     // We haven't found a suitable spawn point
     error ("SelectSpawnPoint: no spawn point on level");
@@ -1200,7 +1261,7 @@ void() Impulses_Player =
         else if (self.impulse == 252)
         {
             Sprint (self, PRINT_MEDIUM, "mcgee -- You're fired!\n");
-            Ignite (self, self, 200);
+            Ignite (self, self, 200, DF_FIRE);
         }
         else if (self.impulse == 253)
             InvenCheat ();

@@ -388,7 +388,7 @@ ROCKETS
 void(entity client) ResetIdle =
 {
     client.idle_done = FALSE;
-    client.idle_time = time + 10 + random() * 10;  // 10-20 sec.
+    client.idle_time = time + 5 + random() * 10;  // 5-15 sec.
 };
 
 // This makes the player rave.
@@ -642,7 +642,7 @@ void() flame_touch =
 
     // hit something that bleeds
     if (other.takedamage)
-        BurnDamage (other, self, 5, 30);
+        BurnDamage (other, self, 5, DF_FIRE, 30);
 
     remove(self);
 

@@ -27,26 +27,6 @@
 #include "common.qh"
 
 
-void() bot_map_load =
-{
-    // place your qc loaded waypoints here
-
-    /*
-    if (mapname == "dm1")
-        map_dm1();
-    else if (mapname == "dm2")
-        map_dm2();
-    else if (mapname == "dm3")
-        map_dm3();
-    else if (mapname == "dm4")
-        map_dm4();
-    else if (mapname == "dm5")
-        map_dm5();
-    else if (mapname == "dm6")
-        map_dm6();
-    */
-};
-
 /*
 -=-=-=-=-=-=-=-=-=-=-=-=-=-=-=-=-=-=-=-=-=-=-=
 
@@ -163,7 +143,7 @@ float   sv_accelerate, sv_maxspeed, sv_stopspeed;
 entity  fixer;
 entity  route_table;
 entity  b_temp1, b_temp2, b_temp3;
-entity  player_head, phys_head, way_head;
+entity  player_head, player_tail, phys_head, way_head;
 float   busy_waypoints;
 #ifndef QUAKEWORLD
 float   saved_bots, saved_skills1, saved_skills2, current_bots;
@@ -552,6 +532,30 @@ it just links the bot into the mod
 -=-=-=-=-=-=-=-=-=-=-=-=-=-=-=-=-=-=-=-=-=-=-=
 */
 
+void() FixPlayerList =
+{
+    local entity fromHead, fromTail;
+
+    // Search for the first _next that points on "self"
+    if (player_head != self)
+    {
+        fromHead = player_head;
+        while (fromHead._next != self)
+            fromHead = fromHead._next;
+    }
+
+    // Search for the first _last that points on "self"
+    if (player_tail != self)
+    {
+        fromTail = player_head;
+        while (fromTail._last != self)
+            fromTail = fromTail._last;
+    }
+
+    self._last = fromHead;
+    self._next = fromTail;
+};
+
 void() ClientFixRankings =
 {
     local float cno;
@@ -574,12 +578,25 @@ void() ClientFixRankings =
 void() ClientInRankings =
 {
     local float cno;
+
+    cno = self.colormap - 1;
+
+    // If it's a real new player, he may have taken the entity of a running bot
+    // In this case, we need to fix the linked list of players
+    if (self.ishuman == 0)
+    {
+        if (ClientIsActive (cno))
+            FixPlayerList ();
+    }
+
     if (player_head)
         player_head._last = self;
 
     self._next = player_head;
     self._last = world;
     player_head = self;
+    if (!player_tail)
+        player_tail = self;
     #ifdef QUAKEWORLD
     userid = userid + 1;
     self.b_userid = userid;
@@ -598,7 +615,6 @@ void() ClientInRankings =
         self.ishuman = FALSE;
         return;
     }
-    cno = self.colormap - 1;
     BotInvalidClientNo (cno);
     if(cno > 16)
         active_clients2 = active_clients2 | ClientBitFlag(cno - 16);
@@ -615,6 +631,8 @@ void() ClientDisconnected =
 {
     if (player_head == self)
         player_head = self._next;
+    if (player_tail == self)
+        player_tail = self._last;
     if (self._next)
         self._next._last = self._last;
     if (self._last)
@@ -819,13 +837,11 @@ void() BotInit =
         localcmd(mapname);
         localcmd(".way\n");
         waypoint_mode = WM_DYNAMIC;
-        bot_map_load();
     }
     else
         waypoint_mode = WM_LOADED;
     #else
     waypoint_mode = WM_DYNAMIC;
-    bot_map_load();
     #endif
 
 };

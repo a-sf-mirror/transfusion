@@ -270,7 +270,6 @@ void() worldspawn =
 
     // Some CTF variables need an initialization
     team1score = team2score = 0;
-    team1_lastspawn = team2_lastspawn = world;
 
     // It's time to precache...
     PrecacheSounds ();

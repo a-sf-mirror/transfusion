@@ -295,6 +295,8 @@ void() PlaceObject =
     // the object has virtually no cost from the server point of view)
     if (!self.spawnflags)
         makestatic (self);
+    else
+        self.touch = SUB_SolidTouch;
 };
 
 /*
@@ -1392,7 +1394,9 @@ void() weapon_touch =
     local   float   leave;
     local   entity  temp;
 
-    if (!(other.flags & FL_CLIENT))
+    if (other.classname != "player")
+        return;
+    if (other.health <= 0)
         return;
 
     if (cvar ("g_weaponStay"))
@@ -1537,6 +1541,7 @@ void() weapon_flaregun =
 {
     precache_model ("progs/v_shot.mdl");
     precache_model ("progs/g_flare.mdl");
+    precache_model ("progs/v_aflare.mdl");  // akimbo model
 
     setmodel (self, "progs/g_flare.mdl");
     self.weapon = IT_FLAREGUN;

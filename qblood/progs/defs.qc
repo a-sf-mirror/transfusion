@@ -302,10 +302,6 @@ float modelindex_eyes, modelindex_player;
 float team1score;
 float team2score;
 
-// Last spawn points
-entity team1_lastspawn;
-entity team2_lastspawn;
-
 
 //================================================
 

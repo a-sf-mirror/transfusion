@@ -89,7 +89,7 @@ float(vector vec) VecInWater =
 //==========================================================================
 //  Fire Damage
 
-void(entity victim, entity attacker, float burn) Ignite;
+void(entity victim, entity attacker, float burn, float dmgtype) Ignite;
 
 void(entity ent) RemoveFlares;
 void() muzzleflash;
@@ -97,23 +97,23 @@ void() muzzleflash;
 //------------------------------------------------------------------------//
 //  This inflicts standard fire damage like in Blood.
 //------------------------------------------------------------------------//
-void(entity targ, entity inflictor, entity attacker) FireDamage =
+void(entity targ, entity inflictor, entity attacker, float dmgtype) FireDamage =
 {
-    T_Damage (targ, inflictor, attacker, 0.75, DF_FIRE | DF_MIN_PAIN, "fire");
+    T_Damage (targ, inflictor, attacker, 0.75, dmgtype | DF_MIN_PAIN, "fire");
 };
 
 //------------------------------------------------------------------------//
 //  This damages a single entity and possibly sets it on fire.
 //------------------------------------------------------------------------//
-void(entity victim, entity fire, float damage, float burn) BurnDamage =
+void(entity victim, entity fire, float damage, float dmgtype, float burn) BurnDamage =
 {
     // Set victim on fire first.
     if (burn > 0)
-        Ignite (victim, fire.owner, burn);
+        Ignite (victim, fire.owner, burn, dmgtype);
 
     // Apply damage next immediately.
     if (damage > 0)
-        T_Damage (victim, fire, fire.owner, damage, DF_FIRE, fire.deathtype);
+        T_Damage (victim, fire, fire.owner, damage, dmgtype, fire.deathtype);
 };
 
 //------------------------------------------------------------------------//
@@ -163,7 +163,7 @@ void(entity fire, float damage, float burn, entity ignore) BurnRadius =
                 org = head.origin + (head.mins + head.maxs)*0.5;
                 dist = vlen (fire.origin - org);
                 dist = 1 - (dist * fade / radius);
-                BurnDamage (head, fire, damage * dist, burn * dist);
+                BurnDamage (head, fire, damage * dist, DF_FIRE, burn * dist);
             }
 
         head = head.chain;
@@ -335,7 +335,7 @@ void() Burn =
     MakeEmbers ();
 
     self.dmg = self.dmg - 1;    // Update the burn damage limit.
-    FireDamage (self.enemy, self.enemy, self.owner);
+    FireDamage (self.enemy, self, self.owner, self.style);
 
     self.nextthink  = time + 0.1;
 };
@@ -343,7 +343,7 @@ void() Burn =
 //------------------------------------------------------------------------//
 //  This sets the victim on fire.
 //------------------------------------------------------------------------//
-void(entity victim, entity attacker, float burn) Ignite =
+void(entity victim, entity attacker, float burn, float dmgtype) Ignite =
 {
     // Check for fire immunity.
     if (!victim.takedamage)
@@ -376,6 +376,7 @@ void(entity victim, entity attacker, float burn) Ignite =
     fire.deathtype  = "fire";
     fire.wait       = time;
     fire.dmg        = burn;
+    fire.style      = dmgtype;  // DF_FIRE or DF_MIND
     fire.nextthink  = 0.1;      // ASAP
     fire.think      = Burn;
 
@@ -549,7 +550,7 @@ void() burn_touch =
     {
         other.burn_time = time + 0.1;
         if (other.takedamage)
-            FireDamage (other, self, self);
+            FireDamage (other, self, self, DF_FIRE);
     }
 
     // Once an object moves into the field, make sure it takes more hits

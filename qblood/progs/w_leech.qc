@@ -96,6 +96,63 @@ void() player_leechholster4 = [$rockatt1, player_run          ] { W_DrawWeapon (
 //=================================================================
 
 /*
+================
+Leech_BallTouch
+
+Touch function for the leech missile
+================
+*/
+void() Leech_BallTouch =
+{
+    if (other == self.owner)
+        return;     // don't explode on owner
+
+    #ifdef QUAKEWORLD
+    if (self.voided) {
+        return;
+    }
+    self.voided = 1;
+    #endif
+
+    if (pointcontents(self.origin) == CONTENT_SKY)
+    {
+        remove(self);
+        return;
+    }
+
+    self.deathtype = "leech";  // Done for the fire code.
+    if (other.takedamage)
+    {
+        other.deathtype = "leech";
+        BurnDamage (other, self, self.dmg, DF_MIND, self.dmg * 0.5);
+    }
+
+    ThrowEmbers (4);
+    PsychoCaleb (self.owner);
+
+    self.origin = self.origin - 8 * normalize (self.velocity);
+
+    #ifdef QUAKEWORLD
+    WriteByte (MSG_MULTICAST, SVC_TEMPENTITY);
+    WriteByte (MSG_MULTICAST, TE_EXPLOSION);
+    WriteCoord (MSG_MULTICAST, self.origin_x);
+    WriteCoord (MSG_MULTICAST, self.origin_y);
+    WriteCoord (MSG_MULTICAST, self.origin_z);
+    multicast (self.origin, MULTICAST_PHS);
+    remove(self);
+
+    #else
+    WriteByte (MSG_BROADCAST, SVC_TEMPENTITY);
+    WriteByte (MSG_BROADCAST, TE_EXPLOSION);
+    WriteCoord (MSG_BROADCAST, self.origin_x);
+    WriteCoord (MSG_BROADCAST, self.origin_y);
+    WriteCoord (MSG_BROADCAST, self.origin_z);
+    BecomeExplosion ();
+    #endif
+};
+
+
+/*
 =========================
 Leech_BallFire
 
@@ -104,6 +161,8 @@ Fire a Life Leech ball
 */
 void() Leech_BallFire =
 {
+    local vector spread;
+
     #ifdef QUAKEWORLD
     msg_entity = self;
     WriteByte (MSG_ONE, SVC_SMALLKICK);
@@ -117,6 +176,14 @@ void() Leech_BallFire =
     makevectors (self.v_angle);
     newmis.velocity = aim (self, 1000);  // base velocity
 
+    // If aim() hasn't found any interesting target, add some spread
+    traceline (self.origin, self.origin + newmis.velocity*2048, FALSE, self);
+    if (trace_ent == world)
+        spread = crandom () * 0.18 * v_right + crandom () * 0.08 * v_up;
+    else
+        spread = '0 0 0';
+    newmis.velocity = 1500 * (newmis.velocity + spread);
+
     newmis.owner = self;
     newmis.solid = SOLID_BBOX;
     newmis.classname = "rocket";
@@ -125,7 +192,6 @@ void() Leech_BallFire =
     #endif
     newmis.angles = vectoangles(newmis.velocity);
     newmis.movetype = MOVETYPE_FLYMISSILE;
-    newmis.velocity = 1500 * (newmis.velocity + crandom()*0.18*v_right + crandom()*0.08*v_up);
 
     // If we don't have enough ammo, use HP
     if (self.ammo_leech < 2)
@@ -137,12 +203,12 @@ void() Leech_BallFire =
         self.ammo_leech = self.ammo_leech - 2;
     self.currentammo = self.ammo_leech;
 
-    newmis.touch = T_MissileTouch;
+    newmis.touch = Leech_BallTouch;
     setmodel (newmis, "progs/lechball.mdl");
     setsize (newmis, '0 0 0', '0 0 0');
     setorigin (newmis, self.origin + v_forward * 8 + '0 0 16');
 
-    self.dmg = 20;
+    newmis.dmg = 20;
 
     // set newmis duration
     newmis.nextthink = time + 5;

@@ -185,15 +185,10 @@ void(entity newball) Napalm_ThrowBouncingBall =
 T_MissileTouch
 
 Touch function for the rockets
-
-NOTE: also used by the "boss" monster
 ================
 */
 void() T_MissileTouch =
 {
-    local float damg;
-    local float ind;
-
     if (other == self.owner)
         return;     // don't explode on owner
 
@@ -214,7 +209,7 @@ void() T_MissileTouch =
     if (other.health)
     {
         other.deathtype = "rocket";
-        BurnDamage (other, self, self.dmg*0.75, self.dmg*0.25);
+        BurnDamage (other, self, self.dmg*0.75, DF_FIRE, self.dmg*0.25);
     }
 
     // don't do radius damage to the other, because all the damage
