@@ -333,7 +333,7 @@ void() LinkDoors =
 
     if (self.enemy)
         return;     // already linked by another door
-    if (self.spawnflags & 4)
+    if (self.spawnflags & DOOR_DONT_LINK)
     {
         self.owner = self.enemy = self;
         return;     // don't want to link this door
@@ -418,7 +418,7 @@ Key doors are allways wait -1.
 "targetname" if set, no touch field will be spawned and a remote button or trigger field activates the door.
 "health"    if set, door must be shot open
 "speed"     movement speed (100 default)
-"wait"      wait before returning (3 default, -1 = never return)
+"wait"      wait before returning (4 default, -1 = never return)
 "lip"       lip remaining at end of move (8 default)
 "dmg"       damage to inflict when blocked (2 default)
 "sounds"
@@ -456,9 +456,7 @@ void() func_door =
         self.noise4 = "locks/swtchwrk.wav";
     }
     else
-    {
         dprint ("no worldtype set!\n");
-    }
 
     if (self.sounds == 0)
     {
@@ -512,7 +510,7 @@ void() func_door =
     if (!self.speed)
         self.speed = 100;
     if (!self.wait)
-        self.wait = 3;
+        self.wait = 4;
     if (!self.lip)
         self.lip = 8;
     if (!self.dmg)
@@ -798,5 +796,5 @@ void () func_door_secret =
     }
     self.oldorigin = self.origin;
     if (!self.wait)
-        self.wait = 5;      // 5 seconds before closing
+        self.wait = 4;      // 4 seconds before closing
 };

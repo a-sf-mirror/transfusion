@@ -603,7 +603,7 @@ float(entity thing) priority_for_thing =
             thisp = 65;
         else if (thing.classname == "item_health")
         {
-            if (thing.spawnflags & 2)  // 2 = H_MEGA
+            if (thing.spawnflags & 2)  // 2 = H_LIFE_SEED
                 thisp = 55;
             if (self.health < 40)
                 thisp = thisp + 50;

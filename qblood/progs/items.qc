@@ -201,66 +201,12 @@ void() StartItem =
 
 
 /*
-============
-lure_touch
-
-Touch function for a proxy item (see below)
-
-For test purpose only
-============
-*/
-void() lure_touch =
-{
-    if (!(other.flags & FL_CLIENT))
-        return;
-
-    self.solid = SOLID_NOT;
-    self.model = string_null;
-    self.nextthink = time + 20;
-    self.think = SUB_regen;
-    self.reset = SUB_regen;
-
-    Sprint (other, PRINT_LOW, "Picked up a LURE\n");
-    sound (other, CHAN_ITEM, self.noise, 1, ATTN_NORM);
-    stuffcmd (other, "bf\n");  // produces a little flash on the interface when you picked up the item
-};
-
-/*
-============
-item_lure
-
-Proxy item. Used by mappers when a spawn function for an item doesn't yet exist
-
-For test purpose only
-============
-*/
-void() item_lure =
-{
-    // set pickup sound if it wasn't already done
-    if (self.noise == "" || self.noise == string_null)
-        self.noise = "items/pickup.wav";
-
-    self.touch = lure_touch;
-
-    precache_model (self.model);
-    setmodel (self, self.model);
-    precache_sound (self.noise);
-
-    setsize (self, '-16 -16 0', '16 16 32');
-    StartItem ();
-};
-
-
-/*
 ==========================================================
 
 MISCELLANEOUS OBJECTS
 
 ==========================================================
 */
-
-// misc. objects that exist in maps as decorations. some are breakable
-
 
 /*
 ====================
@@ -911,61 +857,6 @@ void() item_powerup =
     StartItem ();
 };
 
-//various powerups that aren't in other sections already
-
-// Doctor's Bag
-void() item_artifact_bag =
-{
-    self.netname = "Doctor's Bag";
-    self.model   = "progs/i_docbag.mdl";
-    self.noise   = "items/pickup.wav";
-    item_powerup ();
-    setsize (self, '-7 -11 -1', '7 11 19');
-};
-
-// Boots of Jumping
-void() item_artifact_boots =
-{
-    self.netname = "Boots of Jumping";
-    self.model   = "progs/i_boots.mdl";
-    self.noise   = "items/pickup.wav";
-    item_powerup ();
-    setsize (self, '-11 -10 -1', '4 10 19');
-};
-
-// Crystal Ball
-void() item_artifact_crystal =
-{
-    self.netname = "Crystal Ball";
-    self.model   = "progs/i_crysbl.mdl";
-    self.noise   = "items/pickup.wav";
-    item_powerup ();
-    setsize (self, '-7 -7 -1', '7 7 14');
-};
-
-// Reflective Shots
-void() item_artifact_reflect =
-{
-    self.netname = "Reflective Shots";
-    self.model   = "progs/i_reflct.mdl";
-    self.noise   = "bludbath/powerup.wav";
-
-    self.effects = self.effects | EF_BLUE;
-
-    item_powerup ();
-    setsize (self, '-7 -7 0', '7 11 16');
-};
-
-// Beast Vision
-void() item_artifact_vision =
-{
-    self.netname = "Beast Vision";
-    self.model   = "progs/i_vision.mdl";
-    self.noise   = "items/pickup.wav";
-    item_powerup ();
-    setsize (self, '-10 -9 0', '11 9 9');
-};
-
 
 /*
 =========================================================================
@@ -1043,25 +934,25 @@ void() health_touch =
 };
 
 
-#define H_ROTTEN    1
-#define H_MEGA      2
+#define H_LIFE_ESSENCE  1
+#define H_LIFE_SEED     2
 
 void() item_health =
 {
     self.touch = health_touch;
 
-    if (self.spawnflags & H_ROTTEN)
+    if (self.spawnflags & H_LIFE_ESSENCE)
     {
         precache_model("progs/i_lifess.mdl");
 
         precache_sound("items/pickheal.wav");
         setmodel(self, "progs/i_lifess.mdl");
         self.noise = "items/pickheal.wav";
-        self.healamount = 20;   // PM:  Quake = 15
+        self.healamount = 20;
         self.netname = "Life Essence";
         self.healtype = 1;
     }
-    else if (self.spawnflags & H_MEGA)
+    else if (self.spawnflags & H_LIFE_SEED)
     {
         precache_model("progs/lifeseed.mdl");
         precache_sound("items/pickheal.wav");
@@ -1085,6 +976,7 @@ void() item_health =
     StartItem ();
 };
 
+
 /*
 ===============================================================================
 
@@ -1102,7 +994,6 @@ void() armor_touch =
     if (other.classname != "player")
         return;
 
-// PM:  Use Blood's three armor/damage system.
     if (self.classname == "item_armor1")
     {
         // Body armor
@@ -1204,32 +1095,29 @@ void() armor_touch =
 
 // Basic Armor
 void() item_armor0 =
-    {
+{
     self.touch = armor_touch;
     precache_model("progs/i_arm_bs.mdl");
     setmodel(self, "progs/i_arm_bs.mdl");
     self.netname = "Basic Armor";
-    //setsize (self, '-7 -18 3', '10 18 38');
+
     setsize (self, '-7 -18 0', '10 18 38');
     StartItem ();
-    };
+};
 
 // Spirit Armor
 void() item_armor4 =
-    {
+{
     self.touch = armor_touch;
     precache_model("progs/i_arm_sp.mdl");
     setmodel(self, "progs/i_arm_sp.mdl");
     self.netname = "Spirit Armor";
 
-    //setsize (self, '-2 -17 2', '4 19 37');
     setsize (self, '-2 -17 0', '4 19 37');
     StartItem ();
-    };
+};
 
-/*QUAKED item_armor1 (0 .5 .8) (-1 -18 2) (6 19 45)
-*/
-
+// Body Armor
 void() item_armor1 =
 {
     self.touch = armor_touch;
@@ -1241,9 +1129,7 @@ void() item_armor1 =
     StartItem ();
 };
 
-/*QUAKED item_armor2 (0 .5 .8) (-7 -12 8) (7 10 37)
-*/
-
+// Fire Armor
 void() item_armor2 =
 {
     self.touch = armor_touch;
@@ -1255,9 +1141,7 @@ void() item_armor2 =
     StartItem ();
 };
 
-/*QUAKED item_armorInv (0 .5 .8) (-16 -16 2) (16 16 58)
-*/
-
+// Super Armor
 void() item_armorInv =
 {
     self.touch = armor_touch;
@@ -1265,10 +1149,10 @@ void() item_armorInv =
     setmodel (self, "progs/i_arm_su.mdl");
     self.netname = "Super Armor";
 
-    //setsize (self, '-16 -16 2', '16 16 58');
     setsize (self, '-16 -16 0', '16 16 56');
     StartItem ();
 };
+
 
 /*
 ===============================================================================
@@ -1483,9 +1367,7 @@ void() weapon_touch =
 };
 
 
-/*QUAKED weapon_flaregun (0 .5 .8) (-16 -16 13) (16 16 69)
-*/
-
+// Flaregun
 void() weapon_flaregun =
 {
     precache_model ("progs/v_shot.mdl");
@@ -1496,7 +1378,6 @@ void() weapon_flaregun =
     self.weapon = IT_FLAREGUN;
     self.netname = "Flare Gun";
     self.touch = weapon_touch;
-    //setsize (self, '-16 -16 13', '16 16 69');
     setsize (self, '-16 -16 0', '16 16 56');
 
     // precache the necessary sounds
@@ -1509,9 +1390,7 @@ void() weapon_flaregun =
     StartItem ();
 };
 
-/*QUAKED weapon_supershotgun (0 .5 .8) (-16 -16 3) (16 16 59)
-*/
-
+// Sawed-off
 void() weapon_supershotgun =
 {
     precache_model ("progs/v_shot2.mdl");
@@ -1523,7 +1402,6 @@ void() weapon_supershotgun =
     self.weapon = IT_SAWED_OFF;
     self.netname = "Sawed-off";
     self.touch = weapon_touch;
-    //setsize (self, '-16 -16 3', '16 16 59');
     setsize (self, '-16 -16 0', '16 16 56');
 
     // Precache the necessary sounds
@@ -1538,9 +1416,7 @@ void() weapon_supershotgun =
     StartItem ();
 };
 
-/*QUAKED weapon_nailgun (0 .5 .8) (-16 -16 0) (16 16 32)
-*/
-
+// Tommy Gun
 void() weapon_nailgun =
 {
     precache_model ("progs/v_nail.mdl");
@@ -1565,9 +1441,7 @@ void() weapon_nailgun =
     StartItem ();
 };
 
-/*QUAKED weapon_supernailgun (0 .5 .8) (-16 -16 0) (16 16 32)
-*/
-
+// Spray Can
 void() weapon_supernailgun =
 {
     precache_model ("progs/v_nail2.mdl");
@@ -1581,7 +1455,6 @@ void() weapon_supernailgun =
     setsize (self, '-8 -8 0', '8 8 32');
 
     // Precache the necessary sounds
-//    precache_sound ("weapons/spraycan/burstflm.wav");
     precache_sound ("weapons/spraycan/spraycan.wav");  // lighted spray can
     precache_sound ("weapons/spraycan/sprayfir.wav");  // fire
     precache_sound ("weapons/tnt/lighter.wav");  // = zipopen.wav + ziplight.wav
@@ -1595,61 +1468,49 @@ void() weapon_supernailgun =
 };
 
 
-// FIXME: weapon_grenadelauncher & item_tnt have a lot of
-//        things in common. We should merge them in some way
+// TNT (case & bundle)
+void() item_tnt_common =
+{
+    precache_model ("progs/v_rock.mdl");
+    precache_model ("progs/grd_bund.mdl");
+
+    precache_model (self.model);
+    setmodel (self, self.model);
+
+    self.weapon = IT_TNT;
+    self.touch = weapon_touch;
+
+    // Precache the necessary sounds
+    PsychoCaleb_Precache ();
+    precache_sound ("weapons/tnt/lighter.wav");  // = zipopen.wav + ziplight.wav
+    precache_sound ("weapons/tnt/tntfuse.wav");  // tnt lit
+    precache_sound ("weapons/tnt/tnttoss.wav");  // throw sound
+    precache_sound ("weapons/tnt/zipclose.wav");
+
+    available_weapons = available_weapons | IT_TNT;
+
+    StartItem ();
+};
 
 // Case of TNT
 void() weapon_grenadelauncher =
 {
-    precache_model ("progs/v_rock.mdl");
-    precache_model ("progs/g_rock.mdl");
-    precache_model ("progs/grd_bund.mdl");
-
-    setmodel (self, "progs/g_rock.mdl");
-    self.weapon = IT_TNT;
+    self.model = "progs/g_rock.mdl";
     self.netname = "Case of TNT";
-    self.touch = weapon_touch;
     setsize (self, '-16 -16 0', '16 16 56');
-
-    // Precache the necessary sounds
-    PsychoCaleb_Precache ();
-    precache_sound ("weapons/tnt/lighter.wav");  // = zipopen.wav + ziplight.wav
-    precache_sound ("weapons/tnt/tntfuse.wav");  // tnt lit
-    precache_sound ("weapons/tnt/tnttoss.wav");  // throw sound
-    precache_sound ("weapons/tnt/zipclose.wav");
-
-    available_weapons = available_weapons | IT_TNT;
-
-    StartItem ();
+    item_tnt_common ();
 };
 
-//  TNT Bundle model
+// TNT Bundle
 void() item_tnt =
 {
-    precache_model ("progs/v_rock.mdl");
-    precache_model ("progs/i_tnt.mdl");
-    precache_model ("progs/grd_bund.mdl");
-
-    setmodel (self, "progs/i_tnt.mdl");
-    self.weapon = IT_TNT;
+    self.model = "progs/i_tnt.mdl";
     self.netname = "Bundle of TNT";
-    self.touch = weapon_touch;
     setsize (self, '-8 -8 0', '8 8 32');
-
-    // Precache the necessary sounds
-    PsychoCaleb_Precache ();
-    precache_sound ("weapons/tnt/lighter.wav");  // = zipopen.wav + ziplight.wav
-    precache_sound ("weapons/tnt/tntfuse.wav");  // tnt lit
-    precache_sound ("weapons/tnt/tnttoss.wav");  // throw sound
-    precache_sound ("weapons/tnt/zipclose.wav");
-
-    available_weapons = available_weapons | IT_TNT;
-
-    StartItem ();
+    item_tnt_common ();
 };
 
-
-// Proximity grenade
+// Proximity bombs
 void() weapon_proximity =
 {
     precache_model ("progs/v_proxy.mdl");
@@ -1673,7 +1534,7 @@ void() weapon_proximity =
     StartItem ();
 };
 
-// Remote Detonator model
+// Remote detonators
 void() weapon_remote =
 {
     precache_model ("progs/v_remote.mdl");
@@ -1697,9 +1558,7 @@ void() weapon_remote =
     StartItem ();
 };
 
-/*QUAKED weapon_rocketlauncher (0 .5 .8) (-16 -16 0) (16 16 32)
-*/
-
+// Napalm Launcher
 void() weapon_rocketlauncher =
 {
     precache_model ("progs/v_rock2.mdl");
@@ -1724,10 +1583,7 @@ void() weapon_rocketlauncher =
     StartItem ();
 };
 
-
-/*QUAKED weapon_lightning (0 .5 .8) (-16 -16 0) (16 16 32)
-*/
-
+// Telsa Cannon
 void() weapon_lightning =
 {
     precache_model ("progs/v_light.mdl");
@@ -1743,7 +1599,6 @@ void() weapon_lightning =
     setsize (self, '-16 -16 0', '16 16 56');
 
     // Precache the necessary sounds
-
     precache_sound ("weapons/tesla/tessngfr.wav");  // normal fire
     precache_sound ("weapons/tesla/tessnght.wav");  // normal hit
     precache_sound ("weapons/tesla/tesaltht.wav");  // altfire hit
@@ -1755,10 +1610,7 @@ void() weapon_lightning =
     StartItem ();
 };
 
-
-/*QUAKED weapon_voodoodoll (0 .5 .8) (-16 -16 0) (16 16 32)
-*/
-
+// Voodoo Doll
 void() weapon_voodoodoll =
 {
     precache_model ("progs/v_voodoo.mdl");
@@ -1780,9 +1632,7 @@ void() weapon_voodoodoll =
     StartItem ();
 };
 
-/*QUAKED weapon_lifeleech (0 .5 .8) (-16 -16 0) (16 16 56)
-*/
-
+// Life Leech
 void() weapon_lifeleech =
 {
     precache_model ("progs/g_leech.mdl");
@@ -1933,9 +1783,23 @@ void() ammo_touch =
 
 #define AMMO_BIG 1
 
-/*QUAKED item_shells (0 .5 .8) (-16 -16 0) (16 16 56) big
-*/
+// Flares
+void() item_flares =
+{
+    self.touch = ammo_touch;
 
+    precache_model ("progs/i_flares.mdl");
+    setmodel (self, "progs/i_flares.mdl");
+
+    self.netname = "box of flares";
+    self.aflag = 8;
+    self.weapon = 5;
+
+    setsize (self, '0 0 0', '32 32 56');
+    StartItem ();
+};
+
+// Shells
 void() item_shells =
 {
     self.touch = ammo_touch;
@@ -1959,27 +1823,7 @@ void() item_shells =
     StartItem ();
 };
 
-/*QUAKED item_flares (0 .5 .8) (0 0 0) (32 32 32) big
-*/
-
-void() item_flares =
-{
-    self.touch = ammo_touch;
-
-    precache_model ("progs/i_flares.mdl");
-    setmodel (self, "progs/i_flares.mdl");
-
-    self.netname = "box of flares";
-    self.aflag = 8;
-    self.weapon = 5;
-
-    setsize (self, '0 0 0', '32 32 56');
-    StartItem ();
-};
-
-/*QUAKED item_spikes (0 .5 .8) (0 0 0) (32 32 32) big
-*/
-
+// Bullets
 void() item_spikes =
 {
     self.touch = ammo_touch;
@@ -2003,69 +1847,47 @@ void() item_spikes =
     StartItem ();
 };
 
-/*QUAKED item_rockets (0 .5 .8) (0 0 0) (32 32 32) big
-*/
-
+// Gasoline cans
 void() item_rockets =
 {
     self.touch = ammo_touch;
 
-    if (self.spawnflags & AMMO_BIG)
-    {
-        precache_model ("progs/i_gascan.mdl");
-        setmodel (self, "progs/i_gascan.mdl");
-        self.aflag = 6;
-    }
-    else
-    {
-        precache_model ("progs/i_gascan.mdl");
-        setmodel (self, "progs/i_gascan.mdl");
-        self.aflag = 6;
-    }
+    precache_model ("progs/i_gascan.mdl");
+    setmodel (self, "progs/i_gascan.mdl");
+    self.aflag = 6;
+
     self.weapon = 3;
     self.netname = "gasoline cans";
     setsize (self, '0 0 0', '32 32 56');
     StartItem ();
 };
 
-
-/*QUAKED item_cells (0 .5 .8) (0 0 0) (32 32 32) big
-*/
-
+// Batteries
 void() item_cells =
 {
     self.touch = ammo_touch;
 
-    if (self.spawnflags & AMMO_BIG)
-    {
-        precache_model ("progs/i_teschg.mdl");
-        setmodel (self, "progs/i_teschg.mdl");
-        self.aflag = 32;
-    }
-    else
-    {
-        precache_model ("progs/i_teschg.mdl");
-        setmodel (self, "progs/i_teschg.mdl");
-        self.aflag = 32;
-    }
+    precache_model ("progs/i_teschg.mdl");
+    setmodel (self, "progs/i_teschg.mdl");
+    self.aflag = 32;
+
     self.weapon = 4;
     self.netname = "batteries";
     setsize (self, '0 0 0', '32 32 56');
     StartItem ();
 };
 
-
+// Trapped soul
 void() item_soul =
 {
     self.touch = ammo_touch;
 
     precache_model ("progs/soul.mdl");
     setmodel (self, "progs/soul.mdl");
-
-    self.netname = "trapped soul";
     self.aflag = 10;
-    self.weapon = 11;
 
+    self.weapon = 11;
+    self.netname = "trapped soul";
     setsize (self, '0 0 0', '32 32 56');
     StartItem ();
 };
@@ -2118,6 +1940,7 @@ Skull, Eye, Fire, Dagger, Spider, Moon
 */
 void() item_key =
 {
+    self.classname = "item_key";
     if ((self.spawnflags & 63) == 0)
     {
         // Convert to skull key.
@@ -2125,149 +1948,72 @@ void() item_key =
         self.spawnflags = self.spawnflags | 1;
     }
 
-    if (self.spawnflags & 32)
+    if (self.spawnflags & 1)
     {
-        precache_model ("progs/b_g_key.mdl");
-        setmodel (self, "progs/b_g_key.mdl");
-        self.netname    = "moon key";
-        self.items2     = IT2_KEY6;
-    }
-    else if (self.spawnflags & 16)
-    {
-        precache_model ("progs/b_s_key.mdl");
-        setmodel (self, "progs/b_s_key.mdl");
-        self.netname    = "spider key";
-        self.items2     = IT2_KEY5;
-    }
-    else if (self.spawnflags & 8)
-    {
-        precache_model ("progs/m_g_key.mdl");
-        setmodel (self, "progs/m_g_key.mdl");
-        self.netname    = "dagger key";
-        self.items2     = IT2_KEY4;
-    }
-    else if (self.spawnflags & 4)
-    {
-        precache_model ("progs/m_s_key.mdl");
-        setmodel (self, "progs/m_s_key.mdl");
-        self.netname    = "fire key";
-        self.items2     = IT2_KEY3;
+        self.model      = "progs/w_s_key.mdl";
+        self.netname    = "Skull Key";
+        self.items2     = IT2_KEY1;
     }
     else if (self.spawnflags & 2)
     {
-        precache_model ("progs/w_g_key.mdl");
-        setmodel (self, "progs/w_g_key.mdl");
-        self.netname    = "eye key";
+        self.model      = "progs/w_g_key.mdl";
+        self.netname    = "Eye Key";
         self.items2     = IT2_KEY2;
     }
-    else if (self.spawnflags & 1)
+    else if (self.spawnflags & 4)
     {
-        precache_model ("progs/w_s_key.mdl");
-        setmodel (self, "progs/w_s_key.mdl");
-        self.netname    = "skull key";
-        self.items2     = IT2_KEY1;
+        self.model      = "progs/m_s_key.mdl";
+        self.netname    = "Fire Key";
+        self.items2     = IT2_KEY3;
     }
-    else
+    else if (self.spawnflags & 8)
     {
-        dprint ("No key type -- removed!\n");
-        remove (self);
-        return;
+        self.model      = "progs/m_g_key.mdl";
+        self.netname    = "Dagger Key";
+        self.items2     = IT2_KEY4;
+    }
+    else if (self.spawnflags & 16)
+    {
+        self.model      = "progs/b_s_key.mdl";
+        self.netname    = "Spider Key";
+        self.items2     = IT2_KEY5;
+    }
+    else if (self.spawnflags & 32)
+    {
+        self.model      = "progs/b_g_key.mdl";
+        self.netname    = "Moon Key";
+        self.items2     = IT2_KEY6;
     }
 
-    precache_sound ("items/pickkey.wav");
+    precache_model (self.model);
+    setmodel (self, self.model);
+    setsize (self, '-16 -16 -24', '16 16 32');
+
     self.noise  = "items/pickkey.wav";
+    precache_sound (self.noise);
+
     self.touch  = key_touch;
-    setsize (self, '-16 -16 -24', '16 16 32');
     StartItem ();
 };
 
-/*QUAKED item_key1 (0 .5 .8) (-16 -16 -24) (16 16 32)
-*/
-void() item_key1 =
-{
-    self.spawnflags = 1;    // For compatibility with Quake maps.
-    self.classname = "item_key";
-    item_key ();
-};
-/*QUAKED item_key2 (0 .5 .8) (-16 -16 -24) (16 16 32)
-*/
-void() item_key2 =
-{
-    self.spawnflags = 2;    // For compatibility with Quake maps.
-    self.classname = "item_key";
-    item_key ();
-};
+// Skull Key
+void() item_key1 = { self.spawnflags = 1; item_key (); };
 
+// Eye Key
+void() item_key2 = { self.spawnflags = 2; item_key (); };
 
-/*
-===============================================================================
+// Fire Key
+void() item_key3 = { self.spawnflags = 4; item_key (); };
 
-END OF LEVEL RUNES
+// Dagger Key
+void() item_key4 = { self.spawnflags = 8; item_key (); };
 
-===============================================================================
-*/
+// Spider Key
+void() item_key5 = { self.spawnflags = 16; item_key (); };
 
-void() sigil_touch =
-{
-local entity    stemp;
-local float     best;
+// Moon Key
+void() item_key6 = { self.spawnflags = 32; item_key (); };
 
-    if (other.classname != "player")
-        return;
-    if (other.health <= 0)
-        return;
-
-    centerprint (other, "Picked up the rune!");
-
-    sound (other, CHAN_ITEM, self.noise, 1, ATTN_NORM);
-    stuffcmd (other, "bf\n");
-    self.solid = SOLID_NOT;
-    self.model = string_null;
-    serverflags = serverflags | (self.spawnflags & 15);
-    self.classname = "";        // so rune doors won't find it
-
-    activator = other;
-    SUB_UseTargets();               // fire all targets / killtargets
-};
-
-
-/*QUAKED item_sigil (0 .5 .8) (-16 -16 -24) (16 16 32) E1 E2 E3 E4
-End of level sigil, pick up to end episode and return to jrstart.
-*/
-
-void() item_sigil =
-{
-    if (!self.spawnflags)
-        objerror ("no spawnflags");
-
-    precache_sound ("items/pickkey.wav");  // runekey
-    self.noise = "items/pickkey.wav";
-
-    if (self.spawnflags & 1)
-    {
-        precache_model ("progs/end1.mdl");
-        setmodel (self, "progs/end1.mdl");
-    }
-    if (self.spawnflags & 2)
-    {
-        precache_model ("progs/end2.mdl");
-        setmodel (self, "progs/end2.mdl");
-    }
-    if (self.spawnflags & 4)
-    {
-        precache_model ("progs/end3.mdl");
-        setmodel (self, "progs/end3.mdl");
-    }
-    if (self.spawnflags & 8)
-    {
-        precache_model ("progs/end4.mdl");
-        setmodel (self, "progs/end4.mdl");
-    }
-
-    self.touch = sigil_touch;
-    setsize (self, '-16 -16 -24', '16 16 32');
-    StartItem ();
-};
 
 /*
 ===============================================================================
@@ -2277,80 +2023,96 @@ POWERUPS
 ===============================================================================
 */
 
-
-/*QUAKED item_artifact_invulnerability (0 .5 .8) (-16 -16 -24) (16 16 32)
-Player is invulnerable for 30 seconds
-*/
-void() item_artifact_invulnerability =
+// Doctor's Bag
+void() item_artifact_bag =
 {
-    self.touch = powerup_touch;
-
-    precache_model ("progs/invulner.mdl");
-    precache_sound ("bludbath/powerup.wav");
-    self.noise = "bludbath/powerup.wav";
-    setmodel (self, "progs/invulner.mdl");
-    self.netname = "Death mask";
-    self.effects = self.effects | EF_RED;
-    self.items = IT_INVULNERABILITY;
-    setsize (self, '-4 -12 0', '2 12 30');
-    StartItem ();
+    self.netname = "Doctor's Bag";
+    self.model   = "progs/i_docbag.mdl";
+    item_powerup ();
+    setsize (self, '-7 -11 -1', '7 11 19');
 };
 
-/*QUAKED item_artifact_envirosuit (0 .5 .8) (-9 -13 -3) (8 13 74)
-Player takes no damage from water or slime for 30 seconds
-*/
+// Boots of Jumping
+void() item_artifact_boots =
+{
+    self.netname = "Boots of Jumping";
+    self.model   = "progs/i_boots.mdl";
+    item_powerup ();
+    setsize (self, '-11 -10 -1', '4 10 19');
+};
+
+// Crystal Ball
+void() item_artifact_crystal =
+{
+    self.netname = "Crystal Ball";
+    self.model   = "progs/i_crysbl.mdl";
+    item_powerup ();
+    setsize (self, '-7 -7 -1', '7 7 14');
+};
+
+// Diving Suit
 void() item_artifact_envirosuit =
 {
-    self.touch = powerup_touch;
-
-    precache_model ("progs/suit.mdl");
-
     precache_sound ("foley/swimuw.wav"); // diving suit engage sound
-//    precache_sound ("foley/frbreath.wav");
-//    precache_sound ("foley/uwbreath.wav");
-    precache_sound ("items/pickup.wav");
 
-    self.noise = "items/pickup.wav";
-    setmodel (self, "progs/suit.mdl");
     self.netname = "Diving Suit";
-// PM:  Diving suit/IT_SUIT controlled by inventory.
+    self.model   = "progs/suit.mdl";
+    item_powerup ();
     setsize (self, '-9 -13 -3', '8 13 74');
-    StartItem ();
 };
 
-
-/*QUAKED item_artifact_invisibility (0 .5 .8) (-16 -16 -2) (16 16 54)
-Player is invisible for 30 seconds
-*/
+// Cloak of Invisibility
 void() item_artifact_invisibility =
 {
-    self.touch = powerup_touch;
-
-    precache_model ("progs/invisibl.mdl");
-    precache_sound ("bludbath/powerup.wav");
-    self.noise = "bludbath/powerup.wav";
-    setmodel (self, "progs/invisibl.mdl");
-    self.netname = "Cloak of Invisibility";
     self.items = IT_INVISIBILITY;
+
+    self.netname = "Cloak of Invisibility";
+    self.model   = "progs/invisibl.mdl";
+    self.noise   = "bludbath/powerup.wav";
+    item_powerup ();
     setsize (self, '-16 -16 -2', '16 16 54');
-    StartItem ();
 };
 
+// Death Mask
+void() item_artifact_invulnerability =
+{
+    self.effects = self.effects | EF_RED;
+    self.items = IT_INVULNERABILITY;
 
-/*QUAKED item_artifact_super_damage (0 .5 .8) (-16 -16 -2) (16 16 54)
-The next attack from the player will do 4x damage
-*/
+    self.netname = "Death mask";
+    self.model   = "progs/invulner.mdl";
+    self.noise   = "bludbath/powerup.wav";
+    item_powerup ();
+    setsize (self, '-4 -12 0', '2 12 30');
+};
+
+// Reflective Shots
+void() item_artifact_reflect =
+{
+    self.effects = self.effects | EF_BLUE;
+
+    self.netname = "Reflective Shots";
+    self.model   = "progs/i_reflct.mdl";
+    self.noise   = "bludbath/powerup.wav";
+    item_powerup ();
+    setsize (self, '-7 -7 0', '7 11 16');
+};
+
+// Guns Akimbo
 void() item_artifact_super_damage =
 {
-    self.touch = powerup_touch;
-
-    precache_model ("progs/quaddama.mdl");
-    precache_sound ("bludbath/powerup.wav");
-    self.noise = "bludbath/powerup.wav";
-    setmodel (self, "progs/quaddama.mdl");
-
     self.netname = "Guns Akimbo";
-
+    self.model   = "progs/quaddama.mdl";
+    self.noise   = "bludbath/powerup.wav";
+    item_powerup ();
     setsize (self, '-16 -16 -2', '16 16 54');
-    StartItem ();
+};
+
+// Beast Vision
+void() item_artifact_vision =
+{
+    self.netname = "Beast Vision";
+    self.model   = "progs/i_vision.mdl";
+    item_powerup ();
+    setsize (self, '-10 -9 0', '11 9 9');
 };

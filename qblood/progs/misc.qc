@@ -466,29 +466,20 @@ void(string soundname) sentry_detect_init =
     self.think = sentry_detect_think;
 };
 
-// 'CLUE' entity for Area 15
-void() sentry_detect_laugh =
-{
-    sentry_detect_init ("ambience/laugh.wav");
-};
+// Howling sound
+void() sentry_detect_crypt = { sentry_detect_init ("misc/b2_crypt.wav"); };
 
-// 'CLUE' entity for Bodies
-void() sentry_detect_switch1 =
-{
-    sentry_detect_init ("locks/switch1.wav");
-};
+// Custom sentry (sound chosen by mapper)
+void() sentry_detect_custom = { sentry_detect_init (self.noise); };
 
-// 'CLUE' entity for The Crypt
-void() sentry_detect_crypt =
-{
-    sentry_detect_init ("misc/b2_crypt.wav");
-};
+// Laugh sound
+void() sentry_detect_laugh = { sentry_detect_init ("ambience/laugh.wav"); };
 
-// Generic Thunder sound triggered in any map desired
-void() sentry_detect_thunder =
-{
-    sentry_detect_init ("ambience/thunder3.wav");
-};
+// Switch sound
+void() sentry_detect_switch1 = { sentry_detect_init ("locks/switch1.wav"); };
+
+// Thunder sound
+void() sentry_detect_thunder = { sentry_detect_init ("ambience/thunder3.wav"); };
 
 
 /*
@@ -528,37 +519,6 @@ void() func_illusionary =
     self.solid = SOLID_NOT;
     setmodel (self, self.model);
     makestatic (self);
-};
-
-/*QUAKED func_episodegate (0 .5 .8) ? E1 E2 E3 E4
-This bmodel will appear if the episode has allready been completed, so players can't reenter it.
-*/
-void() func_episodegate =
-
-{
-    if (!(serverflags & self.spawnflags))
-        return;         // can still enter episode
-
-    self.angles = '0 0 0';
-    self.movetype = MOVETYPE_PUSH;  // so it doesn't get pushed by anything
-    self.solid = SOLID_BSP;
-    self.use = func_wall_use;
-    setmodel (self, self.model);
-};
-
-/*QUAKED func_bossgate (0 .5 .8) ?
-This bmodel appears unless players have all of the episode sigils.
-*/
-void() func_bossgate =
-
-{
-    if ( (serverflags & 15) == 15)
-        return;     // all episodes completed
-    self.angles = '0 0 0';
-    self.movetype = MOVETYPE_PUSH;  // so it doesn't get pushed by anything
-    self.solid = SOLID_BSP;
-    self.use = func_wall_use;
-    setmodel (self, self.model);
 };
 
 
@@ -1018,40 +978,3 @@ void() ambient_water        = { ambient_generic ("ambience/water.wav");     };
 void() ambient_waterlap     = { ambient_generic ("ambience/waterlap.wav");  };
 void() ambient_wind2        = { ambient_generic ("ambience/wind2.wav");     };
 void() light_office         = { ambient_buzz2 ();                           };  // FIXME: should be removed(?)
-
-
-//============================================================================
-
-void() noise_think =
-{
-    self.nextthink = time + 0.5;
-    sound (self, 1, "enforcer/enfire.wav", 1, ATTN_NORM);
-    sound (self, 2, "enforcer/enfstop.wav", 1, ATTN_NORM);
-    sound (self, 3, "enforcer/sight1.wav", 1, ATTN_NORM);
-    sound (self, 4, "enforcer/sight2.wav", 1, ATTN_NORM);
-    sound (self, 5, "enforcer/sight3.wav", 1, ATTN_NORM);
-    sound (self, 6, "enforcer/sight4.wav", 1, ATTN_NORM);
-    sound (self, 7, "enforcer/pain1.wav", 1, ATTN_NORM);
-};
-
-/*QUAKED misc_noisemaker (1 0.5 0) (-10 -10 -10) (10 10 10)
-
-For optimzation testing, starts a lot of sounds.
-*/
-
-void() misc_noisemaker =
-{
-    precache_sound ("enforcer/enfire.wav");
-    precache_sound ("enforcer/enfstop.wav");
-    precache_sound ("enforcer/sight1.wav");
-    precache_sound ("enforcer/sight2.wav");
-    precache_sound ("enforcer/sight3.wav");
-    precache_sound ("enforcer/sight4.wav");
-    precache_sound ("enforcer/pain1.wav");
-    precache_sound ("enforcer/pain2.wav");
-    precache_sound ("enforcer/death1.wav");
-    precache_sound ("enforcer/idle1.wav");
-
-    self.nextthink = time + 0.1 + random();
-    self.think = noise_think;
-};

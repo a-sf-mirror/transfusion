@@ -642,31 +642,16 @@ void() PutClientInServer =
 =============================================================================
 */
 
+// The normal starting point for a level.
+// NOTE: info_player_start is useless for now
+void() info_player_start = { remove (self); };
 
-/*QUAKED info_player_start (1 0 0) (-16 -16 -24) (16 16 24)
-The normal starting point for a level.
-*/
-void() info_player_start =
-{
-};
-
-
-/*QUAKED info_player_deathmatch (1 0 1) (-16 -16 -24) (16 16 24)
-potential spawning position for deathmatch games
-*/
-void() info_player_deathmatch =
-{
-};
-
+// Potential spawning position for deathmatch games
+void() info_player_deathmatch = {};
 
 // Team base starting locations
-void() info_player_team1 =
-{
-};
-
-void() info_player_team2 =
-{
-};
+void() info_player_team1 = {};
+void() info_player_team2 = {};
 
 
 /*

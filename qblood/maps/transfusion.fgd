@@ -1,4 +1,4 @@
-// Additional entities and crap
+// Additional entities and crap for Transfusion
 //
 // Authors: Jeff "Alastair" Dennis (jdennis97@home.com)
 //          Tim "protoplasmatic" Hale (timothyhale@hotmail.com)
@@ -11,7 +11,7 @@
 
 @SolidClass = worldspawn : "World entity"
 [
-	message(string) : "LEVELNAME \n by MAPPER NAME"
+	message(string) : "UNNAMED LEVEL\n by ANONYMOUS MAPPER\n  Made For Transfusion"
 	worldtype(choices) : "Ambience" : 0 =
 	[
 		0 : "Medieval"
@@ -31,7 +31,7 @@
 
 
 //
-// player starts, deathmatch, coop, teleport
+// Player starts, teleport, ...
 //
 
 @baseclass size(-16 -16 -24, 16 16 32) color(0 255 0) = PlayerClass []
@@ -56,22 +56,7 @@
 
 
 //
-// Items
-//
-
-@PointClass size(-16 -16 0, 16 16 56) = item_health : "Health pak"
-[
-	spawnflags(choices) : "Type" : 1 =
-	[
-		1 : "Life Essence"
-		2 : "Life Seed"
-		0 : "Medicine Patch"
-	]
-]
-
-
-//
-// lights
+// Lights
 //
 
 @baseclass = Light [
@@ -125,21 +110,6 @@
 @PointClass size(-10 -10 -20, 10 10 20) base(Light, Targetname) =
 	light_torch_small_walltorch : "Small walltorch" []
 
-//
-// misc
-//
-
-@PointClass = air_bubbles : "Air bubbles" []
-@PointClass base(Targetname) =
-	event_lightning : "Chthon's lightning" []
-
-@PointClass = misc_fireball : "Small fireball"
-	[ speed(integer) : "Speed" : 40 ]
-
-@PointClass size(-16 -16 0, 16 16 32) base(Targetname)= misc_explobox2 : "TNT Barrel"
-[
-	dmg(integer) : "Damage" : 240
-]
 
 //
 // Traps
@@ -149,14 +119,12 @@
 @PointClass base(Targetname) = trap_napalm : "Napalm launcher trap" []
 @PointClass base(Targetname) = trap_tommygun : "Tommygun trap" []
 
+
 //
-// ambient sounds
+// Ambient sounds
 //
 
-@PointClass = ambient_custom : "Custom ambient sound"
-[
-	noise(string) : "Ambient sound file"
-]
+@PointClass = ambient_custom : "Custom ambient sound" [ noise(string) : "Sound file" ]
 
 @PointClass = ambient_1wind : "Windstorm" []
 @PointClass = ambient_altair2 : "Soft Blowing Wind" []
@@ -255,21 +223,22 @@
 @PointClass = ambient_wind2 : "More wind noise" []
 @PointClass = light_office : "noisy flou. office lights" []
 
+
 //
- // moving things
+// Moving things
 //
 @baseclass base(Targetname) = Door
 [
 	speed(integer) : "Speed" : 100
 	sounds(choices) : "Sound" : 1 =
- 	[
+	[
 		1: "Stone"
 		2: "Machine"
 		3: "Stone Chain"
 		4: "Screechy Metal"
 	]
 	wait(choices) : "Delay before close" : 4 =
- 	[
+	[
 		-1 : "Stays open"
 	]
 	lip(integer) : "Lip"
@@ -311,7 +280,7 @@
 	target(target_source) : "Targetted object"
 	health(integer) : "Health (shootable if > 0)"
 	sounds(choices) : "Sounds" : 1 =
- 	[
+	[
 		1: "Steam metal"
 		2: "Wooden clunk"
 		3: "Metallic clink"
@@ -336,7 +305,7 @@
 ]
 
 @PointClass base(Targetname) size(16 16 16) =
- 	path_corner : "Moving platform stop"
+	path_corner : "Moving platform stop"
 [
 	target(target_source) : "Next stop target"
 ]
@@ -352,11 +321,9 @@
 	]
 ]
 
-@SolidClass = func_illusionary : "Solids can be walked through" []
-
 
 //
-// triggers
+// Triggers
 //
 
 @baseclass base(Target) = Trigger
@@ -420,10 +387,10 @@
 [
 	message(choices) : "Skill to change to" : 1 =
 	[
-        0 : "Pink on the Inside"
-        1 : "Lightly Broiled"
-        2 : "Well Done"
-        3 : "Extra Crispy"
+		0 : "Pink on the Inside"
+		1 : "Lightly Broiled"
+		2 : "Well Done"
+		3 : "Extra Crispy"
 	]
 ]
 @PointClass base(Trigger, Targetname) = trigger_relay : "Trigger relay"
@@ -447,9 +414,8 @@
 	speed(integer) : "Speed of push" : 40
 ]
 
-@SolidClass base(Trigger) = trigger_hurt : "Trigger player hurt" 
-[
-	dmg(integer) : "Damage" : 10]
+@SolidClass base(Trigger) = trigger_hurt : "Trigger player hurt" [ dmg(integer) : "Damage" : 10 ]
+
 
 //
 // Weapons
@@ -462,96 +428,81 @@
 @PointClass base(Weapon) = weapon_nailgun : "Tommy Gun" []
 @PointClass base(Weapon) = weapon_grenadelauncher : "Case of TNT" []
 @PointClass base(Weapon) = weapon_rocketlauncher : "Napalm Launcher" []
+@PointClass base(Weapon) = weapon_lightning : "Tesla Cannon" []
 @PointClass base(Weapon) = weapon_voodoodoll : "Voodoo Doll" []
 @PointClass base(Weapon) = weapon_lifeleech : "Life Leech" []
-@PointClass base(Weapon) = weapon_lightning : "Tesla Cannon" []
 
 @PointClass base(Weapon) size(-8 -8 0, 8 8 32) = item_tnt : "Bundle of TNT" []
 @PointClass base(Weapon) size(-8 -8 0, 8 8 32) = weapon_proximity : "Proximity Detonator" []
 @PointClass base(Weapon) size(-8 -8 0, 8 8 32) = weapon_remote : "Remote Detonator" []
 @PointClass base(Weapon) size(-8 -8 0, 8 8 32) = weapon_supernailgun : "Spray Can" []
 
+
 //
 // Ammunitions
 //
 
-@baseclass size(0 0 0, 32 32 56) color(80 0 200) = Ammo
+@baseclass color(80 0 200) size(0 0 0, 32 32 56) = Ammo [ ]
+@PointClass base(Ammo) = item_flares : "Box of Flares" []
+@PointClass base(Ammo) size(-16 -16 0, 16 16 56) = item_shells : "Shotgun Shells"
 [
-	spawnflags(flags) =
- 	[
-		1 : "Large box" : 0
+	spawnflags(choices) : "Type" : 0 =
+	[
+		0: "4 shotgun shells"
+		1: "Box of shotgun shells"
 	]
 ]
-
-@PointClass base(Ammo) = item_flares : "Box of Flares" []
-@PointClass base(Ammo) = item_shells : "Box of Shotgun Shells" []
-@PointClass base(Ammo) = item_spikes : "Full Drum of Bullets" []
+@PointClass base(Ammo) = item_spikes : "Bullets"
+[
+	spawnflags(choices) : "Type" : 0 =
+	[
+		0: "A few bullets"
+		1: "Full drum of bullets"
+	]
+]
 @PointClass base(Ammo) = item_rockets : "Gasoline Can" []
 @PointClass base(Ammo) = item_cells : "Battery" []
 @PointClass base(Ammo) = item_soul : "Trapped Soul" []
+
 
 //
 // Powerups
 //
 
-@PointClass size(-7 -11 -1, 7 11 19) =
- 	item_artifact_bag : "Doctor's Bag" []
+@PointClass size(-7 -11 -1, 7 11 19) = item_artifact_bag : "Doctor's Bag" []
+@PointClass size(-11 -10 -1, 4 10 19) = item_artifact_boots : "Boots of Jumping" []
+@PointClass size(-7 -7 -1, 7 7 14) = item_artifact_crystal : "Crystal Ball" []
+@PointClass size(-9 -13 -3, 8 13 74) = item_artifact_envirosuit : "Diving Suit" []
+@PointClass size(-16 -16 -2, 16 16 54) = item_artifact_invisibility : "Cloak of Invisibility" []
+@PointClass size(-4 -12 0, 2 12 30) = item_artifact_invulnerability : "Death Mask" []
+@PointClass size(-7 -7 0, 7 11 16) = item_artifact_reflect : "Reflective Shots" []
+@PointClass size(-16 -16 -2, 16 16 54) = item_artifact_super_damage : "Guns Akimbo" []
+@PointClass size(-10 -9 0, 11 9 9) = item_artifact_vision : "Beast Vision" []
 
-@PointClass size(-3 -6 -2, 6 7 23) =
- 	item_artifact_invisibility : "Cloak of Invisibility" []
-
-@PointClass size(-11 -10 -1, 4 10 19) =
- 	item_artifact_boots : "Boots of Jumping" []
-
-@PointClass size(-16 -16 -2, 16 16 54) =
- 	item_artifact_super_damage : "Guns Akimbo" []
-
-@PointClass size(-9 -13 -3, 8 13 74) =
- 	item_artifact_envirosuit : "Diving Suit" []
-
-@PointClass size(-7 -7 -1, 7 7 14) =
- 	item_artifact_crystal : "Crystal Ball" []
-
-@PointClass size(-7 -7 0, 7 11 16) =
- 	item_artifact_reflect : "Reflective Shots" []
-
-@PointClass size(-10 -9 0, 11 9 9) =
- 	item_artifact_vision : "Beast Vision" []
-
-@PointClass size(-4 -12 0, 2 12 30) =
- 	item_artifact_invulnerability : "Death Mask" []
 
 //
 // Keys
 //
 
-@PointClass size(-16 -16 -24, 16 16 32) =
- 	item_key1 : "Skull Key" []
-@PointClass size(-16 -16 -24, 16 16 32) =
- 	item_key2 : "Eye Key" []
-@PointClass size(-16 -16 -24, 16 16 32) =
- 	item_key3 : "Fire Key" []
-@PointClass size(-16 -16 -24, 16 16 32) =
- 	item_key4 : "Daggar Key" []
-@PointClass size(-16 -16 -24, 16 16 32) =
- 	item_key5 : "Spider Key" []
-@PointClass size(-16 -16 -24, 16 16 32) =
- 	item_key6 : "Moon Key" []
+@baseclass size(-16 -16 -24, 16 16 32) = Key []
+@PointClass base(Key) = item_key1 : "Skull Key" []
+@PointClass base(Key) = item_key2 : "Eye Key" []
+@PointClass base(Key) = item_key3 : "Fire Key" []
+@PointClass base(Key) = item_key4 : "Dagger Key" []
+@PointClass base(Key) = item_key5 : "Spider Key" []
+@PointClass base(Key) = item_key6 : "Moon Key" []
+
 
 //
 // Armor
 //
 
-@PointClass size(-7 -18 0, 10 18 38) =
- 	item_armor0 : "Basic Armor" []
-@PointClass size(-2 -17 0, 4 19 37) =
- 	item_armor4 : "Spirit Armor" []
-@PointClass size(-1 -18 0, 6 19 45) =
- 	item_armor1 : "Body Armor" []
-@PointClass size(-7 -12 0, 7 10 37) =
- 	item_armor2 : "Fire armor" []
-@PointClass size(-16 -16 0, 16 16 56) =
- 	item_armorInv : "Super Armor" []
+@PointClass size(-7 -18 0, 10 18 38) = item_armor0 : "Basic Armor" []
+@PointClass size(-2 -17 0, 4 19 37) = item_armor4 : "Spirit Armor" []
+@PointClass size(-1 -18 0, 6 19 45) = item_armor1 : "Body Armor" []
+@PointClass size(-7 -12 0, 7 10 37) = item_armor2 : "Fire armor" []
+@PointClass size(-16 -16 0, 16 16 56) = item_armorInv : "Super Armor" []
+
 
 //
 // Objects
@@ -564,17 +515,17 @@
 		1 : "Solid" : 0
 	]
 ]
-@PointClass size(-10 -4 -10, 10 4 11) = obj_tome : "A Closed Book " []
-@PointClass size(-5 -6 -9, 5 6 10) = obj_boost : "Small Potion Vial" []
-@PointClass size(-9 -10 -9, 9 10 10) = obj_mboost : "Large Potion Vial" []
-@PointClass size(-14 -14 1, 22 14 89) = obj_beefslab : "Slab of Beef in Freezers" []
-@PointClass size(-16 -15 -3, 16 16 14) = obj_bonepile : "Pile of Bones" []
-@PointClass size(-9 -7 -1, 9 7 6) = obj_bookclos : "Closed Book" []
-@PointClass size(-8 -14 -1, 9 14 5) = obj_bookopen : "Open Book" []
-@PointClass size(-31 -34 -1, 31 32 39) = obj_bush1 : "Small Bush" []
-@PointClass size(-23 -21 0, 24 20 34) = obj_cauldren : "Large Cauldren" []
-@PointClass size(-9 -6 -29, 8 6 27) = obj_cflmtrch : "Chromed Flaming Torch" []
-@PointClass size(-37 -17 -2, 39 17 13) = obj_corps2 : "Corpse, Face Up"
+@PointClass base(Object) size(-10 -4 -10, 10 4 11) = obj_tome : "A Closed Book " []
+@PointClass base(Object) size(-5 -6 -9, 5 6 10) = obj_boost : "Small Potion Vial" []
+@PointClass base(Object) size(-9 -10 -9, 9 10 10) = obj_mboost : "Large Potion Vial" []
+@PointClass base(Object) size(-14 -14 1, 22 14 89) = obj_beefslab : "Slab of Beef in Freezers" []
+@PointClass base(Object) size(-16 -15 -3, 16 16 14) = obj_bonepile : "Pile of Bones" []
+@PointClass base(Object) size(-9 -7 -1, 9 7 6) = obj_bookclos : "Closed Book" []
+@PointClass base(Object) size(-8 -14 -1, 9 14 5) = obj_bookopen : "Open Book" []
+@PointClass base(Object) size(-31 -34 -1, 31 32 39) = obj_bush1 : "Small Bush" []
+@PointClass base(Object) size(-23 -21 0, 24 20 34) = obj_cauldren : "Large Cauldren" []
+@PointClass base(Object) size(-9 -6 -29, 8 6 27) = obj_cflmtrch : "Chromed Flaming Torch" []
+@PointClass base(Object) size(-37 -17 -2, 39 17 13) = obj_corps2 : "Corpse, Face Up"
 [
 	skin(Choices) : "Skin" : 0 =
 	[
@@ -585,42 +536,42 @@
 		4 : "Body wrapped in spiderwebs"
 	]
 ]
-@PointClass size(-3 -12 -19, 3 12 21) = obj_cross : "Tilted Cross" []
-@PointClass size(-12 -5 -21, 14 5 34) = obj_eflmtrch : "Egyptian Torch" []
-@PointClass size(-12 -5 -21, 12 5 9) = obj_egtorch : "Egyptian Torch, unlit" []
-@PointClass size(-3 -25 0, 3 29 53) = obj_fence : "Iron Fence Gateway" []
-@PointClass size(-31 -27 -1, 31 27 95) = obj_fountain : "Large 2 Tier Fountain" []
-@PointClass size(-51 -65 -24, 55 65 90) = obj_goal : "Soccar Goal from FWH" []
-@PointClass size(-27 -27 -1, 26 26 92) = obj_hedge1 : "Triangular Hedge" []
-@PointClass size(-19 -28 0, 18 29 89) = obj_hedge2 : "Square Hedge" []
-@PointClass size(-27 -27 -1, 27 27 127) = obj_hedge3 : "Round Hedge" []
-@PointClass size(-6 -13 -19, 6 13 21) = obj_holycrss : "Cross with fluer de lis" []
-@PointClass size(-30 -29 -1, 29 30 30) = obj_plantgen : "Small Plant" []
-@PointClass size(-30 -29 -1, 29 30 39) = obj_plantmez : "Potted Plant" []
-@PointClass size(-39 -38 -1, 39 39 95) = obj_plantrom : "Plant in Vase" []
-@PointClass size(-19 -32 -1, 19 32 58) = obj_pot1 : "Large 2 Handled Jug - 4 skins" []
-@PointClass size(-12 -14 0, 12 14 42) = obj_pot2 : "Large Vase - 4 skins" []
-@PointClass size(-17 -19 -1, 17 20 48) = obj_pot3 : "Large Vase - 4 skins" []
-@PointClass size(-10 -10 -15, 2 10 27) = obj_rflmtrch : "Roman Style Flaming Torch" []
-@PointClass size(-4 -5 0, 4 5 72) = obj_seaweed : "Flowing Seaweed" []
-@PointClass size(-5 -5 -1, 5 3 55) = obj_skllstk1 : "1 Skull on a Stake" []
-@PointClass size(-5 -2 -1, 6 8 57) = obj_skllstk2 : "2 Skulls on a Stake" []
-@PointClass size(-8 -25 -1, 8 25 72) = obj_tombstn1 : "Cross Tombstone" []
-@PointClass size(-5 -16 -1, 5 16 44) = obj_tombstn2 : "Oval Tombstone" []
-@PointClass size(-7 -19 -1, 7 18 48) = obj_tombstn3 : "R.I.P. Tombstone" []
-@PointClass size(-16 -16 -32, 16 16 32) = obj_tree : "Dead Tree" []
-@PointClass size(-16 -16 -32, 16 16 32) = obj_tree2 : "Large Leafy Tree" []
-@PointClass size(-1 -23 -28, 4 23 26) = obj_webs : "Small Spider Webs - 4 skins" []
-@PointClass size(-6 -4 0, 6 4 11) = obj_skull : "Brown Skull" []
-@PointClass size(-7 -6 -1, 7 6 2) = obj_skulbook : "Book with a skull on it" []
-@PointClass size(-7 -7 0, 7 7 18) = obj_stool : "A Stool" []
-@PointClass size(-5 -9 -13, 5 9 14) = obj_hbook : "Another book" []
-@PointClass size(-12 -8 -11, 12 8 11) = obj_m2 : "White Skull" []
-@PointClass size(-12 -8 -11, 12 8 11) = obj_m3 : "Green Skull" []
-@PointClass size(-8 -11 -11, 7 11 12) = obj_mage : "Another Book" []
-@PointClass size(-16 -16 -16, 16 16 16) = obj_shovel : "A Shovel" []
-@PointClass size(-32 -21 -0, 24 20 34) = obj_cauldron : "A Boiling Cauldron" []
-@PointClass size(-14 -20 -14, 14 20 39) = obj_barrel : "Barrel"
+@PointClass base(Object) size(-3 -12 -19, 3 12 21) = obj_cross : "Tilted Cross" []
+@PointClass base(Object) size(-12 -5 -21, 14 5 34) = obj_eflmtrch : "Egyptian Torch" []
+@PointClass base(Object) size(-12 -5 -21, 12 5 9) = obj_egtorch : "Egyptian Torch, unlit" []
+@PointClass base(Object) size(-3 -25 0, 3 29 53) = obj_fence : "Iron Fence Gateway" []
+@PointClass base(Object) size(-31 -27 -1, 31 27 95) = obj_fountain : "Large 2 Tier Fountain" []
+@PointClass base(Object) size(-51 -65 -24, 55 65 90) = obj_goal : "Soccar Goal from FWH" []
+@PointClass base(Object) size(-27 -27 -1, 26 26 92) = obj_hedge1 : "Triangular Hedge" []
+@PointClass base(Object) size(-19 -28 0, 18 29 89) = obj_hedge2 : "Square Hedge" []
+@PointClass base(Object) size(-27 -27 -1, 27 27 127) = obj_hedge3 : "Round Hedge" []
+@PointClass base(Object) size(-6 -13 -19, 6 13 21) = obj_holycrss : "Cross with fluer de lis" []
+@PointClass base(Object) size(-30 -29 -1, 29 30 30) = obj_plantgen : "Small Plant" []
+@PointClass base(Object) size(-30 -29 -1, 29 30 39) = obj_plantmez : "Potted Plant" []
+@PointClass base(Object) size(-39 -38 -1, 39 39 95) = obj_plantrom : "Plant in Vase" []
+@PointClass base(Object) size(-19 -32 -1, 19 32 58) = obj_pot1 : "Large 2 Handled Jug - 4 skins" []
+@PointClass base(Object) size(-12 -14 0, 12 14 42) = obj_pot2 : "Large Vase - 4 skins" []
+@PointClass base(Object) size(-17 -19 -1, 17 20 48) = obj_pot3 : "Large Vase - 4 skins" []
+@PointClass base(Object) size(-10 -10 -15, 2 10 27) = obj_rflmtrch : "Roman Style Flaming Torch" []
+@PointClass base(Object) size(-4 -5 0, 4 5 72) = obj_seaweed : "Flowing Seaweed" []
+@PointClass base(Object) size(-5 -5 -1, 5 3 55) = obj_skllstk1 : "1 Skull on a Stake" []
+@PointClass base(Object) size(-5 -2 -1, 6 8 57) = obj_skllstk2 : "2 Skulls on a Stake" []
+@PointClass base(Object) size(-8 -25 -1, 8 25 72) = obj_tombstn1 : "Cross Tombstone" []
+@PointClass base(Object) size(-5 -16 -1, 5 16 44) = obj_tombstn2 : "Oval Tombstone" []
+@PointClass base(Object) size(-7 -19 -1, 7 18 48) = obj_tombstn3 : "R.I.P. Tombstone" []
+@PointClass base(Object) size(-16 -16 -32, 16 16 32) = obj_tree : "Dead Tree" []
+@PointClass base(Object) size(-16 -16 -32, 16 16 32) = obj_tree2 : "Large Leafy Tree" []
+@PointClass base(Object) size(-1 -23 -28, 4 23 26) = obj_webs : "Small Spider Webs - 4 skins" []
+@PointClass base(Object) size(-6 -4 0, 6 4 11) = obj_skull : "Brown Skull" []
+@PointClass base(Object) size(-7 -6 -1, 7 6 2) = obj_skulbook : "Book with a skull on it" []
+@PointClass base(Object) size(-7 -7 0, 7 7 18) = obj_stool : "A Stool" []
+@PointClass base(Object) size(-5 -9 -13, 5 9 14) = obj_hbook : "Another book" []
+@PointClass base(Object) size(-12 -8 -11, 12 8 11) = obj_m2 : "White Skull" []
+@PointClass base(Object) size(-12 -8 -11, 12 8 11) = obj_m3 : "Green Skull" []
+@PointClass base(Object) size(-8 -11 -11, 7 11 12) = obj_mage : "Another Book" []
+@PointClass base(Object) size(-16 -16 -16, 16 16 16) = obj_shovel : "A Shovel" []
+@PointClass base(Object) size(-32 -21 -0, 24 20 34) = obj_cauldron : "A Boiling Cauldron" []
+@PointClass base(Object) size(-14 -20 -14, 14 20 39) = obj_barrel : "Barrel"
 [
 	skin(Choices) : "Skin" : 1 =
 	[
@@ -630,7 +581,7 @@
 		3 : "Waste"
 	]
 ]
-@PointClass size(-11 -7 -1, 14 8 28) = obj_brainjar : "Jar with brain in it"
+@PointClass base(Object) size(-11 -7 -1, 14 8 28) = obj_brainjar : "Jar with brain in it"
 [
 	skin(Choices) : "Skin" : 0 =
 	[
@@ -638,7 +589,7 @@
 		1 : "Red fluid"
 	]
 ]
-@PointClass size(-14 -14 -1, 14 14 36) = obj_drum : "Drum-type barrel"
+@PointClass base(Object) size(-14 -14 -1, 14 14 36) = obj_drum : "Drum-type barrel"
 [
 	skin(Choices) : "Skin" : 0 =
 	[
@@ -649,14 +600,42 @@
 
 
 //
+// Sentries
+//
+
+@PointClass = sentry_detect_custom : "Custom sound" [ noise(string) : "Sound file" ]
+
+@PointClass = sentry_detect_crypt : "Howling sound" []
+@PointClass = sentry_detect_laugh : "Laugh sound" []
+@PointClass = sentry_detect_switch1 : "Switch sound" []
+@PointClass = sentry_detect_thunder : "Thunder sound" []
+
+
+//
 // Misc
 //
 
-@baseclass = Sentry [ noise(string) : "Sound file" ]
-@PointClass base(Sentry) = sentry_detect_laugh : "Laugh sound" []
-@PointClass base(Sentry) = sentry_detect_switch1 : "Switch Sound" []
-@PointClass base(Sentry) = sentry_detect_crypt : "Howling sound" []
-@PointClass base(Sentry) = sentry_detect_thunder : "Thunder sound" []
+@PointClass base(Targetname)= sound_player : "Triggered sound player"
+[
+	noise(string) : "Sound file"
+]
+
+@PointClass size(-16 -16 0, 16 16 32) base(Targetname) = misc_explobox2 : "TNT Barrel"
+[
+	dmg(integer) : "Damage" : 240
+]
+
+@PointClass size(-16 -16 0, 16 16 56) = item_health : "Health pak"
+[
+	spawnflags(choices) : "Type" : 1 =
+	[
+		1 : "Life Essence"
+		2 : "Life Seed"
+		0 : "Medicine Patch"
+	]
+]
+
+@SolidClass = func_illusionary : "Solids can be walked through" []
 
 @SolidClass base(Target, Targetname) = exploding_wall : "Exploding Wall"
 [	
@@ -682,8 +661,4 @@
 		16 : "No Rubble" : 0
 		32 : "Explosive only" : 0
 	]
-]
-@PointClass base(Targetname)= sound_player : "Triggered sound player"
-[
-	noise(string) : "Sound file"
 ]
