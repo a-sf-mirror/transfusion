@@ -622,12 +622,20 @@ void() BombContents =
 
 void() BombThink =
 {
+    // the bomb must be able to "touch" the world
+    self.owner = world;
+
+    // Wait a little bit before making self solid as not to blow owner up!
+    if (self.cnt >= 0.3)
+        self.solid = SOLID_BBOX;
+
+    self.cnt = self.cnt + 0.1;
+    
     self.nextthink  = time + 0.1;
 	if (!checkbottom(self) && self.netname == "TNT")
 	{
 	    local float density;
 		density = ceil(random() * 20);
-		
 		
 		makevectors(self.angles);
 
@@ -739,16 +747,12 @@ void() DynaTouch =
     // Normal grenades are the only ones which can explode on touch
     if (self.style == TNT_TYPE_NORMAL)
     {
-        // Don't explode on owner
-        if (other != self.owner)
+        // Rebound if it hits the ceiling.  Otherwise, explode.
+        traceline (self.origin - self.dest*4, self.origin + self.dest*16, TRUE, self);
+        if (trace_fraction == 1 || trace_plane_normal_z >= 0)
         {
-            // Rebound if it hits the ceiling.  Otherwise, explode.
-            traceline (self.origin - self.dest*4, self.origin + self.dest*16, TRUE, self);
-            if (trace_fraction == 1 || trace_plane_normal_z >= 0)
-            {
-                Bomb_Explode ();
-                return;
-            }
+            Bomb_Explode ();
+            return;
         }
     }
 
@@ -830,10 +834,11 @@ void() Bomb_Fire =
     sound (self, CHAN_AUTO, "weapons/tnt/tnttoss.wav", 1, ATTN_NORM);
 
     newmis = spawn ();
-    newmis.owner = self;
-    newmis.solid = SOLID_BBOX;
+    newmis.enemy = self;
+    newmis.solid = SOLID_NOT;
 	newmis.movetype = MOVETYPE_BOUNCE;
     newmis.classname = "grenade";
+    newmis.cnt = 0;                     // Set up for frame count skip
 
     // Wiggle player's screen just a little during toss
     self.punchangle_x = -2;
@@ -933,7 +938,7 @@ void() Bomb_Fire =
     }
 
     setmodel (newmis, newmis.model);
-    setsize (newmis, '-1 -1 -1', '10 10 10');
+    setsize (newmis, '0 0 0', '15 15 15');
 
     // If we have no more dynamite, we "lose" the weapon
     // (expect for remote detonators: we always have the remote)

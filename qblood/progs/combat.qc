@@ -370,7 +370,11 @@ void(entity targ, entity inflictor, entity attacker, float damage, float dflags,
 		// Target was slain!
         if (!targ.deadflag)
             targ.deathtype = dtype;
-
+        
+        // Suicide via grenade
+        if (inflictor.classname == "grenade" && inflictor.enemy == targ)
+            attacker = targ;            
+        
         Killed (targ, attacker);
         return;
 	}        
