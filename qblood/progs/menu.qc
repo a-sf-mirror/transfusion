@@ -414,7 +414,7 @@ void() Menu_Draw =
         Sprint (self, PRINT_HIGH,
                 "Vote for a map:\n"
                 "1) e1m1  Cradle to Grave  | 2) e1m2  Wrong Side of the Tracks\n"
-                "3) e1m7  Altar of Stone\n"
+                "3) e1m7  Altar of Stone   | 4) e4m8  The Hall Of Epiphany\n"
                 "\n"
                 "10) Go back to map menu\n");
     }
@@ -452,8 +452,9 @@ void() Menu_Draw =
     {
         Sprint (self, PRINT_HIGH,
                 "Vote for a map:\n"
-                "1) dranzbb6  Black Coffee         | 2) fragm   Frag'M\n"
-                "3) qe1m7     The House of Chthon  | 4) simple  Dead Simple\n"
+                "1) dranzbb6  Black Coffee  | 2) fragm  Frag'M\n"
+                "3) maim      Maim          | 4) qe1m7  The House of Chthon\n"
+                "5) simple    Dead Simple\n"
                 "\n"
                 "10) Go back to map menu\n");
     }
@@ -709,6 +710,8 @@ void() Menu_HandleVoteMapBloodSP =
         newmap = "e1m2";
     else if (self.impulse == 3)
         newmap = "e1m7";
+    else if (self.impulse == 4)
+        newmap = "e4m8";
     else
     {
         Sprint (self, PRINT_HIGH, "\n===== INVALID COMMAND =====\n\n");
@@ -880,8 +883,10 @@ void() Menu_HandleVoteMapConversions =
     else if (self.impulse == 2)
         newmap = "fragm";
     else if (self.impulse == 3)
-        newmap = "qe1m7";
+        newmap = "maim";
     else if (self.impulse == 4)
+        newmap = "qe1m7";
+    else if (self.impulse == 5)
         newmap = "simple";
     else
     {
