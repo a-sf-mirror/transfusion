@@ -1472,7 +1472,7 @@ void() PlayerPostThink =
     #endif
 
     // Check for menu commands
-    if (self.player_state == PS_MENU)
+    if (self.player_state == PS_MENU && gametype != GT_SINGLE_PLAYER)
         Menu_Update ();
 
     // if we're not allowed to act (observer)

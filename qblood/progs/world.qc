@@ -275,8 +275,8 @@ void() worldspawn =
     else
     {
 		// When we finish the episode 1 media, we can finally do the switch!
-	    gametype = GT_BLOODBATH;  //gametype = GT_SINGLE_PLAYER;
-		cvar_set("deathmatch", "1");
+	    gametype = GT_SINGLE_PLAYER;  //gametype = GT_SINGLE_PLAYER;
+		cvar_set("deathmatch", "0");
 	}
 
 	#ifndef NO_FRIKBOT
