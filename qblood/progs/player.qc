@@ -282,8 +282,9 @@ void() player_light =
     if (self.weaponframe == 5)
         self.weaponframe = 1;
     SuperDamageSound ();
-    sound (self, CHAN_AUTO, "weapons/tesla/tessngfr.wav", 1, ATTN_NORM);
+//    sound (self, CHAN_AUTO, "weapons/tesla/taltac3.wav", 1, ATTN_NORM);
     W_FireLightning ();
+
     self.attack_finished = time + 0.2;
 
     self.impulse = 0;  // REMOVEME as soon as the altfire will no longer be bind to an impulse

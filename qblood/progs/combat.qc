@@ -479,7 +479,7 @@ T_RadiusDamage
 void(entity inflictor, entity attacker, float damage, entity ignore, string dtype) T_RadiusDamage =
 {
     local   float   dflags;
-    if (dtype == "telsa")
+    if (dtype == "tesla")
         dflags = DF_RADIUS | DF_BODY;
     else
         dflags = DF_RADIUS | DF_FIRE;
