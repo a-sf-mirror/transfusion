@@ -1,4 +1,4 @@
-/*  Copyright (C) 2001-2002  Mathieu Olivier
+/*  Copyright (C) 2001-2003  Mathieu Olivier
 
     This program is free software; you can redistribute it and/or modify
     it under the terms of the GNU General Public License as published by
@@ -28,8 +28,9 @@ void() Flare_Fire;
 
 // ----- Flaregun model ----- //
 
+#ifndef NEW_MODELS
 // Normal model
-$modelname v_flare
+$modelname v_shot
 
 // idle
 $frame flare_idle1
@@ -59,6 +60,40 @@ $frame aflare_holster1 aflare_holster2 aflare_holster3 aflare_holster4 aflare_ho
 $frame aflare_holster6
 
 
+#else
+// Normal model
+$modelname v_flare
+
+// idle
+$frame flare_idle1
+
+// draw
+$frame flare_draw1 flare_draw2 flare_draw3
+
+// fire
+$frame flare_fire1 flare_fire2 flare_fire3 flare_fire4
+
+// holster
+$frame flare_holster1 flare_holster2 flare_holster3
+
+
+// Akimbo model
+$modelname ga_flare
+
+// idle
+$frame aflare_idle1
+
+// draw
+$frame aflare_draw1 aflare_draw2 aflare_draw3
+
+// fire
+$frame aflare_fire1 aflare_fire2 aflare_fire3 aflare_fire4 aflare_fire5
+
+// holster
+$frame aflare_holster1 aflare_holster2 aflare_holster3
+#endif
+
+
 // ----- Player related code ----- //
 
 // Normal fire
@@ -86,16 +121,25 @@ void() player_akflare4 = [$attack2, player_run     ]
 // Normal draw
 void() player_flaredraw1 = [$attack2, player_flaredraw2] { self.weaponframe = $flare_draw1; };
 void() player_flaredraw2 = [$attack2, player_flaredraw3] { self.weaponframe = $flare_draw2; };
+#ifndef NEW_MODELS
 void() player_flaredraw3 = [$attack2, player_flaredraw4] { self.weaponframe = $flare_draw3; };
 void() player_flaredraw4 = [$attack2, player_run       ] { self.weaponframe = $flare_draw4; };
+#else
+void() player_flaredraw3 = [$attack2, player_run       ] { self.weaponframe = $flare_draw3; };
+#endif
 
 // Normal holster
 void() player_flareholster1 = [$attack2, player_flareholster2] { self.weaponframe = $flare_holster1; };
 void() player_flareholster2 = [$attack2, player_flareholster3] { self.weaponframe = $flare_holster2; };
 void() player_flareholster3 = [$attack2, player_flareholster4] { self.weaponframe = $flare_holster3; };
+#ifndef NEW_MODELS
 void() player_flareholster4 = [$attack2, player_flareholster5] { self.weaponframe = $flare_holster4; };
 void() player_flareholster5 = [$attack2, player_run          ] { W_DrawWeapon (self.newweapon); };
+#else
+void() player_flareholster4 = [$attack2, player_run          ] { W_DrawWeapon (self.newweapon); };
+#endif
 
+#ifndef NEW_MODELS
 // Akimbo draw
 void() player_akflaredraw1 = [$attack2, player_akflaredraw2] { self.weaponframe = $aflare_draw1; };
 void() player_akflaredraw2 = [$attack2, player_akflaredraw3] { self.weaponframe = $aflare_draw3; };
@@ -106,6 +150,20 @@ void() player_akflareholst1 = [$attack2, player_akflareholst2] { self.weaponfram
 void() player_akflareholst2 = [$attack2, player_akflareholst3] { self.weaponframe = $aflare_holster3; };
 void() player_akflareholst3 = [$attack2, player_akflareholst4] { self.weaponframe = $aflare_holster5; };
 void() player_akflareholst4 = [$attack2, player_run          ] { W_DrawWeapon (self.newweapon); };
+
+
+#else
+// Akimbo draw
+void() player_akflaredraw1 = [$attack2, player_akflaredraw2] { self.weaponframe = $aflare_draw1; };
+void() player_akflaredraw2 = [$attack2, player_akflaredraw3] { self.weaponframe = $aflare_draw2; };
+void() player_akflaredraw3 = [$attack2, player_run         ] { self.weaponframe = $aflare_draw3; };
+
+// Akimbo holster
+void() player_akflareholst1 = [$attack2, player_akflareholst2] { self.weaponframe = $aflare_holster1; };
+void() player_akflareholst2 = [$attack2, player_akflareholst3] { self.weaponframe = $aflare_holster2; };
+void() player_akflareholst3 = [$attack2, player_akflareholst4] { self.weaponframe = $aflare_holster3; };
+void() player_akflareholst4 = [$attack2, player_run          ] { W_DrawWeapon (self.newweapon); };
+#endif
 
 
 //============================================================================
@@ -431,7 +489,11 @@ void() Flare_Draw =
     }
     else
     {
+        #ifndef NEW_MODELS
         self.attack_finished = time + 0.5;
+        #else
+        self.attack_finished = time + 0.4;
+        #endif
         player_flaredraw1 ();
     }
 };
@@ -453,7 +515,11 @@ void() Flare_Holster =
     }
     else
     {
+        #ifndef NEW_MODELS
         self.attack_finished = time + 0.5;
+        #else
+        self.attack_finished = time + 0.4;
+        #endif
         player_flareholster1 ();
     }
 };
@@ -470,12 +536,20 @@ void() Flare_UpdateView =
 {
     if (self.akimbo_finished > time && self.currentammo >= 2)
     {
+        #ifndef NEW_MODELS
         self.weaponmodel = "progs/v_aflare.mdl";
+        #else
+        self.weaponmodel = "models/weapons/ga_flare.md3";
+        #endif
         self.items = self.items | IT_GUNS_AKIMBO;
     }
     else
     {
+        #ifndef NEW_MODELS
         self.weaponmodel = "progs/v_shot.mdl";
+        #else
+        self.weaponmodel = "models/weapons/v_flare.md3";
+        #endif
         self.items = self.items - (self.items & IT_GUNS_AKIMBO);
     }
 };

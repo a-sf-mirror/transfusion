@@ -1538,13 +1538,15 @@ void() weapon_touch =
 // Flaregun
 void() weapon_flaregun =
 {
-    precache_model ("progs/v_shot.mdl");
     #ifndef NEW_MODELS
+    precache_model ("progs/v_shot.mdl");
     precache_model ("progs/g_flare.mdl");
-    #else
-    precache_model ("models/weapons/g_flare.md3");
-    #endif
     precache_model ("progs/v_aflare.mdl");  // akimbo model
+    #else
+    precache_model ("models/weapons/v_flare.md3");
+    precache_model ("models/weapons/g_flare.md3");
+    precache_model ("models/weapons/ga_flare.md3");  // akimbo model
+    #endif
 
     #ifndef NEW_MODELS
     setmodel (self, "progs/g_flare.mdl");
