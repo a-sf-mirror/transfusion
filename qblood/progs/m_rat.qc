@@ -19,9 +19,8 @@
 
 /* Tim's to-do list
     
-    verify biting sound
-    Need more frames ??? (Luke)    
-    
+    Need more frames ??? (Luke)
+  
 */
 
 
@@ -67,11 +66,13 @@ void (float dist) rat_ai =
     }
 };
 
-void () rat_walk1 = [$run1, rat_walk2] {rat_ai (6);};
-void () rat_walk2 = [$run2, rat_walk3] {rat_ai (4);};
+void () rat_walk1 = [$run1, rat_walk2] {rat_ai (3);};
+void () rat_walk2 = [$run2, rat_walk3] {rat_ai (3);};
 void () rat_walk3 = [$run3, rat_walk4] {rat_ai (3);};
-void () rat_walk4 = [$run4, rat_walk1] {rat_ai (5);};
+void () rat_walk4 = [$run4, rat_walk1] {rat_ai (3);};
 
+
+// FIXME: Unless more frames get added to the rat, we don't need two stand functions
 void () rat_stand = 
 {
     if (random () < 0.05)
@@ -107,6 +108,9 @@ void () rat_attack =
 {
     local vector delta;
 
+    if (self.attack_finished > time)    // To avoid constant player chomping
+        return;
+
     delta = (self.enemy.origin - self.origin);
 
     if (vlen (delta) <= 90)      
@@ -120,7 +124,7 @@ void () rat_attack =
 void() rat_bite =
 {
     local vector    delta;
-    local float     ldmg;
+    local float     ldmg;    
 
     if (self.enemy.classname != "player") // To avoid hurting monster buddies on purpose
         return;
@@ -138,7 +142,9 @@ void() rat_bite =
     ldmg = (random() + random() + random()) * 8;
     T_Damage (self.enemy, self, self, ldmg, DF_BODY, string_null);
         
-    sound (self, CHAN_VOICE, "hellhound/houndbt3.wav", 1, ATTN_NORM);  //FIXME: Verify this is correct biting sound
+    sound (self, CHAN_VOICE, "hellhound/houndbit.wav", 1, ATTN_NORM);  //FIXME: Verify this is correct biting sound
+    
+    self.attack_finished = time + 1;
     
 };
 
@@ -207,7 +213,7 @@ void () monster_rat =
     precache_sound ("rat/ratpain.wav");
     precache_sound ("rat/ratroam.wav");
     precache_sound ("rat/ratspot.wav");
-
+    precache_sound ("hellhound/houndbit.wav");
             
     self.solid = SOLID_SLIDEBOX;
     self.movetype = MOVETYPE_STEP;
@@ -220,5 +226,7 @@ void () monster_rat =
     self.th_die = rat_die;
     self.th_pain = rat_pain;
     self.th_missile = rat_attack;
+    self.touch = monster_stepped_on;
+    self.attack_finished = 0;
     walkmonster_start ();
 };

@@ -19,9 +19,9 @@
 
 /* Tim's to-do list
     
+    flame looks like it's coming out of neck, needs to come from mouth
     head - Kick hell hounds head around!
     need to get real health and damage values
-    damage to player if you touch hellhound - in player.qc, for all monsters?
     immunity to fire attacks - in T_Damage - combat.qc
     instant death by water    
 */
@@ -84,18 +84,18 @@ void (float dist) hellhound_ai =
     }
 };
 
-void () hellhound_walk1 = [$run1, hellhound_walk2] {hellhound_ai (6);};
-void () hellhound_walk2 = [$run2, hellhound_walk3] {hellhound_ai (4);};
-void () hellhound_walk3 = [$run3, hellhound_walk4] {hellhound_ai (3);};
-void () hellhound_walk4 = [$run4, hellhound_walk5] {hellhound_ai (5);};
-void () hellhound_walk5 = [$run5, hellhound_walk6] {hellhound_ai (6);};
-void () hellhound_walk6 = [$run6, hellhound_walk7] {hellhound_ai (4);};
-void () hellhound_walk7 = [$run7, hellhound_walk8] {hellhound_ai (3);};
-void () hellhound_walk8 = [$run8, hellhound_walk9] {hellhound_ai (3);};
-void () hellhound_walk9 = [$run9, hellhound_walk10] {hellhound_ai (3);};
-void () hellhound_walk10 = [$run10, hellhound_walk11] {hellhound_ai (3);};
-void () hellhound_walk11 = [$run11, hellhound_walk12] {hellhound_ai (3);};
-void () hellhound_walk12 = [$run12, hellhound_walk1] {hellhound_ai (3);};
+void () hellhound_walk1 = [$run1, hellhound_walk2] {hellhound_ai (10);};
+void () hellhound_walk2 = [$run2, hellhound_walk3] {hellhound_ai (10);};
+void () hellhound_walk3 = [$run3, hellhound_walk4] {hellhound_ai (10);};
+void () hellhound_walk4 = [$run4, hellhound_walk5] {hellhound_ai (10);};
+void () hellhound_walk5 = [$run5, hellhound_walk6] {hellhound_ai (10);};
+void () hellhound_walk6 = [$run6, hellhound_walk7] {hellhound_ai (10);};
+void () hellhound_walk7 = [$run7, hellhound_walk8] {hellhound_ai (10);};
+void () hellhound_walk8 = [$run8, hellhound_walk9] {hellhound_ai (10);};
+void () hellhound_walk9 = [$run9, hellhound_walk10] {hellhound_ai (10);};
+void () hellhound_walk10 = [$run10, hellhound_walk11] {hellhound_ai (10);};
+void () hellhound_walk11 = [$run11, hellhound_walk12] {hellhound_ai (10);};
+void () hellhound_walk12 = [$run12, hellhound_walk1] {hellhound_ai (10);};
 
 
 void () hellhound_stand = 
@@ -218,7 +218,7 @@ void() hellhound_flameSpawn =
     newmis.nextthink = time + 0.6;
     setmodel (newmis, "progs/sprayfir.spr");
     setsize (newmis, '-1 -1 -1', '1 1 1');
-    setorigin (newmis, self.origin + '10 10 10');
+    setorigin (newmis, self.origin + '0 -35 10');
 
     newmis.velocity = dir * 550;
 

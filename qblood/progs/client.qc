@@ -1910,6 +1910,13 @@ void(entity attacker) ClientObituary =
             m_name = "a tesla cultist";
         else if (attacker.classname == "monster_redcultist")
             m_name = "a chosen cultist";
+        else if (attacker.classname == "monster_gargoyle")
+            m_name = "a gargoyle";
+        else if (attacker.classname == "monster_stonegargoyle")
+            m_name = "a stone gargoyle";
+        else if (attacker.classname == "monster_minicaleb")
+            m_name = "a mini-caleb";
+        else break; // Wasn't killed by a monster
 
         bprint4 (self.netname, " was killed by ", m_name, "\n");
     }

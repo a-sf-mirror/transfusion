@@ -43,8 +43,7 @@ $frame idle1
 // Prototypes
 
 void () greencultist_stand1;
-void () cultist_throw_TNT;
-void () cultist_TNT_touch;
+
 
 void (float dist) greencultist_ai =
 {
@@ -73,25 +72,7 @@ void () greencultist_walk1 = [$idle1, greencultist_walk1] {greencultist_ai (3);}
 
 void () greencultist_stand = 
 {
-    local float     r;
-    
-    r = random();
-    
-    if (r < 0.02)  // TESTME: May have to try <= on this set
-        sound (self, CHAN_WEAPON, "cultist/cultspt1.wav", 1, ATTN_NORM);
-        
-    else if (r < 0.04)
-        sound (self, CHAN_WEAPON, "cultist/cultspt2.wav", 1, ATTN_NORM);
-        
-    else if (r < 0.06)
-        sound (self, CHAN_WEAPON, "cultist/cultspt3.wav", 1, ATTN_NORM);
-        
-    else if (r < 0.08)
-        sound (self, CHAN_WEAPON, "cultist/cultspt4.wav", 1, ATTN_NORM);
-        
-    else if (r < 0.1)
-        sound (self, CHAN_WEAPON, "cultist/cultspt5.wav", 1, ATTN_NORM);        
-    
+    cultist_stand();    
     greencultist_stand1();    
 };
 
@@ -108,7 +89,7 @@ void () greencultist_walk =
 void () greencultist_run =
 {
     self.style = 3;
-    greencultist_walk1 ();
+    greencultist_walk1();
 };
 
 
@@ -121,20 +102,11 @@ void () greencultist_attack2 = [$idle1, greencultist_run] {ai_face ();};
 void () greencultist_attack =
 {
     local vector delta;
-    local float r;
     
-    r = random();
-    
-    
-    if (self.pain_finished < time)// To avoid several sounds at once
-    if (r < 0.05)
-        sound (self, CHAN_AUTO, "cultist/cultglo1.wav", 1, ATTN_NORM);
-    else if (r < 0.10)
-        sound (self, CHAN_AUTO, "cultist/cultglo2.wav", 1, ATTN_NORM);
-    else if (r < 0.15)
-        sound (self, CHAN_AUTO, "cultist/cultglo3.wav", 1, ATTN_NORM);
-    else if (r < 0.20)
-        sound (self, CHAN_AUTO, "cultist/cultglo4.wav", 1, ATTN_NORM);
+    if (!infront(self.enemy)) // If there's something blocking the shot
+        return;
+        
+    cultist_attack();
 
     delta = (self.enemy.origin - self.origin);
 
@@ -147,32 +119,7 @@ void () greencultist_attack =
 
 void () greencultist_pain =
 {
-    local float r;
-
-    // don't make multiple pain sounds right after each other
-    if (self.pain_finished > time)
-        return;
-        
-    r = random();    
-    
-    if (self.deathtype == "fire")
-    {
-        if (r < 0.33)
-            {sound (self,2,"cultist/cultfir1.wav",1,1); self.pain_finished = (time + 3.2);}
-        else if (r < 0.66)
-            {sound (self,2,"cultist/cultfir2.wav",1,1);    self.pain_finished = (time + 4.62);}
-        else 
-            {sound (self,2,"cultist/cultfir3.wav",1,1);    self.pain_finished = (time + 3.62);}
-    }
-        
-    else if (r < 0.25)
-        {sound (self,2,"cultist/cultpan1.wav",1,1);    self.pain_finished = (time + 0.38);}
-    else if (r < 0.5)
-        {sound (self,2,"cultist/cultpan2.wav",1,1);    self.pain_finished = (time + 0.35);}
-    else if (r < 0.75)
-        {sound (self,2,"cultist/cultpan3.wav",1,1);    self.pain_finished = (time + 0.4);}
-    else
-        {sound (self,2,"cultist/cultpan4.wav",1,1);    self.pain_finished = (time + 0.29);}    
+    cultist_pain();
     
 //    greencultist_pain1 (); // FIXME: Need pain frames - luke
     
@@ -189,25 +136,8 @@ void () greencultist_death1 = [$idle1, greencultist_death1]
 
 void () greencultist_die =
 {
-    self.effects = 0;
-    if (self.health < -40)
-    {
-        sound (self, CHAN_VOICE, "cultist/cultdie3.wav", 1, ATTN_NORM);
-
-        // ThrowHead (self.health);  // FIXME: At some point need to drop greencultist head, and it be kickable
-        RandomHumanGibs ();
-        remove (self);
-        return;
-    }
-    
-    if (random () < 0.5)
-        sound (self, CHAN_VOICE, "cultist/cultdie1.wav", 1, ATTN_NORM);
-    else
-        sound (self, CHAN_VOICE, "cultist/cultdie2.wav", 1, ATTN_NORM);
-    
+    cultist_die();    
     greencultist_death1 ();
-    self.solid = SOLID_NOT;
-
 };
 
 void () monster_greencultist =

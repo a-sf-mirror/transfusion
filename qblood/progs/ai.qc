@@ -271,6 +271,10 @@ void() SightSound =
         sound (self, CHAN_VOICE, "axezombie/azomspot.wav", 1, ATTN_NORM);
     else if (self.classname == "monster_eel")
         sound (self, CHAN_VOICE, "eel/eelspot.wav", 1, ATTN_NORM);
+    else if (self.classname == "monster_gargoyle")
+        sound (self, CHAN_VOICE, "gargoyle/gargspot.wav", 1, ATTN_NORM);
+    else if (self.classname == "monster_stonegargoyle")
+        sound (self, CHAN_VOICE, "stonegargoyle/sargspot.wav", 1, ATTN_NORM);
     else if (self.classname == "monster_browncultist" ||
              self.classname == "monster_blackcultist" ||
              self.classname == "monster_redcultist"   ||
@@ -279,13 +283,13 @@ void() SightSound =
     {
         rsnd = random();
 
-        if (rsnd < 0.2)
+        if (rsnd <= 0.2)
             sound (self, CHAN_VOICE, "cultist/cultspt1.wav", 1, ATTN_NORM);
-        else if (rsnd < 0.4)
+        else if (rsnd <= 0.4)
             sound (self, CHAN_VOICE, "cultist/cultspt2.wav", 1, ATTN_NORM);
-        else if (rsnd < 0.6)
+        else if (rsnd <= 0.6)
             sound (self, CHAN_VOICE, "cultist/cultspt3.wav", 1, ATTN_NORM);
-        else if (rsnd < 0.8)
+        else if (rsnd <= 0.8)
             sound (self, CHAN_VOICE, "cultist/cultspt4.wav", 1, ATTN_NORM);
         else
             sound (self, CHAN_VOICE, "cultist/cultspt5.wav", 1, ATTN_NORM);

@@ -251,3 +251,17 @@ void() swimmonster_start =
     self.think = swimmonster_start_go;
     total_monsters = total_monsters + 1;
 };
+
+/*
+    monster_stepped_on
+    For everything that can be stepped on and damaged (i.e. rats, spiders, minicaleb)
+
+*/
+
+void () monster_stepped_on =
+{
+    T_Damage (self, self.enemy, self.enemy, 5, DF_BODY, string_null);
+
+    if (self.health > 1)    // To avoid "undead" enemies.  Monsters shouldn't think after they're dead!
+        self.th_pain(self.enemy, 0);
+};

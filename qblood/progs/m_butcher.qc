@@ -19,16 +19,11 @@
 
 /* Tim's to-do list
     
-    August 14/15/16 - updated ai.qc (spotted sounds), client.qc (obituaries), w_fork.qc (non-clank for hitting enemy), 
-                      m_rat.qc, m_bat.qc, m_eel.qc, m_zombie.qc, m_hellhound.qc, m_butcher.qc, m_browncultist.qc, player.qc (throwhead)
-            
     tweak corpse explosion
     corpse explosion model when voodoo dolled alt-fire death? 
     model - vomit ball (Kazashi and Cruaich)
     need to get real health and damage values
     head - fix use of butcher head with ThrowHead().
-    fix missile impacts so they only make living non-world objects bleed
-    pain sequence issue with being on fire?
     damage to player if you touch butcher - in player.qc, for all monsters?
 */
 
@@ -74,13 +69,13 @@ $frame death8 death9 death10 death11 death12 death13
 
 // Prototypes
 
-void () butcher_launch_cleaver;      // Throw butcher's cleaver
-void () butcher_launch_vomit;        // Throw up on player
+void () butcher_launch_cleaver;     // Throw butcher's cleaver
+void () butcher_launch_vomit;       // Throw up on player
 void () butcher_stand1;             // Minor shoulder shrugging and undead breathing
 void () butcher_standa1;            // Bad habits... kids- don't pick your nose!
 void () butcher_VomitTouch;         // When struck by vomit
-void () butcher_CleaverTouch;         // When struck by cleaver
-
+void () butcher_CleaverTouch;       // When struck by cleaver
+void () butcher_CleaverChop;        // Melee cleaver whack
 
 void (float dist) butcher_ai =
 {
@@ -103,12 +98,12 @@ void (float dist) butcher_ai =
 
 //--- Walking around
 
-void () butcher_walk1 = [$walk1, butcher_walk2] {butcher_ai (6);};
-void () butcher_walk2 = [$walk2, butcher_walk3] {butcher_ai (4);};
+void () butcher_walk1 = [$walk1, butcher_walk2] {butcher_ai (3);};
+void () butcher_walk2 = [$walk2, butcher_walk3] {butcher_ai (3);};
 void () butcher_walk3 = [$walk3, butcher_walk4] {butcher_ai (3);};
-void () butcher_walk4 = [$walk4, butcher_walk5] {butcher_ai (5);};
-void () butcher_walk5 = [$walk5, butcher_walk6] {butcher_ai (6);};
-void () butcher_walk6 = [$walk6, butcher_walk7] {butcher_ai (4);};
+void () butcher_walk4 = [$walk4, butcher_walk5] {butcher_ai (3);};
+void () butcher_walk5 = [$walk5, butcher_walk6] {butcher_ai (3);};
+void () butcher_walk6 = [$walk6, butcher_walk7] {butcher_ai (3);};
 void () butcher_walk7 = [$walk7, butcher_walk8] {butcher_ai (3);};
 void () butcher_walk8 = [$walk8, butcher_walk9] {butcher_ai (3);};
 void () butcher_walk9 = [$walk9, butcher_walk10] {butcher_ai (3);};
@@ -205,9 +200,9 @@ void () butcher_attacka5 = [$attacka5, butcher_attacka6] {ai_face ();};
 void () butcher_attacka6 = [$attacka6, butcher_attacka7] {ai_face ();};
 void () butcher_attacka7 = [$attacka7, butcher_attacka8] {ai_face ();};
 void () butcher_attacka8 = [$attacka8, butcher_attacka9] {ai_face ();};
-void () butcher_attacka9 = [$attacka9, butcher_attacka10] {ai_face ();};
+void () butcher_attacka9 = [$attacka9, butcher_attacka10] {butcher_launch_cleaver (); ai_face ();};
 void () butcher_attacka10 = [$attacka10, butcher_attacka11] {ai_face ();};
-void () butcher_attacka11 = [$attacka11, butcher_attacka12] {butcher_launch_cleaver ();ai_face ();};
+void () butcher_attacka11 = [$attacka11, butcher_attacka12] {ai_face ();};
 void () butcher_attacka12 = [$attacka12, butcher_run] {ai_face ();};
 
 //--- Vomiting 
@@ -221,10 +216,33 @@ void () butcher_attackb6 = [$attackb6, butcher_attackb7] {ai_face ();};
 void () butcher_attackb7 = [$attackb7, butcher_attackb8] {butcher_launch_vomit ();ai_face ();};
 void () butcher_attackb8 = [$attackb8, butcher_run] {ai_face ();};
 
+//--- Cleaver chop
+ 
+void () butcher_attackc1 = [$attacka1, butcher_attackc2] {ai_face ();};
+void () butcher_attackc2 = [$attacka2, butcher_attackc3] {ai_face ();};
+void () butcher_attackc3 = [$attacka3, butcher_attackc4] {ai_face ();};
+void () butcher_attackc4 = [$attacka4, butcher_attackc5] {ai_face ();};
+void () butcher_attackc5 = [$attacka5, butcher_attackc6] {ai_face ();};
+void () butcher_attackc6 = [$attacka6, butcher_attackc7] {ai_face ();};
+void () butcher_attackc7 = [$attacka7, butcher_attackc8] {ai_face ();};
+void () butcher_attackc8 = [$attacka8, butcher_attackc9] {ai_face ();};
+void () butcher_attackc9 = [$attacka9, butcher_attackc10] {butcher_CleaverChop(); ai_face ();};
+void () butcher_attackc10 = [$attacka10, butcher_attackc11] {ai_face ();};
+void () butcher_attackc11 = [$attacka11, butcher_attackc12] {ai_face ();};
+void () butcher_attackc12 = [$attacka12, butcher_run] {ai_face ();};
+
 void () butcher_attack =
 {
-    if (random () < 0.5)
+    local float dist;
+    
+    dist = vlen(self.enemy.origin - self.origin);
+    
+    if (dist < 90)
+        butcher_attackc1 ();
+        
+    else if (random () < 0.5)
         butcher_attacka1 ();
+        
     else
         butcher_attackb1 ();
 };
@@ -246,7 +264,7 @@ void () butcher_launch_cleaver =
     newmis.movetype = MOVETYPE_FLYMISSILE;
     setmodel (newmis, "models/enemies/butcher_cleaver.md3");
     setsize (newmis, '0 0 0', '0 0 0');        // FIXME
-    newmis.origin = self.origin + '0 0 16';
+    newmis.origin = self.origin + '0 -8 20';
     newmis.velocity = vec * 600;
     newmis.avelocity = '500 500 500';
     newmis.touch = butcher_CleaverTouch;
@@ -339,12 +357,33 @@ void () butcher_VomitTouch =
     remove (self);
 };
 
+void () butcher_CleaverChop =
+{
+    local vector    delta;
+    local float     ldmg;
+
+    if (!self.enemy)
+        return;        // removed before stroke
+        
+    delta = self.enemy.origin - self.origin;
+
+    if (vlen(delta) > 90)
+        return;
+        
+    ldmg = (random() + random()) * 3;
+    T_Damage (self.enemy, self, self, ldmg, DF_BODY, string_null);
+    
+    SpawnBlood (self.origin, '0 0 0', ldmg);
+    SpawnBloodSpray (trace_ent, self.origin);
+    sound (self, CHAN_WEAPON, "weapons/pitchfrk/pflesh.wav", 1, ATTN_NORM);        
+};
+
 //--- Pain sequence
 
-void () butcher_pain1 = [$pain1, butcher_pain2] {};
-void () butcher_pain2 = [$pain2, butcher_pain3] {};
-void () butcher_pain3 = [$pain3, butcher_pain4] {};
-void () butcher_pain4 = [$pain4, butcher_run] {}; 
+void () butcher_pain1 = [$pain1, butcher_pain2] {if (self.deathtype != "fire") ai_pain(3);};
+void () butcher_pain2 = [$pain2, butcher_pain3] {if (self.deathtype != "fire") ai_pain(3);};
+void () butcher_pain3 = [$pain3, butcher_pain4] {if (self.deathtype != "fire") ai_pain(3);};
+void () butcher_pain4 = [$pain4, butcher_run] {if (self.deathtype != "fire") ai_pain(3);};
 
 
 void () butcher_pain =
@@ -468,6 +507,6 @@ void () monster_butcher =
     self.th_run = butcher_run;
     self.th_die = butcher_die;
     self.th_pain = butcher_pain;
-    self.th_missile = butcher_attack;
+    self.th_missile = butcher_attack;    
     walkmonster_start ();
 };

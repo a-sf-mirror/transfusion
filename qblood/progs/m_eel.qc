@@ -19,10 +19,9 @@
 
 /* Tim's to-do list
     
-    Sounds - all
-    attacks - all
     maybe float to surface when dead?
-    need biting "crunh" sound
+    need biting "crunch" sound
+    does melee touch cause damage?
 */
 
 
@@ -129,19 +128,19 @@ void(entity attacker, float damage)    eel_pain =
     sound (self, CHAN_VOICE, "eel/eelpain.wav", 1, ATTN_NORM);        
         
     self.pain_finished = time + 1;
-    ai_pain(6);
+    ai_pain(12);
 };
 
 void() monster_eel =
 {
-/*  Disabled for testing
+//  Disabled for testing
 
     if (deathmatch)
     {
         remove(self);
         return;
     }
-*/
+
     precache_model ("models/enemies/bone_eel.md3");
 
     precache_sound ("eel/eeldie1.wav");

@@ -43,6 +43,8 @@ $frame idle1
 // Prototypes
 
 void () redcultist_stand1;
+void () redcultist_fireShotgun;
+void () redcultist_attackDecide;
 
 void (float dist) redcultist_ai =
 {
@@ -71,25 +73,7 @@ void () redcultist_walk1 = [$idle1, redcultist_walk1] {redcultist_ai (3);};
 
 void () redcultist_stand = 
 {
-    local float     r;
-    
-    r = random();
-    
-    if (r < 0.02)  // TESTME: May have to try <= on this set
-        sound (self, CHAN_WEAPON, "cultist/cultspt1.wav", 1, ATTN_NORM);
-        
-    else if (r < 0.04)
-        sound (self, CHAN_WEAPON, "cultist/cultspt2.wav", 1, ATTN_NORM);
-        
-    else if (r < 0.06)
-        sound (self, CHAN_WEAPON, "cultist/cultspt3.wav", 1, ATTN_NORM);
-        
-    else if (r < 0.08)
-        sound (self, CHAN_WEAPON, "cultist/cultspt4.wav", 1, ATTN_NORM);
-        
-    else if (r < 0.1)
-        sound (self, CHAN_WEAPON, "cultist/cultspt5.wav", 1, ATTN_NORM);        
-    
+    cultist_stand();
     redcultist_stand1();    
 };
 
@@ -111,71 +95,51 @@ void () redcultist_run =
 
 //--- Shooting gun
  
-void () redcultist_attack1 = [$idle1, redcultist_attack2] {cultist_fireShotgun (); ai_face ();};
+void () redcultist_attack1 = [$idle1, redcultist_attack2] {redcultist_fireShotgun (); ai_face ();};
 void () redcultist_attack2 = [$idle1, redcultist_run] {ai_face ();};
 
 void () redcultist_attack =
 {
-    local vector delta;
-    local float r;
-    
     if (!infront(self.enemy)) // If there's something blocking the shot
-        return;    
-    
-    if (range(self.enemy) == RANGE_MELEE) // A jump back hack, need to smooth this out over frames
-    {    
-        // Need to actually check if he can back up, if not go ahead and use the shotgun
-        ai_back(100);
         return;
-    }
     
-    r = random();
+    cultist_attack(); // Talk some smack!
     
+    redcultist_attackDecide();
     
-    if (self.pain_finished < time)// To avoid several sounds at once
-    if (r < 0.05)
-        sound (self, CHAN_AUTO, "cultist/cultglo1.wav", 1, ATTN_NORM);
-    else if (r < 0.10)
-        sound (self, CHAN_AUTO, "cultist/cultglo2.wav", 1, ATTN_NORM);
-    else if (r < 0.15)
-        sound (self, CHAN_AUTO, "cultist/cultglo3.wav", 1, ATTN_NORM);
-    else if (r < 0.20)
-        sound (self, CHAN_AUTO, "cultist/cultglo4.wav", 1, ATTN_NORM);
+};
 
-    redcultist_attack1 ();    
-    
+void () redcultist_attackDecide =
+{
+    if (self.attack_finished > time)
+    {
+        ai_face();                        // Face player
+        redcultist_attack1 ();    
+    }
+    else
+    {
+        self.think = redcultist_run;     // Turn basic "I have an enemy" AI back on
+        self.nextthink = time + 0.1;    // Turn that AI back on in 1/10 of a second
+    }
+
+};
+
+//--- Shoot the player
+
+void () redcultist_fireShotgun =
+{
+    ai_face();
+    cultist_fireShotgun();
+
+    self.think = redcultist_attackDecide;
+    self.nextthink = time + 0.5;
 };
 
 
 void () redcultist_pain =
 {
-    local float r;
-
-    // don't make multiple pain sounds right after each other
-    if (self.pain_finished > time)
-        return;
-        
-    r = random();    
-    
-    if (self.deathtype == "fire")
-    {
-        if (r < 0.33)
-            {sound (self,2,"cultist/cultfir1.wav",1,1); self.pain_finished = (time + 3.2);}
-        else if (r < 0.66)
-            {sound (self,2,"cultist/cultfir2.wav",1,1);    self.pain_finished = (time + 4.62);}
-        else 
-            {sound (self,2,"cultist/cultfir3.wav",1,1);    self.pain_finished = (time + 3.62);}
-    }
-        
-    else if (r < 0.25)
-        {sound (self,2,"cultist/cultpan1.wav",1,1);    self.pain_finished = (time + 0.38);}
-    else if (r < 0.5)
-        {sound (self,2,"cultist/cultpan2.wav",1,1);    self.pain_finished = (time + 0.35);}
-    else if (r < 0.75)
-        {sound (self,2,"cultist/cultpan3.wav",1,1);    self.pain_finished = (time + 0.4);}
-    else
-        {sound (self,2,"cultist/cultpan4.wav",1,1);    self.pain_finished = (time + 0.29);}    
-    
+      cultist_pain();
+      
 //    redcultist_pain1 (); // FIXME: Need pain frames - luke
     
 };
@@ -210,7 +174,6 @@ void () monster_redcultist =
         remove (self);
         return ;
     }
-
 
     precache_model ("models/enemies/cultist-red.md3");
     precache_model ("models/weapons/grenades/gr_tnt.md3");

@@ -43,13 +43,17 @@ fight.qc
 ai.qc
 monsters.qc
 m_bat.qc
+m_cultist.qc
 m_blackcultist.qc
 m_bluecultist.qc
 m_browncultist.qc
 m_butcher.qc
 m_eel.qc
+m_gargoyle.qc
 m_greencultist.qc
 m_hellhound.qc
+m_minicaleb.qc
 m_rat.qc
 m_redcultist.qc
 m_zombie.qc
+m_stonegargoyle.qc

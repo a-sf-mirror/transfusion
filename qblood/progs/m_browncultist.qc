@@ -21,7 +21,7 @@
             
     Shotgun does not hit up close - jump back hack implemented. real fix???
     Test the idle smack talk    
-    Too many sounds at once
+    Too many sounds at once - I need the sound lengths.  Set attackfinished to end when taunt sound ends
     need more than one frame - luke
     need to get real health and damage values
     head - make use of cultist head with ThrowHead().  Kick cultist head around!    
@@ -43,9 +43,9 @@ $frame idle1
 // Prototypes
 
 void () browncultist_stand1;
-void () cultist_fireShotgun;
-void () cultist_throw_TNT;
-void () cultist_TNT_touch;
+void () browncultist_attackDecide;
+void () browncultist_fireShotgun;
+
 
 void (float dist) browncultist_ai =
 {
@@ -67,38 +67,21 @@ void (float dist) browncultist_ai =
 };
 
 //--- Walking around
-
 void () browncultist_walk1 = [$idle1, browncultist_walk1] {browncultist_ai (3);};
 
-//--- Decide which idle to do
 
+//--- Decide what to say
 void () browncultist_stand = 
 {
-    local float     r;
+    cultist_stand();
     
-    r = random();
-    
-    if (r < 0.02)  // TESTME: May have to try <= on this set
-        sound (self, CHAN_WEAPON, "cultist/cultspt1.wav", 1, ATTN_NORM);
-        
-    else if (r < 0.04)
-        sound (self, CHAN_WEAPON, "cultist/cultspt2.wav", 1, ATTN_NORM);
-        
-    else if (r < 0.06)
-        sound (self, CHAN_WEAPON, "cultist/cultspt3.wav", 1, ATTN_NORM);
-        
-    else if (r < 0.08)
-        sound (self, CHAN_WEAPON, "cultist/cultspt4.wav", 1, ATTN_NORM);
-        
-    else if (r < 0.1)
-        sound (self, CHAN_WEAPON, "cultist/cultspt5.wav", 1, ATTN_NORM);        
-    
+    // FIXME: Whenever the model is finished I can probably redo this
     browncultist_stand1();    
 };
 
 //--- Basic idle
-
 void () browncultist_stand1 = [$idle1, browncultist_stand1] {ai_stand();};
+
 
 void () browncultist_walk =
 {
@@ -114,110 +97,62 @@ void () browncultist_run =
 
 //--- Shooting gun
  
-void () browncultist_attacka1 = [$idle1, browncultist_attacka2] {cultist_fireShotgun (); ai_face ();};
-void () browncultist_attacka2 = [$idle1, browncultist_run] {ai_face ();};
+void () browncultist_attacka1 = [$idle1, browncultist_attacka2] {browncultist_fireShotgun (); ai_face (); ai_run_slide();};
+void () browncultist_attacka2 = [$idle1, browncultist_run] {ai_face (); ai_run_slide();};
 
 //--- Throwing TNT 
 
-void () browncultist_attackb1 = [$idle1, browncultist_attackb2] {cultist_throw_TNT (); ai_face ();};
-void () browncultist_attackb2 = [$idle1, browncultist_run] {ai_face ();};
+void () browncultist_attackb1 = [$idle1, browncultist_attackb2] {cultist_throw_TNT (); ai_face (); ai_run_slide();};
+void () browncultist_attackb2 = [$idle1, browncultist_run] {ai_face (); ai_run_slide();};
 
 
 void () browncultist_attack =
 {
-    local vector delta;
-    local float r;
-    
     if (!infront(self.enemy)) // If there's something blocking the shot
-        return;    
-    
-    if (range(self.enemy) == RANGE_MELEE) // A jump back hack, need to smooth this out over frames
-    {    
-        // Need to actually check if he can back up, if not go ahead and use the shotgun
-        ai_back(100);
         return;
+        
+    cultist_attack(); // Talk some smack!
+    
+    browncultist_attackDecide();    
+};
+
+void () browncultist_attackDecide =
+{
+    if (self.attack_finished > time)
+    {
+        ai_face();                        // Face player
+        
+        if (range(self.enemy) == RANGE_NEAR) // If the player is near shoot them
+            browncultist_attacka1 ();    
+        else
+            browncultist_attackb1 ();    // Otherwise TNT them    
     }
-    
-    r = random();
-    
-    
-    if (self.pain_finished < time)// To avoid several sounds at once
-    if (r < 0.05)
-        sound (self, CHAN_AUTO, "cultist/cultglo1.wav", 1, ATTN_NORM);
-    else if (r < 0.10)
-        sound (self, CHAN_AUTO, "cultist/cultglo2.wav", 1, ATTN_NORM);
-    else if (r < 0.15)
-        sound (self, CHAN_AUTO, "cultist/cultglo3.wav", 1, ATTN_NORM);
-    else if (r < 0.20)
-        sound (self, CHAN_AUTO, "cultist/cultglo4.wav", 1, ATTN_NORM);
-
-    delta = (self.enemy.origin - self.origin);
-
-    if (range(self.enemy) == RANGE_NEAR) // If the player is near shoot them
-        browncultist_attacka1 ();    
     else
-        browncultist_attackb1 ();    // Otherwise TNT them
-    
-    
+    {
+        self.think = browncultist_run;     // Turn basic "I have an enemy" AI back on
+        self.nextthink = time + 0.1;    // Turn that AI back on in 1/10 of a second
+    }
+
 };
 
 //--- Shoot the player
 
-void () cultist_fireShotgun =
+void () browncultist_fireShotgun =
 {
-    local float r;
-    local vector dir;
-    local vector spread;
-
-    self.effects = self.effects | EF_MUZZLEFLASH;
-    
-    makevectors (self.v_angle); // TESTME: Is this needed?
-
-    r = random();
-
-    if (r < 0.5)
-        sound (self, CHAN_AUTO, "cultist/cultatt1.wav", 1, ATTN_NORM);
-    else
-        sound (self ,CHAN_AUTO, "cultist/cultatt2.wav", 1, ATTN_NORM);
-
-    dir = (self.enemy.origin - self.origin);
-    dir = normalize (dir);
-
-    FireBullets (self.origin, dir, 8, 8, '0.1 0.1 0');  // 8 "shot pellets" per shell
-    
+    ai_face();
+    cultist_fireShotgun();
+    self.think = browncultist_attackDecide;
+    self.nextthink = time + 0.5;
 };
 
 void () browncultist_pain =
 {
-    local float r;
-
-    // don't make multiple pain sounds right after each other
-    if (self.pain_finished > time)
-        return;
-        
-    r = random();    
-    
-    if (self.deathtype == "fire")
-    {
-        if (r < 0.33)
-            {sound (self,2,"cultist/cultfir1.wav",1,1); self.pain_finished = (time + 3.2);}
-        else if (r < 0.66)
-            {sound (self,2,"cultist/cultfir2.wav",1,1);    self.pain_finished = (time + 4.62);}
-        else 
-            {sound (self,2,"cultist/cultfir3.wav",1,1);    self.pain_finished = (time + 3.62);}
-    }
-        
-    else if (r < 0.25)
-        {sound (self,2,"cultist/cultpan1.wav",1,1);    self.pain_finished = (time + 0.38);}
-    else if (r < 0.5)
-        {sound (self,2,"cultist/cultpan2.wav",1,1);    self.pain_finished = (time + 0.35);}
-    else if (r < 0.75)
-        {sound (self,2,"cultist/cultpan3.wav",1,1);    self.pain_finished = (time + 0.4);}
-    else
-        {sound (self,2,"cultist/cultpan4.wav",1,1);    self.pain_finished = (time + 0.29);}    
+    cultist_pain();
     
 //    browncultist_pain1 (); // FIXME: Need pain frames - luke
     
+    if (self.deathtype != "fire") // FIXME: This is here until I can spread it through pain frames
+        ai_pain(15);
 };
 
 //--- Death sequence
@@ -231,73 +166,9 @@ void () browncultist_death1 = [$idle1, browncultist_death1]
 
 void () browncultist_die =
 {
-    self.effects = 0;
-    if (self.health < -40)
-    {
-        sound (self, CHAN_VOICE, "cultist/cultdie3.wav", 1, ATTN_NORM);
-
-        // ThrowHead (self.health);  // FIXME: At some point need to drop browncultist head, and it be kickable
-        RandomHumanGibs ();
-        remove (self);
-        return;
-    }
-    
-    if (random () < 0.5)
-        sound (self, CHAN_VOICE, "cultist/cultdie1.wav", 1, ATTN_NORM);
-    else
-        sound (self, CHAN_VOICE, "cultist/cultdie2.wav", 1, ATTN_NORM);
-    
+    cultist_die();
     browncultist_death1 ();
-    self.solid = SOLID_NOT;
-
 };
-
-
-//--- Function used by brown, black and green cultists
-
-void () cultist_throw_TNT =
-{
-    local    entity missile;
-    local    vector delta;
-    local     float dist;
-    
-    sound (self, CHAN_WEAPON, "cultist/culttoss.wav", 1, ATTN_NORM);
-
-    missile = spawn ();
-    missile.owner = self;
-    missile.movetype = MOVETYPE_BOUNCE;
-    missile.solid = SOLID_BBOX;
-        
-    // set missile speed    
-
-    makevectors (self.angles);
-
-    delta = (self.enemy.origin - self.origin);
-    dist = vlen(delta);
-
-    missile.velocity = normalize(self.enemy.origin - self.origin);
-    missile.velocity = missile.velocity * dist; // instead of distance, was 600
-    missile.velocity_z = 425;
-
-    missile.avelocity = '300 300 300';
-
-    missile.angles = vectoangles(missile.velocity);
-    
-    missile.touch = cultist_TNT_touch;
-
-    setmodel (missile, "models/weapons/grenades/gr_tnt.md3");
-    setsize (missile, '0 0 0', '0 0 0');        
-    setorigin (missile, self.origin);
-
-};
-
-void () cultist_TNT_touch =
-{
-    sound (self, CHAN_WEAPON, "weapons/r_exp3.wav", 1, ATTN_NORM);
-    T_RadiusDamage (self, self.owner, 130, world, "grenade"); // FIXME: Make w_bomb.qc defines global
-    BecomeExplosion ();    
-}; 
-
 
 void () monster_browncultist =
 {

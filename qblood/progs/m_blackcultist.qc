@@ -20,14 +20,11 @@
 /* Tim's to-do list    
             
     fire until player is dead or unreachable
-    immunity to fire attacks - in T_Damage - combat.qc
-    Shotgun does not hit up close - jump back hack implemented. real fix???
-    Test the idle smack talk    
-    Too many sounds at once
+    jump back hack implemented. real fix???
     need more than one frame - luke
     need to get real health and damage values
     head - make use of cultist head with ThrowHead().  Kick cultist head around!    
-    damage to player if you touch cultist - in player.qc, for all monsters?        
+    Need real lengths for the tommy cultist specific pain sounds
 */
 
 
@@ -70,29 +67,10 @@ void (float dist) blackcultist_ai =
 
 void () blackcultist_walk1 = [$idle1, blackcultist_walk1] {blackcultist_ai (3);};
 
-//--- Decide which idle to do
-
+//--- Decide what to say
 void () blackcultist_stand = 
 {
-    local float     r;
-    
-    r = random();
-    
-    if (r < 0.02)  // TESTME: May have to try <= on this set
-        sound (self, CHAN_WEAPON, "cultist/cultspt1.wav", 1, ATTN_NORM);
-        
-    else if (r < 0.04)
-        sound (self, CHAN_WEAPON, "cultist/cultspt2.wav", 1, ATTN_NORM);
-        
-    else if (r < 0.06)
-        sound (self, CHAN_WEAPON, "cultist/cultspt3.wav", 1, ATTN_NORM);
-        
-    else if (r < 0.08)
-        sound (self, CHAN_WEAPON, "cultist/cultspt4.wav", 1, ATTN_NORM);
-        
-    else if (r < 0.1)
-        sound (self, CHAN_WEAPON, "cultist/cultspt5.wav", 1, ATTN_NORM);        
-    
+    cultist_stand();
     blackcultist_stand1();    
 };
 
@@ -120,28 +98,13 @@ void () blackcultist_attacka2 = [$idle1, blackcultist_run] {ai_face ();};
 void () blackcultist_attack =
 {
     local vector delta;
-    local float r;
     
-    r = random();
-    
-    
-    if (self.pain_finished < time)// To avoid several sounds at once
-    if (r < 0.05)
-        sound (self, CHAN_AUTO, "cultist/cultglo1.wav", 1, ATTN_NORM);
-    else if (r < 0.10)
-        sound (self, CHAN_AUTO, "cultist/cultglo2.wav", 1, ATTN_NORM);
-    else if (r < 0.15)
-        sound (self, CHAN_AUTO, "cultist/cultglo3.wav", 1, ATTN_NORM);
-    else if (r < 0.20)
-        sound (self, CHAN_AUTO, "cultist/cultglo4.wav", 1, ATTN_NORM);
+    cultist_attack();
 
     delta = (self.enemy.origin - self.origin);
 
     if (vlen (delta) <= 1200)      
         blackcultist_attacka1 ();    // If the player is near shoot them    
-    
-    if (vlen (delta) <= 100) // A jump back hack
-        ai_back(100);
 };
 
 //--- Shoot the player
@@ -163,15 +126,16 @@ void () blackcultist_fireTommygun =
 
     // set the bullet direction according to the weapon real direction
     dir = (self.enemy.origin - self.origin);
+    dir = normalize (dir);
  
     orig = self.origin + v_forward * 15 + v_up * 12 + v_right * 4;
  
     // Spawn 1 shell every 2 shots
-    Tommy_SpawnShell (orig);
+    // Tommy_SpawnShell (orig); // FIXME: Disabled until mdl issue is fixed
 
-    FireBullets (self.origin + v_up * 20, dir, 1, 12, '0.05 0.02 0');
+    FireBullets (self.origin, dir, 1, 12, '0.1 0.1 0');
  
-//    self.punchangle_x = -2 * akimboFactor;    
+    self.punchangle_x = -2;    
 };
 
 
@@ -198,9 +162,9 @@ void () blackcultist_pain =
     else if (r < 0.25)
         {sound (self,2,"cultist/cultpan1.wav",1,1);    self.pain_finished = (time + 0.38);}
     else if (r < 0.5)
-        {sound (self,2,"cultist/cultpan2.wav",1,1);    self.pain_finished = (time + 0.35);}
+        {sound (self,2,"cultist/tcltpan2.wav",1,1);    self.pain_finished = (time + 0.35);}  // FIXME: Need real length
     else if (r < 0.75)
-        {sound (self,2,"cultist/cultpan3.wav",1,1);    self.pain_finished = (time + 0.4);}
+        {sound (self,2,"cultist/tcltpan3.wav",1,1);    self.pain_finished = (time + 0.4);}   // FIXME: Need real length
     else
         {sound (self,2,"cultist/cultpan4.wav",1,1);    self.pain_finished = (time + 0.29);}    
     
@@ -231,7 +195,7 @@ void () blackcultist_die =
     }
     
     if (random () < 0.5)
-        sound (self, CHAN_VOICE, "cultist/cultdie1.wav", 1, ATTN_NORM);
+        sound (self, CHAN_VOICE, "cultist/tcltdie1.wav", 1, ATTN_NORM);
     else
         sound (self, CHAN_VOICE, "cultist/cultdie2.wav", 1, ATTN_NORM);
     
@@ -252,8 +216,7 @@ void () monster_blackcultist =
 
     precache_model ("models/enemies/cultist-gray.md3");
         
-    precache_sound ("weapons/Tommygun/tessngfr.wav");
-    precache_sound ("cultist/cultdie1.wav");
+    precache_sound ("weapons/tommygun/_tom.wav");
     precache_sound ("cultist/cultdie2.wav");
     precache_sound ("cultist/cultdie3.wav");
     precache_sound ("cultist/cultfir1.wav");
@@ -264,15 +227,15 @@ void () monster_blackcultist =
     precache_sound ("cultist/cultglo3.wav");
     precache_sound ("cultist/cultglo4.wav");
     precache_sound ("cultist/cultpan1.wav");
-    precache_sound ("cultist/cultpan2.wav");
-    precache_sound ("cultist/cultpan3.wav");
     precache_sound ("cultist/cultpan4.wav");
     precache_sound ("cultist/cultspt1.wav");
     precache_sound ("cultist/cultspt2.wav");
     precache_sound ("cultist/cultspt3.wav");
     precache_sound ("cultist/cultspt4.wav");
     precache_sound ("cultist/cultspt5.wav");
-    // FIXME: Don't forget the extra sounds!!!
+    precache_sound ("cultist/tcltdie1.wav");
+    precache_sound ("cultist/tcltpan2.wav");
+    precache_sound ("cultist/tcltpan3.wav");
 
     self.solid = SOLID_SLIDEBOX;
     self.movetype = MOVETYPE_STEP;
@@ -285,6 +248,6 @@ void () monster_blackcultist =
     self.th_die = blackcultist_die;
     self.th_pain = blackcultist_pain;
     self.th_missile = blackcultist_attack;
-    self.attack_state == AS_MISSILE;
+    self.attack_state = AS_MISSILE;
     walkmonster_start ();
 };
