@@ -515,8 +515,6 @@ Function used for throwing heads when someone touchs them
 */
 void() HeadTouch =
 {
-    local vector v;
-
     // only a player can kick it
     if (other.classname != "player")
         return;
@@ -533,12 +531,12 @@ void() HeadTouch =
 
     // define velocity
     // you can play with these formulas to adjust trajectory
-    v_x = other.velocity_x * 2 + 50 * random();
-    v_y = other.velocity_y * 2 + 50 * random();
-    v_z = 250 + 160 * random() + (other.velocity_y + other.velocity_x) * 0.30;
+    self.velocity_x = other.velocity_x * 2 + 50 * random();
+    self.velocity_y = other.velocity_y * 2 + 50 * random();
+    self.velocity_z = 250 + 160 * random() + (other.velocity_y + other.velocity_x) * 0.30;
+    self.avelocity = crandom() * '0 600 0';
 
     self.flags = self.flags - (self.flags & FL_ONGROUND);
-    self.velocity = v;
 };
 
 

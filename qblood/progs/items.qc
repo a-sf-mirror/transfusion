@@ -535,16 +535,17 @@ void(float old, float new) Deathmatch_Weapon =
         self.weapon = new;
 };
 
+float() W_BestWeapon;
+
 /*
 =============
 weapon_touch
 =============
 */
-float() W_BestWeapon;
-
 void() weapon_touch =
 {
     local   float   best, new, old;
+    local   float   leave;
     local   entity  stemp;
 
     #ifdef QUAKEWORLD
@@ -562,6 +563,15 @@ void() weapon_touch =
         w_switch = stof(infokey(other,"w_switch"));
     #endif
 
+    if (cvar ("g_weaponStay")
+    #ifndef QUAKEWORLD
+        || (!deathmatch && coop)  // Always leave weapons on SP coop
+    #endif
+       )
+        leave = 1;
+    else
+        leave = 0;
+
 // if the player was using his best weapon, change up to the new one if better
     stemp = self;
     self = other;
@@ -570,40 +580,60 @@ void() weapon_touch =
 
     if (self.classname == "weapon_nailgun")
     {
+        if (leave && (other.items & IT_NAILGUN) )
+            return;
         new = IT_NAILGUN;
         other.ammo_nails = other.ammo_nails + 30;
     }
     else if (self.classname == "weapon_supernailgun")
     {
+        if (leave && (other.items & IT_SUPER_NAILGUN) )
+            return;
         new = IT_SUPER_NAILGUN;
         other.ammo_nails = other.ammo_nails + 30;
     }
     else if (self.classname == "weapon_supershotgun")
     {
+        if (leave && (other.items & IT_SUPER_SHOTGUN) )
+            return;
         new = IT_SUPER_SHOTGUN;
         other.ammo_shells = other.ammo_shells + 5;
     }
     else if (self.classname == "weapon_rocketlauncher")
     {
+        if (leave && (other.items & IT_ROCKET_LAUNCHER) )
+            return;
         new = IT_ROCKET_LAUNCHER;
         other.ammo_rockets = other.ammo_rockets + 5;
     }
     else if (self.classname == "weapon_grenadelauncher")
     {
+        if (leave && (other.items & IT_GRENADE_LAUNCHER) )
+            return;
         new = IT_GRENADE_LAUNCHER;
         other.ammo_rockets = other.ammo_rockets + 5;
     }
     else if (self.classname == "weapon_lightning")
     {
+        if (leave && (other.items & IT_LIGHTNING) )
+            return;
         new = IT_LIGHTNING;
         other.ammo_cells = other.ammo_cells + 15;
     }
     else
         objerror ("weapon_touch: unknown classname");
 
-    Sprint (other, PRINT_LOW, "You got the ");
-    Sprint (other, PRINT_LOW, self.netname);
-    Sprint (other, PRINT_LOW, "\n");
+    #ifndef QUAKEWORLD
+    //ZOID--remove unnessary msgs
+    if (!deathmatch) {
+    #endif
+        Sprint (other, PRINT_LOW, "You got the ");
+        Sprint (other, PRINT_LOW, self.netname);
+        Sprint (other, PRINT_LOW, "\n");
+    #ifndef QUAKEWORLD
+    }
+    #endif
+
 // weapon touch sound
     sound (other, CHAN_ITEM, "weapons/pkup.wav", 1, ATTN_NORM);
     stuffcmd (other, "bf\n");
@@ -623,14 +653,10 @@ void() weapon_touch =
         if (self.flags & FL_INWATER)
         {
             if (new != IT_LIGHTNING)
-            {
                 Deathmatch_Weapon (old, new);
-            }
         }
         else
-        {
             Deathmatch_Weapon (old, new);
-        }
     }
     #else
     if (!deathmatch)
@@ -643,10 +669,15 @@ void() weapon_touch =
 
     self = stemp;
 
+    if (leave)
+        return;
+
     // remove it in single player, or setup for respawning in deathmatch
     self.model = string_null;
     self.solid = SOLID_NOT;
+    #ifndef QUAKEWORLD
     if (deathmatch)
+    #endif
         self.nextthink = time + 30;
     self.think = SUB_regen;
 
