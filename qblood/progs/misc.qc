@@ -302,8 +302,8 @@ void() misc_explobox2 =
 
     self.solid = SOLID_BBOX;
     self.movetype = MOVETYPE_NONE;
-    precache_model2 ("maps/b_exbox2.bsp");
-    setmodel (self, "maps/b_exbox2.bsp");
+    precache_model2 ("progs/barrel.mdl"); // maps/b_exbox2.bsp
+    setmodel (self, "progs/barrel.mdl"); // maps/b_exbox2.bsp");
     setsize (self, '0 0 0', '32 32 32');
     precache_sound ("weapons/napalm/explodfl.wav");
     self.health = 20;
