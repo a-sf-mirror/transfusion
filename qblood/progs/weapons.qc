@@ -27,6 +27,10 @@ void(entity bomb, entity attacker, float rad, entity ignore, string dtype) T_Rad
 void() SuperDamageSound;
 
 
+#define ATTACK_NORMAL  0
+#define ATTACK_ALTFIRE 1
+
+
 // called by worldspawn
 void() W_Precache =
 {
@@ -181,20 +185,6 @@ void(float damage) spawn_touchblood =
 
     vel = wall_velocity () * 0.2;
     SpawnBlood (self.origin + vel*0.01, vel, damage);
-};
-
-
-// FIXME: molivier: "SpawnChunk" seems to be unused
-/*
-================
-SpawnChunk
-================
-*
-void(vector org, vector vel) SpawnChunk =
-{
-    #ifndef QUAKEWORLD
-    particle (org, vel*0.02, 0, 10);
-    #endif
 };
 
 
@@ -610,9 +600,60 @@ void() BecomeExplosion =
 };
 #endif
 
+
+/*
+================
+SpawnBouncingNapalmBall
+
+Spawn a bouncing napalm ball
+================
+*/
+void() GrenadeExplode;
+void() GrenadeTouch;
+void() SpawnBouncingNapalmBall =
+{
+    newmis = spawn ();
+    #ifdef QUAKEWORLD
+    newmis.voided=0;
+    #endif
+    newmis.owner = self;
+    newmis.movetype = MOVETYPE_BOUNCE;
+    newmis.solid = SOLID_BBOX;
+    newmis.classname = "grenade";
+
+    // set newmis speed
+    newmis.velocity_x = random() * 300;
+    newmis.velocity_y = random() * 300;
+    newmis.velocity_z = random() * 300;
+
+    newmis.avelocity = '150 150 150';
+    newmis.angles = vectoangles(newmis.velocity);
+
+    // set missile duration
+    newmis.nextthink = time + 1.25;
+
+    newmis.touch = GrenadeTouch;
+    newmis.think = GrenadeExplode;
+    newmis.netname = "Napalm Ball";
+    newmis.dmg = 120;
+
+    setmodel (newmis, "progs/missile.mdl");
+    setsize (newmis, '-1 -1 -1', '1 1 1');
+    setorigin (newmis, self.origin);
+};
+
+
+/*
+================
+T_MissileTouch
+
+Touch function for the rockets
+================
+*/
 void() T_MissileTouch =
 {
     local float damg;
+    local float ind;
 
     if (other == self.owner)
         return;     // don't explode on owner
@@ -648,6 +689,14 @@ void() T_MissileTouch =
 
     self.origin = self.origin - 8*normalize(self.velocity);
 
+    // Spawn bouncing napalm balls
+    ind = 0;
+    while (ind < self.cnt)
+    {
+        SpawnBouncingNapalmBall ();
+        ind = ind + 1;
+    }
+
     #ifdef QUAKEWORLD
     WriteByte (MSG_MULTICAST, SVC_TEMPENTITY);
     WriteByte (MSG_MULTICAST, TE_EXPLOSION);
@@ -674,10 +723,8 @@ void() T_MissileTouch =
 W_FireRocket
 ================
 */
-void() W_FireRocket =
+void(float attackMode) W_FireRocket =
 {
-    self.currentammo = self.ammo_rockets = self.ammo_rockets - 1;
-
     sound (self, CHAN_WEAPON, "weapons/napalm/blaster.wav", 1, ATTN_NORM);
 
     #ifdef QUAKEWORLD
@@ -704,12 +751,21 @@ void() W_FireRocket =
     newmis.voided = 0;
     #endif
 
+    if (attackMode == ATTACK_ALTFIRE && self.ammo_rockets >= 12)
+    {
+        self.ammo_rockets = self.ammo_rockets - 12;
+        newmis.cnt = 8;  // set the number of bouncing balls
+    }
+    else
+        self.ammo_rockets = self.ammo_rockets - 1;
+    self.currentammo = self.ammo_rockets;
+
     // set newmis duration
     newmis.nextthink = time + 5;
     newmis.think = SUB_Remove;
 
     setmodel (newmis, "progs/missile.mdl");
-    setsize (newmis, '0 0 0', '0 0 0');
+    setsize (newmis, '-1 -1 -1', '1 1 1');
     setorigin (newmis, self.origin + v_forward*8 + '0 0 16');
 };
 
@@ -1449,10 +1505,6 @@ W_Attack
 An attack impulse can be triggered now
 ============
 */
-
-#define ATTACK_NORMAL  0
-#define ATTACK_ALTFIRE 1
-
 void()  player_axe1;
 void()  player_axeb1;
 void()  player_axec1;
@@ -1516,7 +1568,7 @@ void(float attackMode) W_Attack =
     {
         player_rocket1();
         self.attack_finished = time + 0.8;
-        W_FireRocket();
+        W_FireRocket(attackMode);
     }
     else if (self.weapon == IT_LIGHTNING)
     {
