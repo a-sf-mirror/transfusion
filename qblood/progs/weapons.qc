@@ -362,6 +362,7 @@ void(entity shell) DropShell =
     shell.think = SUB_Remove;
     shell.reset = SUB_Remove;
     shell.ltime = time - 1;
+    shell.effects = shell.effects | EF_LOWPRECISION;
 };
 
 
