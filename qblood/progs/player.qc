@@ -32,10 +32,23 @@ PLAYER
 
 void() player_run;
 
-void()  player_stand1 =[    $axstnd1,   player_stand1   ]
+void() player_idleWeapon =
 {
     if (self.player_state != PS_HOLD_FIRE && self.player_state != PS_MENU)
+    {
         self.weaponframe = 0;
+
+        // If there's a pending weapon change
+        if (self.newweapon)
+            W_SwitchToWeapon (self.newweapon);
+        else
+            self.player_state = PS_IDLE;
+    }
+};
+
+void()  player_stand1 =[    $axstnd1,   player_stand1   ]
+{
+    player_idleWeapon ();
 
     if (self.velocity_x || self.velocity_y)
     {
@@ -61,23 +74,7 @@ void()  player_stand1 =[    $axstnd1,   player_stand1   ]
 
 void()  player_run =[   $rockrun1,  player_run  ]
 {
-    if (self.player_state != PS_HOLD_FIRE && self.player_state != PS_MENU)
-    {
-        self.weaponframe = 0;
-
-        // If there's a pending weapon change
-        if (self.newweapon)
-            W_SwitchToWeapon (self.newweapon);
-        else
-            self.player_state = PS_IDLE;
-    }
-
-    if (!self.velocity_x && !self.velocity_y)
-    {
-        self.walkframe=0;
-        player_stand1();
-        return;
-    }
+    player_idleWeapon ();
 
     if (self.weapon == IT_PITCHFORK)
     {
