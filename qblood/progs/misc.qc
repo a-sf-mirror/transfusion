@@ -894,7 +894,7 @@ void() ambient_amb17 =
 void() ambient_amb2 =
 {
     precache_sound ("ambience/amb2.wav");
-    ambientsound (self.origin, "ambience/amb2.wav", 1, ATTN_STATIC);
+    ambientsound (self.origin, "ambience/amb2.wav", 1, ATTN_NONE);
 };
 
 /*QUAKED ambient_amb20 (0.3 0.1 0.6) (-10 -10 -8) (10 10 8)
@@ -1118,7 +1118,7 @@ void() ambient_elcloop1 =
 void() ambient_eriedrne =
 {
     precache_sound ("ambience/eriedrne.wav");
-    ambientsound (self.origin, "ambience/eriedrne.wav", 1, ATTN_STATIC);
+    ambientsound (self.origin, "ambience/eriedrne.wav", 1, ATTN_NONE);
 };
 
 /*QUAKED ambient_erthloop (0.3 0.1 0.6) (-10 -10 -8) (10 10 8)
@@ -1166,7 +1166,7 @@ void() ambient_howling =
 void() ambient_hrtbt =
 {
     precache_sound ("ambience/hrtbt.wav");
-    ambientsound (self.origin, "ambience/hrtbt.wav", 1, ATTN_STATIC);
+    ambientsound (self.origin, "ambience/hrtbt.wav", 1, ATTN_NONE);
 };
 
 /*QUAKED ambient_icemellp (0.3 0.1 0.6) (-10 -10 -8) (10 10 8)
