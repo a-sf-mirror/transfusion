@@ -255,8 +255,6 @@ local float     rs;
     return TRUE;
 };
 
-/*
-*/
 
 void() player_pain1 = [$pain1, player_pain2] {};
 void() player_pain2 = [$pain2, player_pain3] {};

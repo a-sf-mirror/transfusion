@@ -854,6 +854,22 @@ void() exploding_wall =
 
 
 //============================================================================
+
+void() sound_player_use =
+{
+    if (self.noise)
+        sound (self, CHAN_AUTO, self.noise, 1, ATTN_NORM);
+};
+
+void() sound_player =
+{
+    if (self.noise)
+        precache_sound (self.noise);
+    self.use = sound_player_use;
+};
+
+
+//============================================================================
 /*QUAKED ambient_suck_wind (0.3 0.1 0.6) (-10 -10 -8) (10 10 8)
 */
 void() ambient_suck_wind =
