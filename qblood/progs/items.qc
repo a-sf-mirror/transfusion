@@ -854,7 +854,7 @@ void() obj_barrel =
     precache_model("progs/barrel.mdl");
     setmodel(self, "progs/barrel.mdl");
 
-    setsize (self, '-14 -20 -14', '14 20 39');
+    setsize (self, '-16 -16 -14', '16 16 42');
     StartObject ();
 };
 
@@ -1075,7 +1075,7 @@ float (entity e, float healpoints, float ignore) T_Heal =
     return TRUE;
 };
 
-/*QUAKED item_health (.3 .3 1) (0 0 0) (32 32 32) rotten megahealth
+/*QUAKED item_health (.3 .3 1) (-16 -16 0) (16 16 56) rotten megahealth
 Health box. Normally gives 50 points.
 Rotten box heals 20 points,
 megahealth will add 100 health.
@@ -1161,7 +1161,7 @@ void() item_health =
         self.netname = "Medicine Patch";
         self.healtype = 1;
     }
-    setsize (self, '0 0 0', '32 32 56');
+    setsize (self, '-16 -16 0', '16 16 56');
     StartItem ();
 };
 
@@ -1335,7 +1335,7 @@ void() item_armor2 =
     StartItem ();
 };
 
-/*QUAKED item_armorInv (0 .5 .8) (-12 -17 2) (12 19 42)
+/*QUAKED item_armorInv (0 .5 .8) (-16 -16 2) (16 16 54)
 */
 
 void() item_armorInv =
@@ -1345,7 +1345,7 @@ void() item_armorInv =
     setmodel (self, "progs/i_arm_su.mdl");
     self.netname = "Super Armor";
 
-    setsize (self, '-12 -17 0', '12 19 42');
+    setsize (self, '-16 -16 2', '16 16 54');
     StartItem ();
 };
 
@@ -1563,7 +1563,7 @@ void() weapon_touch =
 };
 
 
-/*QUAKED weapon_flaregun (0 .5 .8) (-16 -16 0) (16 16 32)
+/*QUAKED weapon_flaregun (0 .5 .8) (-16 -16 13) (16 16 69)
 */
 
 void() weapon_flaregun =
@@ -1576,7 +1576,7 @@ void() weapon_flaregun =
     self.weapon = IT_FLAREGUN;
     self.netname = "Flare Gun";
     self.touch = weapon_touch;
-    setsize (self, '-16 -16 0', '16 16 56');
+    setsize (self, '-16 -16 13', '16 16 69');
 
     // precache the necessary sounds
     PsychoCaleb_Precache ();
@@ -1586,7 +1586,7 @@ void() weapon_flaregun =
     StartItem ();
 };
 
-/*QUAKED weapon_supershotgun (0 .5 .8) (-16 -16 0) (16 16 32)
+/*QUAKED weapon_supershotgun (0 .5 .8) (-16 -16 3) (16 16 59)
 */
 
 void() weapon_supershotgun =
@@ -1600,7 +1600,7 @@ void() weapon_supershotgun =
     self.weapon = IT_SAWED_OFF;
     self.netname = "Sawed-off";
     self.touch = weapon_touch;
-    setsize (self, '-16 -16 0', '16 16 56');
+    setsize (self, '-16 -16 3', '16 16 59');
 
     // Precache the necessary sounds
     precache_sound ("weapons/shotgun/shotcock.wav");  // shell ejection
@@ -1836,7 +1836,7 @@ void() weapon_voodoodoll =
     StartItem ();
 };
 
-/*QUAKED weapon_lifeleech (0 .5 .8) (-16 -16 0) (16 16 32)
+/*QUAKED weapon_lifeleech (0 .5 .8) (-16 -16 0) (16 16 56)
 */
 
 void() weapon_lifeleech =
@@ -1986,7 +1986,7 @@ void() ammo_touch =
 
 #define AMMO_BIG 1
 
-/*QUAKED item_shells (0 .5 .8) (0 0 0) (32 32 32) big
+/*QUAKED item_shells (0 .5 .8) (-16 -16 0) (16 16 56) big
 */
 
 void() item_shells =
@@ -2008,7 +2008,7 @@ void() item_shells =
         self.aflag = 4;
     }
     self.weapon = 1;
-    setsize (self, '0 0 0', '32 32 56');
+    setsize (self, '-16 -16 0', '16 16 56');
     StartItem ();
 };
 
@@ -2372,7 +2372,7 @@ void() item_artifact_envirosuit =
 };
 
 
-/*QUAKED item_artifact_invisibility (0 .5 .8) (-3 -6 -2) (6 7 23)
+/*QUAKED item_artifact_invisibility (0 .5 .8) (-16 -16 -2) (16 16 54)
 Player is invisible for 30 seconds
 */
 void() item_artifact_invisibility =
@@ -2385,12 +2385,12 @@ void() item_artifact_invisibility =
     setmodel (self, "progs/invisibl.mdl");
     self.netname = "Cloak of Invisibility";
     self.items = IT_INVISIBILITY;
-    setsize (self, '-3 -6 -2', '6 7 23');
+    setsize (self, '-16 -16 -2', '16 16 54');
     StartItem ();
 };
 
 
-/*QUAKED item_artifact_super_damage (0 .5 .8) (-16 -7 -2) (18 7 18)
+/*QUAKED item_artifact_super_damage (0 .5 .8) (-16 -16 -2) (16 16 54)
 The next attack from the player will do 4x damage
 */
 void() item_artifact_super_damage =
@@ -2404,6 +2404,6 @@ void() item_artifact_super_damage =
 
     self.netname = "Guns Akimbo";
 
-    setsize (self, '-16 -7 -2', '18 7 18');
+    setsize (self, '-16 -16 -2', '16 16 54');
     StartItem ();
 };
