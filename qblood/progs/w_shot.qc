@@ -184,11 +184,20 @@ void() Shot_Fire =
 {
     local float nbshots;
     local vector dir;
+    local vector spread;
 
     if (self.player_state == PS_ALTFIRE && (self.currentammo & 1) != 1)
+    {
         nbshots = 2;
+        spread = '0.14 0.08 0';
+    }
     else
+    {
         nbshots = 1;
+        spread = '0.1 0.03 0';
+    }
+
+    makevectors (self.v_angle);
 
     #ifndef QUAKEWORLD
     self.punchangle_x = -2 * nbshots;
@@ -205,7 +214,7 @@ void() Shot_Fire =
         sound (self ,CHAN_WEAPON, "weapons/shotgun/shotfir2.wav", 1, ATTN_NORM);
 
     dir = aim (self, 100000);
-    FireBullets (self.origin, dir, 11 * nbshots, 4, '0.08 0.08 0');  // 9 "shot pellets" per shell
+    FireBullets (self.origin + v_up * 20, dir, 11 * nbshots, 4, spread);  // 9 "shot pellets" per shell
 };
 
 

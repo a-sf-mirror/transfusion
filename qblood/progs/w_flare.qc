@@ -344,7 +344,7 @@ void(entity attacker, vector org, vector dir, float sped, float damage, float bu
     fire.angles     = vectoangles(dir) + '90 0 0';
     fire.velocity   = dir * sped;
     fire.touch      = AltFlareTouch;
-    fire.nextthink  = time + 0.5;   // Approximate time alt-flares split.
+    fire.nextthink  = time + 0.4;   // Approximate time alt-flares split.
     fire.think      = AltFlareSplit;
     fire.pausetime  = time + (8000 / sped);
     fire.cnt        = burn;

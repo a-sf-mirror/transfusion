@@ -710,6 +710,8 @@ void(float weap) W_DrawWeapon =
         Voodoo_Draw ();
     else if (weap == IT_LIFE_LEECH)
         Leech_Draw ();
+
+    self.newweapon = 0;
 };
 
 
@@ -841,37 +843,60 @@ void() W_SetCurrentAmmo =
 };
 
 
+/*
+====================
+W_BestWeapon
+
+Autoswitch weapon list
+
+Note (Elric): This list comes from my experiments with Blood.
+I don't really agree with the order, but hey ... it's Blood.
+====================
+*/
 float() W_BestWeapon =
 {
     local   float   it;
 
     it = self.items;
 
-    if(self.ammo_rockets >= 1 && (it & IT_NAPALM_LAUNCHER) )
-        return IT_NAPALM_LAUNCHER;
-    if (self.waterlevel <= 1 && self.ammo_cells >= 1 && (it & IT_TESLA_CANNON) )
-        return IT_TESLA_CANNON;
-    if(self.ammo_leech >= 14 && (it & IT_LIFE_LEECH) )
-        return IT_LIFE_LEECH;
-    if(self.ammo_spray >= 1 && (it & IT_SPRAY_CAN) )
-        return IT_SPRAY_CAN;
-    if(self.ammo_tnt_bundle >= 1 && (it & IT_TNT) )
-        return IT_TNT;
-    if(self.ammo_shells >= 1 && (it & IT_SAWED_OFF) )
+    // 1- Sawed Off
+    if (self.ammo_shells >= 1 && (it & IT_SAWED_OFF))
         return IT_SAWED_OFF;
-    if(self.ammo_nails >= 1 && (it & IT_TOMMYGUN) )
+
+    // 2- Tommy Gun
+    if (self.ammo_nails >= 1 && (it & IT_TOMMYGUN))
         return IT_TOMMYGUN;
-    if(self.ammo_flares >= 1 && (it & IT_FLAREGUN) )
+
+    // 3- Flare Gun
+    if (self.ammo_flares >= 1 && (it & IT_FLAREGUN))
         return IT_FLAREGUN;
-    if(self.ammo_voodoo >= 1 && (it & IT_VOODOO_DOLL) )
+
+    // 4- Tesla Cannon
+    if (self.ammo_cells >= 1 && (it & IT_TESLA_CANNON))
+        return IT_TESLA_CANNON;
+
+    // 5- Voodoo Doll
+    if (self.ammo_voodoo >= 1 && (it & IT_VOODOO_DOLL))
         return IT_VOODOO_DOLL;
 
+    // 6- Spray Can
+    if (self.ammo_spray >= 1 && (it & IT_SPRAY_CAN))
+        return IT_SPRAY_CAN;
+
+    // 7- Life Leech
+    if (it & IT_LIFE_LEECH)
+        return IT_LIFE_LEECH;
+
+    // 8- Fork
     return IT_PITCHFORK;
 };
 
 float() W_AmmoAvailable =
 {
-    if (self.currentammo > 0 || self.weapon == IT_PITCHFORK || self.weapon == IT_LIFE_LEECH)
+    if (self.currentammo > 0)
+        return TRUE;
+
+    if (self.weapon == IT_PITCHFORK || self.weapon == IT_LIFE_LEECH)
         return TRUE;
 
     return FALSE;
@@ -886,16 +911,6 @@ An attack impulse can be triggered now
 */
 void() W_Attack =
 {
-    if (! W_AmmoAvailable ())
-    {
-        if (self.weapon == IT_TOMMYGUN)
-            sound (self, CHAN_WEAPON, "weapons/tommygun/tomcock.wav", 1, ATTN_NORM);
-
-        self.attack_finished = time + 0.5;
-        self.impulse = 0;
-        return;
-    }
-
     makevectors (self.v_angle);    // calculate forward angle for velocity
     self.show_hostile = time + 1;  // wake monsters up
 
@@ -1372,6 +1387,12 @@ void() W_WeaponFrame =
 {
     if (time < self.attack_finished)
         return;
+
+    if (! W_AmmoAvailable () && self.player_state != PS_HOLD_FIRE)
+    {
+        W_SwitchToWeapon (W_BestWeapon ());
+        return;
+    }
 
     Impulses_Player ();
 

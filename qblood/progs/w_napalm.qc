@@ -132,12 +132,16 @@ Napalm_ThrowBouncingBall
 
 Activate the split function of a napalm ball
 
-NOTE: we must do that because the balls are spawned at the same position,
-      so they would explode as soon as they spawn.
+NOTE: we must do that because the balls are spawned at the same position
+      and near walls or floor, so they would explode as soon as they spawn.
 ================
 */
 void() Napalm_ActivateBall =
 {
+    // We "save" the velocity in the "angles" field
+    // right after the bounce
+    self.angles = vectoangles (self.velocity);
+
     self.touch = Napalm_BallTouch;
 };
 
@@ -164,8 +168,6 @@ void(entity newball) Napalm_ThrowBouncingBall =
     newball.movetype = MOVETYPE_BOUNCE;
     newball.solid = SOLID_BBOX;
     newball.classname = "grenade";
-
-    newball.angles = vectoangles(newball.velocity);
 
     newball.netname = "Napalm Ball";
     newball.dmg = 120;

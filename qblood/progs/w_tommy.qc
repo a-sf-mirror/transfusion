@@ -173,6 +173,8 @@ void() Tommy_Fire =
     local entity    old;
     local vector    orig;
     local float     akimboFactor;  // 2 if guns akimbo, else 1
+    local vector    spread;
+    local float     damage;
 
     if (self.items & IT_GUNS_AKIMBO)
         akimboFactor = 2;
@@ -196,28 +198,29 @@ void() Tommy_Fire =
     else if (self.weaponframe == $tommy_alt7)
         dir = dir + v_right * (1 / 3);
 
-    // If we're in akimbo mode
+    // If we are in altfire mode
+    if (self.weaponframe >= $tommy_alt1)
+        damage = 15;
+    else
+        damage = 5;
+
     orig = self.origin + v_forward * 15 + v_up * 12 + v_right * 4;
+    spread = '0.05 0.02 0';
+
+    // If we're in akimbo mode
     if (akimboFactor == 2)
     {
-        local float damage;
-
         // Spawn the shells
         orig = orig + v_right * 4;
         Tommy_SpawnShell (orig);
         orig = orig - v_right * 8;
         Tommy_SpawnShell (orig);
 
-        // If we are in altfire mode
-        if (self.weaponframe >= $tommy_alt1)
-            damage = 15;
-        else
-            damage = 5;
+        orig = self.origin + v_right * 4 + v_up * 20;
 
-        orig = self.origin + v_right * 4;
-        FireBullets (orig, dir, 1, damage, '0.04 0.04 0');
-        orig = self.origin - v_right * 4;
-        FireBullets (orig, dir, 1, damage, '0.04 0.04 0');
+        FireBullets (orig, dir, 1, damage, spread);
+        orig = orig - v_right * 8;
+        FireBullets (orig, dir, 1, damage, spread);
 
         // If we don't have enough ammo anymore, drop the akimbo mode for now
         if (self.currentammo < 2)
@@ -228,11 +231,7 @@ void() Tommy_Fire =
         // Spawn the shell
         Tommy_SpawnShell (orig);
 
-        // If we are in altfire mode
-        if (self.weaponframe >= $tommy_alt1)
-            FireBullets (self.origin, dir, 1, 15, '0.04 0.04 0');
-        else
-            FireBullets (self.origin, dir, 1, 5, '0.04 0.04 0');
+        FireBullets (self.origin + v_up * 20, dir, 1, damage, spread);
     }
 
     #ifdef QUAKEWORLD
@@ -283,7 +282,7 @@ void() Tommy_Draw =
 
     Tommy_UpdateView ();
 
-    self.attack_finished = time + 0.1;
+    self.attack_finished = time + 0.4;
     player_tommydraw1 ();
 };
 
@@ -297,7 +296,7 @@ Holster code for the tommygun
 */
 void() Tommy_Holster =
 {
-    self.attack_finished = time + 0.1;
+    self.attack_finished = time + 0.4;
     player_tommyholster1 ();
 };
 

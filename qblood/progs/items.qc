@@ -22,6 +22,7 @@
 
 
 void() W_SetCurrentAmmo;
+void(float newWeapon) W_SwitchToWeapon;
 void() FireAmbient;
 
 /* ALL LIGHTS SHOULD BE 0 1 0 IN COLOR ALL OTHER ITEMS SHOULD
@@ -1262,7 +1263,8 @@ void() item_armor0 =
     precache_model("progs/i_arm_bs.mdl");
     setmodel(self, "progs/i_arm_bs.mdl");
     self.netname = "Basic Armor";
-    setsize (self, '0 0 0', '32 32 56');
+    //setsize (self, '-7 -18 3', '10 18 38');
+    setsize (self, '-7 -18 0', '10 18 38');
     StartItem ();
     };
 
@@ -1274,7 +1276,8 @@ void() item_armor4 =
     setmodel(self, "progs/i_arm_sp.mdl");
     self.netname = "Spirit Armor";
 
-    setsize (self, '0 0 0', '32 32 56');
+    //setsize (self, '-2 -17 2', '4 19 37');
+    setsize (self, '-2 -17 0', '4 19 37');
     StartItem ();
     };
 
@@ -1288,7 +1291,7 @@ void() item_armor1 =
     setmodel (self, "progs/i_arm_bd.mdl");
     self.netname = "Body Armor";
 
-    setsize (self, '-1 -18 2', '6 19 45');
+    setsize (self, '-1 -18 0', '6 19 45');
     StartItem ();
 };
 
@@ -1302,7 +1305,7 @@ void() item_armor2 =
     setmodel (self, "progs/i_arm_fr.mdl");
     self.netname = "Fire Armor";
 
-    setsize (self, '-7 -12 8', '7 10 37');
+    setsize (self, '-7 -12 0', '7 10 37');
     StartItem ();
 };
 
@@ -1316,7 +1319,7 @@ void() item_armorInv =
     setmodel (self, "progs/i_arm_su.mdl");
     self.netname = "Super Armor";
 
-    setsize (self, '-12 -17 2', '12 19 42');
+    setsize (self, '-12 -17 0', '12 19 42');
     StartItem ();
 };
 
@@ -1495,13 +1498,23 @@ void() weapon_touch =
     sound (other, CHAN_ITEM, "items/weaponup.wav", 1, ATTN_NORM);
     stuffcmd (other, "bf\n");
 
+    // add the weapon to the player's equipment
+    other.items = other.items | new;
+
     temp = self;
     self = other;
     W_SetCurrentAmmo ();
-    self = temp;
 
-    // add the weapon to the player's equipment
-    other.items = other.items | new;
+    // If the player has a fork, switch to the new weapon
+    if (self.weapon == IT_PITCHFORK && self.player_state != PS_HOLSTER)
+    {
+         if (self.player_state == PS_IDLE)
+            W_SwitchToWeapon (new);
+         else
+            self.newweapon = new;
+    }
+
+    self = temp;
 
     if (leave)
         return;

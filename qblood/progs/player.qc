@@ -64,7 +64,12 @@ void()  player_run =[   $rockrun1,  player_run  ]
     if (self.player_state != PS_HOLD_FIRE && self.player_state != PS_MENU)
     {
         self.weaponframe = 0;
-        self.player_state = PS_IDLE;
+
+        // If there's a pending weapon change
+        if (self.newweapon)
+            W_SwitchToWeapon (self.newweapon);
+        else
+            self.player_state = PS_IDLE;
     }
 
     if (!self.velocity_x && !self.velocity_y)

@@ -537,6 +537,8 @@ void() PutClientInServer =
 
     self.deadflag = DEAD_NO;
     self.player_state = PS_IDLE;
+    self.newweapon = 0;
+
     // paustime is set by teleporters to keep the player from moving a while
     self.pausetime = 0;
 
