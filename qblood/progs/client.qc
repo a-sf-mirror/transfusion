@@ -327,18 +327,37 @@ void() trigger_changelevel =
 
 /*
 ====================
-UpdatePlayerFrags
+Cl_PrintTeamScores
+
+Broadcast the score of each team to all players
+====================
+*/
+void() Cl_PrintTeamScores =
+{
+    local string score;
+
+    Bprint (PRINT_HIGH, "ред╨ ");      // "RED: "
+    score = ftos (team1score);
+    Bprint (PRINT_HIGH, score);
+    Bprint (PRINT_HIGH, " ╞ блуе╨ ");  // " / BLUE: "
+    score = ftos (team2score);
+    Bprint (PRINT_HIGH, score);
+    Bprint (PRINT_HIGH, "\n");
+};
+
+
+/*
+====================
+Cl_UpdatePlayerFrags
 
 Update the frag count of the player and his team
 ====================
 */
-void(entity player, float fragsToAdd) UpdatePlayerFrags =
+void(entity player, float fragsToAdd) Cl_UpdatePlayerFrags =
 {
     // No frag until the warmup is finished
     if (!warmup_done)
         return;
-
-    local string score;
 
     player.frags = player.frags + fragsToAdd;
 
@@ -349,14 +368,7 @@ void(entity player, float fragsToAdd) UpdatePlayerFrags =
         else
             team2score = team2score + fragsToAdd;
 
-        // Show scores
-        Bprint (PRINT_HIGH, "ред╨ ");            // "RED: "
-        score = ftos (team1score);
-        Bprint (PRINT_HIGH, score);
-        Bprint (PRINT_HIGH, " ╞ блуе╨ ");        // " / BLUE: "
-        score = ftos (team2score);
-        Bprint (PRINT_HIGH, score);
-        Bprint (PRINT_HIGH, "\n");
+        Cl_PrintTeamScores ();
     }
 };
 
@@ -398,7 +410,7 @@ void() ClientKill =
     #ifdef QUAKEWORLD
     logfrag (self, self);
     #endif
-    UpdatePlayerFrags (self, -2);  // extra penalty
+    Cl_UpdatePlayerFrags (self, -2);  // extra penalty
     respawn (TRUE);
 };
 
@@ -1518,7 +1530,7 @@ void(entity attacker) ClientObituary =
         logfrag (attacker.owner, self);
         #endif
 
-        UpdatePlayerFrags (attacker.owner, 1);
+        Cl_UpdatePlayerFrags (attacker.owner, 1);
         return;
     }
 
@@ -1532,7 +1544,7 @@ void(entity attacker) ClientObituary =
         logfrag (self, self);
         #endif
 
-        UpdatePlayerFrags (self, -1);
+        Cl_UpdatePlayerFrags (self, -1);
         return;
     }
 
@@ -1543,7 +1555,7 @@ void(entity attacker) ClientObituary =
         Bprint (PRINT_MEDIUM," was overcome by  ");
         Bprint (PRINT_MEDIUM,attacker.owner.netname);
         Bprint (PRINT_MEDIUM, "'s Death Mask power\n");
-        UpdatePlayerFrags (self, -1);
+        Cl_UpdatePlayerFrags (self, -1);
         self.noise1 = "thevoice/splatt.wav";
         #ifdef QUAKEWORLD
         logfrag (self, self);
@@ -1556,7 +1568,7 @@ void(entity attacker) ClientObituary =
         Bprint (PRINT_MEDIUM,self.netname);
         Bprint (PRINT_MEDIUM," was squashed\n");
         self.noise1 = "thevoice/squash.wav";
-        UpdatePlayerFrags (self, -1);  // killed self
+        Cl_UpdatePlayerFrags (self, -1);  // killed self
         #ifdef QUAKEWORLD
         logfrag (self, self);
         #endif
@@ -1571,7 +1583,7 @@ void(entity attacker) ClientObituary =
             #ifdef QUAKEWORLD
             logfrag (attacker, attacker);
             #endif
-            UpdatePlayerFrags (attacker, -1);
+            Cl_UpdatePlayerFrags (attacker, -1);
             Bprint (PRINT_MEDIUM,self.netname);
 
             if (rnum < 0.33)
@@ -1606,7 +1618,7 @@ void(entity attacker) ClientObituary =
             Bprint (PRINT_MEDIUM, attacker.netname);
             Bprint (PRINT_MEDIUM, deathstring);
 
-            UpdatePlayerFrags (attacker, -1);
+            Cl_UpdatePlayerFrags (attacker, -1);
 
             #ifdef QUAKEWORLD
             // killing a teammate logs as suicide
@@ -1620,7 +1632,7 @@ void(entity attacker) ClientObituary =
             #ifdef QUAKEWORLD
             logfrag (attacker, self);
             #endif
-            UpdatePlayerFrags (attacker, 1);
+            Cl_UpdatePlayerFrags (attacker, 1);
 
             rnum = random()*54;
 
@@ -1927,7 +1939,7 @@ void(entity attacker) ClientObituary =
         #ifdef QUAKEWORLD
         logfrag (self, self);
         #endif
-        UpdatePlayerFrags (self, -1);
+        Cl_UpdatePlayerFrags (self, -1);
 
         // hell if I know; he's just dead!!!
         Bprint (PRINT_MEDIUM, self.netname);

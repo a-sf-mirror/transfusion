@@ -6,7 +6,7 @@
    <title> BloodBath manual
    <author> Mathieu Olivier <tt>&lt;elric@planetblood.com&gt;</tt> and
    Dave Turner <tt>&lt;darth_linux@planetblood.com&gt;</tt>
-   <date>v?.?.? (development), May 1, 2002
+   <date>v0.0.0, June 19, 2002
    <abstract>
       This manual covers installation and usage of the
       <url url="http://www.planetblood.com/qblood/" name="BloodBath"> game.
@@ -98,9 +98,7 @@
 
          All those impulses are considered cheats (not available in multiplayer
          games, except if the server has the "sv_cheats" cvar set to a
-         non-zero value). <em>WARNING</em>: due to strict resource management,
-         some of them MAY CRASH THE GAME if the required sounds and models are
-         not precached at this moment.
+         non-zero value). <em>WARNING</em>: some of them MAY CRASH THE GAME.
          <itemize>
             <item> impulse 103: botcam mode (NQ only)
             <item> impulse 104: waypoint edit mode (NQ only)
