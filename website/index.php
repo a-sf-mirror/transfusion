@@ -105,7 +105,7 @@
 	topic, you may want to send a mail directly to one of the 3 project leaders:<br />
 	<ul>
 		<li>
-			<a href="mailto:iliveagain@planetblood.com">Joe "ILiveAgain" Volante</a>
+			<a href="mailto:cruaich@yahoo.com">Christopher "Cruaich" Steele</a>
 			(Project Coordinator): any question not purely about art or programming
 		</li>
 		<li>
@@ -120,7 +120,7 @@
 	The Transfusion Project has also a mailing list:
 	<a href="mailto:blood-devel@lists.sourceforge.net">blood-devel at lists dot
 	sourceforge dot net</a>. It is quite programming oriented, but we don't
-	mind other qBlood related topics. A part of its traffic is made of CVS
+	mind other Transfusion related topics. A part of its traffic is made of CVS
 	update messages that are automatically send each time our code base is
 	updated. All mails are archived, and the "Mailing lists" link at the
 	beginning of this page allows you to browse them or to subscribe to the
