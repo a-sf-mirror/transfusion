@@ -190,7 +190,7 @@ void() Leech_BallFire =
     #ifdef QUAKEWORLD
     newmis.voided = 0;
     #endif
-    newmis.angles = vectoangles(newmis.velocity) + '0 90 0';
+    newmis.angles = vectoangles(newmis.velocity);
     newmis.movetype = MOVETYPE_FLYMISSILE;
 
     // If we don't have enough ammo, use HP
