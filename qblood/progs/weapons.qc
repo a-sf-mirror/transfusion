@@ -43,7 +43,7 @@ void() W_Precache =
     precache_sound ("weapons/flaregun/flarair2.wav");
 */
     precache_sound ("weapons/flaregun/flaref.wav");  // Flaregun fire
-//    precache_sound ("weapons/flaregun/flarefuw.wav");
+//    precache_soud ("weapons/flaregun/flarefuw.wav");
 
     // dynamite bundles/proximity/remote detonators
     precache_sound ("weapons/tnt/tntfuse.wav");  // tnt lighted
@@ -70,7 +70,9 @@ void() W_Precache =
     precache_sound ("weapons/voodoodl/vooburn.wav");
     precache_sound ("weapons/voodoodl/voochant.wav");
     precache_sound ("weapons/voodoodl/voolaugh.wav");
-
+*/
+    precache_sound ("weapons/voodoodl/voostab.wav");
+/*    
     // common sounds - some are in the C code, some aren't
     precache_sound ("weapons/bflesh.wav");
     precache_sound ("weapons/bmetal.wav");
@@ -215,7 +217,7 @@ void() W_FireAxe =
         trace_ent.axhitme = 1;
         SpawnBlood (org, '0 0 0', 20);
 
-        T_Damage (trace_ent, self, self, 20);
+        T_Damage (trace_ent, self, self, 68); // this needs to be 17 per tine, 68 max, need logic for checking how many tines contact enemy
     }
     else
     {   // hit wall
@@ -565,7 +567,7 @@ void() W_FireSuperShotgun =
 
     dir = aim (self, 100000);
     SpawnShell ();
-    FireBullets (30, dir, '0.14 0.08 0');  // quake = 14 bullets
+    FireBullets (18, dir, '0.14 0.08 0');  // 2 shells, with 9 "shot pellets" each.  quake = 14 bullets
 };
 
 
@@ -624,7 +626,7 @@ void() T_MissileTouch =
         return;
     }
 
-    damg = 70 + random()*20; // quake = 100 + random()*20
+    damg = 50 + random()*50; // quake = 100 + random()*20
 
     if (other.health)
     {
@@ -838,7 +840,7 @@ void() W_FireLightning =
     WriteCoord (MSG_BROADCAST, trace_endpos_z);
     #endif
 
-    LightningDamage (self.origin, trace_endpos + v_forward*4, self, 20); //quake = 30
+    LightningDamage (self.origin, trace_endpos + v_forward*4, self, 25); //quake = 30
 };
 
 
@@ -850,7 +852,7 @@ VOODOO DOLL
 ===============================================================================
 */
 
-#define DMG_VOODOO_DOLL 15
+#define DMG_VOODOO_DOLL 25 //per Matt Saettler
 
 /*
 ================
