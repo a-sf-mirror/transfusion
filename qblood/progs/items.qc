@@ -422,8 +422,8 @@ void() armor_touch =
 void() item_armor1 =
 {
     self.touch = armor_touch;
-    precache_model ("progs/armor.mdl");
-    setmodel (self, "progs/armor.mdl");
+    precache_model ("progs/i_arm_bd.mdl");
+    setmodel (self, "progs/i_arm_bd.mdl");
     self.skin = 0;
     setsize (self, '-16 -16 0', '16 16 56');
     StartItem ();
@@ -985,8 +985,8 @@ void() item_shells =
     }
     else
     {
-        precache_model ("maps/b_shell0.bsp");
-        setmodel (self, "maps/b_shell0.bsp");
+        precache_model ("progs/i_boxshl.mdl");
+        setmodel (self, "progs/i_boxshl.mdl");
         self.aflag = 20;
     }
     self.weapon = 1;
@@ -1113,8 +1113,8 @@ void() item_weapon =
         }
         else
         {
-            precache_model ("maps/b_shell0.bsp");
-            setmodel (self, "maps/b_shell0.bsp");
+            precache_model ("progs/i_boxshl.mdl");
+            setmodel (self, "progs/i_boxshl.mdl");
             self.aflag = 20;
         }
         self.weapon = 1;
