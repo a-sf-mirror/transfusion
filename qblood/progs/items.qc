@@ -532,16 +532,18 @@ void() obj_fence =
     };
 
 // large 2 tier fountain
+*/
 
 void() obj_fountain =
     {
     precache_model("progs/fountain.mdl");
     setmodel(self, "progs/fountain.mdl");
-
+    self.solid = SOLID_BBOX;
     setsize (self, '0 0 0', '32 32 56');
     StartItem ();
     };
 
+/*
 // head of a fallen angel
 
 void() obj_hfangel =
@@ -651,6 +653,7 @@ void() obj_pot1 =
     setsize (self, '0 0 0', '32 32 56');
     StartItem ();
     };
+*/
 
 // large vase, 4 skins
 
@@ -658,11 +661,12 @@ void() obj_pot2 =
     {
     precache_model("progs/pot2.mdl");
     setmodel(self, "progs/pot2.mdl");
-
+    self.solid = SOLID_BBOX;
     setsize (self, '0 0 0', '32 32 56');
     StartItem ();
     };
 
+/*
 // large vase, 4 skins
 
 void() obj_pot3 =

@@ -1058,7 +1058,7 @@ void() ambient_flouro_buzz =
 void() ambient_drip =
 {
     precache_sound ("ambience/drip3.wav");
-    ambientsound (self.origin, "ambience/drip3.wav", 1, ATTN_STATIC);
+    ambientsound (self.origin, "ambience/drip3.wav", 0.5, ATTN_STATIC);
 };
 
 /*QUAKED ambient_comp_hum (0.3 0.1 0.6) (-10 -10 -8) (10 10 8)
@@ -1074,6 +1074,12 @@ void() ambient_comp_hum =
 void() ambient_thunder =
 {
     precache_sound ("ambience/amb18.wav"); // not really thunder anymore
+    ambientsound (self.origin, "ambience/amb18.wav", 1, ATTN_STATIC);
+};
+
+void() ambient_amb18 =
+{
+    precache_sound ("ambience/amb18.wav"); // for Winter Wonderland
     ambientsound (self.origin, "ambience/amb18.wav", 1, ATTN_STATIC);
 };
 
@@ -1722,7 +1728,7 @@ void() ambient_water =
 void() ambient_water1 =
 {
     precache_sound ("ambience/water1.wav");
-    ambientsound (self.origin, "ambience/water1.wav", 1, ATTN_STATIC);
+    ambientsound (self.origin, "ambience/water1.wav", 0.5, ATTN_STATIC);
 };
 
 /*QUAKED ambient_waterlap (0.3 0.1 0.6) (-10 -10 -8) (10 10 8)
