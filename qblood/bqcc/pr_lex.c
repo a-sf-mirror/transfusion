@@ -395,7 +395,7 @@ void PR_FindMacro (void)
                 pr_immediate._float = (float) j;
                 return;
             }
-   
+
     PR_ParseError ("Unknown frame macro $%s", pr_token);
 }
 
