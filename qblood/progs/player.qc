@@ -212,15 +212,15 @@ void() player_nail =
         return;
     }
 
-    // If it's a normal fire start
-    if (self.weaponframe == 0 && self.impulse != 12 && !self.button1)
-        self.weaponframe = 7;
+    // If it's an altfire start
+    if (self.weaponframe == 0 && (self.impulse == 12 || self.button1))
+        self.weaponframe = 8;
     else
     {
         self.weaponframe = self.weaponframe + 1;
-        if (self.weaponframe == 15)  // frame 14 is the last frame of the normal fire animation
-            self.weaponframe = 7;
-        else if (self.weaponframe == 7)  // frame 6 is the last frame of the alt fire animation
+        if (self.weaponframe == 14)  // frame 13 is the last frame of the alt fire animation (frame 14 is skipped (== frame 8))
+            self.weaponframe = 8;
+        else if (self.weaponframe == 8)  // frame 7 is the last frame of the normal fire animation
             self.weaponframe = 1;
     }
 

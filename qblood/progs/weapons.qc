@@ -1248,11 +1248,11 @@ void() W_FireSpikes =
 
     // set the bullet direction according to the weapon real direction
     dir = aim (self, 1000);
-    if (self.weaponframe == 1 || self.weaponframe == 3)
+    if (self.weaponframe == 8 || self.weaponframe == 10)
         dir = dir - v_right * (1 / 10);
-    else if (self.weaponframe == 2)
+    else if (self.weaponframe == 9)
         dir = dir - v_right * (1 / 5);
-    else if (self.weaponframe == 5)
+    else if (self.weaponframe == 12)
         dir = dir + v_right * (1 / 10);
 
     launch_spike (self.origin + '0 0 16' + v_right * 8 + v_forward * 4, dir);

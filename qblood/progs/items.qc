@@ -983,14 +983,14 @@ void() item_shells =
     {
         precache_model ("progs/i_boxshl.mdl");
         setmodel (self, "progs/i_boxshl.mdl");
-	self.netname = "box of shotgun shells";
+        self.netname = "box of shotgun shells";
         self.aflag = 15;
     }
     else
     {
         precache_model ("progs/i_fewshl.mdl");
         setmodel (self, "progs/i_fewshl.mdl");
-	self.netname = "4 shotgun shells";
+        self.netname = "4 shotgun shells";
         self.aflag = 4;
     }
     self.weapon = 1;
@@ -1005,13 +1005,13 @@ void() item_flares =
 {
     self.touch = ammo_touch;
 
-        precache_model ("progs/i_flares.mdl");
-        setmodel (self, "progs/i_flares.mdl");
+    precache_model ("progs/i_flares.mdl");
+    setmodel (self, "progs/i_flares.mdl");
     if (self.spawnflags & AMMO_BIG)
-	{
-	        self.netname = "box of flares";
-		self.aflag = 8;
-	}	
+    {
+        self.netname = "box of flares";
+        self.aflag = 8;
+    }
     else
         self.aflag = 4;
     self.weapon = 1;
@@ -1032,13 +1032,13 @@ void() item_spikes =
         precache_model ("progs/i_drum.mdl");
         setmodel (self, "progs/i_drum.mdl");
         self.netname = "full drum of bullets";
-	self.aflag = 100;
+        self.aflag = 100;
     }
     else
     {
         precache_model ("progs/i_fewblt.mdl");
         setmodel (self, "progs/i_fewblt.mdl");
-	self.netname = "a few bullets";
+        self.netname = "a few bullets";
         self.aflag = 15;
     }
     self.weapon = 2;
@@ -1117,14 +1117,14 @@ void() item_weapon =
             precache_model ("progs/i_boxshl.mdl");
             setmodel (self, "progs/i_boxshl.mdl");
             self.netname = "box of shotgun shells";
-	    self.aflag = 15;
+            self.aflag = 15;
         }
         else
         {
             precache_model ("progs/i_fewshl.mdl");
             setmodel (self, "progs/i_fewshl.mdl");
             self.netname = "4 shotgun shells";
-	    self.aflag = 4;
+            self.aflag = 4;
         }
         self.weapon = 1;
     }
@@ -1135,15 +1135,15 @@ void() item_weapon =
         {
             precache_model ("progs/i_drum.mdl");
             setmodel (self, "progs/i_drum.mdl");
-	    self.netname = "full drum of bullets";
+            self.netname = "full drum of bullets";
             self.aflag = 100;
         }
         else
         {
             precache_model ("progs/i_fewblt.mdl");
             setmodel (self, "progs/i_fewblt.mdl");
-	    self.netname = "a few bullets";
-	    self.aflag = 15;
+            self.netname = "a few bullets";
+            self.aflag = 15;
         }
         self.weapon = 2;
 
