@@ -744,8 +744,6 @@ void(entity client) PM_PsychoCaleb =
             playit = "player/play1116.wav";
     }
 
-    // Play on two channels so the player can hear himself clearly.
-    sound (client, CHAN_VOICE, playit, 1, ATTN_NORM);
     sound (client, CHAN_BODY, playit, 1, ATTN_NORM);
 };
 

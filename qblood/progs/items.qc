@@ -543,6 +543,16 @@ void() obj_fountain =
     StartItem ();
     };
 
+// Soccer Goal
+void() obj_goal =
+    {
+    precache_model ("progs/goalpost.mdl");
+    setmodel (self, "progs/goalpost.mdl");
+    self.solid = SOLID_BBOX;
+    setsize (self, '0 0 0', '32 32 56');
+    StartItem ();
+    };
+
 /*
 // head of a fallen angel
 
@@ -959,13 +969,6 @@ void() item_artifact_shadow =
     item_lure ();
 };
 
-
-// Soccer Goal Post
-void() obj_goal =
-{
-     precache_model("progs/goalpost.mdl");
-     self.model = "progs/goalpost.mdl";
-};
 
 /*
 =========================================================================
