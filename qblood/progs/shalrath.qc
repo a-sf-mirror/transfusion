@@ -266,7 +266,7 @@ void() ShalMissileTouch =
         return;     // don't explode on owner
 
     if (other.classname == "monster_zombie")
-        T_Damage (other, self, self, 110);
+        T_Damage (other, self, self, 110, DF_BODY, string_null);
     T_RadiusDamage (self, self.owner, 40, world, "");
     sound (self, CHAN_WEAPON, "weapons/napalm/explodfl.wav", 1, ATTN_NORM);
 
@@ -295,7 +295,7 @@ void() ShalMissileTouch =
 */
 void() monster_shalrath =
 {
-    if (gametype > GAMETYPE_COOPERATIVE)
+    if (gametype > GAME_COOPERATIVE)
     {
         remove(self);
         return;

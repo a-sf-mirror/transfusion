@@ -7,7 +7,7 @@
  * desc:		pre compiler
  *
  * $Archive: /source/code/botlib/l_precomp.h $
- * $Author$ 
+ * $Author$
  * $Revision$
  * $Modtime: 10/05/99 3:32p $
  * $Date$

@@ -32,92 +32,92 @@
 //
 // system globals
 //
-entity      self;
-entity      other;
-entity      world;
-float       time;
-float       frametime;
+entity  self;
+entity  other;
+entity  world;
+float   time;
+float   frametime;
 
 #ifdef QUAKEWORLD
-entity          newmis;                         // if this is set, the entity that just
-                                // run created a new missile that should
-                                // be simulated immediately
+entity  newmis;         // if this is set, the entity that just
+                        // run created a new missile that should
+                        // be simulated immediately
 #endif
 
-float       force_retouch;      // force all entities to touch triggers
-                                // next frame.  this is needed because
-                                // non-moving things don't normally scan
-                                // for triggers, and when a trigger is
-                                // created (like a teleport trigger), it
-                                // needs to catch everything.
-                                // decremented each frame, so set to 2
-                                // to guarantee everything is touched
-string      mapname;
+float   force_retouch;  // force all entities to touch triggers
+                        // next frame.  this is needed because
+                        // non-moving things don't normally scan
+                        // for triggers, and when a trigger is
+                        // created (like a teleport trigger), it
+                        // needs to catch everything.
+                        // decremented each frame, so set to 2
+                        // to guarantee everything is touched
+string  mapname;
 
 #ifndef QUAKEWORLD
 // WARNING: don't use them directly. Use gametype (cf below)
-float       deathmatch;
-float       coop;
-float       teamplay;
+float   deathmatch;
+float   coop;
+float   teamplay;
 #endif
 
-float       serverflags;        // propagated from level to level, used to
-                                // keep track of completed episodes
+float   serverflags;    // propagated from level to level, used to
+                        // keep track of completed episodes
 
-float       total_secrets;
-float       total_monsters;
+float   total_secrets;
+float   total_monsters;
 
-float       found_secrets;      // number of secrets found
-float       killed_monsters;    // number of monsters killed
+float   found_secrets;      // number of secrets found
+float   killed_monsters;    // number of monsters killed
 
 
 // spawnparms are used to encode information about clients across server
 // level changes
-float       parm1, parm2, parm3, parm4, parm5, parm6, parm7, parm8, parm9, parm10, parm11, parm12, parm13, parm14, parm15, parm16;
+float   parm1, parm2, parm3, parm4, parm5, parm6, parm7, parm8, parm9, parm10, parm11, parm12, parm13, parm14, parm15, parm16;
 
 //
 // global variables set by built in functions
 //
-vector      v_forward, v_up, v_right;   // set by makevectors()
+vector  v_forward, v_up, v_right;   // set by makevectors()
 
 // set by traceline / tracebox
-float       trace_allsolid;
-float       trace_startsolid;
-float       trace_fraction;
-vector      trace_endpos;
-vector      trace_plane_normal;
-float       trace_plane_dist;
-entity      trace_ent;
-float       trace_inopen;
-float       trace_inwater;
+float   trace_allsolid;
+float   trace_startsolid;
+float   trace_fraction;
+vector  trace_endpos;
+vector  trace_plane_normal;
+float   trace_plane_dist;
+entity  trace_ent;
+float   trace_inopen;
+float   trace_inwater;
 
-entity      msg_entity;             // destination of single entity writes
+entity  msg_entity;     // destination of single entity writes
 
 //
 // required prog functions
 //
-void()      main;                       // only for testing
+void()  main;                       // only for testing
 
-void()      StartFrame;
+void()  StartFrame;
 
-void()      PlayerPreThink;
-void()      PlayerPostThink;
+void()  PlayerPreThink;
+void()  PlayerPostThink;
 
-void()      ClientKill;
-void()      ClientConnect;
-void()      PutClientInServer;      // call after setting the parm1... parms
-void()      ClientDisconnect;
+void()  ClientKill;
+void()  ClientConnect;
+void()  PutClientInServer;  // call after setting the parm1... parms
+void()  ClientDisconnect;
 
-void()      SetNewParms;            // called when a client first connects to
-                                    // a server. sets parms so they can be
-                                    // saved off for restarts
+void()  SetNewParms;        // called when a client first connects to
+                            // a server. sets parms so they can be
+                            // saved off for restarts
 
-void()      SetChangeParms;         // call to set parms for self so they can
-                                    // be saved for a level transition
+void()  SetChangeParms;     // call to set parms for self so they can
+                            // be saved for a level transition
 
 
 //================================================
-void        end_sys_globals;        // flag for structure dumping
+void    end_sys_globals;    // flag for structure dumping
 //================================================
 
 /*
@@ -131,122 +131,122 @@ void        end_sys_globals;        // flag for structure dumping
 //
 // system fields (*** = do not set in prog code, maintained by C code)
 //
-.float      modelindex;     // *** model index in the precached list
-.vector     absmin, absmax; // *** origin + mins / maxs
+.float  modelindex;     // *** model index in the precached list
+.vector absmin, absmax; // *** origin + mins / maxs
 
-.float      ltime;          // local time for entity
+.float  ltime;          // local time for entity
 #ifdef QUAKEWORLD
-.float      lastruntime;    // *** to allow entities to run out of sequence
+.float  lastruntime;    // *** to allow entities to run out of sequence
 #endif
 
-.float      movetype;
-.float      solid;
+.float  movetype;
+.float  solid;
 
-.vector     origin;         // ***
-.vector     oldorigin;      // ***
-.vector     velocity;
-.vector     angles;
-.vector     avelocity;
+.vector origin;         // ***
+.vector oldorigin;      // ***
+.vector velocity;
+.vector angles;
+.vector avelocity;
 
 #ifndef QUAKEWORLD
-.vector     punchangle;     // temp angle adjust from damage or recoil
+.vector punchangle;     // temp angle adjust from damage or recoil
 #endif
 
-.string     classname;      // spawn function
-.string     model;
-.float      frame;
-.float      skin;
-.float      effects;
+.string classname;      // spawn function
+.string model;
+.float  frame;
+.float  skin;
+.float  effects;
 
-.vector     mins, maxs;     // bounding box extents reletive to origin
-.vector     size;           // maxs - mins
+.vector mins, maxs;     // bounding box extents reletive to origin
+.vector size;           // maxs - mins
 
-.void()     touch;
-.void()     use;
-.void()     think;
-.void()     blocked;        // for doors or plats, called when can't push other
+.void() touch;
+.void() use;
+.void() think;
+.void() blocked;        // for doors or plats, called when can't push other
 
-.float      nextthink;
-.entity     groundentity;
+.float  nextthink;
+.entity groundentity;
 
 // stats
-.float      health;
-.float      frags;
-.float      weapon;         // one of the IT_SHOTGUN, etc flags
-.string     weaponmodel;
-.float      weaponframe;
-.float      currentammo;
-.float      ammo_shells, ammo_nails, ammo_rockets, ammo_cells;
+.float  health;
+.float  frags;
+.float  weapon;         // one of the IT_FLAREGUN, etc flags
+.string weaponmodel;
+.float  weaponframe;
+.float  currentammo;
+.float  ammo_shells, ammo_nails, ammo_rockets, ammo_cells;
 
-.float      items;          // bit flags
+.float  items;          // bit flags
 
-.float      takedamage;
-.entity     chain;
-.float      deadflag;
+.float  takedamage;
+.entity chain;
+.float  deadflag;
 
-.vector     view_ofs;           // add to origin to get eye point
+.vector view_ofs;       // add to origin to get eye point
 
 
-.float      button0;        // fire
-.float      button1;        // use
-.float      button2;        // jump
+.float  button0;        // fire
+.float  button1;        // use
+.float  button2;        // jump
 
-.float      impulse;        // weapon changes
+.float  impulse;        // weapon changes
 
-.float      fixangle;
-.vector     v_angle;        // view / targeting angle for players
+.float  fixangle;
+.vector v_angle;        // view / targeting angle for players
 #ifndef QUAKEWORLD
-.float      idealpitch;     // calculated pitch angle for lookup up slopes
+.float  idealpitch;     // calculated pitch angle for lookup up slopes
 #endif
 
-.string     netname;
+.string netname;
 
-.entity     enemy;
+.entity enemy;
 
-.float      flags;
+.float  flags;
 
-.float      colormap;
-.float      team;
+.float  colormap;
+.float  team;
 
-.float      max_health;     // players maximum health is stored here
+.float  max_health;     // players maximum health is stored here
 
-.float      teleport_time;  // don't back up
+.float  teleport_time;  // don't back up
 
-.float      armortype;      // save this fraction of incoming damage
-.float      armorvalue;
+.float  armortype;      // save this fraction of incoming damage
+.float  armorvalue;
 
-.float      waterlevel;     // 0 = not in, 1 = feet, 2 = wast, 3 = eyes
-.float      watertype;      // a contents value
+.float  waterlevel;     // 0 = not in, 1 = feet, 2 = wast, 3 = eyes
+.float  watertype;      // a contents value
 
-.float      ideal_yaw;
-.float      yaw_speed;
+.float  ideal_yaw;
+.float  yaw_speed;
 
-.entity     aiment;
+.entity aiment;
 
-.entity     goalentity;     // a movetarget or an enemy
+.entity goalentity;     // a movetarget or an enemy
 
-.float      spawnflags;
+.float  spawnflags;
 
-.string     target;
-.string     targetname;
+.string target;
+.string targetname;
 
 // damage is accumulated through a frame. and sent as one single
 // message, so the super shotgun doesn't generate huge messages
-.float      dmg_take;
-.float      dmg_save;
-.entity     dmg_inflictor;
+.float  dmg_take;
+.float  dmg_save;
+.entity dmg_inflictor;
 
-.entity     owner;      // who launched a missile
-.vector     movedir;    // mostly for doors, but also used for waterjump
+.entity owner;          // who launched a missile
+.vector movedir;        // mostly for doors, but also used for waterjump
 
-.string     message;        // trigger messages
+.string message;        // trigger messages
 
-.float      sounds;     // either a cd track number or sound number
+.float  sounds;         // either a cd track number or sound number
 
-.string     noise, noise1, noise2, noise3;  // contains names of wavs to play
+.string noise, noise1, noise2, noise3;  // contains names of wavs to play
 
 //================================================
-void        end_sys_fields;         // flag for structure dumping
+void    end_sys_fields;         // flag for structure dumping
 //================================================
 
 /*
@@ -274,9 +274,25 @@ entity  activator;      // the entity that activated a trigger or brush
 
 entity  damage_attacker;    // set by T_Damage
 entity  damage_inflictor;
-float   framecount;
 
 float   recursioncount;  // used to avoid stack overflow with explosions
+
+
+// cvars checked each frame
+float timelimit;
+float fraglimit;
+float skill;
+
+float friendlyfire;
+
+// USE THIS VARIABLE TO KNOW THE CURRENT GAME TYPE. The other ones are considered obsolete
+// Set once for the entire game (when the world is spawned). cf GAME_* values in common.qh
+float gametype;
+
+float intermission_running;
+
+float modelindex_eyes, modelindex_player;
+
 
 //
 // CTF stuff
@@ -291,20 +307,6 @@ entity team1_lastspawn;
 entity team2_lastspawn;
 
 
-//
-// cvars checked each frame
-//
-float       timelimit;
-float       fraglimit;
-float       skill;
-
-float friendlyfire;
-
-// USE THIS VARIABLE TO KNOW THE CURRENT GAME TYPE. The other ones are considered obsolete
-// Set once for the entire game (when the world is spawned). cf GAMETYPE_* values in common.qh
-float gametype;
-
-
 //================================================
 
 //
@@ -316,13 +318,35 @@ float gametype;
 
 //================================================
 
+.float      hit_z;
+
 .string     killtarget;
+
+//
+// combat
+//
+.float      armor_fire;
+.float      armor_body;
+.float      armor_mind;
+
+.float      remain_arm;
+.float      remain_dmg;
+
+.float      reflect_finished;
+
+.float      charge;
+.float      powertime;
+.float      tnt_time;
+.float      tnt_type;
+
+.float      idle_time;
+.float      idle_done;
 
 //
 // quakeed fields
 //
-.float      light_lev;      // not used by game, but parsed by light util
-.float      style;
+.float      light_lev;  // not used by game, but parsed by light util
+.float      style;      // mainly used for the light styles
 
 
 //
@@ -587,33 +611,7 @@ string(string s) precache_file2     = #77;      // registered version only
 void(entity killer, entity killee) logfrag = #79;       // add to stats
 
 string(entity e, string key) infokey    = #80;  // get a key value (world = serverinfo)
-float(string s) stof                            = #81;          // convert string to float
+float(string s) stof                    = #81;  // convert string to float
 void(vector where, float set) multicast = #82;  // sends the temp message to a set
                                                 // of clients, possibly in PVS or PHS
 #endif
-
-//============================================================================
-
-//
-// subs.qc
-//
-void(vector tdest, float tspeed, void() func) SUB_CalcMove;
-void(entity ent, vector tdest, float tspeed, void() func) SUB_CalcMoveEnt;
-void(vector destangle, float tspeed, void() func) SUB_CalcAngleMove;
-void()  SUB_CalcMoveDone;
-void() SUB_CalcAngleMoveDone;
-void() SUB_Null;
-void() SUB_UseTargets;
-void() SUB_Remove;
-
-//
-//  combat.qc
-//
-void(entity targ, entity inflictor, entity attacker, float damage) T_Damage;
-
-
-float (entity e, float healamount, float ignore) T_Heal; // health function
-
-float(entity targ, entity inflictor) CanDamage;
-
-

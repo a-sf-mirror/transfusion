@@ -220,7 +220,7 @@ void() army_fire =
     dir = en.origin - en.velocity*0.2;
     dir = normalize (dir - self.origin);
 
-    FireBullets (4, dir, '0.1 0.1 0');
+    FireBullets (self.origin, dir, 4, 4, '0.1 0.1 0');
 };
 
 
@@ -313,7 +313,7 @@ void() army_die =
 */
 void() monster_army =
 {
-    if (gametype > GAMETYPE_COOPERATIVE)
+    if (gametype > GAME_COOPERATIVE)
     {
         remove(self);
         return;

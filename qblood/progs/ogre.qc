@@ -186,7 +186,7 @@ local float     ldmg;
         return;
 
     ldmg = (random() + random() + random()) * 4;
-    T_Damage (self.enemy, self, self, ldmg);
+    T_Damage (self.enemy, self, self, ldmg, DF_BODY, string_null);
 
     if (side)
     {
@@ -522,7 +522,7 @@ void() ogre_melee =
 */
 void() monster_ogre =
 {
-    if (gametype > GAMETYPE_COOPERATIVE)
+    if (gametype > GAME_COOPERATIVE)
     {
         remove(self);
         return;

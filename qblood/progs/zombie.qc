@@ -166,7 +166,7 @@ void() ZombieGrenadeTouch =
         return;     // don't explode on owner
     if (other.takedamage)
     {
-        T_Damage (other, self, self.owner, 10 );
+        T_Damage (other, self, self.owner, 10, DF_BODY, string_null);
         sound (self, CHAN_WEAPON, "zombie/z_hit.wav", 1, ATTN_NORM);
         remove (self);
         return;
@@ -596,7 +596,7 @@ If crucified, stick the bounding box 12 pixels back into a wall to look right.
 */
 void() monster_zombie =
 {
-    if (gametype > GAMETYPE_COOPERATIVE)
+    if (gametype > GAME_COOPERATIVE)
     {
         remove(self);
         return;

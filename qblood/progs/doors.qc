@@ -53,10 +53,8 @@ void() door_go_up;
 
 void() door_blocked =
 {
-// PM:  In Blood, squished by door is instant death.  Armor offers
-//      no protection either.
     // Used to do self.dmg for damage.
-    T_NewDamage (other, self, self, other.health, 0, "squish");
+    T_Damage (other, self, self, other.health, DF_NO_PROTECT, "squish");
 
 // if a door has a negative wait, it would never come back if blocked,
 // so let it just squash the object to death real fast
@@ -88,6 +86,7 @@ void() door_hit_bottom =
 
 void() door_go_down =
 {
+dprint ("door_go_down\n");
     sound (self, CHAN_VOICE, self.noise2, 1, ATTN_NORM);
     if (self.max_health)
     {
@@ -101,6 +100,7 @@ void() door_go_down =
 
 void() door_go_up =
 {
+dprint ("door_go_up\n");
     if (self.state == STATE_UP)
         return;     // allready going up
 
@@ -128,6 +128,7 @@ ACTIVATION FUNCTIONS
 
 void() door_fire =
 {
+dprint ("door_fire\n");
     local entity    oself;
     local entity    starte;
 
@@ -171,6 +172,7 @@ void() door_fire =
 
 void() door_use =
 {
+dprint ("door_use\n");
     local entity oself;
 
     self.message = "";          // door message are for touch only
@@ -202,6 +204,7 @@ void() door_trigger_touch =
 
 void() door_killed =
 {
+dprint ("door_killed\n");
     local entity oself;
 
     oself = self;
@@ -689,11 +692,10 @@ void () secret_blocked =
     if (time < self.attack_finished)
         return;
     self.attack_finished = time + 0.5;
-    other.deathtype = "squish";  // FIXME: is it still useful (T_NewDamage is here now) ?
-// PM:  In Blood, squished by door is instant death.  Armor offers
-//      no protection either.
+    other.deathtype = "squish";  // FIXME: is it still useful (New T_Damage is here now) ?
+
     // Used to do self.dmg for damage.
-    T_NewDamage (other, self, self, other.health, 0, "squish");
+    T_Damage (other, self, self, other.health, DF_NO_PROTECT, "squish");
 };
 
 /*

@@ -227,8 +227,8 @@ local entity    fireball;
 
 void() fire_touch =
 {
-// PM:  Make fireballs do fire damage.
-    T_NewDamage (other, self, self, 20, DF_FIRE, "fire");
+    // Make fireballs do fire damage.
+    T_Damage (other, self, self, 20, DF_FIRE, "fire");
     remove(self);
 };
 
@@ -355,7 +355,7 @@ void() Laser_Touch =
     {
         SpawnBlood (org, self.velocity*0.2, 15);
         other.deathtype = "laser";
-        T_Damage (other, self, self.owner, 15);
+        T_Damage (other, self, self.owner, 15, DF_FIRE, "laser");
     }
     else
     {
@@ -548,7 +548,7 @@ testing air bubbles
 void() air_bubbles =
 
 {
-    if (gametype > GAMETYPE_COOPERATIVE)
+    if (gametype > GAME_COOPERATIVE)
     {
         remove (self);
         return;

@@ -5,7 +5,7 @@
 
    <title> QBlood manual
    <author> Mathieu Olivier <tt>&lt;elric@planetblood.com&gt;</tt>
-   <date>v?.?.? (development), November 23, 2001
+   <date>v?.?.? (development), December 8, 2001
    <abstract>
       This manual covers <url url="http://www.planetblood.com/qblood/"
       name="qBlood"> installation and usage.
@@ -64,20 +64,21 @@
             <item> impulse 13: use the currently selected item<p>
             <item> impulses 14 and 15: select previous/next item<p>
             <item> impulse 16: view the current value of the next armor type<p>
+            <item> impulse 20: become an observer (only allowed when dead)<p>
             <item> impulse 100: add a bot (to the red team if available)<p>
             <item> impulse 101: add a bot (to the blue team if available)<p>
             <item> impulse 102: kick a bot<p>
-            <item> impulse 103: botcam mode<p>
-            <item> impulse 104: waypoint edit mode<p>
             <item> impulse 141: identify the player you're aiming at<p>
          </itemize>
 
-         All last impulses are considered cheats (not available in multiplayer
+         All those impulses are considered cheats (not available in multiplayer
          games, except if the server has the "sv_allowCheat" cvar set to a
          non-zero value). <em>WARNING</em>: due to strict resource management,
-         using these impulses may crash the game if the requiered sounds and
-         models are not precached at this moment.
+         some of them may crash the game if the requiered sounds and models are
+         not precached at this moment.
          <itemize>
+            <item> impulse 103: botcam mode<p>
+            <item> impulse 104: waypoint edit mode<p>
             <item> impulse 250: Dump all entities stats to console (debug)<p>
             <item> impulse 251: Give full armor<p>
             <item> impulse 252: Burn yourself !<p>
@@ -137,7 +138,7 @@
       <descrip>
          <tag>Quake exits with: <em>Z_Malloc: failed on allocation of XXX bytes</em></tag>
          QBlood seems to use quite a lot of zone memory, so you may need to
-         increase its size with the "-zone" argument. I personnally use "-zone
+         increase its size with the "-zone" argument. I personally use "-zone
          256".
 
          <tag>Boots of jumping doesn't work / I jump higher in NQ than in QW</tag>

@@ -356,29 +356,29 @@ void() tdeath_touch =
             self.classname = "teledeath3";
             other.invincible_finished = 0;
             self.owner.invincible_finished = 0;
-            T_Damage (other, self, self, 50000);
+            T_Damage (other, self, self, 50000, DF_NO_PROTECT, string_null);
             other2 = self.owner;
             self.owner = other;
-            T_Damage (other2, self, self, 50000);
+            T_Damage (other2, self, self, 50000, DF_NO_PROTECT, string_null);
         }
 
         if (other.invincible_finished > time)
         {
             self.classname = "teledeath2";
-            T_Damage (self.owner, self, self, 50000);
+            T_Damage (self.owner, self, self, 50000, DF_NO_PROTECT, string_null);
             return;
         }
 
         if (self.owner.classname != "player")
         {   // other monsters explode themselves
-            T_Damage (self.owner, self, self, 50000);
+            T_Damage (self.owner, self, self, 50000, DF_NO_PROTECT, string_null);
             return;
         }
     }
 
     if (other.health)
     {
-        T_Damage (other, self, self, 50000);
+        T_Damage (other, self, self, 50000, DF_NO_PROTECT, string_null);
     }
 };
 
@@ -588,7 +588,7 @@ void() hurt_touch =
     if (other.takedamage)
     {
         self.solid = SOLID_NOT;
-        T_Damage (other, self, self, self.dmg);
+        T_Damage (other, self, self, self.dmg, DF_BODY, string_null);
         self.think = hurt_on;
         self.nextthink = time + 1;
     }

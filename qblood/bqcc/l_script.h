@@ -7,7 +7,7 @@
  * desc:		lexicographical parser
  *
  * $Archive: /source/code/botlib/l_script.h $
- * $Author$ 
+ * $Author$
  * $Revision$
  * $Modtime: 10/05/99 3:32p $
  * $Date$

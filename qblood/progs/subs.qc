@@ -21,6 +21,16 @@
 #include "common.qh"
 
 
+void(vector tdest, float tspeed, void() func) SUB_CalcMove;
+void()  SUB_CalcMoveDone;
+
+
+float() crandom =
+{
+    return 2*(random() - 0.5);
+};
+
+
 void() SUB_Null = {};
 
 void() SUB_Remove = {remove(self);};
@@ -135,6 +145,20 @@ void()  SUB_CalcMoveDone =
 
 
 /*
+============
+After rotating, set angle to exact final angle
+============
+*/
+void() SUB_CalcAngleMoveDone =
+{
+    self.angles = self.finalangle;
+    self.avelocity = '0 0 0';
+    self.nextthink = -1;
+    if (self.think1)
+        self.think1();
+};
+
+/*
 =============
 SUB_CalcAngleMove
 
@@ -144,15 +168,6 @@ self.angles rotating
 The calling function should make sure self.think is valid
 ===============
 */
-void(entity ent, vector destangle, float tspeed, void() func) SUB_CalcAngleMoveEnt =
-{
-local entity        stemp;
-    stemp = self;
-    self = ent;
-    SUB_CalcAngleMove (destangle, tspeed, func);
-    self = stemp;
-};
-
 void(vector destangle, float tspeed, void() func) SUB_CalcAngleMove =
 {
 local vector    destdelta;
@@ -181,22 +196,19 @@ local float     len, traveltime;
     self.think = SUB_CalcAngleMoveDone;
 };
 
-/*
-============
-After rotating, set angle to exact final angle
-============
-*/
-void() SUB_CalcAngleMoveDone =
+void(entity ent, vector destangle, float tspeed, void() func) SUB_CalcAngleMoveEnt =
 {
-    self.angles = self.finalangle;
-    self.avelocity = '0 0 0';
-    self.nextthink = -1;
-    if (self.think1)
-        self.think1();
+local entity        stemp;
+    stemp = self;
+    self = ent;
+    SUB_CalcAngleMove (destangle, tspeed, func);
+    self = stemp;
 };
 
 
 //=============================================================================
+
+void() SUB_UseTargets;
 
 void() DelayThink =
 {

@@ -85,38 +85,6 @@ VIEW WEAPONS
 ===============================================================================
 */
 
-$modelname v_axe
-$cd id1/models/v_axe
-$origin 0 5 54
-$base base
-$skin skin
-$frame frame1 frame2 frame3 frame4
-
-
-$modelname v_shot
-$cd id1/models/v_shot
-$origin 0 0 54
-$base base
-$skin skin
-$frame shot1 shot2 shot3 shot4
-
-
-$modelname v_shot2
-$cd id1/models/v_shot2
-$origin 0 0 56
-$base base
-$skin skin
-$frame shot1 shot2
-
-
-$modelname v_rock2
-$cd id1/models/v_rock2
-$origin 0 0 54
-$base base
-$skin skin
-$frame shot1 shot2 shot3 shot4 shot5 shot6 shot6
-
-
 $modelname v_rock
 $cd id1/models/v_rock
 $origin 0 0 54
@@ -145,52 +113,6 @@ $frame holster_half1 holster_half2 holster_half3 holster_half4
 // holster (27 -> 30)
 $frame holster1 holster2 holster3 holster4
 
-
-$modelname v_nail
-$cd id1/models/v_nail
-$origin 0 0 54
-$base base
-$skin skin
-// regular fire
-$frame shot1 shot2 shot3 shot4 shot5 shot6 shot7 shot8
-// alt fire
-$frame alt1 alt2 alt3 alt4 alt5 alt6 alt7
-
-
-$modelname v_light
-$cd id1/models/v_light
-$origin 0 0 54
-$base base
-$skin skin
-// idle
-$frame idle1 idle2
-// fire
-$frame fire1 fire2 fire3 fire4
-// alt
-$frame alt1 alt2 alt3 alt4 alt5 alt6 alt7 alt8 alt9 alt10 alt11 alt12 alt13 alt14 alt15 alt16 alt17 alt18 alt19 alt20
-// draw
-$frame draw1 draw2 draw3
-// holster
-$frame holster1 holster2 holster3
-
-
-$modelname v_voodoo
-$cd id1/models/v_voodoo
-$origin 0 0 54
-$base base
-$skin skin
-// stab stomach
-$frame stomach1 stomach2 stomach3 stomach4
-// stab eye
-$frame eye1 eye2 eye3 eye4
-// stab shoulder
-$frame shlder1 shlder2 shlder3 shlder4
-// stab groin
-$frame groin1 groin2 groin3 groin4
-// sit-up animation
-$frame situp1 situp2 situp3
-// alt-fire mode
-$frame fire1 fire2 fire3 fire4 fire5
 
 $modelname v_tnt
 $cd id1/models/v_tnt

@@ -55,10 +55,6 @@ $frame  ember1 ember2 ember3 ember4 ember5 ember6
 //  General Fire Code
 
 //==========================================================================
-//  ???
-
-void(entity targ, entity inflictor, entity attacker, float damage,
-    float dflags, string dtype) T_NewDamage;
 
 //------------------------------------------------------------------------//
 //  This makes an entity do a think function right now.
@@ -93,7 +89,7 @@ float(vector vec) PM_VecInWater =
     return FALSE;
 };
 
-//----------------------------------------------------/ New Code /--------//
+//------------------------------------------------------------------------//
 //  This returns the water level of an entity.
 //------------------------------------------------------------------------//
 float(entity ent) PM_WaterLevel =
@@ -140,7 +136,7 @@ float(entity ent) PM_FireResistant =
 void(entity targ, entity inflictor, entity attacker) PM_FireDamage =
 {
     if (!PM_FireResistant (targ))
-        T_NewDamage (targ, inflictor, attacker, 0.75, DF_FIRE | DF_MIN_PAIN, "fire");
+        T_Damage (targ, inflictor, attacker, 0.75, DF_FIRE | DF_MIN_PAIN, "fire");
 };
 
 //------------------------------------------------------------------------//
@@ -154,7 +150,7 @@ void(entity victim, entity fire, float damage, float burn) PM_BurnDamage =
 
     // Apply damage next immediately.
     if (damage > 0)
-        T_NewDamage (victim, fire, fire.owner, damage, DF_FIRE, fire.deathtype);
+        T_Damage (victim, fire, fire.owner, damage, DF_FIRE, fire.deathtype);
 };
 
 //------------------------------------------------------------------------//
@@ -165,7 +161,7 @@ void(entity victim, entity fire, float damage, float burn) PM_BurnDamage =
 //         point of fire's origin, damage is 100%.  At maximum
 //         distance (i.e, equal to radius), damage is 0%.
 //------------------------------------------------------------------------//
-void(entity fire, float damage, float burn, entity ignore) PM_BurnRadius =
+void(entity fire, float damage, float burn, entity ignore) BurnRadius =
 {
     local   float   fade;       // Distance multiplier.
     local   float   radius;
@@ -215,7 +211,7 @@ void(entity fire, float damage, float burn, entity ignore) PM_BurnRadius =
 //==========================================================================
 //  Custom Explosions
 
-//----------------------------------------------------/ New Code /--------//
+//------------------------------------------------------------------------//
 //  This makes some smoke.
 //
 //  FIXME:  Useless in QW.
@@ -227,7 +223,7 @@ void(entity fire) PM_MakeSmoke =
     #endif
 };
 
-//----------------------------------------------------/ New Code /--------//
+//------------------------------------------------------------------------//
 //  This make some steam.
 //------------------------------------------------------------------------//
 void(entity fire) PM_MakeSteam =
@@ -263,7 +259,7 @@ void(entity ent) PM_KillBurner =
     PM_RemoveFlares (ent);
 };
 
-//----------------------------------------------------/ New Code /--------//
+//------------------------------------------------------------------------//
 //  This checks if 'ent' is on fire and burning.
 //------------------------------------------------------------------------//
 float(entity ent) PM_IsBurning =
@@ -292,7 +288,7 @@ void() PM_MakeEmbers =
     local   vector  spot;       // The spot where the new fire will appear.
     local   float   loop, r;
 
-    if (gametype != GAMETYPE_SINGLE_PLAYER)
+    if (gametype != GAME_SINGLE_PLAYER)
     {
         // In netgames, keep flames down to a minimum.
         if ((floor(time * 10) & 3) == 0)
@@ -347,7 +343,7 @@ void() PM_MakeEmbers =
     }
 };
 
-//----------------------------------------------------/ New Code /--------//
+//------------------------------------------------------------------------//
 //  This keeps the fire on an entity burning.
 //------------------------------------------------------------------------//
 void() PM_Burn =
@@ -403,7 +399,7 @@ void() PM_Burn =
     self.nextthink  = time + 0.1;
 };
 
-//----------------------------------------------------/ New Code /--------//
+//------------------------------------------------------------------------//
 //  This sets the victim on fire.
 //------------------------------------------------------------------------//
 void(entity victim, entity attacker, float burn) PM_Ignite =
@@ -557,7 +553,7 @@ void() PM_DeathFlameThink =
 
     // In case enemy is not dead, do some damage.
     if (self.enemy.takedamage)
-        T_Damage (self.enemy, self, self.owner, 1);
+        T_Damage (self.enemy, self, self.owner, 1, DF_FIRE, "fire");
 
     // Flame has different effects depending on its contents.
     if (PM_VecInWater (spot))
@@ -659,7 +655,7 @@ void(vector offset) PM_DeathFlame =
 // FIXME:  Embers can be done much more efficiently with a TE -- use
 //         a custom engine.
 
-//----------------------------------------------------/ New Code /--------//
+//------------------------------------------------------------------------//
 //  This enforces air resistance on embers and updates their angles.
 //------------------------------------------------------------------------//
 void() PM_EmberThink =
@@ -687,7 +683,7 @@ void() PM_EmberThink =
 //------------------------------------------------------------------------//
 //  This throws a shower of embers.
 //------------------------------------------------------------------------//
-void(float ents) PM_ThrowEmbers =
+void(float ents) ThrowEmbers =
 {
     // Not in QuakeWorld!
     #ifdef QUAKEWORLD
@@ -699,7 +695,7 @@ void(float ents) PM_ThrowEmbers =
     local   float   loop;
 
     // Make fewer embers in netgames.
-    if (gametype != GAMETYPE_SINGLE_PLAYER)
+    if (gametype != GAME_SINGLE_PLAYER)
         ents = floor(ents * 0.5);
 
     loop = ents * 6;
@@ -730,7 +726,7 @@ void(float ents) PM_ThrowEmbers =
             fire.angles = vectoangles(dir) + '90 0 0';
 
             // Make embers disappear faster in netgames.
-            if (gametype != GAMETYPE_SINGLE_PLAYER)
+            if (gametype != GAME_SINGLE_PLAYER)
                 fire.pausetime = time + random();
             else
                 fire.pausetime = time + 3 + random() * 2;
@@ -773,208 +769,11 @@ void(entity ent) PM_RemoveFlares =
     }
 };
 
-//------------------------------------------------------------------------//
-//  This causes the flare to emit sparks.
-//------------------------------------------------------------------------//
-void() PM_FlareSpark =
-{
-// FIXME:  Use better particle effects -- custom source port recommended.
-
-// FIXME(2):  Currently, this does NOTHING in QW.  Without a particle
-//   function, the only way to produce a spawn shower is to create an
-//   entity for each spark, and that is bad for netplay.
-
-    #ifndef QUAKEWORLD
-    particle (self.origin, '0 0 50', 151, 32);
-    #endif
-};
-
-//------------------------------------------------------------------------//
-//  This makes the flare stick to its target.
-//
-//  FIXME:  If the game has client prediction, the flare can appear to
-//    lag for the client stuck by said the flare, since the client's view
-//    may not match his true origin.  Of course, other clients can see
-//    the flare sticking perfectly to the client.
-//
-//  PM -- I assume QuakeWorld has client prediction like in Quake2.
-//------------------------------------------------------------------------//
-void() PM_FlareStick =
-{
-    local   vector  spot;
-    local   float   dist, least;
-
-    // Find maximum distance from origin the flare is allowed to go.
-    dist = self.enemy.maxs_x - self.enemy.mins_x;
-    least = self.enemy.maxs_y - self.enemy.mins_y;
-    if (least < dist)
-        dist = least;
-    least = self.enemy.maxs_z - self.enemy.mins_z;
-    if (least < dist)
-        dist = least;
-    dist = dist / 4;
-
-    // Get the proper angles.
-    spot_x = self.enemy.angles_x - self.dest_x;
-    spot_y = self.enemy.angles_y + self.dest_y;
-    spot_z = 0;
-
-    // Place the flare.
-    makevectors (spot);
-    spot = (self.enemy.origin + (self.enemy.mins + self.enemy.maxs)*0.5) +
-        (v_forward * dist);
-    setorigin (self, spot);
-};
-
-//------------------------------------------------------------------------//
-//  Here, the flare sticks and burns its target.
-//------------------------------------------------------------------------//
-void() PM_FlareThink =
-{
-    if (self.dmg <= 0)
-    {
-        // Flare burnt out.
-        remove (self);
-        return;
-    }
-    if ((self.enemy.health <= 0) || (self.enemy.deadflag))
-    {
-        // Dead.
-        remove (self);
-        return;
-    }
-
-    // Make the flame stick to its target.
-    PM_FlareStick ();
-    PM_FlareSpark ();
-    self.dmg = self.dmg - 1;    // Update the burn damage limit.
-
-    local   float   nextframe;
-
-    nextframe = time + 0.1;
-    if (self.enemy.flare_time <= time)
-    {
-        // Only one flare can damage at any given frame.
-        self.enemy.flare_time = nextframe;
-
-        // Do burn damage if not already burning.
-        if (!self.enemy.burner)
-            PM_FireDamage (self.enemy, self, self.owner);
-    }
-
-    self.nextthink = nextframe;
-};
-
-//------------------------------------------------------------------------//
-//  Called when flare impacts.
-//------------------------------------------------------------------------//
-void() PM_FlareTouch =
-{
-    if (other.solid == SOLID_TRIGGER)
-        return; // trigger field, do nothing
-
-    #ifdef QUAKEWORLD
-    if (self.voided)
-        return;
-    self.voided = 1;
-    #endif
-
-    if (pointcontents(self.origin) == CONTENT_SKY)
-    {
-        remove(self);
-        return;
-    }
-
-    // hit something that bleeds
-    if (other.takedamage)
-    {
-        if (other.flags & FL_MONSTER)
-        {
-//            PM_BurnDamage (other, self, 1, 0);
-
-            // Change flare properties so it can stick without interference.
-            self.velocity   = '0 0 0';
-            self.solid      = SOLID_NOT;
-            self.movetype   = MOVETYPE_NONE;
-            self.enemy      = other;
-            self.angles     = '180 0 0';    // Turn flame upside-down.
-
-            // Find difference of angles between the directions of the
-            // enemy and the flare.
-            self.dest   = other.origin + (other.mins + other.maxs)*0.5;
-            self.dest   = normalize(self.origin - self.dest);
-            self.dest   = vectoangles (self.dest);
-            self.dest   = self.dest - other.angles;
-
-            // Make the flame stick to its target.
-            PM_FlareStick ();
-            self.nextthink  = 0.1;
-            self.think      = PM_FlareThink;
-
-            return;
-        }
-
-        // Just set the target on fire.
-        PM_BurnDamage (other, self, 0, self.dmg);
-    }
-
-    PM_FlareSpark ();   // Throw a few sparks.
-    remove (self);
-};
-
-//------------------------------------------------------------------------//
-//  This spawns and returns a brand new flare.
-//------------------------------------------------------------------------//
-entity(entity attacker, vector spot) PM_NewFlare =
-{
-    local   entity  fire;
-
-    fire = spawn();
-
-    #ifdef QUAKEWORLD
-    fire.voided     = 0;
-    #endif
-
-    setmodel (fire, "progs/flame2.mdl");
-    setsize (fire, '0 0 0', '0 0 0');
-    setorigin (fire, spot);
-
-    fire.solid      = SOLID_NOT;
-    fire.takedamage = DAMAGE_NO;
-    fire.frame      = $flame;
-    fire.skin       = 1;  // use purplish skin
-    fire.owner      = attacker;
-    fire.classname  = "flare";
-    fire.netname    = "flare";
-
-    fire.effects    = fire.effects | EF_DIMLIGHT;
-    fire.movetype   = MOVETYPE_FLYMISSILE;
-    fire.solid      = SOLID_BBOX;
-
-    return fire;
-};
-
-//------------------------------------------------------------------------//
-//  Create and launch a fire.
-//------------------------------------------------------------------------//
-void(entity attacker, vector org, vector dir, float sped) PM_FireFlare =
-{
-    local   entity  fire;
-
-    fire = PM_NewFlare (attacker, org);
-    fire.angles     = vectoangles(dir) + '90 0 0';
-    fire.velocity   = dir * sped;
-    fire.touch      = PM_FlareTouch;
-    fire.nextthink  = time + (8000 / sped);
-    fire.think      = SUB_Remove;
-    fire.dmg        = 50;       // Flares last five seconds.
-};
-
 
 //==========================================================================
 //  Alt-mode Flares
 
-void(entity client) PM_PsychoCaleb;
+void(entity client) PsychoCaleb;
 
 //------------------------------------------------------------------------//
 //  This animates the napalm cloud, and makes it burn things around it.
@@ -1006,125 +805,6 @@ void() PM_BecomeOldExplosion =
 
     self.nextthink  = time + 0.1;
     self.think      = PM_OldExThink;
-};
-
-//------------------------------------------------------------------------//
-//  Called when flare impacts.
-//------------------------------------------------------------------------//
-void() PM_AltFlareTouch =
-{
-    if (other.solid == SOLID_TRIGGER)
-        return; // trigger field, do nothing
-
-    #ifdef QUAKEWORLD
-    if (self.voided)
-        return;
-    self.voided = 1;
-    #endif
-
-    if (pointcontents(self.origin) == CONTENT_SKY)
-    {
-        remove(self);
-        return;
-    }
-
-    // Explode!
-    muzzleflash ();     // In qblood's 'player.qc'.
-
-    // Do the damage.
-    self.height = 120;
-    PM_BurnRadius (self, self.dmg, self.cnt, other);
-    self.origin = self.origin - 8*normalize(self.velocity);
-    if (other.takedamage)
-        PM_BurnDamage (other, self, self.dmg, self.cnt);
-
-    // Make some fire.
-    self.solid = SOLID_NOT;     // So embers can't touch 'self'.
-    PM_ThrowEmbers (self.count);
-    PM_PsychoCaleb (self.owner);
-    sound (self, CHAN_AUTO, "weapons/napalm/explodfs.wav", 1, ATTN_NORM);
-    PM_BecomeOldExplosion ();
-};
-
-//------------------------------------------------------------------------//
-//  This causes the flare to change its path in mid-flight.
-//------------------------------------------------------------------------//
-void() PM_AltFlareSplit =
-{
-    local   entity  fire;
-    local   vector  dir, spread;
-    local   float   loop;
-
-    dir = normalize (self.velocity);
-    dir = vectoangles (dir);
-    dir_x = 0 - dir_x;
-    makevectors (dir);
-
-    // Create eight new flares.
-    loop = 8;
-    while (loop > 0)
-    {
-        if (loop == 8)
-            spread = '1 0 0.15';
-        else if (loop == 7)
-            spread = '1 0.15 0';
-        else if (loop == 6)
-            spread = '1 0 -0.15';
-        else if (loop == 5)
-            spread = '1 -0.15 0';
-        else if (loop == 4)
-            spread = '1 0.05 0.05';
-        else if (loop == 3)
-            spread = '1 -0.05 0.05';
-        else if (loop == 2)
-            spread = '1 -0.05 -0.05';
-        else if (loop == 1)
-            spread = '1 0.05 -0.05';
-        else
-            spread = '1 0 0';   // This shouldn't happen.
-
-        dir = (v_forward * spread_x) + (v_right * spread_y) + (v_up * spread_z);
-        dir = normalize (dir);
-
-        fire = PM_NewFlare (self.owner, self.origin);
-        fire.angles     = vectoangles(dir) + '90 0 0';
-        fire.velocity   = dir * self.speed;
-        fire.touch      = PM_AltFlareTouch;
-        fire.nextthink  = self.pausetime;
-        fire.think      = SUB_Remove;
-        fire.cnt        = self.cnt;
-        fire.dmg        = self.dmg;
-        fire.speed      = self.speed;
-        fire.distance   = self.distance;
-        fire.count      = 2;    // Number of embers.
-
-        loop = loop - 1;
-    }
-
-    // Remove the old flare.
-    remove (self);
-};
-
-//----------------------------------------------------/ New Code /--------//
-//  Create and launch a small fireball.
-//------------------------------------------------------------------------//
-void(entity attacker, vector org, vector dir, float sped, float damage,
-    float burn) PM_FireAltFlares =
-{
-    local   entity  fire;
-
-    fire = PM_NewFlare (attacker, org);
-    fire.angles     = vectoangles(dir) + '90 0 0';
-    fire.velocity   = dir * sped;
-    fire.touch      = PM_AltFlareTouch;
-    fire.nextthink  = time + 0.3;   // Approximate time alt-flares split.
-    fire.think      = PM_AltFlareSplit;
-    fire.pausetime  = time + (8000 / sped);
-    fire.cnt        = burn;
-    fire.dmg        = damage;
-    fire.speed      = sped;
-    fire.distance   = 0.8;  // Damage is 80% at max radius.
-    fire.count      = 6;    // Number of embers.
 };
 
 

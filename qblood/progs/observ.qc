@@ -155,7 +155,7 @@ void(entity player,entity tele) ObserverTeleporter =
 float() DoObserverImpulse =
 {
     // If we're not in CTF mode, join the game on impulse 1 or 2, or on "jump"
-    if (gametype != GAMETYPE_CAPTURE_THE_FLAG)
+    if (gametype != GAME_CAPTURE_THE_FLAG)
     {
         if (self.impulse == 1 || self.impulse == 2 || self.button2)
         {

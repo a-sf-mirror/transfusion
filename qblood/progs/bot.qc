@@ -774,7 +774,7 @@ void(string h) BotSayTeam =
     // FBX QW doesn't support teamplay...yet
     #ifndef QUAKEWORLD
     local entity t;
-    if (gametype <= GAMETYPE_COOPERATIVE)
+    if (gametype <= GAME_COOPERATIVE)
         return;
     t = player_head;
     while(t)
@@ -844,7 +844,7 @@ void() BotInit =
     precache_model("progs/s_bubble.spr");
     // the bots return!
     b_options = cvar("saved1");
-    if (gametype == GAMETYPE_COOPERATIVE || (b_options & OPT_SAVEBOTS))
+    if (gametype == GAME_COOPERATIVE || (b_options & OPT_SAVEBOTS))
     {
         saved_bots = cvar("scratch1");
         saved_skills1 = cvar("scratch2");
@@ -1191,7 +1191,7 @@ void(float whatbot, float whatskill) BotConnect =
     self.b_skill = whatskill;
 
     #ifndef QUAKEWORLD
-    if (gametype >= GAMETYPE_BLOODBATH)
+    if (gametype >= GAME_BLOODBATH)
     {
         if (whichteam)
             self.b_pants = FindAnotherColor(uself.team - 1);
@@ -1509,11 +1509,18 @@ void() BotImpulses =
     #endif
     else if (self.impulse == 102)
         KickABot();
+
     #ifndef QUAKEWORLD
-    else if (self.impulse == 103)
-        botcam_u();
-    else if (self.impulse == 104)
-        bot_way_edit();
+    // These ones are considered cheats
+    else if (gametype == GAME_SINGLE_PLAYER || cvar ("sv_allowCheat"))
+    {
+        if (self.impulse == 103)
+            botcam_u ();
+        else if (self.impulse == 104)
+            bot_way_edit ();
+        else
+            return;
+    }
     #endif
     else
         return;

@@ -490,7 +490,7 @@ void() hknight_melee =
 */
 void() monster_hell_knight =
 {
-    if (gametype > GAMETYPE_COOPERATIVE)
+    if (gametype > GAME_COOPERATIVE)
     {
         remove(self);
         return;

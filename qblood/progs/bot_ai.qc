@@ -221,8 +221,8 @@ void(entity targ) bot_check_lost =
     {
         if (targ.health <= 0)
             bot_lost(targ, TRUE);
-        else if ((gametype == GAMETYPE_COOPERATIVE) ||
-                 (gametype == GAMETYPE_TEAM_BLOODBATH && targ.team == self.team))
+        else if ((gametype == GAME_COOPERATIVE) ||
+                 (gametype == GAME_TEAM_BLOODBATH && targ.team == self.team))
         {
             if (targ.target1.classname == "player")
             {
@@ -625,12 +625,12 @@ float(entity thing) priority_for_thing =
         }
         else if (thing.classname == "weapon_supershotgun")
         {
-            if (!(self.items & 2)) // IT_SUPER_SHOTGUN
+            if (!(self.items & IT_SAWED_OFF))
                 thisp = 25;
         }
         else if (thing.classname == "weapon_nailgun")
         {
-            if (!(self.items & 4)) // IT_NAILGUN
+            if (!(self.items & IT_TOMMYGUN))
                 thisp = 30;
         }
         else if (thing.classname == "weapon_supernailgun")
@@ -645,12 +645,12 @@ float(entity thing) priority_for_thing =
         }
         else if (thing.classname == "weapon_rocketlauncher")
         {
-            if (!(self.items & 32)) // IT_ROCKET_LAUNCHER
+            if (!(self.items & IT_NAPALM_LAUNCHER))
                 thisp = 60;
         }
         else if (thing.classname == "weapon_lightning")
         {
-            if (!(self.items & 64)) // IT_LIGHTNING
+            if (!(self.items & IT_TESLA_CANNON))
                 thisp = 50;
         }
     }
@@ -666,14 +666,14 @@ float(entity thing) priority_for_thing =
             {
                 if (thing.items & IT_INVISIBILITY) //FIXME
                     thisp = 2;
-                else if (gametype == GAMETYPE_COOPERATIVE)
+                else if (gametype == GAME_COOPERATIVE)
                 {
                     thisp = 100;
                     if (thing.target1.classname == "player")
                         if (!thing.target1.ishuman)
                             return 0;
                 }
-                else if (gametype >= GAMETYPE_TEAM_BLOODBATH && thing.team == self.team)
+                else if (gametype >= GAME_TEAM_BLOODBATH && thing.team == self.team)
                 {
                     thisp = 100;
                     if (thing.target1.classname == "player")

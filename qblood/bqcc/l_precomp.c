@@ -7,7 +7,7 @@
  * desc:		pre compiler
  *
  * $Archive: /source/code/botlib/l_precomp.c $
- * $Author$ 
+ * $Author$
  * $Revision$
  * $Modtime: 10/05/99 3:32p $
  * $Date$
@@ -976,7 +976,7 @@ int PC_ReadLine(source_t *source, token_t *token)
 	do
 	{
 		if (!PC_ReadSourceToken(source, token)) return qfalse;
-		
+
 		if (token->linescrossed > crossline)
 		{
 			PC_UnreadSourceToken(source, token);
@@ -1714,7 +1714,7 @@ int PC_EvaluateTokens(source_t *source, token_t *tokens, signed long int *intval
 							break;
 						} //end if
 					} //end case
-					
+
 					case P_MUL:
 					case P_DIV:
 					case P_MOD:

@@ -240,7 +240,7 @@ void() lure_touch =
 
     self.solid = SOLID_NOT;
     self.model = string_null;
-    if (gametype > GAMETYPE_COOPERATIVE)
+    if (gametype > GAME_COOPERATIVE)
         self.nextthink = time + 20;
     self.think = SUB_regen;
 
@@ -530,28 +530,27 @@ void() obj_fence =
     setsize (self, '0 0 0', '32 32 56');
     StartItem ();
     };
-
-// large 2 tier fountain
 */
 
+// large 2 tier fountain
 void() obj_fountain =
-    {
+{
     precache_model("progs/fountain.mdl");
     setmodel(self, "progs/fountain.mdl");
     self.solid = SOLID_BBOX;
     setsize (self, '0 0 0', '32 32 56');
     StartItem ();
-    };
+};
 
 // Soccer Goal
 void() obj_goal =
-    {
+{
     precache_model ("progs/goalpost.mdl");
     setmodel (self, "progs/goalpost.mdl");
     self.solid = SOLID_BBOX;
     setsize (self, '0 0 0', '32 32 56');
     StartItem ();
-    };
+};
 
 /*
 // head of a fallen angel
@@ -863,7 +862,7 @@ void() powerup_touch =
     Sprint (other, PRINT_LOW,  self.netname);
     Sprint (other, PRINT_LOW, "\n");
 
-    if (gametype > GAMETYPE_COOPERATIVE)
+    if (gametype > GAME_COOPERATIVE)
     {
         self.mdl = self.model;
 
@@ -1041,7 +1040,7 @@ void() health_touch =
     self.solid = SOLID_NOT;
 
     // Do NOT rot health after taking life seed.
-    if (gametype > GAMETYPE_COOPERATIVE)
+    if (gametype > GAME_COOPERATIVE)
     {
         self.nextthink = time + 20;
         self.think = SUB_regen;
@@ -1198,7 +1197,7 @@ void() armor_touch =
 
     self.solid = SOLID_NOT;
     self.model = string_null;
-    if (gametype > GAMETYPE_COOPERATIVE)
+    if (gametype > GAME_COOPERATIVE)
         self.nextthink = time + 20;
     self.think = SUB_regen;
 
@@ -1349,23 +1348,23 @@ void() weapon_touch =
     if (!(other.flags & FL_CLIENT))
         return;
 
-    if (cvar ("g_weaponStay") || gametype == GAMETYPE_COOPERATIVE)  // Always leave weapons on SP coop
+    if (cvar ("g_weaponStay") || gametype == GAME_COOPERATIVE)  // Always leave weapons on SP coop
         leave = 1;
     else
         leave = 0;
 
     if (self.classname == "weapon_flaregun")
     {
-        if (leave && (other.items & IT_SHOTGUN) )
+        if (leave && (other.items & IT_FLAREGUN) )
             return;
-        new = IT_SHOTGUN;
+        new = IT_FLAREGUN;
         other.ammo_flares = other.ammo_flares + 9;
     }
     else if (self.classname == "weapon_nailgun")
     {
-        if (leave && (other.items & IT_NAILGUN) )
+        if (leave && (other.items & IT_TOMMYGUN) )
             return;
-        new = IT_NAILGUN;
+        new = IT_TOMMYGUN;
         other.ammo_nails = other.ammo_nails + 50;
     }
     else if (self.classname == "weapon_supernailgun")
@@ -1377,16 +1376,16 @@ void() weapon_touch =
     }
     else if (self.classname == "weapon_supershotgun")
     {
-        if (leave && (other.items & IT_SUPER_SHOTGUN) )
+        if (leave && (other.items & IT_SAWED_OFF) )
             return;
-        new = IT_SUPER_SHOTGUN;
+        new = IT_SAWED_OFF;
         other.ammo_shells = other.ammo_shells + 8;
     }
     else if (self.classname == "weapon_rocketlauncher")
     {
-        if (leave && (other.items & IT_ROCKET_LAUNCHER) )
+        if (leave && (other.items & IT_NAPALM_LAUNCHER) )
             return;
-        new = IT_ROCKET_LAUNCHER;
+        new = IT_NAPALM_LAUNCHER;
         other.ammo_rockets = other.ammo_rockets + 6;
     }
     else if (self.classname == "weapon_grenadelauncher")
@@ -1416,9 +1415,9 @@ void() weapon_touch =
     }
     else if (self.classname == "weapon_lightning")
     {
-        if (leave && (other.items & IT_LIGHTNING) )
+        if (leave && (other.items & IT_TESLA_CANNON) )
             return;
-        new = IT_LIGHTNING;
+        new = IT_TESLA_CANNON;
         other.ammo_cells = other.ammo_cells + 64;
     }
     else if (self.classname == "weapon_voodoodoll")
@@ -1455,7 +1454,7 @@ void() weapon_touch =
     // remove it in single player, or setup for respawning in deathmatch
     self.model = string_null;
     self.solid = SOLID_NOT;
-    if (gametype > GAMETYPE_COOPERATIVE)
+    if (gametype > GAME_COOPERATIVE)
         self.nextthink = time + 30;
     self.think = SUB_regen;
 
@@ -1473,7 +1472,7 @@ void() weapon_flaregun =
     precache_model ("progs/g_flare.mdl");
 
     setmodel (self, "progs/g_flare.mdl");
-    self.weapon = IT_SHOTGUN;
+    self.weapon = IT_FLAREGUN;
     self.netname = "Flare Gun";
     self.touch = weapon_touch;
     setsize (self, '-16 -16 0', '16 16 56');
@@ -1500,7 +1499,7 @@ void() weapon_supershotgun =
     precache_model ("progs/v_ashot2.mdl");  // akimbo model
 
     setmodel (self, "progs/g_shot.mdl");
-    self.weapon = IT_SUPER_SHOTGUN;
+    self.weapon = IT_SAWED_OFF;
     self.netname = "Sawed-off";
     self.touch = weapon_touch;
     setsize (self, '-16 -16 0', '16 16 56');
@@ -1521,11 +1520,12 @@ void() weapon_supershotgun =
 void() weapon_nailgun =
 {
     precache_model ("progs/v_nail.mdl");
+    precache_model ("progs/v_anail.mdl");  // akimbo model
     precache_model ("progs/g_nail.mdl");
     precache_model ("progs/tommyshl.mdl");  // tommy gun shell
 
     setmodel (self, "progs/g_nail.mdl");
-    self.weapon = IT_NAILGUN;
+    self.weapon = IT_TOMMYGUN;
     self.netname = "Tommy Gun";
     self.touch = weapon_touch;
     setsize (self, '-16 -16 0', '16 16 56');
@@ -1671,7 +1671,7 @@ void() weapon_rocketlauncher =
     precache_model ("progs/v_arock2.mdl");
 
     setmodel (self, "progs/g_rock2.mdl");
-    self.weapon = IT_ROCKET_LAUNCHER;
+    self.weapon = IT_NAPALM_LAUNCHER;
     self.netname = "Napalm Launcher";
     self.touch = weapon_touch;
     setsize (self, '-16 -16 0', '16 16 56');
@@ -1703,7 +1703,7 @@ void() weapon_lightning =
     precache_model ("progs/bolt2.mdl");
 
     setmodel (self, "progs/g_light.mdl");
-    self.weapon = IT_LIGHTNING;
+    self.weapon = IT_TESLA_CANNON;
     self.netname = "Tesla Cannon";
     self.touch = weapon_touch;
     setsize (self, '-16 -16 0', '16 16 56');
@@ -1863,7 +1863,7 @@ void() ammo_touch =
     // remove it in single player, or setup for respawning in deathmatch
     self.model = string_null;
     self.solid = SOLID_NOT;
-    if (gametype > GAMETYPE_COOPERATIVE)
+    if (gametype > GAME_COOPERATIVE)
         self.nextthink = time + 30;
 
     self.think = SUB_regen;
@@ -2082,7 +2082,7 @@ local float     best;
     // Changed to .items2 since that is where key bits are stored.
     other.items2 = other.items2 | self.items2;
 
-    if (gametype != GAMETYPE_COOPERATIVE)
+    if (gametype != GAME_COOPERATIVE)
     {
         self.solid = SOLID_NOT;
         self.model = string_null;
@@ -2537,19 +2537,19 @@ void() DropBackpack =
     else
     {
         item.items = self.weapon;
-        if (item.items == IT_AXE)
+        if (item.items == IT_PITCHFORK)
             item.netname = "Pitchfork";
-        else if (item.items == IT_SHOTGUN)
+        else if (item.items == IT_FLAREGUN)
             item.netname = "Flare Gun";
-        else if (item.items == IT_SUPER_SHOTGUN)
+        else if (item.items == IT_SAWED_OFF)
             item.netname = "Sawed-off";
-        else if (item.items == IT_NAILGUN)
+        else if (item.items == IT_TOMMYGUN)
             item.netname = "Tommy Gun";
         else if (item.items == IT_SUPER_NAILGUN)
             item.netname = "Spray Can";
-        else if (item.items == IT_ROCKET_LAUNCHER)
+        else if (item.items == IT_NAPALM_LAUNCHER)
             item.netname = "Napalm Launcher";
-        else if (item.items == IT_LIGHTNING)
+        else if (item.items == IT_TESLA_CANNON)
             item.netname = "Tesla Cannon";
         else if (item.items == IT_VOODOO_DOLL)
             item.netname = "Voodoo Doll";

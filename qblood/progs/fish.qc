@@ -109,7 +109,7 @@ void() fish_melee =
 
     sound (self, CHAN_VOICE, "eels/eelspot.wav", 1, ATTN_NORM);
     ldmg = (random() + random()) * 3;
-    T_Damage (self.enemy, self, self, ldmg);
+    T_Damage (self.enemy, self, self, ldmg, DF_BODY, string_null);
 };
 
 void() f_attack1        =[      $attack1,       f_attack2 ] {ai_charge(10);};
@@ -178,7 +178,7 @@ void(entity attacker, float damage) fish_pain =
 */
 void() monster_fish =
 {
-    if (gametype > GAMETYPE_COOPERATIVE)
+    if (gametype > GAME_COOPERATIVE)
     {
         remove(self);
         return;

@@ -27,10 +27,7 @@ void() player_pain;
 void() player_stand1;
 void (vector org) spawn_tfog;
 void (vector org, entity death_owner) spawn_tdeath;
-void() CTF_PlayerDropFlag;
 entity() CTF_Spawn;
-
-float   modelindex_eyes, modelindex_player;
 
 /*
 =============================================================================
@@ -42,7 +39,6 @@ float   modelindex_eyes, modelindex_player;
 
 string nextmap;
 
-float   intermission_running;
 float   intermission_exittime;
 
 /*QUAKED info_intermission (1 0.5 0.5) (-16 -16 -16) (16 16 16)
@@ -111,14 +107,14 @@ void() SetChangeParms =
 
 void() SetNewParms =
 {
-    parm1 = IT_AXE;
+    parm1 = IT_PITCHFORK;
     parm2 = 0;
     parm3 = 100;
     parm4 = 0;
     parm5 = 0;
     parm6 = 0;
     parm7 = 0;
-    parm8 = IT_AXE;
+    parm8 = IT_PITCHFORK;
     parm9 = 0;
     parm10 = 0;
     parm11 = 0;
@@ -232,7 +228,7 @@ void() GotoNextMap =
 void() ExitIntermission =
 {
     // skip any text in deathmatch
-    if (gametype > GAMETYPE_COOPERATIVE)
+    if (gametype > GAME_COOPERATIVE)
     {
         GotoNextMap ();
         return;
@@ -418,7 +414,7 @@ void() execute_changelevel =
     intermission_running = 1;
 
     // enforce a wait time before allowing changelevel
-    if (gametype <= GAMETYPE_COOPERATIVE)
+    if (gametype <= GAME_COOPERATIVE)
         intermission_exittime = time + 2;
     else
         intermission_exittime = time + 5;
@@ -479,11 +475,11 @@ void() changelevel_touch =
     // if "noexit" is set, blow up the player trying to leave
     if ((cvar("noexit") == 1) || ((cvar("noexit") == 2) && (mapname != "start")))
     {
-        T_Damage (other, self, self, 50000);
+        T_Damage (other, self, self, 50000, DF_NO_PROTECT, "noexit");
         return;
     }
 
-    if (gametype != GAMETYPE_SINGLE_PLAYER)
+    if (gametype != GAME_SINGLE_PLAYER)
     {
         Bprint (PRINT_HIGH, other.netname);
         Bprint (PRINT_HIGH," checked out for good\n");
@@ -493,7 +489,7 @@ void() changelevel_touch =
 
     SUB_UseTargets ();
 
-    if ((self.spawnflags & 1) && gametype <= GAMETYPE_COOPERATIVE)
+    if ((self.spawnflags & 1) && gametype <= GAME_COOPERATIVE)
     {   // NO_INTERMISSION
         GotoNextMap();
         return;
@@ -534,7 +530,7 @@ void() set_suicide_frame;
 // called by ClientKill and DeadThink
 void() respawn =
 {
-    if (gametype == GAMETYPE_COOPERATIVE)
+    if (gametype == GAME_COOPERATIVE)
     {
         // make a copy of the dead body for appearances sake
         CloneCorpse (self);
@@ -543,7 +539,7 @@ void() respawn =
         // respawn
         PutClientInServer ();
     }
-    else if (gametype != GAMETYPE_SINGLE_PLAYER)
+    else if (gametype != GAME_SINGLE_PLAYER)
     {
         // make a copy of the dead body for appearances sake
         CloneCorpse (self);
@@ -603,12 +599,12 @@ entity() SelectSpawnPoint =
         return lastspawn;
 
     // If we're in a deathmatch
-    if (gametype > GAMETYPE_COOPERATIVE)
+    if (gametype > GAME_COOPERATIVE)
     {
         local float totalspots;
 
         // If it's a CTF game, try to spawn on one of the team's points
-        if (gametype == GAMETYPE_CAPTURE_THE_FLAG)
+        if (gametype == GAME_CAPTURE_THE_FLAG)
         {
             lastspawn = CTF_Spawn ();
             if (lastspawn != world)
@@ -638,7 +634,7 @@ entity() SelectSpawnPoint =
     }
 
     // If we're in a SP coop game
-    else if (gametype == GAMETYPE_COOPERATIVE)
+    else if (gametype == GAME_COOPERATIVE)
     {
         lastspawn = find (lastspawn, classname, "info_player_coop");
         if (lastspawn == world)
@@ -648,7 +644,7 @@ entity() SelectSpawnPoint =
     }
 
     // If we have a least one rune in a SP game
-    if (serverflags && gametype <= GAMETYPE_COOPERATIVE)
+    if (serverflags && gametype <= GAME_COOPERATIVE)
     {
         lastspawn = find (world, classname, "info_player_start2");
         if (lastspawn)
@@ -704,7 +700,7 @@ void() PutClientInServer =
     self.remain_arm = 0;
 
     W_Uncharge ();
-    PM_ResetIdle (self);
+    ResetIdle (self);
 
     DecodeLevelParms ();
 
@@ -713,6 +709,7 @@ void() PutClientInServer =
 
     self.th_pain = player_pain;
     self.th_die = PlayerDie;
+    self.touch = SUB_Null;  // remove the "HeadTouch" binding (if any)
 
     self.deadflag = DEAD_NO;
     // paustime is set by teleporters to keep the player from moving a while
@@ -742,7 +739,7 @@ void() PutClientInServer =
         return;
     }
 
-    if (gametype != GAMETYPE_SINGLE_PLAYER)
+    if (gametype != GAME_SINGLE_PLAYER)
     {
         makevectors(self.angles);
         spawn_tfog (self.origin + v_forward*20);
@@ -919,7 +916,7 @@ void() PlayerDeathThink =
             self.velocity = forward * normalize(self.velocity);
     }
 
-// wait for all buttons released
+    // wait for all buttons released
     if (self.deadflag == DEAD_DEAD)
     {
         if (self.button2 || self.button1 || self.button0)
@@ -936,7 +933,7 @@ void() PlayerDeathThink =
         return;
     }
 
-// wait for any button down
+    // wait for any button down
     if (!self.button2 && !self.button1 && !self.button0)
         return;
 
@@ -1037,8 +1034,8 @@ void() WaterMove =
             self.dmg = self.dmg + 2;
             if (self.dmg > 15)
                 self.dmg = 10;
-            // PM:  Armor does not protect against drowning.
-            T_NewDamage (self, world, world, self.dmg, 0, "drowning");
+            // Armor does not protect against drowning.
+            T_Damage (self, world, world, self.dmg, 0, "drowning");
             self.pain_finished = time + 1;
         }
     }
@@ -1069,7 +1066,7 @@ void() WaterMove =
                 self.dmgtime = time + 0.2;
 
             // Fire-based damage
-            T_NewDamage (self, world, world, 10*self.waterlevel, DF_FIRE, "fire");
+            T_Damage (self, world, world, 10*self.waterlevel, DF_FIRE, "fire");
         }
     }
     else if (self.watertype == CONTENT_SLIME)
@@ -1078,7 +1075,7 @@ void() WaterMove =
             if (!self.dive_on)
         {
             self.dmgtime = time + 1;
-            T_NewDamage (self, world, world, 4*self.waterlevel, DF_BODY, "acid");
+            T_Damage (self, world, world, 4*self.waterlevel, DF_BODY, "acid");
         }
     }
 
@@ -1176,8 +1173,8 @@ void() PlayerPreThink =
         return;
     }
 
-    //ZOID-Observer
-    if (self.observer) {
+    if (self.observer)
+    {
         ObserverThink();
         return;
     }
@@ -1338,7 +1335,18 @@ void() PlayerPostThink =
 
     // if we're not allowed to act (in intermission, or dead, or observer)
     if (self.view_ofs == '0 0 0' || self.deadflag || self.observer)
+    {
+        // If we're dead, we are allowed to become an observer again
+        if (self.impulse == 20 && self.deadflag == DEAD_RESPAWNABLE && !self.observer)
+        {
+            self.do_observer = 1;
+            respawn ();
+            Bprint (PRINT_MEDIUM, self.netname);
+            Bprint (PRINT_MEDIUM, " is an observer again\n");
+        }
+
         return;
+    }
 
     // check to see if player landed and play landing sound
     // no damage taken if not > 350 units high
@@ -1352,7 +1360,7 @@ void() PlayerPostThink =
         {
             // Armor does not protect against falling.
             aspeed = (-650 - self.jump_flag) * 0.3;
-            T_NewDamage (self, world, world, aspeed, 0, "falling");
+            T_Damage (self, world, world, aspeed, 0, "falling");
         }
         else
             sound (self, CHAN_VOICE, "foley/land.wav", 1, ATTN_NORM);
@@ -1369,12 +1377,12 @@ void() PlayerPostThink =
     // Check for boredom.
     if (self.velocity == '0 0 0' && self.idle_time <= time && !self.idle_done)
     {
-        PM_BoredCaleb (self);
+        BoredCaleb (self);
         self.idle_done = TRUE;
     }
     else
     {
-        PM_ResetIdle (self);
+        ResetIdle (self);
     }
 };
 
@@ -1393,7 +1401,7 @@ void() ClientConnect =
     Bprint (PRINT_HIGH, self.netname);
     Bprint (PRINT_HIGH, " lives again!\n"); // entered the game
 
-    if (gametype > GAMETYPE_COOPERATIVE)
+    if (gametype > GAME_COOPERATIVE)
     {
         sound (self, CHAN_AUTO, "thevoice/vo1.wav", 1, ATTN_NORM); // Let the Bloodbath Begin!
         self.do_observer = 1;

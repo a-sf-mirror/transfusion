@@ -19,89 +19,10 @@
 
 
 #include "common.qh"
-
+#include "player.qh"
 
 void() bubble_bob;
-
-/*
-==============================================================================
-
-PLAYER
-
-==============================================================================
-*/
-
-$cd id1/models/player_4
-$origin 0 -6 24
-$base base
-$skin skin
-
-//
-// running
-//
-$frame axrun1 axrun2 axrun3 axrun4 axrun5 axrun6
-
-$frame rockrun1 rockrun2 rockrun3 rockrun4 rockrun5 rockrun6
-
-//
-// standing
-//
-$frame stand1 stand2 stand3 stand4 stand5
-
-$frame axstnd1 axstnd2 axstnd3 axstnd4 axstnd5 axstnd6
-$frame axstnd7 axstnd8 axstnd9 axstnd10 axstnd11 axstnd12
-
-
-//
-// pain
-//
-$frame axpain1 axpain2 axpain3 axpain4 axpain5 axpain6
-
-$frame pain1 pain2 pain3 pain4 pain5 pain6
-
-
-//
-// death
-//
-
-$frame axdeth1 axdeth2 axdeth3 axdeth4 axdeth5 axdeth6
-$frame axdeth7 axdeth8 axdeth9
-
-$frame deatha1 deatha2 deatha3 deatha4 deatha5 deatha6 deatha7 deatha8
-$frame deatha9 deatha10 deatha11
-
-$frame deathb1 deathb2 deathb3 deathb4 deathb5 deathb6 deathb7 deathb8
-$frame deathb9
-
-$frame deathc1 deathc2 deathc3 deathc4 deathc5 deathc6 deathc7 deathc8
-$frame deathc9 deathc10 deathc11 deathc12 deathc13 deathc14 deathc15
-
-$frame deathd1 deathd2 deathd3 deathd4 deathd5 deathd6 deathd7
-$frame deathd8 deathd9
-
-$frame deathe1 deathe2 deathe3 deathe4 deathe5 deathe6 deathe7
-$frame deathe8 deathe9
-
-//
-// attacks
-//
-$frame nailatt1 nailatt2
-
-$frame light1 light2
-
-$frame rockatt1 rockatt2 rockatt3 rockatt4 rockatt5 rockatt6
-
-$frame shotatt1 shotatt2 shotatt3 shotatt4
-
-$frame supatt1 supatt2
-
-$frame axatt1 axatt2 axatt3 axatt4 axatt5 axatt6
-
-$frame axattb1 axattb2 axattb3 axattb4 axattb5 axattb6
-
-$frame axattc1 axattc2 axattc3 axattc4 axattc5 axattc6
-
-$frame axattd1 axattd2 axattd3 axattd4 axattd5 axattd6
+void() CTF_PlayerDropFlag;
 
 
 /*
@@ -124,7 +45,7 @@ void()  player_stand1 =[    $axstnd1,   player_stand1   ]
         return;
     }
 
-    if (self.weapon == IT_AXE)
+    if (self.weapon == IT_PITCHFORK)
     {
         if (self.walkframe >= 12)
             self.walkframe = 0;
@@ -152,7 +73,7 @@ void()  player_run =[   $rockrun1,  player_run  ]
         return;
     }
 
-    if (self.weapon == IT_AXE)
+    if (self.weapon == IT_PITCHFORK)
     {
         if (self.walkframe == 6)
             self.walkframe = 0;
@@ -167,7 +88,7 @@ void()  player_run =[   $rockrun1,  player_run  ]
     self.walkframe = self.walkframe + 1;
 };
 
-void()muzzleflash =
+void() muzzleflash =
 {
     #ifdef QUAKEWORLD
     WriteByte (MSG_MULTICAST, SVC_MUZZLEFLASH);
@@ -178,103 +99,6 @@ void()muzzleflash =
     #endif
 };
 
-
-void()  player_shot1 =  [$shotatt1, player_shot2    ] {self.weaponframe=1;muzzleflash();};
-void()  player_shot2 =  [$shotatt2, player_shot3    ] {self.weaponframe=2;};
-void()  player_shot3 =  [$shotatt3, player_shot4    ] {self.weaponframe=3;};
-void()  player_shot4 =  [$shotatt4, player_run    ] {self.weaponframe=4;};
-
-void()  player_supershot1 = [
-$supatt1, player_supershot2    ] {self.weaponframe=1;muzzleflash();};
-void()  player_supershot2 = [$supatt2, player_run     ] {self.weaponframe=2;};
-
-void()  player_reload1 = [$supatt1, player_reload2] {self.weaponframe=3;};
-void()  player_reload2 = [$supatt1, player_reload3] {self.weaponframe=4;};
-void()  player_reload3 = [$supatt1, player_reload4] {self.weaponframe=5;};
-void()  player_reload4 = [$supatt1, player_reload5] {self.weaponframe=6;};
-void()  player_reload5 = [$supatt1, player_reload6] {self.weaponframe=7;};
-void()  player_reload6 = [$supatt1, player_reload7] {self.weaponframe=8;};
-void()  player_reload7 = [$supatt1, player_reload8] {self.weaponframe=9;};
-void()  player_reload8 = [$supatt1, player_reload9] {self.weaponframe=10;};
-void()  player_reload9 = [$supatt1, player_reload10] {self.weaponframe=11;};
-void()  player_reload10 = [$supatt1, player_reload11] {self.weaponframe=12;};
-void()  player_reload11 = [$supatt1, player_run    ] {self.weaponframe=1;};
-
-void()  player_aksup1 = [$supatt1, player_aksup2     ] {self.weaponframe=0;};
-void()  player_aksup2 = [$supatt1, player_aksup3     ] {self.weaponframe=1;muzzleflash();};
-void()  player_aksup3 = [$supatt1, player_aksup4     ] {self.weaponframe=2;};
-void()  player_aksup4 = [$supatt1, player_aksup5     ] {self.weaponframe=3;W_FireSuperShotgun();};
-void()  player_aksup5 = [$supatt1, player_aksup6     ] {self.weaponframe=4;muzzleflash();};
-void()  player_aksup6 = [$supatt1, player_run        ] {self.weaponframe=0;};
-
-
-void()  player_axe1 =   [$axatt1, player_axe2   ] {self.weaponframe=1;};
-void()  player_axe2 =   [$axatt2, player_axe3   ] {self.weaponframe=2;};
-void()  player_axe3 =   [$axatt3, player_axe4   ] {self.weaponframe=3;W_FireAxe();};
-void()  player_axe4 =   [$axatt4, player_run    ] {self.weaponframe=4;};
-
-void()  player_axeb1 =  [$axattb1, player_axeb2 ] {self.weaponframe=1;};
-void()  player_axeb2 =  [$axattb2, player_axeb3 ] {self.weaponframe=2;};
-void()  player_axeb3 =  [$axattb3, player_axeb4 ] {self.weaponframe=3;W_FireAxe();};
-void()  player_axeb4 =  [$axattb4, player_run   ] {self.weaponframe=4;};
-
-void()  player_axec1 =  [$axattc1, player_axec2 ] {self.weaponframe=1;};
-void()  player_axec2 =  [$axattc2, player_axec3 ] {self.weaponframe=2;};
-void()  player_axec3 =  [$axattc3, player_axec4 ] {self.weaponframe=3;W_FireAxe();};
-void()  player_axec4 =  [$axattc4, player_run   ] {self.weaponframe=4;};
-
-void()  player_axed1 =  [$axattd1, player_axed2 ] {self.weaponframe=1;};
-void()  player_axed2 =  [$axattd2, player_axed3 ] {self.weaponframe=2;};
-void()  player_axed3 =  [$axattd3, player_axed4 ] {self.weaponframe=3;W_FireAxe();};
-void()  player_axed4 =  [$axattd4, player_run   ] {self.weaponframe=4;};
-
-
-//============================================================================
-
-void() player_nail =
-{
-    if ((!self.button0 && !self.button1 && self.impulse != 12)  || intermission_running || self.ammo_nails < 1)
-    {
-        player_run ();
-        return;
-    }
-
-    muzzleflash ();
-
-    self.weaponframe = self.weaponframe + 1;
-    if (self.weaponframe == 8)  // frame 7 is the last frame of the normal fire animation
-        self.weaponframe = 1;
-
-    W_FireSpikes ();
-    self.attack_finished = time + 0.1;
-
-    self.impulse = 0;
-};
-
-void() player_nail1 = [$nailatt1, player_nail2] { player_nail (); };
-void() player_nail2 = [$nailatt2, player_nail1] { player_nail (); };
-
-void() player_altnail =
-{
-    if ((!self.button1 && self.impulse != 12 && self.weaponframe == 13) || intermission_running || self.ammo_nails < 1)
-    {
-        player_run ();
-        return;
-    }
-
-    muzzleflash ();
-
-    self.weaponframe = self.weaponframe + 1;
-    if (self.weaponframe == 14 || self.weaponframe == 1)
-        self.weaponframe = 8;
-    W_FireSpikes ();
-    self.attack_finished = time + 0.1;
-
-    self.impulse = 0;
-};
-// frame 13 is the last frame of the alt fire animation (frame 14 is skipped (== frame 8))
-void() player_altnail1 = [$nailatt1, player_altnail2] {player_altnail ();};
-void() player_altnail2 = [$nailatt2, player_altnail1] {player_altnail ();};
 
 //============================================================================
 
@@ -327,87 +151,8 @@ void() player_altsupernail4 = [$shotatt1, player_altsupernail5]
 };
 void() player_altsupernail5 = [$shotatt1, player_run          ] { self.weaponframe = 12; };
 
-//============================================================================
-
-void() player_doll =
-{
-    // Note: frame 16 -> 18 are the sit-up animation
-
-    self.weaponframe = self.weaponframe + 1;
-    if (self.weaponframe == 24 ||
-        self.weaponframe == 16 ||
-        self.weaponframe == 12 ||
-        self.weaponframe == 4  ||
-        self.weaponframe == 8
-       )
-    {
-        player_run ();
-        self.weaponframe = 0;
-    }
-
-    self.impulse = 0; // REMOVEME ... (cf above)
-};
-
-void() player_doll1 = [$light1, player_doll2] { player_doll (); };
-void() player_doll2 = [$light2, player_doll1] { player_doll (); };
 
 //============================================================================
-
-void() player_light =
-{
-    if ((!self.button0 && !self.button1 && self.impulse != 12) || intermission_running || self.ammo_cells < 1)
-    {
-        player_run ();
-        self.weaponframe = 0;
-        return;
-    }
-    self.weaponframe = self.weaponframe + 1;
-    if (self.weaponframe == 6)
-        self.weaponframe = 2;
-
-    W_FireLightning (FALSE);
-};
-
-void() player_light1 = [$light1, player_light2] {self.weaponframe = 2; W_FireLightning (FALSE);};
-void() player_light2 = [$light2, player_light3] {self.weaponframe = 3; W_FireLightning (FALSE);};
-void() player_light3 = [$light1, player_light4] {self.weaponframe = 4; W_FireLightning (FALSE);};
-void() player_light4 = [$light2, player_light5] {self.weaponframe = 5; W_FireLightning (FALSE);};
-void() player_light5 = [$light1, player_light6] {self.weaponframe = 2; W_FireLightning (FALSE);};
-void() player_light6 = [$light2, player_light7] {player_light (); };
-void() player_light7 = [$light1, player_light6] {player_light (); };
-
-void()  player_altlight1  = [$shotatt1, player_altlight2 ]
-{
-    if (self.items & IT_GUNS_AKIMBO)
-        sound (self, CHAN_WEAPON, "weapons/tesla/tesakima.wav", 1, ATTN_NORM);
-    else
-        sound (self, CHAN_WEAPON, "weapons/tesla/tessuper.wav", 1, ATTN_NORM);
-
-    self.weaponframe=6;
-};
-void()  player_altlight2  = [$shotatt1, player_altlight3 ] {self.weaponframe = 7;};
-void()  player_altlight3  = [$shotatt2, player_altlight4 ] {self.weaponframe = 8;};
-void()  player_altlight4  = [$shotatt1, player_altlight5 ] {self.weaponframe = 9;};
-void()  player_altlight5  = [$shotatt2, player_altlight6 ] {self.weaponframe = 10;};
-void()  player_altlight6  = [$shotatt1, player_altlight7 ] {self.weaponframe = 11;};
-void()  player_altlight7  = [$shotatt2, player_altlight8 ] {self.weaponframe = 12;};
-void()  player_altlight8  = [$shotatt1, player_altlight9 ] {self.weaponframe = 13;};
-void()  player_altlight9  = [$shotatt2, player_altlight10] {self.weaponframe = 14;};
-void()  player_altlight10 = [$shotatt1, player_altlight11] {self.weaponframe = 15;};
-void()  player_altlight11 = [$shotatt2, player_altlight12] {self.weaponframe = 16;};
-void()  player_altlight12 = [$shotatt1, player_altlight13] {self.weaponframe = 17;};
-void()  player_altlight13 = [$shotatt2, player_altlight14] {self.weaponframe = 18;};
-void()  player_altlight14 = [$shotatt1, player_altlight15] {self.weaponframe = 19;};
-void()  player_altlight15 = [$shotatt2, player_altlight16] {self.weaponframe = 20;W_FireLightning (TRUE); };
-void()  player_altlight16 = [$shotatt1, player_altlight17] {self.weaponframe = 21;};
-void()  player_altlight17 = [$shotatt2, player_altlight18] {self.weaponframe = 22;};
-void()  player_altlight18 = [$shotatt1, player_altlight19] {self.weaponframe = 23;};
-void()  player_altlight19 = [$shotatt2, player_altlight20] {self.weaponframe = 24;};
-void()  player_altlight20 = [$shotatt1, player_altlight21] {self.weaponframe = 25;};
-void()  player_altlight21 = [$shotatt2, player_run       ] {};
-
-//============================================================================
-
 
 void() player_rocket1   =[$rockatt1, player_rocket2  ] {self.weaponframe=1;muzzleflash();};
 void() player_rocket2   =[$rockatt2, player_rocket3  ] {self.weaponframe=2;};
@@ -415,23 +160,6 @@ void() player_rocket3   =[$rockatt3, player_rocket4  ] {self.weaponframe=3;};
 void() player_rocket4   =[$rockatt4, player_rocket5  ] {self.weaponframe=4;};
 void() player_rocket5   =[$rockatt5, player_rocket6  ] {self.weaponframe=5;};
 void() player_rocket6   =[$rockatt6, player_run      ] {self.weaponframe=6;};
-
-void() player_akrocket1   =[$rockatt1, player_akrocket2 ] {self.weaponframe=1; muzzleflash();};
-void() player_akrocket2   =[$rockatt2, player_akrocket3 ] {self.weaponframe=2;};
-void() player_akrocket3   =[$rockatt1, player_akrocket4 ] {self.weaponframe=3; W_FireRocket ();};
-void() player_akrocket4   =[$rockatt2, player_akrocket5 ] {self.weaponframe=4;};
-void() player_akrocket5   =[$rockatt3, player_akrocket6 ] {self.weaponframe=5;};
-void() player_akrocket6   =[$rockatt5, player_run       ]
-{
-    // If we don't have enough ammo anymore, drop the guns akimbo
-    if ((self.items & IT_GUNS_AKIMBO) && self.currentammo < 2)
-    {
-        W_SetCurrentAmmo (FALSE, 0);
-        self.weaponframe = 0;
-    }
-    else
-        self.weaponframe = 6;
-};
 
 
 void(float num_bubbles) DeathBubbles;
@@ -533,7 +261,7 @@ void() player_pain =
     if (PainSound ())
     {
         self.weaponframe = 0;
-        if (self.weapon == IT_AXE)
+        if (self.weapon == IT_PITCHFORK)
             player_axpain1 ();
         else
             player_pain1 ();
@@ -666,6 +394,27 @@ vector(float dm) VelocityForDamage =
 };
 
 
+void(string gibname, float dm) ThrowGib =
+{
+    local   entity new;
+
+    new = spawn();
+    new.origin = self.origin;
+    setmodel (new, gibname);
+    setsize (new, '0 0 0', '0 0 0');
+    new.velocity = VelocityForDamage (dm);
+    new.movetype = MOVETYPE_BOUNCE;
+    new.solid = SOLID_NOT;
+    new.avelocity_x = random()*600;
+    new.avelocity_y = random()*600;
+    new.avelocity_z = random()*600;
+    new.think = SUB_Remove;
+    new.ltime = time;
+    new.nextthink = time + 10 + random()*10;
+    new.frame = 0;
+    new.flags = 0;
+};
+
 /*
 ====================
 HeadDie
@@ -718,27 +467,6 @@ void() HeadTouch =
     self.flags = self.flags - (self.flags & FL_ONGROUND);
 };
 
-
-void(string gibname, float dm) ThrowGib =
-{
-    local   entity new;
-
-    new = spawn();
-    new.origin = self.origin;
-    setmodel (new, gibname);
-    setsize (new, '0 0 0', '0 0 0');
-    new.velocity = VelocityForDamage (dm);
-    new.movetype = MOVETYPE_BOUNCE;
-    new.solid = SOLID_NOT;
-    new.avelocity_x = random()*600;
-    new.avelocity_y = random()*600;
-    new.avelocity_z = random()*600;
-    new.think = SUB_Remove;
-    new.ltime = time;
-    new.nextthink = time + 10 + random()*10;
-    new.frame = 0;
-    new.flags = 0;
-};
 
 void(string gibname, float dm) ThrowHead =
 {
@@ -906,7 +634,7 @@ void() PlayerDie =
 
     self.items = self.items - (self.items & IT_INVISIBILITY);
 
-    if (gametype != GAMETYPE_SINGLE_PLAYER)
+    if (gametype != GAME_SINGLE_PLAYER)
     {
         if (self.akimbo_finished > 0)
         {
@@ -959,7 +687,7 @@ void() PlayerDie =
     self.angles_x = 0;
     self.angles_z = 0;
 
-    if (self.weapon == IT_AXE)
+    if (self.weapon == IT_PITCHFORK)
     {
         player_die_ax1 ();
         return;

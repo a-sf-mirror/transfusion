@@ -105,14 +105,14 @@ void() PrecacheSounds =
 
     // ----- The Voice ----- //
 
-    if (gametype > GAMETYPE_COOPERATIVE)
+    if (gametype > GAME_COOPERATIVE)
         precache_sound ("thevoice/vo1.wav");  // Let the bloodbath begins !
     precache_sound ("thevoice/vo2.wav");
     precache_sound ("thevoice/vo5.wav");
     precache_sound ("thevoice/splatt.wav");
 
     // Multiplayer obituary sounds
-    if (gametype != GAMETYPE_SINGLE_PLAYER)
+    if (gametype != GAME_SINGLE_PLAYER)
     {
         precache_sound ("thevoice/boned.wav");
         precache_sound ("thevoice/castra.wav");
@@ -174,7 +174,7 @@ void() PrecacheSounds =
     // ----- Various game sounds ----- //
 
     // Fire
-    if (gametype <= GAMETYPE_COOPERATIVE)
+    if (gametype <= GAME_COOPERATIVE)
         precache_sound ("weapons/flaregun/burstflm.wav");  // when a monster is in fire
     precache_sound ("weapons/napalm/burn.wav");  // burning on lava
 
@@ -186,7 +186,7 @@ void() PrecacheSounds =
     precache_sound ("player/die1.wav");
     precache_sound ("player/die2.wav");
     precache_sound ("player/die3.wav");
-    if (gametype <= GAMETYPE_COOPERATIVE)
+    if (gametype <= GAME_COOPERATIVE)
         precache_sound ("player/udeath.wav");  // monsters gib sound
 
     // Moving, swimming, jumping, ...
@@ -210,7 +210,7 @@ void() PrecacheSounds =
     // Miscellaneous sounds
     precache_sound ("ambience/bubrise.wav");       // bubble sound
     precache_sound ("ambience/sizzle.wav");        // smelt on slime
-    if (gametype > GAMETYPE_COOPERATIVE)
+    if (gametype > GAME_COOPERATIVE)
         precache_sound ("bludbath/reappear.wav");  // item respawn sound
     precache_sound ("bludbath/message.wav");       // Messages  (TODO: not always used...)
     precache_sound ("items/ammo.wav");             // ammo pick up
@@ -256,15 +256,15 @@ void() worldspawn =
     if (! deathmatch)
     {
         if (coop)
-            gametype = GAMETYPE_COOPERATIVE;
+            gametype = GAME_COOPERATIVE;
         else
-            gametype = GAMETYPE_SINGLE_PLAYER;
+            gametype = GAME_SINGLE_PLAYER;
     }
     // NOTE: CTF play cannot be set with the interface only.
     // You must use the console
     else if (deathmatch == 2)
     {
-        gametype = GAMETYPE_CAPTURE_THE_FLAG;
+        gametype = GAME_CAPTURE_THE_FLAG;
 
         // Tell the engine that we're actually in a team play
         if (teamplay == 0)
@@ -276,9 +276,9 @@ void() worldspawn =
     else
     {
         if (! teamplay)
-            gametype = GAMETYPE_BLOODBATH;
+            gametype = GAME_BLOODBATH;
         else
-            gametype = GAMETYPE_TEAM_BLOODBATH;
+            gametype = GAME_TEAM_BLOODBATH;
     }
     friendlyfire = (teamplay == 2);  // NOTE: should we allow friendlyfire changes during the game ?
 
@@ -383,8 +383,6 @@ void() StartFrame =
     skill     = cvar("skill");
 
     BotFrame(); // FrikBot
-
-    framecount = framecount + 1;
 };
 
 
@@ -479,7 +477,7 @@ void() GibPlayerCorpse =
     RandomHumanGibs ();
     sound (self, CHAN_ITEM, "misc/gibsq.wav", 1, ATTN_NORM);
 
-    if (gametype != GAMETYPE_SINGLE_PLAYER)
+    if (gametype != GAME_SINGLE_PLAYER)
     {
         Bprint (PRINT_MEDIUM, self.enemy.netname);
         Bprint (PRINT_MEDIUM, " desecrated ");

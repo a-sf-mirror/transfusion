@@ -129,7 +129,7 @@ local float     ldmg;
         return;
 
     ldmg = (random() + random() + random()) * 40;
-    T_Damage (self.enemy, self, self, ldmg);
+    T_Damage (self.enemy, self, self, ldmg, DF_BODY, string_null);
     sound (self, CHAN_VOICE, "shambler/smack.wav", 1, ATTN_NORM);
 
     SpawnMeatSpray (self.origin + v_forward*16, crandom() * 100 * v_right);
@@ -155,7 +155,7 @@ local float     ldmg;
         return;
 
     ldmg = (random() + random() + random()) * 20;
-    T_Damage (self.enemy, self, self, ldmg);
+    T_Damage (self.enemy, self, self, ldmg, DF_BODY, string_null);
     sound (self, CHAN_VOICE, "shambler/smack.wav", 1, ATTN_NORM);
 
     if (side)
@@ -397,7 +397,7 @@ void() sham_die =
 */
 void() monster_shambler =
 {
-    if (gametype > GAMETYPE_COOPERATIVE)
+    if (gametype > GAME_COOPERATIVE)
     {
         remove(self);
         return;

@@ -120,7 +120,7 @@ void()  Tar_JumpTouch =
         if ( vlen(self.velocity) > 400 )
         {
             ldmg = 10 + 10*random();
-            T_Damage (other, self, self, ldmg);
+            T_Damage (other, self, self, ldmg, DF_BODY, string_null);
             sound (self, CHAN_WEAPON, "blob/hit1.wav", 1, ATTN_NORM);
         }
     }
@@ -223,7 +223,7 @@ void()  tbaby_die2  =[  $exp,       tbaby_run1  ]
 */
 void() monster_tarbaby =
 {
-    if (gametype > GAMETYPE_COOPERATIVE)
+    if (gametype > GAME_COOPERATIVE)
     {
         remove(self);
         return;

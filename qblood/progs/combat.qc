@@ -21,17 +21,8 @@
 #include "common.qh"
 
 
-//--------------------//
-//  NEW EDICT FIELDS  //
-//--------------------//
-.float      armor_fire;
-.float      armor_body;
-.float      armor_mind;
+void() FoundTarget;
 
-.float      remain_arm;
-.float      remain_dmg;
-
-.float      reflect_finished;
 
 void() T_MissileTouch;
 void() info_player_start;
@@ -212,7 +203,7 @@ float(entity targ, float armour, float damage) PM_ArmorSave =
 #define MAX_RECURSION_COUNT 5
 
 // PM:  Below is the new damage function that replaces 'T_Damage'.
-void(entity targ, entity inflictor, entity attacker, float damage, float dflags, string dtype) T_NewDamage =
+void(entity targ, entity inflictor, entity attacker, float damage, float dflags, string dtype) T_Damage =
 {
     local   vector  dir;
     local   entity  oldself;
@@ -240,7 +231,7 @@ void(entity targ, entity inflictor, entity attacker, float damage, float dflags,
     }
 
     // Players take more damage at higher skill levels.
-    if (gametype <= GAMETYPE_COOPERATIVE)
+    if (gametype <= GAME_COOPERATIVE)
         if (targ.classname == "player")
             damage = damage * (1 + (cvar("skill") * 0.4));
 
@@ -321,7 +312,7 @@ void(entity targ, entity inflictor, entity attacker, float damage, float dflags,
             protected = TRUE;
         }
         // Team play avoidance.
-        else if (gametype >= GAMETYPE_TEAM_BLOODBATH && ! friendlyfire &&
+        else if (gametype >= GAME_TEAM_BLOODBATH && ! friendlyfire &&
                  targ != attacker && attacker.classname == "player" && inflictor.classname != "door")
         {
             #ifdef QUAKEWORLD
@@ -419,7 +410,7 @@ void(entity targ, entity inflictor, entity attacker, float damage, float dflags,
         // Target was slain!
         if (!targ.deadflag)
             targ.deathtype = dtype;
-        targ.enemy = attacker;
+
         Killed (targ, attacker);
 
         // Decrease the recursion count.
@@ -463,12 +454,6 @@ void(entity targ, entity inflictor, entity attacker, float damage, float dflags,
 };
 
 
-void(entity targ, entity inflictor, entity attacker, float damage) T_Damage=
-{
-    // PM:  Default to the new damage function.
-    T_NewDamage (targ, inflictor, attacker, damage, DF_BODY, string_null);
-};
-
 /*
 ============
 T_RadiusDamage
@@ -504,7 +489,7 @@ void(entity inflictor, entity attacker, float damage, entity ignore, string dtyp
                 {
                     if (CanDamage (head, inflictor))
                     {
-                        T_NewDamage (head, inflictor, attacker, points, dflags, dtype);
+                        T_Damage (head, inflictor, attacker, points, dflags, dtype);
                     }
                 }
             }

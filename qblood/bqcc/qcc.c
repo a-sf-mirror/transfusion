@@ -1246,8 +1246,8 @@ int main (int argc, char **argv)
 
 	Log_Open("bqcc.log");
 
-	Log_Print("\nBloody QuakeC compiler v0.0.1, %s %s\n", __DATE__, __TIME__);
-	Log_Print("BQCC is based on MrElusive's QuakeC compiler (v1.4)\n");
+	Log_Print("\nBloody QuakeC compiler v0.1.0, %s %s\n", __DATE__, __TIME__);
+	Log_Print("BQCC is based on MrElusive's QuakeC compiler v1.4\n");
 	Log_Print("This compiler is not supported by id Software.\n");
 	Log_Print("bqcc -help for info.\n\n");
 
@@ -1347,6 +1347,6 @@ int main (int argc, char **argv)
 	crc = PR_WriteProgdefs("progdefs.h");
 	//write data file: progs.dat
 	WriteData(crc);
-	
+
 	return EXIT_SUCCESS;
 } //end of the function main

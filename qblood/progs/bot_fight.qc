@@ -129,7 +129,7 @@ void() bot_dodge_stuff =
             }
         }
     }
-    if (gametype == GAMETYPE_COOPERATIVE)
+    if (gametype == GAME_COOPERATIVE)
     {
         if (!self.enemy)
         {
@@ -171,7 +171,7 @@ void() bot_dodge_stuff =
                 {
                     if (foe.health > 0)
                     {
-                        if (!(gametype >= GAMETYPE_TEAM_BLOODBATH && self.team == foe.team))
+                        if (!(gametype >= GAME_TEAM_BLOODBATH && self.team == foe.team))
                         {
                             flen = vlen(foe.origin - self.origin);
                             if (flen < foedist)
@@ -214,21 +214,21 @@ _z maximum range bot can be to be effective (lg/axe) (move in)
 
 vector(float wep) weapon_range =
 {
-    if (wep == 4096) // IT_AXE
+    if (wep == IT_PITCHFORK)
         return '48 0 64';
-    else if (wep == 1) // IT_SHOTGUN
+    else if (wep == IT_FLAREGUN)
         return '128 0 99999';
-    else if (wep == 2) // IT_SUPER_SHOTGUN
+    else if (wep == IT_SAWED_OFF)
         return '128 0 99999';
-    else if (wep == 4) // IT_NAILGUN
+    else if (wep == IT_TOMMYGUN)
         return '180 0 3000';
     else if (wep == 8) // IT_SUPER_NAILGUN
         return '180 0 3000';
     else if (wep == 16) // IT_GRENADE_LAUNCHER
         return '180 48 3000';
-    else if (wep == 32) // IT_ROCKET_LAUNCHER
+    else if (wep == IT_NAPALM_LAUNCHER)
         return '180 48 3000';
-    else if (wep == 64) // IT_LIGHTNING
+    else if (wep == IT_TESLA_CANNON)
         return '350 0 512';
 };
 /*
@@ -371,8 +371,8 @@ void() bot_fight_style =
         {
             // try to avoid shooting teammates
             if (trace_ent.classname == "player")
-                if ((trace_ent.team == self.team && gametype >= GAMETYPE_TEAM_BLOODBATH) ||
-                    (gametype == GAMETYPE_COOPERATIVE))
+                if ((trace_ent.team == self.team && gametype >= GAME_TEAM_BLOODBATH) ||
+                    (gametype == GAME_COOPERATIVE))
                     return;
             bot_shoot();
         }
@@ -387,7 +387,7 @@ void() bot_fight_style =
 
         if (foesz > mysz)
         {
-            if (gametype >= GAMETYPE_TEAM_BLOODBATH)
+            if (gametype >= GAME_TEAM_BLOODBATH)
             {
                 if (random() < 0.02)
                 {

@@ -84,7 +84,7 @@ Call at start of file and when *pr_file_p == '\n'
 void PR_NewLine (void)
 {
 	boolean  m;
-   
+
 	if (*pr_file_p == '\n')
 	{
 		pr_file_p++;
@@ -137,7 +137,7 @@ void PR_LexString (void)
 {
    int c, i, asciicode;
    int len;
-   
+
    len = 0;
    //first character after the double quote
    pr_file_p++;
@@ -208,7 +208,7 @@ float PR_LexNumber (void)
 {
    int      c;
    int      len;
-   
+
    len = 0;
    c = *pr_file_p;
    do
@@ -232,7 +232,7 @@ Parses a single quoted vector
 void PR_LexVector (void)
 {
    int      i;
-   
+
    pr_file_p++;
    pr_token_type = tt_immediate;
    pr_immediate_type = &type_vector;
@@ -257,7 +257,7 @@ void PR_LexName (void)
 {
    int      c;
    int      len;
-   
+
    len = 0;
    c = *pr_file_p;
    do
@@ -266,7 +266,7 @@ void PR_LexName (void)
       len++;
       pr_file_p++;
       c = *pr_file_p;
-   } while ( (c >= 'a' && c <= 'z') || (c >= 'A' && c <= 'Z') || c == '_' 
+   } while ( (c >= 'a' && c <= 'z') || (c >= 'A' && c <= 'Z') || c == '_'
    || (c >= '0' && c <= '9'));
    pr_token[len] = 0;
    pr_token_type = tt_name;
@@ -282,9 +282,9 @@ void PR_LexPunctuation (void)
    int      i;
    int      len;
    char  *p;
-   
+
    pr_token_type = tt_punct;
-   
+
    for (i=0 ; (p = pr_punctuation[i]) != NULL ; i++)
    {
       len = strlen(p);
@@ -299,7 +299,7 @@ void PR_LexPunctuation (void)
          return;
       }
    }
-   
+
    PR_ParseError ("Unknown punctuation");
 }
 
@@ -323,7 +323,7 @@ void PR_LexWhitespace (void)
             return;     // end of file
          pr_file_p++;
       }
-      
+
    // skip // comments
       if (c=='/' && pr_file_p[1] == '/')
       {
@@ -333,7 +333,7 @@ void PR_LexWhitespace (void)
          pr_file_p++;
          continue;
       }
-      
+
    // skip /* */ comments
       if (c=='/' && pr_file_p[1] == '*')
       {
@@ -348,7 +348,7 @@ void PR_LexWhitespace (void)
          pr_file_p++;
          continue;
       }
-      
+
       break;      // a real character has been found
    }
 }
@@ -356,10 +356,13 @@ void PR_LexWhitespace (void)
 //============================================================================
 // frame macros
 
-#define  MAX_FRAMES  256
+#define  MAX_FRAMES      256
+#define  MAX_FRAME_LISTS 4
 
-char  pr_framemacros[MAX_FRAMES][16];
-int      pr_nummacros;
+int   pr_crtframelist;
+char  pr_framemacros[MAX_FRAME_LISTS][MAX_FRAMES][16];
+int   pr_nummacros[MAX_FRAME_LISTS];
+char  pr_listnames[MAX_FRAME_LISTS][32];
 
 /*
 ============
@@ -368,7 +371,9 @@ PR_ClearGrabMacros
 */
 void PR_ClearGrabMacros (void)
 {
-   pr_nummacros = 0;
+    pr_crtframelist = 0;
+    memset (pr_nummacros, 0, sizeof (pr_nummacros));
+    strcpy (pr_listnames[0], "<default>");
 }
 
 /*
@@ -378,18 +383,20 @@ PR_FindMacro
 */
 void PR_FindMacro (void)
 {
-   int      i;
+    int i, j;
+
+    for (i=0 ; i<=pr_crtframelist ; i++)
+        for (j=0 ; j<pr_nummacros[i] ; j++)
+            if (!strcmp (pr_token, pr_framemacros[i][j]))
+            {
+                sprintf (pr_token,"%d", j);
+                pr_token_type = tt_immediate;
+                pr_immediate_type = &type_float;
+                pr_immediate._float = (float) j;
+                return;
+            }
    
-   for (i=0 ; i<pr_nummacros ; i++)
-      if (!strcmp (pr_token, pr_framemacros[i]))
-      {
-         sprintf (pr_token,"%d", i);
-         pr_token_type = tt_immediate;
-         pr_immediate_type = &type_float;
-         pr_immediate._float = (float) i;
-         return;
-      }
-   PR_ParseError ("Unknown frame macro $%s", pr_token);
+    PR_ParseError ("Unknown frame macro $%s", pr_token);
 }
 
 /*
@@ -399,7 +406,6 @@ PR_SimpeGetToken
   just parses text, returning false if an eol is reached
 ============
 */
-
 boolean PR_SimpleGetToken(void)
 {
 	token_t token;
@@ -407,10 +413,41 @@ boolean PR_SimpleGetToken(void)
 	if (!PC_ReadLine(pr_source, &token))
 	{
 		return false;
-	} //end if
+	}
 	strcpy(pr_token, token.string);
 	return true;
-} //end of the function PR_SimpeGetToken
+}
+
+
+/*
+============
+PR_AddFrameList
+============
+*/
+void PR_AddFrameList (void)
+{
+    if (! PR_SimpleGetToken ())
+        PR_ParseError ("missing model name");
+
+    if (strlen (pr_token) >= sizeof (pr_listnames[0]))
+        PR_ParseError ("model name too long (max: %u characters)", sizeof (pr_listnames[0]) - 1);
+
+    // if the current frame list is empty, we don't need to add a new one
+    if (pr_nummacros[pr_crtframelist] != 0)
+    {
+        // if we have reached the maximum number of frame lists
+        if (pr_crtframelist >= MAX_FRAME_LISTS - 1)
+            PR_ParseError ("too many frame lists (max: %u)", MAX_FRAME_LISTS);
+
+        pr_crtframelist++;
+    }
+
+    strcpy (pr_listnames[pr_crtframelist], pr_token);
+
+    // skip the rest of the line
+    while (PR_SimpleGetToken ()) /* Nothing */;
+}
+
 
 /*
 ============
@@ -419,12 +456,20 @@ PR_ParseFrame
 */
 void PR_ParseFrame (void)
 {
-   while (PR_SimpleGetToken ())
-   {
-      strcpy (pr_framemacros[pr_nummacros], pr_token);
-      pr_nummacros++;
-   }
+    while (PR_SimpleGetToken ())
+    {
+        if (pr_nummacros[pr_crtframelist] == MAX_FRAMES)
+            PR_ParseError ("too many frames in model \"%s\" (max: %u)",
+                           pr_listnames[pr_crtframelist], MAX_FRAMES);
+
+        if (strlen (pr_token) >= sizeof (pr_framemacros[0][0]))
+            PR_ParseError ("frame name too long (max: %u characters)", sizeof (pr_framemacros[0][0]) - 1);
+
+        strcpy (pr_framemacros[pr_crtframelist][pr_nummacros[pr_crtframelist]], pr_token);
+        pr_nummacros[pr_crtframelist]++;
+    }
 }
+
 
 /*
 ==============
@@ -434,32 +479,43 @@ Deals with counting sequence numbers and replacing frame macros
 ==============
 */
 void PR_LexGrab (void)
-{  
-   pr_file_p++;   // skip the $
-   if (!PR_SimpleGetToken ())
-      PR_ParseError ("hanging $");
-   
-// check for $frame
-   if (!strcmp (pr_token, "frame"))
-   {
-      PR_ParseFrame ();
-      PR_Lex ();
-   }
-// ignore other known $commands
-   else if (!strcmp (pr_token, "cd")
-   || !strcmp (pr_token, "origin")
-   || !strcmp (pr_token, "base")
-   || !strcmp (pr_token, "flags")
-   || !strcmp (pr_token, "scale")
-   || !strcmp (pr_token, "skin") )
-   {  // skip to end of line
-      while (PR_SimpleGetToken ())
-      ;
-      PR_Lex ();
-   }
-// look for a frame name macro
-   else
-      PR_FindMacro ();
+{
+    pr_file_p++;   // skip the $
+    if (!PR_SimpleGetToken ())
+        PR_ParseError ("hanging $");
+
+    // check for $frame
+    if (!strcmp (pr_token, "frame"))
+    {
+        PR_ParseFrame ();
+        PR_Lex ();
+    }
+    // if its a new model
+    else if (!strcmp (pr_token, "modelname"))
+    {
+        PR_AddFrameList ();
+        PR_Lex ();
+    }
+    // framegroup{start,end} aren't yet supported
+    else if (!strcmp (pr_token, "framegroupstart") ||
+             !strcmp (pr_token, "framegroupend") )
+    {
+        PR_ParseError ("$%s macro isn't yet supported\n", pr_token);
+    }
+    // ignore other known $commands
+    else if (!strcmp (pr_token, "cd") ||
+             !strcmp (pr_token, "origin") ||
+             !strcmp (pr_token, "base") ||
+             !strcmp (pr_token, "flags") ||
+             !strcmp (pr_token, "scale") ||
+             !strcmp (pr_token, "skin") )
+    {  // skip to end of line
+        while (PR_SimpleGetToken ()) /* Nothing */;
+        PR_Lex ();
+    }
+    // look for a frame name macro
+    else
+        PR_FindMacro ();
 }
 
 //============================================================================
@@ -624,14 +680,14 @@ Checks to see if the current token is a valid name
 char *PR_ParseName (void)
 {
    static char ident[MAX_NAME];
-   
+
    if (pr_token_type != tt_name)
       PR_ParseError ("not a name");
    if (strlen(pr_token) >= MAX_NAME-1)
       PR_ParseError ("name too long");
    strcpy (ident, pr_token);
    PR_Lex ();
-   
+
    return ident;
 }
 
@@ -648,28 +704,28 @@ type_t *PR_FindType (type_t *type)
    def_t *def;
    type_t   *check;
    int      i;
-   
+
    for (check = pr.types ; check ; check = check->next)
    {
       if (check->type != type->type
       || check->aux_type != type->aux_type
       || check->num_parms != type->num_parms)
          continue;
-   
+
       for (i=0 ; i< type->num_parms ; i++)
          if (check->parm_types[i] != type->parm_types[i])
             break;
-         
+
       if (i == type->num_parms)
-         return check;  
+         return check;
    }
-   
+
 // allocate a new one
    check = GetMemory (sizeof (*check));
    *check = *type;
    check->next = pr.types;
    pr.types = check;
-   
+
 // allocate a generic def for the type, so fields can reference it
    def = GetMemory (sizeof(def_t));
    def->name = "COMPLEX TYPE";
@@ -709,7 +765,7 @@ type_t *PR_ParseType (void)
    type_t   new;
    type_t   *type;
    char  *name;
-   
+
    if (PR_Check ("."))
    {
       memset (&new, 0, sizeof(new));
@@ -717,7 +773,7 @@ type_t *PR_ParseType (void)
       new.aux_type = PR_ParseType ();
       return PR_FindType (&new);
    }
-   
+
    if (!strcmp (pr_token, "float") )
       type = &type_float;
    else if (!strcmp (pr_token, "vector") )
@@ -736,10 +792,10 @@ type_t *PR_ParseType (void)
       type = &type_float;  // shut up compiler warning
    }
    PR_Lex ();
-   
+
    if (!PR_Check ("("))
       return type;
-   
+
 // function type
    memset (&new, 0, sizeof(new));
    new.type = ev_function;
@@ -758,10 +814,10 @@ type_t *PR_ParseType (void)
             new.parm_types[new.num_parms] = type;
             new.num_parms++;
          } while (PR_Check (","));
-   
+
       PR_Expect (")");
    }
-   
+
    return PR_FindType (&new);
 }
 

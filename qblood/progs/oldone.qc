@@ -274,7 +274,7 @@ void () nopain =
 */
 void() monster_oldone =
 {
-    if (gametype > GAMETYPE_COOPERATIVE)
+    if (gametype > GAME_COOPERATIVE)
     {
         remove(self);
         return;

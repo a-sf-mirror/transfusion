@@ -26,7 +26,7 @@ void() t_movetarget;
 void() knight_walk1;
 void() knight_bow6;
 void() knight_bow1;
-void(entity etemp, entity stemp, entity stemp, float dmg) T_Damage;
+void(entity etemp, entity stemp, entity stemp, float dmg, float dflags, string dtype) T_Damage;
 /*
 
 .enemy
@@ -732,7 +732,7 @@ void(float dist) ai_run =
         self.search_time = time + 5;
 
     // look for other coop players
-    if (gametype == GAMETYPE_COOPERATIVE && self.search_time < time)
+    if (gametype == GAME_COOPERATIVE && self.search_time < time)
     {
         if (FindTarget ())
             return;
