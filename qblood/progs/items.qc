@@ -216,6 +216,9 @@ For test purpose only
 */
 void() lure_touch =
 {
+    if (!(other.flags & FL_CLIENT))
+        return;
+
     self.solid = SOLID_NOT;
     self.model = string_null;
     if (deathmatch)

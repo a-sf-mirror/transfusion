@@ -220,7 +220,7 @@ void(entity player) BecomeObserver =
     player.movetype         = MOVETYPE_FLY;
     player.deadflag         = DEAD_NO;
 
-    setmodel (player, string_null);
+    setmodel (player, "progs/eyes.mdl");
 
     player.weaponmodel      = "";
     player.weaponframe      = 0;
