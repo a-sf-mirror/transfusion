@@ -228,11 +228,32 @@ void() player_nail =
     W_FireSpikes ();
     self.attack_finished = time + 0.2;
 
-    self.impulse = 0;  // REMOVEME as soon as the altfire will no longer be bind to an impulse
+    self.impulse = 0;  // REMOVEME as soon as the altfire won't be bound to an impulse
 };
 
 void() player_nail1 = [$nailatt1, player_nail2] { player_nail (); };
 void() player_nail2 = [$nailatt2, player_nail1] { player_nail (); };
+
+//============================================================================
+
+void() player_doll =
+{
+    // Note: frame 17 -> 19 are the sit-up animation
+
+    self.weaponframe = self.weaponframe + 1;
+    if (self.weaponframe == 25 ||
+        self.weaponframe == 17 ||
+        self.weaponframe == 13 ||
+        self.weaponframe == 5  ||
+        self.weaponframe == 9
+       )
+        player_run ();
+
+    self.impulse = 0; // REMOVEME ... (cf above)
+};
+
+void() player_doll1 = [$light1, player_doll2] { player_doll (); };
+void() player_doll2 = [$light2, player_doll1] { player_doll (); };
 
 //============================================================================
 

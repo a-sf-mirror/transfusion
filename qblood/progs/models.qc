@@ -143,12 +143,32 @@ $frame shot1 shot2 shot3 shot4 shot5 shot6 shot7 shot8
 // alt fire
 $frame alt1 alt2 alt3 alt4 alt5 alt6 alt7
 
+
 $modelname v_light
 $cd id1/models/v_light
 $origin 0 0 54
 $base base
 $skin skin
 $frame shot1 shot2 shot3 shot4 shot5
+
+
+$modelname v_voodoo
+$cd id1/models/v_voodoo
+$origin 0 0 54
+$base base
+$skin skin
+// stab stomach
+$frame stomach1 stomach2 stomach3 stomach4
+// stab eye
+$frame eye1 eye2 eye3 eye4
+// stab shoulder
+$frame shlder1 shlder2 shlder3 shlder4
+// stab groin
+$frame groin1 groin2 groin3 groin4
+// sit-up animation
+$frame situp1 situp2 situp3
+// alt-fire mode
+$frame fire1 fire2 fire3 fire4 fire5
 
 
 /*

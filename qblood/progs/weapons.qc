@@ -26,6 +26,7 @@ void () player_run;
 void(entity bomb, entity attacker, float rad, entity ignore, string dtype) T_RadiusDamage;
 void() SuperDamageSound;
 entity() identify_player;
+void() muzzleflash;
 
 
 // called by worldspawn
@@ -943,27 +944,54 @@ void() W_UseVoodooDoll =
     local float stab_type;
     local float damage;
 
-    // Select a stab type at random
-    stab_type = random()*4;
-    damage = random();
-    if (stab_type >= 3) // Stab Groin
-        damage = damage*49 + 4;
-    else if (stab_type >= 2) // Stab Shoulder (supposed to make player lower weapon in MP mode)
-        damage = damage*9 + 4;
-    else if (stab_type >= 1) // Stab Chest
-        damage = damage*17 + 4;
-    else if (stab_type < 1) // Stab Eye (supposed to blind player in MP mode)
-        damage = damage*11 + 4;
+    muzzleflash ();
+
+    // Alt-fire mode
+    if ((self.impulse == 12 || self.button1) && self.ammo_cells >= 10)
+    {
+        damage = self.ammo_cells;
+        self.ammo_cells = 0;
+        self.weaponframe = 20;
+    }
+
+    // Normal fire mode
     else
-        Sprint (self, PRINT_MEDIUM, "There's a problem with the voodoo doll code\n");
+    {
+        stab_type = random()*4;
+        damage = random();
+        if (stab_type >= 3) // Stab Groin
+        {
+            damage = damage*49 + 4;
+            self.weaponframe = 13;
+        }
+        else if (stab_type >= 2) // Stab Shoulder (supposed to make player lower weapon in MP mode)
+        {
+            self.weaponframe = 9;
+            damage = damage*9 + 4;
+        }
+        else if (stab_type >= 1) // Stab Chest
+        {
+            self.weaponframe = 1;
+            damage = damage*17 + 4;
+        }
+        else if (stab_type < 1) // Stab Eye (supposed to blind player in MP mode)
+        {
+            self.weaponframe = 5;
+            damage = damage*11 + 4;
+        }
+        else
+            Sprint (self, PRINT_MEDIUM, "There's a problem with the voodoo doll code\n");
+
+        self.ammo_cells = self.ammo_cells - damage / 4;
+    }
+
+    self.currentammo = self.ammo_cells;
 
     // Play the appropriate sound
     if (stab_type >= 3)  // Stab Groin
         sound (self, CHAN_WEAPON, "weapons/voodoodl/voolaugh.wav", 1, ATTN_NORM);
     else
         sound (self, CHAN_WEAPON, "weapons/voodoodl/voostab.wav", 1, ATTN_NORM);
-
-    self.currentammo = self.ammo_cells = self.ammo_cells - damage / 4;
 
     dir = aim (self, 100000);
 
@@ -1556,6 +1584,7 @@ void()  player_shot1;
 void()  player_nail1;
 void()  player_light1;
 void()  player_rocket1;
+void()  player_doll1;
 
 void() W_Attack =
 {
@@ -1563,7 +1592,12 @@ void() W_Attack =
 
     if (! W_AmmoAvailable ())
     {
-        sound (self, CHAN_WEAPON, "weapons/tommygun/tomcock.wav", 1, ATTN_NORM);
+        // Check to see which weapon player is holding
+        if (self.weapon == IT_SHOTGUN)
+            sound (self, CHAN_WEAPON, "weapons/shotgun/shotcock.wav", 1, ATTN_NORM);
+        else if (self.weapon == IT_NAILGUN)
+            sound (self, CHAN_WEAPON, "weapons/tommygun/tomcock.wav", 1, ATTN_NORM);
+
         self.attack_finished = time + 0.5;
         return;
     }
@@ -1621,9 +1655,9 @@ void() W_Attack =
     }
     else if (self.weapon == IT_VOODOO_DOLL)
     {
-        player_shot1 ();  // FIXME: we should call a "player_???"
+        W_UseVoodooDoll();
         self.attack_finished = time + 0.7;
-        W_UseVoodooDoll ();
+        player_doll1 ();
     }
 };
 
