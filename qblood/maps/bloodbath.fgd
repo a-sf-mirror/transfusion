@@ -22,90 +22,53 @@
 	light(integer) : "100"
 ]
 
+
 //
 // base marker definitions
 //
-@baseclass = Appearflags [
-	spawnflags(Flags) =
-	[
-		256 : "Not in Pink on the Inside" : 0
-		512 : "Not in Lightly Broiled" : 0
-		1024 : "Not in Well Done" : 0
-		2048 : "Not in BloodBath" : 0
-	]
-]
 @baseclass = Targetname [ targetname(target_source) : "Name" ]
 @baseclass = Target [ target(target_destination) : "Target" ]
+
 
 //
 // player starts, deathmatch, coop, teleport
 //
 
-@baseclass base(Appearflags) size(-16 -16 -24, 16 16 32)
- 	color(0 255 0) = PlayerClass []
+@baseclass size(-16 -16 -24, 16 16 32) color(0 255 0) = PlayerClass []
 
-@PointClass base(PlayerClass) = info_player_start : "Player 1 start" []
+@PointClass base(PlayerClass) = info_player_start : "Single player start (UNUSED)" []
 @PointClass base(PlayerClass) = info_player_deathmatch : "Player deathmatch start" []
-@PointClass base(PlayerClass) = info_player_coop : "Player cooperative start" []
-@PointClass base(PlayerClass) = info_player_start2 : "Player episode return point" []
+@PointClass base(PlayerClass) = info_player_team1 : "Red team base start" []
+@PointClass base(PlayerClass) = info_player_team2 : "Blue team base start" []
+@PointClass base(PlayerClass) = info_intermission : "Intermission camera" []
 @PointClass base(PlayerClass, Targetname) = info_teleport_destination : "Teleport destination" []
-@PointClass = info_null : "info_null (spotlight target)"
-[
-	targetname(target_source) : "Name"
-]
+@PointClass base(Targetname) = info_null : "info_null (spotlight target)" []
+
 
 //
-// CTF stuff
+// CTF-only stuff
 //
 
-@PointClass size(-6 -7 -1, 6 49 75) base(Appearflags) =
-     item_flag_team1 : "CTF: Red Team Flag" []
-@PointClass size(-6 -7 -1, 6 49 75) base(Appearflags) =
-     item_flag_team2 : "CTF: Blue Team Flag" []
-@PointClass base(PlayerClass) = info_player_team1 : "CTF: Red team base start" []
-@PointClass base(PlayerClass) = info_player_team2 : "CTF: Blue team base start" []
+@baseclass size(-6 -7 -1, 6 49 75) = CTF_Flag []
+@PointClass base(CTF_Flag) = item_flag_team1 : "CTF: Red Team Flag" []
+@PointClass base(CTF_Flag) = item_flag_team2 : "CTF: Blue Team Flag" []
+@SolidClass = func_ctf_wall : "Wall that only appears in CTF" []
 
-@PointClass base(Appearflags) = info_intermission : "Intermission camera" []
-@PointClass size(-16 -16 0, 16 16 32) base(Appearflags) = item_lure : "Testing Entity, set the model and pickup noise manually"
-[
-	model(string) : "Model file"
-	noise(string) : "Pickup noise file"
-]
 
 //
-// items
+// Items
 //
 
-@baseclass size(-12 -11 -1, 8 13 24) color(80 0 200) base(Appearflags) = Ammo
+@PointClass size(-16 -16 0, 16 16 56) = item_health : "Health pak"
 [
-	spawnflags(flags) =
- 	[
-		1 : "Large box" : 0
-	]
-]
-
-@PointClass size(-9 -11 -1, 9 11 14) base(Appearflags) = item_health : "Health pak"
-[
-	spawnflags(flags) =
- 	[
-		1 : "Life Esscence" : 0
-		2 : "Life Seed" : 0
-	]
-]
-
-// ********NOTE********* Left 'sigil' IN
-
-@PointClass size(-16 -16 -24, 16 16 32) base(Appearflags) =
- 	item_sigil : "Sigil"
-[
-	spawnflags(Flags) =
+	spawnflags(choices) : "Type" : 1 =
 	[
-		1 : "Episode 1" : 1
-		2 : "Episode 2" : 0
-		4 : "Episode 3" : 0
-		8 : "Episode 4" : 0
+		1 : "Life Essence"
+		2 : "Life Seed"
+		0 : "Medicine Patch"
 	]
 ]
+
 
 //
 // lights
@@ -130,47 +93,47 @@
 	]
 ]
 
-@PointClass size(-8 -8 -8, 8 8 8) base(Light, Target, Targetname) =
- 	light : "Invisible lightsource"
+@PointClass size(-8 -8 -8, 8 8 8) base(Light, Targetname) =
+	light : "Invisible lightsource"
 	[
 		spawnflags(Flags) = [ 1 : "Initially dark" : 0 ]
 	]
 @PointClass size(-8 -8 -8, 8 8 8) base(Light, Targetname) =
- 	light_fluoro : "Fluorescent light"
+	light_fluoro : "Fluorescent light"
 	[
 		spawnflags(Flags) = [ 1 : "Initially dark" : 0 ]
 	]
 @PointClass size(-8 -8 -8, 8 8 8) base(Light, Targetname) =
- 	light_fluorospark : "Sparking fluorescent light"
+	light_fluorospark : "Sparking fluorescent light"
 	[
 		spawnflags(Flags) = [ 1 : "Initially dark" : 0 ]
 	]
 @PointClass size(-8 -8 -8, 8 8 8) base(Light, Targetname) =
- 	light_globe : "Globe light" []
+	light_globe : "Globe light" []
 @PointClass size(-10 -10 -12, 12 12 18) base(Light, Targetname) =
- 	light_flame_large_yellow : "Large yellow flame" []
+	light_flame_large_yellow : "Large yellow flame" []
 @PointClass size(-10 -10 -12, 12 12 18) base(Light, Targetname) =
- 	light_flame_small_yellow : "Small yellow flame"
- 	[
+	light_flame_small_yellow : "Small yellow flame"
+	[
 		spawnflags(Flags) = [ 1 : "Initially dark" : 0 ]
 	]
 @PointClass size(-10 -10 -12, 12 12 18) base(Light, Targetname) =
- 	light_flame_small_white : "Small white flame"
- 	[
+	light_flame_small_white : "Small white flame"
+	[
 		spawnflags(Flags) = [ 1 : "Initially dark" : 0 ]
 	]
 @PointClass size(-10 -10 -20, 10 10 20) base(Light, Targetname) =
- 	light_torch_small_walltorch : "Small walltorch" []
+	light_torch_small_walltorch : "Small walltorch" []
 
 //
 // misc
 //
 
-@PointClass base(Appearflags) = air_bubbles : "Air bubbles" []
-@PointClass base(Appearflags, Targetname) =
+@PointClass = air_bubbles : "Air bubbles" []
+@PointClass base(Targetname) =
 	event_lightning : "Chthon's lightning" []
 
-@PointClass base(Appearflags) = misc_fireball : "Small fireball"
+@PointClass = misc_fireball : "Small fireball"
 	[ speed(integer) : "Speed" : 40 ]
 
 @PointClass size(-16 -16 0, 16 16 32) base(Targetname)= misc_explobox2 : "TNT Barrel"
@@ -182,11 +145,11 @@
 // Traps
 //
 
-@PointClass base(Appearflags, Targetname) = trap_flame : "Flame thrower trap" []
-@PointClass base(Appearflags, Targetname) = trap_napalm : "Napalm launcher trap" []
-@PointClass base(Appearflags, Targetname) = trap_tommygun : "Tommygun trap" []
+@PointClass base(Targetname) = trap_flame : "Flame thrower trap" []
+@PointClass base(Targetname) = trap_napalm : "Napalm launcher trap" []
+@PointClass base(Targetname) = trap_tommygun : "Tommygun trap" []
 
-// 
+//
 // ambient sounds
 //
 
@@ -295,7 +258,7 @@
 //
  // moving things
 //
-@baseclass base(Appearflags, Targetname) = Door
+@baseclass base(Targetname) = Door
 [
 	speed(integer) : "Speed" : 100
 	sounds(choices) : "Sound" : 1 =
@@ -322,8 +285,8 @@
 		1 : "Starts Open" : 0
 		4 : "Don't link" : 0
 		8 : "Gold Key required" : 0
-        	16: "Silver Key required" : 0
-        	32: "Toggle" : 0
+		16: "Silver Key required" : 0
+		32: "Toggle" : 0
 	]
 ]
 
@@ -335,11 +298,12 @@
 		2 : "Moves left first" : 0
 		4 : "Moves down first" : 0
 		8 : "Not shootable" : 0
-        	16 : "Always shootable" : 0
+		16 : "Always shootable" : 0
+		32 : "Never opens" : 0
 	]
 ]
 
-@SolidClass base(Appearflags) = func_wall : "Moving wall" []
+@SolidClass = func_wall : "Moving wall" []
 
 @SolidClass = func_button : "Button"
 [
@@ -388,21 +352,8 @@
 	]
 ]
 
-@SolidClass = func_dm_only : "Deathmatch teleporter" []
 @SolidClass = func_illusionary : "Solids can be walked through" []
 
-@SolidClass = func_episodegate : "Episode Gate"
-[
-	spawnflags(Flags) =
-	[
-		1 : "Episode 1" : 1
-		2 : "Episode 2" : 0
-		4 : "Episode 3" : 0
-		8 : "Episode 4" : 0
-	]
-]
-
-@SolidClass = func_bossgate : "Boss gate" []
 
 //
 // triggers
@@ -504,7 +455,7 @@
 // Weapons
 //
 
-@baseclass size(-16 -16 0, 16 16 56) color(0 0 200) base(Appearflags) = Weapon []
+@baseclass size(-16 -16 0, 16 16 56) color(0 0 200) = Weapon []
 
 @PointClass base(Weapon) = weapon_flaregun : "Flare Gun" []
 @PointClass base(Weapon) = weapon_supershotgun : "Sawed-off Shotgun" []
@@ -524,7 +475,7 @@
 // Ammunitions
 //
 
-@baseclass size(0 0 0, 32 32 56) color(80 0 200) base(Appearflags) = Ammo
+@baseclass size(0 0 0, 32 32 56) color(80 0 200) = Ammo
 [
 	spawnflags(flags) =
  	[
@@ -543,72 +494,63 @@
 // Powerups
 //
 
-@PointClass base(Appearflags) size(-7 -11 -1, 7 11 19) =
+@PointClass size(-7 -11 -1, 7 11 19) =
  	item_artifact_bag : "Doctor's Bag" []
 
-@PointClass size(0 0 0, 32 32 56) base(Appearflags) = item_health : "Health pak" 
-[
-	spawnflags(flags) =
- 	[
-		1 : "Rotten" : 0
-		2 : "Megahealth" : 0
-	]
-]
-
-@PointClass size(-3 -6 -2, 6 7 23) base(Appearflags) =
+@PointClass size(-3 -6 -2, 6 7 23) =
  	item_artifact_invisibility : "Cloak of Invisibility" []
 
-@PointClass size(-11 -10 -1, 4 10 19) base(Appearflags) =
+@PointClass size(-11 -10 -1, 4 10 19) =
  	item_artifact_boots : "Boots of Jumping" []
 
-@PointClass size(-16 -16 -2, 16 16 54) base(Appearflags) =
+@PointClass size(-16 -16 -2, 16 16 54) =
  	item_artifact_super_damage : "Guns Akimbo" []
 
-@PointClass size(-9 -13 -3, 8 13 74) base(Appearflags) =
+@PointClass size(-9 -13 -3, 8 13 74) =
  	item_artifact_envirosuit : "Diving Suit" []
 
-@PointClass size(-7 -7 -1, 7 7 14) base(Appearflags) =
+@PointClass size(-7 -7 -1, 7 7 14) =
  	item_artifact_crystal : "Crystal Ball" []
 
-@PointClass size(-7 -7 0, 7 11 16) base(Appearflags) =
+@PointClass size(-7 -7 0, 7 11 16) =
  	item_artifact_reflect : "Reflective Shots" []
 
-@PointClass size(-10 -9 0, 11 9 9) base(Appearflags) =
+@PointClass size(-10 -9 0, 11 9 9) =
  	item_artifact_vision : "Beast Vision" []
 
-@PointClass size(-4 -12 0, 2 12 30) base(Appearflags) =
+@PointClass size(-4 -12 0, 2 12 30) =
  	item_artifact_invulnerability : "Death Mask" []
 
 //
 // Keys
 //
 
-@PointClass size(-16 -16 -24, 16 16 32) base(Appearflags) =
+@PointClass size(-16 -16 -24, 16 16 32) =
  	item_key1 : "Skull Key" []
-@PointClass size(-16 -16 -24, 16 16 32) base(Appearflags) =
+@PointClass size(-16 -16 -24, 16 16 32) =
  	item_key2 : "Eye Key" []
-@PointClass size(-16 -16 -24, 16 16 32) base(Appearflags) =
+@PointClass size(-16 -16 -24, 16 16 32) =
  	item_key3 : "Fire Key" []
-@PointClass size(-16 -16 -24, 16 16 32) base(Appearflags) =
+@PointClass size(-16 -16 -24, 16 16 32) =
  	item_key4 : "Daggar Key" []
-@PointClass size(-16 -16 -24, 16 16 32) base(Appearflags) =
+@PointClass size(-16 -16 -24, 16 16 32) =
  	item_key5 : "Spider Key" []
-@PointClass size(-16 -16 -24, 16 16 32) base(Appearflags) =
+@PointClass size(-16 -16 -24, 16 16 32) =
  	item_key6 : "Moon Key" []
 
 //
 // Armor
 //
 
-@PointClass size(-7 -18 0, 10 18 38) base(Appearflags) =
+@PointClass size(-7 -18 0, 10 18 38) =
  	item_armor0 : "Basic Armor" []
-@PointClass size(-2 -17 0, 4 19 37) base(Appearflags) =
+@PointClass size(-2 -17 0, 4 19 37) =
  	item_armor4 : "Spirit Armor" []
-@PointClass size(-1 -18 0, 6 19 45) base(Appearflags) =
+@PointClass size(-1 -18 0, 6 19 45) =
  	item_armor1 : "Body Armor" []
-@PointClass size(-7 -12 0, 7 10 37) base(Appearflags) =
+@PointClass size(-7 -12 0, 7 10 37) =
  	item_armor2 : "Fire armor" []
-@PointClass size(-16 -16 0, 16 16 56) base(Appearflags) =
+@PointClass size(-16 -16 0, 16 16 56) =
  	item_armorInv : "Super Armor" []
 
 //
@@ -705,12 +647,17 @@
 	]
 ]
 
+
 //
 // Misc
 //
-@SolidClass base(Target, Targetname) = sentry_detect_laugh : "Laugh sound for Area 15" []
-@SolidClass base(Target, Targetname) = sentry_detect_switch1 : "Switch Sound for Bodies" []
-@SolidClass base(Target, Targetname) = sentry_detect_crypt : "Howling sound for The Crypt (Blood2)" []
+
+@baseclass = Sentry [ noise(string) : "Sound file" ]
+@PointClass base(Sentry) = sentry_detect_laugh : "Laugh sound" []
+@PointClass base(Sentry) = sentry_detect_switch1 : "Switch Sound" []
+@PointClass base(Sentry) = sentry_detect_crypt : "Howling sound" []
+@PointClass base(Sentry) = sentry_detect_thunder : "Thunder sound" []
+
 @SolidClass base(Target, Targetname) = exploding_wall : "Exploding Wall"
 [	
 	alpha(integer) : "Opacity rate"
