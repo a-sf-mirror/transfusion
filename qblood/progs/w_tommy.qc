@@ -1,4 +1,4 @@
-/*  Copyright (C) 2001  Mathieu Olivier
+/*  Copyright (C) 2001-2002  Mathieu Olivier
 
     This program is free software; you can redistribute it and/or modify
     it under the terms of the GNU General Public License as published by
@@ -120,15 +120,15 @@ void() player_alttommy1 = [$attack1, player_alttommy2] { player_alttommy (); };
 void() player_alttommy2 = [$attack2, player_alttommy1] { player_alttommy (); };
 
 // Normal draw
-void() player_tommydraw1 = [$attack1, player_tommydraw2] { self.weaponframe = $tommy_draw1; };
-void() player_tommydraw2 = [$attack1, player_tommydraw3] { self.weaponframe = $tommy_draw2; };
-void() player_tommydraw3 = [$attack1, player_run       ] { self.weaponframe = $tommy_draw3; };
+void() player_tommydraw1 = [$attack2, player_tommydraw2] { self.weaponframe = $tommy_draw1; };
+void() player_tommydraw2 = [$attack2, player_tommydraw3] { self.weaponframe = $tommy_draw2; };
+void() player_tommydraw3 = [$attack2, player_run       ] { self.weaponframe = $tommy_draw3; };
 
 // Normal holster
-void() player_tommyholster1 = [$attack1, player_tommyholster2] { self.weaponframe = $tommy_holster1; };
-void() player_tommyholster2 = [$attack1, player_tommyholster3] { self.weaponframe = $tommy_holster2; };
-void() player_tommyholster3 = [$attack1, player_tommyholster4] { self.weaponframe = $tommy_holster3; };
-void() player_tommyholster4 = [$attack1, player_run          ] { W_DrawWeapon (self.newweapon); };
+void() player_tommyholster1 = [$attack2, player_tommyholster2] { self.weaponframe = $tommy_holster1; };
+void() player_tommyholster2 = [$attack2, player_tommyholster3] { self.weaponframe = $tommy_holster2; };
+void() player_tommyholster3 = [$attack2, player_tommyholster4] { self.weaponframe = $tommy_holster3; };
+void() player_tommyholster4 = [$attack2, player_run          ] { W_DrawWeapon (self.newweapon); };
 
 
 //============================================================================

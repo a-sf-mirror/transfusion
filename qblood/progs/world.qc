@@ -123,7 +123,9 @@ void() PrecacheSounds =
     precache_sound ("thevoice/vo12.wav");  // Population control
     precache_sound ("thevoice/vo13.wav");  // Unassisted death
     precache_sound ("thevoice/vo14.wav");
+    #ifndef QUAKEWORLD  // QW doesn't have BOD
     precache_sound ("thevoice/vo15.wav");  // Finish him
+    #endif
     precache_sound ("thevoice/vo16.wav");  // Darwin Award
     precache_sound ("thevoice/vo19.wav");
     precache_sound ("thevoice/vo20.wav");
@@ -233,19 +235,18 @@ void() worldspawn =
     qcextensions = cvar ("pr_checkextension");
 
     // Try to create our own cvars as soon as possible
-    if (qcextensions && checkextension ("DP_REGISTERCVAR"))
-    {
-        registercvar ("g_weaponStay", "0");
-        registercvar ("sv_allowCheat", "0");
-        registercvar ("sv_disable", "0");
-    }
+    if (qcextensions)
+        if (checkextension ("DP_REGISTERCVAR"))
+        {
+            registercvar ("g_weaponStay", "0");
+            registercvar ("sv_allowCheat", "0");
+            registercvar ("sv_disable", "0");
+        }
+
     // Some engines create them on the fly
-    else
-    {
-        cvar ("g_weaponStay");
-        cvar ("sv_allowCheat");
-        cvar ("sv_disable");
-    }
+    cvar ("g_weaponStay");
+    cvar ("sv_allowCheat");
+    cvar ("sv_disable");
 
     #ifdef FRIKBOT
     // FrikBot X initialization

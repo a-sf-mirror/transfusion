@@ -1,4 +1,4 @@
-/*  Copyright (C) 2001  Mathieu Olivier
+/*  Copyright (C) 2001-2002  Mathieu Olivier
 
     This program is free software; you can redistribute it and/or modify
     it under the terms of the GNU General Public License as published by
@@ -167,7 +167,11 @@
 #define STATE_DOWN      3
 
 #define VEC_ORIGIN      '0 0 0'
-#define VEC_HULL_MIN    '-16 -16 -20'
+#ifdef QUAKEWORLD
+# define VEC_HULL_MIN    '-16 -16 -24'
+#else
+# define VEC_HULL_MIN    '-16 -16 -20'
+#endif
 #define VEC_HULL_MAX    '16 16 32'
 
 // protocol bytes

@@ -101,11 +101,11 @@ $frame remote_holster1 remote_holster2 remote_holster3 remote_holster4
 // ----- Player related code ----- //
 
 // Throw a TNT
-void() player_throwtnt1 = [$attack1, player_throwtnt2] { self.weaponframe = $tnt_throw1; };
-void() player_throwtnt2 = [$attack1, player_throwtnt3] { self.weaponframe = $tnt_throw2; };
-void() player_throwtnt3 = [$attack1, player_throwtnt4] { self.weaponframe = $tnt_throw3; };
-void() player_throwtnt4 = [$attack1, player_throwtnt5] { self.weaponframe = $tnt_throw4; };
-void() player_throwtnt5 = [$attack1, player_throwtnt6] { self.weaponframe = $tnt_throw5; };
+void() player_throwtnt1 = [$attack2, player_throwtnt2] { self.weaponframe = $tnt_throw1; };
+void() player_throwtnt2 = [$attack2, player_throwtnt3] { self.weaponframe = $tnt_throw2; };
+void() player_throwtnt3 = [$attack2, player_throwtnt4] { self.weaponframe = $tnt_throw3; };
+void() player_throwtnt4 = [$attack2, player_throwtnt5] { self.weaponframe = $tnt_throw4; };
+void() player_throwtnt5 = [$attack2, player_throwtnt6] { self.weaponframe = $tnt_throw5; };
 void() player_throwtnt6 = [$attack1, player_throwtnt7]
 {
     self.weaponframe = $tnt_throw6;
@@ -115,14 +115,14 @@ void() player_throwtnt6 = [$attack1, player_throwtnt7]
     self.player_state = PS_IDLE;
 };
 void() player_throwtnt7 = [$attack1, player_throwtnt8] { self.weaponframe = $tnt_throw7; };
-void() player_throwtnt8 = [$attack1, player_run      ] { self.weaponframe = $tnt_throw8; };
+void() player_throwtnt8 = [$attack2, player_run      ] { self.weaponframe = $tnt_throw8; };
 
 // Throw a proximity bomb
-void() player_throwproxy1 = [$attack1, player_throwproxy2] { self.weaponframe = $proxy_throw1; };
-void() player_throwproxy2 = [$attack1, player_throwproxy3] { self.weaponframe = $proxy_throw2; };
-void() player_throwproxy3 = [$attack1, player_throwproxy4] { self.weaponframe = $proxy_throw3; };
-void() player_throwproxy4 = [$attack1, player_throwproxy5] { self.weaponframe = $proxy_throw4; };
-void() player_throwproxy5 = [$attack1, player_throwproxy6] { self.weaponframe = $proxy_throw5; };
+void() player_throwproxy1 = [$attack2, player_throwproxy2] { self.weaponframe = $proxy_throw1; };
+void() player_throwproxy2 = [$attack2, player_throwproxy3] { self.weaponframe = $proxy_throw2; };
+void() player_throwproxy3 = [$attack2, player_throwproxy4] { self.weaponframe = $proxy_throw3; };
+void() player_throwproxy4 = [$attack2, player_throwproxy5] { self.weaponframe = $proxy_throw4; };
+void() player_throwproxy5 = [$attack2, player_throwproxy6] { self.weaponframe = $proxy_throw5; };
 void() player_throwproxy6 = [$attack1, player_throwproxy7]
 {
     self.weaponframe = $proxy_throw6;
@@ -134,11 +134,11 @@ void() player_throwproxy6 = [$attack1, player_throwproxy7]
 void() player_throwproxy7 = [$attack1, player_run] { self.weaponframe = $proxy_throw7; };
 
 // Throw a remote detonator
-void() player_throwremote1 = [$attack1, player_throwremote2] { self.weaponframe = $remote_throw1; };
-void() player_throwremote2 = [$attack1, player_throwremote3] { self.weaponframe = $remote_throw2; };
-void() player_throwremote3 = [$attack1, player_throwremote4] { self.weaponframe = $remote_throw3; };
-void() player_throwremote4 = [$attack1, player_throwremote5] { self.weaponframe = $remote_throw4; };
-void() player_throwremote5 = [$attack1, player_throwremote6] { self.weaponframe = $remote_throw5; };
+void() player_throwremote1 = [$attack2, player_throwremote2] { self.weaponframe = $remote_throw1; };
+void() player_throwremote2 = [$attack2, player_throwremote3] { self.weaponframe = $remote_throw2; };
+void() player_throwremote3 = [$attack2, player_throwremote4] { self.weaponframe = $remote_throw3; };
+void() player_throwremote4 = [$attack2, player_throwremote5] { self.weaponframe = $remote_throw4; };
+void() player_throwremote5 = [$attack2, player_throwremote6] { self.weaponframe = $remote_throw5; };
 void() player_throwremote6 = [$attack1, player_throwremote7]
 {
     self.weaponframe = $remote_throw6;
@@ -147,7 +147,7 @@ void() player_throwremote6 = [$attack1, player_throwremote7]
     ShowThrowMeter ();
 };
 void() player_throwremote7 = [$attack1, player_throwremote8] { self.weaponframe = $remote_throw7; };
-void() player_throwremote8 = [$attack1, player_run         ]
+void() player_throwremote8 = [$attack2, player_run         ]
 {
     // We switch to the 1st remote frame
     self.weaponframe = $remote_fire1;
@@ -156,76 +156,76 @@ void() player_throwremote8 = [$attack1, player_run         ]
 };
 
 // TNT half draw
-void() player_tnthalfdraw1 = [$attack1, player_tnthalfdraw2] { self.weaponframe = $tnt_drawhalf1; };
-void() player_tnthalfdraw2 = [$attack1, player_tnthalfdraw3] { self.weaponframe = $tnt_drawhalf2; };
-void() player_tnthalfdraw3 = [$attack1, player_tnthalfdraw4] { self.weaponframe = $tnt_drawhalf3; };
-void() player_tnthalfdraw4 = [$attack1, player_run         ] { self.weaponframe = $tnt_drawhalf4; };
+void() player_tnthalfdraw1 = [$attack2, player_tnthalfdraw2] { self.weaponframe = $tnt_drawhalf1; };
+void() player_tnthalfdraw2 = [$attack2, player_tnthalfdraw3] { self.weaponframe = $tnt_drawhalf2; };
+void() player_tnthalfdraw3 = [$attack2, player_tnthalfdraw4] { self.weaponframe = $tnt_drawhalf3; };
+void() player_tnthalfdraw4 = [$attack2, player_run         ] { self.weaponframe = $tnt_drawhalf4; };
 
 // TNT normal draw
-void() player_tntdraw1 = [$attack1, player_tntdraw2] { self.weaponframe = $tnt_draw1; };
-void() player_tntdraw2 = [$attack1, player_tntdraw3] { self.weaponframe = $tnt_draw2; };
-void() player_tntdraw3 = [$attack1, player_tntdraw4] { self.weaponframe = $tnt_draw3; };
-void() player_tntdraw4 = [$attack1, player_tntdraw5] { self.weaponframe = $tnt_draw4; };
-void() player_tntdraw5 = [$attack1, player_tntdraw6] { self.weaponframe = $tnt_draw5; };
-void() player_tntdraw6 = [$attack1, player_tntdraw7] { self.weaponframe = $tnt_draw6; };
-void() player_tntdraw7 = [$attack1, player_tntdraw8] { self.weaponframe = $tnt_draw7; };
-void() player_tntdraw8 = [$attack1, player_run     ] { self.weaponframe = $tnt_draw8; };
+void() player_tntdraw1 = [$attack2, player_tntdraw2] { self.weaponframe = $tnt_draw1; };
+void() player_tntdraw2 = [$attack2, player_tntdraw3] { self.weaponframe = $tnt_draw2; };
+void() player_tntdraw3 = [$attack2, player_tntdraw4] { self.weaponframe = $tnt_draw3; };
+void() player_tntdraw4 = [$attack2, player_tntdraw5] { self.weaponframe = $tnt_draw4; };
+void() player_tntdraw5 = [$attack2, player_tntdraw6] { self.weaponframe = $tnt_draw5; };
+void() player_tntdraw6 = [$attack2, player_tntdraw7] { self.weaponframe = $tnt_draw6; };
+void() player_tntdraw7 = [$attack2, player_tntdraw8] { self.weaponframe = $tnt_draw7; };
+void() player_tntdraw8 = [$attack2, player_run     ] { self.weaponframe = $tnt_draw8; };
 
 // TNT half holster
-void() player_tnthalfholster1 = [$attack1, player_tnthalfholster2] { self.weaponframe = $tnt_holsterhlf1; };
-void() player_tnthalfholster2 = [$attack1, player_tnthalfholster3] { self.weaponframe = $tnt_holsterhlf2; };
-void() player_tnthalfholster3 = [$attack1, player_tnthalfholster4] { self.weaponframe = $tnt_holsterhlf3; };
-void() player_tnthalfholster4 = [$attack1, player_tnthalfholster5] { self.weaponframe = $tnt_holsterhlf4; };
-void() player_tnthalfholster5 = [$attack1, player_run            ] { W_DrawWeapon (self.newweapon); };
+void() player_tnthalfholster1 = [$attack2, player_tnthalfholster2] { self.weaponframe = $tnt_holsterhlf1; };
+void() player_tnthalfholster2 = [$attack2, player_tnthalfholster3] { self.weaponframe = $tnt_holsterhlf2; };
+void() player_tnthalfholster3 = [$attack2, player_tnthalfholster4] { self.weaponframe = $tnt_holsterhlf3; };
+void() player_tnthalfholster4 = [$attack2, player_tnthalfholster5] { self.weaponframe = $tnt_holsterhlf4; };
+void() player_tnthalfholster5 = [$attack2, player_run            ] { W_DrawWeapon (self.newweapon); };
 
 // TNT normal holster
-void() player_tntholster1 = [$attack1, player_tntholster2] { self.weaponframe = $tnt_holster1; };
-void() player_tntholster2 = [$attack1, player_tntholster3] { self.weaponframe = $tnt_holster2; };
-void() player_tntholster3 = [$attack1, player_tntholster4] { self.weaponframe = $tnt_holster3; };
-void() player_tntholster4 = [$attack1, player_tntholster5] { self.weaponframe = $tnt_holster4; };
-void() player_tntholster5 = [$attack1, player_run        ] { W_DrawWeapon (self.newweapon); };
+void() player_tntholster1 = [$attack2, player_tntholster2] { self.weaponframe = $tnt_holster1; };
+void() player_tntholster2 = [$attack2, player_tntholster3] { self.weaponframe = $tnt_holster2; };
+void() player_tntholster3 = [$attack2, player_tntholster4] { self.weaponframe = $tnt_holster3; };
+void() player_tntholster4 = [$attack2, player_tntholster5] { self.weaponframe = $tnt_holster4; };
+void() player_tntholster5 = [$attack2, player_run        ] { W_DrawWeapon (self.newweapon); };
 
 // Proximity bomb draw
-void() player_proxydraw1 = [$attack1, player_proxydraw2] { self.weaponframe = $proxy_draw1; };
-void() player_proxydraw2 = [$attack1, player_proxydraw3] { self.weaponframe = $proxy_draw2; };
-void() player_proxydraw3 = [$attack1, player_proxydraw4] { self.weaponframe = $proxy_draw3; };
-void() player_proxydraw4 = [$attack1, player_run       ] { self.weaponframe = $proxy_draw4; };
+void() player_proxydraw1 = [$attack2, player_proxydraw2] { self.weaponframe = $proxy_draw1; };
+void() player_proxydraw2 = [$attack2, player_proxydraw3] { self.weaponframe = $proxy_draw2; };
+void() player_proxydraw3 = [$attack2, player_proxydraw4] { self.weaponframe = $proxy_draw3; };
+void() player_proxydraw4 = [$attack2, player_run       ] { self.weaponframe = $proxy_draw4; };
 
 // Proximity bomb holster
-void() player_proxyholster1 = [$attack1, player_proxyholster2] { self.weaponframe = $proxy_holster1; };
-void() player_proxyholster2 = [$attack1, player_proxyholster3] { self.weaponframe = $proxy_holster2; };
-void() player_proxyholster3 = [$attack1, player_proxyholster4] { self.weaponframe = $proxy_holster3; };
-void() player_proxyholster4 = [$attack1, player_proxyholster5] { self.weaponframe = $proxy_holster4; };
-void() player_proxyholster5 = [$attack1, player_run          ] { W_DrawWeapon (self.newweapon); };
+void() player_proxyholster1 = [$attack2, player_proxyholster2] { self.weaponframe = $proxy_holster1; };
+void() player_proxyholster2 = [$attack2, player_proxyholster3] { self.weaponframe = $proxy_holster2; };
+void() player_proxyholster3 = [$attack2, player_proxyholster4] { self.weaponframe = $proxy_holster3; };
+void() player_proxyholster4 = [$attack2, player_proxyholster5] { self.weaponframe = $proxy_holster4; };
+void() player_proxyholster5 = [$attack2, player_run          ] { W_DrawWeapon (self.newweapon); };
 
 // Remote detonator draw
-void() player_remotedraw1 = [$attack1, player_remotedraw2] { self.weaponframe = $remote_draw1; };
-void() player_remotedraw2 = [$attack1, player_remotedraw3] { self.weaponframe = $remote_draw2; };
-void() player_remotedraw3 = [$attack1, player_remotedraw4] { self.weaponframe = $remote_draw3; };
-void() player_remotedraw4 = [$attack1, player_run        ] { self.weaponframe = $remote_draw4; };
+void() player_remotedraw1 = [$attack2, player_remotedraw2] { self.weaponframe = $remote_draw1; };
+void() player_remotedraw2 = [$attack2, player_remotedraw3] { self.weaponframe = $remote_draw2; };
+void() player_remotedraw3 = [$attack2, player_remotedraw4] { self.weaponframe = $remote_draw3; };
+void() player_remotedraw4 = [$attack2, player_run        ] { self.weaponframe = $remote_draw4; };
 
 // Remote detonator holster
-void() player_remoteholster1 = [$attack1, player_remoteholster2] { self.weaponframe = $remote_holster1; };
-void() player_remoteholster2 = [$attack1, player_remoteholster3] { self.weaponframe = $remote_holster2; };
-void() player_remoteholster3 = [$attack1, player_remoteholster4] { self.weaponframe = $remote_holster3; };
-void() player_remoteholster4 = [$attack1, player_remoteholster5] { self.weaponframe = $remote_holster4; };
-void() player_remoteholster5 = [$attack1, player_run           ] { W_DrawWeapon (self.newweapon); };
+void() player_remoteholster1 = [$attack2, player_remoteholster2] { self.weaponframe = $remote_holster1; };
+void() player_remoteholster2 = [$attack2, player_remoteholster3] { self.weaponframe = $remote_holster2; };
+void() player_remoteholster3 = [$attack2, player_remoteholster4] { self.weaponframe = $remote_holster3; };
+void() player_remoteholster4 = [$attack2, player_remoteholster5] { self.weaponframe = $remote_holster4; };
+void() player_remoteholster5 = [$attack2, player_run           ] { W_DrawWeapon (self.newweapon); };
 
 // Light a TNT
-void() player_lighttnt1 = [$attack1, player_lighttnt2] { self.weaponframe = $tnt_fire1; };
-void() player_lighttnt2 = [$attack1, player_lighttnt3] { self.weaponframe = $tnt_fire2; };
-void() player_lighttnt3 = [$attack1, player_lighttnt4] { self.weaponframe = $tnt_fire3; };
-void() player_lighttnt4 = [$attack1, player_lighttnt5] { self.weaponframe = $tnt_fire4; };
-void() player_lighttnt5 = [$attack1, player_lighttnt6] { self.weaponframe = $tnt_fire5; };
-void() player_lighttnt6 = [$attack1, player_lighttnt7] { self.weaponframe = $tnt_fire6; };
-void() player_lighttnt7 = [$attack1, player_lighttnt8] { self.weaponframe = $tnt_fire7; };
-void() player_lighttnt8 = [$attack1, player_lighttnt9] { self.weaponframe = $tnt_fire8; };
-void() player_lighttnt9 = [$attack1, player_lighttnt7] { self.weaponframe = $tnt_fire9; };
+void() player_lighttnt1 = [$attack2, player_lighttnt2] { self.weaponframe = $tnt_fire1; };
+void() player_lighttnt2 = [$attack2, player_lighttnt3] { self.weaponframe = $tnt_fire2; };
+void() player_lighttnt3 = [$attack2, player_lighttnt4] { self.weaponframe = $tnt_fire3; };
+void() player_lighttnt4 = [$attack2, player_lighttnt5] { self.weaponframe = $tnt_fire4; };
+void() player_lighttnt5 = [$attack2, player_lighttnt6] { self.weaponframe = $tnt_fire5; };
+void() player_lighttnt6 = [$attack2, player_lighttnt7] { self.weaponframe = $tnt_fire6; };
+void() player_lighttnt7 = [$attack2, player_lighttnt8] { self.weaponframe = $tnt_fire7; };
+void() player_lighttnt8 = [$attack2, player_lighttnt9] { self.weaponframe = $tnt_fire8; };
+void() player_lighttnt9 = [$attack2, player_lighttnt7] { self.weaponframe = $tnt_fire9; };
 
 // Trigger the remote bombs
-void() player_remotefire1 = [$attack1, player_remotefire2] { self.weaponframe = $remote_fire2; };
-void() player_remotefire2 = [$attack1, player_remotefire3] { self.weaponframe = $remote_fire3; };
-void() player_remotefire3 = [$attack1, player_run        ]
+void() player_remotefire1 = [$attack2, player_remotefire2] { self.weaponframe = $remote_fire2; };
+void() player_remotefire2 = [$attack2, player_remotefire3] { self.weaponframe = $remote_fire3; };
+void() player_remotefire3 = [$attack2, player_run        ]
 {
     self.weaponframe = 0;
     self.player_state = PS_IDLE;

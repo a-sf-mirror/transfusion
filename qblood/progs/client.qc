@@ -24,7 +24,7 @@
 // prototypes
 void () W_WeaponFrame;
 void() player_pain;
-void() player_stand1;
+void() player_stand;
 void (vector org) spawn_tfog;
 void (vector org, entity death_owner) spawn_tdeath;
 
@@ -638,7 +638,7 @@ void() PutClientInServer =
     self.view_ofs = '0 0 22';
     self.velocity = '0 0 0';
 
-    player_stand1 ();
+    player_stand ();
 
     if (self.do_observer)
     {
@@ -1304,8 +1304,10 @@ void() Impulses_Player =
         }
         else if (self.impulse == 253)
             Cheat_Inventory ();
+        #ifndef QUAKEWORLD
         else if (self.impulse == 254)
             Player_BrinkOfDeath (self, world);
+        #endif
         else if (self.impulse == 255)
             Cheat_Akimbo ();
     }

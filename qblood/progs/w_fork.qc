@@ -1,4 +1,4 @@
-/*  Copyright (C) 2001  Mathieu Olivier
+/*  Copyright (C) 2001-2002  Mathieu Olivier
 
     This program is free software; you can redistribute it and/or modify
     it under the terms of the GNU General Public License as published by
@@ -203,7 +203,19 @@ void() Fork_Attack =
 {
     local float r;
 
+    #ifdef QUAKEWORLD
+    r = random ();
+    if (r < 0.25)
+        self.frame = $axatt1;
+    else if (r < 0.5)
+        self.frame = $axattb1;
+    else if (r < 0.75)
+        self.frame = $axattc1;
+    else
+        self.frame = $axattd1;
+    #else
     self.frame = $pitchattack1;
+    #endif
 
     player_fork1 ();
     self.attack_finished = time + 0.5;

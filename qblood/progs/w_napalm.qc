@@ -1,4 +1,4 @@
-/*  Copyright (C) 2001  Mathieu Olivier
+/*  Copyright (C) 2001-2002  Mathieu Olivier
 
     This program is free software; you can redistribute it and/or modify
     it under the terms of the GNU General Public License as published by
@@ -98,28 +98,28 @@ void() player_aknapalm6 = [$attack2, player_run      ]
 };
 
 // Normal draw
-void() player_napalmdraw1 = [$attack1, player_napalmdraw2] { self.weaponframe = $napalm_draw1; };
-void() player_napalmdraw2 = [$attack1, player_napalmdraw3] { self.weaponframe = $napalm_draw2; };
-void() player_napalmdraw3 = [$attack1, player_napalmdraw4] { self.weaponframe = $napalm_draw3; };
-void() player_napalmdraw4 = [$attack1, player_run        ] { self.weaponframe = $napalm_draw4; };
+void() player_napalmdraw1 = [$attack2, player_napalmdraw2] { self.weaponframe = $napalm_draw1; };
+void() player_napalmdraw2 = [$attack2, player_napalmdraw3] { self.weaponframe = $napalm_draw2; };
+void() player_napalmdraw3 = [$attack2, player_napalmdraw4] { self.weaponframe = $napalm_draw3; };
+void() player_napalmdraw4 = [$attack2, player_run        ] { self.weaponframe = $napalm_draw4; };
 
 // Normal holster
-void() player_napalmholst1 = [$attack1, player_napalmholst2] { self.weaponframe = $napalm_holster1; };
-void() player_napalmholst2 = [$attack1, player_napalmholst3] { self.weaponframe = $napalm_holster2; };
-void() player_napalmholst3 = [$attack1, player_napalmholst4] { self.weaponframe = $napalm_holster3; };
-void() player_napalmholst4 = [$attack1, player_napalmholst5] { self.weaponframe = $napalm_holster4; };
-void() player_napalmholst5 = [$attack1, player_run         ] { W_DrawWeapon (self.newweapon); };
+void() player_napalmholst1 = [$attack2, player_napalmholst2] { self.weaponframe = $napalm_holster1; };
+void() player_napalmholst2 = [$attack2, player_napalmholst3] { self.weaponframe = $napalm_holster2; };
+void() player_napalmholst3 = [$attack2, player_napalmholst4] { self.weaponframe = $napalm_holster3; };
+void() player_napalmholst4 = [$attack2, player_napalmholst5] { self.weaponframe = $napalm_holster4; };
+void() player_napalmholst5 = [$attack2, player_run         ] { W_DrawWeapon (self.newweapon); };
 
 // Akimbo draw
-void() player_aknapalmdraw1 = [$attack1, player_aknapalmdraw2] { self.weaponframe = $anapalm_draw1; };
-void() player_aknapalmdraw2 = [$attack1, player_aknapalmdraw3] { self.weaponframe = $anapalm_draw2; };
-void() player_aknapalmdraw3 = [$attack1, player_run          ] { self.weaponframe = $anapalm_draw3; };
+void() player_aknapalmdraw1 = [$attack2, player_aknapalmdraw2] { self.weaponframe = $anapalm_draw1; };
+void() player_aknapalmdraw2 = [$attack2, player_aknapalmdraw3] { self.weaponframe = $anapalm_draw2; };
+void() player_aknapalmdraw3 = [$attack2, player_run          ] { self.weaponframe = $anapalm_draw3; };
 
 // Akimbo holster
-void() player_aknapalmholst1 = [$attack1, player_aknapalmholst2] { self.weaponframe = $anapalm_holstr1; };
-void() player_aknapalmholst2 = [$attack1, player_aknapalmholst3] { self.weaponframe = $anapalm_holstr2; };
-void() player_aknapalmholst3 = [$attack1, player_aknapalmholst4] { self.weaponframe = $anapalm_holstr3; };
-void() player_aknapalmholst4 = [$attack1, player_run           ] { W_DrawWeapon (self.newweapon); };
+void() player_aknapalmholst1 = [$attack2, player_aknapalmholst2] { self.weaponframe = $anapalm_holstr1; };
+void() player_aknapalmholst2 = [$attack2, player_aknapalmholst3] { self.weaponframe = $anapalm_holstr2; };
+void() player_aknapalmholst3 = [$attack2, player_aknapalmholst4] { self.weaponframe = $anapalm_holstr3; };
+void() player_aknapalmholst4 = [$attack2, player_run           ] { W_DrawWeapon (self.newweapon); };
 
 
 //============================================================================

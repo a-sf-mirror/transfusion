@@ -1,4 +1,4 @@
-/*  Copyright (C) 2001  Mathieu Olivier
+/*  Copyright (C) 2001-2002  Mathieu Olivier
 
     This program is free software; you can redistribute it and/or modify
     it under the terms of the GNU General Public License as published by
@@ -77,10 +77,10 @@ void() player_voodoo =
 void() player_voodoo1 = [$attack1, player_voodoo2] { player_voodoo (); };
 void() player_voodoo2 = [$attack2, player_voodoo1] { player_voodoo (); };
 
-void() player_altvoodoo1 = [$attack1, player_altvoodoo2] { self.weaponframe = $voodoo_altfire1; };
-void() player_altvoodoo2 = [$attack1, player_altvoodoo3] { self.weaponframe = $voodoo_altfire2; };
-void() player_altvoodoo3 = [$attack1, player_altvoodoo4] { self.weaponframe = $voodoo_altfire3; };
-void() player_altvoodoo4 = [$attack1, player_altvoodoo5] { self.weaponframe = $voodoo_altfire4; };
+void() player_altvoodoo1 = [$attack2, player_altvoodoo2] { self.weaponframe = $voodoo_altfire1; };
+void() player_altvoodoo2 = [$attack2, player_altvoodoo3] { self.weaponframe = $voodoo_altfire2; };
+void() player_altvoodoo3 = [$attack2, player_altvoodoo4] { self.weaponframe = $voodoo_altfire3; };
+void() player_altvoodoo4 = [$attack2, player_altvoodoo5] { self.weaponframe = $voodoo_altfire4; };
 void() player_altvoodoo5 = [$attack1, player_altvoodoo6]
 {
     local float damage;
@@ -90,21 +90,21 @@ void() player_altvoodoo5 = [$attack1, player_altvoodoo6]
     Voodoo_ApplyDamage (damage);
 };
 void() player_altvoodoo6 = [$attack1, player_altvoodoo7] { self.weaponframe = $voodoo_altfire6; };
-void() player_altvoodoo7 = [$attack1, player_altvoodoo8] { self.weaponframe = $voodoo_altfire7; };
-void() player_altvoodoo8 = [$attack1, player_run       ] { self.weaponframe = $voodoo_altfire8; };
+void() player_altvoodoo7 = [$attack2, player_altvoodoo8] { self.weaponframe = $voodoo_altfire7; };
+void() player_altvoodoo8 = [$attack2, player_run       ] { self.weaponframe = $voodoo_altfire8; };
 
 // Normal draw
-void() player_voodoodraw1 = [$attack1, player_voodoodraw2] { self.weaponframe = $voodoo_draw1; };
-void() player_voodoodraw2 = [$attack1, player_voodoodraw3] { self.weaponframe = $voodoo_draw2; };
-void() player_voodoodraw3 = [$attack1, player_voodoodraw4] { self.weaponframe = $voodoo_draw3; };
-void() player_voodoodraw4 = [$attack1, player_run        ] { self.weaponframe = $voodoo_draw4; };
+void() player_voodoodraw1 = [$attack2, player_voodoodraw2] { self.weaponframe = $voodoo_draw1; };
+void() player_voodoodraw2 = [$attack2, player_voodoodraw3] { self.weaponframe = $voodoo_draw2; };
+void() player_voodoodraw3 = [$attack2, player_voodoodraw4] { self.weaponframe = $voodoo_draw3; };
+void() player_voodoodraw4 = [$attack2, player_run        ] { self.weaponframe = $voodoo_draw4; };
 
 // Normal holster
-void() player_voodooholster1 = [$attack1, player_voodooholster2] { self.weaponframe = $voodoo_holster1; };
-void() player_voodooholster2 = [$attack1, player_voodooholster3] { self.weaponframe = $voodoo_holster2; };
-void() player_voodooholster3 = [$attack1, player_voodooholster4] { self.weaponframe = $voodoo_holster3; };
-void() player_voodooholster4 = [$attack1, player_voodooholster5] { self.weaponframe = $voodoo_holster4; };
-void() player_voodooholster5 = [$attack1, player_run           ] { W_DrawWeapon (self.newweapon); };
+void() player_voodooholster1 = [$attack2, player_voodooholster2] { self.weaponframe = $voodoo_holster1; };
+void() player_voodooholster2 = [$attack2, player_voodooholster3] { self.weaponframe = $voodoo_holster2; };
+void() player_voodooholster3 = [$attack2, player_voodooholster4] { self.weaponframe = $voodoo_holster3; };
+void() player_voodooholster4 = [$attack2, player_voodooholster5] { self.weaponframe = $voodoo_holster4; };
+void() player_voodooholster5 = [$attack2, player_run           ] { W_DrawWeapon (self.newweapon); };
 
 
 //============================================================================

@@ -1359,7 +1359,9 @@ W_WeaponFrame
 Called every frame so impulse events can be handled as well as possible
 ============
 */
+#ifndef QUAKEWORLD
 void() Player_LiveAgain;
+#endif
 void() Impulses_Player;
 float() W_FireCharge;
 void() W_WeaponFrame =
@@ -1367,9 +1369,11 @@ void() W_WeaponFrame =
     if (time < self.attack_finished)
         return;
 
+    #ifndef QUAKEWORLD  // No BOD in QW
     // If we was on the Brink Of Death
     if (self.player_state == PS_BRINK_OF_DEATH)
         Player_LiveAgain ();
+    #endif
 
     if (! W_AmmoAvailable () && self.player_state != PS_HOLD_FIRE)
     {

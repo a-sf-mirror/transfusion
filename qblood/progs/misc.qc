@@ -152,9 +152,8 @@ Large yellow flame ball
 */
 void() light_flame_large_yellow =
 {
-    precache_model ("progs/flame2.mdl");
-    setmodel (self, "progs/flame2.mdl");
-    self.frame = 1;
+    precache_model ("progs/flame2.spr");
+    setmodel (self, "progs/flame2.spr");
     FireAmbient ();
     makestatic (self);
 };
@@ -164,8 +163,8 @@ Small yellow flame ball
 */
 void() light_flame_small_yellow =
 {
-    precache_model ("progs/flame2.mdl");
-    setmodel (self, "progs/flame2.mdl");
+    precache_model ("progs/flame.spr");
+    setmodel (self, "progs/flame.spr");
     FireAmbient ();
     makestatic (self);
 };
@@ -493,24 +492,6 @@ void() sentry_detect_crypt =
 void() sentry_detect_thunder =
 {
     sentry_detect_init ("ambience/thunder3.wav");
-};
-
-
-/*~>~<~>~<~>~<~>~<~>~<~>~<~>~<~>~<~>~<~>~<~>~<~>~<~>~<~>~<~>~<~>~<~>~<~>
-~>~<~>~<~>~<~>~<~>~<~>~<~>~<~>~<~>~<~>~<~>~<~>~<~>~<~>~<~>~<~>~<~>~<~>~*/
-
-/*QUAKED viewthing (0 .5 .8) (-8 -8 -8) (8 8 8)
-
-Just for the debugging level.  Don't use
-*/
-
-void() viewthing =
-
-{
-    self.movetype = MOVETYPE_NONE;
-    self.solid = SOLID_NOT;
-    precache_model ("progs/player.mdl");
-    setmodel (self, "progs/player.mdl");
 };
 
 

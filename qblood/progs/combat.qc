@@ -25,7 +25,9 @@ void() T_MissileTouch;
 void() info_player_start;
 void(entity attacker) ClientObituary;
 void(entity inflictor, entity attacker, float damage, entity ignore, string dtype) T_RadiusDamage;
+#ifndef QUAKEWORLD
 void(entity player, entity attacker) Player_BrinkOfDeath;
+#endif
 
 
 //============================================================================
@@ -87,8 +89,7 @@ void(entity targ, entity attacker) Killed =
         self.health = -99;      // don't let sbar look bad if a player
 
     // doors, triggers, etc
-    if (self.movetype == MOVETYPE_PUSH ||
-        (self.movetype == MOVETYPE_NONE && self.player_state != PS_BRINK_OF_DEATH))
+    if (self.movetype == MOVETYPE_PUSH || (self.movetype == MOVETYPE_NONE && self.player_state != PS_BRINK_OF_DEATH))
     {
         self.th_die ();
         self = oself;
@@ -327,6 +328,7 @@ void(entity targ, entity inflictor, entity attacker, float damage, float dflags,
     targ.health = targ.health - take;
     if (targ.health <= 0)
     {
+        #ifndef QUAKEWORLD  // No BOD in QW
         // If a player reaches exactly 0 HP (Brink Of Death)
         if (targ.health == 0 && targ.classname == "player")
         {
@@ -345,6 +347,7 @@ void(entity targ, entity inflictor, entity attacker, float damage, float dflags,
                 }
             }
         }
+        #endif
 
         // Target was slain!
         if (!targ.deadflag)
