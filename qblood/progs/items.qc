@@ -940,7 +940,8 @@ void() item_artifact_vision =
 {
     self.netname = "Beast Vision";
     self.model   = "progs/i_vision.mdl";
-    self.noise   = "items/pickup.wav";
+    self.noise   = "items/
+    pickup.wav";
     item_powerup ();
 };
 
@@ -1066,9 +1067,9 @@ void() item_health =
     else if (self.spawnflags & H_MEGA)
     {
         precache_model("progs/lifeseed.mdl");
-        precache_sound("items/pickup.wav");
+        precache_sound("items/pickheal.wav");
         setmodel(self, "progs/lifeseed.mdl");
-        self.noise = "items/pickup.wav";
+        self.noise = "items/pickheal.wav";
         self.healamount = 100;
         self.netname = "Life Seed";
         self.healtype = 2;
