@@ -1593,7 +1593,7 @@ void() W_Attack =
     if (! W_AmmoAvailable ())
     {
         // Check to see which weapon player is holding
-        if (self.weapon == IT_SHOTGUN)
+        if (self.weapon == IT_SUPER_SHOTGUN)
             sound (self, CHAN_WEAPON, "weapons/shotgun/shotcock.wav", 1, ATTN_NORM);
         else if (self.weapon == IT_NAILGUN)
             sound (self, CHAN_WEAPON, "weapons/tommygun/tomcock.wav", 1, ATTN_NORM);
