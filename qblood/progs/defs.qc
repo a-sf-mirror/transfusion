@@ -296,14 +296,13 @@ float intermission_running;
 
 float modelindex_eyes, modelindex_player;
 
-
-//
-// Teamplay / CTF stuff
-//
-
 // Team scores
 float team1score;
 float team2score;
+
+// Weapons that can be found into the current map (i.e. their resources
+// have been precached). Used for the warmup and the "give all" cheat
+float available_weapons;
 
 
 //================================================

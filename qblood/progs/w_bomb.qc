@@ -246,10 +246,10 @@ void() player_remotefire3 = [$attack2, player_run        ]
 
 //============================================================================
 
-#define DMG_TNT              120
-#define DMG_PROXIMITY_BOMB   150
-#define DMG_REMOTE_DETONATOR 120
-#define DMG_SPRAY_CAN        20
+#define DMG_TNT              130
+#define DMG_PROXIMITY_BOMB   160
+#define DMG_REMOTE_DETONATOR 130
+#define DMG_SPRAY_CAN        50
 
 // The 2 types of TNT
 #define TNT_TYPE_NORMAL  0
@@ -865,9 +865,9 @@ void() Bomb_Fire =
         // TNT Charge/throw meter power.
         local   float   mspeed, mup;
 
-        mspeed = 200 + (self.charge * 50);
-        if (mspeed < 300)
-            mspeed = 300;  // don't throw the grenade on our own feet !
+        mspeed = 200 + (self.charge * 35);
+        if (mspeed < 230)
+            mspeed = 230;  // don't throw the grenade on our own feet !
         mup = mspeed / 1.75;
 
         if (self.v_angle_x)
@@ -894,7 +894,7 @@ void() Bomb_Fire =
     newmis.nextthink = 0.1;
     newmis.think     = BombThink;
 
-    setorigin (newmis, self.origin);
+    setorigin (newmis, self.origin + v_forward * 15 + '0 0 16');
 
     self.player_state = PS_FIRE;
 

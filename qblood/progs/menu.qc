@@ -855,7 +855,7 @@ void() Menu_HandleVoteOptions =
 
     if (self.impulse == 1)
     {
-        cvarName = "g_weaponsStay";
+        cvarName = "g_weaponStay";
         option = OPTION_WEAPONS_STAY;
     }
     else if (self.impulse == 2)

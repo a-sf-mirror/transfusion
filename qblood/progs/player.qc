@@ -412,17 +412,13 @@ local float     rs;
         return;
     }
 
-    rs = rint ((random() * 4) + 1);
-    if (rs == 1)
+    rs = rint (random() * 2);
+    if (rs == 0)
         self.noise = "player/die1.wav";
-    else if (rs == 2)
+    else if (rs == 1)
         self.noise = "player/die2.wav";
-    else if (rs == 3)
-        self.noise = "player/die3.wav";
-    else if (rs == 4)
-        self.noise = "player/die1.wav";
     else
-        self.noise = "player/die2.wav";
+        self.noise = "player/die3.wav";
 
     sound (self, CHAN_VOICE, self.noise, 1, ATTN_NONE);
     return;
@@ -702,12 +698,12 @@ void() PlayerDie =
 
     if (self.akimbo_finished > 0)
     {
-        DropQuad (self.akimbo_finished - time);
         Bprint (PRINT_LOW, self.netname);
         Bprint (PRINT_LOW, " lost a Guns Akimbo with ");
         s = ftos(rint(self.akimbo_finished - time));
         Bprint (PRINT_LOW, s);
         Bprint (PRINT_LOW, " seconds remaining\n");
+        Akimbo_Drop (self.akimbo_finished - time);
     }
 
     if (self.invisible_finished > 0)
@@ -717,7 +713,7 @@ void() PlayerDie =
         s = ftos(rint(self.invisible_finished - time));
         Bprint (PRINT_LOW, s);
         Bprint (PRINT_LOW, " seconds remaining\n");
-        DropRing (self.invisible_finished - time);
+        Invisibility_Drop (self.invisible_finished - time);
     }
 
     CTF_PlayerDropFlag ();

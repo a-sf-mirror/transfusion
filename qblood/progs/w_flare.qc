@@ -237,10 +237,7 @@ void() FlareTouch =
 
     // hit something that bleeds
     if (other.takedamage)
-    {
-        // Just set the target on fire.
-        BurnDamage (other, self, 0, DF_FIRE, self.dmg);
-    }
+        BurnDamage (other, self, 5, DF_FIRE, self.dmg);
 
     FlareSpark ();   // Throw a few sparks.
     remove (self);

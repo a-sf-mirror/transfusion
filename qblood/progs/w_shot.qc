@@ -252,7 +252,7 @@ Attack code for the sawed-off
 */
 void() Shot_Attack =
 {
-    self.attack_finished = time + 0.5;
+    self.attack_finished = time + 0.4;
 
     // If it's an altfire shot
     if (self.button3 || self.impulse == 12)

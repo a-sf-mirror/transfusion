@@ -162,8 +162,6 @@ void() PrecacheSounds =
     precache_sound ("weapons/napalm/burn.wav");  // burning on lava
 
     // Death and gib sounds
-    //precache_sound ("butcher/fzomdie2.wav");
-    //precache_sound ("butcher/fzomdie3.wav");
     precache_sound ("firepod/fpodcol2.wav");  // telefragged player
     precache_sound ("misc/gibsq.wav");        // used when gibbing a corpse/head
     precache_sound ("player/die1.wav");
@@ -232,21 +230,25 @@ void() worldspawn =
         {
             registercvar ("g_lockTeams", "0");
             registercvar ("g_warmup", "0");
-            registercvar ("g_weaponsStay", "0");
-            registercvar ("sv_allowCheat", "0");
+            registercvar ("g_weaponStay", "0");
+            registercvar ("sv_cheats", "0");
             registercvar ("sv_disable", "0");
         }
 
     // Some engines create them on the fly
     cvar ("g_lockTeams");
     doWarmup = cvar ("g_warmup");
-    cvar ("g_weaponsStay");
-    cvar ("sv_allowCheat");
+    cvar ("g_weaponStay");
+    cvar ("sv_cheats");
     cvar ("sv_disable");
 
     // Warmup initialization
     warmup_done = (! doWarmup);
     warmup_endtime = 0;
+    warmup_counttime = 0;
+
+    // Empty the lists of available weapons
+    available_weapons = IT_PITCHFORK;
 
     #ifdef FRIKBOT
     // FrikBot X initialization
@@ -419,6 +421,8 @@ void() World_EndWarmup =
     local entity ent, tempEnt;
 
     Bprint (PRINT_HIGH, "Resetting level...\n");
+    warmup_done = TRUE;
+    warmup_counttime = 0;
 
     tempEnt = self;
 
@@ -457,8 +461,9 @@ void() World_EndWarmup =
 
     self = tempEnt;
 
-    warmup_done = TRUE;
-    warmup_counttime = 0;
+    // Use this occasion to test if cheats are enabled (the players should know that)
+    if (cvar ("sv_cheats"))
+        Bprint (PRINT_HIGH, "◊¡“Œ…Œ«∫ Cheats are enabled on this server!!\n");
 };
 
 
@@ -471,11 +476,21 @@ Handle the warmup countdown
 */
 void() World_WarmupCountdown =
 {
-    // If the warmup has already been done or hasn't begun
+    // If the warmup has already been done
     if (warmup_done)
         return;
+
+    // If the warmup hasn't begun, send regularly a message to all players
+    // so they know they're not in the real game yet
     if (! warmup_endtime)
+    {
+        if (warmup_counttime <= time)
+        {
+            warmup_counttime = warmup_counttime + 10;
+            Bprint (PRINT_HIGH, "ææ Waiting for opponents to begin the warmup ºº\n");
+        }
         return;
+    }
 
     // If the warmup is over
     if (warmup_endtime <= time)
@@ -526,10 +541,10 @@ void() World_StartWarmup =
     warmup_endtime = time + duration;
     warmup_counttime = time + duration - (floor (duration / 5) * 5);
 
-    Bprint (PRINT_HIGH, "WARMUP STARTED (");
+    Bprint (PRINT_HIGH, "ææ Warmup started (");
     str = ftos (duration);
     Bprint (PRINT_HIGH, str);
-    Bprint (PRINT_HIGH, " sec)\n");
+    Bprint (PRINT_HIGH, " sec) ºº\n");
 };
 
 
@@ -547,7 +562,8 @@ void() World_StopWarmup =
         return;
 
     warmup_endtime = 0;
-    Bprint (PRINT_HIGH, "WARMUP CANCELED\n");
+    warmup_counttime = time + 5;  // "waiting for opponents" in 5 sec
+    Bprint (PRINT_HIGH, "ææ Warmup canceled ºº\n");
 };
 
 

@@ -170,7 +170,7 @@ void(entity newball) Napalm_ThrowBouncingBall =
     newball.classname = "grenade";
 
     newball.netname = "Napalm Ball";
-    newball.dmg = 120;
+    newball.dmg = 100;
 
     newball.nextthink = time + 0.1;
     newball.think = Napalm_ActivateBall;
@@ -336,7 +336,7 @@ void() Napalm_Fire =
         setmodel (newmis, "progs/missile.mdl");
         setsize (newmis, '0 0 0', '0 0 0');
 
-        newmis.dmg = 75 + random () * 50;
+        newmis.dmg = 90 + random () * 40;
 
         // set newmis duration
         newmis.nextthink = time + 5;

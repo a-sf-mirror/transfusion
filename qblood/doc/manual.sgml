@@ -6,7 +6,7 @@
    <title> BloodBath manual
    <author> Mathieu Olivier <tt>&lt;elric@planetblood.com&gt;</tt> and
    Dave Turner <tt>&lt;darth_linux@planetblood.com&gt;</tt>
-   <date>v?.?.? (development), April 14, 2002
+   <date>v?.?.? (development), May 1, 2002
    <abstract>
       This manual covers installation and usage of the
       <url url="http://www.planetblood.com/qblood/" name="BloodBath"> game.
@@ -97,7 +97,7 @@
          </itemize>
 
          All those impulses are considered cheats (not available in multiplayer
-         games, except if the server has the "sv_allowCheat" cvar set to a
+         games, except if the server has the "sv_cheats" cvar set to a
          non-zero value). <em>WARNING</em>: due to strict resource management,
          some of them MAY CRASH THE GAME if the required sounds and models are
          not precached at this moment.
@@ -304,7 +304,7 @@
          map and respawn all players. Be sure to set it to a non-zero value
          before starting the map, or you won't have any warmup at all.
 
-         Of course, no frag can be taken during warmup.
+         Of course, no frag can be taken during the warmup.
       </sect1>
 
       <sect1><heading>Voting menu<label id="menu"><p>
@@ -336,10 +336,10 @@
             <item> "g_warmup"<label id="g_warmup">: if set to a non-zero value,
             it indicates the duration of the <ref id="warmup" name="warmup">
             in secondes. If set to 0, the warmup is disabled.
-            <item> "g_weaponsStay": if set, weapons don't disappear when taken,
+            <item> "g_weaponStay": if set, weapons don't disappear when taken,
             but you can't take a weapon more than once (equivalent to "Doom Old
             DeathMatch" and "Quake DM 3")
-            <item> "sv_allowCheat": enable a few more client impulses, which
+            <item> "sv_cheats": enable a few more client impulses, which
             may be used to CHEAT one way or another, and MAY CRASH THE GAME
             under some conditions. You have been warned.
             <item> "sv_disable": a set of flags that allow a server

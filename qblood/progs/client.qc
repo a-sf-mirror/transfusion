@@ -23,6 +23,7 @@
 
 // prototypes
 void () W_WeaponFrame;
+void() PlayerDie;
 void() player_pain;
 void() player_stand;
 void (vector org) spawn_tfog;
@@ -51,110 +52,69 @@ void() info_intermission =
 
 void() SetChangeParms =
 {
-    if (self.health <= 0)
-    {
-        SetNewParms ();
-        return;
-    }
-
-    // remove items
-    self.items  = self.items  - (self.items  & (IT_INVISIBILITY | IT_INVULNERABILITY | IT_SUIT));
-    self.items2 = self.items2 - (self.items2 & (IT2_KEY1 | IT2_KEY2));
-
-    // Recharge inventory, except for first-aid.
-    InvenRecharge ();
-
-    // cap super health
-    if (self.health > 200)
-        self.health = 200;
-
-    //
-    //  *Very* important note:
-    //
-    //  Since qblood has enough data to require more than 16 parms, some of
-    //  the parms contain data from up to three different fields.
-    //
-    //  Ammo parms...
-    //  parm3 -> Bits used for flares/shells/bullets are 7/7/9.
-    //      Flares use bits 0-6.  Shells use bits 7-13.  Bullets use bits 14-22.
-    //  parm4 -> Bits used for napalm/tnt/proxy are 7/7/7.
-    //      Rockets use bits 0-6.  TNT use bits 7-13.  Proxy use bits 14-20.
-    //  parm5 -> Bits used for remote/spraycan/cells are 7/8/8.
-    //      Remotes use bits 0-6.  Cans use bits 7-14.  Cells use bits 15-22.
-    //  parm6 -> Bits used for voodoo/souls are 8/8.
-    //      Voodoo uses bits 0-7.  Souls use bits 8-15.
-    //
-    //  Armor parms...
-    //  parm8 -> Bits used for fire/body/spirit are 8/8/8.
-    //      Fire uses bits 0-7.  Body uses bits 8-15.  Spirit uses bits 16-23.
-    //
-    parm1 = self.items;
-    parm2 = self.items2;
-    parm3 = self.health;
-    parm4 = self.ammo_flares + (self.ammo_shells * 128) + (self.ammo_nails * 16384);
-    parm5 = self.ammo_rockets + (self.ammo_tnt_bundle * 128) + (self.ammo_tnt_proxy * 16384);
-    parm6 = self.ammo_tnt_remote + (self.ammo_spray * 128) + (self.ammo_cells * 32768);
-    parm7 = self.ammo_voodoo + (self.ammo_leech * 256);
-    parm8 = self.weapon;
-    parm9 = self.armor_fire + (self.armor_body * 256) + (self.armor_mind * 65536);
-    parm10 = self.inven1;
-    parm11 = self.inven2;
-    parm12 = self.it_select;
+    // We need to have this function, but it's unused
 };
 
 void() SetNewParms =
 {
-    parm1 = IT_PITCHFORK;
-    parm2 = 0;
-    parm3 = 100;
-    parm4 = 0;
-    parm5 = 0;
-    parm6 = 0;
-    parm7 = 0;
-    parm8 = IT_PITCHFORK;
-    parm9 = 0;
-    parm10 = 0;
-    parm11 = 0;
-    parm12 = 0;
-    parm13 = 0;
+    // We need to have this function, but it's unused
 };
 
-void() DecodeLevelParms =
+void() InitPlayerCharacteristics =
 {
-    // take away all stuff on starting new episode
-    if (serverflags && world.model == "maps/start.bsp")
-        SetNewParms ();
+    self.items           = IT_PITCHFORK;
+    self.items2          = 0;
+    self.health          = 100;
+    self.ammo_flares     = 0;
+    self.ammo_shells     = 0;
+    self.ammo_nails      = 0;
+    self.ammo_rockets    = 0;
+    self.ammo_tnt_bundle = 0;
+    self.ammo_tnt_proxy  = 0;
+    self.ammo_tnt_remote = 0;
+    self.ammo_spray      = 0;
+    self.ammo_cells      = 0;
+    self.ammo_voodoo     = 0;
+    self.ammo_leech      = 0;
+    self.weapon          = IT_PITCHFORK;
+    self.armor_fire      = 0;
+    self.armor_body      = 0;
+    self.armor_mind      = 0;
+    self.inven1          = 0;
+    self.inven2          = 0;
+    self.it_select       = 0;
 
-    self.items           = parm1;
-    self.items2          = parm2;
-    self.health          = parm3;
-    self.ammo_flares     = (parm4 & 127);
-    self.ammo_shells     = (parm4 & 16256) / 128;
-    self.ammo_nails      = (parm4 & 8372224) / 16384;
-    self.ammo_rockets    = (parm5 & 127);
-    self.ammo_tnt_bundle = (parm5 & 16256) / 128;
-    self.ammo_tnt_proxy  = (parm5 & 2080768) / 16384;
-    self.ammo_tnt_remote = (parm6 & 127);
-    self.ammo_spray      = (parm6 & 32640) / 128;
-    self.ammo_cells      = (parm6 & 8355840) / 32768;
-    self.ammo_voodoo     = (parm7 & 255);
-    self.ammo_leech      = (parm7 & 65280) / 256;
-    self.weapon          = parm8;
-    self.armor_fire      = (parm9 & 255);
-    self.armor_body      = (parm9 & 65280) / 256;
-    self.armor_mind      = (parm9 & 16711680) / 65536;
-    self.inven1          = parm10;
-    self.inven2          = parm11;
-    self.it_select       = parm12;
-
-    if (self.items & IT_ARMOR1)
+    // If the warmup is not over, let's give him some extra stuff  :)
+    if (! warmup_done)
+    {
+        self.items = self.items | available_weapons | IT_ARMOR1;
+        self.armor_body = 50;
+        self.armor_fire = 50;
+        self.armor_mind = 50;
         self.armorvalue = self.armor_body;
-    else if (self.items & IT_ARMOR2)
-        self.armorvalue = self.armor_fire;
-    else if (self.items & IT_ARMOR3)
-        self.armorvalue = self.armor_mind;
-    else
-        self.armorvalue = 0;
+        if (available_weapons & IT_FLAREGUN)
+            self.ammo_flares = self.ammo_flares + 15;
+        if (available_weapons & IT_SAWED_OFF)
+            self.ammo_shells = self.ammo_shells + 20;
+        if (available_weapons & IT_TOMMYGUN)
+            self.ammo_nails = self.ammo_nails + 50;
+        if (available_weapons & IT_NAPALM_LAUNCHER)
+            self.ammo_rockets = self.ammo_rockets + 10;
+        if (available_weapons & IT_TNT)
+            self.ammo_tnt_bundle = self.ammo_tnt_bundle + 5;
+        if (available_weapons & IT_PROXIMITY_BOMB)
+            self.ammo_tnt_proxy = self.ammo_tnt_proxy + 5;
+        if (available_weapons & IT_REMOTE_DETONATOR)
+            self.ammo_tnt_remote = self.ammo_tnt_remote + 5;
+        if (available_weapons & IT_SPRAY_CAN)
+            self.ammo_spray = self.ammo_spray + 50;
+        if (available_weapons & IT_TESLA_CANNON)
+            self.ammo_cells = self.ammo_cells + 50;
+        if (available_weapons & IT_VOODOO_DOLL)
+            self.ammo_voodoo = self.ammo_voodoo + 100;
+        if (available_weapons & IT_LIFE_LEECH)
+            self.ammo_leech = self.ammo_leech + 50;
+    }
 };
 
 /*
@@ -561,10 +521,6 @@ entity() SelectSpawnPoint =
 };
 
 
-void() DecodeLevelParms;
-void() PlayerDie;
-
-
 /*
 ===========
 PutClientInServer
@@ -602,7 +558,7 @@ void() PutClientInServer =
     Bomb_Uncharge ();
     ResetIdle (self);
 
-    DecodeLevelParms ();
+    InitPlayerCharacteristics ();
 
     // You surely don't want to toss your brand new TNT *right now*...
     self.attack_finished = time + 0.3;
@@ -1184,9 +1140,9 @@ void() CheckPowerups =
             self.invincible_finished = 0;
         }
         if (self.invincible_finished > time)
-            self.effects = self.effects | EF_DIMLIGHT | EF_RED;
+            self.effects = self.effects | EF_RED;
         else
-            self.effects = self.effects - (self.effects & (EF_DIMLIGHT | EF_RED));
+            self.effects = self.effects - (self.effects & EF_RED);
     }
 
     // Guns akimbo
@@ -1202,27 +1158,19 @@ void() CheckPowerups =
             #endif
                 W_SetCurrentAmmo ();
         }
-
-        // (un)set the entity effects
-        if (self.akimbo_finished > time)
-            self.effects = self.effects | EF_DIMLIGHT;
-        else
-            self.effects = self.effects - (self.effects & EF_DIMLIGHT);
     }
 
     // Reflective shots
     if (self.reflect_finished)
     {
-        // In Blood, there is no warning when it stops.
-
         if (self.reflect_finished < time)
         {   // just stopped
             self.reflect_finished = 0;
 
-            self.effects = self.effects - (self.effects & (EF_DIMLIGHT | EF_BLUE));
+            self.effects = self.effects - (self.effects & EF_BLUE);
         }
         else
-            self.effects = self.effects | EF_DIMLIGHT | EF_BLUE;
+            self.effects = self.effects | EF_BLUE;
     }
 
     // Check inventory items.
@@ -1292,8 +1240,8 @@ void() Impulses_Player =
     else if (self.impulse == 141)
         identify_player ();
 
-    // These ones are considered cheats and are only allowed when the "sv_allowCheat" cvar is set
-    else if (cvar ("sv_allowCheat"))
+    // These ones are considered cheats and are only allowed when the "sv_cheats" cvar is set
+    else if (cvar ("sv_cheats"))
     {
         #if defined(FRIKBOT) && !defined (QUAKEWORLD)
         if (self.impulse == 103)

@@ -519,6 +519,7 @@ Kick A Bot.
 -=-=-=-=-=-=-=-=-=-=-=-=-=-=-=-=-=-=-=-=-=-=-=
 */
 
+void() World_CheckWarmup;
 void() KickABot =
 {
     local entity ty;
@@ -529,12 +530,12 @@ void() KickABot =
         {
             BotDisconnect(ty);
             ty.ishuman = TRUE;
+            World_CheckWarmup ();
             return;
         }
 
         ty = find(ty, classname, "player");
     }
-
 };
 
 

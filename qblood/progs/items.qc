@@ -43,7 +43,7 @@ void() SUB_regen =
 };
 
 
-void() q_touch =
+void() Akimbo_Touch =
 {
     local entity    stemp;
     local float     best;
@@ -79,7 +79,7 @@ void() q_touch =
     SUB_UseTargets();                               // fire all targets / killtargets
 };
 
-void(float timeleft) DropQuad =
+void(float timeleft) Akimbo_Drop =
 {
     local entity    item;
 
@@ -96,13 +96,13 @@ void(float timeleft) DropQuad =
     item.noise = "bludbath/powerup.wav";
     setmodel (item, "progs/quaddama.mdl");
     setsize (item, '-16 -7 -2', '18 7 18');
-    item.touch = q_touch;
+    item.touch = Akimbo_Touch;
     item.nextthink = time + timeleft;    // remove it with the time left on it
     item.think = SUB_Remove;
     item.reset = SUB_Remove;
 };
 
-void() r_touch =
+void() Invisibility_Touch =
 {
     local float     best;
     local string    s;
@@ -134,7 +134,7 @@ void() r_touch =
     SUB_UseTargets();                               // fire all targets / killtargets
 };
 
-void(float timeleft) DropRing =
+void(float timeleft) Invisibility_Drop =
 {
     local entity    item;
 
@@ -152,7 +152,7 @@ void(float timeleft) DropRing =
     setmodel (item, "progs/invisibl.mdl");
     setsize (item, '-3 -6 -2', '6 7 23');
     item.cnt = time + timeleft;
-    item.touch = r_touch;
+    item.touch = Invisibility_Touch;
     item.nextthink = time + timeleft;    // remove after 30 seconds
     item.think = SUB_Remove;
     item.reset = SUB_Remove;
@@ -886,7 +886,7 @@ void() obj_drum =
 /*
 ===================================
 
-POWERUPS
+INVENTORY ITEMS
 
 ===================================
 */
@@ -1335,7 +1335,7 @@ void() item_armor2 =
     StartItem ();
 };
 
-/*QUAKED item_armorInv (0 .5 .8) (-16 -16 2) (16 16 54)
+/*QUAKED item_armorInv (0 .5 .8) (-16 -16 2) (16 16 58)
 */
 
 void() item_armorInv =
@@ -1345,7 +1345,8 @@ void() item_armorInv =
     setmodel (self, "progs/i_arm_su.mdl");
     self.netname = "Super Armor";
 
-    setsize (self, '-16 -16 2', '16 16 54');
+    //setsize (self, '-16 -16 2', '16 16 58');
+    setsize (self, '-16 -16 0', '16 16 56');
     StartItem ();
 };
 
@@ -1404,7 +1405,6 @@ void() bound_other_ammo =
 };
 
 
-
 float() W_BestWeapon;
 
 /*
@@ -1423,7 +1423,7 @@ void() weapon_touch =
     if (other.health <= 0)
         return;
 
-    if (cvar ("g_weaponsStay"))
+    if (cvar ("g_weaponStay"))
         leave = 1;
     else
         leave = 0;
@@ -1576,12 +1576,15 @@ void() weapon_flaregun =
     self.weapon = IT_FLAREGUN;
     self.netname = "Flare Gun";
     self.touch = weapon_touch;
-    setsize (self, '-16 -16 13', '16 16 69');
+    //setsize (self, '-16 -16 13', '16 16 69');
+    setsize (self, '-16 -16 0', '16 16 56');
 
     // precache the necessary sounds
     PsychoCaleb_Precache ();
     precache_sound ("weapons/flaregun/flaref.wav");
     precache_sound ("weapons/napalm/explodfs.wav");  // For alt-flares
+
+    available_weapons = available_weapons | IT_FLAREGUN;
 
     StartItem ();
 };
@@ -1600,7 +1603,8 @@ void() weapon_supershotgun =
     self.weapon = IT_SAWED_OFF;
     self.netname = "Sawed-off";
     self.touch = weapon_touch;
-    setsize (self, '-16 -16 3', '16 16 59');
+    //setsize (self, '-16 -16 3', '16 16 59');
+    setsize (self, '-16 -16 0', '16 16 56');
 
     // Precache the necessary sounds
     precache_sound ("weapons/shotgun/shotcock.wav");  // shell ejection
@@ -1608,6 +1612,8 @@ void() weapon_supershotgun =
     precache_sound ("weapons/shotgun/shotfire.wav");  // shotgun fired
     precache_sound ("weapons/shotgun/shotload.wav");  // reload sound
     precache_sound ("weapons/shtshl2.wav");  // shell hitting ground
+
+    available_weapons = available_weapons | IT_SAWED_OFF;
 
     StartItem ();
 };
@@ -1633,6 +1639,8 @@ void() weapon_nailgun =
     precache_sound ("weapons/tommygun/tomcock.wav");  // Out of bullet noise
     precache_sound ("weapons/shtshl.wav");            // shell hitting ground
     precache_sound ("weapons/shtshl3.wav");           // shell hitting ground (2nd)
+
+    available_weapons = available_weapons | IT_TOMMYGUN;
 
     StartItem ();
 };
@@ -1661,6 +1669,8 @@ void() weapon_supernailgun =
 
     precache_model ("progs/sprayfir.spr");
 
+    available_weapons = available_weapons | IT_SPRAY_CAN;
+
     StartItem ();
 };
 
@@ -1688,6 +1698,8 @@ void() weapon_grenadelauncher =
     precache_sound ("weapons/tnt/tnttoss.wav");  // throw sound
     precache_sound ("weapons/tnt/zipclose.wav");
 
+    available_weapons = available_weapons | IT_TNT;
+
     StartItem ();
 };
 
@@ -1710,6 +1722,8 @@ void() item_tnt =
     precache_sound ("weapons/tnt/tntfuse.wav");  // tnt lit
     precache_sound ("weapons/tnt/tnttoss.wav");  // throw sound
     precache_sound ("weapons/tnt/zipclose.wav");
+
+    available_weapons = available_weapons | IT_TNT;
 
     StartItem ();
 };
@@ -1734,6 +1748,8 @@ void() weapon_proximity =
     precache_sound ("weapons/tnt/proxdet.wav");  // proximity bomb triggered
     precache_sound ("weapons/tnt/tnttoss.wav");  // throw sound
 
+    available_weapons = available_weapons | IT_PROXIMITY_BOMB;
+
     StartItem ();
 };
 
@@ -1755,6 +1771,8 @@ void() weapon_remote =
     precache_sound ("weapons/tnt/remdet.wav");   // bomb triggered
     precache_sound ("weapons/tnt/remfire.wav");  // remote triggered
     precache_sound ("weapons/tnt/tnttoss.wav");  // throw sound
+
+    available_weapons = available_weapons | IT_REMOTE_DETONATOR;
 
     StartItem ();
 };
@@ -1780,6 +1798,8 @@ void() weapon_rocketlauncher =
     // Precache the necessary sounds
     PsychoCaleb_Precache ();
     precache_sound ("weapons/napalm/blaster.wav");  // Shot
+
+    available_weapons = available_weapons | IT_NAPALM_LAUNCHER;
 
     StartItem ();
 };
@@ -1810,6 +1830,8 @@ void() weapon_lightning =
     precache_sound ("weapons/tesla/tessuper.wav");  // alt fire charge up + fire
     precache_sound ("weapons/tesla/tesakima.wav");  // alt fire charge up + fire (Akimbo)
 
+    available_weapons = available_weapons | IT_TESLA_CANNON;
+
     StartItem ();
 };
 
@@ -1833,6 +1855,8 @@ void() weapon_voodoodoll =
     precache_sound ("weapons/voodoodl/voostab.wav");
     precache_sound ("weapons/voodoodl/voochant.wav");
 
+    available_weapons = available_weapons | IT_VOODOO_DOLL;
+
     StartItem ();
 };
 
@@ -1855,6 +1879,9 @@ void() weapon_lifeleech =
     precache_sound ("weapons/lifelech/laltfr1.wav");
     precache_sound ("weapons/lifelech/llaltht.wav");    // LL sentry destroyed
     precache_sound ("weapons/napalm/explodfs.wav");     // altfire missile touch
+
+    available_weapons = available_weapons | IT_LIFE_LEECH;
+
     StartItem ();
 };
 
