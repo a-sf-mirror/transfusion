@@ -101,7 +101,7 @@ void(float timeleft) DropQuad =
     item.movetype = MOVETYPE_TOSS;
     item.noise = "bludbath/powerup.wav";
     setmodel (item, "progs/quaddama.mdl");
-    setsize (item, '-18 -11 -33', '19 11 9');
+    setsize (item, '-16 -16 -24', '16 16 32');
     item.touch = q_touch;
     item.nextthink = time + timeleft;    // remove it with the time left on it
     item.think = SUB_Remove;
@@ -2428,6 +2428,6 @@ void() item_artifact_super_damage =
 
     self.netname = "Guns Akimbo";
 
-    setsize (self, '-18 -11 -33', '19 11 9');
+    setsize (self, '-16 -16 -24', '16 16 32');
     StartItem ();
 };
