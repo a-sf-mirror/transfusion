@@ -181,6 +181,7 @@ void() player_throwremote6 = [$attack1, player_throwremote7]
     Bomb_Uncharge ();
     ShowThrowMeter ();
 };
+#ifndef NEW_MODELS
 void() player_throwremote7 = [$attack1, player_throwremote8] { self.weaponframe = $remote_throw7; };
 void() player_throwremote8 = [$attack2, player_run         ]
 {
@@ -189,6 +190,15 @@ void() player_throwremote8 = [$attack2, player_run         ]
 
     self.player_state = PS_HOLD_FIRE;
 };
+#else
+void() player_throwremote7 = [$attack1, player_run         ]
+{
+    self.weaponframe = $remote_throw7;
+
+    // We hold on here
+    self.player_state = PS_HOLD_FIRE;
+};
+#endif
 
 // TNT half draw
 void() player_tnthalfdraw1 = [$attack2, player_tnthalfdraw2] { self.weaponframe = $tnt_drawhalf1; };
