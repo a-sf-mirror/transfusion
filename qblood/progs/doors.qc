@@ -20,17 +20,6 @@
 
 #include "common.qh"
 
-
-#define DOOR_START_OPEN 1
-#define DOOR_DONT_LINK  4
-#define DOOR_EYE_KEY    8
-#define DOOR_SKULL_KEY  16
-#define DOOR_TOGGLE     32
-#define DOOR_FIRE_KEY   64
-#define DOOR_DAGGER_KEY 128
-#define DOOR_SPIDER_KEY 256
-#define DOOR_MOON_KEY   512
-
 /*
 
 Doors are similar to buttons, but can spawn a fat trigger field around them
@@ -585,14 +574,6 @@ void() fd_secret_move4;
 void() fd_secret_move5;
 void() fd_secret_move6;
 void() fd_secret_done;
-
-#define SECRET_OPEN_ONCE    1   // stays open
-#define SECRET_1ST_LEFT     2   // 1st move is left of arrow
-#define SECRET_1ST_DOWN     4   // 1st move is down from arrow
-#define SECRET_NO_SHOOT     8   // only opened by trigger
-#define SECRET_YES_SHOOT    16  // shootable even if targeted
-#define SECRET_NEVER        32  // lock it shut
-
 
 void () fd_secret_use =
 {

@@ -44,21 +44,6 @@ float   enemy_yaw;
 //=============================================================================
 
 /*
-
-in nightmare mode, all attack_finished times become 0
-some monsters refire twice automatically
-
-*/
-
-void(float normal) AI_AttackFinished =
-{
-    self.cnt = 0;      // refire count for nightmare
-    if (skill != 3)
-        self.attack_finished = time + normal;
-};
-
-
-/*
 ===========
 CheckAttack
 
@@ -99,31 +84,27 @@ float() CheckAttack =
     if (!self.th_missile)
         return FALSE;
 
-    if (time < self.attack_finished)
-        return FALSE;
-
     if (enemy_range == RANGE_FAR)
         return FALSE;
 
     if (enemy_range == RANGE_MELEE)
-    {
         chance = 1;
-    }
+
+	else if (time < self.attack_finished)
+        return FALSE;
+
     else if (enemy_range == RANGE_NEAR)
-    {
         chance = 0.2;
-    }
+
     else if (enemy_range == RANGE_MID)
-    {
         chance = 0.05;
-    }
+
     else
         chance = 0;
 
-    if (random () < chance)
+    if (random () <= chance)
     {
-        self.th_missile ();
-        AI_AttackFinished (2*random());
+        self.th_missile ();        
         return TRUE;
     }
 

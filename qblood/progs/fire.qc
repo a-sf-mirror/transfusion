@@ -72,12 +72,8 @@ void(entity targ, entity inflictor, entity attacker, float dmgtype, float damage
 //------------------------------------------------------------------------//
 void(entity victim, entity fire, float damage, float dmgtype, float burn, float burntime) BurnDamage =
 {
-    // Cerebrus doesn't take fire damage, just damage from napalm missile impact, and never catches on fire
-    if (victim.classname == "monster_cerebrus")
-        dmgtype = DF_BODY;
-
     // Set victim on fire first.
-    else if (burn > 0)
+    if (burn > 0)
         Ignite (victim, fire.owner, dmgtype, burn, burntime);
 
     // Apply damage next immediately.
@@ -179,7 +175,10 @@ void(entity ent) KillBurner =
     if (ent.burner)
     {
         // Unlink and remove the burning flame.
-        remove (ent.burner);
+        if (ent.effects & EF_FLAME)
+		    ent.effects = ent.effects - (ent.effects | EF_FLAME);
+		
+		remove (ent.burner);
         ent.burner = world;
     }
 };
@@ -247,7 +246,10 @@ void() Burn =
     // Check for removal.
     if (time > self.dmgtime)
     {
-        // Fuel is all gone.
+        if (self.enemy.effects & EF_FLAME)
+		    self.enemy.effects = self.enemy.effects - (self.enemy.effects | EF_FLAME);
+			
+		// Fuel is all gone.
         self.enemy.burner = world;
         remove (self);
         return;
@@ -263,7 +265,10 @@ void() Burn =
 
     if (VecInWater (spot))
     {
-        // Victim is submerged under some liquid.
+        if (self.enemy.effects & EF_FLAME)
+		    self.enemy.effects = self.enemy.effects - (self.enemy.effects | EF_FLAME);
+
+		// Victim is submerged under some liquid.
         setorigin (self, spot);     // So steam comes from enemy.
 
         // Put out the fire and make some steam.
@@ -290,14 +295,15 @@ void(entity victim, entity attacker, float dmgtype, float burn, float burntime) 
     if (!victim.takedamage)
         return;
 
-    // If it's a door, a plat or a wall, don't burn
-    if (victim.classname == "door")
-        return;
-    if (victim.classname == "plat")
-        return;
-    if (victim.classname == "func_button")
-        return;
-    if (victim.classname == "exploding_wall")  // the other types of walls can't burn anyway
+    if (victim.classname == "door"              || // If it's a door, a plat or a wall, don't burn
+	    victim.classname == "plat"              ||
+        victim.classname == "func_button"       ||
+        victim.classname == "exploding_wall"    ||  // the other types of walls can't burn anyway
+		victim.classname == "monster_hellhound" ||
+		victim.classname == "monster_cerebrus"  ||
+		victim.classname == "sentry"            ||
+		victim.classname == "corpse"            ||
+		victim.classname == "head")
         return;
 
     // Check if the entity is linked to a burning flame.
@@ -342,6 +348,9 @@ void(entity victim, entity attacker, float dmgtype, float burn, float burntime) 
     fire.nextthink  = 0.1;
     fire.think      = Burn;
     fire.reset      = SUB_Remove;
+
+    if (!victim.effects & EF_FLAME)
+	    victim.effects = victim.effects | EF_FLAME;
 
     victim.burner   = fire;     // Link entity to fire.
 };

@@ -269,16 +269,6 @@ void() player_remotefire3 = [$attack2, player_run        ]
 
 //============================================================================
 
-#define DMG_TNT              130
-#define DMG_PROXIMITY_BOMB   160
-#define DMG_REMOTE_DETONATOR 130
-#define DMG_SPRAY_CAN        50
-
-// The 2 types of TNT
-#define TNT_TYPE_NORMAL  0
-#define TNT_TYPE_ALTFIRE 1
-
-
 void() ShowThrowMeter =
 {
     local   string  text;
@@ -339,7 +329,6 @@ void() Bomb_Uncharge =
     self.tnt_time   = 0;
 };
 
-#define FUSE_TIME   5.5
 
 // This charges up and displays the throw meter
 void() BuildThrowMeter =
@@ -652,7 +641,7 @@ void() ProximBombCheck =
     while (thing)
     {
         // If it's a player or a monster, explode in 400 msec
-        if (thing.classname == "player")
+        if (thing.classname == "player" || (thing.flags & FL_MONSTER))
         {
             sound (self, CHAN_WEAPON, "weapons/tnt/proxdet.wav", 1, ATTN_NORM);
             self.pausetime = time + 0.4;
@@ -774,7 +763,7 @@ Spawn function for proximity mines (BB6 map)
 */
 void() proximity_mine =
 {
-    precache_sound ("weapons/tnt/proxdet.wav");  // proximity bomb triggered
+	precache_sound ("weapons/tnt/proxdet.wav");  // proximity bomb triggered
 
     self.owner      = world;
     self.solid      = SOLID_BBOX;

@@ -26,7 +26,7 @@ void() button_wait;
 void() button_return;
 
 void() button_wait =
-{
+{    
     self.state = STATE_TOP;
 
     if (self.wait)

@@ -17,13 +17,6 @@
     See file, 'COPYING', for details.
 */
 
-/* Tim's to-do list
-
-    Need more frames ??? (Luke)
-
-*/
-
-
 #include "common.qh"
 
 
@@ -48,8 +41,8 @@ void () rat_stand1;
 void () rat_bite;
 
 void (float dist) rat_ai =
-{
-    if (self.style == 1)
+{    
+	if (self.style == 1)
         ai_stand ();
     else
     {
@@ -167,19 +160,18 @@ void () rat_pain =
 void () rat_death1 = [$idle1, rat_death1]
 {
     // In the last frame, remove self 15 seconds after death
-    self.nextthink = time + 15;self.think = SUB_Remove;
-
+    self.nextthink = time + 15;
+	self.think = SUB_Remove;
 };
 
 void () rat_die =
 {
-    self.effects = 0;
-    if (self.health < -40)
+    monster_death();
+	
+    if (self.health < -20)
     {
         sound (self, CHAN_VOICE, "rat/ratdie3.wav", 1, ATTN_NORM);
-
-        // FIXME: Throw really small gib or just make a big blood splat
-
+        ThrowGib ("models/objects/gib4.md3", self.health);
         remove (self);
         return;
     }
@@ -189,22 +181,16 @@ void () rat_die =
     else
         sound (self, CHAN_VOICE, "rat/ratdie2.wav", 1, ATTN_NORM);
 
-    rat_death1 ();
-    self.solid = SOLID_NOT;
+    rat_death1 ();    
 };
 
 //--- The spawn
 
 void () monster_rat =
 {
-/* Disable for testing the model
+    //  Disable for testing
+    monster_check();
 
-    if (deathmatch)
-    {
-        remove (self);
-        return ;
-    }
-*/
     precache_model ("models/enemies/rat.md3");
 
     precache_sound ("rat/ratdie1.wav");
@@ -216,7 +202,7 @@ void () monster_rat =
     precache_sound ("hellhound/houndbit.wav");
 
     self.solid = SOLID_SLIDEBOX;
-    self.movetype = MOVETYPE_STEP;
+    self.movetype = MOVETYPE_TOSS;
     setmodel (self, "models/enemies/rat.md3");
     setsize (self,'-13 -3 0', '13 3 6');     // FIXME: Need real coordinates
     self.health = 100;

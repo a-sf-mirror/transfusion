@@ -17,17 +17,6 @@
     See file, 'COPYING', for details.
 */
 
-/* Tim's to-do list
-
-    tweak corpse explosion
-    corpse explosion model when voodoo dolled alt-fire death?
-    model - vomit ball (Kazashi and Cruaich)
-    need to get real health and damage values
-    head - fix use of gargoyle head with ThrowHead().
-    damage to player if you touch gargoyle - in player.qc, for all monsters?
-*/
-
-
 #include "common.qh"
 
 
@@ -133,7 +122,6 @@ void () gargoyle_launch_Bone =
     newmis.velocity = vec * 600;
     newmis.avelocity = '500 500 500';
     newmis.touch = gargoyle_BoneTouch;
-    self.effects = 0;
 };
 
 //--- bone hit something solid, now what?
@@ -201,29 +189,29 @@ void () gargoyle_pain =
 
 void () gargoyle_death1 = [$idle1, gargoyle_death1]
 {
-    // In the last frame, remove self 15 seconds after death
-    self.nextthink = time + 15;
+    CloneCorpse (self);
+
+    // In the last frame, spawn corpse, remove self 1 second after death
+    self.nextthink = time + 1;
     self.think = SUB_Remove;
 };
 
 void () gargoyle_die =
 {
-    self.effects = 0;
+    monster_death();
+	droptofloor();
+	
     if (self.health < -40)
     {
         sound (self, CHAN_VOICE, "gargoyle/gargdie3.wav", 1, ATTN_NORM);
         remove (self);
         return;
-    }
-
-    droptofloor();
+    }    
 
     if (random () < 0.5)
         sound (self, CHAN_VOICE, "gargoyle/gargdie1.wav", 1, ATTN_NORM);
     else
-        sound (self, CHAN_VOICE, "gargoyle/gargdie2.wav", 1, ATTN_NORM);
-
-    self.solid = SOLID_NOT;
+        sound (self, CHAN_VOICE, "gargoyle/gargdie2.wav", 1, ATTN_NORM);    
 
     gargoyle_death1 ();
 
@@ -231,14 +219,9 @@ void () gargoyle_die =
 
 void () monster_gargoyle =
 {
-/* Disable for testing the model
+    //  Disable for testing
+    monster_check();
 
-    if (deathmatch)
-    {
-        remove (self);
-        return ;
-    }
-*/
     precache_model ("models/enemies/gargoyle.md3");
     precache_model ("models/world/leg1.md3");
 

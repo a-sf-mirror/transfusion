@@ -27,7 +27,7 @@
 #ifndef NO_FRIKBOT
 
 #include "common.qh"
-
+#include "bot.qh"
 
 void() bot_jump =
 {
@@ -262,7 +262,7 @@ void() frik_obstacles =
 
         if (self.target1)
         {
-            // getting furter away from my target?
+            // getting further away from my target?
             test = vlen(self.target1.origin - (ang + self.origin));
             if (test > vlen(self.target1.origin - self.origin))
             {
@@ -317,9 +317,11 @@ void() frik_dodge_obstruction =
         return;
     }
 
-    // perform a walkmove check to see if the obs_dir is still obstructed
-    // walkmove is less forgiving than frik_obstacles, so I dunno
-    // how well this will work
+    /*
+	   perform a walkmove check to see if the obs_dir is still obstructed
+       walkmove is less forgiving than frik_obstacles, so I dunno
+       how well this will work
+	*/
 
     oflags = self.flags;
     org = self.origin;
@@ -356,8 +358,6 @@ void() frik_dodge_obstruction =
 -=-=-=-=-=-=-=-=-=-=-=-=-=-=-=-=-=-=-=-=-=-=-=
 
 movetogoal and walkmove replacements
-
-blah
 
 -=-=-=-=-=-=-=-=-=-=-=-=-=-=-=-=-=-=-=-=-=-=-=
 */

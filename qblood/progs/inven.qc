@@ -44,24 +44,10 @@
 .float      boots_time;
 .float      dive_on;
 .float      dive_time;
-//.float      beast_on;
+.float      beast_on;
 .float      beast_time;
 //.float      xray_on;
 .float      xray_time;
-
-//-----------------//
-//  NEW CONSTANTS  //
-//-----------------//
-
-#define SEVEN_BITS          127
-
-#define IT3_FIRST_AID       1
-#define IT3_JUMP_BOOTS      128
-#define IT3_DIVING_SUIT     16384
-
-#define IT4_BEAST_VISION    1
-#define IT4_CRYSTAL_BALL    128
-
 
 //========================================================================
 //  Item Power Settings
@@ -125,51 +111,46 @@ void(entity who, float itype, float fuel) InvenSet =
     else if (fuel < 0)
         fuel = 0;
 
-    // Now reset the desired item.
-    if (itype == INV_FIRST_AID)
-    {
-        if (noitems)
+    if (noitems)
             who.it_select = itype;
+	
+	// Now reset the desired item.
+    if (itype == INV_FIRST_AID)
+    {        
         who.inven1 = who.inven1 - (who.inven1 & (SEVEN_BITS * IT3_FIRST_AID));
         who.inven1 = who.inven1 + (fuel * IT3_FIRST_AID);
         return;
     }
-    if (itype == INV_DIVING_SUIT)
+    else if (itype == INV_DIVING_SUIT)
     {
-        if (noitems)
-            who.it_select = itype;
         who.inven1 = who.inven1 - (who.inven1 & (SEVEN_BITS * IT3_DIVING_SUIT));
         who.inven1 = who.inven1 + (fuel * IT3_DIVING_SUIT);
         who.dive_time = 0;
         return;
     }
-    if (itype == INV_CRYSTAL_BALL)
+    else if (itype == INV_CRYSTAL_BALL)
     {
-        if (noitems)
-            who.it_select = itype;
         who.inven2 = who.inven2 - (who.inven2 & (SEVEN_BITS * IT4_CRYSTAL_BALL));
         who.inven2 = who.inven2 + (fuel * IT4_CRYSTAL_BALL);
         who.xray_time = 0;
         return;
     }
-    if (itype == INV_BEAST_VISION)
+    else if (itype == INV_BEAST_VISION)
     {
-        if (noitems)
-            who.it_select = itype;
-        who.inven2 = who.inven2 - (who.inven2 & (SEVEN_BITS * IT4_BEAST_VISION));
+	    who.inven2 = who.inven2 - (who.inven2 & (SEVEN_BITS * IT4_BEAST_VISION));
         who.inven2 = who.inven2 + (fuel * IT4_BEAST_VISION);
         who.beast_time = 0;
         return;
     }
-    if (itype == INV_JUMP_BOOTS)
-    {
-        if (noitems)
-            who.it_select = itype;
+    else if (itype == INV_JUMP_BOOTS)
+    {        
         who.inven1 = who.inven1 - (who.inven1 & (SEVEN_BITS * IT3_JUMP_BOOTS));
         who.inven1 = who.inven1 + (fuel * IT3_JUMP_BOOTS);
         who.boots_time = 0;
         return;
     }
+	else
+	    bprint("The new inventory item needs to be coded in InvenSet()\n");
 };
 
 
@@ -255,14 +236,46 @@ void() Use_CrystalBall =
     sound (self, CHAN_ITEM, "bludbath/powerup.wav", 1, ATTN_NORM);
 };
 
-void() Use_BeastVision =
+
+void (float OnOrOff) ToggleBeastVision =
 {
+    other = nextent (world);
+	
+    while (other != world)
+    {
+        if (other.classname == "player" || (other.flags & FL_MONSTER))
+        {
+            if (OnOrOff)
+			    other.effects = other.effects | EF_FULLBRIGHT;
+			
+			// Avoid turning on unwanted effects when you turn off your beast vision
+			else if (other.effects & EF_FULLBRIGHT)				    
+			    other.effects = other.effects - (other.effects | EF_FULLBRIGHT);
+        }
+
+        other = nextent (other);
+    }
+};
+
+void() Use_BeastVision =
+{    
     if (!InvenFuel (INV_BEAST_VISION))
         return;
 
-    sprint (self, "FIXME:  Beast vision\n");
-    InvenSet (self, INV_BEAST_VISION, 0);     // Remove it from inventory.
-    sound (self, CHAN_ITEM, "bludbath/powerup.wav", 1, ATTN_NORM);
+    self.beast_on = !self.beast_on;    
+	if (self.beast_on)
+	{
+	    sprint (self, "Beast vision ON\n");
+		self.beast_time = time + self.beast_time;
+		sound (self, CHAN_ITEM, "bludbath/powerup.wav", 1, ATTN_NORM);
+		ToggleBeastVision(TRUE);
+	}
+	else
+    {
+	    sprint (self, "Beast vision OFF\n");
+		self.beast_time = self.beast_time - time;
+		ToggleBeastVision(FALSE);
+	}    
 };
 
 void() Use_JumpBoots =
@@ -567,4 +580,36 @@ void() InvenCheck =
             }
         }
     }
+	
+	// Beast vision
+    if (self.beast_on)
+    {
+        if (self.beast_time <= time)
+        {
+            fuel = InvenFuel (INV_BEAST_VISION);
+            if (fuel > 0)
+            {
+                fuel = fuel - 1;
+                InvenSet (self, INV_BEAST_VISION, fuel);
+                self.beast_time = time + 0.3;
+
+                // Debug message.
+                fuel = fuel * 0.1;
+                if (floor(fuel) == fuel)
+                {
+                    text = ftos(fuel * 10);
+                    sprint3 (self, "Beast Vision time remaining ", text, "%\n");
+                }
+            }
+            // All gone. Turn it off
+            else
+            {
+			    ToggleBeastVision(FALSE);
+                self.beast_on   = 0;
+                self.beast_time = 0;
+                InvenSetOnFirst ();
+            }
+        }
+    }	
+	
 };

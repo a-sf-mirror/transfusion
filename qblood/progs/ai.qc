@@ -247,8 +247,7 @@ void() HuntTarget =
     if (!vis) // don't forget the melee guys
         self.ideal_yaw = vectoyaw(self.enemy.origin - self.origin);
 
-    self.nextthink = time + 0.1;
-    AI_AttackFinished (1); // wait a while before first attack
+    self.nextthink = time + 0.1;    
 };
 
 void() SightSound =
@@ -347,14 +346,11 @@ float() FindTarget =
             return FALSE;   // current check entity isn't in PVS
     }
 
-    if (client == self.enemy)
+    if (client == self.enemy ||
+	   (client.flags & FL_NOTARGET) ||
+	   (client.items & IT_INVISIBILITY))
         return FALSE;
-
-    if (client.flags & FL_NOTARGET)
-        return FALSE;
-    if (client.items & IT_INVISIBILITY)
-        return FALSE;
-
+    
     r = range (client);
 //    if (r == RANGE_FAR)  // TESTME: Do all blood monsters respond to players as soon as they're spotted?
 //        return FALSE;
@@ -364,18 +360,17 @@ float() FindTarget =
 
     if (r == RANGE_NEAR)
     {
-        if (client.show_hostile < time && !infront (client))
+        if (skill < 2 && !infront(client))
             return FALSE;
     }
     else if (r == RANGE_MID)
     {
-        if ( /* client.show_hostile < time || */ !infront (client))
+        if (!infront (client))
             return FALSE;
     }
 
-//
-// got one
-//
+    // got one
+
     self.enemy = client;
     if (self.enemy.classname != "player")
     {
@@ -635,7 +630,8 @@ void(float dist) ai_run =
     local   float   direct, ang_rint, ang_floor, ang_ceil;
 
     movedist = dist;
-// see if the enemy is dead
+    
+	// see if the enemy is dead
     if (self.enemy.health <= 0)
     {
         self.enemy = world;
@@ -654,10 +650,10 @@ void(float dist) ai_run =
             return;
         }
     }
-
+	
     self.show_hostile = time + 1;       // wake up other monsters
 
-// check knowledge of enemy
+    // check knowledge of enemy
     enemy_vis = visible(self.enemy);
     if (enemy_vis)
         self.search_time = time + 5;
@@ -693,9 +689,43 @@ void(float dist) ai_run =
         return;
     }
 
-// head straight in
+    if ((self.flags & FL_FLY) &&
+	    (self.origin_z > self.enemy.absmin_z + 10))
+	    setorigin(self, self.origin - '0 0 1');
+
+    // FIXME: Needs further testing
+	//walkmove (self.ideal_yaw, dist);
+
+	// head straight in
     movetogoal (dist);      // done in C code...
 };
+
+// Search a specified radius for monsters/players
+
+float (float dist) ai_search_area =
+{
+    local entity thing;
+
+    // Try to find a player or monster
+    
+    thing = findradius (self.origin, dist);
+    while (thing)
+    {
+        // If it's a player or a monster
+        if (thing.classname == "player" || (thing.flags & FL_MONSTER))
+		    if (thing.classname != "monster_innocent" && thing != self) 
+		        return TRUE;
+
+        if (thing.show_hostile > time && thing != self)
+		    return 2;
+
+        // Next one
+        thing = thing.chain;
+    }
+	
+	return FALSE;
+};
+
 
 /*
 =============
@@ -706,24 +736,35 @@ The heart and soul of the innocent ai.  Runs around like a dummy.  If he hits a 
 */
 void(float dist) ai_run_away =
 {
-// FIXME: This should be tweaked more
-traceline(self.origin, self.origin + '-32 0 0', FALSE, self); // Detect if there is something solid in self's way
+    local float monsters_near;
 
-    if (self.attack_finished < time)
-       {
-         //    Thinking whether or not self is stuck
-         if (self.oldorigin == self.origin || trace_fraction != 1)
-         {
-           // Self is stuck
-           self.ideal_yaw = self.ideal_yaw - 22.5;   // Turn a little bit
-           self.ideal_yaw = anglemod(self.ideal_yaw);// Get rid of crazy values
-         }
-         else                                        // Self is not stuck!
-           self.oldorigin = self.origin;
-
-         self.attack_finished = time + 0.1;          // Give self a little while to get unstuck
-       }
-
-    ChangeYaw ();// Change the way self is facing
-    walkmove(self.ideal_yaw, dist);
+    // See if there's something to run away from in area
+	monsters_near = ai_search_area(100);
+	
+	if (monsters_near)
+	{
+	    self.search_time = rint(time + 15 + rint(random()*5));
+		
+		// Don't let buddies know that another innocent let you know there's a monster near
+		// Just run
+		
+		if (monsters_near != 2)		
+		    self.show_hostile = time + 1;       // wake up other monsters
+	}
+	else if (self.search_time < time)
+	{
+	    self.th_stand();
+	    return;
+	}
+	
+    // Change the way self is facing
+	ChangeYaw ();
+    
+	// Try to run straight
+    if (!walkmove(self.ideal_yaw, dist))
+    {
+       // Self is stuck, so try turning around a little
+       self.ideal_yaw = self.ideal_yaw - 22.5;   // Turn a little bit
+       self.ideal_yaw = anglemod(self.ideal_yaw);// Get rid of crazy values
+    }	
 };

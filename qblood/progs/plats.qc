@@ -27,7 +27,6 @@ void() plat_trigger_use;
 void() plat_go_up;
 void() plat_go_down;
 void() plat_crush;
-#define PLAT_LOW_TRIGGER 1
 
 void() plat_spawn_inside_trigger =
 {
@@ -148,7 +147,7 @@ void() plat_trigger_use =
 void() plat_crush =
 {
     other.deathtype = "squish";
-    T_Damage (other, self, self, 1, DF_BODY, "squish");
+    T_Damage (other, self, self, self.dmg, DF_BODY, "squish");
 
     if (self.state == STATE_UP)
         plat_go_down ();
@@ -223,8 +222,12 @@ void() func_plat =
     setsize (self, self.mins , self.maxs);
 
     self.blocked = plat_crush;
-    if (!self.speed)
+    
+	if (!self.speed)
         self.speed = 150;
+		
+	if (!self.dmg)
+	    self.dmg = 1;
 
 // pos1 is the top position, pos2 is the bottom
     self.pos1 = self.origin;

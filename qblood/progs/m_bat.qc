@@ -17,14 +17,6 @@
     See file, 'COPYING', for details.
 */
 
-/* Tim's to-do list
-
-     Fix movement - If within certain radius, dive at players head. Buzz around player
-     droptofloor() should be done elsewhere
-
-*/
-
-
 #include "common.qh"
 
 
@@ -96,11 +88,11 @@ void() bat_run5  =[$fly5, bat_run6 ] {ai_run(12);ai_face();};
 void() bat_run6  =[$fly6, bat_run7 ] {ai_run(12);ai_face();};
 void() bat_run7  =[$fly7, bat_run1 ] {ai_run(12);ai_charge(10);ai_face();};
 
-void() bat_death1 =[$fly1, bat_death1]
+void() bat_death =[$fly1, bat_death]
 {
-    local float     r;
+    monster_death();	
 
-    droptofloor(); // FIXME: This is getting missed in killed()
+    local float     r;
 
     r = random();
 
@@ -113,7 +105,16 @@ void() bat_death1 =[$fly1, bat_death1]
     else
         sound (self, CHAN_VOICE, "bat/bat.wav", 1, ATTN_NORM);
 
-    self.solid = SOLID_NOT;     // In the last frame, remove self 15 seconds after death
+    if (self.health <= -20)
+	{
+        ThrowGib ("models/objects/gib4.md3", self.health);
+		remove (self);
+		return;
+	}
+	else
+	    droptofloor();
+
+	// In the last frame, remove self 15 seconds after death
     self.nextthink = time + 15;
     self.think = SUB_Remove;
 };
@@ -133,14 +134,9 @@ void(entity attacker, float damage)    bat_pain =
 
 void() monster_bat =
 {
-/*  Disabled for testing
-
-    if (deathmatch)
-    {
-        remove(self);
-        return;
-    }
-*/
+    //  Disable for testing
+    monster_check();
+ 
     precache_model ("models/enemies/bat.md3");
 
     precache_sound ("bat/batdie1.wav");
@@ -162,7 +158,7 @@ void() monster_bat =
     self.th_stand = bat_idle;
     self.th_walk = bat_walk1;
     self.th_run = bat_run;
-    self.th_die = bat_death1;
+    self.th_die = bat_death;
     self.th_pain = bat_pain;
 
     flymonster_start ();

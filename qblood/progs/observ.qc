@@ -279,7 +279,7 @@ void(entity player) BecomeObserver =
 
     player.skin = 0;
     player.frame = 0;
-    setmodel (player, "progs/eyes.mdl");
+    setmodel (player, "models/objects/eyes.md3");
     setsize (player, '-10 -10 -20', '10 10 28');
 
     player.weaponmodel = string_null;

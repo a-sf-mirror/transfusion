@@ -17,13 +17,6 @@
     See file, 'COPYING', for details.
 */
 
-/* Tim's to-do list
-
-    Need to be able to step on eel
-
-*/
-
-
 #include "common.qh"
 
 
@@ -85,13 +78,29 @@ void() eel_melee =
     T_Damage (self.enemy, self, self, ldmg, DF_BODY, string_null);
 };
 
-void() eel_attack1        =[      $attack1,       eel_attack2 ] {ai_charge(10);};
-void() eel_attack2        =[      $attack2,       eel_attack3 ] {eel_melee();};
-void() eel_attack3        =[      $attack3,       eel_attack1 ] {ai_charge(10);};
+void() eel_attack1 =[      $attack1,       eel_attack2 ] {ai_charge(10);};
+void() eel_attack2 =[      $attack2,       eel_attack3 ] {eel_melee();};
+void() eel_attack3 =[      $attack3,       eel_attack1 ] {ai_charge(10);};
 
-void() eel_death1 =[      $death1,        eel_death2        ]
+void() eel_death1 =[      $death1,        eel_death2        ] {};
+void() eel_death2 =[      $death2,        eel_death3        ] {};
+void() eel_death3 =[      $death3,        eel_death4        ] {};
+void() eel_death4 =[      $death4,        eel_death5        ] {};
+void() eel_death5 =[      $death5,        eel_death6        ] {};
+void() eel_death6 =[      $death6,        eel_death7        ] {};
+void() eel_death7 =[      $death7,        eel_death8        ] {};
+void() eel_death8 =[      $death8,        eel_death8         ]
+{    
+	// In the last frame, remove self 15 seconds after death
+    self.nextthink = time + 15;
+    self.think = SUB_Remove;
+};
+
+void() eel_death =
 {
     local float     r;
+	
+	monster_death();
 
     r = random();
 
@@ -101,21 +110,20 @@ void() eel_death1 =[      $death1,        eel_death2        ]
         sound (self, CHAN_VOICE, "eel/eeldie2.wav", 1, ATTN_NORM);
     else
         sound (self, CHAN_VOICE, "eel/eeldie3.wav", 1, ATTN_NORM);
-};
 
-void() eel_death2 =[      $death2,        eel_death3        ] {};
-void() eel_death3 =[      $death3,        eel_death4        ] {};
-void() eel_death4 =[      $death4,        eel_death5        ] {};
-void() eel_death5 =[      $death5,        eel_death6        ] {};
-void() eel_death6 =[      $death6,        eel_death7        ] {};
-void() eel_death7 =[      $death7,        eel_death8        ] {};
-void() eel_death8 =[      $death8,        eel_death8         ]
-{
-    self.solid = SOLID_NOT;     // In the last frame, remove self 15 seconds after death
-    self.nextthink = time + 15;
-    self.think = SUB_Remove;
+	if (self.health < -20)
+    {        
+		if (random() < 0.5)
+            ThrowGib ("models/objects/gib4.md3", self.health);
+        else
+            ThrowGib ("models/objects/gib5.md3", self.health);
+			
+        remove (self);
+        return;
+    }
+	else
+	    eel_death1();
 };
-
 
 void(entity attacker, float damage)    eel_pain =
 {
@@ -132,14 +140,9 @@ void(entity attacker, float damage)    eel_pain =
 
 void() monster_eel =
 {
-/*  Disabled for testing
+    //  Disable for testing
+    monster_check();
 
-    if (deathmatch)
-    {
-        remove(self);
-        return;
-    }
-*/
     precache_model ("models/enemies/bone_eel.md3");
 
     precache_sound ("eel/eeldie1.wav");
@@ -160,7 +163,7 @@ void() monster_eel =
     self.th_stand = eel_stand1;
     self.th_walk = eel_walk1;
     self.th_run = eel_run1;
-    self.th_die = eel_death1;
+    self.th_die = eel_death;
     self.th_pain = eel_pain;
     self.th_melee = eel_attack1;
     self.touch = monster_stepped_on;

@@ -17,15 +17,6 @@
     See file, 'COPYING', for details.
 */
 
-/* Tim's to-do list
-
-    Need to get sound lengths for pain/taunts
-    Fix bounding box
-    Fix rate of shotgun fire
-    Need real attack / health values
-*/
-
-
 #include "common.qh"
 #include "player.qh"    // For player.mdl frames
 
@@ -65,7 +56,12 @@ void (float dist) minicaleb_ai =
 
 //--- Walking around
 
-void () minicaleb_walk1 = [$stand1, minicaleb_walk1] {minicaleb_ai (3);};
+void () minicaleb_walk1 = [$run1, minicaleb_walk2] {minicaleb_ai (3);};
+void () minicaleb_walk2 = [$run2, minicaleb_walk3] {minicaleb_ai (3);};
+void () minicaleb_walk3 = [$run3, minicaleb_walk4] {minicaleb_ai (3);};
+void () minicaleb_walk4 = [$run4, minicaleb_walk5] {minicaleb_ai (3);};
+void () minicaleb_walk5 = [$run5, minicaleb_walk6] {minicaleb_ai (3);};
+void () minicaleb_walk6 = [$run6, minicaleb_walk1] {minicaleb_ai (3);};
 
 //--- Decide which idle to do
 
@@ -105,18 +101,38 @@ void () minicaleb_attack =
 
     r = random();
 
-    if (self.pain_finished < time && self.attack_finished < time)// To avoid several sounds at once
-    if (r <= 0.20)
-        sound (self, CHAN_AUTO, "player/taunts/t1002.wav", 1, ATTN_NORM); // FIXME: Need real sound lengths
-    else if (r <= 0.40)
-        sound (self, CHAN_AUTO, "player/taunts/t1005.wav", 1, ATTN_NORM);
-    else if (r <= 0.60)
-        sound (self, CHAN_AUTO, "player/taunts/t1006.wav", 1, ATTN_NORM);
-    else if (r <= 0.80)
-        sound (self, CHAN_AUTO, "player/taunts/t1010.wav", 1, ATTN_NORM);
-
-
-    self.attack_finished = time + 2; // FIXME: Put this per sound once I have the lengths
+    // Avoid several sounds at once
+    if (self.pain_finished < time && self.voice_finished < time)
+    {
+	    if (r <= 0.2)
+        {
+	        sound (self, CHAN_AUTO, "player/taunts/t1002.wav", 1, ATTN_NORM);
+			self.voice_finished = time + 1.62;
+	    }
+        else if (r <= 0.4)
+        {
+	        sound (self, CHAN_AUTO, "player/taunts/t1005.wav", 1, ATTN_NORM);
+			self.voice_finished = time + 2.18;
+	    }
+        else if (r <= 0.6)
+        {
+	        sound (self, CHAN_AUTO, "player/taunts/t1006.wav", 1, ATTN_NORM);
+			self.voice_finished = time + 3.04;
+	    }
+        else if (r <= 0.8)
+        {
+	        sound (self, CHAN_AUTO, "player/taunts/t1010.wav", 1, ATTN_NORM);
+			self.voice_finished = time + 2.65;
+	    }
+	    else
+        {
+	        sound (self, CHAN_AUTO, "player/taunts/t1011.wav", 1, ATTN_NORM);
+			self.voice_finished = time + 2.56;
+	    }
+		
+		// Give it a half second break so he's not too annoying
+		self.voice_finished = self.voice_finished + 0.5;
+	}    
 
     minicaleb_attackDecide();
 
@@ -124,7 +140,7 @@ void () minicaleb_attack =
 
 void () minicaleb_attackDecide =
 {
-    if (self.attack_finished > time)
+    if (self.attack_finished < time)
     {
         ai_face();                        // Face player
         minicaleb_attack1 ();
@@ -132,7 +148,7 @@ void () minicaleb_attackDecide =
     else
     {
         self.think = minicaleb_run;     // Turn basic "I have an enemy" AI back on
-        self.nextthink = time + 0.3;    // Turn that AI back on in 3/10 of a second
+        self.nextthink = time + 0.1;    // Turn that AI back on in 3/10 of a second
     }
 
 };
@@ -141,11 +157,12 @@ void () minicaleb_attackDecide =
 
 void () minicaleb_fireShotgun =
 {
-    ai_face();
+	ai_face();
     cultist_fireShotgun();
 
     self.think = minicaleb_attackDecide;
-    self.nextthink = time + 0.5;
+    self.nextthink = time + 0.1;
+	self.attack_finished = time + 1;
 };
 
 
@@ -155,8 +172,8 @@ void () minicaleb_pain1 = [$pain1, minicaleb_pain2]
         return;
 
     sound (self,2,"player/pain/play1106.wav",1,1);
-    self.pain_finished = time + 2;  // FIXME: Need real sound length here
-    ai_pain(1);
+    self.pain_finished = time + 0.49;
+    ai_pain(1);	
 };
 void () minicaleb_pain2 = [$pain2, minicaleb_pain3]{};
 void () minicaleb_pain3 = [$pain3, minicaleb_pain4]{};
@@ -172,53 +189,59 @@ void () minicaleb_death4 = [$deatha4, minicaleb_death5]{};
 void () minicaleb_death5 = [$deatha5, minicaleb_death6]{};
 void () minicaleb_death6 = [$deatha6, minicaleb_death6]
 {
-    // In the last frame, remove self 15 seconds after death
-   self.nextthink = time + 15;
-   self.think = SUB_Remove;
+    CloneCorpse (self);
+
+    // In the last frame, spawn corpse, remove self 1 second after death
+    self.nextthink = time + 1;
+    self.think = SUB_Remove;
 };
 
 void () minicaleb_die =
 {
-    minicaleb_death1 ();
+    monster_death();
+	
     sound (self,2,"player/die3.wav",1,1);
-    /*
-        Need to add "splat" here
-    */
 
-
-   self.solid = SOLID_NOT;
+    if (self.health <= -20)
+	{ 
+        if (random() <= 0.5)
+            ThrowGib ("models/objects/gib4.md3", self.health);
+        else
+            ThrowGib ("models/objects/gib5.md3", self.health);
+			
+		remove (self);
+		return;
+	}
+	else
+	    minicaleb_death1();
 };
 
 void () monster_minicaleb =
 {
+    //  Disable for testing
+    monster_check();
 
-/* Disable for testing the model
-
-    if (deathmatch)
-    {
-        remove (self);
-        return ;
-    }
-*/
     precache_model ("progs/player.mdl");
 
-    precache_sound ("cultist/cultatt1.wav");// Shotgun
-    precache_sound ("cultist/cultatt2.wav");// Shotgun
+    precache_sound ("cultist/cultatt1.wav");    // Shotgun
+    precache_sound ("cultist/cultatt2.wav");    // Shotgun
     precache_sound ("player/taunts/t1002.wav"); // "this is my boom stick"
     precache_sound ("player/taunts/t1005.wav"); // "all I want's a friend"
     precache_sound ("player/taunts/t1006.wav"); // "noone wants to play with me"
     precache_sound ("player/taunts/t1010.wav"); // "i live again"
+    precache_sound ("player/taunts/t1011.wav"); // "who wants some- huh? Who's next?"	
     precache_sound ("player/pain/play1106.wav");// pain
     precache_sound ("player/die3.wav");         // death
 
     self.solid = SOLID_SLIDEBOX;
-    self.movetype = MOVETYPE_STEP;
+    self.movetype = MOVETYPE_TOSS;
     setmodel (self, "progs/player.mdl");
     self.scale = 0.5;
     self.frame = $run1;
-    setsize (self,'16 -14 -10', '32 14 32'); // FIXME: Need real values
+	setsize (self,'-16 -16 -10', '16 16 20'); // FIXME: Need real values
     self.health = 100;
     self.max_health = self.health;
+
     self.th_stand = minicaleb_stand;
     self.th_walk = minicaleb_walk;
     self.th_run = minicaleb_run;
@@ -226,5 +249,11 @@ void () monster_minicaleb =
     self.th_pain = minicaleb_pain1;
     self.th_missile = minicaleb_attack;
     self.touch = monster_stepped_on;
+
     walkmonster_start ();
+};
+
+void () monster_hand =
+{
+    monster_minicaleb();
 };

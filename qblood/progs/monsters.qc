@@ -61,30 +61,6 @@ void() monster_use =
     self.think = FoundTarget;
 };
 
-/*
-================
-monster_death_use
-
-When a mosnter dies, it fires all of its targets with the current
-enemy as activator.
-================
-*/
-void() monster_death_use =
-{
-    // fall to ground
-    if (self.flags & FL_FLY)
-        self.flags = self.flags - FL_FLY;
-    if (self.flags & FL_SWIM)
-        self.flags = self.flags - FL_SWIM;
-
-    if (!self.target)
-        return;
-
-    activator = self.enemy;
-    SUB_UseTargets ();
-};
-
-
 //============================================================================
 
 void() walkmonster_start_go =
@@ -94,9 +70,10 @@ void() walkmonster_start_go =
 
     if (!walkmove(0,0))
     {
-        dprint ("walkmonster in wall at: ");
-        dprint (vtos(self.origin));
-        dprint ("\n");
+	    bprint (self.classname);
+        bprint (" in wall at: ");
+        bprint (vtos(self.origin));
+        bprint ("\n");		
     }
 
     self.takedamage = DAMAGE_AIM;
@@ -144,6 +121,43 @@ void() walkmonster_start =
     self.nextthink = self.nextthink + random()*0.5;
     self.think = walkmonster_start_go;
     total_monsters = total_monsters + 1;
+
+	// Needed for random health drop
+	precache_model ("models/items/i_essence.md3");
+	precache_sound ("items/pickheal.wav");
+	
+	// Needed for random weapon / ammo drops	
+	
+	if (self.classname == "monster_browncultist")
+	{
+	    // Ammo
+	    precache_model ("models/ammo/a_fewshell.md3");		
+		precache_sawedoff();	 
+	}
+	else if (self.classname == "monster_blackcultist")
+	{
+	    // Ammo
+	    precache_model ("models/ammo/a_fewbullet.md3");		
+	    precache_tommygun();
+	}
+	else if (self.classname == "monster_greencultist")
+	{
+	    // Ammo
+		precache_model ("models/ammo/a_tnt.md3");
+	    precache_tnt();
+	}
+	else if (self.classname == "monster_bluecultist")
+	{
+	    // Ammo
+	    precache_model ("models/ammo/a_battery.md3");
+		precache_teslacannon();
+	}
+	else if (self.classname == "monster_gargoyle" ||
+		     self.classname == "monster_hellhound"||
+		     self.classname == "monster_phantasm")
+    {
+	    precache_model ("models/items/i_seed.md3");
+	}	
 };
 
 
@@ -253,8 +267,123 @@ void() swimmonster_start =
 
 void () monster_stepped_on =
 {
-    T_Damage (self, self.enemy, self.enemy, 5, DF_BODY, string_null);
+    // If we've gotten here an enemy is touching my bbox.  But is the enemy on TOP of me?
+    if (self.enemy.absmin_z <= self.absmax_z + 3)		
+	    T_Damage (self, self.enemy, self.enemy, 1, DF_BODY, "squashing");		
+	else 
+	    return;
 
     if (self.health > 1)    // To avoid "undead" enemies.  Monsters shouldn't think after they're dead!
         self.th_pain(self.enemy, 0);
+};
+
+void () monster_check =
+{    	
+    if (deathmatch)
+    	SUB_Remove();
+
+	self.netname = "monster";
+};
+
+/*
+    monster_death
+	
+	clears monster effects and sets corpse non-solid
+	drops random item based on monster class
+
+*/
+void () monster_death =
+{
+    local float r;
+	local entity drop_item;
+	
+	self.effects = 0;
+	KillBurner(self);
+	self.solid = SOLID_NOT;
+	self.deadflag = DEAD_DEAD;
+	SUB_UseTargets();
+	
+	// These monsters never drop anything
+	if (self.classname == "monster_bat"           ||
+        self.classname == "monster_rat"           ||
+		self.classname == "monster_eel"           ||
+		self.classname == "monster_hand"          ||
+		self.classname == "monster_redspider"     ||
+		self.classname == "monster_greenspider"   ||
+		self.classname == "monster_minicaleb"	  ||
+		self.classname == "monster_chrysalid_pod" ||
+		self.classname == "monster_fire_pod"      ||
+		self.classname == "monster_mime"          ||
+		self.classname == "monster_stonegargoyle" ||
+		self.classname == "monster_shial"         ||
+		self.classname == "monster_cerebrus"      ||
+		self.classname == "monster_tchernobog"    ||
+		self.classname == "monster_redcultist"    ||
+		self.classname == "monster_beast")
+		return;
+	
+	r = random();
+	
+	if (r <= 0.2)
+	{
+	    drop_item = spawn ();
+        drop_item.classname = "drop_item";
+	    drop_item.owner = self;
+	    drop_item.origin = self.origin;
+		drop_item.think = SUB_Remove;
+		
+	    if (r <= 0.05)
+	    {
+            // Cultist weapons
+			if (self.classname == "monster_browncultist")
+		        drop_item.think = weapon_sawedoff;
+				
+			else if (self.classname == "monster_blackcultist")
+		        drop_item.think = weapon_tommygun;
+
+			else if (self.classname == "monster_greencultist")
+		        drop_item.think = weapon_tnt;
+				
+			else if (self.classname == "monster_bluecultist")
+		        drop_item.think = weapon_teslacannon;	
+	    }	
+	    else if (r <= 0.1)
+	    {
+		    // Cultist ammos
+			if (self.classname == "monster_browncultist")
+		        drop_item.think = ammo_shell;
+				
+			else if (self.classname == "monster_blackcultist")
+		        drop_item.think = ammo_bullets;			
+				
+			else if (self.classname == "monster_bluecultist")
+		        drop_item.think = ammo_batteries;
+			
+			// Gargoyles, Hell hounds, Phantasms drop life seeds
+			else if (self.classname == "monster_gargoyle" ||
+			         self.classname == "monster_hellhound"||
+					 self.classname == "monster_phantasm")
+					 {
+					     drop_item.spawnflags = 2;         // flag for life seed
+						 drop_item.think = item_health;
+					 }
+	    }	
+	    else if (r <= 0.2)
+	    {
+		    // Cultists, zombies, butchers, innocents, gill beasts, drop regular hearts
+			if (self.classname == "monster_browncultist" ||
+			    self.classname == "monster_blackcultist" ||
+				self.classname == "monster_greencultist" ||
+				self.classname == "monster_bluecultist"  ||
+				self.classname == "monster_butcher"      ||
+				self.classname == "monster_zombie"       ||
+				self.classname == "monster_innocent"     ||
+				self.classname == "monster_gillbeast")
+				{
+				    drop_item.spawnflags = 1;         // flag for basic heart
+					drop_item.think = item_health;
+				}
+	    }
+		drop_item.nextthink = time + 0.1;
+	}
 };

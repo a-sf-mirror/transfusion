@@ -131,10 +131,7 @@ Called when flare impacts.
 */
 void() FlareTouch =
 {
-    if (other.solid == SOLID_TRIGGER)
-        return;
-
-    if (pointcontents(self.origin) == CONTENT_SKY)
+    if (pointcontents(self.origin) == CONTENT_SKY || other.solid == SOLID_TRIGGER)
     {
         remove(self);
         return;
@@ -148,12 +145,11 @@ void() FlareTouch =
     if (other.classname == "player" || (other.flags & FL_MONSTER))
     {
         self.alpha = 0.1; // Until I get a new model
-
-        // No more glowing, flesh has been hit
-        self.effects = 0;
+		self.solid = SOLID_NOT;
         self.enemy = other;
         self.movetype = MOVETYPE_NONE;
         self.v_angle = self.enemy.origin - self.origin;
+		self.effects = EF_STARDUST;
 
         // Flares stick for 6 seconds
         self.attack_finished = time + 6;
@@ -185,8 +181,6 @@ void () FlareThink =
     else if (self.enemy.flags & FL_MONSTER)
         T_Damage (self.enemy, self, self, 3, DF_FIRE, "fire");
 
-    FlareSpark ();   // Throw a few sparks.
-
     if ((self.enemy.origin - self.origin) != self.v_angle)
         self.origin = self.enemy.origin + self.v_angle;
 
@@ -207,7 +201,7 @@ entity(entity attacker, vector spot) NewFlare =
 
     fire = spawn();
 
-    setmodel (fire, "progs/flame2.mdl");
+    setmodel (fire, "models/weapons/objects/flare.md3");
     setsize (fire, '0 0 0', '0 0 0');
     setorigin (fire, spot);
 
@@ -219,7 +213,9 @@ entity(entity attacker, vector spot) NewFlare =
     fire.classname  = "flare";
     fire.netname    = "flare";
 
-    fire.effects    = EF_DIMLIGHT;
+    fire.effects    = EF_LOWPRECISION;
+	fire.effects    = fire.effects | EF_STARDUST;
+	fire.effects    = fire.effects | EF_DIMLIGHT;
     fire.movetype   = MOVETYPE_FLYMISSILE;
     fire.solid      = SOLID_BBOX;
 

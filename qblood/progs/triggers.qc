@@ -31,9 +31,6 @@ void() trigger_reactivate =
 
 //=============================================================================
 
-#define SPAWNFLAG_NOMESSAGE 1
-#define SPAWNFLAG_NOTOUCH   1
-
 // the wait time has passed, so set back up for another activation
 void() multi_wait =
 {
@@ -288,9 +285,6 @@ TELEPORT TRIGGERS
 ==============================================================================
 */
 
-#define PLAYER_ONLY 1
-#define SILENT      2
-
 void() play_teleport =
 {
     local   float v;
@@ -533,8 +527,6 @@ void() trigger_hurt =
 
 //============================================================================
 
-#define PUSH_ONCE 1
-
 void() trigger_push_touch =
 {
     if (other.classname == "grenade")
@@ -592,5 +584,28 @@ void() trigger_changelevel =
         objerror ("changelevel trigger doesn't have map");
 
     InitTrigger ();
-    self.use = changelevel_use;
+    self.use = changelevel_use;	
+};
+
+void() trigger_use_touch =
+{
+    if (other.button4)
+	    SUB_UseTargets();
+};
+
+
+/*
+    trigger_use
+	
+	while the player is in the trigger brush, if he presses the "use" button the target is triggered
+
+*/
+void() trigger_use =
+{
+    if (!self.target)
+        objerror ("trigger_use doesn't have a target");
+
+    InitTrigger ();
+    
+	self.touch = trigger_use_touch;   
 };

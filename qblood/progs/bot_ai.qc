@@ -27,10 +27,11 @@
 #ifndef NO_FRIKBOT
 
 #include "common.qh"
-
+#include "bot.qh"
+#include "player.qh" // For death frame reference
 
 float() crandom;
-
+void(float cloneCorpse) respawn;
 
 /*
 -=-=-=-=-=-=-=-=-=-=-=-=-=-=-=-=-=-=-=-=-=-=-=
@@ -528,7 +529,10 @@ void() bot_path =
         {
             if (trace_ent.classname == "door" && !(self.b_aiflags & AI_DOOR_NO_OPEN)) // a door blocks the way
             {
-                // linked doors fix
+                // Use the door
+				self.button4 = TRUE;
+				
+				// linked doors fix
                 if (trace_ent.owner)
                     trace_ent = trace_ent.owner;
                 if ((trace_ent.health > 0) && (self.enemy == world))
@@ -942,24 +946,54 @@ void() BotAI =
         return;
     }
 
-    // am I dead? Fire randomly until I respawn
-    // health < 1 is used because fractional healths show up as 0 on normal player
-    // status bars, and the mod probably already compensated for that
+    // If falling a long distance go ahead and respawn
+	if (self.jump_flag <= -1000)
+	   respawn (TRUE); 
 
-    if (self.health < 1)
-    {
+    /*
+	   am I dead? 
+       health < 1 is used because fractional healths show up as 0 on normal player
+       status bars, and the mod probably already compensated for that
+	*/
+	
+	if (self.health < 1)
+    {	
+        // Fire randomly until I respawn - doesn't always work, workaround below - Tim
         self.button0 = floor(random() * 2);
-        self.button2 = 0;
+		
+		// Set buttons to null
+        self.button1 = FALSE;
+        self.button2 = FALSE;
+		self.button3 = FALSE;
+		self.button4 = FALSE;
+		
         self.keys = 0;
         self.b_aiflags = 0;
         ClearMyRoute();
         self.target1 = self.target2 = self.target3 = self.target4 = self.enemy = world;
         self.last_way = world;
+		
+		// This is a workaround for bots not being able to respawn for some reason
+		if (!(self.flags & DEAD_DEAD))
+		{
+		    self.flags = self.flags | DEAD_DEAD;
+			self.cnt = 3;
+		}
+		
+		else if (self.cnt > 0)
+		    self.cnt = self.cnt - 0.1;
+		
+		else
+		    respawn (TRUE);
+
         return;
     }
 
-    // stagger the bot's AI out so they all don't think at the same time, causing game
-    // 'spikes'
+    /*
+	    stagger the bot's AI out so they all don't think at the same time, causing game
+       'spikes'	   
+	*/
+
     if (self.b_skill < 2)
     {
         if (self.ai_time > time)
@@ -980,12 +1014,13 @@ void() BotAI =
 
     // shut the bot's buttons off, various functions will turn them on by AI end
 
-    self.button2 = 0;
-    self.button0 = 0;
+    self.button0 = self.button1 = self.button2 = self.button3 = self.button4 = FALSE;
+    
+    /* 
+	   target1 is like goalentity in normal Quake monster AI.
+       it's the bot's most immediate target
+	*/
 
-
-    // target1 is like goalentity in normal Quake monster AI.
-    // it's the bot's most immediate target
     if (route_table == self)
     {
         if (busy_waypoints <= 0)
@@ -1027,14 +1062,18 @@ void() BotAI =
 
     bot_angle_set();
 
-    // fight my enemy. Enemy is probably a field QC coders will most likely use a lot
-    // for their own needs, since it's unused on a normal player
-    // FIXME
+    /* 
+	   fight my enemy. Enemy is probably a field QC coders will most likely use a lot
+       for their own needs, since it's unused on a normal player
+       FIXME
+	*/
+
     if (self.enemy)
         bot_fight_style();
-    else if (random() < 0.2)
-        if (random() < 0.2)
-            bot_weapon_switch(-1);
+
+    // Pick the best available weapon
+    bot_weapon_switch(-1);
+
     bot_dodge_stuff();
 
     // checks to see if bot needs to start going up for air

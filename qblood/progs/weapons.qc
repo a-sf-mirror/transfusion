@@ -35,7 +35,8 @@ SpawnBlood
 */
 void(vector org, vector vel, float damage) SpawnBlood =
 {
-    particle (org, vel*0.1, 73, damage*2);
+	damage = ceil (damage / 2);
+	te_particlecube(org, org + '0 0 32', vel, damage, 73, TRUE, 250);
 };
 
 
@@ -48,7 +49,10 @@ Bleeds when generic meat spray touches something
 */
 void() MeatSprayTouch =
 {
-    SpawnBlood (self.origin, '0 0 500', 16);
+    SpawnBlood (self.origin, '0 0 50', 16);
+
+    if (other.classname == "player")
+		remove(self);
 };
 
 /*
@@ -76,9 +80,11 @@ void(vector org, vector vel, entity ignore) BloodMeatSpray =
     missile.think       = SUB_Remove;
     missile.touch       = MeatSprayTouch;
 
-    setmodel (missile, "progs/bitogore.mdl");
+    setmodel (missile, "models/objects/gib4.md3");
     setsize (missile, '0 0 0', '0 0 0');
     setorigin (missile, org);
+	
+	te_blood(org, vel, 8);
 };
 
 

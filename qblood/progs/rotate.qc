@@ -19,43 +19,6 @@
 
 #include "common.qh"
 
-#define STATE_ACTIVE       0
-#define STATE_INACTIVE     1
-#define STATE_SPEEDINGUP   2
-#define STATE_SLOWINGDOWN  3
-
-#define STATE_CLOSED    4
-#define STATE_OPEN      5
-#define STATE_OPENING   6
-#define STATE_CLOSING   7
-
-#define STATE_WAIT  0
-#define STATE_MOVE  1
-#define STATE_STOP  2
-#define STATE_FIND  3
-#define STATE_NEXT  4
-
-#define OBJECT_ROTATE  0
-#define OBJECT_MOVEWALL   1
-#define OBJECT_SETORIGIN  2
-
-#define TOGGLE    1
-#define START_ON  2
-
-#define ROTATION  1
-#define ANGLES    2
-#define STOP      4
-#define NO_ROTATE  8
-#define DAMAGE    16
-#define MOVETIME  32
-#define SET_DAMAGE  64
-
-#define VISIBLE  1
-#define TOUCH  2
-#define NONBLOCKING  4
-
-#define STAYOPEN  1
-
 /*QUAKED info_rotate (0 0.5 0) (-4 -4 -4) (4 4 4)
 Used as the point of rotation for rotatable objects.
 */

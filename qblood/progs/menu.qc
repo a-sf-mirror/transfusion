@@ -242,34 +242,6 @@ void(float vote, string newmap) Vote_AddMapVote =
 
 // The menus
 #define MENU_MAIN           0
-#define MENU_VOTE_MAP       1
-#define MENU_VOTE_GAMETYPE  2
-#define MENU_VOTE_FRAGLIMIT 3
-#define MENU_VOTE_TIMELIMIT 4
-#define MENU_VOTE_WARMUP    5
-#define MENU_VOTE_OPTIONS   6
-
-#define MENU_VOTE_MAP_BLOOD         10
-#define MENU_VOTE_MAP_BLOOD_SP      11
-#define MENU_VOTE_MAP_BLOODPACKS    12  // Plasma Pack + Cryptic Passage
-#define MENU_VOTE_MAP_BLOOD2        13
-#define MENU_VOTE_MAP_TRANSFUSION   14
-#define MENU_VOTE_MAP_CONVERSIONS   15
-
-// The groups of maps
-#define MAPS_BLOOD          0
-#define MAPS_BLOOD_SP       10
-#define MAPS_BLOODPACKS     40  // Plasma Pack + Cryptic Passage
-#define MAPS_BLOOD2         60
-#define MAPS_TRANSFUSION    80
-#define MAPS_CONVERSIONS    100
-
-// Options
-// All values must be powers of 2
-#define OPTION_WEAPONS_STAY    1
-#define OPTION_LOCK_TEAMS      2
-#define OPTION_FLASHY_EFFECTS  4
-
 
 /*
 ====================

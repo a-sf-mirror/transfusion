@@ -28,6 +28,16 @@
 
 #include "common.qh"
 
+void () Taunt0;
+void () Taunt1;
+void () Taunt2;
+void () Taunt3;
+void () Taunt4;
+void () Taunt5;
+void () Taunt6;
+void () Taunt7;
+void () Taunt8;
+void () Taunt9;
 
 /*
 -=-=-=-=-=-=-=-=-=-=-=-=-=-=-=-=-=-=-=-=-=-=-=
@@ -41,102 +51,63 @@ Sets bot's name and colors
 string(float r) BotName =
 {
     self.b_num = r;
+	self.b_pants = r;
+    self.b_shirt = r;
+	
     if (r == 1)
-    {
-        self.b_pants = 11;
-        self.b_shirt = 0;
         return "Barker";
-    }
+
     else if (r == 2)
-    {
-        self.b_pants = 1;
-        self.b_shirt = 3;
         return "Bloch";
-    }
+
     else if (r == 3)
-    {
-        self.b_pants = 13;
-        self.b_shirt = 2;
         return "Bradbury";
-    }
+
     else if (r == 4)
-    {
-        self.b_pants = 7;
-        self.b_shirt = 6;
         return "Campbell";
-    }
+
     else if (r == 5)
-    {
-        self.b_pants = 12;
-        self.b_shirt = 6;
         return "DeSade";
-    }
+
     else if (r == 6)
-    {
-        self.b_pants = 4;
-        self.b_shirt = 4;
         return "King";
-    }
+
     else if (r == 7)
-    {
-        self.b_pants = 2;
-        self.b_shirt = 5;
         return "Koontz";
-    }
+
     else if (r == 8)
-    {
-        self.b_pants = 10;
-        self.b_shirt = 3;
         return "Lee";
-    }
+
     else if (r == 9)
-    {
-        self.b_pants = 9;
-        self.b_shirt = 4;
         return "Lovecraft";
-    }
+
     else if (r == 10)
-    {
-        self.b_pants = 4;
-        self.b_shirt = 7;
         return "McCammon";
-    }
+
     else if (r == 11)
-    {
-        self.b_pants = 3;
-        self.b_shirt = 11;
         return "Poe";
-    }
+
     else if (r == 12)
-    {
-        self.b_pants = 13;
-        self.b_shirt = 12;
         return "Saul";
-    }
+
     else if (r == 13)
-    {
-        self.b_pants = 11;
-        self.b_shirt = 2;
         return "Stine";
-    }
+
     else if (r == 14)
-    {
-        self.b_pants = 0;
-        self.b_shirt = 2;
         return "Stoker";
-    }
+
     else if (r == 15)
-    {
-        self.b_pants = 8;
-        self.b_shirt = 9;
         return "Straub";
-    }
+
     else if (r == 16)
     {
-        self.b_pants = 5;
-        self.b_shirt = 10;
-        return "Wells";
-    }
+	    self.b_pants = 0;
+        self.b_shirt = 0;
+		return "Wells";
+	}
+	
+	else
+        return "FIX_ME_IN_BotName";
 };
 string () PickARandomName =
 {
@@ -186,7 +157,7 @@ b_originator == targ
 */
 void(float tpic) bot_start_topic =
 {
-    if (random() < 0.2)
+    if (random() <= 0.2)
     {
         b_topic = tpic;
         b_originator = self;
@@ -198,8 +169,26 @@ void(float tpic) bot_start_topic =
 void() bot_chat =
 {
     local float r;
+	local float chat_strings;
+	
+	if (b_topic == 1)
+	    chat_strings = 12;
+	
+	else if (b_topic == 2)
+	    chat_strings = 8;
 
-    r = ceil (random() * 6);
+	else if (b_topic == 3 || b_topic == 4 || b_topic == 5)
+	    chat_strings = 2;
+
+	else if (b_topic == 6)
+	    chat_strings = 7;
+    
+	else if (b_topic == 9)
+	    chat_strings = 5;
+	else
+	    chat_strings = 6;
+
+    r = ceil (random() * chat_strings);
 
     if (self.b_chattime > time)
     {
@@ -209,58 +198,140 @@ void() bot_chat =
     }
     else if (self.b_chattime)
     {
-        if (b_topic == 1)
+        if (b_topic == 1)  // Spawning
         {
             if (b_originator == self)
             {
                 if (r == 1)
                 {
-                    BotSay(": lo all\n");
-                    bot_start_topic(8);
+                    BotSay(": I have something for you...\n");
+					Taunt4();
                 }
                 else if (r == 2)
                 {
-                    BotSay(": hey everyone\n");
-                    bot_start_topic(8);
-                }
-                else if (r == 3)
-                {
-                    BotSay(": prepare to be fragged!\n");
-                    bot_start_topic(0);
-                }
+                    BotSay(": Fool - You're already dead\n");                    
+					Taunt9();
+                }                
+				else if (r == 3)
+				{
+				    BotSay(": I live again!\n");
+					localcmd("play player/taunts/t1010.wav\n");
+				}
                 else if (r == 4)
                 {
-                    BotSay(": boy this is laggy\n");
-                    bot_start_topic(11);
-                }
+				    BotSay(": All I want's a friend\n");
+					localcmd("play player/taunts/t1005.wav\n");
+				}
                 else if (r == 5)
                 {
-                    BotSay(": #mm getting some lag here\n");
-                    bot_start_topic(11);
-                }
-                else
+				    BotSay(": Mmm fresh victims for the evergrowing army of the undead\n");
+					localcmd("play player/quips/1001.wav\n");
+				}
+                else if (r == 6)
                 {
-                    BotSay(": hi everyone\n");
-                    bot_start_topic(8);
-                }
+				    BotSay(": They're all dead they just don't know it yet\n");
+					localcmd("play player/quips/1014.wav\n");
+				}                
+				else if (r == 7)
+                {
+				    BotSay(": I got time to play with you\n");
+					localcmd("play player/quips/1037.wav\n");
+				}
+				else if (r == 8)
+                {
+				    BotSay(": Come out come out wherever you are\n");
+					localcmd("play player/quips/1038.wav\n");
+				}
+				else if (r == 9)
+                {
+				    BotSay(": I've got a present for ya!\n");
+					localcmd("play player/quips/1017.wav\n");
+				}
+				else if (r == 10)
+                {
+				    BotSay(": Wow! This promises to be fun!\n");
+					localcmd("play player/quips/1048.wav\n");
+				}
+				else if (r == 11)
+                {
+				    BotSay(": I'm going to have to put you down\n");
+					localcmd("play player/quips/1053.wav\n");
+				}
+				else
+                {
+				    BotSay(": Run... Run...\n");
+					localcmd("play player/quips/1083.wav\n");
+				}
+				bot_start_topic(0);
             }
         }
-        else if (b_topic == 2)
+        else if (b_topic == 2) // Just killed someone
         {
             if (b_originator == self)
             {
-                if (r == 1)
-                    BotSay(": take that\n");
+			    if (self.items & IT_GUNS_AKIMBO)
+				{
+				    BotSay(": I've got two guns. That should be enough for all of you\n");
+					localcmd("play player/quips/1018.wav\n");
+				}					
+				else if (self.weapon == IT_NAPALM_LAUNCHER)
+				{
+				    if (random() <= 0.5)
+					{
+					    BotSay(": I love the smell of napalm in the morning\n");
+						Taunt0();
+					}	
+					else
+					{
+					    BotSay(": Hmmm... is that gasoline I smell?\n");
+						Taunt1();
+					}                
+				}
+				else if (random() <= 0.5 && self.weapon == IT_SAWED_OFF)
+				{
+				    BotSay(": This is my boomstick!\n");
+					localcmd("play player/taunts/t1002.wav\n");
+				}					
+                else if (r == 1)
+				{
+                    BotSay(": Tada!\n");
+					Taunt2();
+				}
                 else if (r == 2)
-                    BotSay(": yehaww!\n");
+				{
+                    BotSay(": Who wants some HUH? Who's next?\n");
+					Taunt3();
+				}                
                 else if (r == 3)
-                    BotSay(": wh00p\n");
-                else if (r == 4)
-                    BotSay(": j00_sawk();\n");
-                else if (r == 5)
-                    BotSay(": i rule\n");
-                else
-                    BotSay(": eat that\n");
+                {
+				    BotSay(": I want some more\n");
+					localcmd("play player/quips/1012.wav\n");
+				}				
+				else if (r == 4)
+				{
+				    BotSay(": Rest in pieces!\n");
+					localcmd("play player/quips/1057.wav\n");
+				}				
+				else if (r == 5)
+				{
+				    BotSay(": I did it my way\n");
+					localcmd("play player/songs/1095.wav\n");
+				}
+				else if (r == 6)
+				{
+				    BotSay(": It's all in the reflexes\n");
+					localcmd("play player/quips/1040.wav\n");
+				}				
+				else if (r == 7)
+				{
+					BotSay(": Pay attention son, this is for your own good\n");
+					localcmd("play player/quips/1046.wav\n");
+				}				
+				else
+				{
+				    BotSay(": What are you gonna do, bleed on me?\n");
+					localcmd("play player/quips/1054.wav\n");
+				}
                 bot_start_topic(0);
             }
         }
@@ -268,7 +339,7 @@ void() bot_chat =
         {
             if (b_originator == self)
             {
-                if (r < 3)
+                if (r == 1)
                     BotSayTeam(": friendly eyes\n");
                 else
                     BotSayTeam(": team eyes\n");
@@ -279,7 +350,7 @@ void() bot_chat =
         {
             if (b_originator == self)
             {
-                if (r < 3)
+                if (r == 1)
                     BotSayTeam(": on your back\n");
                 else
                     BotSayTeam(": I'm with you\n");
@@ -290,64 +361,63 @@ void() bot_chat =
         {
             if (b_originator == self)
             {
-                if (r < 3)
+                if (r == 1)
                     BotSayTeam(": I need help\n");
                 else
                     BotSayTeam(": need backup\n");
                 bot_start_topic(0);
             }
         }
-        else if (b_topic == 6)
+        else if (b_topic == 6) // Just died
         {
             if (b_originator == self)
             {
                 if (r == 1)
                 {
-                    BotSay(": sun got in my eyes\n");
-                    bot_start_topic(0);
+                    BotSay(": Oh, that wasn't a bit nice!\n");
+					Taunt7();                    
                 }
                 else if (r == 2)
                 {
-                    BotSay(": mouse needs cleaning\n");
-                    bot_start_topic(0);
-                }
+				    BotSay(": Victims, aren't we all?\n");
+					localcmd("play player/taunts/t1013.wav\n");
+				}
                 else if (r == 3)
                 {
-                    BotSay(": i meant to do that\n");
-                    bot_start_topic(0);
-                }
+				    BotSay(": Mmm this looks extraordinarily bad\n");
+					localcmd("play player/quips/1045.wav\n");
+				}
                 else if (r == 4)
                 {
-                    BotSay(": lag\n");
-                    bot_start_topic(11);
-                }
+				    BotSay(": When does the hurting stop?\n");
+					
+					if (random() <= 0.5)
+					    localcmd("play player/quips/1042.wav\n");
+					else
+					    localcmd("play player/quips/1044.wav\n");
+				}
                 else if (r == 5)
                 {
-                    BotSay(": killer lag\n");
-                    bot_start_topic(11);
-                }
-                else
+				    BotSay(": Boo hoo when does the hurting stop?\n");
+					localcmd("play player/quips/1043.wav\n");
+				}
+                else if (r == 6)
                 {
-                    BotSay(": 100% lag\n");
-                    bot_start_topic(11);
-                }
+				    BotSay(": I smell balm and puntane\n");
+					localcmd("play player/quips/1041.wav\n");
+				}
+				else
+                {
+				    BotSay(": Help help! I'm being repressed\n");
+					localcmd("play player/quips/1051.wav\n");
+				}
+				bot_start_topic(0);
             }
         }
         else if (b_topic == 7)
         {
-            if (r == 1)
-                BotSay(": gg\n");
-            else if (r == 2)
-                BotSay(": gg all\n");
-            else if (r == 3)
-                BotSay(": that was fun\n");
-            else if (r == 4)
-                BotSay(": good game\n");
-            else if (r == 5)
-                BotSay(": pah\n");
-            else
-                BotSay(": hrm\n");
-            bot_start_topic(0);
+		    BotSay(": Good game\n");
+			bot_start_topic(0);
         }
         else if (b_topic == 8)
         {
@@ -397,28 +467,31 @@ void() bot_chat =
             if (b_originator != self)
             {
                 if (r == 1)
-                    BotSay(": hah\n");
-                else if (r == 2)
-                    BotSay(": heheh\n");
+				{
+                    BotSay(": Amateurs\n");
+					Taunt8();					
+				}
+				else if (r == 2)
+				{
+                    BotSay(": Are you just gonna stand there and bleed?\n");
+					Taunt5();
+				}
                 else if (r == 3)
-                {
-                    BotSayInit();
-                    BotSay2(": good work ");
-                    BotSay2(b_originator.netname);
-                    BotSay2("\n");
-                }
-                else if (r == 4)
-                {
-                    BotSayInit();
-                    BotSay2(": nice1 ");
-                    BotSay2(b_originator.netname);
-                    BotSay2("\n");
-                }
-                else if (r == 5)
-                    BotSay(": lol\n");
-                else
-                    BotSay(": :)\n");
-                b_topic = 6;
+				{
+                    BotSay(": That'll teach ya\n");
+					Taunt6();
+				}
+				else if (r == 4)
+				{
+				    BotSay(": Hmmm. Extraordinary use of color. The composition is a bit lacking\n");
+					localcmd("play player/quips/1055.wav\n");
+				}				
+				else
+				{
+					BotSay(": Lambs to the slaughter\n");
+					localcmd("play player/quips/1027.wav\n");
+				}
+				bot_start_topic(0);
             }
         }
         else if (b_topic == 10)
@@ -455,39 +528,8 @@ void() bot_chat =
         {
             if (b_originator != self)
             {
-                if (r == 1)
-                {
-                    BotSayInit();
-                    BotSay2(": yeah right ");
-                    BotSay2(b_originator.netname);
-                    BotSay2("\n");
+                BotSay(": Lag...\n");
                     bot_start_topic(0);
-                }
-                else if (r == 2)
-                {
-                    BotSay(": ping\n");
-                    bot_start_topic(0);
-                }
-                else if (r == 3)
-                {
-                    BotSay(": shuddup, you're an lpb\n");
-                    bot_start_topic(0);
-                }
-                else if (r == 4)
-                {
-                    BotSay(": lag my eye\n");
-                    bot_start_topic(0);
-                }
-                else if (r == 5)
-                {
-                    BotSay(": yeah\n");
-                    bot_start_topic(11);
-                }
-                else
-                {
-                    BotSay(": totally\n");
-                    bot_start_topic(11);
-                }
             }
         }
         self.b_chattime = 0;

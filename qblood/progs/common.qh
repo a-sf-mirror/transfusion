@@ -34,21 +34,23 @@
 #define GT_BLOODBATH          0  // free for all
 #define GT_TEAM_BLOODBATH     1  // 1 team VS 1 team  (NOTE: should we add support for more than 2 teams ?)
 #define GT_CAPTURE_THE_FLAG   2  // 1 team VS 1 team
-#define GT_COOPERATIVE        3  // UNUSED until we reimplement the SP modes
+#define GT_COOPERATIVE        3  // Play the game with buddies
+#define GT_SINGLEPLAYER       4  // Play with your self
 
 // edict.flags
 #define FL_FLY              1
 #define FL_SWIM             2
-#define FL_CLIENT           8    // set for all client edicts
-#define FL_INWATER          16   // for enter / leave water splash
+#define FL_CLIENT           8     // set for all client edicts
+#define FL_INWATER          16    // for enter / leave water splash
 #define FL_MONSTER          32
-#define FL_GODMODE          64   // player cheat
-#define FL_NOTARGET         128  // player cheat
-#define FL_ITEM             256  // extra wide size for bonus items
-#define FL_ONGROUND         512  // standing on something
-#define FL_PARTIALGROUND    1024 // not all corners are valid
-#define FL_WATERJUMP        2048 // player jumping out of water
-#define FL_JUMPRELEASED     4096 // for jump debouncing
+#define FL_GODMODE          64    // player cheat
+#define FL_NOTARGET         128   // player cheat
+#define FL_ITEM             256   // extra wide size for bonus items
+#define FL_ONGROUND         512   // standing on something
+#define FL_PARTIALGROUND    1024  // not all corners are valid
+#define FL_WATERJUMP        2048  // player jumping out of water
+#define FL_JUMPRELEASED     4096  // for jump debouncing
+#define FL_FALLING          8192  // when falling a large distance
 
 // edict.spawnflags
 // let 10 flags (1 -> 512) free for each entity type
@@ -86,6 +88,7 @@
 #define SOLID_BBOX      2    // touch on edge, block
 #define SOLID_SLIDEBOX  3    // touch on edge, but not an onground
 #define SOLID_BSP       4    // bsp clip, touch on edge, block
+#define SOLID_CORPSE    5    // if you want dead bodies that are shootable but do not obstruct movement by players and monsters
 
 // range values
 #define RANGE_MELEE 0
@@ -164,22 +167,22 @@
 #define IMP_OBSERVER         56
 
 // Player taunts (70 - 79)
-#define TAUNT_0              70
-#define TAUNT_1              71
-#define TAUNT_2              72
-#define TAUNT_3              73
-#define TAUNT_4              74
-#define TAUNT_5              75
-#define TAUNT_6              76
-#define TAUNT_7              77
-#define TAUNT_8              78
-#define TAUNT_9              79
+#define IMP_TAUNT_0          70
+#define IMP_TAUNT_1          71
+#define IMP_TAUNT_2          72
+#define IMP_TAUNT_3          73
+#define IMP_TAUNT_4          74
+#define IMP_TAUNT_5          75
+#define IMP_TAUNT_6          76
+#define IMP_TAUNT_7          77
+#define IMP_TAUNT_8          78
+#define IMP_TAUNT_9          79
 
 // Cheats (from 254, going down)
 // WARNING: all of them are CHEAT PROTECTED
 #define IMP_CHEAT_BOD        250  // Brink Of Death
 #define IMP_CHEAT_ARMOR      251  // griswold - full armor
-#define IMP_CHEAT_IN_FIRE    252  // mcgee - you're in fire
+#define IMP_CHEAT_IN_FIRE    252  // mcgee - you're on fire
 #define IMP_CHEAT_INVENT     253  // Inventory cheat
 #define IMP_CHEAT_AKIMBO     254  // Give you Akimbo!
 
@@ -286,7 +289,8 @@
 #define TE_TELEPORT         11
 #define TE_EXPLOSION2       12  // color mapped explosion. No sprite
 #define TE_BEAM             13  // WARNING: "progs/beam.mdl" required
-#define TE_TEI_BIGEXPLOSION    78
+#define TE_TEI_G3           76
+#define TE_TEI_BIGEXPLOSION 78
 
 // sound channels
 // channel 0 never willingly overrides
@@ -311,7 +315,11 @@
 #define EF_ADDITIVE     32      // Additive blending when this object is rendered; DP_EF_ADDITIVE extension
 #define EF_BLUE         64      // Entity emits blue light; DP_EF_BLUE extension
 #define EF_RED          128     // Entity emits red light; DP_EF_RED extension
+#define	EF_REFLECTIVE	256		// LordHavoc: shiny metal objects :)  (not currently supported)
+#define EF_FULLBRIGHT	512		// LordHavoc: fullbright
 #define EF_FLAME        1024    // Entity is surrounded by fire; DP_EF_FLAME extension
+#define EF_STARDUST		2048	// LordHavoc: showering sparks
+#define EF_NOSHADOW		4096	// LordHavoc: does not cast a shadow
 #define EF_LOWPRECISION 4194304 // Entity uses integer coordinates to save network bandwidth; DP_ENT_LOWPRECISION extension
 
 // messages
@@ -360,6 +368,162 @@
 // Team colors
 #define TEAM_COLOR1 5
 #define TEAM_COLOR2 14
+
+// flag status used in cnt field of flag
+#define FLAG_AT_BASE 0
+#define FLAG_CARRIED 1
+#define FLAG_DROPPED 2
+
+#define TEAM_CAPTURE_CAPTURE_BONUS  15  // what you get for capture
+#define TEAM_CAPTURE_RECOVERY_BONUS 1   // what you get for recovery
+#define TEAM_CAPTURE_FLAG_RETURN_TIME 40  // seconds until auto return
+
+// Cultist variants
+#define CULTIST_BROWN 4 // Shotgun
+#define CULTIST_BLACK 3 // Tommygun
+#define CULTIST_BLUE  2 // Tesla
+#define CULTIST_GREEN 1 // TNT
+#define CULTIST_RED   0 // Shotgun / beastmorph
+
+
+/*
+    Item related
+*/
+#define H_LIFE_ESSENCE  1
+#define H_LIFE_SEED     2
+#define AMMO_BIG 1
+
+/*
+    Door related
+*/
+#define DOOR_START_OPEN 1
+#define DOOR_DONT_LINK  4
+#define DOOR_EYE_KEY    8
+#define DOOR_SKULL_KEY  16
+#define DOOR_TOGGLE     32
+#define DOOR_FIRE_KEY   64
+#define DOOR_DAGGER_KEY 128
+#define DOOR_SPIDER_KEY 256
+#define DOOR_MOON_KEY   512
+
+#define SECRET_OPEN_ONCE    1   // stays open
+#define SECRET_1ST_LEFT     2   // 1st move is left of arrow
+#define SECRET_1ST_DOWN     4   // 1st move is down from arrow
+#define SECRET_NO_SHOOT     8   // only opened by trigger
+#define SECRET_YES_SHOOT    16  // shootable even if targeted
+#define SECRET_NEVER        32  // lock it shut
+
+/*
+    Inventory related
+*/
+#define SEVEN_BITS          127
+
+#define IT3_FIRST_AID       1
+#define IT3_JUMP_BOOTS      128
+#define IT3_DIVING_SUIT     16384
+
+#define IT4_BEAST_VISION    1
+#define IT4_CRYSTAL_BALL    128
+
+/*
+    Menu related
+*/
+#define MENU_VOTE_MAP       1
+#define MENU_VOTE_GAMETYPE  2
+#define MENU_VOTE_FRAGLIMIT 3
+#define MENU_VOTE_TIMELIMIT 4
+#define MENU_VOTE_WARMUP    5
+#define MENU_VOTE_OPTIONS   6
+
+#define MENU_VOTE_MAP_BLOOD         10
+#define MENU_VOTE_MAP_BLOOD_SP      11
+#define MENU_VOTE_MAP_BLOODPACKS    12  // Plasma Pack + Cryptic Passage
+#define MENU_VOTE_MAP_BLOOD2        13
+#define MENU_VOTE_MAP_TRANSFUSION   14
+#define MENU_VOTE_MAP_CONVERSIONS   15
+
+// The groups of maps
+#define MAPS_BLOOD          0
+#define MAPS_BLOOD_SP       10
+#define MAPS_BLOODPACKS     40  // Plasma Pack + Cryptic Passage
+#define MAPS_BLOOD2         60
+#define MAPS_TRANSFUSION    80
+#define MAPS_CONVERSIONS    100
+
+// Options
+// All values must be powers of 2
+#define OPTION_WEAPONS_STAY    1
+#define OPTION_LOCK_TEAMS      2
+#define OPTION_FLASHY_EFFECTS  4
+
+#define START_OFF   1
+#define PLAT_LOW_TRIGGER 1
+
+/*
+    Trigger related
+*/
+#define SPAWNFLAG_NOMESSAGE 1
+#define SPAWNFLAG_NOTOUCH   1
+#define PLAYER_ONLY 1
+#define SILENT      2
+#define PUSH_ONCE 1
+
+/*
+    Bomb related
+*/
+#define DMG_TNT              130
+#define DMG_PROXIMITY_BOMB   160
+#define DMG_REMOTE_DETONATOR 130
+#define DMG_SPRAY_CAN        50
+
+// The 2 types of TNT
+#define TNT_TYPE_NORMAL  0
+#define TNT_TYPE_ALTFIRE 1
+
+#define FUSE_TIME   5.5
+
+#define TESLA_NORMALJOLT 0
+#define TESLA_BIGJOLT    1
+
+/*
+    Rotating brush related
+*/
+#define STATE_ACTIVE       0
+#define STATE_INACTIVE     1
+#define STATE_SPEEDINGUP   2
+#define STATE_SLOWINGDOWN  3
+
+#define STATE_CLOSED    4
+#define STATE_OPEN      5
+#define STATE_OPENING   6
+#define STATE_CLOSING   7
+
+#define STATE_WAIT  0
+#define STATE_MOVE  1
+#define STATE_STOP  2
+#define STATE_FIND  3
+#define STATE_NEXT  4
+
+#define OBJECT_ROTATE  0
+#define OBJECT_MOVEWALL   1
+#define OBJECT_SETORIGIN  2
+
+#define TOGGLE    1
+#define START_ON  2
+
+#define ROTATION  1
+#define ANGLES    2
+#define STOP      4
+#define NO_ROTATE  8
+#define DAMAGE    16
+#define MOVETIME  32
+#define SET_DAMAGE  64
+
+#define VISIBLE  1
+#define TOUCH  2
+#define NONBLOCKING  4
+
+#define STAYOPEN  1
 
 
 #endif  // #ifndef _COMMON_QH_

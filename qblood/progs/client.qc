@@ -38,7 +38,8 @@ void () Taunt6;
 void () Taunt7;
 void () Taunt8;
 void () Taunt9;
-
+void () FadePlayerDisplay;
+void () ResetPlayerDisplay;
 /*
 =============================================================================
 
@@ -363,7 +364,7 @@ void(entity player, float fragsToAdd) Cl_UpdatePlayerFrags =
 // called by ClientKill and DeadThink
 void(float cloneCorpse) respawn =
 {
-    // make a copy of the dead body for appearances sake
+	// make a copy of the dead body for appearances sake
     if (cloneCorpse)
         CloneCorpse (self);
 
@@ -385,6 +386,7 @@ Player entered the suicide command
 void() set_suicide_frame;
 void() ClientKill =
 {
+        bprint("ClientKill\n");
     // can't suicide when observer
     if (self.observer)
         return;
@@ -421,6 +423,55 @@ float(entity spot) Cl_IsSpawnSpotFree =
 
     return TRUE;
 };
+
+
+// Cl_FindBestSpawn
+entity (string spawnclass) Cl_FindBestSpawn =
+{
+    local entity thing;
+	local entity spot;
+	local float radius;	
+	local float bad_spawn;
+	
+	radius = 1500;
+	spot = world;	
+
+    // Loop until within telefrag radius
+    while(radius >= 32)
+	{
+	    spot = find (world, classname, spawnclass);		
+		
+		if (spot == world)
+	        return world;		
+		
+		// loop through all "classname" entites
+		while (spot)
+	    {		   	
+	        thing = findradius (spot.origin, radius);
+		    bad_spawn = 0;			
+		
+		    while (thing)
+            {
+	            if (thing.classname == "player")
+				    bad_spawn = 1;
+			
+                thing = thing.chain;
+            }
+			if (!bad_spawn)
+			    return spot;
+			
+			spot = find (spot, classname, spawnclass);
+		}		
+		    radius = radius - 100;
+	}
+	
+	// If it made it here, then there's no clear spawns.  Pick the first spot and go with it
+	spot = find (world, classname, spawnclass);
+	
+	return spot;    
+	
+};
+
 
 
 /*
@@ -493,24 +544,42 @@ entity() SelectSpawnPoint =
 {
     local entity spawnpoint;
 
-    // If it's a team based game, try to spawn on one of the team's points
-    if (gametype != GT_BLOODBATH)
+    // choose a info_player_deathmatch point
+	if (coop)
+	{
+		spawnpoint = Cl_GetRandomSpawnPoint("info_player_coop");
+		
+		if (spawnpoint == world)
+			spawnpoint = Cl_GetRandomSpawnPoint ("info_player_start");
+
+		if (spawnpoint != world)
+			return spawnpoint;
+			
+		bprint("Coop mode set, but no info_player_coop or info_player_start entities in the map\n");
+	}	
+	// If it's a team based game, try to spawn on one of the team's points
+    else if (gametype != GT_BLOODBATH)
     {
         if (self.team == TEAM_COLOR1)
         {
-            spawnpoint = Cl_GetRandomSpawnPoint ("info_player_team1");
+            spawnpoint = Cl_FindBestSpawn ("info_player_team1");
             if (spawnpoint)
                 return spawnpoint;
         }
         else if (self.team == TEAM_COLOR2)
         {
-            spawnpoint = Cl_GetRandomSpawnPoint ("info_player_team2");
+            spawnpoint = Cl_FindBestSpawn ("info_player_team2");
             if (spawnpoint)
                 return spawnpoint;
         }
     }
+//	else if (deathmatch)
+            spawnpoint = Cl_FindBestSpawn ("info_player_deathmatch");
 
-    spawnpoint = Cl_GetRandomSpawnPoint ("info_player_deathmatch");
+// FIXME: Disabled until the mappers put coops / starts in the maps
+//	else
+//        spawnpoint = Cl_GetRandomSpawnPoint ("info_player_start");
+
     if (spawnpoint)
         return spawnpoint;
 
@@ -530,7 +599,10 @@ void() PutClientInServer =
 {
     local   entity spot;
 
-    spot = SelectSpawnPoint ();
+    // Reset poison fade effect in case player was killed while screen was darkened
+    ResetPlayerDisplay();
+
+	spot = SelectSpawnPoint ();
 
     self.classname = "player";
     self.health = 100;
@@ -542,10 +614,10 @@ void() PutClientInServer =
     self.air_finished = time + 12;
     self.dmg = 2;           // initial water damage
     self.akimbo_finished = 0;
-    self.radsuit_finished = 0;
     self.invisible_finished = 0;
     self.invincible_finished = 0;
     self.effects = 0;
+	self.alpha = 1;
     self.invincible_time = 0;
     KillBurner (self);
 
@@ -579,7 +651,7 @@ void() PutClientInServer =
     self.fixangle = TRUE;       // turn this way immediately
 
     // Hack to get the eyes model index
-    setmodel (self, "progs/eyes.mdl");
+    setmodel (self, "models/objects/eyes.md3");
     modelindex_eyes = self.modelindex;
 
     setmodel (self, "progs/player.mdl");
@@ -752,9 +824,7 @@ void() PlayerDeathThink =
     if (!self.button2 && !self.button3 && !self.button0)
         return;
 
-    self.button0 = 0;
-    self.button3 = 0;
-    self.button2 = 0;
+    self.button0 = self.button1 = self.button2 = self.button3 = self.button4 = 0;
     respawn (TRUE);
 };
 
@@ -1043,7 +1113,8 @@ void() CheckPowerups =
     // invisibility
     if (self.invisible_finished)
     {
-        // sound and screen flash when items starts to run out
+        break;
+		// sound and screen flash when items starts to run out
         if (self.invisible_sound < time)
         {
             sound (self, CHAN_AUTO, "bludbath/powerup.wav", 0.5, ATTN_IDLE);
@@ -1073,6 +1144,7 @@ void() CheckPowerups =
             self.items = self.items - IT_INVISIBILITY;
             self.invisible_finished = 0;
             self.invisible_time = 0;
+			self.alpha = 1;
         }
 
         // use the eyes
@@ -1229,36 +1301,40 @@ void(float isAlive) Impulses_Player =
         else if (self.impulse == IMP_ARMOR_NEXT)
             ArmorTest ();
 
-        else if (self.impulse == TAUNT_0)
+        else if (self.impulse == IMP_TAUNT_0)
             Taunt0();
 
-        else if (self.impulse == TAUNT_1)
+        else if (self.impulse == IMP_TAUNT_1)
             Taunt1();
 
-        else if (self.impulse == TAUNT_2)
+        else if (self.impulse == IMP_TAUNT_2)
             Taunt2();
 
-        else if (self.impulse == TAUNT_3)
+        else if (self.impulse == IMP_TAUNT_3)
             Taunt3();
 
-        else if (self.impulse == TAUNT_4)
+        else if (self.impulse == IMP_TAUNT_4)
             Taunt4();
 
-        else if (self.impulse == TAUNT_5)
+        else if (self.impulse == IMP_TAUNT_5)
             Taunt5();
 
-        else if (self.impulse == TAUNT_6)
+        else if (self.impulse == IMP_TAUNT_6)
             Taunt6();
 
-        else if (self.impulse == TAUNT_7)
+        else if (self.impulse == IMP_TAUNT_7)
             Taunt7();
 
-        else if (self.impulse == TAUNT_8)
+        else if (self.impulse == IMP_TAUNT_8)
             Taunt8();
 
-        else if (self.impulse == TAUNT_9)
+        else if (self.impulse == IMP_TAUNT_9)
             Taunt9();
-
+        
+/*
+		else if (self.impulse == 80)
+		    self.poison = 255;
+*/
         // These ones are considered cheats and are only allowed when the "sv_cheats" cvar is set
         else if (cvar ("sv_cheats"))
         {
@@ -1375,6 +1451,10 @@ void() PlayerPostThink =
         return;
     }
 
+    // Do neato screen fade
+    if (self.poison > 1)
+	    FadePlayerDisplay();
+
     // check to see if player landed and play landing sound
     // no damage taken if not > 350 units high
     if ((self.jump_flag < -350) && (self.flags & FL_ONGROUND) && (self.health > 0))
@@ -1390,13 +1470,20 @@ void() PlayerPostThink =
             T_Damage (self, world, world, aspeed, 0, "falling");
         }
         else
-            sound (self, CHAN_VOICE, "foley/land.wav", 1, ATTN_NORM);
-
-        self.jump_flag = 0;
+            sound (self, CHAN_VOICE, "foley/land.wav", 1, ATTN_NORM);		
+		
+		self.jump_flag = 0;
     }
-
-    self.jump_flag = self.velocity_z;
-
+	else if ((self.jump_flag < -750) && !(self.flags & FL_ONGROUND) && (self.health > 0) && !(self.flags & FL_FALLING))
+	{
+	    self.flags = self.flags | FL_FALLING;
+		sound (self, CHAN_VOICE, "player/fall.wav", 1, ATTN_NORM);
+	}    
+		
+	// This little check is here to avoid sliding deaths
+    if (!(self.flags & FL_ONGROUND))
+	    self.jump_flag = self.velocity_z;
+	
     CheckPowerups ();
 
     // If we are on the Brink Of Death
@@ -1550,6 +1637,14 @@ void(entity attacker) ClientObituary =
     {
         bprint2 (self.netname, " was squashed\n");
         self.noise1 = "thevoice/squash.wav";
+
+        Cl_UpdatePlayerFrags (self, -1);  // killed self
+        return;
+    }
+	
+	if (self.deathtype == "falling")
+    {
+        bprint2 (self.netname, " fell to his death\n");        
 
         Cl_UpdatePlayerFrags (self, -1);  // killed self
         return;
@@ -1944,24 +2039,23 @@ void(entity attacker) ClientObituary =
         else if (attacker.classname == "monster_butcher")
             m_name = "a bloated zombie";
         else if (attacker.classname == "monster_browncultist")
-            m_name = "a shotgun cultist";
+            m_name = "a Cultist";
         else if (attacker.classname == "monster_blackcultist")
-            m_name = "a tommygun cultist";
+            m_name = "a Fanatic";
         else if (attacker.classname == "monster_greencultist")
-            m_name = "a TNT cultist";
+            m_name = "an Acolyte";
         else if (attacker.classname == "monster_bluecultist")
-            m_name = "a tesla cultist";
+            m_name = "a Zealot";
         else if (attacker.classname == "monster_redcultist")
-            m_name = "a chosen cultist";
+            m_name = "a Priest";
         else if (attacker.classname == "monster_gargoyle")
             m_name = "a gargoyle";
         else if (attacker.classname == "monster_stonegargoyle")
             m_name = "a stone gargoyle";
         else if (attacker.classname == "monster_minicaleb")
             m_name = "a mini-caleb";
-        else if (attacker.flags & FL_MONSTER)
+        else
             m_name = "an unknown monster";
-        else break; // Wasn't killed by a monster
 
         bprint4 (self.netname, " was killed by ", m_name, "\n");
     }
@@ -1974,6 +2068,35 @@ void(entity attacker) ClientObituary =
         // hell if I know; he's just dead!!!
         bprint2 (self.netname, " died\n");
     }
+};
+
+
+// I need to test this and see if this only affects on players screen
+void() FadePlayerDisplay =
+{
+    local float i; 
+	local string temp1, temp2;
+	
+	i = 15;
+	
+	if (self.poison > 255)
+	    self.poison = 255;
+	
+	while (i > 1 && self.poison > 1)
+	{
+	    temp1 = ftos(self.poison);
+		temp2 = strcat("v_cshift 0 0 0 ", temp1);
+		
+		stuffcmd(self, temp2);
+				
+		self.poison = self.poison - 1;
+		i = i - 1;
+	}	
+};
+
+void() ResetPlayerDisplay =
+{
+    localcmd("v_cshift 0 0 0 0\n");
 };
 
 // Player taunts

@@ -32,10 +32,24 @@ BE .8 .3 .4 IN COLOR */
 
 void() SUB_regen =
 {
+     // Items don't respawn in singleplayer / coop
+	 if (!(deathmatch))
+	 {
+	     remove(self);
+		 return;
+	 }	     
+    
     self.model = self.mdl;      // restore original model
     self.solid = SOLID_TRIGGER; // allow it to be touched again
     sound (self, CHAN_VOICE, "bludbath/reappear.wav", 1, ATTN_NORM);    // item respawn sound
     setorigin (self, self.origin);
+
+    // Turn pretty glowing auras back on
+    if (self.classname == "item_artifact_deathmask")
+	    self.effects = self.effects | EF_RED;
+	else if (self.classname == "item_artifact_reflect")
+        self.effects = self.effects | EF_BLUE;
+	
 
     // Don't call it back later
     if (self.think == SUB_regen)
@@ -111,7 +125,8 @@ void() Invisibility_Touch =
         return;
 
     // FIXME: need to set alpha for each weapon instead of totally losing player v_weap
-    self.mdl = self.model;
+    other.alpha = 0.2;
+	self.mdl = self.model;
 
     sound (other, CHAN_VOICE, self.noise, 1, ATTN_NORM);
     stuffcmd (other, "bf\n");
@@ -172,7 +187,9 @@ void(float isAnObject) PlaceItemOrObject =
     }
     else
         self.solid = SOLID_BBOX;
-
+		
+    // Make coordinates low precision to save net bandwidth
+    self.effects = self.effects | EF_LOWPRECISION;
     self.movetype = MOVETYPE_TOSS;
     self.velocity = '0 0 0';
     self.origin_z = self.origin_z + 2;
@@ -197,7 +214,7 @@ void(float isAnObject) PlaceItemOrObject =
         // the object has virtually no cost from the server point of view)
         if (!self.spawnflags && !self.think1)
         {
-            makestatic (self);
+			makestatic (self);
             return;
         }
 
@@ -276,69 +293,6 @@ void(string objmodel, vector bbox_min, vector bbox_max) StartObject =
 };
 
 
-// pile of bones
-void() obj_bonepile =
-{
-    StartObject ("progs/bonepile.mdl", '-16 -15 -3', '16 16 14');
-};
-
-// small bush
-void() obj_bush1 =
-{
-    StartObject ("progs/bush1.mdl", '-31 -34 -1', '31 32 39');
-};
-
-// Corpse, Face up
-void() obj_corps2 =
-{
-    StartObject ("progs/corps2.mdl", '-37 -17 -2', '39 17 13');
-};
-
-// a rusty metal cross with a tilted cross beam
-void() obj_cross =
-{
-    StartObject ("progs/cross.mdl", '-3 -12 -19', '3 12 21');
-};
-
-// large 2 tier fountain
-void() obj_fountain =
-{
-    if (self.sounds > 0)
-        ambient_water1();
-
-    StartObject ("progs/fountain.mdl", '-31 -27 -1', '31 27 95');
-};
-
-// Soccer Goal
-void() obj_goal =
-{
-    StartObject ("progs/goalpost.mdl", '-51 -65 -3', '55 65 111');
-};
-
-// tall triangular hedge
-void() obj_hedge1 =
-{
-    StartObject ("progs/hedge1.mdl", '-27 -27 -1', '26 26 92');
-};
-
-// small plant
-void() obj_plantgen =
-{
-    StartObject ("progs/plantgen.mdl", '-30 -29 -1', '29 30 30');
-};
-
-// potted plant
-void() obj_plantmez =
-{
-    StartObject ("progs/plantmez.mdl", '-30 -29 -1', '29 30 39');
-};
-
-// plant in vase
-void() obj_plantrom =
-{
-    StartObject ("progs/plantrom.mdl", '-39 -38 -1', '39 39 95');
-};
-
 // Large Vase (tile0537)
 void() obj_pot1 =
 {
@@ -355,12 +309,6 @@ void() obj_pot2 =
 void() obj_pot5 =
 {
     StartObject ("models/world/pot5.md3", '-7 -7 0', '7 7 15');
-};
-
-// seaweed
-void() obj_seaweed =
-{
-    StartObject ("progs/seaweed.mdl", '-4 -5 0', '4 5 72');
 };
 
 // Stake w/ 1 skull (tile0257)
@@ -429,37 +377,11 @@ void() obj_tree2 =
     StartObject ("models/world/tree2.md3", '-32 -41 0', '52 45 174');
 };
 
-// Brown skull
-void() obj_skull =
-{
-    StartObject ("progs/skull.mdl", '-6 -4 0', '6 4 11');
-};
-
-// bar stool
-void() obj_stool =
-{
-    StartObject ("progs/stool.mdl", '-7 -7 0', '7 7 18');
-};
-
-// White skull
-void() obj_m2 =
-{
-    StartObject ("progs/m2.mdl", '-12 -8 -11', '12 8 11');
-};
-
-// Green skull
-void() obj_m3 =
-{
-    StartObject ("progs/m3.mdl", '-12 -8 -11', '12 8 11');
-};
-
 // Shovel (tile1713)
 void() obj_shovel =
 {
     StartObject ("models/world/shovel.md3", '-0 -7 -27', '3 7 26');
 };
-
-// -------------------- MD3 models -------------------- //
 
 // Glass Jar w/brain (tile0075)
 void() obj_world_jar1 =
@@ -658,6 +580,26 @@ void() obj_world_metbarrel2 =
     StartObject ("models/world/metbarrel2.md3", '-14 -14 0', '14 14 36');
 };
 
+// Soccer Goal
+void() obj_goal =
+{
+    StartObject ("models/world/goalposts.md3", '-40 -52 0', '44 52 90');
+};
+
+// Dead innocent sitting FIXME: BBox is from frame 0
+void() obj_body_sitting =
+{
+    self.frame = 21;
+	StartObject ("models/enemies/innocent.md3", '-6 -14 0', '15 10 55');
+};
+
+// Dead innocent spread out FIXME: BBox is from frame 0
+void() obj_body_spread =
+{
+    self.frame = 22;
+	StartObject ("models/enemies/innocent.md3", '-6 -14 0', '15 10 55');
+};
+
 /*
 ===================================
 
@@ -671,6 +613,8 @@ void() powerup_touch =
         return;
     if (other.health <= 0)
         return;
+		
+	self.effects = 0;
 
     // do the appropriate action (listed in alphabetical order)
     if (self.classname == "item_artifact_bag")
@@ -826,7 +770,7 @@ void() health_touch =
     sound(other, CHAN_ITEM, self.noise, 1, ATTN_NORM);
 
     stuffcmd (other, "bf\n");
-
+	
     self.model = string_null;
     self.solid = SOLID_NOT;
 
@@ -837,10 +781,6 @@ void() health_touch =
     activator = other;
     SUB_UseTargets();       // fire all targets / killtargets
 };
-
-
-#define H_LIFE_ESSENCE  1
-#define H_LIFE_SEED     2
 
 void() item_health =
 {
@@ -876,7 +816,7 @@ void() item_health =
         self.healtype = 2;
 
         // Set animation loop
-        self.anim_len = 9;  // 9 frames in the animation
+        self.anim_len = 42;  // 42 frames in the animation
         self.think1 = SUB_AutoAnimation;
     }
     else
@@ -887,12 +827,18 @@ void() item_health =
         self.healtype = 1;
     }
 
-    precache_model (self.model);
+    // already precached, and you can't precache in the middle of a game
+    if (self.classname != "drop_item")
+	    precache_model (self.model);
+		
     setmodel(self, self.model);
     setsize (self, '-16 -16 0', '16 16 56');
 
     self.noise = "items/pickheal.wav";
-    precache_sound (self.noise);
+    
+    // already precached, and you can't precache in the middle of a game
+	if (self.classname != "drop_item")
+	    precache_sound (self.noise);
 
     StartItem ();
 };
@@ -1301,7 +1247,7 @@ void() weapon_flaregun =
 
     // precache the necessary sounds
     PsychoCaleb_Precache ();
-    precache_model ("progs/flame2.mdl");
+    precache_model ("models/weapons/objects/flare.md3");
     precache_sound ("weapons/flaregun/flaref.wav");
     precache_sound ("weapons/napalm/explodfs.wav");  // For alt-flares
 
@@ -1310,51 +1256,72 @@ void() weapon_flaregun =
     StartItem ();
 };
 
-// Sawed-off
-void() weapon_sawedoff =
+void() precache_sawedoff =
 {
     precache_model ("models/weapons/v_shot.md3");
     precache_model ("models/weapons/ga_shot.md3");              // akimbo model
     precache_model ("models/weapons/g_shot.md3");
     precache_model ("models/weapons/objects/shotshell.md3");    // shotgun shell
-
-    setmodel (self, "models/weapons/g_shot.md3");
-    self.weapon = IT_SAWED_OFF;
-    self.netname = "Sawed-off";
-    self.touch = weapon_touch;
-    setsize (self, '-16 -16 0', '16 16 56');
-
-    // Precache the necessary sounds
+        
+	// Precache the necessary sounds
     precache_sound ("weapons/shotgun/shotcock.wav");  // shell ejection
     precache_sound ("weapons/shotgun/shotfir2.wav");  // shotgun alt-fire
     precache_sound ("weapons/shotgun/shotfire.wav");  // shotgun fired
     precache_sound ("weapons/shotgun/shotload.wav");  // reload sound
     precache_sound ("weapons/shtshl2.wav");  // shell hitting ground
+};
 
+// Sawed-off
+void() weapon_sawedoff =
+{
+    // already precached, and you can't precache in the middle of a game
+    if (self.classname != "drop_item")
+	    precache_sawedoff();
+	else
+	    self.classname = "weapon_sawedoff"; // For monster weapon drop
+
+    setmodel (self, "models/weapons/g_shot.md3");
+    self.weapon = IT_SAWED_OFF;
+    self.netname = "Sawed-off";
+	
+    self.touch = weapon_touch;
+    setsize (self, '-16 -16 0', '16 16 56');
+
+    
     available_weapons = available_weapons | IT_SAWED_OFF;
 
     StartItem ();
 };
 
-// Tommy Gun
-void() weapon_tommygun =
+void() precache_tommygun =
 {
     precache_model ("models/weapons/v_tommy.md3");
     precache_model ("models/weapons/ga_tommy.md3");             // akimbo model
     precache_model ("models/weapons/g_tommy.md3");
     precache_model ("models/weapons/objects/bulletshell.md3");  // tommy gun shell
+		
+	// Precache the necessary sounds
+    precache_sound ("weapons/tommygun/_tom.wav");     // Fire
+    precache_sound ("weapons/tommygun/tomcock.wav");  // Out of bullet noise
+    precache_sound ("weapons/shtshl.wav");            // shell hitting ground
+    precache_sound ("weapons/shtshl3.wav");           // shell hitting ground (2nd)
+};
+
+
+// Tommy Gun
+void() weapon_tommygun =
+{
+    // already precached, and you can't precache in the middle of a game
+    if (self.classname != "drop_item")
+	    precache_tommygun();
+	else
+	    self.classname = "weapon_tommygun";
 
     setmodel (self, "models/weapons/g_tommy.md3");
     self.weapon = IT_TOMMYGUN;
     self.netname = "Tommy Gun";
     self.touch = weapon_touch;
-    setsize (self, '-16 -16 0', '16 16 56');
-
-    // Precache the necessary sounds
-    precache_sound ("weapons/tommygun/_tom.wav");     // Fire
-    precache_sound ("weapons/tommygun/tomcock.wav");  // Out of bullet noise
-    precache_sound ("weapons/shtshl.wav");            // shell hitting ground
-    precache_sound ("weapons/shtshl3.wav");           // shell hitting ground (2nd)
+    setsize (self, '-16 -16 0', '16 16 56');        
 
     available_weapons = available_weapons | IT_TOMMYGUN;
 
@@ -1387,6 +1354,20 @@ void() weapon_spraycan =
     StartItem ();
 };
 
+void() precache_tnt =
+{
+    precache_model ("models/weapons/v_tnt.md3");
+    precache_model ("models/weapons/grenades/gr_tnt.md3");	
+    precache_model (self.model);
+	
+    // Precache the necessary sounds
+    PsychoCaleb_Precache ();
+    precache_sound ("weapons/tnt/lighter.wav");  // = zipopen.wav + ziplight.wav
+    precache_sound ("weapons/tnt/tntfuse.wav");  // tnt lit
+    precache_sound ("weapons/tnt/tnttoss.wav");  // throw sound
+    precache_sound ("weapons/tnt/zipclose.wav");
+
+};
 
 // TNT (bundle or case)
 void() weapon_tnt =
@@ -1409,22 +1390,19 @@ void() weapon_tnt =
         maxSize = '8 8 32';
     }
 
-    precache_model ("models/weapons/v_tnt.md3");
-    precache_model ("models/weapons/grenades/gr_tnt.md3");
+    // already precached, and you can't precache in the middle of a game
+    if (self.classname != "drop_item")
+	    precache_tnt();
+	else
+	    self.classname = "weapon_tnt";
 
-    precache_model (self.model);
+	
     setmodel (self, self.model);
     setsize (self, minSize, maxSize);
 
     self.weapon = IT_TNT;
     self.touch = weapon_touch;
 
-    // Precache the necessary sounds
-    PsychoCaleb_Precache ();
-    precache_sound ("weapons/tnt/lighter.wav");  // = zipopen.wav + ziplight.wav
-    precache_sound ("weapons/tnt/tntfuse.wav");  // tnt lit
-    precache_sound ("weapons/tnt/tnttoss.wav");  // throw sound
-    precache_sound ("weapons/tnt/zipclose.wav");
 
     available_weapons = available_weapons | IT_TNT;
 
@@ -1505,27 +1483,37 @@ void() weapon_napalmlauncher =
     StartItem ();
 };
 
-// Tesla Cannon
-void() weapon_teslacannon =
+void() precache_teslacannon =
 {
     precache_model ("models/weapons/v_tesla.md3");
     precache_model ("models/weapons/ga_tesla.md3");  // Akimbo model
     precache_model ("models/weapons/g_tesla.md3");
     precache_model ("progs/teslaball.spr");
-    precache_model ("progs/bolt2.mdl");
-
-    setmodel (self, "models/weapons/g_tesla.md3");
-    self.weapon = IT_TESLA_CANNON;
-    self.netname = "Tesla Cannon";
-    self.touch = weapon_touch;
-    setsize (self, '-16 -16 0', '16 16 56');
-
-    // Precache the necessary sounds
+    precache_model ("models/weapons/objects/alttesla.md3");
+		
+	// Precache the necessary sounds
     precache_sound ("weapons/tesla/tessngfr.wav");  // normal fire
     precache_sound ("weapons/tesla/tessnght.wav");  // normal hit
     precache_sound ("weapons/tesla/tesaltht.wav");  // altfire hit
     precache_sound ("weapons/tesla/tessuper.wav");  // alt fire charge up + fire
     precache_sound ("weapons/tesla/tesakima.wav");  // alt fire charge up + fire (Akimbo)
+
+};
+
+// Tesla Cannon
+void() weapon_teslacannon =
+{
+    // already precached, and you can't precache in the middle of a game
+    if (self.classname != "drop_item")
+	    precache_teslacannon();
+	else
+	    self.classname = "weapon_teslacannon";
+
+    setmodel (self, "models/weapons/g_tesla.md3");
+    self.weapon = IT_TESLA_CANNON;
+    self.netname = "Tesla Cannon";
+    self.touch = weapon_touch;
+    setsize (self, '-16 -16 0', '16 16 56');    
 
     available_weapons = available_weapons | IT_TESLA_CANNON;
 
@@ -1559,7 +1547,7 @@ void() weapon_lifeleech =
 {
     precache_model ("models/weapons/v_leech.md3");
     precache_model ("models/weapons/g_leech.md3");
-    precache_model ("progs/bolt.mdl");
+    precache_model ("progs/lechball.mdl"); // leechball.spr
     precache_model ("progs/teslaball.spr");
 
     setmodel (self, "models/weapons/g_leech.md3");
@@ -1702,8 +1690,6 @@ void() ammo_touch =
 };
 
 
-#define AMMO_BIG 1
-
 // Flares
 void() ammo_flares =
 {
@@ -1738,8 +1724,14 @@ void() ammo_shell =
         self.netname = "4 shotgun shells";
         self.aflag = 4;
     }
-    precache_model (self.model);
-    setmodel (self, self.model);
+    
+	// already precached, and you can't precache in the middle of a game
+    if (self.classname != "drop_item")
+	    precache_model (self.model);
+	else
+	    self.classname = "ammo_shell";
+    
+	setmodel (self, self.model);
     self.weapon = 1;
     setsize (self, '-16 -16 0', '16 16 56');
     StartItem ();
@@ -1762,7 +1754,13 @@ void() ammo_bullets =
         self.netname = "a few bullets";
         self.aflag = 15;
     }
-    precache_model (self.model);
+    
+	// already precached, and you can't precache in the middle of a game
+    if (self.classname != "drop_item")
+	    precache_model (self.model);
+	else
+	    self.classname = "ammo_bullets";
+		
     setmodel (self, self.model);
     self.weapon = 2;
     setsize (self, '0 0 0', '32 32 56');
@@ -1791,7 +1789,13 @@ void() ammo_batteries =
     self.touch = ammo_touch;
 
     self.model = "models/ammo/a_battery.md3";
-    precache_model (self.model);
+    
+	// already precached, and you can't precache in the middle of a game
+    if (self.classname != "drop_item")
+	    precache_model (self.model);
+	else
+	    self.classname = "ammo_batteries";
+
     setmodel (self, self.model);
     self.aflag = 32;
 

@@ -21,18 +21,6 @@
 #include "common.qh"
 #include "player.qh"
 
-
-// flag status used in cnt field of flag
-#define FLAG_AT_BASE 0
-#define FLAG_CARRIED 1
-#define FLAG_DROPPED 2
-
-#define TEAM_CAPTURE_CAPTURE_BONUS  15  // what you get for capture
-#define TEAM_CAPTURE_RECOVERY_BONUS 1   // what you get for recovery
-
-#define TEAM_CAPTURE_FLAG_RETURN_TIME 40  // seconds until auto return
-
-
 $cd id1/models/flag
 $base base
 $skin skin
@@ -300,8 +288,8 @@ void() CTF_FlagThink =
 
 
 void() place_flag = {
-    setmodel (self, "progs/flag.mdl");
-    setsize(self, '-6 -7 -1', '6 49 75');
+    setmodel (self, "models/objects/flag.md3");
+    setsize(self, '-3 -20 0', '4 20 55');
 
     self.mdl = self.model;      // so it can be restored on respawn
     self.flags = FL_ITEM;       // make extra wide
@@ -340,7 +328,7 @@ void() item_flag_team1 =
         return;
     }
 
-    precache_model ("progs/flag.mdl");
+    precache_model ("models/objects/flag.md3");
 
     precache_sound ("thevoice/8000.wav");  // "Red captures the flag"
     precache_sound ("thevoice/8002.wav");  // "Red returns the flag"
@@ -368,7 +356,7 @@ void() item_flag_team2 =
         return;
     }
 
-    precache_model ("progs/flag.mdl");
+    precache_model ("models/objects/flag.md3");
 
     precache_sound ("thevoice/8001.wav");  // "Blue captures the flag"
     precache_sound ("thevoice/8003.wav");  // "Blue returns the flag"

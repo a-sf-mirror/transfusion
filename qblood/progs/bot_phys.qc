@@ -29,7 +29,7 @@
 #ifndef NO_FRIKBOT
 
 #include "common.qh"
-
+#include "bot.qh"
 
 /*
 =========================================

@@ -17,16 +17,6 @@
     See file, 'COPYING', for details.
 */
 
-/* Tim's to-do list
-
-    flame looks like it's coming out of neck, needs to come from mouth
-    head - Kick hell hounds head around!
-    need to get real health and damage values
-    immunity to fire attacks - in T_Damage - combat.qc
-    instant death by water
-*/
-
-
 #include "common.qh"
 
 
@@ -56,7 +46,7 @@ $frame pain1 pain2 pain3
 
 //death
 
-$frame death1 death2 death3 death4 death5 death6 death7 death8
+$frame death1 death2 death3 death4 death5 death6
 
 
 // Prototypes
@@ -294,18 +284,19 @@ void () hellhound_death2 = [$death2, hellhound_death3] {};
 void () hellhound_death3 = [$death3, hellhound_death4] {};
 void () hellhound_death4 = [$death4, hellhound_death5] {};
 void () hellhound_death5 = [$death5, hellhound_death6] {};
-void () hellhound_death6 = [$death6, hellhound_death7] {};
-void () hellhound_death7 = [$death7, hellhound_death8] {};
-void () hellhound_death8 = [$death8, hellhound_death8]
+void () hellhound_death6 = [$death6, hellhound_death6]
 {
-    // In the last frame, remove self 15 seconds after death
-    self.nextthink = time + 15;
+    CloneCorpse (self);
+
+    // In the last frame, spawn corpse, remove self 1 second after death
+    self.nextthink = time + 1;
     self.think = SUB_Remove;
 };
 
 void () hellhound_die =
 {
-    self.effects = 0;
+     monster_death();
+	 
     if (self.health < -40)
     {
         sound (self, CHAN_VOICE, "hellhound/cerbdie3.wav", 1, ATTN_NORM);
@@ -321,22 +312,16 @@ void () hellhound_die =
     else
         sound (self, CHAN_VOICE, "hellhound/cerbdie2.wav", 1, ATTN_NORM);
 
-    hellhound_death1 ();
-    self.solid = SOLID_NOT;
+    hellhound_death1 ();    
 };
 
 //--- The spawn
 
 void () monster_hellhound =
 {
-/* Disable for testing the model
+    //  Disable for testing
+    monster_check();
 
-    if (deathmatch)
-    {
-        remove (self);
-        return ;
-    }
-*/
     precache_model ("models/enemies/hellhound.md3");
     precache_model ("progs/sprayfir.spr");
 
@@ -352,7 +337,7 @@ void () monster_hellhound =
     precache_sound ("hellhound/smalwoof.wav");
 
     self.solid = SOLID_SLIDEBOX;
-    self.movetype = MOVETYPE_STEP;
+    self.movetype = MOVETYPE_TOSS;
     setmodel (self, "models/enemies/hellhound.md3");
     setsize (self,'-39 -17 0', '38 17 35');
     self.health = 100;

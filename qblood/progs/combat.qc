@@ -110,7 +110,7 @@ void(entity targ, entity attacker) Killed =
 
     // fall to ground
     if (self.flags & FL_FLY)
-        self.flags = self.flags - FL_FLY;
+	    self.flags = self.flags - FL_FLY;
     if (self.flags & FL_SWIM)
         self.flags = self.flags - FL_SWIM;
 
@@ -163,8 +163,6 @@ float(entity targ, float armour, float damage) ArmorSave =
     return save;
 };
 
-
-#define MAX_RECURSION_COUNT 5
 /*
 ============
 T_Damage
@@ -194,6 +192,13 @@ void(entity targ, entity inflictor, entity attacker, float damage, float dflags,
                 inflictor.classname != "grenade"          &&  // All bombs, lighted Spray Can, Napalm Launcher (altfire)
                 inflictor.classname != "missile")             // Napalm Launcher (normal), Life Leech
                 return;
+	
+	// Hellhound / Cerebrus can't be hurt by fire, but can be hurt by the napalm launcher and TNT
+	if ((targ.classname == "monster_hellhound" || targ.classname == "monster_cerebrus") && 
+	    (dflags & DF_FIRE) && 
+	    inflictor.weapon != IT_NAPALM_LAUNCHER &&
+		dtype != "grenade")
+	    return;	
 
     // Used by buttons and triggers to set activator for target firing
     damage_attacker = attacker;
@@ -333,31 +338,26 @@ void(entity targ, entity inflictor, entity attacker, float damage, float dflags,
     // Do the damage.
     targ.health = targ.health - take;
 
-    if (targ.health <= 0)
-    {
-        // If a player reaches between -1 and 1 HP (Brink Of Death)
-        if (targ.health >= -1 && targ.health <= 1 && targ.classname == "player")
-        {
-            // If he wasn't already on the Brink Of Death
-            // and if he doesn't kill himself
-            if (targ.player_state != PS_BRINK_OF_DEATH && targ != attacker)
-            {
-                // If he doesn't burn, he becomes on the BOD; else let him go
-                if (targ.burner == world)
-                {
-                    Player_BrinkOfDeath (targ, attacker);
-                    return;
-                }
-            }
-        }
-
-        // Target was slain!
+    if (targ.health >= -1                      && // If a player reaches between -1 and 1 HP (Brink Of Death)
+	    targ.health <= 1                       &&
+		targ.classname == "player"             && // BOD can only be done player to player
+		attacker.classname == "player"         &&
+		targ.player_state != PS_BRINK_OF_DEATH && // If he wasn't already on the Brink Of Death
+		targ != attacker                       && // and if he doesn't kill himself
+		targ.burner == world)
+	{
+	    Player_BrinkOfDeath (targ, attacker);
+        return;
+    }
+	else if (targ.health <= 0)
+	{
+		// Target was slain!
         if (!targ.deadflag)
             targ.deathtype = dtype;
 
         Killed (targ, attacker);
         return;
-    }
+	}        
 
     // React to the damage.
     oldself = self;

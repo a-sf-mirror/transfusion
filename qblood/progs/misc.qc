@@ -46,7 +46,6 @@ void() FireAmbient =
 
 //============================================================================
 
-#define START_OFF   1
 
 void() light_use =
 {
@@ -128,7 +127,7 @@ void(string flame_model) light_flame_generic =
 // Small wall torch
 void() light_torch_small_walltorch =
 {
-    light_flame_generic ("progs/flame.mdl");
+    light_flame_generic ("progs/flame.spr");
 };
 
 // Large yellow flame
@@ -142,13 +141,6 @@ void() light_flame_small_yellow =
 {
     light_flame_generic ("progs/flame.spr");
 };
-
-// Small white flame
-void() light_flame_small_white =
-{
-    light_flame_generic ("progs/flame2.mdl");
-};
-
 
 //============================================================================
 
@@ -448,7 +440,7 @@ void() trap_napalm_use =
 void() trap_napalm =
 {
     precache_sound ("weapons/napalm/blaster.wav");
-    precache_model ("progs/missile.mdl");
+    precache_model ("models/weapons/objects/napalm.md3");
 
     // a little hack so it will shot from its origin...
     self.origin = self.origin - '0 0 16';
@@ -572,7 +564,6 @@ This is just a solid wall if not inhibitted
 
 void() func_wall =
 {
-    bprint("func_wall\n");
     self.movetype = MOVETYPE_PUSH;  // so it doesn't get pushed by anything
     self.solid = SOLID_BSP;
     setmodel (self, self.model);
@@ -612,6 +603,26 @@ void() func_illusionary =
     self.solid = SOLID_NOT;
     setmodel (self, self.model);
     makestatic (self);
+};
+
+
+
+void() func_transparent =
+
+{
+   	if (!self.alpha)
+	    self.alpha = 0.5;
+
+	self.angles = '0 0 0';
+    self.movetype = MOVETYPE_NONE;
+
+    if (!self.style)
+        self.solid = SOLID_BSP;
+	else
+        self.solid = SOLID_NOT;
+		
+    setmodel (self, self.model);
+    makestatic (self);	
 };
 
 

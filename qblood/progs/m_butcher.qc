@@ -17,16 +17,6 @@
     See file, 'COPYING', for details.
 */
 
-/* Tim's to-do list
-
-    tweak corpse explosion
-    corpse explosion model when voodoo dolled alt-fire death?
-    model - vomit ball (Kazashi and Cruaich)
-    need to get real health and damage values
-    need to drop head
-*/
-
-
 #include "common.qh"
 
 
@@ -239,18 +229,18 @@ void () butcher_attack =
     if (dist < 90)// chop player with cleaver
         butcher_attackc1 ();
 
-    else if (random () < 0.5)
-    {
-        // Throw cleaver
-        self.attack_state = AS_MISSILE;
-        butcher_attacka1 ();
-    }
-
-    else
+    else if (dist < 500)
     {
         // Vomit acid ball
         self.attack_state = AS_MISSILE;
         butcher_attackb1 ();
+    }
+
+    else
+    {
+        // Throw cleaver
+        self.attack_state = AS_MISSILE;
+        butcher_attacka1 ();
     }
 };
 
@@ -274,8 +264,7 @@ void () butcher_launch_cleaver =
     newmis.origin = self.origin + '0 -8 20';
     newmis.velocity = vec * 600;
     newmis.avelocity = '500 500 500';
-    newmis.touch = butcher_CleaverTouch;
-    self.effects = 0;
+    newmis.touch = butcher_CleaverTouch;    
 };
 
 //--- Cleaver hit something solid, now what?
@@ -327,8 +316,7 @@ void () butcher_launch_vomit =
     newmis.origin = self.origin + '0 0 28';
     newmis.velocity = vec * 600;
     newmis.avelocity = '500 500 500';
-    newmis.touch = butcher_VomitTouch;
-    self.effects = 0;
+    newmis.touch = butcher_VomitTouch;    
 };
 
 //--- Vomit hit something solid, now what?
@@ -427,16 +415,16 @@ void () butcher_death13 = [$death13, butcher_death13]
 
 // Sequence for burn or voodoo death
 
-void () butcher_explode1 = [1, butcher_explode2] {};
-void () butcher_explode2 = [2, butcher_explode3] {};
-void () butcher_explode3 = [3, butcher_explode4] {};
-void () butcher_explode4 = [4, butcher_explode5] {};
-void () butcher_explode5 = [5, butcher_explode6] {};
-void () butcher_explode6 = [6, butcher_explode7] {};
-void () butcher_explode7 = [7, butcher_explode8] {};
-void () butcher_explode8 = [8, butcher_explode9] {};
-void () butcher_explode9 = [9, butcher_explode10] {};
-void () butcher_explode10 = [10, butcher_explode10]
+void () butcher_explode1 = [0, butcher_explode2] {};
+void () butcher_explode2 = [1, butcher_explode3] {};
+void () butcher_explode3 = [2, butcher_explode4] {};
+void () butcher_explode4 = [3, butcher_explode5] {};
+void () butcher_explode5 = [4, butcher_explode6] {};
+void () butcher_explode6 = [5, butcher_explode7] {};
+void () butcher_explode7 = [6, butcher_explode8] {};
+void () butcher_explode8 = [7, butcher_explode9] {};
+void () butcher_explode9 = [8, butcher_explode10] {};
+void () butcher_explode10 = [9, butcher_explode10]
 {
     // In the last frame, remove self 15 seconds after death
     self.nextthink = time + 15;
@@ -446,29 +434,40 @@ void () butcher_explode10 = [10, butcher_explode10]
 
 void () butcher_die =
 {
-    self.effects = 0;
+    monster_death();
+
     if (self.health < -40)
     {
         sound (self, CHAN_VOICE, "butcher/fzomdie3.wav", 1, ATTN_NORM);
 
         ThrowHead ("models/enemies/butcher_head.md3", self.health);
-        RandomHumanGibs ();
+
+        // Make new head 100% null
+		self.think = SUB_Null;
+		self.th_stand = SUB_Null;
+        self.th_walk = SUB_Null;
+        self.th_run = SUB_Null;
+        self.th_pain = SUB_Null;
+        self.th_missile = SUB_Null;
+		self.nextthink = time + 0.2;
+		self.classname = "head";
+        self.touch = HeadTouch;
+        BecomeCorpse (80, HeadDie);
+
+		RandomHumanGibs ();
         RandomHumanGibs (); // Many gibs!
-        remove (self);
         return;
     }
 
     if (random () < 0.5)
         sound (self, CHAN_VOICE, "butcher/fzomdie1.wav", 1, ATTN_NORM);
     else
-        sound (self, CHAN_VOICE, "butcher/fzomdie2.wav", 1, ATTN_NORM);
+        sound (self, CHAN_VOICE, "butcher/fzomdie2.wav", 1, ATTN_NORM);    
 
-    self.solid = SOLID_NOT;
-
-    if (self.deathtype == "fire")
-    {
-        ThrowHead ("models/enemies/butcher_head.md3", self.health);
+    if (self.deathtype == "fire" || self.deathtype == "alt-voodoo")
+    {        
         setmodel (self, "models/enemies/butcher_explode.md3");
+		setsize (self, '-7 -11 0', '4 8 51');
         butcher_explode1 ();
     }
 
@@ -479,14 +478,9 @@ void () butcher_die =
 
 void () monster_butcher =
 {
-/* Disable for testing the model
-
-    if (deathmatch)
-    {
-        remove (self);
-        return ;
-    }
-*/
+    //  Disable for testing
+    monster_check();	
+	
     precache_model ("models/enemies/butcher.md3");
     precache_model ("models/enemies/butcher_cleaver.md3");
     precache_model ("models/enemies/butcher_head.md3");
@@ -506,7 +500,7 @@ void () monster_butcher =
 
 
     self.solid = SOLID_SLIDEBOX;
-    self.movetype = MOVETYPE_STEP;
+    self.movetype = MOVETYPE_TOSS;
     setmodel (self, "models/enemies/butcher.md3");
     setsize (self,'-8 -11 0', '11 11 50');
     self.health = 300;

@@ -17,16 +17,6 @@
     See file, 'COPYING', for details.
 */
 
-/* Tim's to-do list
-
-    need more frames - luke
-    Need real attack values
-    Need crawling from grave sequence and spawnflag for the two variants
-    Sounds - add crawling from grave sounds
-    Feigns death, which looks like his death sequence when he takes shotgun blasts
-*/
-
-
 #include "common.qh"
 
 
@@ -181,20 +171,21 @@ void () zombie_pain =
 
 void () zombie_death1 = [$idle1, zombie_death1]
 {
-    // In the last frame, remove self 15 seconds after death
-    self.nextthink = time + 15;
+    CloneCorpse (self);
+
+    // In the last frame, spawn corpse, remove self 1 second after death
+    self.nextthink = time + 1;
     self.think = SUB_Remove;
 };
 
 void () zombie_die =
 {
-    self.effects = 0;
+    monster_death();
+	
     if (self.health < -40)
     {
         sound (self, CHAN_VOICE, "axezombie/azomdie3.wav", 1, ATTN_NORM);
-
         RandomHumanGibs();
-
         remove (self);
         return;
     }
@@ -204,22 +195,16 @@ void () zombie_die =
     else
         sound (self, CHAN_VOICE, "axezombie/azomdie2.wav", 1, ATTN_NORM);
 
-    zombie_death1 ();
-    self.solid = SOLID_NOT;
+    zombie_death1 ();    
 };
 
 //--- The spawn
 
 void () monster_zombie =
 {
-/* Disable for testing the model
+    //  Disable for testing
+    monster_check();
 
-    if (deathmatch)
-    {
-        remove (self);
-        return ;
-    }
-*/
     precache_model ("models/enemies/zombie.md3");
 
     precache_sound ("axezombie/azomdie1.wav");
@@ -235,7 +220,7 @@ void () monster_zombie =
 
 
     self.solid = SOLID_SLIDEBOX;
-    self.movetype = MOVETYPE_STEP;
+    self.movetype = MOVETYPE_TOSS;
     setmodel (self, "models/enemies/zombie.md3");
     setsize (self,'-5 -15 0', '11 15 62');
     self.health = 100;

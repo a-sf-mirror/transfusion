@@ -290,7 +290,6 @@ float available_weapons;
 // Number of the current map in the map cycle
 float map_cycle;
 
-
 //================================================
 
 //
@@ -428,7 +427,7 @@ float map_cycle;
 .float      invincible_finished;
 .float      invisible_finished;
 .float      akimbo_finished;
-.float      radsuit_finished;
+.float      poison;         // for spider bites / choking hands
 
 .float      invincible_time, invincible_sound;
 .float      invisible_time, invisible_sound;
@@ -639,3 +638,32 @@ void(entity e) setspawnparms = #78;  // set parm1... to the values at level star
 // QC extensions
 float(string name, string value) registercvar   = #93;
 float(string s) checkextension                  = #99;
+
+// concatenates two strings (for example "abc", "def" would return "abcdef") and returns as a tempstring
+string(string s1, string s2) strcat             = #115; 
+
+/*
+    Temporary entities were simplified.  Here's the simpler functions...
+*/
+
+//creates a blood effect
+void(vector org, vector velocity, float howmany) te_blood = #405;
+
+//creates an exploding shower of blood, for making gibbings more convincing.	
+void(vector mincorner, vector maxcorner, float explosionspeed, float howmany) te_bloodshower = #406;
+
+//creates a colored explosion effect
+void(vector org, vector color) te_explosionrgb = #407;
+
+//creates a cloud of particles, useful for forcefields but quite customizable.
+void(vector mincorner, vector maxcorner, vector vel, float howmany, float color, float gravityflag, float randomveljitter) te_particlecube = #408;
+
+//creates a shower of rain, the rain will appear either at the top (if falling down) or bottom (if falling up) of the cube.
+void(vector mincorner, vector maxcorner, vector vel, float howmany, float color) te_particlerain = #409;
+
+//creates a shower of snow, the snow will appear either at the top (if falling down) or bottom (if falling up) of the cube
+void(vector mincorner, vector maxcorner, vector vel, float howmany, float color) te_particlesnow = #410;
+
+//creates a customized light flash.
+void(vector org, float radius, float lifetime, vector color) te_customflash = #417;
+

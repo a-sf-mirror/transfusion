@@ -163,6 +163,7 @@ void() PrecacheSounds =
     precache_sound ("foley/submerge.wav");  // swimming
     precache_sound ("foley/swim.wav");      // swimming
     precache_sound ("foley/undchoke.wav");  // drowning pain
+	precache_sound ("player/fall.wav");     // falling large distance scream
 
     // Teleport sounds
     precache_sound ("misc/r_tele1.wav");
@@ -262,10 +263,19 @@ void() worldspawn =
     // Compute the game type
     teamplay = cvar("teamplay");
     deathmatch = cvar("deathmatch");
-
-    // we don't care about SP cooperative play anyway
-    cvar_set ("coop", "0");
-    coop = 0;
+	
+    // Set up SP cooperative play
+    if ((teamplay) && !(deathmatch))
+	{
+	    cvar_set ("coop", "1");
+        coop = 1;
+		gametype = GT_COOPERATIVE;
+	}
+	else
+	{
+	    cvar_set ("coop", "0");
+        coop = 0;
+	}
 
     // Select the game type
     if (deathmatch == 2)
@@ -279,7 +289,7 @@ void() worldspawn =
             cvar_set ("teamplay", "1");
         }
     }
-    else
+    else if (gametype != GT_COOPERATIVE)
     {
         cvar_set ("deathmatch", "1");
         deathmatch = 1;
@@ -303,19 +313,18 @@ void() worldspawn =
     precache_model ("progs/flame.spr");     // Used for people on fire
     precache_model ("progs/s_oldexp.spr");
     precache_model ("progs/player.mdl");    // Warning: this model is also referenced by the engine itself
-    precache_model ("progs/eyes.mdl");
+    precache_model ("models/objects/eyes.md3");
 
     // Gibs and other stuff
-    precache_model ("progs/bitogore.mdl");
     precache_model ("progs/h_player.mdl");
     precache_model ("models/objects/gib1.md3");
     precache_model ("models/objects/gib2.md3");
     precache_model ("models/objects/gib3.md3");
-    precache_model ("progs/m_arm.mdl");
+    precache_model ("models/objects/gib4.md3");
+    precache_model ("models/objects/gib5.md3");	
+    precache_model ("models/objects/m_arm.md3");
     precache_model ("models/objects/m_brain.md3");
-    precache_model ("progs/m_chest.mdl");
-    precache_model ("progs/m_farm.mdl");
-    precache_model ("progs/m_fist.mdl");
+    precache_model ("models/objects/m_chest.md3");	
     precache_model ("models/objects/m_foot.md3");
     precache_model ("models/objects/m_guts.md3");
     precache_model ("models/objects/m_leg.md3");
@@ -632,7 +641,12 @@ void(float corpseHealth, void() corpseToGib) BecomeCorpse =
 
     // Allow some interactions (so the corpses can be destroyed by explosions)
     self.solid = SOLID_BBOX;
-    self.takedamage = DAMAGE_AIM;
+	
+	// Force realtime gravity on corpses, so they don't end up floating
+	if (self.classname != "head")
+	    self.movetype = MOVETYPE_TOSS;
+    
+	self.takedamage = DAMAGE_AIM;
 
     // Set up deal for corpse fade
     self.oldorigin = self.origin;
@@ -680,6 +694,7 @@ void(entity ent) CloneCorpse =
     clone.netname = ent.netname;
     clone.movetype = ent.movetype;
     clone.velocity = ent.velocity;
+	clone.scale = ent.scale;
     clone.classname = "corpse";
 
     setorigin (clone, ent.origin);
@@ -703,9 +718,9 @@ void(entity ent) CloneCorpse =
         minBbox = '-32 -32 -20';
         maxBbox = '32 32 0';
 
-        // FIXME: Is there a smarter way than setting for individual monsters?
-        if (ent.classname == "monster_butcher")
-            minBbox_z = 0;
+        // Set corpse bbox min z based upon the monster's min z
+        if (ent.flags & FL_MONSTER)
+            minBbox_z = ent.mins_z;
 
         maxBbox_z = minBbox_z + 5;
         setsize (self, minBbox, maxBbox);

@@ -27,7 +27,7 @@
 #ifndef NO_FRIKBOT
 
 #include "common.qh"
-
+#include "bot.qh"
 
 .entity avoid;
 
@@ -173,7 +173,7 @@ void() bot_dodge_stuff =
     foe = findradius (self.origin, 600);
     while (foe != world)
     {
-        if (foe.classname == "sentry")
+        if (foe.classname == "sentry" && foe.leech_sentry != self)
         {
             if (gametype < GT_TEAM_BLOODBATH || self.team != foe.team)
             {
@@ -259,8 +259,14 @@ void(float brange) bot_weapon_switch =
 
     while(it)
     {
-        // Napalm Launcher
-        if ((self.ammo_rockets >= 1) && (it & IT_NAPALM_LAUNCHER))
+        // Voodoo Doll
+        if(self.ammo_voodoo >= 1 && (it & IT_VOODOO_DOLL))
+        {
+            flag = IT_VOODOO_DOLL;
+            pulse = IMP_VOODOO_DOLL;
+        }
+		// Napalm Launcher
+        else if ((self.ammo_rockets >= 1) && (it & IT_NAPALM_LAUNCHER))
         {
             flag = IT_NAPALM_LAUNCHER;
             pulse = IMP_NAPALM_LAUNCHER;
@@ -294,13 +300,7 @@ void(float brange) bot_weapon_switch =
         {
             flag = IT_TOMMYGUN;
             pulse = IMP_TOMMYGUN;
-        }
-        // Voodoo Doll
-        else if(self.ammo_voodoo >= 1 && (it & IT_VOODOO_DOLL))
-        {
-            flag = IT_VOODOO_DOLL;
-            pulse = IMP_VOODOO_DOLL;
-        }
+        }        
         // Flaregun
         else if(self.ammo_shells >= 1 && (it & IT_FLAREGUN))
         {
@@ -341,15 +341,31 @@ void(float brange) bot_weapon_switch =
 
 void() bot_shoot =
 {
-    // quick little function to stop making him shoot the wrong way ! Argh
+    // quick little function to stop making him shoot the wrong way
     local float g;
+
     g = angcomp(self.v_angle_x, self.b_angle_x);
+
     if (fabs(g) > 10 * (4 - self.b_skill))
         return; // argh, too far away
+
     g = angcomp(self.v_angle_y, self.b_angle_y);
+
     if (fabs(g) > 7 * (4 - self.b_skill))
         return; // not again!
-    self.button0 = TRUE;
+
+	if (
+	    (self.weapon == IT_FLAREGUN        ) ||
+		(self.weapon == IT_SAWED_OFF       ) ||
+		(self.weapon == IT_TOMMYGUN        ) ||
+		(self.weapon == IT_NAPALM_LAUNCHER ) ||
+		(self.weapon == IT_TESLA_CANNON    ) ||
+		(self.weapon == IT_LIFE_LEECH      ) ||
+		(self.weapon == IT_VOODOO_DOLL     )
+	   )
+	     self.button3 = TRUE; // Alt-fire
+	else
+	     self.button0 = TRUE;
 };
 
 /*
@@ -401,7 +417,8 @@ void() bot_fight_style =
             if (trace_ent.classname == "player")
                 if (trace_ent.team == self.team && gametype >= GT_TEAM_BLOODBATH)
                     return;
-            bot_shoot();
+                else 
+				    bot_shoot();
         }
     }
     else

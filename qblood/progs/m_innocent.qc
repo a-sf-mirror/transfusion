@@ -17,17 +17,9 @@
     See file, 'COPYING', for details.
 */
 
-/* Tim's to-do list
-
-    Need to make run for 15 + rint(random()*5)
-
-*/
-
-
 #include "common.qh"
 
-
-void () innocent_pain1;
+void () innocent_think;
 
 $base base
 $skin skin
@@ -36,27 +28,73 @@ $frame idle1 idle2 idle3
 $frame run1 run2 run3 run4 run5 run6
 $frame pain
 $frame death1 death2 death3 death4 death5 death6 death7 death8
-$frame pain1 // repeat
-$frame sitting
-$frame spread
+$frame pain1   // repeat of pain
+$frame sitting // 21
+$frame spread  // 22
 
-void() innocent_stand1  =[      $idle1, innocent_stand2 ] { ai_stand();};
-void() innocent_stand2  =[      $idle2, innocent_stand3 ] { ai_stand();};
-void() innocent_stand3  =[      $idle3, innocent_stand1 ] { ai_stand();};
+void() innocent_stand1  =[$idle1, innocent_stand2 ] { innocent_think();};
+void() innocent_stand2  =[$idle2, innocent_stand3 ] { innocent_think();};
+void() innocent_stand3  =[$idle3, innocent_stand1 ] { innocent_think();};
 
-void() innocent_run1  =[      $run1, innocent_run2 ] {ai_run_away(12);};
-void() innocent_run2  =[      $run2, innocent_run3 ] {ai_run_away(12);};
-void() innocent_run3  =[      $run3, innocent_run4 ] {ai_run_away(12);};
-void() innocent_run4  =[      $run4, innocent_run5 ] {ai_run_away(12);};
-void() innocent_run5  =[      $run5, innocent_run6 ] {ai_run_away(12);};
-void() innocent_run6  =[      $run6, innocent_run1 ] {ai_run_away(12);};
+void() innocent_run1  =[$run1, innocent_run2 ] {ai_run_away(12);};
+void() innocent_run2  =[$run2, innocent_run3 ] {ai_run_away(12);};
+void() innocent_run3  =[$run3, innocent_run4 ] {ai_run_away(12);};
+void() innocent_run4  =[$run4, innocent_run5 ] {ai_run_away(12);};
+void() innocent_run5  =[$run5, innocent_run6 ] {ai_run_away(12);};
+void() innocent_run6  =[$run6, innocent_run1 ] {ai_run_away(12);};
 
-
-void() innocent_death1 =[      $death1,        innocent_death2        ]
+void() innocent_death1 =[$death1, innocent_death2] {};
+void() innocent_death2 =[$death2, innocent_death3] {};
+void() innocent_death3 =[$death3, innocent_death4] {};
+void() innocent_death4 =[$death4, innocent_death5] {};
+void() innocent_death5 =[$death5, innocent_death6] {};
+void() innocent_death6 =[$death6, innocent_death7] {};
+void() innocent_death7 =[$death7, innocent_death8] {};
+void() innocent_death8 =[$death8, innocent_death8]
 {
-    // FIXME: Need gibs here
+    CloneCorpse (self);
 
+    // In the last frame, spawn corpse, remove self 1 second after death
+    self.nextthink = time + 1;
+    self.think = SUB_Remove;
+};
+
+void() innocent_think =
+{
+	// See if there's something to run away from in area
+    if (ai_search_area(100))
+	{
+	    self.search_time = rint(time + 15 + rint(random()*5));
+		self.show_hostile = time + 1;       // wake up other monsters
+	}
+/*
+    if (self.enemy != world)
+	{
+	    if (!visible(self.enemy))
+		    self.enemy = world;
+	}
+*/
+	if (self.search_time >= time) //|| self.enemy != world)
+        self.think = innocent_run1;
+	else 
+	    self.think = innocent_stand1;
+	
+	self.nextthink = time + 0.1;		
+};	
+
+void() innocent_death =
+{
     local float     r;
+	
+	monster_death();
+	
+	if (self.health < -40)
+    {
+        sound (self, CHAN_VOICE, "innocent/iscream1.wav", 1, ATTN_NORM);
+        RandomHumanGibs();
+        remove (self);
+        return;
+    }
 
     r = random();
 
@@ -76,27 +114,19 @@ void() innocent_death1 =[      $death1,        innocent_death2        ]
         sound (self, CHAN_VOICE, "innocent/iplease.wav", 1, ATTN_NORM);
     else
         sound (self, CHAN_VOICE, "innocent/sobbing.wav", 1, ATTN_NORM);
+		
+	innocent_death1();
 };
 
-void() innocent_death2 =[      $death2,        innocent_death3        ] {};
-void() innocent_death3 =[      $death3,        innocent_death4        ] {};
-void() innocent_death4 =[      $death4,        innocent_death5        ] {};
-void() innocent_death5 =[      $death5,        innocent_death6        ] {};
-void() innocent_death6 =[      $death6,        innocent_death7        ] {};
-void() innocent_death7 =[      $death7,        innocent_death8        ] {};
-void() innocent_death8 =[      $death8,        innocent_death8        ]
-{
-    self.solid = SOLID_NOT;     // In the last frame, remove self 15 seconds after death
-    self.nextthink = time + 15;
-    self.think = SUB_Remove;
-};
-
+void() innocent_pain1 =[ $pain, innocent_run1]{ai_pain(12);};
 
 void(entity attacker, float damage)    innocent_pain =
 {
     local float     r;
 
-// don't make multiple pain sounds right after each other
+    self.search_time = rint(time + 15 + rint(random()*5));
+	
+    // don't make multiple pain sounds right after each other
     if (self.pain_finished > time)
         return;
 
@@ -157,23 +187,20 @@ void(entity attacker, float damage)    innocent_pain =
     else
         self.pain_finished = time + 1;
 
+
+    self.enemy = attacker;
+
     innocent_pain1();
 };
 
-void() innocent_pain1 =[ $pain, innocent_run1]{ai_pain(12);};
+
 
 void() monster_innocent =
 {
-/*  Disabled for testing
+    //  Disable for testing
+    monster_check();
 
-    if (deathmatch)
-    {
-        remove(self);
-        return;
-    }
-*/
     precache_model ("models/enemies/innocent.md3");
-
     precache_sound ("innocent/icrying.wav");
     precache_sound ("innocent/icrying2.wav");
     precache_sound ("innocent/idonhme.wav");
@@ -186,18 +213,16 @@ void() monster_innocent =
     precache_sound ("innocent/sobbing.wav");
 
     self.solid = SOLID_SLIDEBOX;
-    self.movetype = MOVETYPE_STEP;
-
+    self.movetype = MOVETYPE_TOSS;
     setmodel (self, "models/enemies/innocent.md3");
-
-    setsize (self, '-6 -14 0', '15 10 55');  // Need real values
-    self.health = 25;
+    setsize (self, '-6 -14 0', '15 10 55');
+    self.health = 50;
     self.max_health = self.health;
-    self.th_stand = innocent_stand1;
-    self.th_run = innocent_run1;
-    self.th_die = innocent_death1;
+    self.th_stand = innocent_stand1;    
+	self.th_run = innocent_think;
+    self.th_die = innocent_death;
     self.th_pain = innocent_pain;
     self.oldorigin = self.origin;
-
+	
     walkmonster_start ();
 };

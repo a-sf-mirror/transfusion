@@ -374,8 +374,7 @@ entity(float closeness) SUB_GetPointedPlayer =
     // Temp vars.
     local vector diff, point, start_point;
     local float currclose, length;
-    local string s1, s2, s3;
-
+	
     // Normalize self.angles so we can do a length-independent
     // consideration
     makevectors (self.v_angle);
@@ -407,6 +406,63 @@ entity(float closeness) SUB_GetPointedPlayer =
             guy = e;
         }
         e = find (e, classname, "player");
+    }
+
+    return guy;
+};
+
+/*
+=======================
+SUB_GetPointedMonster
+
+Returns the player you are pointed towards
+
+Copyright (C) 1997  Nat Friedman
+By Suck (Nat Friedman); hacked by Zoid for CTF4
+=======================
+*/
+entity(float closeness) SUB_GetPointedMonster =
+{
+    // e is a temp entity; guy is our current best guess
+    // as to at whom the player is pointing
+    local entity e, guy;
+
+    // Temp vars.
+    local vector diff, point, start_point;
+    local float currclose, length;
+
+    // Normalize self.angles so we can do a length-independent
+    // consideration
+    makevectors (self.v_angle);
+
+    start_point = self.origin + self.view_ofs;
+
+    // Walk the list of monsters...
+    e = find(world, netname, "monster");
+    while (e != world)
+    {	    
+        // Get a vector pointing from the viewer to the current
+        // player under consideration
+        diff = e.origin - start_point;
+        length = vlen (diff);
+
+        // Normalize it since we only care where he's pointing,
+        // not how far away the guy is.
+        diff = normalize (diff);
+
+        // Find the different between the current player's angle
+        // and the viewer's vision angle
+        diff = diff - v_forward;
+
+        // The length is going to be our definition of closeness
+        currclose = vlen (diff) * length / 500;
+        traceline (start_point, e.origin, FALSE, self);
+        if (trace_ent == e && (closeness == -1 || currclose < closeness)) 
+		{
+            closeness = currclose;
+            guy = e;
+        }
+        e = find (e, netname, "monster");
     }
 
     return guy;

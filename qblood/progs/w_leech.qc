@@ -47,7 +47,6 @@ $frame leech_fire21 leech_fire22 leech_fire23 leech_fire24 leech_fire25
 // holster
 $frame leech_holster1 leech_holster2 leech_holster3
 
-
 // ------------ Player related code ---------- //
 
 // Normal fire
@@ -177,7 +176,7 @@ void() Leech_BallFire =
     self.currentammo = self.ammo_leech;
 
     newmis.touch = Leech_BallTouch;
-    setmodel (newmis, "progs/bolt.mdl");
+    setmodel (newmis, "progs/lechball.mdl"); // FIXME: leechball.spr
     newmis.skin = 1;
     setsize (newmis, '0 0 0', '0 0 0');
     setorigin (newmis, self.origin + v_forward * 8 + '0 0 24');
@@ -245,9 +244,9 @@ void() Leech_Think =
     ent = findradius (self.origin, 500);
     while (ent != world)
     {
-        if (ent.takedamage)
+		if (ent.takedamage)
             // If it's a player
-            if (ent.classname == "player")
+            if (ent.classname == "player" || (ent.flags & FL_MONSTER))
                 // If he's a valid target (not the owner or a player from the same team)
                 if (ent != self.leech_sentry && (gametype == GT_BLOODBATH || ent.team != self.team))
                 {
@@ -355,20 +354,19 @@ void() Leech_Die =
         remove (self);
 };
 
-
 /*
 ==================
-Leech_Touch
+Leech_Use
 
-Touch function for a LL sentry
+Use function for a LL sentry
 ==================
 */
-void() Leech_Touch =
+void() Leech_Use =
 {
     // If it's the owner, he takes back his Life Leech
     if (self.leech_sentry == other)
     {
-        other.items = other.items + IT_LIFE_LEECH;
+		other.items = other.items + IT_LIFE_LEECH;
         other.leech_sentry = world;
         other.ammo_leech = other.ammo_leech + self.ammo_leech;
         sound (other, CHAN_ITEM, "items/weaponup.wav", 1, ATTN_NORM);
@@ -400,7 +398,7 @@ void() Leech_Drop =
     item.owner = self;             // we don't want to trigger the touch function yet
     item.leech_sentry = self;      // we can't use "owner" because the owner of an entity is never clipped against it
     item.team = self.team;
-    item.solid = SOLID_BBOX;
+    item.solid = SOLID_SLIDEBOX;
     item.takedamage = DAMAGE_AIM;
     item.health = 300;
 
@@ -413,13 +411,16 @@ void() Leech_Drop =
         item.effects = item.effects | EF_FLAME;
 
     // Sentry mode
+	item.spawnflags = item.spawnflags | SF_USABLE;
     item.nextthink = time + 1.5;
     item.think = Leech_Think;
-    item.touch = Leech_Touch;
+	item.use = Leech_Use;
     item.th_die = Leech_Die;
     item.reset = Leech_Reset;
 
-    // Dropping it requiers 25 ammo/HP
+/* TIM- Tested this against SP blood, and this wasn't how SP blood handled LL sentry.
+
+    // Dropping it requires 25 ammo/HP
     if (self.ammo_leech < 25)
     {
         T_Damage (self, world, self, 25 - self.ammo_leech, DF_MIND, "leech");
@@ -427,6 +428,7 @@ void() Leech_Drop =
     }
     else
         item.ammo_leech = self.ammo_leech - 25;
+*/
     self.currentammo = self.ammo_leech = 0;
     self.items = self.items - self.weapon;
     self.leech_sentry = item;

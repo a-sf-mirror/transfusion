@@ -1,4 +1,4 @@
-/*  Copyright (C) 2001-2002  Mathieu Olivier
+/*  Copyright (C) 2001-2003  Mathieu Olivier, Timothy Hale
 
     This program is free software; you can redistribute it and/or modify
     it under the terms of the GNU General Public License as published by
@@ -27,26 +27,10 @@
 #ifndef NO_FRIKBOT
 
 #include "common.qh"
-
+#include "bot.qh"
 
 float saved1, saved2, saved3, scratch1, scratch2, scratch3, scratch4;
 float bytecounter, filecount;
-
-float MENU_MAIN         = 1;
-float MENU_WAYPOINTS    = 2;
-float MENU_LINKS        = 3;
-float MENU_FLAGS        = 4;
-float MENU_FLAGS2       = 5;
-float MENU_BOTS         = 6;
-float MENU_WAYLIST  = 7;
-// 8 = link way
-// 9 = telelink way
-// 10 = delete link
-// 11 = create link X2
-// 12 = delete link x2
-// 13 = confirmation of delete all
-// 14 = Teleport to way
-// 15 = confirmation of delete point
 
 void() BSPDumpWaypoints;
 void() QCDumpWaypoints;

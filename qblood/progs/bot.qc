@@ -27,7 +27,7 @@
 #ifndef NO_FRIKBOT
 
 #include "common.qh"
-
+#include "bot.qh"
 
 /*
 -=-=-=-=-=-=-=-=-=-=-=-=-=-=-=-=-=-=-=-=-=-=-=
@@ -56,66 +56,6 @@ for all variable in the bot...
 .vector b_angle, b_dest, mouse_emu, obs_dir;
 .vector movevect, b_dir;
 .vector dyn_dest;
-
-// --------defines-----
-float SVC_UPDATENAME    = 13;
-float SVC_UPDATEFRAGS   = 14;
-float SVC_UPDATECOLORS  = 17;
-
-// used for the physics & movement AI
-float KEY_MOVEUP        = 1;
-float KEY_MOVEDOWN      = 2;
-float KEY_MOVELEFT      = 4;
-float KEY_MOVERIGHT     = 8;
-float KEY_MOVEFORWARD   = 16;
-float KEY_MOVEBACK      = 32;
-float KEY_LOOKUP        = 64;
-float KEY_LOOKDOWN      = 128;
-float KEY_LOOKLEFT      = 256;
-float KEY_LOOKRIGHT     = 512;
-
-// these are aiflags for waypoints
-// some overlap to the bot
-float AI_TELELINK_1     = 1;       // link type
-float AI_TELELINK_2     = 2;       // link type
-float AI_TELELINK_3     = 4;       // link type
-float AI_TELELINK_4     = 8;       // link type
-float AI_DOORFLAG       = 16;      // read ahead
-float AI_PRECISION      = 32;      // read ahead + point
-float AI_SURFACE        = 64;      // point
-float AI_BLIND          = 128;     // read ahead + point
-float AI_JUMP           = 256;     // point + ignore
-float AI_DIRECTIONAL    = 512;     // read ahead + ignore
-float AI_PLAT_BOTTOM    = 1024;    // read ahead
-float AI_RIDE_TRAIN     = 2048;    // read ahead
-float AI_SUPER_JUMP     = 4096;    // point + ignore + route test
-float AI_SNIPER         = 8192;    // point type
-float AI_AMBUSH         = 16384;   // point type
-float AI_DOOR_NO_OPEN   = 32768;   // read ahead
-float AI_DIFFICULT      = 65536;   // route test
-float AI_TRACE_TEST     = 131072;  // route test
-
-// these are flags for bots/players (dynamic/editor flags)
-float AI_OBSTRUCTED     = 1;
-float AI_HOLD_SELECT    = 2;
-float AI_ROUTE_FAILED   = 2;
-float AI_WAIT           = 4;
-float AI_DANGER         = 8;
-
-// addition masks
-float AI_POINT_TYPES        = 29152;
-float AI_READAHEAD_TYPES    = 36528;
-float AI_IGNORE_TYPES       = 4864;
-
-float WM_UNINIT         = 0;
-float WM_DYNAMIC        = 1;
-float WM_LOADING        = 2;
-float WM_LOADED         = 3;
-// editor modes aren't available in QW, but we retain support of them
-// since the editor is still built into the AI in places
-float WM_EDITOR         = 4;
-float WM_EDITOR_DYNAMIC = 5;
-float WM_EDITOR_DYNLINK = 6;
 
 // -------globals-----
 float   active_clients;
@@ -904,10 +844,13 @@ void(float whichteam, float whatbot, float whatskill) BotConnect =
 
     bot_count = bot_count + 1;
     self = GetClientEntity(f);
+
     if (!saved_bots)
         bot_start_topic(1);
+
     self.b_clientno = f;
     self.colormap = f + 1;
+
     if (whatbot)
         self.netname = BotName(whatbot);
     else
@@ -919,6 +862,7 @@ void(float whichteam, float whatbot, float whatskill) BotConnect =
         whatskill = 3;
     else if (whatskill < 0)
         whatskill = 0;
+
     self.b_skill = whatskill;
 
     UpdateClient(self);
@@ -1046,6 +990,7 @@ void() WaypointWatch =
 
     if (max_clients < 2)
         return;
+
     if (waypoint_mode != WM_UNINIT)
     {
         bigboobs = cvar("saved4");

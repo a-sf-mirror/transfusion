@@ -124,8 +124,15 @@ Apply the spiritual damage of the voodoo doll
 void(float damage) Voodoo_ApplyDamage =
 {
     local entity targ;
+    local string death_type;
 
-    targ = SUB_GetPointedPlayer (0.15);
+    death_type = "voodoo";
+
+    if (deathmatch)
+	    targ = SUB_GetPointedPlayer (0.15);
+
+	else
+	    targ = SUB_GetPointedMonster (0.15);
 
     // If we had a target that can be damaged and seems alive
     if (targ != world && targ.takedamage)
@@ -141,12 +148,15 @@ void(float damage) Voodoo_ApplyDamage =
 
     // We don't consume ammo if we don't hit a target (except for altfire)
     if (self.player_state == PS_ALTFIRE)
+	{
         self.ammo_voodoo = 0;
+		death_type = "alt-voodoo";
+	}	
     else if (targ != self)
         self.ammo_voodoo = self.ammo_voodoo - damage / 4;
     self.currentammo = self.ammo_voodoo;
 
-    T_Damage (targ, self, self, damage, DF_MIND, "voodoo");
+    T_Damage (targ, self, self, damage, DF_MIND, death_type);
 };
 
 

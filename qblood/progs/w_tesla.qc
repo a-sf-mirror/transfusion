@@ -157,10 +157,6 @@ void() player_teslaholster4 = [$attack2, player_run          ] { W_DrawWeapon (s
 
 //============================================================================
 
-#define TESLA_NORMALJOLT 0
-#define TESLA_BIGJOLT    1
-
-
 /*
 ============
 Tesla_JoltTouch
@@ -231,7 +227,10 @@ void(vector org, vector dir, float mspeed) Tesla_LaunchJolt =
     if (self.player_state == PS_ALTFIRE)
     {
         jolt.dmg = 180;
-        jolt.model = "progs/bolt2.mdl";
+        jolt.model = "models/weapons/objects/alttesla.md3";
+        jolt.glow_color = 244;
+		jolt.glow_size = 1;
+		jolt.glow_trail = 1;
         jolt.style = TESLA_BIGJOLT;
         setorigin (jolt, org);
     }

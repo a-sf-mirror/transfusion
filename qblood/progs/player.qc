@@ -315,7 +315,8 @@ local float     rs;
     }
 
     rs = rint (random() * 2);
-    if (rs == 0)
+
+	if (rs == 0)
         self.noise = "player/die1.wav";
     else if (rs == 1)
         self.noise = "player/die2.wav";
@@ -438,8 +439,17 @@ void(string headmodel, float dm) ThrowHead =
     self.frame = 0;
     self.skin = 0;
     setmodel (self, headmodel);
-    setsize (self, '-10 -13 -3', '12 6 18');
-    self.view_ofs = '0 0 8';
+    
+	if (self.classname == "player")
+        setsize (self, '-10 -13 -3', '12 6 18');
+		
+	else if (self.classname == "monster_butcher")
+	    setsize (self, '-5 12 0', '5 20 9');
+	
+	else
+	    setsize (self, '0 0 0', '0 0 0');
+    
+	self.view_ofs = '0 0 8';
 
     self.movetype = MOVETYPE_BOUNCE;
     self.velocity = VelocityForDamage (dm);
@@ -463,11 +473,11 @@ void() RandomHumanGibs =
 // gib1 = bone (arm/leg) with flesh
 // gib2 = rib cage
 // gib3 = heart
+// gib4 = small flesh piece
+// gib5 = bigger flesh piece
 // m_arm = upper arm
 // m_brain = brain (used when the head "dies")
 // m_chest = torso
-// m_farm = forearm with fist
-// m_fist = hand/fist
 // m_foot = looks like a bloody shoe?
 // m_guts = intestines
 // m_leg = femur with meat
@@ -479,7 +489,7 @@ void() RandomHumanGibs =
 
     // throw torso, and heart
     if (random () < 0.75)
-        ThrowGib ("progs/m_chest.mdl", self.health);
+        ThrowGib ("models/objects/m_chest.md3", self.health);
     if (random () < 0.25)
         ThrowGib ("models/objects/gib3.md3", self.health);
 
@@ -503,11 +513,11 @@ void() RandomHumanGibs =
     {
         r = random ();
         if (r < 0.2)
-            ThrowGib ("progs/m_farm.mdl", self.health);
+            ThrowGib ("models/objects/gib4.md3", self.health);
         else if (r < 0.4)
-            ThrowGib ("progs/m_fist.mdl", self.health);
+            ThrowGib ("models/objects/gib5.md3", self.health);
         else if (r < 0.6)
-            ThrowGib ("progs/m_arm.mdl", self.health);
+            ThrowGib ("models/objects/m_arm.md3", self.health);
         else if (r < 0.8)
             ThrowGib ("models/objects/m_hand.md3", self.health);
         gibs = gibs - 1;
@@ -529,7 +539,9 @@ void() RandomHumanGibs =
 
 void() GibPlayer =
 {
-    ThrowHead ("progs/h_player.mdl", self.health);
+    local float rs;
+	
+	ThrowHead ("progs/h_player.mdl", self.health);
     RandomHumanGibs ();
 
     self.deadflag = DEAD_DEAD;
@@ -542,10 +554,19 @@ void() GibPlayer =
         return;
     }
 
-    if (random() < 0.5)
-        sound (self, CHAN_VOICE, "player/die1.wav", 1, ATTN_NONE);
+    rs = rint (random() * 2);
+
+    if (self.deathtype == "falling")
+	    self.noise =  "misc/gibsq.wav";
+	else if (rs == 0)
+        self.noise = "player/die1.wav";
+    else if (rs == 1)
+        self.noise = "player/die2.wav";
     else
-        sound (self, CHAN_VOICE, "player/die3.wav", 1, ATTN_NONE);
+        self.noise = "player/die3.wav";
+
+    sound (self, CHAN_VOICE, self.noise, 1, ATTN_NONE);
+    return;
 };
 
 void() PlayerDie =
@@ -587,10 +608,10 @@ void() PlayerDie =
     self.invisible_finished = 0;    // don't die as eyes
     self.invincible_finished = 0;
     self.akimbo_finished = 0;
-    self.radsuit_finished = 0;
     self.modelindex = modelindex_player;    // don't use eyes
-
-    self.weaponmodel = string_null;
+    self.poison = 0;
+    self.alpha = 1;
+	self.weaponmodel = string_null;
     self.view_ofs = '0 0 -8';
     self.deadflag = DEAD_DYING;
     self.solid = SOLID_NOT;

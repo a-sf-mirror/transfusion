@@ -151,6 +151,8 @@ void(entity newball) Napalm_ThrowBouncingBall =
         newball.owner = self.owner;
     else
         newball.owner = self;
+		
+	newball.effects = newball.effects | EF_FLAME;
     newball.movetype = MOVETYPE_BOUNCE;
     newball.solid = SOLID_BBOX;
     newball.classname = "grenade";
@@ -281,8 +283,9 @@ void() Napalm_Fire =
         Napalm_ThrowBouncingBall (newmis);
     }
     else
-    {
-        newmis.owner = self;
+    {        
+		newmis.effects = newmis.effects | EF_FLAME;
+		newmis.owner = self;
         newmis.solid = SOLID_BBOX;
         newmis.classname = "missile";
         newmis.angles = vectoangles(newmis.velocity);

@@ -17,15 +17,6 @@
     See file, 'COPYING', for details.
 */
 
-/* Tim's to-do list
-
-    need to get real health and damage values
-    need to make him fly lower
-    tweak projectile origin
-    need to make him pause, then fire. Same trick from hellhound flame?
-*/
-
-
 #include "common.qh"
 
 
@@ -124,9 +115,8 @@ void () stonegargoyle_attack =
         stonegargoyle_attackb1 ();
     else
     {
-        self.nextthink = 1;
+        self.nextthink = 0.1;
         self.think = stonegargoyle_attacka1;
-        //stonegargoyle_attacka1 ();
     }
 };
 
@@ -146,10 +136,11 @@ void (vector misorig) stonegargoyle_eye_shot =
     newmis.owner = self;
     newmis.solid = SOLID_BBOX;
     newmis.classname = "missile";
+	newmis.effects = newmis.effects | EF_DIMLIGHT;
     newmis.angles = vectoangles(newmis.velocity);
     newmis.movetype = MOVETYPE_FLYMISSILE;
     newmis.touch = Leech_BallTouch;
-    setmodel (newmis, "progs/bolt.mdl");
+    setmodel (newmis, "progs/teslaball.spr");
     newmis.skin = 0;
     setsize (newmis, '0 0 0', '0 0 0');
     newmis.origin = self.origin + misorig;
@@ -198,29 +189,29 @@ void () stonegargoyle_pain =
 
 void () stonegargoyle_death1 = [$idle1, stonegargoyle_death1]
 {
-    // In the last frame, remove self 15 seconds after death
-    self.nextthink = time + 15;
+    CloneCorpse (self);
+
+    // In the last frame, spawn corpse, remove self 1 second after death
+    self.nextthink = time + 1;
     self.think = SUB_Remove;
 };
 
 void () stonegargoyle_die =
 {
-    self.effects = 0;
+    monster_death();
+	droptofloor();
+	
     if (self.health < -40)
     {
         sound (self, CHAN_VOICE, "stonegargoyle/sargdie3.wav", 1, ATTN_NORM);
         remove (self);
         return;
-    }
-
-    droptofloor();
+    }    
 
     if (random () < 0.5)
         sound (self, CHAN_VOICE, "stonegargoyle/sargdie1.wav", 1, ATTN_NORM);
     else
         sound (self, CHAN_VOICE, "stonegargoyle/sargdie2.wav", 1, ATTN_NORM);
-
-    self.solid = SOLID_NOT;
 
     stonegargoyle_death1 ();
 
@@ -228,16 +219,11 @@ void () stonegargoyle_die =
 
 void () monster_stonegargoyle =
 {
-/* Disable for testing the model
+    //  Disable for testing
+    monster_check();
 
-    if (deathmatch)
-    {
-        remove (self);
-        return ;
-    }
-*/
     precache_model ("models/enemies/gargoyle.md3");
-    precache_model ("progs/bolt.mdl");
+    precache_model ("progs/teslaball.spr");
 
     precache_sound ("stonegargoyle/sargblst.wav");
     precache_sound ("gargoyle/gargclaw.wav");
@@ -262,4 +248,9 @@ void () monster_stonegargoyle =
     self.th_pain = stonegargoyle_pain;
     self.th_missile = stonegargoyle_attack;
     flymonster_start ();
+};
+
+void () monster_graygargoyle =
+{
+    monster_stonegargoyle();    
 };
