@@ -1059,7 +1059,9 @@ void() armor_touch =
         self.nextthink = time + 20;
     self.think = SUB_regen;
 
-    Sprint(other, PRINT_LOW, "Picked up basic armor\n"); // FIXME need also Body, Fire, Spirit, Super
+    Sprint(other, PRINT_LOW, "Picked up "); 
+    Sprint(other, PRINT_LOW, self.netname);
+    Sprint(other, PRINT_LOW, "\n");
     sound(other, CHAN_ITEM, "items/pickarmr.wav", 1, ATTN_NORM);
     stuffcmd (other, "bf\n");
 
@@ -1075,7 +1077,7 @@ void() item_armor0 =
     self.touch = armor_touch;
     precache_model("progs/i_arm_bs.mdl");
     setmodel(self, "progs/i_arm_bs.mdl");
-
+    self.netname = "Basic Armor";
     setsize (self, '0 0 0', '32 32 56');
     StartItem ();
     };
@@ -1089,6 +1091,7 @@ void() item_armor4 =
     precache_model("progs/i_arm_sp.mdl");
     setmodel(self, "progs/i_arm_sp.mdl");
 
+    self.netname = "Spirit Armor";
     setsize (self, '0 0 0', '32 32 56');
     StartItem ();
     };
@@ -1102,6 +1105,7 @@ void() item_armor1 =
     precache_model ("progs/i_arm_bd.mdl");
     setmodel (self, "progs/i_arm_bd.mdl");
 
+    self.netname = "Body Armor";
     setsize (self, '-16 -16 0', '16 16 56');
     StartItem ();
 };
@@ -1115,6 +1119,7 @@ void() item_armor2 =
     precache_model ("progs/i_arm_fr.mdl");
     setmodel (self, "progs/i_arm_fr.mdl");
 
+    self.netname = "Fire Armor";
     setsize (self, '-16 -16 0', '16 16 56');
     StartItem ();
 };
@@ -1128,6 +1133,7 @@ void() item_armorInv =
     precache_model ("progs/i_arm_su.mdl");
     setmodel (self, "progs/i_arm_su.mdl");
 
+    self.netname = "Super Armor";
     setsize (self, '-16 -16 0', '16 16 56');
     StartItem ();
 };
