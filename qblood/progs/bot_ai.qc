@@ -923,6 +923,15 @@ float stagger_think;
 
 void() BotAI =
 {
+    // am I still an observer? Then I try to enter the game
+    if (self.observer)
+    {
+        // the impulse value must be correctly set
+        if (self.impulse != 1 && self.impulse != 2)
+            self.impulse = 1;
+        return;
+    }
+
     // am I dead? Fire randomly until I respawn
     // health < 1 is used because fractional healths show up as 0 on normal player
     // status bars, and the mod probably already compensated for that

@@ -558,7 +558,7 @@
 @PointClass size(-11 -10 -1, 4 10 19) base(Appearflags) =
  	item_artifact_boots : "Boots of Jumping" []
 
-@PointClass size(-16 -7 -2, 18 7 18) base(Appearflags) =
+@PointClass size(-16 -16 -2, 16 16 54) base(Appearflags) =
  	item_artifact_super_damage : "Guns Akimbo" []
 
 @PointClass size(-9 -13 -3, 8 13 74) base(Appearflags) =
@@ -605,7 +605,7 @@
  	item_armor1 : "Body Armor" []
 @PointClass size(-7 -12 0, 7 10 37) base(Appearflags) =
  	item_armor2 : "Fire armor" []
-@PointClass size(-12 -17 0, 12 19 42) base(Appearflags) =
+@PointClass size(-16 -16 0, 16 16 56) base(Appearflags) =
  	item_armorInv : "Super Armor" []
 
 //
@@ -663,8 +663,8 @@
 @PointClass size(-8 -25 -1, 8 25 72) = obj_tombstn1 : "Cross Tombstone" []
 @PointClass size(-5 -16 -1, 5 16 44) = obj_tombstn2 : "Oval Tombstone" []
 @PointClass size(-7 -19 -1, 7 18 48) = obj_tombstn3 : "R.I.P. Tombstone" []
-@PointClass size(-44 -74 0, 89 45 208) = obj_tree : "Dead Tree" []
-@PointClass size(-138 -131 -20, 118 106 224) = obj_tree2 : "Large Leafy Tree" []
+@PointClass size(-16 -16 -32, 16 16 32) = obj_tree : "Dead Tree" []
+@PointClass size(-16 -16 -32, 16 16 32) = obj_tree2 : "Large Leafy Tree" []
 @PointClass size(-1 -23 -28, 4 23 26) = obj_webs : "Small Spider Webs - 4 skins" []
 @PointClass size(-6 -4 0, 6 4 11) = obj_skull : "Brown Skull" []
 @PointClass size(-7 -6 -1, 7 6 2) = obj_skulbook : "Book with a skull on it" []
@@ -673,7 +673,7 @@
 @PointClass size(-12 -8 -11, 12 8 11) = obj_m2 : "White Skull" []
 @PointClass size(-12 -8 -11, 12 8 11) = obj_m3 : "Green Skull" []
 @PointClass size(-8 -11 -11, 7 11 12) = obj_mage : "Another Book" []
-@PointClass size(-3 -7 -26, 3 7 27) = obj_shovel : "A Shovel" []
+@PointClass size(-16 -16 -16, 16 16 16) = obj_shovel : "A Shovel" []
 @PointClass size(-32 -21 -0, 24 20 34) = obj_cauldron : "A Boiling Cauldron" []
 @PointClass size(-14 -20 -14, 14 20 39) = obj_barrel : "Barrel"
 [
@@ -710,6 +710,7 @@
 @SolidClass base(Target, Targetname) = sentry_detect_crypt : "Howling sound for The Crypt (Blood2)" []
 @SolidClass base(Target, Targetname) = exploding_wall : "Exploding Wall"
 [	
+	alpha(integer) : "Opacity rate"
 	health(integer) : "Health (shootable if > 0)"
 	skin(choices) : "Skin" : 0 =
 	[
@@ -721,7 +722,7 @@
 		5: "Stained Glass"
 		6: "Regular Glass"
 	]
-	cnt(integer) : "Rubble Amt" : 12
+	cnt(integer) : "Rubble Amount" : 12
 	spawnflags(Flags) =
 	[
 		1 : "Trigger Break" : 0
