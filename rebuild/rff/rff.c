@@ -6,7 +6,7 @@
 // Version 0.1.0 alpha
 //
 
-/* Copyright (C) 2001  Mathieu Olivier <elric@planetblood.com>
+/* Copyright (C) 2001-2003  Mathieu Olivier <elric@planetblood.com>
  *
  * This program is free software; you can redistribute it and/or modify
  * it under the terms of the GNU General Public License as published by
@@ -144,7 +144,6 @@ typedef struct
 
 // The RFF file
 static FILE* RffFile = NULL;
-static char RffFileName [MAX_PATH];
 
 // Number of files in the RFF file
 static uint32 NbFiles = 0;
@@ -465,8 +464,6 @@ int main (int ArgC, char* ArgV [])
     }
 
     // Open the file
-    strncpy (RffFileName, ArgV[Ind], sizeof (RffFileName) - 1);
-    RffFileName[sizeof (RffFileName) - 1] = '\0';
     RffFile = fopen (ArgV[Ind], "rb");
     if (RffFile == NULL)
     {
