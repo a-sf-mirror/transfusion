@@ -1,4 +1,4 @@
-/*  Copyright (C) 2001-2002  Mathieu Olivier
+/*  Copyright (C) 2001-2003  Mathieu Olivier
 
     This program is free software; you can redistribute it and/or modify
     it under the terms of the GNU General Public License as published by
@@ -26,8 +26,9 @@ void() Tommy_Fire;
 
 //============================================================================
 
-// ----- Tesla Cannon model ----- //
+// ----- Tommy Gun models ----- //
 
+#ifndef NEW_MODELS
 // Normal model
 $modelname v_nail
 
@@ -49,6 +50,31 @@ $frame tommy_draw1 tommy_draw2 tommy_draw3
 
 // holster
 $frame tommy_holster1 tommy_holster2 tommy_holster3
+
+
+#else
+// Normal model
+$modelname v_tommy
+
+// idle
+$frame tommy_idle1
+
+// draw
+$frame tommy_draw1 tommy_draw2 tommy_draw3
+
+// fire
+$frame tommy_fire1 tommy_fire2
+
+// altfire
+// tommy_alt1 = tommy_alt5 = center
+// tommy_alt2 = tommy_alt4 = near left
+// tommy_alt6 = tommy_alt8 = near right
+$frame tommy_alt1 tommy_alt2 tommy_alt3 tommy_alt4 tommy_alt5
+$frame tommy_alt6 tommy_alt7 tommy_alt8
+
+// holster
+$frame tommy_holster1 tommy_holster2 tommy_holster3
+#endif
 
 
 // Akimbo model
@@ -313,7 +339,11 @@ void() Tommy_UpdateView =
     }
     else
     {
+        #ifndef NEW_MODELS
         self.weaponmodel = "progs/v_nail.mdl";
+        #else
+        self.weaponmodel = "models/weapons/v_tommy.md3";
+        #endif
         self.items = self.items - (self.items & IT_GUNS_AKIMBO);
     }
 };

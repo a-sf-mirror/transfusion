@@ -1,4 +1,4 @@
-/*  Copyright (C) 2001-2002  Mathieu Olivier
+/*  Copyright (C) 2001-2003  Mathieu Olivier
 
     This program is free software; you can redistribute it and/or modify
     it under the terms of the GNU General Public License as published by
@@ -29,6 +29,7 @@ void() Shot_SpawnShell;
 
 // ----- Sawed-off models ----- //
 
+#ifndef NEW_MODELS
 // Normal model
 $modelname v_shot2
 
@@ -49,6 +50,30 @@ $frame shot_draw1 shot_draw2 shot_draw3 shot_draw4
 
 // holster
 $frame shot_holster1 shot_holster2 shot_holster3 shot_holster4
+
+
+#else
+// Normal model
+$modelname v_shot
+
+// idle
+$frame shot_idle1
+
+// draw
+$frame shot_draw1 shot_draw2 shot_draw3
+
+// fire
+$frame shot_fire1
+
+// alt
+$frame shot_alt1 shot_alt2 shot_alt3
+
+// reload
+$frame shot_reload1 shot_reload2 shot_reload3 shot_reload4 shot_reload5
+
+// holster
+$frame shot_holster1 shot_holster2 shot_holster3
+#endif
 
 
 // Akimbo model
@@ -80,6 +105,7 @@ void() player_reloadshot4  = [$attack2, player_reloadshot5 ] { self.weaponframe 
 void() player_reloadshot5  = [$attack2, player_run         ] { self.weaponframe = $shot_reload5; };
 
 // Normal shot
+#ifndef NEW_MODELS
 void() player_shot1 = [$attack1, player_shot2] { self.weaponframe = $shot_fire1; muzzleflash (); };
 void() player_shot2 = [$attack2, player_run  ]
 {
@@ -90,6 +116,18 @@ void() player_shot2 = [$attack2, player_run  ]
         self.attack_finished = time + 0.6;
     }
 };
+#else
+void() player_shot1 = [$attack1, player_shot2] { self.weaponframe = $shot_fire1; muzzleflash (); };
+void() player_shot2 = [$attack2, player_run  ]
+{
+    self.weaponframe = $shot_fire1;
+    if ((self.currentammo & 1) == 0)
+    {
+        self.think = player_reloadshot1;
+        self.attack_finished = time + 0.6;
+    }
+};
+#endif
 
 // Akimbo normal shot
 void() player_akshot1 = [$attack1, player_akshot2] { self.weaponframe = $ashot_fire1; muzzleflash (); Shot_Fire (); };
@@ -129,15 +167,23 @@ void() player_altshot5 = [$attack2, player_run    ]
 // Normal draw
 void() player_shotdraw1 = [$attack2, player_shotdraw2] { self.weaponframe = $shot_draw1; };
 void() player_shotdraw2 = [$attack2, player_shotdraw3] { self.weaponframe = $shot_draw2; };
+#ifndef NEW_MODELS
 void() player_shotdraw3 = [$attack2, player_shotdraw4] { self.weaponframe = $shot_draw3; };
 void() player_shotdraw4 = [$attack2, player_run      ] { self.weaponframe = $shot_draw4; };
+#else
+void() player_shotdraw3 = [$attack2, player_run      ] { self.weaponframe = $shot_draw3; };
+#endif
 
 // Normal holster
 void() player_shotholster1 = [$attack2, player_shotholster2] { self.weaponframe = $shot_holster1; };
 void() player_shotholster2 = [$attack2, player_shotholster3] { self.weaponframe = $shot_holster2; };
 void() player_shotholster3 = [$attack2, player_shotholster4] { self.weaponframe = $shot_holster3; };
+#ifndef NEW_MODELS
 void() player_shotholster4 = [$attack2, player_shotholster5] { self.weaponframe = $shot_holster4; };
 void() player_shotholster5 = [$attack2, player_run         ] { W_DrawWeapon (self.newweapon); };
+#else
+void() player_shotholster4 = [$attack2, player_run         ] { W_DrawWeapon (self.newweapon); };
+#endif
 
 // Akimbo draw
 void() player_akshotdraw1 = [$attack2, player_akshotdraw2] { self.weaponframe = $ashot_draw1; };
@@ -164,34 +210,30 @@ Spawns the shotgun shells if necessary
 */
 void() Shot_SpawnShell =
 {
-    // Shotgun shells (2 shells dropped at a time, or nothing)
-    if ((self.currentammo & 1) == 0)
-    {
-        local entity shell;
-        local entity shell2;
+    local entity shell;
+    local entity shell2;
 
-        // 1st shell
-        shell = spawn ();
-        shell.owner = self;
-        shell.mdl   = "progs/shotshl.mdl";
-        shell.noise = "weapons/shtshl2.wav";
+    // 1st shell
+    shell = spawn ();
+    shell.owner = self;
+    shell.mdl   = "progs/shotshl.mdl";
+    shell.noise = "weapons/shtshl2.wav";
 
-        setorigin (shell, self.origin + v_forward * 15);
-        shell.velocity = (crandom () + 1) * v_forward * 30 + v_up * (220 + crandom () * 10) - v_right * crandom () * 30;
-        DropShell (shell);
+    setorigin (shell, self.origin + v_forward * 15);
+    shell.velocity = (crandom () + 1) * v_forward * 30 + v_up * (220 + crandom () * 10) - v_right * crandom () * 30;
+    DropShell (shell);
 
-        // 2nd shell
-        shell2 = spawn ();
-        shell2.owner = self;
-        shell2.mdl   = shell.mdl;
-        shell2.noise = shell.noise;
+    // 2nd shell
+    shell2 = spawn ();
+    shell2.owner = self;
+    shell2.mdl   = shell.mdl;
+    shell2.noise = shell.noise;
 
-        setorigin (shell2, shell.origin);
-        shell2.velocity = (crandom () + 1) * v_forward * 30 + v_up * (220 + crandom () * 10) - v_right * crandom () * 30;
-        DropShell (shell2);
+    setorigin (shell2, shell.origin);
+    shell2.velocity = (crandom () + 1) * v_forward * 30 + v_up * (220 + crandom () * 10) - v_right * crandom () * 30;
+    DropShell (shell2);
 
-        sound (shell, CHAN_WEAPON, "weapons/shotgun/shotcock.wav", 1, ATTN_NORM);
-    }
+    sound (shell, CHAN_WEAPON, "weapons/shotgun/shotcock.wav", 1, ATTN_NORM);
 };
 
 
@@ -265,8 +307,8 @@ void() Shot_Attack =
     }
     else
     {
-        player_shot1 ();
         Shot_Fire ();
+        player_shot1 ();
     }
 };
 
@@ -286,7 +328,11 @@ void() Shot_Draw =
 
     Shot_UpdateView ();
 
-    self.attack_finished = time + 0.5;
+    #ifndef NEW_MODELS
+    self.attack_finished = time + 0.4;
+    #else
+    self.attack_finished = time + 0.3;
+    #endif
     if (self.items & IT_GUNS_AKIMBO)
         player_akshotdraw1 ();
     else
@@ -303,7 +349,11 @@ Holster code for the sawed-off
 */
 void() Shot_Holster =
 {
-    self.attack_finished = time + 0.5;
+    #ifndef NEW_MODELS
+    self.attack_finished = time + 0.4;
+    #else
+    self.attack_finished = time + 0.3;
+    #endif
     if (self.items & IT_GUNS_AKIMBO)
         player_akshotholster1 ();
     else
@@ -327,7 +377,11 @@ void() Shot_UpdateView =
     }
     else
     {
+        #ifndef NEW_MODELS
         self.weaponmodel = "progs/v_shot2.mdl";
+        #else
+        self.weaponmodel = "models/weapons/v_shot.md3";
+        #endif
         self.items = self.items - (self.items & IT_GUNS_AKIMBO);
     }
 };

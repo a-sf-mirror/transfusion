@@ -314,7 +314,11 @@ void() worldspawn =
 
     precache_model ("progs/s_explod.spr");  // napalm sprite explosion
 
+    #ifndef NEW_MODELS
     precache_model ("progs/v_axe.mdl");
+    #else
+    precache_model ("models/weapons/v_pitch.md3");
+    #endif
 
 
     //

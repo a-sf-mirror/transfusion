@@ -1,4 +1,4 @@
-/*  Copyright (C) 2001-2002  Mathieu Olivier
+/*  Copyright (C) 2001-2003  Mathieu Olivier
 
     This program is free software; you can redistribute it and/or modify
     it under the terms of the GNU General Public License as published by
@@ -28,6 +28,7 @@ void() Fork_Fire;
 
 // ----- Pitchfork model ----- //
 
+#ifndef NEW_MODELS
 $modelname v_axe
 
 // idle
@@ -41,6 +42,23 @@ $frame fork_draw1 fork_draw2 fork_draw3 fork_draw4
 
 // holster
 $frame fork_holster1 fork_holster2 fork_holster3 fork_holster4
+
+
+#else
+$modelname v_pitch
+
+// idle
+$frame fork_idle1
+
+// draw
+$frame fork_draw1 fork_draw2 fork_draw3
+
+// fire
+$frame fork_fire1 fork_fire2 fork_fire3 fork_fire4
+
+// holster
+$frame fork_holster1 fork_holster2 fork_holster3
+#endif
 
 
 // ----- Player related code ----- //
@@ -84,15 +102,23 @@ void() player_fork1 =
 // Normal draw
 void() player_forkdraw1 = [$pitchstand1, player_forkdraw2] { self.weaponframe = $fork_draw1; };
 void() player_forkdraw2 = [$pitchstand1, player_forkdraw3] { self.weaponframe = $fork_draw2; };
+#ifndef NEW_MODELS
 void() player_forkdraw3 = [$pitchstand1, player_forkdraw4] { self.weaponframe = $fork_draw3; };
 void() player_forkdraw4 = [$pitchstand1, player_run      ] { self.weaponframe = $fork_draw4; };
+#else
+void() player_forkdraw3 = [$pitchstand1, player_run      ] { self.weaponframe = $fork_draw3; };
+#endif
 
 // Normal holster
 void() player_forkholster1 = [$pitchstand1, player_forkholster2] { self.weaponframe = $fork_holster1; };
 void() player_forkholster2 = [$pitchstand1, player_forkholster3] { self.weaponframe = $fork_holster2; };
 void() player_forkholster3 = [$pitchstand1, player_forkholster4] { self.weaponframe = $fork_holster3; };
+#ifndef NEW_MODELS
 void() player_forkholster4 = [$pitchstand1, player_forkholster5] { self.weaponframe = $fork_holster4; };
 void() player_forkholster5 = [$pitchstand1, player_run         ] { W_DrawWeapon (self.newweapon); };
+#else
+void() player_forkholster4 = [$pitchstand1, player_run         ] { W_DrawWeapon (self.newweapon); };
+#endif
 
 
 //============================================================================
@@ -215,7 +241,11 @@ void() Fork_Draw =
 
     Fork_UpdateView ();
 
+    #ifndef NEW_MODELS
     self.attack_finished = time + 0.4;
+    #else
+    self.attack_finished = time + 0.3;
+    #endif
     player_forkdraw1 ();
 };
 
@@ -229,7 +259,11 @@ Holster code for the pitchfork
 */
 void() Fork_Holster =
 {
+    #ifndef NEW_MODELS
     self.attack_finished = time + 0.4;
+    #else
+    self.attack_finished = time + 0.3;
+    #endif
     player_forkholster1 ();
 };
 
@@ -243,6 +277,10 @@ Choose the right pitchfork model to display
 */
 void() Fork_UpdateView =
 {
+    #ifndef NEW_MODELS
     self.weaponmodel = "progs/v_axe.mdl";
+    #else
+    self.weaponmodel = "models/weapons/v_pitch.md3";
+    #endif
     self.items = self.items - (self.items & IT_GUNS_AKIMBO);
 };

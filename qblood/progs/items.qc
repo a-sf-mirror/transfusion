@@ -1389,7 +1389,11 @@ void() weapon_flaregun =
 // Sawed-off
 void() weapon_supershotgun =
 {
+    #ifndef NEW_MODELS
     precache_model ("progs/v_shot2.mdl");
+    #else
+    precache_model ("models/weapons/v_shot.md3");
+    #endif
     precache_model ("progs/g_shot.mdl");
     precache_model ("progs/shotshl.mdl");   // shotgun shell
     precache_model ("progs/v_ashot2.mdl");  // akimbo model
@@ -1415,7 +1419,11 @@ void() weapon_supershotgun =
 // Tommy Gun
 void() weapon_nailgun =
 {
+    #ifndef NEW_MODELS
     precache_model ("progs/v_nail.mdl");
+    #else
+    precache_model ("models/weapons/v_tommy.md3");
+    #endif
     precache_model ("progs/v_anail.mdl");  // akimbo model
     precache_model ("progs/g_nail.mdl");
     precache_model ("progs/tommyshl.mdl");  // tommy gun shell

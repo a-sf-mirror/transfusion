@@ -29,7 +29,7 @@ void() Flare_Fire;
 // ----- Flaregun model ----- //
 
 // Normal model
-$modelname v_shot
+$modelname v_flare
 
 // idle
 $frame flare_idle1
