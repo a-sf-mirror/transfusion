@@ -278,27 +278,43 @@ int PS_ReadEscapeCharacter(script_t *script, char *ch)
 		case '\'': c = '\''; break;
 		case '\"': c = '\"'; break;
 		case '\?': c = '\?'; break;
+		case '[': c = '['; break;
+		case ']': c = ']'; break;
 		case 'x':
-		{
-			script->script_p++;
-			for (i = 0, val = 0; ; i++, script->script_p++)
 			{
-				c = *script->script_p;
-				if (c >= '0' && c <= '9') c = c - '0';
-				else if (c >= 'A' && c <= 'Z') c = c - 'A' + 10;
-				else if (c >= 'a' && c <= 'z') c = c - 'a' + 10;
-				else break;
-				val = (val << 4) + c;
-			} //end for
-			script->script_p--;
-			if (val > 0xFF)
+				script->script_p++;
+				for (i = 0, val = 0; ; i++, script->script_p++)
+				{
+					c = *script->script_p;
+					if (c >= '0' && c <= '9') c = c - '0';
+					else if (c >= 'A' && c <= 'Z') c = c - 'A' + 10;
+					else if (c >= 'a' && c <= 'z') c = c - 'a' + 10;
+					else break;
+					val = (val << 4) + c;
+				} //end for
+				script->script_p--;
+				if (val > 0xFF)
+				{
+					ScriptWarning(script, "too large value in escape character");
+					val = 0xFF;
+				} //end if
+				c = val;
+				break;
+			} //end case
+		case '{':
 			{
-				ScriptWarning(script, "too large value in escape character");
-				val = 0xFF;
-			} //end if
-			c = val;
-			break;
-		} //end case
+				c = 0;
+				for (i = *script->script_p++; i != '}'; i = *script->script_p++)
+				{
+					i = *script->script_p;
+					if (i >= '0' && i <= '9')
+					{
+						c = c * 10 + i - '0';
+					}
+				}
+				if (i != '}' || c > 255) ScriptError(script, "unclosed or unknown escape char");
+				break;
+			}
 		default: //NOTE: decimal ASCII code, NOT octal
 		{
 			if (*script->script_p < '0' || *script->script_p > '9') ScriptError(script, "unknown escape char");
@@ -315,7 +331,10 @@ int PS_ReadEscapeCharacter(script_t *script, char *ch)
 				ScriptWarning(script, "too large value in escape character");
 				val = 0xFF;
 			} //end if
-			c = val;
+			if (val < 10) //hack for single digit numbers, just make them show as regular numbers
+				c = 18 + val; //18 offsets it as special numberset, smaller and thinner
+			else
+				c = val;
 			break;
 		} //end default
 	} //end switch
