@@ -70,11 +70,11 @@ void() W_Precache =
     // voodoo doll
     precache_sound ("weapons/voodoodl/vooburn.wav");
     precache_sound ("weapons/voodoodl/voochant.wav");
-    precache_sound ("weapons/voodoodl/voolaugh.wav");
 */
 
     // REMOVEME as soon as we have voodoo items directly in maps
     // because the sound is also precached in item_voodoo
+    precache_sound ("weapons/voodoodl/voolaugh.wav");
     precache_sound ("weapons/voodoodl/voostab.wav");
 
 /*
@@ -926,10 +926,30 @@ void() W_UseVoodooDoll =
     local vector dir;
     local vector src;
     local vector vel, org;
+    local float stab_type;
+    local float damage;
 
-    sound (self, CHAN_WEAPON, "weapons/voodoodl/voostab.wav", 1, ATTN_NORM);
+    // Select a stab type at random
+    stab_type = random()*4;
+    damage = random();
+    if (stab_type >= 3) // Stab Groin
+        damage = damage*49 + 4;
+    else if (stab_type >= 2) // Stab Shoulder (supposed to make player lower weapon in MP mode)
+        damage = damage*9 + 4;
+    else if (stab_type >= 1) // Stab Chest
+        damage = damage*17 + 4;
+    else if (stab_type < 1) // Stab Eye (supposed to blind player in MP mode)
+        damage = damage*11 + 4;
+    else
+        Sprint (self, PRINT_MEDIUM, "There's a problem with the voodoo doll code\n");
 
-    self.currentammo = self.ammo_cells = self.ammo_cells - 1;
+    // Play the appropriate sound
+    if (stab_type >= 3)  // Stab Groin
+        sound (self, CHAN_WEAPON, "weapons/voodoodl/voolaugh.wav", 1, ATTN_NORM);
+    else
+        sound (self, CHAN_WEAPON, "weapons/voodoodl/voostab.wav", 1, ATTN_NORM);
+
+    self.currentammo = self.ammo_cells = self.ammo_cells - damage / 4;
 
     dir = aim (self, 100000);
 

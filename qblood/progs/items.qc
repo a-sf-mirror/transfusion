@@ -927,6 +927,7 @@ void() weapon_voodoodoll =
     setsize (self, '-16 -16 0', '16 16 56');
 
     // Precache the necessary sounds
+    precache_sound ("weapons/voodoodl/voolaugh.wav");
     precache_sound ("weapons/voodoodl/voostab.wav");
 
     StartItem ();

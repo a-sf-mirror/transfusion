@@ -224,29 +224,23 @@ void(entity targ, entity inflictor, entity attacker, float damage) T_Damage=
         return;
     }
 
-// team play damage avoidance
+    // team play damage avoidance
     #ifdef QUAKEWORLD
-// team play damage avoidance
-//ZOID 12-13-96: self.team doesn't work in QW.  Use keys
+    //ZOID 12-13-96: self.team doesn't work in QW.  Use keys
     attackerteam = infokey(attacker, "team");
     targteam = infokey(targ, "team");
 
     if ((teamplay == 1 || (teamplay == 3 && targ != attacker)) &&
         attacker.classname == "player" && attackerteam != "" &&
         targteam == attackerteam       && inflictor.classname !="door"   )
-    {
-        // Decrease the recursion count
-        recursioncount = recursioncount - 1;
-        return;
-    }
     #else
     if ( (teamplay == 1) && (targ.team > 0)&&(targ.team == attacker.team) )
+    #endif
     {
         // Decrease the recursion count
         recursioncount = recursioncount - 1;
         return;
     }
-    #endif
 
 // do the damage
     targ.health = targ.health - take;

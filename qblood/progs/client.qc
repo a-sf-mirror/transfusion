@@ -1564,10 +1564,11 @@ void(entity attacker) ClientObituary =
             return;
         }
         #ifndef QUAKEWORLD
-        else if ( (teamplay == 2) && (self.team > 0)&&(self.team == attacker.team) )
+        else if ((teamplay == 2 && self.team > 0      && self.team == attacker.team) ||
         #else
-        else if ( (teamplay == 2) && (attackerteam != "")&&(targteam == attackerteam))
+        else if ((teamplay == 2 && attackerteam != "" && targteam == attackerteam) ||
         #endif
+                 (deathmatch == 2 && self.team == attacker.team))
         {
             if (rnum < 0.25)
                 deathstring = " mows down a teammate\n";
