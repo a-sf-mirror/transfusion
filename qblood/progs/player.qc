@@ -226,7 +226,10 @@ void() player_nail =
     }
 
     SuperDamageSound ();
-    W_FireSpikes ();
+    if (self.weapon == IT_SUPER_NAILGUN)
+        W_FireSuperSpikes ();
+    else
+        W_FireSpikes ();
     self.attack_finished = time + 0.1;
 
     self.impulse = 0;  // REMOVEME as soon as the altfire won't be bound to an impulse

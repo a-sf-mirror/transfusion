@@ -465,7 +465,7 @@ void() W_FireShotgun =
     local vector dir;
     local float  mspeed;
 
-// Launch flare instead.
+    // Launch flare instead.
     sound (self, CHAN_WEAPON, "weapons/flaregun/flaref.wav", 1, ATTN_NORM);
 
     #ifndef QUAKEWORLD
@@ -477,16 +477,23 @@ void() W_FireShotgun =
 
     mspeed = 1000;
     dir = aim (self, mspeed);
+
+    // Spawn the flare a little ahead of the player
+    local vector orig;
+    makevectors(self.v_angle);
+    orig = self.origin + v_forward * 10 + v_right * 4;
+    orig_z = self.absmin_z + self.size_z * 0.8;
+
     if ((self.impulse == 12 || self.button1) && self.ammo_flares >= 8)
     {
-        // PM:  Fire alt-flares instead.
+        // Fire alt-flares instead.
         self.currentammo = self.ammo_flares = self.ammo_flares - 8;
-        PM_FireAltFlares (self, self.origin + '0 0 16', dir, mspeed, 10, 50);
+        PM_FireAltFlares (self, orig, dir, mspeed, 10, 50);
         return;
     }
 
     self.currentammo = self.ammo_flares = self.ammo_flares - 1;
-    PM_FireFlare (self, self.origin + '0 0 16', dir, mspeed);
+    PM_FireFlare (self, orig, dir, mspeed);
 };
 
 
@@ -555,9 +562,6 @@ void() SpawnShell =
 {
     local entity shell;
 
-    shell = spawn ();
-    shell.owner = self;
-
     // shell.noise is the hitting ground sound
     // shell.noise1 is the cocking sound
 
@@ -565,6 +569,9 @@ void() SpawnShell =
     if (self.weapon == IT_NAILGUN)
     {
         local entity player;
+
+        shell = spawn ();
+        shell.owner = self;
 
         shell.mdl    = "progs/tommyshl.mdl";
         if (random() < 0.5)
@@ -585,6 +592,9 @@ void() SpawnShell =
         local entity shell2;
 
         // 1st shell
+        shell = spawn ();
+        shell.owner = self;
+
         shell.nextthink = time + 0.4;  // delay shells until reload
         shell.mdl    = "progs/shotshl.mdl";
         shell.noise  = "weapons/shtshl2.wav";
@@ -636,7 +646,7 @@ void() W_FireSuperShotgun =
 
     dir = aim (self, 100000);
     SpawnShell ();
-    FireBullets (9 * nbshots, dir, '0.08 0.08 0');  // 9 "shot pellets" per shell.  quake = 14 bullets
+    FireBullets (9 * nbshots, dir, '0.08 0.08 0');  // 9 "shot pellets" per shell
 };
 
 
@@ -1703,12 +1713,6 @@ void() W_FireSuperSpikes =
 
 void() W_FireSpikes =
 {
-    if (self.weapon == IT_SUPER_NAILGUN)
-    {
-        W_FireSuperSpikes ();
-        return;
-    }
-
     local vector    dir;
     local entity    old;
 
@@ -1731,7 +1735,7 @@ void() W_FireSpikes =
     else if (self.weaponframe == 13)
         dir = dir + v_right * (1 / 10);
 
-    launch_spike (self.origin + '0 0 16' + v_right * 8 + v_forward * 4, dir);
+    FireBullets (1, dir, '0.04 0.04 0');
 
     #ifdef QUAKEWORLD
     msg_entity = self;
@@ -1740,7 +1744,6 @@ void() W_FireSpikes =
     self.punchangle_x = -2;
     #endif
 };
-
 
 
 .float hit_z;
@@ -2073,7 +2076,7 @@ void() W_Attack =
     else if (self.weapon == IT_ROCKET_LAUNCHER)
     {
         player_rocket1();
-        self.attack_finished = time + 0.8;
+        self.attack_finished = time + 0.5;
         W_FireRocket();
     }
     else if (self.weapon == IT_LIGHTNING)
@@ -2094,8 +2097,9 @@ void() W_Attack =
     else if (self.weapon == IT_VOODOO_DOLL)
     {
         W_UseVoodooDoll();
-        self.attack_finished = time + 0.7;
-// PM:  Don't call player_run if dead.
+        self.attack_finished = time + 0.5;
+
+        // Don't call player_run if dead.
         if (!self.deadflag)
             player_doll1 ();
     }
@@ -2467,7 +2471,6 @@ void() QuadCheat =
     dprint ("quad cheat\n");
 };
 
-//========================================================================
 
 void() ShowThrowMeter =
 {
@@ -2732,7 +2735,6 @@ void() PM_ArmorTest =
     }
 };
 
-//========================================================================
 
 /*
 ============

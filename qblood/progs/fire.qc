@@ -839,7 +839,7 @@ void() PM_FlareStick =
     setorigin (self, spot);
 };
 
-//----------------------------------------------------/ New Code /--------//
+//------------------------------------------------------------------------//
 //  Here, the flare sticks and burns its target.
 //------------------------------------------------------------------------//
 void() PM_FlareThink =
@@ -878,7 +878,7 @@ void() PM_FlareThink =
     self.nextthink = nextframe;
 };
 
-//----------------------------------------------------/ New Code /--------//
+//------------------------------------------------------------------------//
 //  Called when flare impacts.
 //------------------------------------------------------------------------//
 void() PM_FlareTouch =
@@ -935,7 +935,7 @@ void() PM_FlareTouch =
     remove (self);
 };
 
-//----------------------------------------------------/ New Code /--------//
+//------------------------------------------------------------------------//
 //  This spawns and returns a brand new flare.
 //------------------------------------------------------------------------//
 entity(entity attacker, vector spot) PM_NewFlare =
@@ -967,7 +967,7 @@ entity(entity attacker, vector spot) PM_NewFlare =
     return fire;
 };
 
-//----------------------------------------------------/ New Code /--------//
+//------------------------------------------------------------------------//
 //  Create and launch a fire.
 //------------------------------------------------------------------------//
 void(entity attacker, vector org, vector dir, float sped) PM_FireFlare =
@@ -989,7 +989,7 @@ void(entity attacker, vector org, vector dir, float sped) PM_FireFlare =
 
 void(entity client) PM_PsychoCaleb;
 
-//----------------------------------------------------/ New Code /--------//
+//------------------------------------------------------------------------//
 //  This animates the napalm cloud, and makes it burn things around it.
 //------------------------------------------------------------------------//
 void() PM_OldExThink =
@@ -1005,7 +1005,7 @@ void() PM_OldExThink =
     self.nextthink = time + 0.1;
 };
 
-//----------------------------------------------------/ New Code /--------//
+//------------------------------------------------------------------------//
 //  Turns entity into a flaming napalm cloud.
 //------------------------------------------------------------------------//
 void() PM_BecomeOldExplosion =
@@ -1021,7 +1021,7 @@ void() PM_BecomeOldExplosion =
     self.think      = PM_OldExThink;
 };
 
-//----------------------------------------------------/ New Code /--------//
+//------------------------------------------------------------------------//
 //  Called when flare impacts.
 //------------------------------------------------------------------------//
 void() PM_AltFlareTouch =
@@ -1059,7 +1059,7 @@ void() PM_AltFlareTouch =
     PM_BecomeOldExplosion ();
 };
 
-//----------------------------------------------------/ New Code /--------//
+//------------------------------------------------------------------------//
 //  This causes the flare to change its path in mid-flight.
 //------------------------------------------------------------------------//
 void() PM_AltFlareSplit =
