@@ -25,6 +25,29 @@
 	<h2 id="news-section" class="section">News</h2>
 	<ul>
 		<li>
+                        <span class="title">November 2, 2003:</span> (by Tim)<br/>
+                        Finally figuring out how to work some of the stuff on the site.<br/>
+                        It's good to be working with Mathieu again, albiet a little sad since he's inactive these days.<br/>
+                        My main desire for joining up (again) was to motivate the great 3D animators/artists that have been 
+                        with the project through it's great period of inactivity.  I seriously thought that the project
+                        would have ended if not for their persistance.  Thanks Luke and Chris!<br/>
+                        I like to do updates every week, so I figure I'll start things off today.<br/><br/>
+                        <b>The good stuff for this week as follows:</b><br/>
+                        Blood splattering was lost for some reason. 
+                        Put it back, and made it do a nifty splattering confetti style effect.<br/>
+                        Initial screen shaking code is in place.  Now to implement it for beast's stomp, etc.<br/>
+                        Monsters can be disabled via nomonsters cvar now.  Works like nodudes.<br/>
+                        A lot of Single Player specific code tweaks added.
+                        I.E. keys not spawning in blood bath, all doors open, keys respawning in 15 seconds in coop games,
+                        life leech sentries attacking monsters in SP and coop, etc.<br/>
+                        Of course all the monster related code is SP specific.<br/>
+                        The most notable update this week is that monsters no longer stand around when being attacked.  
+                        They "wake up" and wake up nearby monsters that can see you.<br/>
+                        Stepping on monsters hurts them, and can slowly kill them.<br/>
+                        Lots of code cleaning and fat trimming. Many bug/behavior fixes for the monsters.<br/>
+                        
+                        <p/>   
+                <li>
 			<span class="title">October 13, 2003:</span> (by Elric)<br />
 			I am officially resigning from my Lead Programmer position today. Timothy Hale, another co-founder
 			of this project, will be taking up the chair in my place.<p />
