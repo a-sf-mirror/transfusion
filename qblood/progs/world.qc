@@ -218,6 +218,9 @@ void() worldspawn =
     if (!cvar ("pr_checkextension"))
         error ("QuakeC extensions are not supported by this engine");
     MandatoryExtension ("DP_INPUTBUTTONS");
+    #ifdef NEW_MODELS
+    MandatoryExtension ("DP_QUAKE3_MODEL");
+    #endif
     MandatoryExtension ("DP_REGISTERCVAR");
 
     // Create our own cvars as soon as possible

@@ -101,7 +101,7 @@ void() player_akshot4 = [$attack2, player_run    ]
     if (self.ammo_shells < 2)
     {
         Shot_UpdateView ();
-        self.weaponframe = 0;
+        self.weaponframe = $shot_idle1;
     }
 };
 
@@ -122,7 +122,7 @@ void() player_altshot5 = [$attack2, player_run    ]
     if (self.ammo_shells < 2)
     {
         Shot_UpdateView ();
-        self.weaponframe = 0;
+        self.weaponframe = $shot_idle1;
     }
 };
 

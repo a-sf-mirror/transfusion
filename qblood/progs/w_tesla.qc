@@ -28,6 +28,7 @@ void() Tesla_Fire;
 
 // ----- Tesla Cannon models ----- //
 
+#ifndef NEW_MODELS
 // Normal model
 $modelname v_light
 
@@ -48,6 +49,30 @@ $frame tesla_draw1 tesla_draw2 tesla_draw3
 
 // holster
 $frame tesla_holster1 tesla_holster2 tesla_holster3
+
+
+#else
+// Normal model
+$modelname v_tesla
+
+// idle
+$frame tesla_idle1
+
+// draw
+$frame tesla_draw1 tesla_draw2 tesla_draw3
+
+// fire
+$frame tesla_fire1 tesla_fire2 tesla_fire3 tesla_fire4
+
+// altfire
+$frame tesla_alt1  tesla_alt2  tesla_alt3  tesla_alt4  tesla_alt5
+$frame tesla_alt6  tesla_alt7  tesla_alt8  tesla_alt9  tesla_alt10
+$frame tesla_alt11 tesla_alt12 tesla_alt13 tesla_alt14 tesla_alt15
+$frame tesla_alt16 tesla_alt17 tesla_alt18 tesla_alt19 tesla_alt20
+
+// holster
+$frame tesla_holster1 tesla_holster2 tesla_holster3
+#endif
 
 
 // Akimbo model
@@ -414,7 +439,11 @@ void() Tesla_UpdateView =
     }
     else
     {
+        #ifndef NEW_MODELS
         self.weaponmodel = "progs/v_light.mdl";
+        #else
+        self.weaponmodel = "models/weapons/v_tesla.md3";
+        #endif
         self.items = self.items - (self.items & IT_GUNS_AKIMBO);
     }
 };

@@ -266,6 +266,7 @@ void() player_axpain5 = [$pitchpain5, player_run    ] {};
 
 void() player_pain =
 {
+    // FIXME: check the player state instead
     if (self.weaponframe)
         return;
 
@@ -275,7 +276,6 @@ void() player_pain =
     // Changed so player only shows pain when player make noise.
     if (PainSound ())
     {
-        self.weaponframe = 0;
         if (self.weapon == IT_PITCHFORK)
             player_axpain1 ();
         else

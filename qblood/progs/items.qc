@@ -1582,7 +1582,11 @@ void() weapon_rocketlauncher =
 // Telsa Cannon
 void() weapon_lightning =
 {
+    #ifndef NEW_MODELS
     precache_model ("progs/v_light.mdl");
+    #else
+    precache_model ("models/weapons/v_tesla.md3");
+    #endif
     precache_model ("progs/g_light.mdl");
     precache_model ("progs/v_alight.mdl");  // Akimbo model
     precache_model ("progs/teslaball.spr");

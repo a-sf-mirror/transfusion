@@ -227,7 +227,7 @@ void() player_remotefire1 = [$attack2, player_remotefire2] { self.weaponframe = 
 void() player_remotefire2 = [$attack2, player_remotefire3] { self.weaponframe = $remote_fire3; };
 void() player_remotefire3 = [$attack2, player_run        ]
 {
-    self.weaponframe = 0;
+    self.weaponframe = $remote_idle1;
     self.player_state = PS_IDLE;
 
     // If we have no more remote bombs, we "lose" this weapon
