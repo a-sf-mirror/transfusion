@@ -252,7 +252,7 @@
 [
 	speed(integer) : "Speed"
 	lip(integer) : "Lip"
-	health(integer) : "Health (shoot open)" : 0
+	health(integer) : "Health (shoot open)"
 	spawnflags(flags) =
 	[
 		1  : "Starts Open" : 0
@@ -265,10 +265,10 @@
 		256: "Spider Key Required" : 0
 		512: "Moon Key Required" : 0
 	]
-	flags(choices) =
+	flags(choices) : "User interaction with door" : 0 =
 	[
-	    0 : "Player manually uses the door" : 0
-		1 : "Player proximity opens the door" : 0
+          0 : "Player manually uses the door"
+          1 : "Player proximity opens the door"
 	]
 ]
 
@@ -522,8 +522,8 @@
 @baseclass color(130 255 64) = Object
 [
 	spawnflags(flags) =
-	[
-		1 : "Solid" : 0
+    [
+        1 : "Solid" : 0
     ]
 ]
 
@@ -681,28 +681,28 @@
 
 @PointClass = hidden_exploder : "Unseen triggered explosion"
 [
-	noise(string) : "Sound to play when explosion occurs"
-	colormap(color255) : "color for explosion (0-255) with particle explosion"
+    noise(string) : "Sound to play when explosion occurs"
+    colormap(integer) : "color (0-255) for particle explosion"
     target(target_destination) : "Target - great for chained explosions"
-    wait(interger) : "Delay until explosion"
-    style(choices) =
+    wait(integer) : "Delay until explosion"
+      style(choices) : "Explosion style" : 0 =
 	[
-	    0 : "Basic sprite explosion" : 1
-	    1 : "Medium opengl explosion" : 0
-	    2 : "Violet flash, then medium opengl explosion" : 0
-	    3 : "Red splash going up" : 0
-	    4 : "White spherical pulse" : 0
-	    5 : "Large opengl explosion" : 0
-	    6 : "Particle explosion" : 0
+	    0 : "Basic sprite explosion"
+	    1 : "Medium opengl explosion"
+	    2 : "Violet flash, then medium opengl explosion"
+	    3 : "Red splash going up"
+	    4 : "White spherical pulse"
+	    5 : "Large opengl explosion"
+	    6 : "Particle explosion"
 	]
 ]
 
-@PointClass = func_transparent : "Transparent wall"
+@SolidClass = func_transparent : "Transparent wall"
 [
-    alpha(integer) : "Opacity rate 0.0 to 1.0"
-	style(choices) : "Solid / Non-solid" : 1 =
-	[
-	    0 : "Non-solid" : 0
-		1 : "Solid" : 1
+      alpha(integer) : "Opacity rate 0.0 to 1.0"
+      style(choices) : "Solid / Non-solid" : 1 =
+      [
+          0 : "Non-solid"
+          1 : "Solid"
 	]
 ]
