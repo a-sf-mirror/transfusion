@@ -1649,7 +1649,7 @@ void() W_Attack =
     else if (self.weapon == IT_LIGHTNING)
     {
         self.attack_finished = time + 0.1;
-        sound (self, CHAN_AUTO, "weapons/tesla/teslaz~1.wav", 1, ATTN_NORM);
+        sound (self, CHAN_AUTO, "weapons/tesla/tessngfr.wav", 1, ATTN_NORM);
         player_light1();
     }
     else if (self.weapon == IT_VOODOO_DOLL)
