@@ -625,21 +625,26 @@ void() func_wall =
         self.angles = '0 0 0';
         self.use = func_wall_use;
     }
-    else
+    else // It's automated
     {
+        SetMovedir ();
+        setorigin (self, self.origin);
 
-    SetMovedir ();
-    setorigin (self, self.origin);
+        if (!self.speed)
+            self.speed = 100;
+        if (!self.lip)
+            self.lip = 8;
 
-    if (!self.speed)
-        self.speed = 100;
-    if (!self.lip)
-        self.lip = 8;
+        self.pos1 = self.origin;
+        self.pos2 = self.pos1 + self.movedir*(fabs(self.movedir*self.size) - self.lip);
 
-    self.pos1 = self.origin;
-    self.pos2 = self.pos1 + self.movedir*(fabs(self.movedir*self.size) - self.lip);
-
-    func_wall_go_up();
+        if (!self.wait)
+            func_wall_go_up();
+        else
+        {   // The mapper has set the automated wall to wait before going
+            self.think = func_wall_go_up;
+            self.nextthink = time + self.wait;
+        }        
     }
 };
 

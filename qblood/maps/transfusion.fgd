@@ -294,6 +294,7 @@
 	]	
 	speed(integer) : "Speed (units per second)" : 150
 	lip(integer) : "Lip remaining at end of move"
+    wait(integer) : "Wall start wait time"
 ]
 
 @SolidClass = func_changelevel : "End of level switch (Only shows in SP/COOP)" 
