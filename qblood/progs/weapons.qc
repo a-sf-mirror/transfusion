@@ -571,7 +571,7 @@ void() SpawnShell =
     {
         // play the reload scene
         player_reload1 ();
-	
+
         local entity shell2;
 
         // 1st shell
@@ -1627,11 +1627,11 @@ void() W_FireGrenade =
 
     mspeed = 200 + (self.charge * 50);
     if (mspeed < 300)
-        mspeed = 300;  // don't throw the grenade on our feet !
-    mup = mspeed / 1.5;
+        mspeed = 300;  // don't throw the grenade on our own feet !
+    mup = mspeed / 2;
 
     if (self.v_angle_x)
-        newmis.velocity = v_forward*mup + v_up * mup + crandom()*v_right*10 + crandom()*v_up*10;
+        newmis.velocity = v_forward * (mspeed / 1.25) + v_up * mup + crandom () * v_right * 10 + crandom () * v_up * 10;
     else
     {
         newmis.velocity = aim(self, 10000);
@@ -2029,17 +2029,17 @@ void(float weaponHasChanged, float oldWeapon) W_SetCurrentAmmo =
     else if (self.weapon == IT_SUPER_SHOTGUN)
     {
         self.currentammo = self.ammo_shells;
-	if (self.akimbo_finished > time && self.currentammo >= 2)
-	{
-	     self.weaponmodel = "progs/v_ashot2.mdl";
-	     self.items = self.items | IT_GUNS_AKIMBO;
+        if (self.akimbo_finished > time && self.currentammo >= 2)
+        {
+            self.weaponmodel = "progs/v_ashot2.mdl";
+            self.items = self.items | IT_GUNS_AKIMBO;
         }
-	else
-	{
-	    self.weaponmodel = "progs/v_shot2.mdl";
-	    self.items = self.items - (self.items & IT_GUNS_AKIMBO);
-	}	
-	self.items = self.items | IT_SHELLS;
+        else
+        {
+            self.weaponmodel = "progs/v_shot2.mdl";
+            self.items = self.items - (self.items & IT_GUNS_AKIMBO);
+        }
+        self.items = self.items | IT_SHELLS;
     }
     else if (self.weapon == IT_NAILGUN)
     {
@@ -2236,9 +2236,10 @@ void() W_Attack =
     {
         // if we have guns akimbo
         if (self.items & IT_GUNS_AKIMBO)
-	     player_aksup1 ();
-	else	
-        player_supershot1 ();
+            player_aksup1 ();
+        else
+            player_supershot1 ();
+
         self.attack_finished = time + 0.7;
         W_FireSuperShotgun ();
     }

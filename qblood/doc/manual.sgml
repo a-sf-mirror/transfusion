@@ -3,9 +3,9 @@
 
    <!-- Header and TOC -->
 
-   <title> qBlood manual
+   <title> QBlood manual
    <author> Mathieu Olivier <tt>&lt;elric@planetblood.com&gt;</tt>
-   <date>v?.?.? (development), November 13, 2001
+   <date>v?.?.? (development), November 23, 2001
    <abstract>
       This manual covers <url url="http://www.planetblood.com/qblood/"
       name="qBlood"> installation and usage.
@@ -42,7 +42,7 @@
 
    <sect><heading> Basic usage<p>
       <sect1>Game types<p>
-         qBlood supports 5 game types:
+         QBlood supports 5 game types:
          <itemize>
             <item> Single player game (deathmatch = 0, and coop = 0)<p>
             <item> Cooperative game (deathmatch = 0, and coop = 1)<p>
@@ -131,6 +131,28 @@
       </descrip>
    </sect>
 
+   <!-- FAQ -->
+
+   <sect> <heading> Frequently Asked Questions <p>
+      <descrip>
+         <tag>Quake exits with: <em>Z_Malloc: failed on allocation of XXX bytes</em></tag>
+         QBlood seems to use quite a lot of zone memory, so you may need to
+         increase its size with the "-zone" argument. I personnally use "-zone
+         256".
+
+         <tag>Boots of jumping doesn't work / I jump higher in NQ than in QW</tag>
+         NQ relies on the game code to handle jumping, but QW does it in its
+		 own code. As a result, we can't tweak the jump velocity in QW until
+		 we get our own version of the Quake engine.
+
+         <tag>I want to contribute to qBlood. How can I do ?</tag>
+         It's very simple. Start doing a quick tour through our 2 websites to
+         be sure to know all the basic informations you may need. Then, contact
+         the Project Coordinator and either the Lead Artist or the Lead
+         Programmer, depending on what you want to contribute.
+      </descrip>
+   </sect>
+
    <!-- Links -->
 
    <sect>Links<label id="Links"><p>
@@ -138,7 +160,7 @@
          <item><url url="http://www.planetblood.com/qblood/"
             name="The qBlood Project">: our home page<p>
          <item><url url="http://blood.sourceforge.net/"
-            name="qBlood on SourceForge.net">: our development page<p>
+            name="QBlood on SourceForge.net">: our development page<p>
       </itemize>
    </sect>
 
