@@ -536,6 +536,8 @@ SpawnShell
 Spawns new shell entity but doesn't display it until reloadtime
 ================
 */
+void() player_reload1;
+
 void() SpawnShell =
 {
     local entity shell;
@@ -565,8 +567,11 @@ void() SpawnShell =
         self = player;
     }
     // Shotgun shells (2 shells dropped at a time, or nothing)
-    else if (self.weapon == IT_SUPER_SHOTGUN && (self.currentammo & 1) == 0)
+    else if (self.akimbo_finished < time && self.weapon == IT_SUPER_SHOTGUN && (self.currentammo & 1) == 0)
     {
+        // play the reload scene
+        player_reload1 ();
+	
         local entity shell2;
 
         // 1st shell
@@ -1598,7 +1603,7 @@ void() W_FireGrenade =
         self.currentammo = self.ammo_spray;
     }
 
-    sound (self, CHAN_WEAPON, "weapons/tnt/tnttoss.wav", 1, ATTN_NORM);
+    sound (self, CHAN_AUTO, "weapons/tnt/tnttoss.wav", 1, ATTN_NORM);
 
     newmis = spawn ();
     newmis.owner = self;
@@ -2024,8 +2029,17 @@ void(float weaponHasChanged, float oldWeapon) W_SetCurrentAmmo =
     else if (self.weapon == IT_SUPER_SHOTGUN)
     {
         self.currentammo = self.ammo_shells;
-        self.weaponmodel = "progs/v_shot2.mdl";
-        self.items = self.items | IT_SHELLS;
+	if (self.akimbo_finished > time && self.currentammo >= 2)
+	{
+	     self.weaponmodel = "progs/v_ashot2.mdl";
+	     self.items = self.items | IT_GUNS_AKIMBO;
+        }
+	else
+	{
+	    self.weaponmodel = "progs/v_shot2.mdl";
+	    self.items = self.items - (self.items & IT_GUNS_AKIMBO);
+	}	
+	self.items = self.items | IT_SHELLS;
     }
     else if (self.weapon == IT_NAILGUN)
     {
@@ -2169,6 +2183,8 @@ void()  player_axeb1;
 void()  player_axec1;
 void()  player_axed1;
 void()  player_shot1;
+void()  player_supershot1;
+void()  player_aksup1;
 void()  player_nail1;
 void()  player_altnail1;
 void()  player_supernail1;
@@ -2218,7 +2234,11 @@ void() W_Attack =
     }
     else if (self.weapon == IT_SUPER_SHOTGUN)
     {
-        player_shot1 ();
+        // if we have guns akimbo
+        if (self.items & IT_GUNS_AKIMBO)
+	     player_aksup1 ();
+	else	
+        player_supershot1 ();
         self.attack_finished = time + 0.7;
         W_FireSuperShotgun ();
     }
@@ -2848,7 +2868,7 @@ void() W_ChargeNormal =
         }
 
         self.tnt_time = time + FUSE_TIME;
-        Sprint (self, PRINT_LOW, "WARNING: you've just lit up the TNT fuse (5 sec)...\n");
+        Sprint (self, PRINT_LOW, "WARNING: you've just lit the fuse (5 sec)...\n");
 
         self.t_width = 0;  // So the fuse wav starts at the next frame
     }

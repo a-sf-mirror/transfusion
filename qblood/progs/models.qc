@@ -98,7 +98,7 @@ $cd id1/models/v_shot
 $origin 0 0 54
 $base base
 $skin skin
-$frame shot1 shot2 shot3 shot4 shot5 shot6 shot7
+$frame shot1 shot2 shot3 shot4
 
 
 $modelname v_shot2
@@ -106,7 +106,7 @@ $cd id1/models/v_shot2
 $origin 0 0 56
 $base base
 $skin skin
-$frame shot1 shot2 shot3 shot4 shot5 shot6 shot7
+$frame shot1 shot2
 
 
 $modelname v_rock2

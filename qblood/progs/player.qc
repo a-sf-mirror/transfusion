@@ -91,7 +91,11 @@ $frame light1 light2
 
 $frame rockatt1 rockatt2 rockatt3 rockatt4 rockatt5 rockatt6
 
-$frame shotatt1 shotatt2 shotatt3 shotatt4 shotatt5 shotatt6
+$frame shotatt1 shotatt2 shotatt3 shotatt4
+
+$frame supatt1 supatt2
+
+$frame aksup1 aksup2 aksup3 aksup4 aksup5
 
 $frame axatt1 axatt2 axatt3 axatt4 axatt5 axatt6
 
@@ -180,9 +184,31 @@ void()muzzleflash =
 void()  player_shot1 =  [$shotatt1, player_shot2    ] {self.weaponframe=1;muzzleflash();};
 void()  player_shot2 =  [$shotatt2, player_shot3    ] {self.weaponframe=2;};
 void()  player_shot3 =  [$shotatt3, player_shot4    ] {self.weaponframe=3;};
-void()  player_shot4 =  [$shotatt4, player_shot5    ] {self.weaponframe=4;};
-void()  player_shot5 =  [$shotatt5, player_shot6    ] {self.weaponframe=5;};
-void()  player_shot6 =  [$shotatt6, player_run      ] {self.weaponframe=6;};
+void()  player_shot4 =  [$shotatt4, player_run    ] {self.weaponframe=4;};
+
+void()  player_supershot1 = [
+$supatt1, player_supershot2    ] {self.weaponframe=1;muzzleflash();};
+void()  player_supershot2 = [$supatt2, player_run     ] {self.weaponframe=2;};
+
+void()  player_reload1 = [$supatt1, player_reload2] {self.weaponframe=3;};
+void()  player_reload2 = [$supatt1, player_reload3] {self.weaponframe=4;};
+void()  player_reload3 = [$supatt1, player_reload4] {self.weaponframe=5;};
+void()  player_reload4 = [$supatt1, player_reload5] {self.weaponframe=6;};
+void()  player_reload5 = [$supatt1, player_reload6] {self.weaponframe=7;};
+void()  player_reload6 = [$supatt1, player_reload7] {self.weaponframe=8;};
+void()  player_reload7 = [$supatt1, player_reload8] {self.weaponframe=9;};
+void()  player_reload8 = [$supatt1, player_reload9] {self.weaponframe=10;};
+void()  player_reload9 = [$supatt1, player_reload10] {self.weaponframe=11;};
+void()  player_reload10 = [$supatt1, player_reload11] {self.weaponframe=12;};
+void()  player_reload11 = [$supatt1, player_run    ] {self.weaponframe=1;};
+
+void()  player_aksup1 = [$aksup1, player_aksup2     ] {self.weaponframe=0;};
+void()  player_aksup2 = [$aksup2, player_aksup3     ] {self.weaponframe=1;muzzleflash();};
+void()  player_aksup3 = [$aksup3, player_aksup4     ] {self.weaponframe=2;};
+void()  player_aksup4 = [$aksup4, player_aksup5     ] {self.weaponframe=3;W_FireSuperShotgun();};
+void()  player_aksup5 = [$aksup5, player_aksup6     ] {self.weaponframe=4;muzzleflash();};
+void()  player_aksup6 = [$aksup5, player_run        ] {self.weaponframe=0;};
+
 
 void()  player_axe1 =   [$axatt1, player_axe2   ] {self.weaponframe=1;};
 void()  player_axe2 =   [$axatt2, player_axe3   ] {self.weaponframe=2;};
@@ -287,19 +313,21 @@ void() player_supernail2 = [$nailatt2, player_supernail1] { player_supernail ();
 void() player_lightcan1 = [$shotatt1, player_lightcan2] {self.weaponframe = 2;};
 void() player_lightcan2 = [$shotatt1, player_lightcan3] {self.weaponframe = 3;};
 void() player_lightcan3 = [$shotatt1, player_lightcan4] {self.weaponframe = 4;};
-void() player_lightcan4 = [$shotatt1, player_run      ] {self.weaponframe = 5;};
+void() player_lightcan4 = [$shotatt1, player_lightcan5] {self.weaponframe = 5;};
+void() player_lightcan5 = [$shotatt1, player_lightcan6] {self.weaponframe = 6;};
+void() player_lightcan6 = [$shotatt1, player_lightcan4] {self.weaponframe = 7;};
 
-void() player_altsupernail1 = [$shotatt1, player_altsupernail2] { self.weaponframe = 6; };
-void() player_altsupernail2 = [$shotatt1, player_altsupernail3] { self.weaponframe = 7; };
-void() player_altsupernail3 = [$shotatt1, player_altsupernail4] { self.weaponframe = 8; };
+void() player_altsupernail1 = [$shotatt1, player_altsupernail2] { self.weaponframe = 8; };
+void() player_altsupernail2 = [$shotatt1, player_altsupernail3] { self.weaponframe = 9; };
+void() player_altsupernail3 = [$shotatt1, player_altsupernail4] { self.weaponframe = 10; };
 void() player_altsupernail4 = [$shotatt1, player_altsupernail5]
 {
-    self.weaponframe = 9;
+    self.weaponframe = 11;
     W_FireGrenade ();
     W_Uncharge ();
     ShowThrowMeter ();
 };
-void() player_altsupernail5 = [$shotatt1, player_run          ] { self.weaponframe = 10; };
+void() player_altsupernail5 = [$shotatt1, player_run          ] { self.weaponframe = 12; };
 
 //============================================================================
 

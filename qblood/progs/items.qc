@@ -959,6 +959,7 @@ void() item_artifact_shadow =
 // Soccer Goal Post
 void() obj_goal =
 {
+     precache_model("progs/goalpost.mdl");
      self.model = "progs/goalpost.mdl";
 };
 
@@ -1489,6 +1490,7 @@ void() weapon_supershotgun =
     precache_model ("progs/v_shot2.mdl");
     precache_model ("progs/g_shot.mdl");
     precache_model ("progs/shotshl.mdl");   // shotgun shell
+    precache_model ("progs/v_ashot2.mdl");  // akimbo model
 
     setmodel (self, "progs/g_shot.mdl");
     self.weapon = IT_SUPER_SHOTGUN;
@@ -1500,7 +1502,7 @@ void() weapon_supershotgun =
     precache_sound ("weapons/shotgun/shotcock.wav");  // shell ejection
     precache_sound ("weapons/shotgun/shotfir2.wav");  // shotgun alt-fire
     precache_sound ("weapons/shotgun/shotfire.wav");  // shotgun fired
-//    precache_sound ("weapons/shotgun/shotload.wav");  // reload sound
+    precache_sound ("weapons/shotgun/shotload.wav");  // reload sound
     precache_sound ("weapons/shtshl2.wav");  // shell hitting ground
 
     StartItem ();
