@@ -526,9 +526,15 @@ string(string s) precache_model     = #20;
 void(entity client, string s)stuffcmd = #21;
 #endif
 entity(vector org, float rad) findradius = #22;
-void(string s) bprint               = #23;
+void(string s) bprint                                               = #23;
+void(string s1, string s2) bprint2                                  = #23;
+void(string s1, string s2, string s3) bprint3                       = #23;
+void(string s1, string s2, string s3, string s4) bprint4            = #23;
+void(string s1, string s2, string s3, string s4, string s5) bprint5 = #23;
 #ifdef NO_FRIKBOT
-void(entity client, string s) sprint = #24;
+void(entity client, string s) sprint                            = #24;
+void(entity client, string s1, string s2) sprint2               = #24;
+void(entity client, string s1, string s2, string s3) sprint3    = #24;
 #endif
 void(string s) dprint               = #25;
 string(float f) ftos                = #26;

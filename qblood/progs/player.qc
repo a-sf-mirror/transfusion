@@ -570,21 +570,15 @@ void() PlayerDie =
 
     if (self.akimbo_finished > 0)
     {
-        bprint (self.netname);
-        bprint (" lost a Guns Akimbo with ");
         s = ftos(rint(self.akimbo_finished - time));
-        bprint (s);
-        bprint (" seconds remaining\n");
+        bprint4 (self.netname, " lost a Guns Akimbo with ", s, " seconds remaining\n");
         Akimbo_Drop (self.akimbo_finished - time);
     }
 
     if (self.invisible_finished > 0)
     {
-        bprint (self.netname);
-        bprint (" lost a cloak with ");
         s = ftos(rint(self.invisible_finished - time));
-        bprint (s);
-        bprint (" seconds remaining\n");
+        bprint4 (self.netname, " lost a cloak with ", s, " seconds remaining\n");
         Invisibility_Drop (self.invisible_finished - time);
     }
 

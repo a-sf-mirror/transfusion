@@ -539,10 +539,8 @@ void() World_StartWarmup =
     warmup_endtime = time + duration;
     warmup_counttime = time + duration - (floor (duration / 5) * 5);
 
-    bprint ("¾¾ Warmup started (");
     str = ftos (duration);
-    bprint (str);
-    bprint (" sec) ¼¼\n");
+    bprint3 ("¾¾ Warmup started (", str, " sec) ¼¼\n");
 };
 
 

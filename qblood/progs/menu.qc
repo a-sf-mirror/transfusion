@@ -35,9 +35,8 @@ void(string newmap) Vote_ChangeMap =
     nextmap = newmap;
     Cl_ChangeLevel (TRUE);
 
-    bprint ("Û Vote passed. Switching to map ");  // "[ Vote passed ..."
-    bprint (newmap);
-    bprint (" Ý\n");  // " ]\n"
+    // "[ Vote passed ... ]\n"
+    bprint3 ("Û Vote passed. Switching to map ", newmap, " Ý\n");
 };
 
 
@@ -50,9 +49,8 @@ Used when the vote for a frag limit is passed
 */
 void(string newFraglimit) Vote_ChangeFraglimit =
 {
-    bprint ("Û Vote passed. New frag limit: ");  // "[ Vote passed ..."
-    bprint (newFraglimit);
-    bprint (" Ý\n");  // " ]\n"
+    // "[ Vote passed ... ]\n"
+    bprint3 ("Û Vote passed. New frag limit: ", newFraglimit, " Ý\n");
 
     if (newFraglimit == "unlimited")
         cvar_set ("fraglimit", "0");
@@ -87,10 +85,10 @@ void(float newGametype) Vote_ChangeGametype =
     else
         cvar_set ("teamplay", "1");
 
-    bprint ("Û Vote passed. Next game type: ");  // "[ Vote passed ..."
     gt = Vote_GametypeToString (newGametype);
-    bprint (gt);
-    bprint (" Ý\n");  // " ]\n"
+
+    // "[ Vote passed ... ]\n"
+    bprint3 ("Û Vote passed. Next game type: ", gt, " Ý\n");
 };
 
 
@@ -103,9 +101,8 @@ Used when the vote for a time limit is passed
 */
 void(string newTimelimit) Vote_ChangeTimelimit =
 {
-    bprint ("Û Vote passed. New time limit: ");  // "[ Vote passed ..."
-    bprint (newTimelimit);
-    bprint (" Ý\n");  // " ]\n"
+    // "[ Vote passed ... ]\n"
+    bprint3 ("Û Vote passed. New time limit: ", newTimelimit, " Ý\n");
 
     if (newTimelimit == "unlimited")
         cvar_set ("timelimit", "0");
@@ -123,9 +120,8 @@ Used when the vote for a warmup duration is passed
 */
 void(string newDuration) Vote_ChangeWarmup =
 {
-    bprint ("Û Vote passed. New warmup duration: ");  // "[ Vote passed ..."
-    bprint (newDuration);
-    bprint (" secondes Ý\n");  // " secondes ]\n"
+    // "[ Vote passed ... secondes ]\n"
+    bprint3 ("Û Vote passed. New warmup duration: ", newDuration, " secondes Ý\n");
 
     cvar_set ("g_warmup", newDuration);
 
@@ -148,13 +144,10 @@ void(string cvarName) Vote_ChangeOption =
     local string newValue;
 
     newValue = ftos (! cvar (cvarName));
-    bprint ("Û Vote passed. New option: \"");  // "[ Vote passed ..."
-    bprint (cvarName);
-    bprint ("\" = ");
-    bprint (newValue);
-    bprint (" Ý\n");  // " ]\n"
-
     cvar_set (cvarName, newValue);
+    
+    // "[ Vote passed ... ]\n"
+    bprint5 ("Û Vote passed. New option: \"", cvarName, "\" = ", newValue, " Ý\n");
 
     // Test if the engine support creation of new cvars by progs
     if (newValue == "1")
@@ -227,10 +220,8 @@ float(.float vote_field, float bitmask, float value) Vote_IsPassed =
     {
         local string tmpString;
 
-        bprint ("Û ");  // "[ "
         tmpString = ftos (VoteCount);
-        bprint (tmpString);
-        bprint (" votes missing Ý\n");  // " ]\n"
+        bprint3 ("Û ", tmpString, " votes missing Ý\n");  // "[ ... votes missing ]\n"
 
         return FALSE;
     }
@@ -249,11 +240,7 @@ Add one vote to the map
 void(float vote, string newmap) Vote_AddMapVote =
 {
     self.vote_map = vote;
-    bprint ("Û ");  // "[ "
-    bprint (self.netname);
-    bprint (" votes for map ");
-    bprint (newmap);
-    bprint (" Ý\n");  // " ]\n"
+    bprint5 ("Û ", self.netname, " votes for map ", newmap, " Ý\n");  // "[ ... ]\n"
 
     // If the vote is passed
     if (Vote_IsPassed (vote_map, 255, vote))
@@ -582,11 +569,7 @@ void() Menu_HandleVoteFraglimit =
     }
 
     self.vote_fraglimit = self.impulse;
-    bprint ("Û ");  // "[ "
-    bprint (self.netname);
-    bprint (" votes for a new frag limit: ");
-    bprint (fl);
-    bprint (" Ý\n");  // " ]\n"
+    bprint5 ("Û ", self.netname, " votes for a new frag limit: ", fl, " Ý\n");  // "[ ... ]\n"
 
     // If the vote is passed
     if (Vote_IsPassed (vote_fraglimit, 255, self.impulse))
@@ -624,12 +607,8 @@ void() Menu_HandleVoteGametype =
     }
 
     self.vote_gametype = self.impulse;
-    bprint ("Û ");  // "[ "
-    bprint (self.netname);
-    bprint (" votes for ");
     gt = Vote_GametypeToString (self.impulse);
-    bprint (gt);
-    bprint (" Ý\n");  // " ]\n"
+    bprint5 ("Û ", self.netname, " votes for ", gt, " Ý\n");  // "[ ... ]\n"
 
     // If the vote is passed
     if (Vote_IsPassed (vote_gametype, 255, self.impulse))
@@ -999,11 +978,7 @@ void() Menu_HandleVoteOptions =
     else
         self.vote_options = self.vote_options - (self.vote_options & option);
 
-    bprint ("Û ");  // "[ "
-    bprint (self.netname);
-    bprint (" votes for toggling \"");
-    bprint (cvarName);
-    bprint ("\" Ý\n");  // " ]\n"
+    bprint5 ("Û ", self.netname, " votes for toggling \"", cvarName, "\" Ý\n");  // "[ ... ]\n"
 
     // If the vote is passed
     if (Vote_IsPassed (vote_options, option, option * newValue))
@@ -1058,11 +1033,7 @@ void() Menu_HandleVoteTimelimit =
     }
 
     self.vote_timelimit = self.impulse;
-    bprint ("Û ");  // "[ "
-    bprint (self.netname);
-    bprint (" votes for a new time limit: ");
-    bprint (tl);
-    bprint (" Ý\n");  // " ]\n"
+    bprint5 ("Û ", self.netname, " votes for a new time limit: ", tl, " Ý\n");  // "[ ... ]\n"
 
     // If the vote is passed
     if (Vote_IsPassed (vote_timelimit, 255, self.impulse))
@@ -1117,11 +1088,7 @@ void() Menu_HandleVoteWarmup =
     }
 
     self.vote_warmup = self.impulse;
-    bprint ("Û ");  // "[ "
-    bprint (self.netname);
-    bprint (" votes for a new warmup duration: ");
-    bprint (duration);
-    bprint (" secondes Ý\n");  // " ]\n"
+    bprint5 ("Û ", self.netname, " votes for a new warmup duration: ", duration, " secondes Ý\n");  // "[ ... ]\n"
 
     // If the vote is passed
     if (Vote_IsPassed (vote_warmup, 255, self.impulse))

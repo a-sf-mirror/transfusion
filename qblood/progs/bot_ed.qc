@@ -258,12 +258,11 @@ void() bot_menu_display =
             {
                 if (self.current_way)
                 {
-                    sprint(self, "\nwaypoint info for waypoint #");
                     h = ftos(self.current_way.count);
-                    sprint(self, h);
-                    sprint(self, "\nAI Flag value: ");
+                    sprint2 (self, "\nwaypoint info for waypoint #", h);
+
                     h = ftos(self.current_way.b_aiflags);
-                    sprint(self, h);
+                    sprint2 (self, "\nAI Flag value: ", h);
 
                     if (self.current_way.target1)
                     {
@@ -621,17 +620,13 @@ void() bot_menu_display =
                 {
                     if ((t.target1 == world) && (t.target2 == world) && (t.target3 == world) && (t.target4 == world))
                     {
-                        sprint(self, "Waypoint #");
                         h = ftos(t.count);
-                        sprint(self, h);
-                        sprint(self, " has no outbound links\n");
+                        sprint3 (self, "Waypoint #", h, " has no outbound links\n");
                     }
                     if ((t.target1 == t) || (t.target2 == t) || (t.target3 == t) || (t.target4 == t))
                     {
-                        sprint(self, "Waypoint #");
                         h = ftos(t.count);
-                        sprint(self, h);
-                        sprint(self, " links to itself (??)\n");
+                        sprint3 (self, "Waypoint #", h, " links to itself (??)\n");
                     }
                     t = t._next;
                 }
@@ -953,7 +948,7 @@ void() bot_menu_display =
         }
         else if (self.b_menu == 15)
             s1 = "-- Delete Waypoint --\n\nAre you sure? Push 1 to go\nthrough with it, 2 to cancel";
-        frik_big_centerprint(self, s1, s2, s3, s4, s5, s6, s7);
+        frik_centerprint7 (self, s1, s2, s3, s4, s5, s6, s7);
         self.b_menu_time = time + 1.25;
     }
 };
@@ -1051,28 +1046,24 @@ void() PrintWaypoint =
         t = self.enemy._next;
     if (bytecounter >= 8000)
     {
-        bprint("exec maps/");
-        bprint(mapname);
-        bprint(".wa");
         h = ftos(filecount);
-        bprint(h);
+        bprint5 ("exec maps/", mapname, ".wa", h, "\n"
+                 "// **** break here **** \n");
         filecount = filecount + 1;
-        bprint("\n// **** break here **** \n");
         bytecounter = 26;
     }
     if (t == world)
     {
         remove(self);
         fixer = world;
-        bprint("saved4 3\n// end waypoint dump\n");
+        bprint ("saved4 3\n// end waypoint dump\n");
         bytecounter = bytecounter + 27;
         return;
     }
     if ((t.origin_x != saved1) || (t.count == 1))
     {
-        bprint("saved1 ");
         h = ftos(t.origin_x);
-        bprint(h);
+        bprint2 ("saved1 ", h);
         saved1 = t.origin_x;
         bytecounter = bytecounter + 12;
         needcolon = TRUE;
@@ -1086,9 +1077,8 @@ void() PrintWaypoint =
         }
         else
             needcolon = TRUE;
-        bprint("saved2 ");
         h = ftos(t.origin_y);
-        bprint(h);
+        bprint2 ("saved2 ", h);
         bytecounter = bytecounter + 12;
         saved2 = t.origin_y;
     }
@@ -1101,9 +1091,8 @@ void() PrintWaypoint =
         }
         else
             needcolon = TRUE;
-        bprint("saved3 ");
         h = ftos(t.origin_z);
-        bprint(h);
+        bprint2 ("saved3 ", h);
         bytecounter = bytecounter + 12;
         saved3 = t.origin_z;
     }
@@ -1113,10 +1102,9 @@ void() PrintWaypoint =
     if ((scratch1 != t.target1.count) || t.count == 1)
     {
         needcolon = TRUE;
-        bprint("scratch1 ");
         bytecounter = bytecounter + 14;
         h = ftos(t.target1.count);
-        bprint(h);
+        bprint2 ("scratch1 ", h);
         scratch1 = t.target1.count;
     }
     if ((scratch2 != t.target2.count) || t.count == 1)
@@ -1128,10 +1116,9 @@ void() PrintWaypoint =
         }
         else
             needcolon = TRUE;
-        bprint("scratch2 ");
         bytecounter = bytecounter + 14;
         h = ftos(t.target2.count);
-        bprint(h);
+        bprint2 ("scratch2 ", h);
         scratch2 = t.target2.count;
     }
     if ((scratch3 != t.target3.count) || t.count == 1)
@@ -1143,10 +1130,9 @@ void() PrintWaypoint =
         }
         else
             needcolon = TRUE;
-        bprint("scratch3 ");
         bytecounter = bytecounter + 14;
         h = ftos(t.target3.count);
-        bprint(h);
+        bprint2 ("scratch3 ", h);
         scratch3 = t.target3.count;
     }
     if ((scratch4 != t.target4.count) || t.count == 1)
@@ -1158,20 +1144,17 @@ void() PrintWaypoint =
         }
         else
             needcolon = TRUE;
-        bprint("scratch4 ");
         bytecounter = bytecounter + 14;
         h = ftos(t.target4.count);
-        bprint(h);
+        bprint2 ("scratch4 ", h);
         scratch4 = t.target4.count;
     }
-    bprint("\nsaved4 ");
     bytecounter = bytecounter + 19;
     if (t.count != 1)
         h = ftos(t.b_aiflags * 4 + 2);
     else
         h = ftos(t.b_aiflags * 4 + 1);
-    bprint(h);
-    bprint ("; wait\n");
+    bprint3 ("\nsaved4 ", h, "; wait\n");
     self.nextthink = time + 0.01;
     self.enemy = t;
 };
@@ -1182,14 +1165,8 @@ void() DumpWaypoints =
     bytecounter = 50;
     filecount = 1;
 
-    bprint("// ");
-    bprint(world.message);
-    bprint("- maps/");
-    bprint(mapname);
-    bprint(".way\n");
-    bprint("// Ways by ");
-    bprint(self.netname);
-    bprint("\n");
+    bprint5 ("// ", world.message, "- maps/", mapname, ".way\n");
+    bprint3 ("// Ways by ", self.netname, "\n");
     if (!fixer)
     {
         fixer = spawn();
@@ -1218,40 +1195,31 @@ void() PrintQCWaypoint =
     }
     bprint("    make_way(");
     h = vtos(t.origin);
-    bprint(h);
-    bprint(", '");
+    bprint2 (h, ", '");
     h = ftos(t.target1.count);
-    bprint(h);
-    bprint(" ");
+    bprint2 (h, " ");
     h = ftos(t.target2.count);
-    bprint(h);
-    bprint(" ");
+    bprint2 (h, " ");
     h = ftos(t.target3.count);
-    bprint(h);
-    bprint("', ");
+    bprint2 (h, "', ");
     h = ftos(t.target4.count);
-    bprint(h);
-    bprint(", ");
+    bprint2 (h, ", ");
     h = ftos(t.b_aiflags);
-    bprint(h);
-    bprint(");\n");
+    bprint2 (h, ");\n");
     self.nextthink = time + 0.01;
     self.enemy = t;
 
 };
 void() QCDumpWaypoints =
 {
-    bprint("/* QC Waypoint Dump - src/frikbot/map_");
+    bprint3 ("/* QC Waypoint Dump - src/frikbot/map_", mapname, ".qc\n"
+             "For instructions please read the\n"
+             "readme.html that comes with FrikBot */\n\n");
 
-    bprint(mapname);
-    bprint(".qc\nFor instructions please read the\nreadme.html that comes with FrikBot */\n\nvoid(vector org, vector bit1, float bit4, float flargs) make_way;\n");
-    bprint("// Ways by ");
-    bprint(self.netname);
-    bprint("\n\n");
+    bprint3 ("void(vector org, vector bit1, float bit4, float flargs) make_way;\n"
+             "// Ways by ", self.netname, "\n\n");
 
-    bprint("void() map_");
-    bprint(mapname);
-    bprint(" =\n{\n");
+    bprint3 ("void() map_", mapname, " =\n{\n");
 
 
     if (!fixer)
@@ -1282,42 +1250,35 @@ void() PrintBSPWaypoint =
     }
     bprint("{\n\"classname\" \"waypoint\"\n\"origin\" \"");
     h = ftos(t.origin_x);
-    bprint(h);
-    bprint(" ");
+    bprint2 (h, " ");
     h = ftos(t.origin_y);
-    bprint(h);
-    bprint(" ");
+    bprint2 (h, " ");
     h = ftos(t.origin_z);
     bprint(h);
     if (t.target1.count)
     {
-        bprint("\"\n\"b_pants\" \"");
         h = ftos(t.target1.count);
-        bprint(h);
+        bprint2 ("\"\n\"b_pants\" \"", h);
     }
     if (t.target2.count)
     {
-        bprint("\"\n\"b_skill\" \"");
         h = ftos(t.target2.count);
-        bprint(h);
+        bprint2 ("\"\n\"b_skill\" \"", h);
     }
     if (t.target3.count)
     {
-        bprint("\"\n\"b_shirt\" \"");
         h = ftos(t.target3.count);
-        bprint(h);
+        bprint2 ("\"\n\"b_shirt\" \"", h);
     }
     if (t.target4.count)
     {
-        bprint("\"\n\"b_frags\" \"");
         h = ftos(t.target4.count);
-        bprint(h);
+        bprint2 ("\"\n\"b_frags\" \"", h);
     }
     if (t.b_aiflags)
     {
-        bprint("\"\n\"b_aiflags\" \"");
         h = ftos(t.b_aiflags);
-        bprint(h);
+        bprint2 ("\"\n\"b_aiflags\" \"", h);
     }
     bprint("\"\n}\n");
     self.nextthink = time + 0.01;
@@ -1326,10 +1287,9 @@ void() PrintBSPWaypoint =
 };
 void() BSPDumpWaypoints =
 {
-    bprint("/* BSP entities Dump - maps/");
-
-    bprint(mapname);
-    bprint(".ent\nFor instructions please read the\nreadme.html that comes with FrikBot */\n\n\n");
+    bprint3 ("/* BSP entities Dump - maps/", mapname, ".ent\n"
+             "For instructions please read the\n"
+             "readme.html that comes with FrikBot */\n\n\n");
 
     if (!fixer)
     {

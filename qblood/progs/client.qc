@@ -310,15 +310,12 @@ Broadcast the score of each team to all players
 */
 void() Cl_PrintTeamScores =
 {
-    local string score;
+    local string score1, score2;
 
-    bprint ("ред╨ ");      // "RED: "
-    score = ftos (team1score);
-    bprint (score);
-    bprint (" ╞ блуе╨ ");  // " / BLUE: "
-    score = ftos (team2score);
-    bprint (score);
-    bprint ("\n");
+    score1 = ftos (team1score);
+    score2 = ftos (team2score);
+
+    bprint5 ("ред╨ ", score1, " ╞ блуе╨ ", score2, "\n");  // "RED: ... / BLUE: ... \n"
 };
 
 
@@ -378,9 +375,7 @@ void() ClientKill =
     if (self.observer)
         return;
 
-    bprint ("Kevorkian approves ");
-    bprint (self.netname);
-    bprint ("!\n");
+    bprint3 ("Kevorkian approves ", self.netname, "!\n");
     sound (self, CHAN_AUTO, "thevoice/vo5.wav", 1, ATTN_NORM);
     CTF_PlayerDropFlag ();
     set_suicide_frame ();
@@ -1263,8 +1258,7 @@ void() Impulses_Dead =
     {
         self.do_observer = 1;
         respawn (TRUE);
-        bprint (self.netname);
-        bprint (" is an observer again\n");
+        bprint2 (self.netname, " is an observer again\n");
     }
 
     // Toggle menu
@@ -1392,8 +1386,7 @@ void() ClientConnect =
     ClientInRankings();
     #endif
 
-    bprint (self.netname);
-    bprint (" entered the game\n");
+    bprint2 (self.netname, " entered the game\n");
 
     sound (self, CHAN_AUTO, "thevoice/vo1.wav", 1, ATTN_NORM); // Let the Bloodbath Begin!
     self.do_observer = 1;
@@ -1444,11 +1437,8 @@ void() ClientDisconnect =
         return;
 
     // let everyone else know
-    bprint (self.netname);
-    bprint (" left this world for another with ");
     finalscore = ftos (self.frags);
-    bprint (finalscore);
-    bprint (" kills\n");
+    bprint4 (self.netname, " left this world for another with ", finalscore, " kills\n");
     sound (self, CHAN_BODY, "thevoice/vo2.wav", 1, ATTN_NONE);
     CTF_PlayerDropFlag ();
     set_suicide_frame ();
@@ -1476,10 +1466,8 @@ void(entity attacker) ClientObituary =
 
     if (attacker.classname == "teledeath")
     {
-        bprint (self.netname);
-        bprint ("'s personal space was invaded by ");
-        bprint (attacker.owner.netname);
-        bprint ("\n");
+        bprint4 (self.netname, "'s personal space was invaded by ",
+                 attacker.owner.netname, "\n");
         self.noise1 = "thevoice/splatt.wav";
 
         Cl_UpdatePlayerFrags (attacker.owner, 1);
@@ -1488,11 +1476,8 @@ void(entity attacker) ClientObituary =
 
     if (attacker.classname == "teledeath2")
     {
-        bprint ("Tchernobog's Death Mask deflects ");
-        bprint (self.netname);
-        bprint ("'s telefrag on ");
-        bprint (attacker.owner.netname);
-        bprint ("\n");
+        bprint5 ("Tchernobog's Death Mask deflects ", self.netname,
+                 "'s telefrag on ", attacker.owner.netname, "\n");
         self.noise1 = "thevoice/splatt.wav";
 
         Cl_UpdatePlayerFrags (self, -1);
@@ -1502,20 +1487,19 @@ void(entity attacker) ClientObituary =
     // double 666 telefrag
     if (attacker.classname == "teledeath3")
     {
-        bprint (self.netname);
-        bprint (" was overcome by ");
-        bprint (attacker.owner.netname);
-        bprint ("'s Death Mask power\n");
-        Cl_UpdatePlayerFrags (self, -1);
+        bprint4 (self.netname, " was overcome by ",
+                 attacker.owner.netname, "'s Death Mask power\n");
         self.noise1 = "thevoice/splatt.wav";
+
+        Cl_UpdatePlayerFrags (self, -1);
         return;
     }
 
     if (self.deathtype == "squish")
     {
-        bprint (self.netname);
-        bprint (" was squashed\n");
+        bprint2 (self.netname, " was squashed\n");
         self.noise1 = "thevoice/squash.wav";
+
         Cl_UpdatePlayerFrags (self, -1);  // killed self
         return;
     }
@@ -1526,7 +1510,6 @@ void(entity attacker) ClientObituary =
         {
             // killed self in a dumb fashion
             Cl_UpdatePlayerFrags (attacker, -1);
-            bprint (self.netname);
 
             if (rnum < 0.33)
             {
@@ -1544,7 +1527,7 @@ void(entity attacker) ClientObituary =
                 self.noise1 = "thevoice/vo13.wav";
             }
 
-            bprint (deathstring);
+            bprint2 (self.netname, deathstring);
             return;
         }
         else if (friendlyfire && self.team > 0 && self.team == attacker.team)
@@ -1557,10 +1540,7 @@ void(entity attacker) ClientObituary =
                 deathstring = " gets a frag for the other team on ";
             else
                 deathstring = " loses his friend ";
-            bprint (attacker.netname);
-            bprint (deathstring);
-            bprint (self.netname);
-            bprint ("\n");
+            bprint4 (attacker.netname, deathstring, self.netname, "\n");
 
             Cl_UpdatePlayerFrags (attacker, -1);
 
@@ -1887,9 +1867,7 @@ void(entity attacker) ClientObituary =
                 self.noise1 = "thevoice/wasted.wav";
             }
 
-            bprint (attacker.netname);
-            bprint (deathstring);
-            bprint (self.netname);
+            bprint3 (attacker.netname, deathstring, self.netname);
             if (deathstring2)
                 bprint (deathstring2);
             bprint ("\n");
@@ -1900,7 +1878,6 @@ void(entity attacker) ClientObituary =
         Cl_UpdatePlayerFrags (self, -1);
 
         // hell if I know; he's just dead!!!
-        bprint (self.netname);
-        bprint (" died\n");
+        bprint2 (self.netname, " died\n");
     }
 };

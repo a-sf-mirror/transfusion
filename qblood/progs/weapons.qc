@@ -28,19 +28,6 @@ void() identify_player;
 
 //============================================================================
 
-vector() wall_velocity =
-{
-    local vector    vel;
-
-    vel = normalize (self.velocity);
-    vel = normalize(vel + v_up*(random()- 0.5) + v_right*(random()- 0.5));
-    vel = vel + 2*trace_plane_normal;
-    vel = vel * 200;
-
-    return vel;
-};
-
-
 /*
 ================
 SpawnBlood

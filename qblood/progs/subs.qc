@@ -21,8 +21,7 @@
 #include "common.qh"
 
 
-void(vector tdest, float tspeed, void() func) SUB_CalcMove;
-void()  SUB_CalcMoveDone;
+void() SUB_CalcMoveDone;
 
 
 float() crandom =
@@ -63,7 +62,7 @@ void(string text) Bcenterprint =
 ====================
 Bcenterprint3
 
-Send a centerprint2 to all players
+Send a centerprint3 to all players
 ====================
 */
 void(string text1, string text2, string text3) Bcenterprint3 =
@@ -278,12 +277,10 @@ void() SUB_UseTargets =
 {
     local entity t, stemp, otemp, act;
 
-//
-// check for a delay
-//
+    // check for a delay
     if (self.delay)
     {
-    // create a temp object to fire at a later time
+        // create a temp object to fire at a later time
         t = spawn();
         t.classname = "DelayedUse";
         t.nextthink = time + self.delay;
@@ -295,10 +292,7 @@ void() SUB_UseTargets =
         return;
     }
 
-
-//
-// print the message
-//
+    // print the message
     if (activator.classname == "player" && self.message != string_null)
     {
         centerprint (activator, self.message);
@@ -306,9 +300,7 @@ void() SUB_UseTargets =
             sound (activator, CHAN_VOICE, "bludbath/message.wav", 1, ATTN_NORM);
     }
 
-//
-// kill the killtagets
-//
+    // kill the killtagets
     if (self.killtarget)
     {
         t = world;
@@ -321,9 +313,7 @@ void() SUB_UseTargets =
         } while ( 1 );
     }
 
-//
-// fire targets
-//
+    // fire targets
     if (self.target)
     {
         act = activator;

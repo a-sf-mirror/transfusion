@@ -208,10 +208,7 @@ void() Impulses_Observer =
 
     // If the player has just spawned into the arena
     if (!self.observer)
-    {
-        bprint (self.netname);
-        bprint (" lives again!\n");
-    }
+        bprint2 (self.netname, " lives again!\n");
 
     if (self.impulse == 141)
         identify_player ();

@@ -201,9 +201,7 @@ void() Use_FirstAid =
         local   string  text;
 
         text = ftos(faid);
-        sprint (self, "Doctor's Bag health level is now at ");
-        sprint (self, text);
-        sprint (self, "%\n");
+        sprint3 (self, "Doctor's Bag health level is now at ", text, "%\n");
     }
     else
     {
@@ -487,9 +485,7 @@ void() InvenCheck =
                 if (floor(fuel) == fuel)
                 {
                     text = ftos(fuel * 10);
-                    sprint (self, "Dive Suit air remaining: ");
-                    sprint (self, text);
-                    sprint (self, "%\n");
+                    sprint3 (self, "Dive Suit air remaining: ", text, "%\n");
                 }
             }
             // All gone. Turn it off
@@ -520,9 +516,7 @@ void() InvenCheck =
                 if (floor(fuel) == fuel)
                 {
                     text = ftos(fuel * 10);
-                    sprint (self, "Boots of Jumping time remaining ");
-                    sprint (self, text);
-                    sprint (self, "%\n");
+                    sprint3 (self, "Boots of Jumping time remaining ", text, "%\n");
                 }
             }
             // All gone. Turn it off

@@ -193,24 +193,25 @@ void()              bot_menu_display;
 
 // ----------Commands---------
 void(entity e, float chan, string samp, float vol, float atten) frik_sound = #8;
-void(entity client, string s)   frik_stuffcmd = #21;
-void(entity client, string s)   frik_sprint = #24;
-vector(entity e, float sped)                         frik_aim = #44;
-void(entity client, string s)                        frik_centerprint = #73;
-void(entity client, string s1, string s2)            frik_centerprint2 = #73;
-void(entity client, string s1, string s2, string s3) frik_centerprint3 = #73;
-void(entity e)          frik_setspawnparms = #78;
-void(float to, float f)     frik_WriteByte = #52;
-void(float to, float f)     frik_WriteChar = #53;
-void(float to, float f)     frik_WriteShort = #54;
-void(float to, float f)     frik_WriteLong = #55;
-void(float to, float f)     frik_WriteCoord = #56;
-void(float to, float f)     frik_WriteAngle = #57;
-void(float to, string s)    frik_WriteString    = #58;
-void(float to, entity s)    frik_WriteEntity    = #59;
+void(entity client, string s)                           frik_stuffcmd = #21;
+void(entity client, string s)                           frik_sprint = #24;
+void(entity client, string s1, string s2)               frik_sprint2 = #24;
+void(entity client, string s1, string s2, string s3)    frik_sprint3 = #24;
+vector(entity e, float sped)                            frik_aim = #44;
+void(float to, float f)                                 frik_WriteByte = #52;
+void(float to, float f)                                 frik_WriteChar = #53;
+void(float to, float f)                                 frik_WriteShort = #54;
+void(float to, float f)                                 frik_WriteLong = #55;
+void(float to, float f)                                 frik_WriteCoord = #56;
+void(float to, float f)                                 frik_WriteAngle = #57;
+void(float to, string s)                                frik_WriteString = #58;
+void(float to, entity s)                                frik_WriteEntity = #59;
+void(entity client, string s)                           frik_centerprint = #73;
+void(entity client, string s1, string s2)               frik_centerprint2 = #73;
+void(entity client, string s1, string s2, string s3)    frik_centerprint3 = #73;
+void(entity client, string s1, string s2, string s3, string s4, string s5, string s6, string s7) frik_centerprint7 = #73;
+void(entity e)                                          frik_setspawnparms = #78;
 
-void(entity client, string s1, string s2, string s3, string s4, string s5, string s6, string s7)
-frik_big_centerprint = #73;
 
 //----------------------------------------------------------------------------
 
@@ -281,6 +282,41 @@ void(entity client, string s) sprint =
         b_temp1 = b_temp1._next;
     }
 };
+
+void(entity client, string s1, string s2) sprint2 =
+{
+    if (client.ishuman == 1)
+        frik_sprint2 (client, s1, s2);
+    b_temp1 = player_head;
+
+    while(b_temp1)
+    {
+        if (b_temp1.classname == "botcam")
+        {
+            if ((b_temp1.enemy == client) && b_temp1.ishuman)
+                frik_sprint2 (b_temp1, s1, s2);
+        }
+        b_temp1 = b_temp1._next;
+    }
+};
+
+void(entity client, string s1, string s2, string s3) sprint3 =
+{
+    if (client.ishuman == 1)
+        frik_sprint3 (client, s1, s2, s3);
+    b_temp1 = player_head;
+
+    while(b_temp1)
+    {
+        if (b_temp1.classname == "botcam")
+        {
+            if ((b_temp1.enemy == client) && b_temp1.ishuman)
+                frik_sprint3 (b_temp1, s1, s2, s3);
+        }
+        b_temp1 = b_temp1._next;
+    }
+};
+
 void(entity client, string s) centerprint =
 {
     if (client.ishuman == 1)
@@ -297,6 +333,7 @@ void(entity client, string s) centerprint =
         b_temp1 = b_temp1._next;
     }
 };
+
 void(entity client, string s1, string s2) centerprint2 =
 {
     if (client.ishuman == 1)
@@ -313,6 +350,7 @@ void(entity client, string s1, string s2) centerprint2 =
         b_temp1 = b_temp1._next;
     }
 };
+
 void(entity client, string s1, string s2, string s3) centerprint3 =
 {
     if (client.ishuman == 1)
@@ -486,9 +524,7 @@ void() botcam_u =
         self.enemy.dmg_take = 0;
         self.enemy.dmg_save = 0;
     }
-    sprint(self, "Now tracking ");
-    sprint(self, self.enemy.netname);
-    sprint(self, "\n");
+    sprint3 (self, "Now tracking ", self.enemy.netname, "\n");
 };
 
 
