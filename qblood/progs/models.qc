@@ -236,6 +236,17 @@ $frame frame3 0.1
 $frame frame2 0.1
 $framegroupend
 
+$modelname i_lifess
+$cd id1/models/i_lifess
+$base base
+$skin skin
+$framegroupstart
+$frame frame1 0.25
+$frame frame2 0.25
+$frame frame3 0.25
+$frame frame4 0.25
+$framegroupend
+
 $modelname invulner
 $flags 8        // client side rotate
 $cd id1/models/invulner
