@@ -161,14 +161,16 @@ void () ObserverThink =
 {
     local entity e;
     local float cont;
+    local float invcos,nv,nvp,nvpmax,nvs,nsp,sp,svz;
+    local vector f,vp,vs;
 
     self.weaponmodel = "";
     self.weaponframe = 0;
     self.flags = self.flags | FL_ONGROUND;
-
-  {
-    local float invcos,nv,nvp,nvpmax,nvs,nsp,sp,svz;
-    local vector f,vp,vs;
+    #ifdef QUAKEWORLD
+    // REMOVEME / FIXME: QW somehow changes movetype to MOVETYPE_WALK regularly
+    self.movetype = MOVETYPE_FLY;
+    #endif
 
     svz = self.velocity_z * 0.75;
     self.velocity_z = 0;
@@ -192,7 +194,6 @@ void () ObserverThink =
     if (nvp > nvpmax) { vp = vp * (nvpmax/nvp); }
 
     self.velocity = vp + vs;
-  }
 
     // look for doors, etc.
     e = findradius(self.origin,75);
@@ -221,7 +222,7 @@ void(entity player) BecomeObserver =
     player.deadflag         = DEAD_NO;
 
     setmodel (player, "progs/eyes.mdl");
-    setsize (self, '-12 -12 -24', '12 12 32');
+    setsize (player, '-12 -12 -24', '12 12 32');
 
     player.weaponmodel      = "";
     player.weaponframe      = 0;
