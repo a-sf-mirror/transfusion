@@ -179,12 +179,14 @@ void() PlaceItem =
         return;
     }
 
+    #ifdef NEW_MODELS
     // If the item has an animation loop
     if (self.think1)
     {
         self.nextthink = time + 0.1;
         self.think = self.think1;
     }
+    #endif
 };
 
 /*
@@ -949,6 +951,12 @@ void() item_health =
         self.netname = "Life Essence";
         self.healtype = 1;
 
+        #ifdef NEW_MODELS
+        // Set animation loop
+        self.anim_len = 8;  // 8 frames in the animation
+        self.think1 = SUB_AutoAnimation;
+        #endif
+
         // If flashy effects are allowed, make it glow
         if (cvar ("g_flashyEffects"))
         {
@@ -970,6 +978,12 @@ void() item_health =
         self.healamount = 100;
         self.netname = "Life Seed";
         self.healtype = 2;
+
+        #ifdef NEW_MODELS
+        // Set animation loop
+        self.anim_len = 5;  // 5 frames in the animation
+        self.think1 = SUB_AutoAnimation;
+        #endif
     }
     else
     {
@@ -2038,19 +2052,6 @@ void() item_cells =
     StartItem ();
 };
 
-// 12 frames for the soul animation
-void() soul_anim1  = [0,  soul_anim2 ] {};
-void() soul_anim2  = [1,  soul_anim3 ] {};
-void() soul_anim3  = [2,  soul_anim4 ] {};
-void() soul_anim4  = [3,  soul_anim5 ] {};
-void() soul_anim5  = [4,  soul_anim6 ] {};
-void() soul_anim6  = [5,  soul_anim7 ] {};
-void() soul_anim7  = [6,  soul_anim8 ] {};
-void() soul_anim8  = [7,  soul_anim9 ] {};
-void() soul_anim9  = [8,  soul_anim10] {};
-void() soul_anim10 = [9,  soul_anim11] {};
-void() soul_anim11 = [10, soul_anim12] {};
-void() soul_anim12 = [11, soul_anim1 ] {};
 
 // Trapped soul
 void() item_soul =
@@ -2069,10 +2070,14 @@ void() item_soul =
     self.weapon = 11;
     self.netname = "trapped soul";
     setsize (self, '0 0 0', '32 32 56');
-    StartItem ();
 
+    #ifdef NEW_MODELS
     // Set animation loop
-    self.think1 = soul_anim1;
+    self.anim_len = 12;  // 12 frames for the soul animation
+    self.think1 = SUB_AutoAnimation;
+    #endif
+
+    StartItem ();
 };
 
 
@@ -2276,6 +2281,12 @@ void() item_artifact_invisibility =
     self.noise   = "bludbath/powerup.wav";
     item_powerup ();
     setsize (self, '-16 -16 -2', '16 16 54');
+
+    #ifdef NEW_MODELS
+    // Set animation loop
+    self.anim_len = 11;  // 11 frames in the animation
+    self.think1 = SUB_AutoAnimation;
+    #endif
 };
 
 // Death Mask
@@ -2309,6 +2320,12 @@ void() item_artifact_reflect =
     self.noise   = "bludbath/powerup.wav";
     item_powerup ();
     setsize (self, '-7 -7 0', '7 11 16');
+
+    #ifdef NEW_MODELS
+    // Set animation loop
+    self.anim_len = 6;  // 6 frames in the animation
+    self.think1 = SUB_AutoAnimation;
+    #endif
 };
 
 // Guns Akimbo

@@ -78,6 +78,25 @@ void(string text1, string text2, string text3) bcenterprint3 =
 };
 
 
+#ifdef NEW_MODELS
+/*
+====================
+SUB_AutoAnimation
+
+Function used to animate models that don't have animation groups
+====================
+*/
+void() SUB_AutoAnimation =
+{
+    self.nextthink = time + 0.1;
+
+    self.frame = self.frame + 1;
+    if (self.frame >= self.anim_len)
+        self.frame = 0;
+};
+#endif
+
+
 /*
 ====================
 SUB_SolidTouch

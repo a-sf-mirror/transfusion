@@ -436,6 +436,9 @@ float map_cycle;
 .vector     mangle;         // angle at start
 
 .float      t_length, t_width;
+#ifdef NEW_MODELS
+.float      anim_len;       // animation length
+#endif
 
 
 //
