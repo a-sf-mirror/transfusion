@@ -367,9 +367,9 @@
     t_width(integer) : "t_width - ???" : 10
 	noise(string) : "Player defined sound 1 (must set both 1 & 2)"
 	noise1(string) : "Player defined sound 2 (must set both 1 & 2)"
-	speed(integer) : "Platform speed"
 	dmg(integer) : "Damage to inflict if blocked"
 	targetname(string) : "targetname"
+    wait(integer) : "platform start wait time"
 ]
 
 //
