@@ -782,56 +782,6 @@ void() PutClientInServer =
     }
     #endif
 
-    if (deathmatch == 4)
-    {
-        self.ammo_shells = 0;
-        #ifdef QUAKEWORLD  // Quake doesn't have "stof" and "infokey"
-        if (stof(infokey(world, "axe")) == 0)
-        {
-        #endif
-            self.ammo_nails = 255;
-            self.ammo_shells = 255;
-            self.ammo_rockets = 255;
-            self.ammo_cells = 255;
-            self.items = self.items | IT_NAILGUN;
-            self.items = self.items | IT_SUPER_NAILGUN;
-            self.items = self.items | IT_SUPER_SHOTGUN;
-            self.items = self.items | IT_ROCKET_LAUNCHER;
-//      self.items = self.items | IT_GRENADE_LAUNCHER;
-            self.items = self.items | IT_LIGHTNING;
-        #ifdef QUAKEWORLD
-        }
-        #endif
-        self.items = self.items - (self.items & (IT_ARMOR1 | IT_ARMOR2 | IT_ARMOR3)) + IT_ARMOR3;
-        self.armorvalue = 200;
-        self.armortype = 0.8;
-        self.health = 250;
-        self.items = self.items | IT_INVULNERABILITY;
-        self.invincible_time = 1;
-        self.invincible_finished = time + 3;
-    }
-
-    else if (deathmatch == 5)
-    {
-        self.ammo_nails = 80;
-        self.ammo_shells = 30;
-        self.ammo_rockets = 10;
-        self.ammo_cells = 30;
-        self.items = self.items | IT_NAILGUN;
-        self.items = self.items | IT_SUPER_NAILGUN;
-        self.items = self.items | IT_SUPER_SHOTGUN;
-        self.items = self.items | IT_ROCKET_LAUNCHER;
-        self.items = self.items | IT_GRENADE_LAUNCHER;
-        self.items = self.items | IT_LIGHTNING;
-        self.items = self.items - (self.items & (IT_ARMOR1 | IT_ARMOR2 | IT_ARMOR3)) + IT_ARMOR3;
-        self.armorvalue = 200;
-        self.armortype = 0.8;
-        self.health = 200;
-        self.items = self.items | IT_INVULNERABILITY;
-        self.invincible_time = 1;
-        self.invincible_finished = time + 3;
-    }
-
     self.weapon = W_BestWeapon ();
     W_SetCurrentAmmo ();
 };
@@ -1366,10 +1316,7 @@ void() CheckPowerups =
         {
             if (self.super_time == 1)
             {
-                if (deathmatch == 4)
-                    Sprint (self, PRINT_HIGH, "OctaPower is wearing off\n");
-                else
-                    Sprint (self, PRINT_HIGH, "Quad Damage is wearing off\n");
+                Sprint (self, PRINT_HIGH, "Quad Damage is wearing off\n");
                 stuffcmd (self, "bf\n");
                 sound (self, CHAN_AUTO, "items/damage2.wav", 1, ATTN_NORM);
                 self.super_time = time + 1;
@@ -1385,13 +1332,6 @@ void() CheckPowerups =
         if (self.super_damage_finished < time)
         {   // just stopped
             self.items = self.items - IT_QUAD;
-            if (deathmatch == 4)
-            {
-                self.ammo_cells = 255;
-                self.armorvalue = 1;
-                self.armortype = 0.8;
-                self.health = 100;
-            }
             self.super_damage_finished = 0;
             self.super_time = 0;
         }
@@ -1559,17 +1499,6 @@ void(entity targ, entity attacker) ClientObituary =
 
     if (targ.classname == "player")
     {
-        if (deathmatch > 3)
-        {
-            if (targ.deathtype == "selfwater")
-            {
-                Bprint (PRINT_MEDIUM, targ.netname);
-                Bprint (PRINT_MEDIUM," electrocutes himself.\n ");
-                targ.frags = targ.frags - 1;
-                return;
-            }
-        }
-
         if (attacker.classname == "teledeath")
         {
             Bprint (PRINT_MEDIUM,targ.netname);
@@ -1597,7 +1526,7 @@ void(entity targ, entity attacker) ClientObituary =
             return;
         }
 
-        // double 666 telefrag (can happen often in deathmatch 4)
+        // double 666 telefrag
         if (attacker.classname == "teledeath3")
         {
             Bprint (PRINT_MEDIUM,targ.netname);

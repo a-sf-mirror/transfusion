@@ -19,8 +19,10 @@
 
 #ifdef QUAKEWORLD
 #define Bprint(p, s)    bprint (p, s)
+#define Sprint(e, p, s) sprint (e, p, s)
 #else
 #define Bprint(p, s)    bprint (s)
+#define Sprint(e, p, s) sprint (e, s)
 #endif
 
 
@@ -578,10 +580,7 @@ void() PlayerDie =
     {
         DropQuad (self.super_damage_finished - time);
         Bprint (PRINT_LOW, self.netname);
-        if (deathmatch == 4)
-            Bprint (PRINT_LOW, " lost an OctaPower with ");
-        else
-            Bprint (PRINT_LOW, " lost a quad with ");
+        Bprint (PRINT_LOW, " lost a quad with ");
         s = ftos(rint(self.super_damage_finished - time));
         Bprint (PRINT_LOW, s);
         Bprint (PRINT_LOW, " seconds remaining\n");

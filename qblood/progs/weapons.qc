@@ -83,10 +83,7 @@ void() W_FireAxe =
         SpawnBlood (org, '0 0 0', 20);
         #endif
 
-        if (deathmatch > 3)
-            T_Damage (trace_ent, self, self, 75);
-        else
-            T_Damage (trace_ent, self, self, 20);
+        T_Damage (trace_ent, self, self, 20);
     }
     else
     {   // hit wall
@@ -399,8 +396,7 @@ void() W_FireShotgun =
     WriteByte (MSG_ONE, SVC_SMALLKICK);
     #endif
 
-    if (deathmatch != 4)
-        self.currentammo = self.ammo_shells = self.ammo_shells - 1;
+    self.currentammo = self.ammo_shells = self.ammo_shells - 1;
 
     dir = aim (self, 100000);
     FireBullets (6, dir, '0.04 0.04 0');
@@ -430,8 +426,8 @@ void() W_FireSuperShotgun =
     msg_entity = self;
     WriteByte (MSG_ONE, SVC_BIGKICK);
     #endif
-    if (deathmatch != 4)
-        self.currentammo = self.ammo_shells = self.ammo_shells - 2;
+
+    self.currentammo = self.ammo_shells = self.ammo_shells - 2;
 
     dir = aim (self, 100000);
     FireBullets (14, dir, '0.14 0.08 0');
@@ -468,25 +464,6 @@ void() BecomeExplosion =
 void() T_MissileTouch =
 {
     local float damg;
-
-    #ifdef QUAKEWORLD
-//  if (deathmatch == 4)
-//  {
-//  if ( ((other.weapon == 32) || (other.weapon == 16)))
-//      {
-//          if (random() < 0.1)
-//          {
-//              if (other != world)
-//              {
-//  //              bprint (PRINT_HIGH, "Got here\n");
-//                  other.deathtype = "blaze";
-//                  T_Damage (other, self, self.owner, 1000 );
-//                  T_RadiusDamage (self, self.owner, 1000, other, "");
-//              }
-//          }
-//      }
-//  }
-    #endif
 
     if (other == self.owner)
         return;     // don't explode on owner
@@ -553,8 +530,7 @@ void() W_FireRocket =
 {
     local   entity missile, mpuff;
 
-    if (deathmatch != 4)
-        self.currentammo = self.ammo_rockets = self.ammo_rockets - 1;
+    self.currentammo = self.ammo_rockets = self.ammo_rockets - 1;
 
     sound (self, CHAN_WEAPON, "weapons/sgun1.wav", 1, ATTN_NORM);
 
@@ -700,19 +676,11 @@ void() W_FireLightning =
 // explode if under water
     if (self.waterlevel > 1)
     {
-        if (deathmatch > 3 && random() <= 0.5)
-        {
-            self.deathtype = "selfwater";
-            T_Damage (self, self, self.owner, 4000 );
-        }
-        else
-        {
-            cells = self.ammo_cells;
-            self.ammo_cells = 0;
-            W_SetCurrentAmmo ();
-            T_RadiusDamage (self, self, 35*cells, world, "");
-            return;
-        }
+        cells = self.ammo_cells;
+        self.ammo_cells = 0;
+        W_SetCurrentAmmo ();
+        T_RadiusDamage (self, self, 35*cells, world, "");
+        return;
     }
 
     if (self.t_width < time)
@@ -726,8 +694,8 @@ void() W_FireLightning =
     msg_entity = self;
     WriteByte (MSG_ONE, SVC_SMALLKICK);
     #endif
-    if (deathmatch != 4)
-        self.currentammo = self.ammo_cells = self.ammo_cells - 1;
+
+    self.currentammo = self.ammo_cells = self.ammo_cells - 1;
 
     org = self.origin + '0 0 16';
 
@@ -819,8 +787,7 @@ void() W_FireGrenade =
     local   entity missile;
     #endif
 
-    if (deathmatch != 4)
-        self.currentammo = self.ammo_rockets = self.ammo_rockets - 1;
+    self.currentammo = self.ammo_rockets = self.ammo_rockets - 1;
 
     sound (self, CHAN_WEAPON, "weapons/grenade.wav", 1, ATTN_NORM);
 
@@ -854,16 +821,7 @@ void() W_FireGrenade =
 
     newmis.touch = GrenadeTouch;
 
-// set newmis duration
-    if (deathmatch == 4)
-    {
-        newmis.nextthink = time + 2.5;
-        self.attack_finished = time + 1.1;
-//      self.health = self.health - 1;
-        T_Damage (self, self, self.owner, 10 );
-    }
-    else
-        newmis.nextthink = time + 2.5;
+    newmis.nextthink = time + 2.5;
 
     newmis.think = GrenadeExplode;
 
@@ -953,8 +911,7 @@ void() W_FireSuperSpikes =
 
     sound (self, CHAN_WEAPON, "weapons/spike2.wav", 1, ATTN_NORM);
     self.attack_finished = time + 0.2;
-    if (deathmatch != 4)
-        self.currentammo = self.ammo_nails = self.ammo_nails - 2;
+    self.currentammo = self.ammo_nails = self.ammo_nails - 2;
     dir = aim (self, 1000);
     launch_spike (self.origin + '0 0 16', dir);
     newmis.touch = superspike_touch;
@@ -991,8 +948,7 @@ void(float ox) W_FireSpikes =
 
     sound (self, CHAN_WEAPON, "weapons/rocket1i.wav", 1, ATTN_NORM);
     self.attack_finished = time + 0.2;
-    if (deathmatch != 4)
-        self.currentammo = self.ammo_nails = self.ammo_nails - 1;
+    self.currentammo = self.ammo_nails = self.ammo_nails - 1;
     dir = aim (self, 1000);
     launch_spike (self.origin + '0 0 16' + v_right*ox, dir);
 
@@ -1602,6 +1558,7 @@ void() QuadCheat =
 {
     if (deathmatch || coop)
         return;
+
     self.super_time = 1;
     self.super_damage_finished = time + 30;
     self.items = self.items | IT_QUAD;

@@ -209,8 +209,6 @@ void() worldspawn =
 
 // setup precaches allways needed
     precache_sound ("items/itembk2.wav");       // item respawn sound
-    precache_sound ("items/protect2.wav");      // used when respawning in deathmatch 4 mode
-    precache_sound ("items/protect3.wav");      // used in deathmatch 4 mode
     precache_sound ("player/plyrjmp8.wav");     // player jump
     precache_sound ("player/land.wav");         // player landing
     precache_sound ("player/land2.wav");        // player hurt landing

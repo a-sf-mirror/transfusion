@@ -69,12 +69,6 @@ local string    s;
     self.solid = SOLID_NOT;
     other.items = other.items | IT_QUAD;
     self.model = string_null;
-    if (deathmatch == 4)
-    {
-        other.armortype = 0;
-        other.armorvalue = 0 * 0.01;
-        other.ammo_cells = 0;
-    }
 
 // do the apropriate action
     other.super_time = 1;
@@ -83,10 +77,7 @@ local string    s;
     s=ftos(rint(other.super_damage_finished - time));
 
     Bprint (PRINT_LOW, other.netname);
-    if (deathmatch == 4)
-        Bprint (PRINT_LOW, " recovered an OctaPower with ");
-    else
-        Bprint (PRINT_LOW, " recovered a Quad with ");
+    Bprint (PRINT_LOW, " recovered a Quad with ");
     Bprint (PRINT_LOW, s);
     Bprint (PRINT_LOW, " seconds remaining!\n");
 
@@ -300,10 +291,6 @@ void() health_touch =
     local   float amount;
     local   string  s;
 
-    if (deathmatch == 4)
-        if (other.invincible_time > 0)
-            return;
-
     if (other.classname != "player")
         return;
 
@@ -337,21 +324,11 @@ void() health_touch =
     if (self.healtype == 2)
     {
         other.items = other.items | IT_SUPERHEALTH;
-
-        // Don't rot down player's health in deathmatch 4
-        if (deathmatch == 4)
-        {
-            self.nextthink = time + 20;
-            self.think = SUB_regen;
-        }
-        else
-        {
-            self.nextthink = time + 5;
-            self.think = item_megahealth_rot;
-        }
+        self.nextthink = time + 5;
+        self.think = item_megahealth_rot;
         self.owner = other;
     }
-    else if (deathmatch && deathmatch != 2)        // deathmatch 2 is the silly old rules
+    else if (deathmatch)
     {
         self.nextthink = time + 20;
         self.think = SUB_regen;
@@ -376,7 +353,7 @@ void() item_megahealth_rot =
 // just blindly subtract the flag off
     other.items = other.items - (other.items & IT_SUPERHEALTH);
 
-    if (deathmatch && deathmatch != 2)    // deathmatch 2 is silly old rules
+    if (deathmatch)
     {
         self.nextthink = time + 20;
         self.think = SUB_regen;
@@ -401,10 +378,6 @@ void() armor_touch =
         return;
     if (other.classname != "player")
         return;
-
-    if (deathmatch == 4)
-        if (other.invincible_time > 0)
-            return;
 
     if (self.classname == "item_armor1")
     {
@@ -433,7 +406,7 @@ void() armor_touch =
 
     self.solid = SOLID_NOT;
     self.model = string_null;
-    if (deathmatch && deathmatch != 2)    // deathmatch 2 is silly old rules
+    if (deathmatch)
         self.nextthink = time + 20;
     self.think = SUB_regen;
 
@@ -571,9 +544,8 @@ float() W_BestWeapon;
 
 void() weapon_touch =
 {
-    local   float   hadammo, best, new, old;
+    local   float   best, new, old;
     local   entity  stemp;
-    local   float   leave;
 
     #ifdef QUAKEWORLD
     // For client weapon_switch
@@ -596,60 +568,33 @@ void() weapon_touch =
     best = W_BestWeapon();
     self = stemp;
 
-    #ifdef QUAKEWORLD
-    if (deathmatch == 2 || deathmatch == 3 || deathmatch == 5)
-    #else
-    if (deathmatch == 2 || deathmatch == 3 || deathmatch == 5 || coop)
-    #endif
-        leave = 1;
-    else
-        leave = 0;
-
     if (self.classname == "weapon_nailgun")
     {
-        if (leave && (other.items & IT_NAILGUN) )
-            return;
-        hadammo = other.ammo_nails;
         new = IT_NAILGUN;
         other.ammo_nails = other.ammo_nails + 30;
     }
     else if (self.classname == "weapon_supernailgun")
     {
-        if (leave && (other.items & IT_SUPER_NAILGUN) )
-            return;
-        hadammo = other.ammo_rockets;
         new = IT_SUPER_NAILGUN;
         other.ammo_nails = other.ammo_nails + 30;
     }
     else if (self.classname == "weapon_supershotgun")
     {
-        if (leave && (other.items & IT_SUPER_SHOTGUN) )
-            return;
-        hadammo = other.ammo_rockets;
         new = IT_SUPER_SHOTGUN;
         other.ammo_shells = other.ammo_shells + 5;
     }
     else if (self.classname == "weapon_rocketlauncher")
     {
-        if (leave && (other.items & IT_ROCKET_LAUNCHER) )
-            return;
-        hadammo = other.ammo_rockets;
         new = IT_ROCKET_LAUNCHER;
         other.ammo_rockets = other.ammo_rockets + 5;
     }
     else if (self.classname == "weapon_grenadelauncher")
     {
-        if (leave && (other.items & IT_GRENADE_LAUNCHER) )
-            return;
-        hadammo = other.ammo_rockets;
         new = IT_GRENADE_LAUNCHER;
         other.ammo_rockets = other.ammo_rockets + 5;
     }
     else if (self.classname == "weapon_lightning")
     {
-        if (leave && (other.items & IT_LIGHTNING) )
-            return;
-        hadammo = other.ammo_rockets;
         new = IT_LIGHTNING;
         other.ammo_cells = other.ammo_cells + 15;
     }
@@ -698,13 +643,10 @@ void() weapon_touch =
 
     self = stemp;
 
-    if (leave)
-        return;
-
     // remove it in single player, or setup for respawning in deathmatch
     self.model = string_null;
     self.solid = SOLID_NOT;
-    if (deathmatch == 1)
+    if (deathmatch)
         self.nextthink = time + 30;
     self.think = SUB_regen;
 
@@ -718,16 +660,13 @@ void() weapon_touch =
 
 void() weapon_supershotgun =
 {
-    if (deathmatch <= 3)
-    {
-        precache_model ("progs/g_shot.mdl");
-        setmodel (self, "progs/g_shot.mdl");
-        self.weapon = IT_SUPER_SHOTGUN;
-        self.netname = "Double-barrelled Shotgun";
-        self.touch = weapon_touch;
-        setsize (self, '-16 -16 0', '16 16 56');
-        StartItem ();
-    }
+    precache_model ("progs/g_shot.mdl");
+    setmodel (self, "progs/g_shot.mdl");
+    self.weapon = IT_SUPER_SHOTGUN;
+    self.netname = "Double-barrelled Shotgun";
+    self.touch = weapon_touch;
+    setsize (self, '-16 -16 0', '16 16 56');
+    StartItem ();
 };
 
 /*QUAKED weapon_nailgun (0 .5 .8) (-16 -16 0) (16 16 32)
@@ -735,16 +674,13 @@ void() weapon_supershotgun =
 
 void() weapon_nailgun =
 {
-    if (deathmatch <= 3)
-    {
-        precache_model ("progs/g_nail.mdl");
-        setmodel (self, "progs/g_nail.mdl");
-        self.weapon = IT_NAILGUN;
-        self.netname = "nailgun";
-        self.touch = weapon_touch;
-        setsize (self, '-16 -16 0', '16 16 56');
-        StartItem ();
-    }
+    precache_model ("progs/g_nail.mdl");
+    setmodel (self, "progs/g_nail.mdl");
+    self.weapon = IT_NAILGUN;
+    self.netname = "nailgun";
+    self.touch = weapon_touch;
+    setsize (self, '-16 -16 0', '16 16 56');
+    StartItem ();
 };
 
 /*QUAKED weapon_supernailgun (0 .5 .8) (-16 -16 0) (16 16 32)
@@ -752,16 +688,13 @@ void() weapon_nailgun =
 
 void() weapon_supernailgun =
 {
-    if (deathmatch <= 3)
-    {
-        precache_model ("progs/g_nail2.mdl");
-        setmodel (self, "progs/g_nail2.mdl");
-        self.weapon = IT_SUPER_NAILGUN;
-        self.netname = "Super Nailgun";
-        self.touch = weapon_touch;
-        setsize (self, '-16 -16 0', '16 16 56');
-        StartItem ();
-    }
+    precache_model ("progs/g_nail2.mdl");
+    setmodel (self, "progs/g_nail2.mdl");
+    self.weapon = IT_SUPER_NAILGUN;
+    self.netname = "Super Nailgun";
+    self.touch = weapon_touch;
+    setsize (self, '-16 -16 0', '16 16 56');
+    StartItem ();
 };
 
 /*QUAKED weapon_grenadelauncher (0 .5 .8) (-16 -16 0) (16 16 32)
@@ -769,16 +702,13 @@ void() weapon_supernailgun =
 
 void() weapon_grenadelauncher =
 {
-    if (deathmatch <= 3)
-    {
-        precache_model ("progs/g_rock.mdl");
-        setmodel (self, "progs/g_rock.mdl");
-        self.weapon = 3;
-        self.netname = "Grenade Launcher";
-        self.touch = weapon_touch;
-        setsize (self, '-16 -16 0', '16 16 56');
-        StartItem ();
-    }
+    precache_model ("progs/g_rock.mdl");
+    setmodel (self, "progs/g_rock.mdl");
+    self.weapon = 3;
+    self.netname = "Grenade Launcher";
+    self.touch = weapon_touch;
+    setsize (self, '-16 -16 0', '16 16 56');
+    StartItem ();
 };
 
 /*QUAKED weapon_rocketlauncher (0 .5 .8) (-16 -16 0) (16 16 32)
@@ -786,16 +716,13 @@ void() weapon_grenadelauncher =
 
 void() weapon_rocketlauncher =
 {
-    if (deathmatch <= 3)
-    {
-        precache_model ("progs/g_rock2.mdl");
-        setmodel (self, "progs/g_rock2.mdl");
-        self.weapon = 3;
-        self.netname = "Rocket Launcher";
-        self.touch = weapon_touch;
-        setsize (self, '-16 -16 0', '16 16 56');
-        StartItem ();
-    }
+    precache_model ("progs/g_rock2.mdl");
+    setmodel (self, "progs/g_rock2.mdl");
+    self.weapon = 3;
+    self.netname = "Rocket Launcher";
+    self.touch = weapon_touch;
+    setsize (self, '-16 -16 0', '16 16 56');
+    StartItem ();
 };
 
 
@@ -804,16 +731,13 @@ void() weapon_rocketlauncher =
 
 void() weapon_lightning =
 {
-    if (deathmatch <= 3)
-    {
-        precache_model ("progs/g_light.mdl");
-        setmodel (self, "progs/g_light.mdl");
-        self.weapon = 3;
-        self.netname = "Thunderbolt";
-        self.touch = weapon_touch;
-        setsize (self, '-16 -16 0', '16 16 56');
-        StartItem ();
-    }
+    precache_model ("progs/g_light.mdl");
+    setmodel (self, "progs/g_light.mdl");
+    self.weapon = 3;
+    self.netname = "Thunderbolt";
+    self.touch = weapon_touch;
+    setsize (self, '-16 -16 0', '16 16 56');
+    StartItem ();
 };
 
 
@@ -903,12 +827,7 @@ local float     best;
 // remove it in single player, or setup for respawning in deathmatch
     self.model = string_null;
     self.solid = SOLID_NOT;
-
-
-    // Xian -- If playing in DM 3.0 mode, halve the time ammo respawns
-    if (deathmatch == 3 || deathmatch == 5)
-        self.nextthink = time + 15;
-    else if (deathmatch && deathmatch != 2)
+    if (deathmatch)
         self.nextthink = time + 30;
 
     self.think = SUB_regen;
@@ -927,9 +846,6 @@ float WEAPON_BIG2 = 1;
 
 void() item_shells =
 {
-    if (deathmatch == 4)
-        return;
-
     self.touch = ammo_touch;
 
     if (self.spawnflags & WEAPON_BIG2)
@@ -955,9 +871,6 @@ void() item_shells =
 
 void() item_spikes =
 {
-    if (deathmatch == 4)
-        return;
-
     self.touch = ammo_touch;
 
     if (self.spawnflags & WEAPON_BIG2)
@@ -983,9 +896,6 @@ void() item_spikes =
 
 void() item_rockets =
 {
-    if (deathmatch == 4)
-        return;
-
     self.touch = ammo_touch;
 
     if (self.spawnflags & WEAPON_BIG2)
@@ -1012,9 +922,6 @@ void() item_rockets =
 
 void() item_cells =
 {
-    if (deathmatch == 4)
-        return;
-
     self.touch = ammo_touch;
 
     if (self.spawnflags & WEAPON_BIG2)
@@ -1386,13 +1293,6 @@ local float     best;
 
     if (self.classname == "item_artifact_super_damage")
     {
-        if (deathmatch == 4)
-        {
-            other.armortype = 0;
-            other.armorvalue = 0 * 0.01;
-            other.ammo_cells = 0;
-        }
-
         other.super_time = 1;
         other.super_damage_finished = time + 30;
     }
@@ -1478,10 +1378,7 @@ void() item_artifact_super_damage =
     self.noise = "items/damage.wav";
     setmodel (self, "progs/quaddama.mdl");
 
-    if (deathmatch == 4)
-        self.netname = "OctaPower";
-    else
-        self.netname = "Quad Damage";
+    self.netname = "Quad Damage";
     self.items = IT_QUAD;
     #ifdef QUAKEWORLD
     self.effects = self.effects | EF_BLUE;
@@ -1510,10 +1407,6 @@ void() BackpackTouch =
     #ifdef QUAKEWORLD
     local   float   b_switch;
 
-    if (deathmatch == 4)
-        if (other.invincible_time > 0)
-            return;
-
     if ((stof(infokey(other,"b_switch"))) == 0)
         b_switch = 8;
     else
@@ -1527,42 +1420,6 @@ void() BackpackTouch =
 
     acount = 0;
     Sprint (other, PRINT_LOW, "You get ");
-
-    if (deathmatch == 4)
-    {
-        other.health = other.health + 10;
-        Sprint (other, PRINT_LOW, "10 additional health\n");
-        if ((other.health > 250) && (other.health < 300))
-            sound (other, CHAN_ITEM, "items/protect3.wav", 1, ATTN_NORM);
-        else
-            sound (other, CHAN_ITEM, "weapons/lock4.wav", 1, ATTN_NORM);
-        stuffcmd (other, "bf\n");
-        remove(self);
-
-        if (other.health >299)
-        {
-            if (other.invincible_time != 1)
-            {
-                other.invincible_time = 1;
-                other.invincible_finished = time + 30;
-                other.items = other.items | IT_INVULNERABILITY;
-
-                other.super_time = 1;
-                other.super_damage_finished = time + 30;
-                other.items = other.items | IT_QUAD;
-
-                other.ammo_cells = 0;
-
-
-                sound (other, CHAN_VOICE, "boss1/sight1.wav", 1, ATTN_NORM);
-                stuffcmd (other, "bf\n");
-                Bprint (PRINT_HIGH, other.netname);
-                Bprint (PRINT_HIGH, " attains bonus powers!!!\n");
-            }
-        }
-        self = other;
-        return;
-    }
 
     if (self.items)
         if ((other.items & self.items) == 0)
@@ -1628,9 +1485,6 @@ void() BackpackTouch =
         Sprint (other, PRINT_LOW, s);
         Sprint (other, PRINT_LOW, " cells");
     }
-
-    if ( (deathmatch==3 || deathmatch == 5) & ( (WeaponCode(new)==6) || (WeaponCode(new)==7) ) & (other.ammo_rockets < 5) )
-        other.ammo_rockets = 5;
 
     Sprint(other, PRINT_LOW, "\n");
 // backpack touch sound

@@ -143,12 +143,7 @@ void(entity targ, entity inflictor, entity attacker, float damage) T_Damage=
 
 // check for quad damage powerup on the attacker
     if (attacker.super_damage_finished > time && inflictor.classname != "door")
-    {
-        if (deathmatch == 4)
-            damage = damage * 8;
-        else
-            damage = damage * 4;
-    }
+        damage = damage * 4;
 
 // save damage based on the target's armor level
 
