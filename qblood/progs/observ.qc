@@ -221,6 +221,7 @@ void(entity player) BecomeObserver =
     player.deadflag         = DEAD_NO;
 
     setmodel (player, "progs/eyes.mdl");
+    setsize (self, '-12 -12 -24', '12 12 32');
 
     player.weaponmodel      = "";
     player.weaponframe      = 0;
