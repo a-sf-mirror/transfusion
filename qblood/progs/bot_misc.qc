@@ -172,10 +172,10 @@ void() bot_chat =
 	    chat_strings = 2;
 
 	else if (b_topic == 6)
-	    chat_strings = 7;
+	    chat_strings = 23;
     
 	else if (b_topic == 9)
-	    chat_strings = 5;
+	    chat_strings = 15;
 	else
 	    chat_strings = 6;
 
@@ -248,10 +248,105 @@ void() bot_chat =
 				    BotSay(": I'm going to have to put you down\n");
 					localcmd("play player/quips/1053.wav\n");
 				}
-				else
+				else if (r == 12)
                 {
 				    BotSay(": Run... Run...\n");
 					localcmd("play player/quips/1083.wav\n");
+				}
+				else if (r == 13)
+                {
+                    BotSay(": Bring it on!\n");
+                    localcmd("play blood2/spawn/1acaleb1.wav\n");
+				}
+				else if (r == 14)
+                {
+                    BotSay(": Everybody dies!\n");
+                    localcmd("play blood2/spawn/C_1LINER_2.WAV\n");
+				}
+				else if (r == 15)
+                {
+                    BotSay(": Everybody dies\n");
+                    localcmd("play blood2/spawn/C_1LINER_3.WAV\n");
+				}
+				else if (r == 16)
+                {
+                    BotSay(": I am death, who wants some?\n");
+                    localcmd("play blood2/spawn/C_1LINER_6.WAV\n");
+				}
+				else if (r == 17)
+                {
+                    BotSay(": Hmmm, I'll take a BLT.  That's a lettuce, tomato and blood sandwich.  Hold the mayo\n");
+                    localcmd("play blood2/spawn/E1M3_3_CAL.WAV\n");
+				}
+				else if (r == 18)
+                {
+                    BotSay(": Looks like there's killin to do\n");
+                    localcmd("play blood2/spawn/E1M4_1_CAL.WAV\n");
+				}
+				else if (r == 19)
+                {
+                    BotSay(": Ah, this place is a hell hole.  I like it!\n");
+                    localcmd("play blood2/spawn/E1M4_2_CAL.WAV\n");
+				}
+				else if (r == 20)
+                {
+                    BotSay(": All in all, I'd rather be killing stuff.\n");
+                    localcmd("play blood2/spawn/E2M2_3_CAL.WAV\n");
+				}
+				else if (r == 21)
+                {
+                    BotSay(": It's howdy doody time kiddies - the bad man is here!\n");
+                    localcmd("play blood2/spawn/E2M5_1_CAL.WAV\n");
+				}
+				else if (r == 22)
+                {
+                    BotSay(": I'm no mechanic, I just mostly hurt people.\n");
+                    localcmd("play blood2/spawn/E3M3_3_CAL.WAV\n");
+				}
+				else if (r == 23)
+                {
+                    BotSay(": You know, this place almost seems unreal...\n");
+                    localcmd("play blood2/spawn/E3M5_1_CAL.WAV\n");
+				}
+				else if (r == 24)
+                {
+                    BotSay(": Time to start piling up the bodies\n");
+                    localcmd("play blood2/spawn/PWRUP1_CAL.WAV\n");
+				}
+				else if (r == 25)
+                {
+                    BotSay(": Dead man walking\n");
+                    localcmd("play blood2/spawn/SPAWN3_CAL.WAV\n");
+				}
+				else if (r == 26)
+                {
+                    BotSay(": Be careful now, you'll shoot your eye out\n");
+                    localcmd("play blood2/spawn/tnt12cal.wav\n");
+				}
+				else if (r == 27)
+                {
+                    BotSay(": Today is the last day of the rest of your life\n");
+                    localcmd("play blood2/spawn/tnt13cal.wav\n");
+				}
+				else if (r == 28)
+                {
+                    BotSay(": I'll beat you like a bad stepchild\n");
+                    localcmd("play blood2/spawn/tnt2_cal.wav\n");
+				}
+				else if (r == 29)
+                {
+                    BotSay(": I'm your best reason to be afraid\n");
+                    localcmd("play blood2/spawn/tnt4_cal.wav\n");
+				}
+				else if (r == 30)
+                {
+                    BotSay(": They're going to need a bucket and a mop when I'm through with you\n");
+                    localcmd("play blood2/spawn/tnt6_cal.wav\n");
+				}
+				else
+                {
+                    BotSay(": Are you feelin lucky?\n");
+                    localcmd("play blood2/spawn/tnt8_cal.wav\n");
 				}
 				bot_start_topic(0);
             }
@@ -267,21 +362,70 @@ void() bot_chat =
 				}					
 				else if (self.weapon == IT_NAPALM_LAUNCHER)
 				{
-				    if (random() <= 0.5)
+                    local float TempSound;
+
+                    TempSound = ceil (random() * 3);
+
+				    if (TempSound == 1)
 					{
 					    BotSay(": I love the smell of napalm in the morning\n");
 						Taunt(0);
 					}	
-					else
+					else if (TempSound == 2)
 					{
 					    BotSay(": Hmmm... is that gasoline I smell?\n");
 						Taunt(1);
-					}                
+					}
+                    else
+                    {
+                        BotSay(": Now we're cooking with gas!\n");
+                        localcmd("play blood2/murdered/E3M1_2_CAL.WAV\n");
+    				}
 				}
+                else if (self.weapon == IT_FLAREGUN || self.weapon == IT_SPRAY_CAN)
+                {
+                    local float TempSound;
+
+                    TempSound = ceil (random() * 5);
+
+                    if (TempSound == 1)
+					{
+                        BotSay(": Now that's one hell of a foundeau! Hoo hoo hoo hoo!\n");
+                        localcmd("play blood2/murdered/E1M1_9_CALA.WAV\n");
+				    }
+				    else if (TempSound == 2)
+                    {
+                        BotSay(": Now that's what I call a barbeque.  Mmm... lot's of sauce!\n");
+                        localcmd("play blood2/murdered/E1M1_9_CALB.WAV\n");
+	    			}
+    				else if (TempSound == 3)
+                    {
+                        BotSay(": Ooh! Now that's what I call a barbeque.  Hehehe!\n");
+                        localcmd("play blood2/murdered/E1M1_9_CALC.WAV\n");
+    				}
+				    else if (TempSound == 4)
+                    {
+                        BotSay(": Time for a barbeque\n");
+                        localcmd("play blood2/murdered/msc7_cal.wav\n");
+    				}
+				    else
+                    {
+                        BotSay(": How do you like your flesh cooked?\n");
+                        localcmd("play blood2/murdered/tnt7_cal.wav\n");
+    				}
+                }
 				else if (random() <= 0.5 && self.weapon == IT_SAWED_OFF)
 				{
-				    BotSay(": This is my boomstick!\n");
-					localcmd("play player/taunts/t1002.wav\n");
+				    if (random() <= 0.5)
+					{
+                        BotSay(": This is my boomstick!\n");
+    					localcmd("play player/taunts/t1002.wav\n");
+                    }
+                    else
+                    {
+                        BotSay(": Now this is what I call a boom stick\n");
+                        localcmd("play blood2/murdered/msc1_cal.wav\n");
+    				}                    
 				}					
                 else if (r == 1)
 				{
@@ -318,10 +462,165 @@ void() bot_chat =
 					BotSay(": Pay attention son, this is for your own good\n");
 					localcmd("play player/quips/1046.wav\n");
 				}				
-				else
+				else if (r == 8)
 				{
 				    BotSay(": What are you gonna do, bleed on me?\n");
 					localcmd("play player/quips/1054.wav\n");
+				}
+				else if (r == 9)
+                {
+                    BotSay(": When you get to hell, tell them I sent you.  You'll get a discount\n");
+                    localcmd("play blood2/murdered/11caleb2.wav\n");
+				}
+				else if (r == 10)
+                {
+                    BotSay(": Relax.  You're dead!\n");
+                    localcmd("play blood2/murdered/16caleb1.wav\n");
+				}
+				else if (r == 11)
+                {
+                    BotSay(": Gimme some sugar baby!\n");
+                    localcmd("play blood2/murdered/16caleb2.wav\n");
+				}
+				else if (r == 12)
+                {
+                    BotSay(": What are you going to do? SPANK me?\n");
+                    localcmd("play blood2/murdered/20caleb2.wav\n");
+				}
+				else if (r == 13)
+                {
+                    BotSay(": And me, without a spoon\n");
+                    localcmd("play blood2/murdered/BGGIB4_CAL.WAV\n");
+				}
+				else if (r == 14)
+                {
+                    BotSay(": You've looked better, but not by much\n");
+                    localcmd("play blood2/murdered/C_1LINER_1.WAV\n");
+				}
+				else if (r == 15)
+                {
+                    BotSay(": That's right!  Who's laughing now?!?!\n");
+                    localcmd("play blood2/murdered/C_1LINER_5.WAV\n");
+				}				
+				else if (r == 16)
+                {
+                    BotSay(": Resistance is futile!\n");
+                    localcmd("play blood2/murdered/gen2_cal.wav\n");
+				}
+				else if (r == 17)
+                {
+                    BotSay(": Blood drops keep falling on my head...\n");
+                    localcmd("play blood2/murdered/IDLE2_CAL.WAV\n");
+				}
+				else if (r == 18)
+                {
+                    BotSay(": If you think I'm sexy - and you want my body...\n");
+                    localcmd("play blood2/murdered/IDLE3_CAL.WAV\n");
+				}
+				else if (r == 19)
+                {
+                    BotSay(": I never learned how to play nice\n");
+                    localcmd("play blood2/murdered/KILL10CAL1.WAV\n");
+				}
+				else if (r == 20)
+                {
+                    BotSay(": What we have here is a failure to coagulate\n");
+                    localcmd("play blood2/murdered/KILL10CAL2.WAV\n");
+				}
+				else if (r == 21)
+                {
+                    BotSay(": Aw, no one wants to play with me\n");
+                    localcmd("play blood2/murdered/KILL11CAL.WAV\n");
+				}
+				else if (r == 22)
+                {
+                    BotSay(": That will teach ya\n");
+                    localcmd("play blood2/murdered/KILL12CAL.WAV\n");
+				}
+				else if (r == 23)
+                {
+                    BotSay(": That will teach ya!\n");
+                    localcmd("play blood2/murdered/KILL16CAL.WAV\n");
+				}
+				else if (r == 24)
+                {
+                    BotSay(": Aw, did I hurt your feelings?\n");
+                    localcmd("play blood2/murdered/KILL2_CALA.WAV\n");
+				}
+				else if (r == 25)
+                {
+                    BotSay(": You must have blinked\n");
+                    localcmd("play blood2/murdered/KILL2_CALB.WAV\n");
+				}
+				else if (r == 26)
+                {
+                    BotSay(": That's right!  Who's laughing now?\n");
+                    localcmd("play blood2/murdered/KILL3_CAL.WAV\n");
+				}
+				else if (r == 27)
+                {
+                    BotSay(": Another day, another corpse\n");
+                    localcmd("play blood2/murdered/KILL4_CAL.WAV\n");
+				}
+				else if (r == 28)
+                {
+                    BotSay(": Another day, another corpse, another reason for making whoopie\n");
+                    localcmd("play blood2/murdered/KILL5_CAL.WAV\n");
+				}
+				else if (r == 29)
+                {
+                    BotSay(": Red is definitely your color\n");
+                    localcmd("play blood2/murdered/KILL6_CAL.WAV\n");
+				}
+				else if (r == 30)
+                {
+                    BotSay(": Lucky you, killed by the best!\n");
+                    localcmd("play blood2/murdered/KILL7_CAL.WAV\n");
+				}
+				else if (r == 31)
+                {
+                    BotSay(": Another notch on the barrel\n");
+                    localcmd("play blood2/murdered/KILL9_CAL.WAV\n");
+				}
+				else if (r == 32)
+                {
+                    BotSay(": Hehe\n");
+                    localcmd("play blood2/murdered/LAUGH1_CALA.WAV\n");
+				}
+				else if (r == 33)
+                {
+                    BotSay(": Haha\n");
+                    localcmd("play blood2/murdered/LAUGH1_CALB.WAV\n");
+				}
+				else if (r == 34)
+                {
+                    BotSay(": I'd say I'm sorry, but you know it wouldn't be sincere\n");
+                    localcmd("play blood2/murdered/msc11cal.wav\n");
+				}
+				else if (r == 35)
+                {
+                    BotSay(": What a mess, these conditions are hardly sanitary\n");
+                    localcmd("play blood2/murdered/MSC16_CAL.WAV\n");
+				}
+				else if (r == 36)
+                {
+                    BotSay(": Hmm, point away from face and fire.  Sounds easy enough\n");
+                    localcmd("play blood2/murdered/msc2_cal.wav\n");
+				}
+				else if (r == 37)
+                {
+                    BotSay(": There going to need a closed casket now!\n");
+                    localcmd("play blood2/murdered/PWRUP2_CAL.WAV\n");
+				}
+				else if (r == 38)
+                {
+                    BotSay(": Your bad day just got worse\n");
+                    localcmd("play blood2/murdered/tnt1_cal.wav\n");
+				}
+				else if (r == 39)
+                {
+                    BotSay(": When you get to hell, tell them I sent you.  You'll get a group discount\n");
+                    localcmd("play blood2/murdered/tnt3_cal.wav\n");
 				}
                 bot_start_topic(0);
             }
@@ -397,10 +696,90 @@ void() bot_chat =
 				    BotSay(": I smell balm and puntane\n");
 					localcmd("play player/quips/1041.wav\n");
 				}
-				else
+				else if (r == 7)
                 {
 				    BotSay(": Help help! I'm being repressed\n");
 					localcmd("play player/quips/1051.wav\n");
+				}
+				else if (r == 8)
+                {
+				    BotSay(": Aw... you're gonna hurt my feelings\n");
+				    localcmd("play blood2/died/17caleb2.wav\n");
+				}
+				else if (r == 9)
+                {
+				    BotSay(": Ooh... this could be bad!\n");
+				    localcmd("play blood2/died/5caleb1.wav\n");
+				}
+				else if (r == 10)
+                {
+				    BotSay(": Ooh... you son of a ...!\n");
+				    localcmd("play blood2/died/C_1LINER_4.WAV\n");
+				}
+				else if (r == 11)
+                {
+				    BotSay(": Mmm... this is going to get a lot worse before it get's better\n");
+				    localcmd("play blood2/died/E1M5_3_CAL.WAV\n");
+				}
+				else if (r == 12)
+                {
+				    BotSay(": My momma said there'd be days like this.  I never liked her\n");
+				    localcmd("play blood2/died/E2M3_2_CAL.WAV\n");
+				}
+				else if (r == 13)
+                {
+				    BotSay(": Ah... I feel like a piece of meat\n");
+				    localcmd("play blood2/died/E2M5_4_CAL.WAV\n");
+				}
+				else if (r == 14)
+                {
+				    BotSay(": You know, I should have taken a job in construction\n");
+				    localcmd("play blood2/died/E2M7_1_CAL.WAV\n");
+				}
+				else if (r == 15)
+                {
+				    BotSay(": This is unbelivably bad!\n");
+				    localcmd("play blood2/died/E3M1_4_CAL.WAV\n");
+				}
+				else if (r == 16)
+                {
+				    BotSay(": I've just about had enough of you\n");
+				    localcmd("play blood2/died/KILL14CAL.WAV\n");
+				}
+				else if (r == 17)
+                {
+				    BotSay(": Umm... That wasn't a bit nice\n");
+				    localcmd("play blood2/died/MSC10CALA.WAV\n");
+				}
+				else if (r == 18)
+                {
+				    BotSay(": Make the hurting stop!\n");
+				    localcmd("play blood2/died/pn2_cal.wav\n");
+				}
+				else if (r == 19)
+                {
+				    BotSay(": I wish you wouldn't do that\n");
+				    localcmd("play blood2/died/pn8_cal1.wav\n");
+				}
+				else if (r == 20)
+                {
+				    BotSay(": Make the hurting stop\n");
+				    localcmd("play blood2/died/pn8_cal2.wav\n");
+				}
+				else if (r == 21)
+                {
+				    BotSay(": Little thing like death never stopped me!\n");
+				    localcmd("play blood2/died/SPAWN2_CAL.WAV\n");
+				}
+				else if (r == 22)
+                {
+				    BotSay(": You've got to be kidding me!\n");
+				    localcmd("play blood2/died/SUBBCALEB1.WAV\n");
+				}
+				else
+                {
+				    BotSay(": I'm DEAD again!\n");
+				    localcmd("play blood2/died/sui2_cal.wav\n");
 				}
 				bot_start_topic(0);
             }
@@ -477,10 +856,60 @@ void() bot_chat =
 				    BotSay(": Hmmm. Extraordinary use of color. The composition is a bit lacking\n");
 					localcmd("play player/quips/1055.wav\n");
 				}				
-				else
+				else if (r == 5)
 				{
 					BotSay(": Lambs to the slaughter\n");
 					localcmd("play player/quips/1027.wav\n");
+				}
+				else if (r == 6)
+				{
+                	BotSay(": Sure is dead around here\n");
+                	localcmd("play blood2/suicide/E1M5_4_CAL.WAV\n");
+				}
+				else if (r == 7)
+				{
+                	BotSay(": Oh yum!  A personcicle\n");
+                	localcmd("play blood2/suicide/E2M5_3_CAL.WAV\n");
+				}
+				else if (r == 8)
+				{
+                	BotSay(": Couldn't have done it better myself\n");
+                	localcmd("play blood2/suicide/E2M7_3_CAL.WAV\n");
+				}
+				else if (r == 9)
+				{
+                	BotSay(": What a waste of good ammunition\n");
+                	localcmd("play blood2/suicide/E3M2_1_CAL.WAV\n");
+				}
+				else if (r == 10)
+				{
+                	BotSay(": You know, it smells like somebody died in here\n");
+                	localcmd("play blood2/suicide/E4M3_1_CAL.WAV\n");
+				}
+				else if (r == 11)
+				{
+                	BotSay(": Oooh - that's gotta hurt\n");
+                	localcmd("play blood2/suicide/KILL15CAL.WAV\n");
+				}
+				else if (r == 12)
+				{
+                	BotSay(": That's a good way to get yourself killed\n");
+                	localcmd("play blood2/suicide/KILL1_CAL.WAV\n");
+				}
+				else if (r == 13)
+				{
+                	BotSay(": Haha\n");
+                	localcmd("play blood2/suicide/LAUGH2_CALA.WAV\n");
+				}
+				else if (r == 14)
+				{
+                	BotSay(": Hehe\n");
+                	localcmd("play blood2/suicide/LAUGH2_CALB.WAV\n");
+				}
+				else
+				{
+                	BotSay(": Hey dummy - you got a deathwish or something?\n");
+                	localcmd("play blood2/suicide/sui3_cal.wav\n");
 				}
 				bot_start_topic(0);
             }
