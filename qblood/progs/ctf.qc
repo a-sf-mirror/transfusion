@@ -90,73 +90,6 @@ void () TeamCaptureRegenFlags =
 };
 
 
-// possum: 3 loops in one.  Hopefully this will help prevent an
-// occasional server lockup when a player picks up and then captures the
-// flag in rapid succession
-/*void() LoopThroughPlayersAfterCapture =
-{
-    local entity p;
-
-    // count up teamscr
-    lastteamscrtime = time + TEAMSCRTIME;
-    teamscr1 = teamscr2 = 0;
-
-    // Ok, let's do the player loop, hand out the bonuses, add up
-    // the scores, and inform the players about the capture
-
-    p = find(world, classname, "player");
-    while (p != world) {
-
-        // Ok, let's do the player loop, hand out the bonuses
-        self = p;
-        self.killed = 0;
-        if (self.steam == other.steam && self != other)
-            self.frags = self.frags + TEAM_CAPTURE_TEAM_BONUS;
-        if (self.steam != other.steam) {
-            // *XXX* EXPERT CTF
-            // reset the last_hurt_carrier variable in all enemy
-            // players, so that you don't get bonuses for defending
-            // the flag carrier if the flag carrier has already
-            // completed a capture
-            self.last_hurt_carrier = -5;
-        } else if (self.steam == other.steam) {
-            // done to all players on the capturing team
-            // *XXX* EXPERT CTF
-            // award extra points for capture assists
-            if (self.last_returned_flag + TEAM_CAPTURE_RETURN_FLAG_ASSIST_TIMEOUT > time) {
-                bprint(PRINT_HIGH, self.netname);
-                bprint(PRINT_HIGH, " gets an assist for returning his flag!\n");
-                self.frags = self.frags + TEAM_CAPTURE_RETURN_FLAG_ASSIST_BONUS;
-            }
-            if (self.last_fragged_carrier + TEAM_CAPTURE_FRAG_CARRIER_ASSIST_TIMEOUT > time) {
-                bprint(PRINT_HIGH, self.netname);
-                bprint(PRINT_HIGH, " gets an assist for fragging the flag carrier!\n");
-                self.frags = self.frags + TEAM_CAPTURE_FRAG_CARRIER_ASSIST_BONUS;
-            }
-        }
-        self.player_flag = self.player_flag - (self.player_flag & ITEM_ENEMY_FLAG);
-
-        // count up teamscr
-        if (p.steam == TEAM_COLOR1)
-            teamscr1 = teamscr1 + p.frags;
-        else if (p.steam == TEAM_COLOR2)
-            teamscr2 = teamscr2 + p.frags;
-
-        // inform players about capture
-        if ((p.steam == TEAM_COLOR1 && other.steam == TEAM_COLOR2) ||
-            (p.steam == TEAM_COLOR2 && other.steam == TEAM_COLOR1))
-            TeamPlayerUpdate(p, "Your flag was captured!");
-        else if (p.steam == other.steam)
-            TeamPlayerUpdate(p, "Your team captured the flag!");
-
-        // remove any flags
-        p.effects = p.effects - (p.effects & (EF_FLAG1 | EF_FLAG2));
-
-        p = find(p, classname, "player");
-    }
-};*/
-
-
 void() CTF_FlagTouch =
 {
     local entity p, oself;
@@ -201,9 +134,6 @@ void() CTF_FlagTouch =
 
             // other gets another 10 frag bonus
             other.frags = other.frags + TEAM_CAPTURE_CAPTURE_BONUS;
-
-            // possum: 3 loops in one
-            //LoopThroughPlayersAfterCapture();  // <<=== TODO
 
             // respawn flags
             TeamCaptureRegenFlags();
@@ -472,6 +402,30 @@ void() info_player_team1 =
 
 void() info_player_team2 =
 {
+};
+
+
+// self is player
+entity() CTF_Spawn =
+{
+    local entity spawnpoint;
+
+    if (self.team == TEAM_COLOR1)
+    {
+        team1_lastspawn = find(team1_lastspawn, classname, "info_player_team1");
+        if (team1_lastspawn == world)
+            team1_lastspawn = find(team1_lastspawn, classname, "info_player_team1");
+        return team1_lastspawn;
+
+    }
+    else if (self.team == TEAM_COLOR2)
+    {
+        team2_lastspawn = find(team2_lastspawn, classname, "info_player_team2");
+        if (team2_lastspawn == world)
+            team2_lastspawn = find(team2_lastspawn, classname, "info_player_team2");
+        return team2_lastspawn;
+    }
+    return world;
 };
 
 

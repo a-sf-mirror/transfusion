@@ -869,6 +869,8 @@ void () wall_killed =
 
     activator = self;
     SUB_UseTargets();
+
+    remove (self);
 };
 
 void() wall_pain =

@@ -204,6 +204,51 @@ void() StartItem =
     self.think = PlaceItem;
 };
 
+
+/*
+============
+lure_touch
+
+Touch function for a proxy item (see below)
+
+For test purpose only
+============
+*/
+void() lure_touch =
+{
+    self.solid = SOLID_NOT;
+    self.model = string_null;
+    if (deathmatch)
+        self.nextthink = time + 20;
+    self.think = SUB_regen;
+
+    Sprint (other, PRINT_LOW, "Picked up a LURE\n");
+    sound (other, CHAN_ITEM, "items/pickup.wav", 1, ATTN_NORM);
+    stuffcmd (other, "bf\n");  // produces a little flash on the interface when you picked up the item
+};
+
+/*
+============
+item_lure
+
+Proxy item. Used by mappers when a spawn function for an item doesn't yet exist
+
+For test purpose only
+============
+*/
+void() item_lure =
+{
+    self.touch = lure_touch;
+
+    precache_model(self.model);
+    precache_sound("items/pickup.wav");
+    setmodel(self, self.model);
+
+    setsize (self, '0 0 0', '32 32 56');
+    StartItem ();
+};
+
+
 /*
 =========================================================================
 
@@ -278,6 +323,20 @@ void() item_health =
         self.healamount = 25;
         self.healtype = 1;
     }
+    setsize (self, '0 0 0', '32 32 56');
+    StartItem ();
+};
+
+
+void() item_artifact_essence =
+{
+    precache_model("progs/i_lifess.mdl");
+    precache_sound("items/pickup.wav");
+    setmodel(self, "progs/i_lifess.mdl");
+    self.noise = "items/pickup.wav";
+    self.healamount = 15;
+    self.healtype = 1;
+
     setsize (self, '0 0 0', '32 32 56');
     StartItem ();
 };

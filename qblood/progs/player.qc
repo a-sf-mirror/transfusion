@@ -547,9 +547,9 @@ void() HeadTouch =
 
     // define velocity
     // you can play with these formulas to adjust trajectory
-    self.velocity_x = other.velocity_x * 2 + 50 * random();
-    self.velocity_y = other.velocity_y * 2 + 50 * random();
-    self.velocity_z = 250 + 160 * random() + (other.velocity_y + other.velocity_x) * 0.30;
+    self.velocity_x = other.velocity_x * 3 + 50 * random();
+    self.velocity_y = other.velocity_y * 3 + 50 * random();
+    self.velocity_z = 300 + 160 * random() + (other.velocity_y + other.velocity_x) * 0.30;
     self.avelocity = crandom() * '0 600 0';
 
     self.flags = self.flags - (self.flags & FL_ONGROUND);

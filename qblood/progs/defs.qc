@@ -287,6 +287,10 @@ float   recursioncount;  // used to avoid stack overflow with explosions
 float team1score;
 float team2score;
 
+// Last spawn points
+entity team1_lastspawn;
+entity team2_lastspawn;
+
 
 //
 // cvars checked each frame

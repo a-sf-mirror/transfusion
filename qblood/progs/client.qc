@@ -29,6 +29,7 @@ void() player_stand1;
 void (vector org) spawn_tfog;
 void (vector org, entity death_owner) spawn_tdeath;
 void() CTF_PlayerDropFlag;
+entity() CTF_Spawn;
 
 float   modelindex_eyes, modelindex_player;
 
@@ -511,128 +512,74 @@ Returns the entity to spawn at
 */
 entity() SelectSpawnPoint =
 {
-    local   entity spot, thing;
-    local   float  pcount;
-    #ifdef QUAKEWORLD
-    local   entity  newspot;
-    local   float   numspots, totalspots;
-    local   float   rnum;
-    local   float   rs;
-    local entity spots;
+    // testinfo_player_start is only found in regioned levels
+    lastspawn = find (world, classname, "testplayerstart");
+    if (lastspawn)
+        return lastspawn;
 
-    numspots = 0;
-    totalspots = 0;
+    // If we're in a deathmatch
+    #ifndef QUAKEWORLD
+    if (deathmatch)
+    {
     #endif
+        local float totalspots;
 
-// testinfo_player_start is only found in regioned levels
-    spot = find (world, classname, "testplayerstart");
-    if (spot)
-        return spot;
-
-// choose a info_player_deathmatch point
-    #ifdef QUAKEWORLD
-
-// ok, find all spots that don't have players nearby
-
-    spots = world;
-    spot = find (world, classname, "info_player_deathmatch");
-    while (spot)
-    {
-        totalspots = totalspots + 1;
-
-        thing=findradius(spot.origin, 84);
-        pcount=0;
-        while (thing)
+        // If it's a CTF game, try to spawn on one of the team's points
+        if (deathmatch == 2)
         {
-            if (thing.classname == "player")
-                pcount=pcount + 1;
-            thing=thing.chain;
-        }
-        if (pcount == 0) {
-            spot.goalentity = spots;
-            spots = spot;
-            numspots = numspots + 1;
+            lastspawn = CTF_Spawn ();
+            if (lastspawn != world)
+                return lastspawn;
         }
 
-        // Get the next spot in the chain
-        spot = find (spot, classname, "info_player_deathmatch");
-    }
-    totalspots=totalspots - 1;
-    if (!numspots) {
-        // ack, they are all full, just pick one at random
-//      bprint (PRINT_HIGH, "Ackk! All spots are full. Selecting random spawn spot\n");
-        totalspots = rint((random() * totalspots));
-        spot = find (world, classname, "info_player_deathmatch");
-        while (totalspots > 0) {
-            totalspots = totalspots - 1;
-            spot = find (spot, classname, "info_player_deathmatch");
+        // Get a list of all DM spots
+        totalspots = 0;
+        lastspawn = find (world, classname, "info_player_deathmatch");
+        while (lastspawn)
+        {
+            totalspots = totalspots + 1;
+            lastspawn = find (lastspawn, classname, "info_player_deathmatch");
         }
-        return spot;
+
+        // Choose one at random
+        if (totalspots > 0)
+        {
+            totalspots = rint((random() * (totalspots - 1)));
+            lastspawn = find (world, classname, "info_player_deathmatch");
+            while (totalspots > 0) {
+                totalspots = totalspots - 1;
+                lastspawn = find (lastspawn, classname, "info_player_deathmatch");
+            }
+            return lastspawn;
+        }
+    #ifndef QUAKEWORLD
     }
 
-// We now have the number of spots available on the map in numspots
-
-    // Generate a random number between 1 and numspots
-
-    numspots = numspots - 1;
-
-    numspots = rint((random() * numspots ) );
-
-    spot = spots;
-    while (numspots > 0) {
-        spot = spot.goalentity;
-        numspots = numspots - 1;
-    }
-
-    #else
-    if (coop)
+    // If we're in a SP coop game
+    else if (coop)
     {
-        lastspawn = find(lastspawn, classname, "info_player_coop");
+        lastspawn = find (lastspawn, classname, "info_player_coop");
         if (lastspawn == world)
-            lastspawn = find (lastspawn, classname, "info_player_start");
+            lastspawn = find (world, classname, "info_player_coop");
         if (lastspawn != world)
             return lastspawn;
     }
-    else if (deathmatch)
+
+    // If we have a least one rune in a SP game
+    if (serverflags && !deathmatch)
     {
-        spot = lastspawn;
-        while (1)
-        {
-            spot = find(spot, classname, "info_player_deathmatch");
-            if (spot != world)
-            {
-                if (spot == lastspawn)
-                    return lastspawn;
-                pcount = 0;
-                thing = findradius(spot.origin, 32);
-                while(thing)
-                {
-                    if (thing.classname == "player")
-                        pcount = pcount + 1;
-                    thing = thing.chain;
-                }
-                if (pcount == 0)
-                {
-                    lastspawn = spot;
-                    return spot;
-                }
-            }
-        }
+        lastspawn = find (world, classname, "info_player_start2");
+        if (lastspawn)
+            return lastspawn;
     }
-
-    if (serverflags)
-    {   // return with a rune to start
-        spot = find (world, classname, "info_player_start2");
-        if (spot)
-            return spot;
-    }
-
-    spot = find (world, classname, "info_player_start");
-    if (!spot)
-        error ("PutClientInServer: no info_player_start on level");
     #endif
 
-    return spot;
+    // We haven't found a suitable spawn point, so we take the SP one
+    lastspawn = find (world, classname, "info_player_start");
+    if (! lastspawn)
+        error ("PutClientInServer: no info_player_start on level");
+
+    return lastspawn;
 };
 
 

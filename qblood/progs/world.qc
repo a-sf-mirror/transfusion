@@ -201,8 +201,9 @@ void() worldspawn =
     else
         cvar_set ("sv_gravity", "800");
 
-    // Team scores initialization
+    // Some CTF variables need an initialization
     team1score = team2score = 0;
+    team1_lastspawn = team2_lastspawn = world;
 
 // the area based ambient sounds MUST be the first precache_sounds
 
