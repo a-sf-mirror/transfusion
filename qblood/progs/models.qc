@@ -252,12 +252,12 @@ $cd id1/models/lifeseed
 $base base
 $skin skin
 $framegroupstart
-$frame frame1 0.33
-$frame frame2 0.33
-$frame frame3 0.33
-$frame frame4 0.33
-$frame frame5 0.33
-$frame frame6 0.33
+$frame frame1 0.67
+$frame frame2 0.67
+$frame frame3 0.67
+$frame frame4 0.67
+$frame frame5 0.67
+$frame frame6 0.67
 $framegroupend
 
 $modelname invulner
