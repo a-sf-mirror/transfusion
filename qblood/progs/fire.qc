@@ -85,26 +85,6 @@ float(vector vec) VecInWater =
     return FALSE;
 };
 
-//------------------------------------------------------------------------//
-//  This returns the water level of an entity.
-//------------------------------------------------------------------------//
-float(entity ent) WaterLevel =
-{
-    local   vector  spot;
-
-    spot = ent.origin;
-    spot_z = ent.origin_z + ent.view_ofs_z;
-    if (VecInWater (spot))
-        return 3;
-    spot_z = ent.origin_z + (ent.mins_z + ent.maxs_z) * 0.5;
-    if (VecInWater (spot))
-        return 2;
-    spot_z = ent.origin_z + ent.mins_z + 1;
-    if (VecInWater (spot))
-        return 1;
-    return 0;
-};
-
 
 //==========================================================================
 //  Fire Damage
@@ -347,10 +327,9 @@ void() Burn =
         return;
     }
 
-    // Don't let victim burn for more than 20 seconds (default).
-    // 200 * 0.1 sec. = 20 sec.
-    if (self.dmg > 200)
-        self.dmg = 200;
+    // Don't let victim burn for more than 10 seconds (default).
+    if (self.dmg > 100)
+        self.dmg = 100;
 
     // Keep on burning.
     MakeEmbers ();
@@ -401,153 +380,6 @@ void(entity victim, entity attacker, float burn) Ignite =
     fire.think      = Burn;
 
     victim.burner   = fire;     // Link entity to fire.
-};
-
-
-//==========================================================================
-//  Flaming Death
-
-// NOTE:  Used by monsters only.
-
-void() BecomeOldExplosion;
-//------------------------------------------------------------------------//
-//  The creates an explosion entity from scratch.
-//------------------------------------------------------------------------//
-void(vector spot) MakeExplosion =
-{
-    local   entity  e;
-
-    e = spawn();
-    setmodel (e, "progs/s_explod.spr");
-    setsize (e, '0 0 0', '0 0 0');
-    setorigin (e, spot);
-
-    Think (e, BecomeOldExplosion);
-};
-
-//------------------------------------------------------------------------//
-//  This makes the death flame produce a little smoke and embers
-//  before it disappears.
-//------------------------------------------------------------------------//
-void() DeathFlameDying =
-{
-    if (self.wait <= time)
-    {
-        // Done burning.
-        remove (self);
-        return;
-    }
-
-    local   vector  spot;
-
-    makevectors (self.enemy.angles);
-    spot = self.enemy.origin + (v_forward * self.dest_x) +
-        (v_right * self.dest_y) + (v_up * self.dest_z);
-    setorigin (self, spot);
-
-    // Make a thin trail of smoke above the flame, plus a few embers.
-    local   float   ftime;
-    ftime = floor(time * 10);
-    if (ftime & 1)
-    {
-        #ifndef QUAKEWORLD
-        particle (spot, '0 0 100', 6, 5);
-        #endif
-        if (!VecInWater (spot))
-            if ((ftime & 2) || (random() < 0.5))
-                MakeEmbers ();
-    }
-
-    self.nextthink = time + 0.1;
-};
-
-//------------------------------------------------------------------------//
-//  This checks if the death flame should stop burning.
-//------------------------------------------------------------------------//
-float() EndDeathFlame =
-{
-    // Stop burning once the enemy is really dead or once he becomes non-solid
-    if (self.enemy.deadflag == DEAD_DEAD || self.enemy.solid == SOLID_NOT)
-        return TRUE;
-
-    // Keep on burning
-    return FALSE;
-};
-
-//------------------------------------------------------------------------//
-//  This makes the death flame burn.
-//------------------------------------------------------------------------//
-void() DeathFlameThink =
-{
-    if (EndDeathFlame ())
-    {
-        // Done burning.
-        if (self.model == self.mdl)
-        {
-            MakeExplosion (self.origin);
-            setmodel (self, string_null);
-        }
-        self.think = DeathFlameDying;
-        self.wait = time + 1 + random() * 2;
-        DeathFlameDying ();
-        return;
-    }
-
-    // Make the flame stick to its target.
-    local   vector  spot;
-
-    makevectors (self.enemy.angles);
-    spot = self.enemy.origin + (v_forward * self.dest_x) +
-        (v_right * self.dest_y) + (v_up * self.dest_z);
-    setorigin (self, spot);
-
-    // Make a thin trail of smoke above the flame, plus a few embers.
-    #ifndef QUAKEWORLD
-    particle (spot + '0 0 24', '0 0 100', 6, 5);
-    #endif
-    if (floor(time * 10) & 1)
-        MakeEmbers ();
-
-    // In case enemy is not dead, do some damage.
-    if (self.enemy.takedamage)
-        T_Damage (self.enemy, self, self.owner, 1, DF_FIRE, "fire");
-
-    // Flame has different effects depending on its contents.
-    if (VecInWater (spot))
-    {
-        // Hide the flame and make more steam in its place.
-        if (self.model == self.mdl)
-        {
-            setmodel (self, string_null);
-            sound (self, CHAN_AUTO, "player/slimbrn2.wav", 1, ATTN_NORM);
-        }
-        #ifndef QUAKEWORLD
-        particle (spot, '0 0 100', 6, 50);
-        #endif
-    }
-    else
-    {
-        if (self.model != self.mdl)
-        {
-            MakeExplosion (spot);
-            setmodel (self, self.mdl);
-        }
-
-        // Burn nearby enemies.
-        local   entity  head;
-
-        head = findradius(self.origin, 60);
-        while (head)
-        {
-            if (head != self.enemy)
-                if (CanDamage (head, self))
-                    FireDamage (head, self, self.owner);
-
-            head = head.chain;
-        }
-    }
-
-    self.nextthink = time + 0.1;
 };
 
 
@@ -699,6 +531,7 @@ void() BecomeOldExplosion =
     self.velocity   = '0 0 0';
     self.touch      = SUB_Null;
     self.frame      = 0;
+    self.skin       = 0;
     setmodel (self, "progs/s_oldexp.spr");
     self.solid      = SOLID_NOT;
 

@@ -159,7 +159,7 @@ void() Spray_Fire =
     newmis.voided=0;
     #endif
     newmis.owner = self;
-    newmis.movetype = MOVETYPE_FLYMISSILE;  // use MOVETYPE_NOCLIP for free move
+    newmis.movetype = MOVETYPE_FLYMISSILE;
     newmis.solid = SOLID_BBOX;
 
     newmis.angles = vectoangles(dir);
@@ -169,7 +169,7 @@ void() Spray_Fire =
     newmis.think = SUB_Remove;
     newmis.nextthink = time + 0.6;
     setmodel (newmis, "progs/sprayfir.spr");
-    setsize (newmis, '-5 -5 -7', '5 5 7');
+    setsize (newmis, '-1 -1 -1', '1 1 1');
     setorigin (newmis, self.origin + '0 0 10' + v_forward * 50 + v_right * 8);
 
     newmis.velocity = dir * 550;

@@ -740,12 +740,16 @@ void() DynaTouch =
     // Normal grenades are the only ones which can explode on touch
     if (self.style == TNT_TYPE_NORMAL)
     {
-        // Rebound if it hits the ceiling.  Otherwise, explode.
-        traceline (self.origin - self.dest*4, self.origin + self.dest*16, TRUE, self);
-        if (trace_fraction == 1 || trace_plane_normal_z >= 0)
+        // Don't explode on owner
+        if (other != self.owner)
         {
-            GrenadeExplode ();
-            return;
+            // Rebound if it hits the ceiling.  Otherwise, explode.
+            traceline (self.origin - self.dest*4, self.origin + self.dest*16, TRUE, self);
+            if (trace_fraction == 1 || trace_plane_normal_z >= 0)
+            {
+                GrenadeExplode ();
+                return;
+            }
         }
     }
 
@@ -878,6 +882,7 @@ void() Bomb_Fire =
     newmis.think     = BombThink;
 
     setorigin (newmis, self.origin);
+    setsize (newmis, '-10 -5 0', '10 5 10');
 
     self.player_state = PS_FIRE;
 
@@ -910,6 +915,7 @@ void() Bomb_Fire =
         newmis.think     = DynaThink;
         newmis.touch     = DynaTouch;
         newmis.dest      = normalize (newmis.velocity);
+        setsize (newmis, '0 0 0', '0 0 0');
 
         if (self.weapon == IT_SPRAY_CAN)
         {
@@ -918,7 +924,7 @@ void() Bomb_Fire =
             newmis.model     = "progs/grd_aero.mdl";
             newmis.angles    = '0 -300 0';
             newmis.avelocity = '150 150 150';
-            setorigin (newmis, self.origin + v_forward * 35 + '0 0 20' + v_right * 8);
+            //setorigin (newmis, self.origin + v_forward * 35 + '0 0 20' + v_right * 8);
 
             self.weaponframe = 0;  // reset the weapon view
         }
@@ -933,7 +939,6 @@ void() Bomb_Fire =
     }
 
     setmodel (newmis, newmis.model);
-    setsize (newmis, '-10 -5 0', '10 5 10');
 
     // If we have no more dynamite, we "lose" the weapon
     // (expect for remote detonators: we always have the remote)

@@ -132,7 +132,7 @@ Napalm_ThrowBouncingBall
 
 Activate the split function of a napalm ball
 
-NOTE: we must do that because we spawn them just besides walls,
+NOTE: we must do that because the balls are spawned at the same position,
       so they would explode as soon as they spawn.
 ================
 */
@@ -174,7 +174,7 @@ void(entity newball) Napalm_ThrowBouncingBall =
     newball.think = Napalm_ActivateBall;
 
     setmodel (newball, "progs/naltball.mdl");
-    setsize (newball, '-2 -2 -2', '2 2 2');
+    setsize (newball, '0 0 0', '0 0 0');
 };
 
 
@@ -223,6 +223,8 @@ void() T_MissileTouch =
     MakeBlastDamage (self, 160, 20, 10);
     PsychoCaleb (self.owner);
 
+    self.origin = self.origin - 8 * normalize (self.velocity);
+
     #ifdef QUAKEWORLD
     WriteByte (MSG_MULTICAST, SVC_TEMPENTITY);
     WriteByte (MSG_MULTICAST, TE_EXPLOSION);
@@ -255,23 +257,27 @@ void() Napalm_BallTouch =
     if (self.cnt > 1)
     {
         local entity newball;
+        local vector neworigin;
 
-        //makevectors (self.v_angle);
+        // "self.angles" allows us to recover the original direction
+        makevectors (self.angles);
+
+        neworigin = self.origin - 8 * normalize (self.velocity);
 
         newmis = spawn ();
         newmis.cnt = floor (self.cnt / 2);
         self.cnt = self.cnt - newmis.cnt;
         newmis.velocity = v_forward * 500 + v_right * 100;
-        newmis.velocity_z = random() * 150 + 150;
+        newmis.velocity_z = random() * 100 + 300;
         Napalm_ThrowBouncingBall (newmis);
-        setorigin (newmis, self.origin - 8 * v_forward);
+        setorigin (newmis, neworigin);
 
         newball = spawn ();
         newball.cnt = self.cnt;
         newball.velocity = v_forward * 500 - v_right * 100;
-        newball.velocity_z = random() * 150 + 150;
+        newball.velocity_z = random() * 100 + 300;
         Napalm_ThrowBouncingBall (newball);
-        setorigin (newball, self.origin - 8 * v_forward);
+        setorigin (newball, neworigin);
     }
 
     T_MissileTouch ();
@@ -329,7 +335,7 @@ void() Napalm_Fire =
 
         newmis.touch = T_MissileTouch;
         setmodel (newmis, "progs/missile.mdl");
-        setsize (newmis, '-2 -2 -2', '2 2 2');
+        setsize (newmis, '0 0 0', '0 0 0');
 
         newmis.dmg = 75 + random () * 50;
 
@@ -338,11 +344,7 @@ void() Napalm_Fire =
         newmis.think = SUB_Remove;
     }
     self.currentammo = self.ammo_rockets;
-
-    // If we do our 2nd shot with guns akimbo, fire from the left side
-    setorigin (newmis, self.origin + v_forward * 20 + '0 0 10' + v_right * 10);
-    if (self.weaponframe == $anapalm_fire4)
-        setorigin (newmis, newmis.origin - v_right * 20);
+    setorigin (newmis, self.origin + v_forward * 8 + '0 0 16');
 };
 
 

@@ -403,8 +403,7 @@ void() Flare_Fire =
     // Spawn the flare a little ahead of the player
     local vector orig;
     makevectors(self.v_angle);
-    orig = self.origin + v_forward * 10 + v_right * 4;
-    orig_z = self.absmin_z + self.size_z * 0.8;
+    orig = self.origin + v_forward * 8 + '0 0 16';
 
     // If we want to (and can) launch alt-flares
     if ((self.impulse == 12 || self.button1) && self.ammo_flares >= 8)
