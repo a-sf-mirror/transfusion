@@ -3,64 +3,62 @@
 
    <!-- Header and TOC -->
 
-   <title> BloodBath manual
+   <title> Transfusion manual
    <author> Mathieu Olivier <tt>&lt;elric@planetblood.com&gt;</tt> and
    Dave Turner <tt>&lt;darth_linux@planetblood.com&gt;</tt>
-   <date>v0.0.0, June 19, 2002
+   <date>v0.0.1, August 10, 2002
    <abstract>
       This manual covers installation and usage of the
-      <url url="http://www.planetblood.com/qblood/" name="BloodBath"> game.
+      <url url="http://www.planetblood.com/qblood/" name="Transfusion"> game.
    </abstract>
    <toc>
 
    <!-- Introduction -->
 
    <sect><heading>Introduction<p>
-      The qBlood Project aims to recreate an old DOS game from Monolith
-      Productions called Blood, using the Quake engine. Although qBlood will
-      switch to the Quake 2 engine soon, we have decided to release our current
-      work under the name "BloodBath".
+      The Transfusion Project aims to recreate an old DOS game from Monolith
+      Productions called Blood, using the Quake engine.
 
       It looks like a simple <it>mod</it>, but actually, you don't need any
-      Quake data to run it. In fact, BloodBath is a complete total conversion
+      Quake data to run it. In fact, Transfusion is a complete total conversion
       of the multiplayer aspect of Blood. The original Blood is a remarkable
-      game, and the qBlood team hopes you'll have as much fun playing it as we
-      had playing Blood.
+      game, and the Transfusion team hopes you'll have as much fun playing it
+      as we had playing Blood.
 
       Obviously, you'll be more at ease if you already know Blood and/or Quake.
       Even if it's not the case, don't worry: you should be able to find in
-      this manual all you need to know about BloodBath.
+      this manual all you need to know about Transfusion.
    </sect>
 
    <!-- Installation -->
 
    <sect><heading>Installation<p>
       If you only want to play on a LAN or with bots, then all you need to do
-      is run the BloodBath installer program, choose a suitable location for it
-      on your hard drive, and you are ready to play. BloodBath requires no
+      is run the Transfusion installer program, choose a suitable location for it
+      on your hard drive, and you are ready to play. Transfusion requires no
       external files or games for it to run.
 
       If you want to play on the internet with others using a dedicated server,
       then you'll need to have a copy of Quake and QuakeWorld installed as
       well. Those of you that are already familiar with Quake shouldn't have
-      any difficulties for installing BloodBath. Like with any mod, all you
-      have to do is to put all BloodBath PAK files in a subdirectory of Quake
-      (naming it "bb" is highly recommended), and then launch the game with
-      "glqwcl -game bb" if your QuakeWorld binary is "glqwcl.exe" and BloodBath
-      directory is "bb". In order for all of the graphics and files to be used
-      by Quakeworld you'll also need to add some files and subdirectories into
-      the "qw" directory of your Quake installation. These files are present in
-      the BloodBath distribution under the "qw" subdirectory. They consist of
-      the player and eyes models, the graphics wad file and some palette lump
-      files. Move these files out of your 'qw' when you play QuakeWorld proper
-      unless you don't mind still seeing the BloodBath graphics.
+      any difficulties for installing Transfusion. Like with any mod, all you
+      have to do is to put all Transfusion PAK files in a subdirectory of Quake
+      (naming it "transfusion" is highly recommended), and then launch the game with
+      "glqwcl -game transfusion" if your QuakeWorld binary is "glqwcl.exe" and
+      Transfusion directory is "transfusion". In order for all of the graphics and
+      files to be used by Quakeworld you'll also need to add some files and
+      subdirectories into the "qw" directory of your Quake installation. These files
+      are present in the Transfusion distribution under the "qw" subdirectory. They
+      consist of the player and eyes models, the graphics wad file and some palette
+      lump files. Move these files out of your 'qw' when you play QuakeWorld proper
+      unless you don't mind still seeing the Transfusion graphics.
    </sect>
 
    <!-- Basic usage -->
 
    <sect><heading> Basic usage<p>
       <sect1>Game types<p>
-         BloodBath supports 3 game types:
+         Transfusion supports 3 game types:
          <itemize>
             <item> BloodBath (deathmatch = 0 or 1, and teamplay = 0): ): This
             is standard Free For All Deathmatch play. Everyone is your enemy -
@@ -116,7 +114,7 @@
             <tag>Sending messages</tag> To communicate with other players
             during a multiplayer game, press "T" and type your message. Press
             [ENTER] to send it or [Esc] to abort.
-            <tag>Teleporters</tag> Some BloodBath levels feature teleporters.
+            <tag>Teleporters</tag> Some Transfusion levels feature teleporters.
             Learn to use these teleporters to get around levels quickly.
             Teleporter destinations generally appear as animated markers on
             the floor. Stay away from these in a crowded game -- someone might
@@ -129,7 +127,7 @@
 
    <sect><heading>Bloody stuff<p>
       <sect1><heading>Weapons<p>
-         You have 12 differents weapons at your disposal in BloodBath. Aside
+         You have 12 differents weapons at your disposal in Transfusion. Aside
          from the Pitchfork, each of them has a normal fire and a secondary
          fire, also known as altfire. Most of the time, it's a deadlier mode
          that consumes more ammo.
@@ -272,7 +270,7 @@
 
    <sect><heading>Advanced usage<p>
       <sect1><heading>Brink Of Death<label id="BOD"><p>
-         Sometimes you'll knock BloodBath opponents to their knees instead of
+         Sometimes you'll knock opponents to their knees instead of
          killing them outright. The victim spends several moments swaying,
          poised between life and death. If no one reacts, the victim will slump
          over and die, earning you a point. Of course, because your victim is
@@ -321,11 +319,11 @@
       </sect1>
 
       <sect1><heading>Cvars<p>
-         You'll find in BloodBath quite a lot of the usual cvars from Quake. We
+         You'll find in Transfusion quite a lot of the usual cvars from Quake. We
          have already talked about "deathmatch", "teamplay", "fraglimit" and
          "timelimit"; but you'll also find "skill" for setting the bots skill.
 
-         BloodBath has a few specific cvars that you may want to use if you host
+         Transfusion has a few specific cvars that you may want to use if you host
          a server:
          <itemize>
             <item> "g_lockTeams": if set during a teamplay, the end of the
@@ -368,12 +366,12 @@
          only 1 client into the game. That's why you must explicitely start a
          multiplayer game with the menu or add a "-listen" or "-dedicated"
          argument to your command line to tell Quake you want more clients.
-         <tag>BloodBath exits with: <em>Z_Malloc: failed on allocation of XXX
+         <tag>Transfusion exits with: <em>Z_Malloc: failed on allocation of XXX
          bytes</em></tag>
          The engine hasn't allocated enough "zone" memory. You can change this
          with the "-zone" command line argument. With most engines, "-zone 256"
          will be enough, but some of them may require more (try 512).
-         <tag>I want to contribute to the qBlood Project. How can I do ?</tag>
+         <tag>I want to contribute to the Transfusion Project. How can I do ?</tag>
          It's very simple. Start doing a quick tour through our 2 websites to
          be sure to know all the basic informations you may need. Then, contact
          the Project Coordinator and either the Lead Artist or the Lead
@@ -386,9 +384,9 @@
    <sect>Links<label id="Links"><p>
       <itemize>
          <item><url url="http://www.planetblood.com/qblood/"
-            name="The qBlood Project">: our home page
+            name="The Transfusion Project">: our home page
          <item><url url="http://blood.sourceforge.net/"
-            name="qBlood on SourceForge.net">: our development page
+            name="Transfusion on SourceForge.net">: our development page
       </itemize>
    </sect>
 
