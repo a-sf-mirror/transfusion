@@ -52,7 +52,7 @@
 @PointClass base(PlayerClass) = info_intermission : "Intermission camera" []
 @PointClass base(PlayerClass, Targetname) = info_teleport_destination : "Teleport destination" []
 @PointClass base(Targetname) = info_null : "info_null (spotlight target)" []
-
+@PointClass base(Targetname) = info_notnull : "info_notnull (lighting target)" []
 
 //
 // CTF-only stuff
@@ -306,12 +306,13 @@
 	speed(integer) : "Speed" : 5
 	target(target_source) : "Targetted object"
 	health(integer) : "Health (shootable if > 0)"
-	sounds(choices) : "Sounds" : 1 =
+	sounds(choices) : "Sounds" : 0 =
 	[
-		1: "Steam metal"
-		2: "Wooden clunk"
-		3: "Metallic clink"
-		4: "In-out"
+		0: "Steam metal"
+		1: "Wooden clunk"
+		2: "Metallic clink"
+		3: "In-out"
+		4: "No sound"
 	]
 	wait(choices) : "Delay before reset" : 3 =
 	[
@@ -326,6 +327,7 @@
 	lip(integer) : "Lip remaining at end of move" : 8
 	targetname(string) : "Allows a button to be triggered by other triggers"
     killtarget(string) : "kill certain entities, when used on their targetname"
+	noise(string) : "Sound when pressed"
 ]
 
 @SolidClass base(Targetname) = func_train : "Moving platform"
@@ -346,7 +348,7 @@
 	target(target_source) : "Next stop target"
 ]
 
-@SolidClass = func_plat : "Elevator"
+@SolidClass base(Usable) = func_plat : "Elevator"
 [
 	style(choices) : "Movement style" : 0 =
 	[
@@ -369,7 +371,6 @@
 	dmg(integer) : "Damage to inflict if blocked"
 	targetname(string) : "targetname"
 ]
-
 
 //
 // Triggers
@@ -607,7 +608,7 @@
 @PointClass base(Monster) size(-16 -16 -10, 16 16 20) = monster_minicaleb : "Mini-Caleb" []
 @PointClass base(Monster) size(-13 -3 0, 13 3 6) = monster_rat : "Rat" []
 @PointClass base(Monster) size(-6 -14 0, 34 14 62) = monster_redcultist : "Red Cultist" []
-@PointClass base(Monster) size(-25 -31 0, 18 31 45) = monster_stonegargoyle : "Stone Gargoyle" []
+@PointClass base(Monster) size(-50 -62 0, 36 62 90) = monster_stonegargoyle : "Stone Gargoyle" []
 @PointClass base(Monster) size(-5 -15 0, 11 15 62) = monster_zombie : "Zombie" []
 
 
