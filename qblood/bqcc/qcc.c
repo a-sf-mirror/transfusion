@@ -7,9 +7,9 @@
 
 #include <time.h>
 #include <stdio.h>
-#if defined(WIN32)|defined(_WIN32)|defined(__NT__)|defined(__WINDOWS__)|defined(__WINDOWS_386__)
-#include <direct.h> //mkdir
-#include <io.h> //lseek, close, filelength
+#if defined (WIN32) || defined (_WIN32)
+# include <direct.h>	// mkdir
+# include <io.h>		// lseek, close, filelength
 #endif
 
 #include "l_log.h"
@@ -40,18 +40,6 @@ int				numglobaldefs;
 ddef_t			fields[MAX_FIELDS];
 int				numfielddefs;
 
-char			precache_sounds[MAX_SOUNDS][MAX_DATA_PATH];
-int				precache_sounds_block[MAX_SOUNDS];
-int				numsounds;
-
-char			precache_models[MAX_MODELS][MAX_DATA_PATH];
-int				precache_models_block[MAX_SOUNDS];
-int				nummodels;
-
-char			precache_files[MAX_FILES][MAX_DATA_PATH];
-int				precache_files_block[MAX_SOUNDS];
-int				numfiles;
-
 //undecompilable data flag
 int undecompilabledata = 0;
 
@@ -77,10 +65,13 @@ int NewCheckParm(char *check)
 
 /*
 =================
-CopyString returns an offset from the string heap
+CopyString
+Checks for duplicates
+
+returns an offset from the string heap
 =================
 */
-int CopyString (char *str)
+int CopyString (const char *str)
 {
 	int      old;
 	char   *ptr = strings, *final = strings + strofs;
@@ -104,6 +95,7 @@ int CopyString (char *str)
 	CHECK_STRINGS_BUFFER;
 	return old;
 }
+
 
 /*
 =================
@@ -628,9 +620,6 @@ void WriteData(int crc)
 	Log_Print("numglobaldefs = %6i, max = %i\n", numglobaldefs, MAX_GLOBALS);
 	Log_Print("numfielddefs  = %6i, max = %i\n", numfielddefs, MAX_FIELDS);
 	Log_Print("numpr_globals = %6i, max = %i\n", numpr_globals, MAX_REGS);
-	Log_Print("nummodels     = %6i, max = %i\n", nummodels, MAX_MODELS);
-	Log_Print("numsounds     = %6i, max = %i\n", numsounds, MAX_SOUNDS);
-	Log_Print("numfiles      = %6i, max = %i\n", numfiles, MAX_FILES);
 
 	h = SafeOpenWrite (destfile);
 	SafeWrite(h, &progs, sizeof(progs));
@@ -1260,7 +1249,7 @@ int main (int argc, char **argv)
 
 	Log_Open("bqcc.log");
 
-	Log_Print("\nBloody QuakeC compiler v0.1.2, %s %s\n", __DATE__, __TIME__);
+	Log_Print("\nBloody QuakeC compiler v0.2cvs, %s %s\n", __DATE__, __TIME__);
 	Log_Print("BQCC is based on MrElusive's QuakeC compiler v1.4\n");
 	Log_Print("This compiler is not supported by id Software.\n");
 	Log_Print("bqcc -help for info.\n\n");
@@ -1269,11 +1258,11 @@ int main (int argc, char **argv)
 	{
 		Log_Print("bqcc looks for a progs.src in the current directory.\n");
 		Log_Print("Command line options:\n");
-        Log_Print("-qw               QuakeWorld mode (define QUAKEWORLD and use qwprogs.src)\n");
-        Log_Print("-src <directory>  look for a progs.src in the specified directory\n");
+		Log_Print("-qw               QuakeWorld mode (define QUAKEWORLD and use qwprogs.src)\n");
+		Log_Print("-src <directory>  look for a progs.src in the specified directory\n");
 		Log_Print("-undec            create progs.dat which cannot be decompiled\n");
 		Log_Print("-undec+           \" and write out undec.txt\n");
-		Log_Print("-asm <function>   output Quake ASM code of the specified function\n");
+		Log_Print("-asm <functions>  output Quake ASM code of the specified functions\n");
 		Log_Print("-d <define>       add a precompiler definition\n");
 		Log_Print("-?                display command line options\n");
 		Log_Print("-h                \"\n");

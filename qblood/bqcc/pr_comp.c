@@ -203,44 +203,35 @@ def_t *defnamehash[DEFHASHSIZE];
 NameHash
 ============
 */
-int NameHash(char *name)
+int NameHash (const char *name)
 {
 	int register hash, i;
 
 	hash = 0;
 	for (i = 0; name[i] != '\0'; i++)
-	{
 		hash += name[i] * (119 + i);
-		//hash += (name[i] << 7) + i;
-		//hash += (name[i] << (i&15));
-	} //end while
+
 	hash = (hash ^ (hash >> 10) ^ (hash >> 20)) & (DEFHASHSIZE-1);
 	return hash;
-} //end of the function NameHash
+}
 
 /*
 ============
 DefValueHash
 ============
 */
-int DefValueHash(type_t *type, char *ptr)
+int DefValueHash (type_t *type, const char *ptr)
 {
-	int hash;
-	unsigned long int value;
+	unsigned int hash;
 
 	if (type == &type_string)
-	{
-		return NameHash(ptr);
-	} //end if
-	else
-	{
-		//memcpy(&value, &G_FLOAT(ofs), 4);
-		value = (int) (fabs(*(float *) ptr) * 2);
-	} //end else
-	hash = value;
+		return NameHash (ptr);
+
+	hash = (unsigned int)(fabs(*(float *)ptr) * 2);  // FIXME: stupid hash?
 	hash &= (DEFHASHSIZE-1);
 	return hash;
-} //end of the function DefValueHash
+}
+
 
 /*
 ============
@@ -251,22 +242,29 @@ void AddDefToHash(def_t *def)
 {
 	int hash;
 
-	if (def->initialized)
-	if (def->type == &type_string ||
-			def->type == &type_float ||
-			def->type == &type_vector)
+	if (def->initialized &&
+		(def->type == &type_string || def->type == &type_float ||
+		 def->type == &type_vector))
 	{
-		//add to value hash
-		if (def->type == &type_string) hash = DefValueHash(def->type, G_STRING(def->ofs));
-		else hash = DefValueHash(def->type, (char *) &G_FLOAT(def->ofs));
+		const char *ptr;
+
+		if (def->type == &type_string)
+			ptr = G_STRING (def->ofs);
+		else
+			ptr = (const char*)&G_FLOAT (def->ofs);
+
+		// Add to value hash
+		hash = DefValueHash (def->type, ptr);
 		def->valuehashnext = defvaluehash[hash];
 		defvaluehash[hash] = def;
-	} //end if
-	//add to name hash
+	}
+
+	// Add to name hash
 	hash = NameHash(def->name);
 	def->namehashnext = defnamehash[hash];
 	defnamehash[hash] = def;
-} //end of the function AddDefToHash
+}
+
 
 /*
 ============
@@ -370,14 +368,13 @@ def_t *PR_ParseImmediate (void)
 	}
 
 	// allocate a new one
-	cn = GetMemory (sizeof(def_t));
+	cn = GetMemory (sizeof (def_t));
 	cn->next = NULL;
 	pr.def_tail->next = cn;
 	pr.def_tail = cn;
 	cn->type = pr_immediate_type;
 	cn->name = "IMMEDIATE";
 	cn->initialized = 1;
-	//MrE
 	cn->internuse = 0;
 
 	cn->scope = NULL;    // always share immediates
@@ -390,9 +387,8 @@ def_t *PR_ParseImmediate (void)
 	if (pr_immediate_type == &type_string)
 	{
 		pr_immediate.string = CopyString (pr_immediate_string);
-		//MrE
 		pr_globals_isstring[cn->ofs] = 1;
-	} //end if
+	}
 	memcpy (pr_globals + cn->ofs, &pr_immediate, 4*type_size[pr_immediate_type->type]);
 
 	AddDefToHash(cn);
@@ -400,90 +396,6 @@ def_t *PR_ParseImmediate (void)
 	PR_Lex ();
 
 	return cn;
-}
-
-/*
-============
-PrecacheSound
-============
-*/
-void PrecacheSound (def_t *e, int ch)
-{
-   char  *n;
-   int      i;
-
-   if (!e->ofs)
-      return;
-   n = G_STRING(e->ofs);
-
-   for (i=0 ; i<numsounds ; i++)
-      if (!strcmp(n, precache_sounds[i]))
-         return;
-
-   if (numsounds == MAX_SOUNDS)
-      Error ("PrecacheSound: numsounds == MAX_SOUNDS");
-   strcpy (precache_sounds[i], n);
-   if (ch >= '1'  && ch <= '9')
-      precache_sounds_block[i] = ch - '0';
-   else
-      precache_sounds_block[i] = 1;
-   numsounds++;
-}
-
-/*
-============
-PrecacheModel
-============
-*/
-void PrecacheModel (def_t *e, int ch)
-{
-   char  *n;
-   int      i;
-
-   if (!e->ofs)
-      return;
-   n = G_STRING(e->ofs);
-
-   for (i=0 ; i<nummodels ; i++)
-      if (!strcmp(n, precache_models[i]))
-         return;
-
-   if (nummodels == MAX_SOUNDS)
-      Error ("PrecacheModels: nummodels == MAX_MODELS");
-   strcpy (precache_models[i], n);
-   if (ch >= '1'  && ch <= '9')
-      precache_models_block[i] = ch - '0';
-   else
-      precache_models_block[i] = 1;
-   nummodels++;
-}
-
-/*
-============
-PrecacheFile
-============
-*/
-void PrecacheFile (def_t *e, int ch)
-{
-   char  *n;
-   int      i;
-
-   if (!e->ofs)
-      return;
-   n = G_STRING(e->ofs);
-
-   for (i=0 ; i<numfiles ; i++)
-      if (!strcmp(n, precache_files[i]))
-         return;
-
-   if (numfiles == MAX_FILES)
-      Error ("PrecacheFile: numfiles == MAX_FILES");
-   strcpy (precache_files[i], n);
-   if (ch >= '1'  && ch <= '9')
-      precache_files_block[i] = ch - '0';
-   else
-      precache_files_block[i] = 1;
-   numfiles++;
 }
 
 /*
@@ -513,21 +425,11 @@ def_t *PR_ParseFunctionCall (def_t *func)
 		{
 			if (t->num_parms != -1 && arg >= t->num_parms)
 				PR_ParseError ("too many parameters");
+
 			e = PR_Expression (TOP_PRIORITY);
-
-			if (arg == 0 && func->name)
-			{
-				// save information for model and sound caching
-				if (!strncmp(func->name,"precache_sound", 14))
-					PrecacheSound (e, func->name[14]);
-				else if (!strncmp(func->name,"precache_model", 14))
-					PrecacheModel (e, func->name[14]);
-				else if (!strncmp(func->name,"precache_file", 13))
-					PrecacheFile (e, func->name[13]);
-			}
-
-			if (t->num_parms != -1 && ( e->type != t->parm_types[arg] ) )
+			if (t->num_parms != -1 && (e->type != t->parm_types[arg]))
 				PR_ParseError ("type mismatch on parm %i", arg);
+
 			// a vector copy will copy everything
 			def_parms[arg].type = t->parm_types[arg];
 			PR_Statement (&pr_opcodes[OP_STORE_V], e, &def_parms[arg]);

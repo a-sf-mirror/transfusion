@@ -410,9 +410,6 @@ extern   def_t def_ret, def_parms[MAX_PARMS];
 //MrE: replaced '#define  MAX_FUNCTIONS  8192' by
 #define  MAX_FUNCTIONS  16384
 
-#define  MAX_SOUNDS     1024
-#define  MAX_MODELS     1024
-#define  MAX_FILES      1024
 #define  MAX_DATA_PATH  64
 
 extern   char strings[MAX_STRINGS];
@@ -451,33 +448,4 @@ extern int           numpr_globals;
 
 extern   char  pr_immediate_string[2048];
 
-extern char          precache_sounds[MAX_SOUNDS][MAX_DATA_PATH];
-extern int           precache_sounds_block[MAX_SOUNDS];
-extern int           numsounds;
-#define CHECK_MAX_SOUNDS if                              \
-(numsounds > MAX_SOUNDS || numsound < 0)                 \
-{                                                        \
-   Error("number of sounds exceeds buffer");             \
-}
-
-extern char          precache_models[MAX_MODELS][MAX_DATA_PATH];
-extern int           precache_models_block[MAX_SOUNDS];
-extern int           nummodels;
-#define CHECK_MAX_MODELS if                              \
-(nummodels > MAX_MODELS || nummodels < 0)                \
-{                                                        \
-   Error("number of models exceeds buffer");             \
-}
-
-extern char          precache_files[MAX_FILES][MAX_DATA_PATH];
-extern int           precache_files_block[MAX_SOUNDS];
-extern int           numfiles;
-#define CHECK_MAX_FILES if                               \
-(numfiles > MAX_FILES || numfiles < 0)                   \
-{                                                        \
-   Error("number of files exceeds buffer");              \
-}
-
-int CopyString (char *str);
-
-
+int CopyString (const char *str);  // Checks for duplicates
