@@ -223,7 +223,7 @@ void() lure_touch =
     self.think = SUB_regen;
 
     Sprint (other, PRINT_LOW, "Picked up a LURE\n");
-    sound (other, CHAN_ITEM, "items/pickup.wav", 1, ATTN_NORM);
+    sound (other, CHAN_ITEM, self.noise, 1, ATTN_NORM);
     stuffcmd (other, "bf\n");  // produces a little flash on the interface when you picked up the item
 };
 
@@ -238,13 +238,17 @@ For test purpose only
 */
 void() item_lure =
 {
+    // set pickup sound if it wasn't already done
+    if (self.noise == "" || self.noise == string_null)
+        self.noise = "items/pickup.wav";
+
     self.touch = lure_touch;
 
-    precache_model(self.model);
-    precache_sound("items/pickup.wav");
-    setmodel(self, self.model);
+    precache_model (self.model);
+    setmodel (self, self.model);
+    precache_sound (self.noise);
 
-    setsize (self, '0 0 0', '32 32 56');
+    setsize (self, '0 0 0', '32 32 32');
     StartItem ();
 };
 
@@ -282,7 +286,6 @@ void() obj_boost =
     setsize (self, '0 0 0', '32 32 56'); 
     StartItem (); 
     }; 
-
 
 // large potion goblet
 
@@ -763,114 +766,83 @@ POWERUPS
 // FIXME: move to weapons when code is complete
 
 void() weapon_proximity =
-    {
-    precache_model("progs/g_proxy.mdl");
-    setmodel(self, "progs/g_proxy.mdl");
-    
-    setsize (self, '0 0 0', '32 32 56');
-    StartItem ();
-    };
+{
+    self.model = "progs/g_proxy.mdl";
+    self.noise = "items/weaponup.wav";
+    item_lure ();
+};
     
 // Remote Detonator model
 // FIXME: move to weapons when code is complete
 
 void() weapon_remote =
-    {
-    precache_model("progs/g_remote.mdl");
-    setmodel(self, "progs/g_remote.mdl");
-    
-    setsize (self, '0 0 0', '32 32 56');
-    StartItem ();
-    };
+{
+    self.model = "progs/g_remote.mdl";
+    self.noise = "items/weaponup.wav";
+    item_lure ();
+};
     
 // Life Leech model
 //  FIXME: move to weapons when code is complete
 
 void() weapon_lifeleech =
-    {
-    precache_model("progs/g_leech.mdl");
-    setmodel(self, "progs/g_leech.mdl");
-    
-    setsize (self, '0 0 0', '32 32 56');
-    StartItem ();
-    };
+{
+    self.model = "progs/g_leech.mdl";
+    self.noise = "items/weaponup.wav";
+    item_lure ();
+};
 
 //  TNT Bundle model
 //  FIXME: move to weapons when code is complete
 void() item_tnt =
-    {
-    precache_model("progs/i_tnt.mdl");
-    setmodel(self, "progs/i_tnt.mdl");
-    
-    setsize (self, '0 0 0', '32 32 56');
-    StartItem ();
-    };
+{
+    self.model = "progs/i_tnt.mdl";
+    self.noise = "items/weaponup.wav";
+    item_lure ();
+};
     
 // Doctor's Bag
-
 void() item_artifact_bag =
-    {
-    precache_model("progs/i_docbag.mdl");
-    setmodel(self, "progs/i_docbag.mdl");
-    
-    setsize (self, '0 0 0', '32 32 56');
-    StartItem ();
-    };
+{
+    self.model = "progs/i_docbag.mdl";
+    item_lure ();
+};
     
 // Boots of Jumping
-
 void() item_artifact_boots =
-    {
-    precache_model("progs/i_boots.mdl");
-    setmodel(self, "progs/i_boots.mdl");
-    
-    setsize (self, '0 0 0', '32 32 56');
-    StartItem ();
-    };
+{
+    self.model = "progs/i_boots.mdl";
+    item_lure ();
+};
     
 // Crystal Ball
-
 void() item_artifact_crystal =
-    {
-    precache_model("progs/i_crysbal.mdl");
-    setmodel(self, "progs/i_crysbal.mdl");
-    
-    setsize (self, '0 0 0', '32 32 56');
-    StartItem ();
-    };
+{
+    self.model = "progs/i_crysbal.mdl";
+    item_lure ();
+};
     
 // Reflective Shots
-
 void() item_artifact_reflect =
-    {
-    precache_model("progs/i_reflct.mdl");
-    setmodel(self, "progs/i_reflct.mdl");
-    
-    setsize (self, '0 0 0', '32 32 56');
-    StartItem ();
-    };
+{
+    self.model = "progs/i_reflct.mdl";
+    item_lure ();
+};
     
 // Beast Vision
-
 void() item_artifact_vision =
-    {
-    precache_model("progs/i_vision.mdl");
-    setmodel(self, "progs/i_vision.mdl");
-    
-    setsize (self, '0 0 0', '32 32 56');
-    StartItem ();
-    };
+{
+    self.model = "progs/i_vision.mdl";
+    item_lure ();
+};
     
 // Cloak of Shadows
-
 void() item_artifact_shadow =
-    {
-    precache_model("progs/i_shadow.mdl");
-    setmodel(self, "progs/i_shadow.mdl");
-    
-    setsize (self, '0 0 0', '32 32 56');
-    StartItem ();
-    };
+{
+    self.model = "progs/i_shadow.mdl";
+    item_lure ();
+};
+
 
 /*
 =========================================================================
