@@ -1138,8 +1138,9 @@ void(entity attacker, vector org, vector dir, float mspeed, float big) PM_Launch
     }
     else
     {
-        jolt.dmg    = 25;
-        jolt.model  = "progs/bolt.mdl";
+        jolt.dmg       = 25;
+        jolt.model     = "progs/bolt.mdl";
+        jolt.avelocity = '300 300 300';
     }
     jolt.style      = big;
     jolt.touch      = PM_TeslaTouch;
@@ -1207,7 +1208,7 @@ void() W_FireLightning =
     }
     makevectors (self.v_angle);
     dir = aim(self, mspeed);
-    org = self.origin + v_forward * 50;
+    org = self.origin + v_forward * 50 + '0 0 12' + v_right * 12;
 
     PM_LaunchJolt (self, org, dir, mspeed, big);
 };
