@@ -148,9 +148,11 @@ void(entity newball) Napalm_ThrowBouncingBall =
 {
     // Remember who really owns the ball.
     if (self.owner)
-        newball.owner = self.owner;
+        newball.owner = newball.enemy = self.owner;
     else
-        newball.owner = self;
+        newball.owner = newball.enemy = self;
+
+    
 		
 	newball.effects = newball.effects | EF_FLAME;
     newball.movetype = MOVETYPE_BOUNCE;
