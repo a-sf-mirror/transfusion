@@ -64,12 +64,12 @@ void() plat_spawn_inside_trigger =
 
 void() plat_hit_top =
 {
-    if (self.sounds > 0)
+    if (self.sounds)
         sound (self, CHAN_VOICE, self.noise1, 1, ATTN_NORM);
 
     self.state = STATE_TOP;
 
-    if (self.style > 0) // Automated platform
+    if (self.style) // Automated platform
         plat_go_down();
     else
     {
@@ -80,18 +80,18 @@ void() plat_hit_top =
 
 void() plat_hit_bottom =
 {
-    if (self.sounds > 0)
+    if (self.sounds)
         sound (self, CHAN_VOICE, self.noise1, 1, ATTN_NORM);
 
     self.state = STATE_BOTTOM;
 
-    if (self.style > 0) // Automated platform
+    if (self.style) // Automated platform
          plat_go_up();
 };
 
 void() plat_go_down =
 {
-    if (self.sounds > 0)
+    if (self.sounds)
         sound (self, CHAN_VOICE, self.noise, 1, ATTN_NORM);
 
     self.state = STATE_DOWN;
@@ -100,7 +100,7 @@ void() plat_go_down =
 
 void() plat_go_up =
 {
-    if (self.sounds > 0)
+    if (self.sounds)
         sound (self, CHAN_VOICE, self.noise, 1, ATTN_NORM);
 
     self.state = STATE_UP;
@@ -141,7 +141,7 @@ void() plat_outside_touch =
 void() plat_trigger_use =
 {
     if (self.think)
-        return;     // allready activated
+        return;     // already activated
     plat_go_down();
 };
 

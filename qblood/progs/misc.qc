@@ -127,7 +127,7 @@ void(string flame_model) light_flame_generic =
 // Small wall torch
 void() light_torch_small_walltorch =
 {
-    light_flame_generic ("progs/flame.spr");
+    light_flame_generic ("models/world/torch.md3");
 };
 
 // Large yellow flame

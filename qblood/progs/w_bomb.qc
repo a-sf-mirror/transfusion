@@ -835,6 +835,7 @@ void() Bomb_Fire =
 	newmis.movetype = MOVETYPE_BOUNCE;
     newmis.classname = "grenade";
 
+    // Wiggle player's screen just a little during toss
     self.punchangle_x = -2;
 
     // set newmis speed
@@ -932,7 +933,7 @@ void() Bomb_Fire =
     }
 
     setmodel (newmis, newmis.model);
-    setsize (newmis, '-1 -1 -1', '1 1 1');
+    setsize (newmis, '-1 -1 -1', '10 10 10');
 
     // If we have no more dynamite, we "lose" the weapon
     // (expect for remote detonators: we always have the remote)
