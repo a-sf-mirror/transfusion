@@ -28,7 +28,6 @@
 
 #define TEAM_CAPTURE_CAPTURE_BONUS  15  // what you get for capture
 #define TEAM_CAPTURE_RECOVERY_BONUS 1   // what you get for recovery
-#define TEAM_CAPTURE_FLAG_BONUS     0   // what you get for picking up enemy flag
 
 #define TEAM_CAPTURE_FLAG_RETURN_TIME 40  // seconds until auto return
 
@@ -42,6 +41,9 @@ void(entity flg) RegenFlag =
 {
     flg.movetype = MOVETYPE_TOSS;
     flg.solid = SOLID_TRIGGER;
+    #ifdef QUAKEWORLD
+    setmodel(flg, flg.mdl);
+    #endif
     setorigin(flg, flg.oldorigin);
     flg.angles = flg.mangle;
     flg.cnt = FLAG_AT_BASE; // it's at home base
@@ -149,8 +151,6 @@ void() CTF_FlagTouch =
         Bprint (PRINT_HIGH, " ГОТ the блуе flag!\n"); // blue
     else
         Bprint (PRINT_HIGH, " ГОТ the ред flag!\n"); // red
-    if (TEAM_CAPTURE_FLAG_BONUS)
-        other.frags = other.frags + TEAM_CAPTURE_FLAG_BONUS;
     centerprint (other, "ыоу гот тхе енемы флаг\n\nретурн то басе");  // == "YOU GOT THE ENEMY FLAG!\n\nRETURN TO BASE!"
     sound (other, CHAN_ITEM, self.noise, 1, ATTN_NORM);
 
@@ -158,7 +158,9 @@ void() CTF_FlagTouch =
 
     // pick up the flag
     self.cnt = FLAG_CARRIED;
+    #ifndef QUAKEWORLD
     self.movetype = MOVETYPE_NOCLIP;
+    #endif
     self.solid = SOLID_NOT;
     self.owner = other;
 
@@ -167,6 +169,7 @@ void() CTF_FlagTouch =
         self.owner.effects = self.owner.effects | EF_FLAG1;
     else // must be other team
         self.owner.effects = self.owner.effects | EF_FLAG2;
+    setmodel(self, "");  // Make the flag desappear. The EF_FLAG? effect will show it on the client nevertheless
     #endif
 
     p = find(world, classname, "player");
@@ -209,10 +212,13 @@ void(entity flg) TeamDropFlag =
     flg.flags = FL_ITEM;
     flg.solid = SOLID_TRIGGER;
     flg.movetype = MOVETYPE_TOSS;
+    #ifdef QUAKEWORLD
+    setmodel(flg, flg.mdl);
+    #endif
     setsize(flg, '-16 -16 0', '16 16 74');
 
     // return it after so long
-    flg.super_time = time + TEAM_CAPTURE_FLAG_RETURN_TIME;
+    flg.search_time = time + TEAM_CAPTURE_FLAG_RETURN_TIME;
 };
 
 
@@ -247,7 +253,7 @@ void() CTF_FlagThink =
         return; // just sitting around waiting to be picked up
 
     if (self.cnt == FLAG_DROPPED) {
-        if (time - self.super_time > TEAM_CAPTURE_FLAG_RETURN_TIME)
+        if (time - self.search_time > TEAM_CAPTURE_FLAG_RETURN_TIME)
             TeamCaptureReturnFlag(self);
         return;
     }
@@ -255,6 +261,8 @@ void() CTF_FlagThink =
     if (self.cnt != FLAG_CARRIED)
         objerror("Flag in invalid state\n");
 
+    // If we're not in QW, we must manage the flag ourselves
+    #ifndef QUAKEWORLD
     e = self.owner;
     if ((e.classname != "player") || (e.deadflag)) {
         TeamDropFlag(self);
@@ -291,6 +299,7 @@ void() CTF_FlagThink =
     self.angles = e.angles + '0 0 -45';
     setorigin (self, self.origin);
     self.nextthink = time + 0.01;
+    #endif
 };
 
 

@@ -1,90 +1,27 @@
+/*  Copyright (C) 2001  Mathieu Olivier
+
+    This program is free software; you can redistribute it and/or modify
+    it under the terms of the GNU General Public License as published by
+    the Free Software Foundation; either version 2 of the License, or
+    (at your option) any later version.
+
+    This program is distributed in the hope that it will be useful,
+    but WITHOUT ANY WARRANTY; without even the implied warranty of
+    MERCHANTABILITY or FITNESS FOR A PARTICULAR PURPOSE.  See the
+    GNU General Public License for more details.
+
+    You should have received a copy of the GNU General Public License
+    along with this program; if not, write to the Free Software
+    Foundation, Inc., 59 Temple Place, Suite 330, Boston, MA 02111-1307 USA
+
+    See file, 'COPYING', for details.
+*/
 
 /*
-======================================
-FrikBot X (Version 0.10.1)
-======================================
-
-This program is in the Public Domain. My crack legal
-team would like to add:
-
-RYAN "FRIKAC" SMITH IS PROVIDING THIS SOFTWARE "AS IS"
-AND MAKES NO WARRANTY, EXPRESS OR IMPLIED, AS TO THE
-ACCURACY, CAPABILITY, EFFICIENCY, MERCHANTABILITY, OR
-FUNCTIONING OF THIS SOFTWARE AND/OR DOCUMENTATION. IN
-NO EVENT WILL RYAN "FRIKAC" SMITH BE LIABLE FOR ANY
-GENERAL, CONSEQUENTIAL, INDIRECT, INCIDENTAL,
-EXEMPLARY, OR SPECIAL DAMAGES, EVEN IF RYAN "FRIKAC"
-SMITH HAS BEEN ADVISED OF THE POSSIBILITY OF SUCH
-DAMAGES, IRRESPECTIVE OF THE CAUSE OF SUCH DAMAGES.
-
-You accept this software on the condition that you
-indemnify and hold harmless Ryan "FrikaC" Smith from
-any and all liability or damages to third parties,
-including attorney fees, court costs, and other
-related costs and expenses, arising out of your use
-of this software irrespective of the cause of said
-liability.
-
-The export from the United States or the subsequent
-reexport of this software is subject to compliance
-with United States export control and munitions
-control restrictions. You agree that in the event you
-seek to export this software, you assume full
-responsibility for obtaining all necessary export
-licenses and approvals and for assuring compliance
-with applicable reexport restrictions.
-
-Any reproduction of this software must contain
-this notice in its entirety.
-
-======================================
-
---------------------------------------
-To install on a new mod, do all this:
---------------------------------------
-Place all included bot*.qc files in the subdirectory "frikbot"
-in your source folder, then...
-
-* Add the following lines to progs.src right after the defs.qc line
-frikbot/bot.qc
-frikbot/bot_way.qc
-frikbot/bot_fight.qc
-frikbot/bot_ai.qc
-frikbot/bot_misc.qc
-frikbot/bot_phys.qc
-frikbot/bot_move.qc
-frikbot/bot_ed.qc (for NQ only)
-
---------------------------------------
-* Comment out the following functions in defs.qc
-sound, stuffcmd, sprint, aim, centerprint, setspawnparms
-WriteByte, WriteChar, WriteShort, WriteLong, WriteCoord
-WriteAngle, WriteString, WriteEntity
---------------------------------------
-* Add this to worldspawn() in world.qc, right at the very top, before InitBodyQue();
-BotInit();  // FrikBot
---------------------------------------
-* add this line to StartFrame() in world.qc, at the very top
-BotFrame(); // FrikBot
---------------------------------------
-* Add these two lines to PlayerPreThink in client.qc at the very top
-if (BotPreFrame()) // FrikBot
-    return;
---------------------------------------
-* Add this line to PlayerPostThink in client.qc at the very top
-if (BotPostFrame()) // FrikBot
-    return;
---------------------------------------
-* Add the following line to the very top of Client Connect in client.qc
-ClientInRankings(); // FrikBot
---------------------------------------
-* Add these lines to the very top of ClientDisconnect in client.qc
-ClientDisconnected(); // FrikBot
---------------------------------------
-* For QW: Add these lines to the very top of SpectatorConnect in spectate.qc
-ClientFixRankings(); // FrikBot
---------------------------------------
-*/
+ * Original version of this file taken from FrikBot X v0.10.1
+ * Copyright (C) 2001  Ryan Smith
+ * See the file COPYING.FrikBotX for the copyright notice.
+ */
 
 
 #include "common.qh"
@@ -1274,8 +1211,8 @@ void(float whatbot, float whatskill) BotConnect =
     PutClientInServer();
 
     #ifndef QUAKEWORLD
-	// Select a team at spawn time
-	self.impulse = whichteam + 1;
+    // Select a team at spawn time
+    self.impulse = whichteam + 1;
 
     // this is risky... could corrupt .way files if done wrong
     // If you're not the gambling type, comment this out

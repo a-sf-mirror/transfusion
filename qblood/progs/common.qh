@@ -115,12 +115,12 @@
 #define IT_ARMOR1           8192     // 14 - basic armor
 #define IT_ARMOR2           16384    // 15 - fire armor
 #define IT_ARMOR3           32768    // 16 - spirit armor
-//#define IT_SUPERHEALTH      65536    // 17 - life essence  // Free slot. This item doesn't exist in Blood
+//#define IT_SUPERHEALTH      65536    // 17 - life essence. FREE SLOT. This item doesn't exist in Blood
 
 #define IT_INVISIBILITY     524288   // 20 - cloak
 #define IT_INVULNERABILITY  1048576  // 21 - deathmask
 #define IT_SUIT             2097152  // 22 - diving suit
-#define IT_QUAD             4194304  // 23 - guns akimbo
+#define IT_GUNS_AKIMBO      4194304  // 23 - guns akimbo. Set when being in akimbo mode AND having enough ammo to use it
 
 // In ".items2"
 #define IT2_KEY1            1        // 1 - skull
@@ -225,12 +225,11 @@
 #define EF_BRIGHTLIGHT  4
 #define EF_DIMLIGHT     8
 #ifdef QUAKEWORLD
-#define EF_FLAG1        16
-#define EF_FLAG2        32
-// GLQuakeWorld Stuff
+#define EF_FLAG1        16  // EF_FLAG? flags make the client render a flag automatically
+#define EF_FLAG2        32  // attached to the client entity (i.e. it's a *really* evil hack)
+#endif
 #define EF_BLUE         64   // Blue Globe effect for Quad
 #define EF_RED          128  // Red Globe effect for Pentagram
-#endif
 
 // messages
 #define MSG_BROADCAST   0  // unreliable to all

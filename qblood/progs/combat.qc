@@ -231,12 +231,6 @@ void(entity targ, entity inflictor, entity attacker, float damage, float dflags,
     damage_attacker = attacker;
     damage_inflictor = inflictor;
 
-// FIXME:  Remove quad damage.
-    // Check for quad damage powerup on the attacker.
-    if (attacker.super_damage_finished > time)
-        if (inflictor.classname != "door")
-            damage = damage * 4;
-
     if (dflags & DF_RADIUS)
     {
         // shambler takes half damage from all explosions
@@ -484,15 +478,3 @@ void(entity inflictor, entity attacker, float damage, entity ignore, string dtyp
         head = head.chain;
     }
 };
-
-/*
-============
-T_BeamDamage
-============
-*/
-void(entity attacker, float damage) T_BeamDamage =
-{
-    // PM:  Default to another function.  Is 'T_BeamDamage()' ever used?
-    T_RadiusDamage (attacker, attacker, damage, world, string_null);
-};
-

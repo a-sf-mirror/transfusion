@@ -234,6 +234,8 @@ void() CastLightning =
 
     traceline (org, self.origin + dir*600, TRUE, self);
 
+    // WARNING: the lightning attack is visually broken
+    //          due to our custom "progs/bolt.mdl" model
     WriteByte (MSG_BROADCAST, SVC_TEMPENTITY);
     WriteByte (MSG_BROADCAST, TE_LIGHTNING1);
     WriteEntity (MSG_BROADCAST, self);

@@ -372,12 +372,11 @@ float gametype;
 
 .float      invincible_finished;
 .float      invisible_finished;
-.float      super_damage_finished;
+.float      akimbo_finished;
 .float      radsuit_finished;
 
 .float      invincible_time, invincible_sound;
 .float      invisible_time, invisible_sound;
-.float      super_time, super_sound;
 .float      rad_time;
 .float      fly_sound;
 

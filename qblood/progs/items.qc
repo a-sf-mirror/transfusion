@@ -68,9 +68,9 @@ void() noclass =
 
 void() q_touch =
 {
-local entity    stemp;
-local float     best;
-local string    s;
+    local entity    stemp;
+    local float     best;
+    local string    s;
 
     if (other.classname != "player")
         return;
@@ -82,14 +82,16 @@ local string    s;
     sound (other, CHAN_VOICE, self.noise, 1, ATTN_NORM);
     stuffcmd (other, "bf\n");
     self.solid = SOLID_NOT;
-    other.items = other.items | IT_QUAD;
     self.model = string_null;
 
-// do the apropriate action
-    other.super_time = 1;
-    other.super_damage_finished = self.cnt;
+    // do the apropriate action
+    other.akimbo_finished = self.nextthink;
+    stemp = self;
+    self = other;
+    W_SetCurrentAmmo (FALSE, 0);
+    self = stemp;
 
-    s=ftos(rint(other.super_damage_finished - time));
+    s=ftos(rint(other.akimbo_finished - time));
 
     Bprint (PRINT_LOW, other.netname);
     Bprint (PRINT_LOW, " picked up a guns akimbo with ");
@@ -117,7 +119,6 @@ void(float timeleft) DropQuad =
     item.noise = "bludbath/powerup.wav";
     setmodel (item, "progs/quaddama.mdl");
     setsize (item, '-16 -16 -24', '16 16 32');
-    item.cnt = time + timeleft;
     item.touch = q_touch;
     item.nextthink = time + timeleft;    // remove it with the time left on it
     item.think = SUB_Remove;
@@ -125,9 +126,8 @@ void(float timeleft) DropQuad =
 
 void() r_touch =
 {
-local entity    stemp;
-local float     best;
-local string    s;
+    local float     best;
+    local string    s;
 
     if (other.classname != "player")
         return;
@@ -281,7 +281,7 @@ void() item_lure =
 MISCELLANEOUS OBJECTS
 
 ==========================================================
-*/
+*
 // misc. objects that exist in maps as decorations. some are breakable
 // dturner 6/30/2001
 
@@ -788,8 +788,7 @@ void() powerup_touch =
     if (other.health <= 0)
         return;
 
-// do the apropriate action
-// PM:  Listed in alphabetical order.
+    // do the appropriate action (listed in alphabetical order)
     if (self.classname == "item_artifact_bag")
     {
         if (InvenMax (other, S_FIRST_AID))
@@ -830,8 +829,14 @@ void() powerup_touch =
     }
     else if (self.classname == "item_artifact_super_damage")
     {
-        other.super_time = 1;
-        other.super_damage_finished = time + 30;
+        local entity stemp;
+
+        other.akimbo_finished = time + 30;
+
+        stemp = self;
+        self = other;
+        W_SetCurrentAmmo (FALSE, 0);
+        self = stemp;
     }
     else if (self.classname == "item_artifact_vision")
     {
@@ -927,10 +932,7 @@ void() item_artifact_reflect =
     self.model   = "progs/i_reflct.mdl";
     self.noise   = "bludbath/powerup.wav";
 
-    self.items   = IT_QUAD;
-    #ifdef QUAKEWORLD
     self.effects = self.effects | EF_BLUE;
-    #endif
 
     item_powerup ();
 };
@@ -947,7 +949,9 @@ void() item_artifact_vision =
 // Cloak of Shadows
 void() item_artifact_shadow =
 {
-    self.model = "progs/i_shadow.mdl";
+    self.netname = "Cloak of Shadows";
+    self.model   = "progs/i_shadow.mdl";
+    self.noise   = "bludbath/powerup.wav";
     item_lure ();
 };
 
@@ -1056,9 +1060,7 @@ void() item_health =
         self.noise = "items/pickheal.wav";
         self.healamount = 20;   // PM:  Quake = 15
         self.netname = "Life Essence";
-        #ifdef QUAKEWORLD
         self.effects = self.effects | EF_RED;
-        #endif
         self.healtype = 1;
     }
     else if (self.spawnflags & H_MEGA)
@@ -1459,7 +1461,9 @@ void() weapon_touch =
 
 void() weapon_flaregun =
 {
+    precache_model ("progs/v_shot.mdl");
     precache_model ("progs/g_flare.mdl");
+
     setmodel (self, "progs/g_flare.mdl");
     self.weapon = IT_SHOTGUN;
     self.netname = "Flare Gun";
@@ -1482,7 +1486,10 @@ void() weapon_flaregun =
 
 void() weapon_supershotgun =
 {
+    precache_model ("progs/v_shot2.mdl");
     precache_model ("progs/g_shot.mdl");
+    precache_model ("progs/shotshl.mdl");   // shotgun shell
+
     setmodel (self, "progs/g_shot.mdl");
     self.weapon = IT_SUPER_SHOTGUN;
     self.netname = "Sawed-off";
@@ -1504,7 +1511,10 @@ void() weapon_supershotgun =
 
 void() weapon_nailgun =
 {
+    precache_model ("progs/v_nail.mdl");
     precache_model ("progs/g_nail.mdl");
+    precache_model ("progs/tommyshl.mdl");  // tommy gun shell
+
     setmodel (self, "progs/g_nail.mdl");
     self.weapon = IT_NAILGUN;
     self.netname = "Tommy Gun";
@@ -1525,7 +1535,10 @@ void() weapon_nailgun =
 
 void() weapon_supernailgun =
 {
+    precache_model ("progs/v_nail2.mdl");
     precache_model ("progs/g_nail2.mdl");
+    precache_model ("progs/grenade.mdl");
+
     setmodel (self, "progs/g_nail2.mdl");
     self.weapon = IT_SUPER_NAILGUN;
     self.netname = "Spray Can";
@@ -1549,7 +1562,10 @@ void() weapon_supernailgun =
 
 void() weapon_grenadelauncher =
 {
+    precache_model ("progs/v_rock.mdl");
     precache_model ("progs/g_rock.mdl");
+    precache_model ("progs/grd_bund.mdl");
+
     setmodel (self, "progs/g_rock.mdl");
     self.weapon = IT_GRENADE_LAUNCHER;
     self.netname = "Dynamite";
@@ -1573,7 +1589,10 @@ void() weapon_grenadelauncher =
 //  TNT Bundle model
 void() item_tnt =
 {
+    precache_model ("progs/v_rock.mdl");
     precache_model ("progs/i_tnt.mdl");
+    precache_model ("progs/grd_bund.mdl");
+
     setmodel (self, "progs/i_tnt.mdl");
     self.weapon = IT_GRENADE_LAUNCHER;
     self.netname = "Dynamite";
@@ -1595,7 +1614,10 @@ void() item_tnt =
 // Proximity grenade
 void() weapon_proximity =
 {
+    precache_model ("progs/v_rock.mdl");
     precache_model ("progs/g_proxy.mdl");
+    precache_model ("progs/grd_prox.mdl");
+
     setmodel (self, "progs/g_proxy.mdl");
     self.weapon = IT_PROXIMITY_BOMB;
     self.netname = "Proximity Bomb";
@@ -1614,7 +1636,10 @@ void() weapon_proximity =
 // Remote Detonator model
 void() weapon_remote =
 {
+    precache_model ("progs/v_rock.mdl");
     precache_model ("progs/g_remote.mdl");
+    precache_model ("progs/grd_remo.mdl");
+
     setmodel (self, "progs/g_remote.mdl");
     self.weapon = IT_REMOTE_DETONATOR;
     self.netname = "Remote Detonator";
@@ -1634,7 +1659,10 @@ void() weapon_remote =
 
 void() weapon_rocketlauncher =
 {
+    precache_model ("progs/v_rock2.mdl");
     precache_model ("progs/g_rock2.mdl");
+    precache_model ("progs/v_arock2.mdl");
+
     setmodel (self, "progs/g_rock2.mdl");
     self.weapon = IT_ROCKET_LAUNCHER;
     self.netname = "Napalm Launcher";
@@ -1661,7 +1689,12 @@ void() weapon_rocketlauncher =
 
 void() weapon_lightning =
 {
+    precache_model ("progs/v_light.mdl");
     precache_model ("progs/g_light.mdl");
+    precache_model ("progs/v_alight.mdl");  // Akimbo model
+    precache_model ("progs/bolt.mdl");
+    precache_model ("progs/bolt2.mdl");
+
     setmodel (self, "progs/g_light.mdl");
     self.weapon = IT_LIGHTNING;
     self.netname = "Tesla Cannon";
@@ -1688,7 +1721,9 @@ void() weapon_lightning =
 
 void() weapon_voodoodoll =
 {
+    precache_model ("progs/v_voodoo.mdl");
     precache_model ("progs/g_voodoo.mdl");
+
     setmodel (self, "progs/g_voodoo.mdl");
     self.weapon = IT_VOODOO_DOLL;
     self.netname = "Voodoo Doll";
@@ -2229,9 +2264,7 @@ void() item_artifact_invulnerability =
     self.noise = "bludbath/powerup.wav";
     setmodel (self, "progs/invulner.mdl");
     self.netname = "Death mask";
-    #ifdef QUAKEWORLD
     self.effects = self.effects | EF_RED;
-    #endif
     self.items = IT_INVULNERABILITY;
     setsize (self, '-16 -16 -24', '16 16 32');
     StartItem ();
@@ -2291,10 +2324,7 @@ void() item_artifact_super_damage =
     setmodel (self, "progs/quaddama.mdl");
 
     self.netname = "Guns Akimbo";
-// PM:  Reflective shots now use IT_QUAD instead.
-    #ifdef QUAKEWORLD
     self.effects = self.effects | EF_BLUE;
-    #endif
 
     setsize (self, '-16 -16 -24', '16 16 32');
     StartItem ();

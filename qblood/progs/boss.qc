@@ -247,6 +247,7 @@ void(vector p) boss_missile =
     setsize (newmis, VEC_ORIGIN, VEC_ORIGIN);
     newmis.velocity = vec*300;
     newmis.touch = T_MissileTouch; // rocket explosion
+    newmis.cnt = 0;  // Don't spawn napalm balls !
     sound (self, CHAN_WEAPON, "boss1/throw.wav", 1, ATTN_NORM);
 
 // check for dead enemy
@@ -293,6 +294,7 @@ void() monster_boss =
     }
     precache_model ("progs/boss.mdl");
     precache_model ("progs/lavaball.mdl");
+    precache_model ("progs/bolt3.mdl");    // TE_LIGHTNING3
 
     precache_sound ("weapons/rocket1i.wav");
     precache_sound ("boss1/out1.wav");

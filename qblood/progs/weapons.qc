@@ -24,7 +24,6 @@
 void (entity targ, entity inflictor, entity attacker, float damage) T_Damage;
 void () player_run;
 void(entity bomb, entity attacker, float rad, entity ignore, string dtype) T_RadiusDamage;
-void() SuperDamageSound;
 entity() identify_player;
 
 
@@ -1138,15 +1137,21 @@ void(entity attacker, vector org, vector dir, float mspeed, float big) PM_Launch
 
 void(float big) W_FireLightning =
 {
-    local   vector      org;
-    local   float       cells;
-    local   float       mspeed;
+    local   vector  org;
+    local   vector  dir;
+    local   float   mspeed;
+    local   float   akimboFactor;  // 1 if normal shot / 2 if akimbo
 
-    if (self.ammo_cells < 1)
+    if (self.items & IT_GUNS_AKIMBO)
+        akimboFactor = 2;
+    else
+        akimboFactor = 1;
+
+    // If we don't have enough ammo
+    if (self.ammo_cells < akimboFactor)
         return;
 
     muzzleflash ();
-    SuperDamageSound ();
 
     #ifndef QUAKEWORLD
     self.punchangle_x = -2;
@@ -1155,11 +1160,11 @@ void(float big) W_FireLightning =
     WriteByte (MSG_ONE, SVC_SMALLKICK);
     #endif
 
-    if (big && self.ammo_cells >= 35)
+    if (big && self.ammo_cells >= 35 * akimboFactor)
     {
         // We have already started the sound
 
-        self.ammo_cells = self.ammo_cells - 35;
+        self.ammo_cells = self.ammo_cells - 35 * akimboFactor;
         mspeed = 2000;
     }
     else
@@ -1168,19 +1173,26 @@ void(float big) W_FireLightning =
 
         sound (self, CHAN_WEAPON, "weapons/tesla/tessngfr.wav", 1, ATTN_NORM);
 
-        self.ammo_cells = self.ammo_cells - 1;
+        self.ammo_cells = self.ammo_cells - akimboFactor;
         mspeed = 1500;
     }
     self.currentammo = self.ammo_cells;
 
-    // PM:  This is for the plasma gun-wannabe mode.
-    local   vector  dir;
-
     makevectors (self.v_angle);
     dir = aim(self, mspeed);
     org = self.origin + v_forward * 50 + '0 0 12' + v_right * 12;
-
     PM_LaunchJolt (self, org, dir, mspeed, big);
+
+    // 2nd shot in akimbo mode
+    if (akimboFactor == 2)
+    {
+        org = org - v_right * 24;
+        PM_LaunchJolt (self, org, dir, mspeed, big);
+
+        // If we don't have enough ammo anymore, drop the akimbo mode for now
+        if (self.ammo_cells < 2)
+            W_SetCurrentAmmo (FALSE, 0);
+    }
 };
 
 
@@ -1624,7 +1636,6 @@ void() W_FireGrenade =
     if (!self.charge)
         newmis.velocity = '0 0 0';
 
-    newmis.avelocity = '300 300 300';
     newmis.angles = vectoangles(newmis.velocity);
     newmis.touch = GrenadeTouch;
 
@@ -1642,24 +1653,33 @@ void() W_FireGrenade =
         newmis.pausetime = time + 2.5;
         newmis.think = ProximBombThink;
         newmis.think1 = ProximBombArmed;
-        newmis.netname = "Proximity Bomb";
+        newmis.netname = "proximity bomb";
         newmis.dmg = DMG_PROXIMITY_BOMB;
-        newmis.model = "progs/v_proxy.mdl";
+        newmis.avelocity = '0 300 0';
+        newmis.angles = '0 0 0';
+
+        setmodel (newmis, "progs/grd_prox.mdl");
+        newmis.frame = 1;
     }
     // else if we fire a remote detonator
     else if (self.weapon == IT_REMOTE_DETONATOR)
     {
-        newmis.netname = "Remote Detonator";
+        newmis.netname = "remote detonator";
         newmis.dmg = DMG_REMOTE_DETONATOR;
-        newmis.model = "progs/v_remote.mdl";
+        newmis.avelocity = '0 300 0';
+        newmis.angles = '0 0 0';
 
         // We switch to the remote model / frames
         self.weaponmodel = "";  // FIXME: we don't have the remote model / frames yet
         Sprint (self, PRINT_LOW, "You now have the remote in your hands...\n");
+
+        setmodel (newmis, "progs/grd_remo.mdl");
+        newmis.frame = 1;
     }
     // Else, it's TNT or a spray can!
     else
     {
+        newmis.avelocity = '300 300 300';
         newmis.style     = self.tnt_type;
         newmis.pausetime = self.tnt_time;
         newmis.think     = DynaThink;
@@ -1671,17 +1691,19 @@ void() W_FireGrenade =
             newmis.netname = "Lit Spray Can";
             newmis.dmg     = DMG_SPRAY_CAN;
             self.weaponframe = 0;  // reset the weapon view
-            // newmis.model   = "progs/v_spray.mdl"; //FIXME - this is only for alt-fire
+
+            setmodel (newmis, "progs/grenade.mdl");
         }
         else
         {
             newmis.netname = "TNT";
             newmis.dmg     = DMG_TNT;
-            newmis.model   = "progs/v_tnt.mdl";
+
+            newmis.frame = 1;
+            setmodel (newmis, "progs/grd_bund.mdl");
         }
     }
 
-    setmodel (newmis, newmis.model);
     setsize (newmis, '-1 -1 -1', '1 1 1');
     setorigin (newmis, self.origin);
 
@@ -1973,7 +1995,7 @@ void(float weaponHasChanged, float oldWeapon) W_SetCurrentAmmo =
     {
         player_run ();      // get out of any weapon firing states
 
-        self.items = self.items - ( self.items & (IT_SHELLS | IT_NAILS | IT_ROCKETS | IT_CELLS) );
+        self.items = self.items - (self.items & (IT_SHELLS | IT_NAILS | IT_ROCKETS | IT_CELLS));
         self.weaponframe = 0;
 
         // If we need to pop up the lighter
@@ -2059,13 +2081,31 @@ void(float weaponHasChanged, float oldWeapon) W_SetCurrentAmmo =
     else if (self.weapon == IT_ROCKET_LAUNCHER)
     {
         self.currentammo = self.ammo_rockets;
-        self.weaponmodel = "progs/v_rock2.mdl";
+        if (self.akimbo_finished > time && self.currentammo >= 2)
+        {
+            self.weaponmodel = "progs/v_arock2.mdl";
+            self.items = self.items | IT_GUNS_AKIMBO;
+        }
+        else
+        {
+            self.weaponmodel = "progs/v_rock2.mdl";
+            self.items = self.items - (self.items & IT_GUNS_AKIMBO);
+        }
         self.items = self.items | IT_ROCKETS;
     }
     else if (self.weapon == IT_LIGHTNING)
     {
         self.currentammo = self.ammo_cells;
-        self.weaponmodel = "progs/v_light.mdl";
+        if (self.akimbo_finished > time && self.currentammo >= 2)
+        {
+            self.weaponmodel = "progs/v_alight.mdl";
+            self.items = self.items | IT_GUNS_AKIMBO;
+        }
+        else
+        {
+            self.weaponmodel = "progs/v_light.mdl";
+            self.items = self.items - (self.items & IT_GUNS_AKIMBO);
+        }
         self.items = self.items | IT_CELLS;
     }
     else if (self.weapon == IT_VOODOO_DOLL)
@@ -2134,6 +2174,7 @@ void()  player_lightcan1;
 void()  player_light1;
 void()  player_altlight1;
 void()  player_rocket1;
+void()  player_akrocket1;
 void()  player_doll1;
 
 void() W_Attack =
@@ -2210,9 +2251,18 @@ void() W_Attack =
     }
     else if (self.weapon == IT_ROCKET_LAUNCHER)
     {
-        player_rocket1();
-        self.attack_finished = time + 0.5;
-        W_FireRocket();
+        // If we have guns akimbo
+        if (self.items & IT_GUNS_AKIMBO)
+        {
+            player_akrocket1();
+            self.attack_finished = time + 0.8;
+        }
+        else
+        {
+            player_rocket1();
+            self.attack_finished = time + 0.5;
+        }
+        W_FireRocket ();
     }
     else if (self.weapon == IT_LIGHTNING)
     {
@@ -2606,12 +2656,11 @@ void() CycleWeaponReverseCommand =
 
 void() QuadCheat =
 {
-    self.super_time = 1;
-    self.super_damage_finished = time + 30;
+    self.akimbo_finished = time + 30;
+    W_SetCurrentAmmo (FALSE, 0);
 
-    // Guns Akimbo no longer uses IT_QUAD.
-    Sprint (self, PRINT_MEDIUM, "tequila\n");
-    dprint ("quad cheat\n");
+    Sprint (self, PRINT_MEDIUM, "Tequila !\n");
+    dprint ("Akimbo cheat\n");
 };
 
 
@@ -2678,7 +2727,6 @@ void() W_Uncharge =
 void() ThrowBomb =
 {
     // Throw the dynamite
-    SuperDamageSound ();
     W_Attack ();
     W_Uncharge ();
     ShowThrowMeter ();  // Remove throw meter
@@ -3040,29 +3088,8 @@ void() W_WeaponFrame =
     if (self.button0 || self.button1 || self.impulse == 12)
     {
         PM_ResetIdle (self);
-        SuperDamageSound ();
         W_Attack ();
 
         self.impulse = 0;
     }
-};
-
-/*
-========
-SuperDamageSound
-
-Plays sound if needed
-========
-*/
-void() SuperDamageSound =
-{
-    if (self.super_damage_finished > time)
-    {
-        if (self.super_sound < time)
-        {
-            self.super_sound = time + 1;
-            sound (self, CHAN_BODY, "bludbath/powerup.wav", 1, ATTN_NORM);
-        }
-    }
-    return;
 };

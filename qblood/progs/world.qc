@@ -242,7 +242,8 @@ void() worldspawn =
 
     lastspawn = world;
 
-    BotInit();  // FrikBot
+    // FrikBot X initialization
+    BotInit();
 
     // Compute the game type
     #ifdef QUAKEWORLD
@@ -296,12 +297,13 @@ void() worldspawn =
     precache_model ("progs/flame2.mdl");  // FIXME:  Maybe place elsewhere with flaregun item code.
     precache_model ("progs/s_oldexp.spr");
 
-    // REMOVEME: Here so alt-napalm won't crash in levels without incinerator
-    precache_model ("progs/naltball.mdl");
-
-    // models and stuff
+    // WARNING: these models are referenced by the engine itself
     precache_model ("progs/player.mdl");
     precache_model ("progs/eyes.mdl");
+    precache_model ("progs/spike.mdl");
+    precache_model ("progs/s_spike.mdl");
+
+    // models and stuff
     precache_model ("progs/h_player.mdl");
     precache_model ("progs/gib1.mdl");
     precache_model ("progs/gib2.mdl");
@@ -315,37 +317,12 @@ void() worldspawn =
     precache_model ("progs/m_guts.mdl");
     precache_model ("progs/m_leg.mdl");
 
-//    precache_model ("progs/flesh1.mdl");
-//    precache_model ("progs/flesh2.mdl");
-//    precache_model ("progs/flesh3.mdl");
-
     precache_model ("progs/s_bubble.spr");  // drowning bubbles
     precache_model ("progs/s_explod.spr");  // napalm sprite explosion
 
     precache_model ("progs/v_axe.mdl");
-    precache_model ("progs/v_shot.mdl");
-    precache_model ("progs/v_nail.mdl");
-    precache_model ("progs/v_rock.mdl");
-    precache_model ("progs/v_shot2.mdl");
-    precache_model ("progs/v_nail2.mdl");
-    precache_model ("progs/v_rock2.mdl");
-    precache_model ("progs/v_light.mdl");
-    precache_model ("progs/v_voodoo.mdl");
-
-    precache_model ("progs/shotshl.mdl");   // shotgun shell
-    precache_model ("progs/tommyshl.mdl");  // tommy gun shell
-
-    precache_model ("progs/bolt.mdl");      // for lightning gun
-    precache_model ("progs/bolt2.mdl");     // for lightning gun
-    precache_model ("progs/bolt3.mdl");     // for boss shock
 
     precache_model ("progs/missile.mdl");  // napalm regular fire
-    precache_model ("progs/v_tnt.mdl"); // regular tnt
-    precache_model ("progs/v_remote.mdl"); // remote detonator
-    precache_model ("progs/v_proxy.mdl"); // proximity bomb
-//    precache_model ("progs/v_spray.mdl"); // alt-fire spray can
-    precache_model ("progs/spike.mdl");
-    precache_model ("progs/s_spike.mdl");
 
     precache_model ("progs/backpack.mdl");
 

@@ -65,7 +65,7 @@ void() SetChangeParms =
     }
 
     // remove items
-    self.items  = self.items  - (self.items  & (IT_INVISIBILITY | IT_INVULNERABILITY | IT_SUIT | IT_QUAD));
+    self.items  = self.items  - (self.items  & (IT_INVISIBILITY | IT_INVULNERABILITY | IT_SUIT));
     self.items2 = self.items2 - (self.items2 & (IT2_KEY1 | IT2_KEY2));
 
     // Recharge inventory, except for first-aid.
@@ -508,7 +508,8 @@ void() changelevel_touch =
 };
 
 /*QUAKED trigger_changelevel (0.5 0.5 0.5) ? NO_INTERMISSION
-When the player touches this, he gets sent to the map listed in the "map" variable.  Unless the NO_INTERMISSION flag is set, the view will go to the info_intermission spot and display stats.
+When the player touches this, he gets sent to the map listed in the "map" variable.
+Unless the NO_INTERMISSION flag is set, the view will go to the info_intermission spot and display stats.
 */
 void() trigger_changelevel =
 {
@@ -690,7 +691,7 @@ void() PutClientInServer =
     self.flags = FL_CLIENT;
     self.air_finished = time + 12;
     self.dmg = 2;           // initial water damage
-    self.super_damage_finished = 0;
+    self.akimbo_finished = 0;
     self.radsuit_finished = 0;
     self.invisible_finished = 0;
     self.invincible_finished = 0;
@@ -1278,88 +1279,41 @@ void() CheckPowerups =
             self.invincible_finished = 0;
         }
         if (self.invincible_finished > time)
-        {
-            self.effects = self.effects | EF_DIMLIGHT;
-            #ifdef QUAKEWORLD
-            self.effects = self.effects | EF_RED;
-            #endif
-        }
+            self.effects = self.effects | EF_DIMLIGHT | EF_RED;
         else
-        {
-            self.effects = self.effects - (self.effects & EF_DIMLIGHT);
-            #ifdef QUAKEWORLD
-            self.effects = self.effects - (self.effects & EF_RED);
-            #endif
-        }
+            self.effects = self.effects - (self.effects & EF_DIMLIGHT & EF_RED);
     }
 
-// super damage
-    if (self.super_damage_finished)
+    // Guns akimbo
+    if (self.akimbo_finished)
     {
-
-// sound and screen flash when items starts to run out
-
-        if (self.super_damage_finished < time + 3)
+        // just stopped
+        if (self.akimbo_finished < time)
         {
-            if (self.super_time == 1)
-            {
-                Sprint (self, PRINT_HIGH, "Guns Akimbo is wearing off\n");
-                stuffcmd (self, "bf\n");
-                sound (self, CHAN_AUTO, "bludbath/powerup.wav", 1, ATTN_NORM);
-                self.super_time = time + 1;
-            }
-
-            if (self.super_time < time)
-            {
-                self.super_time = time + 1;
-                stuffcmd (self, "bf\n");
-            }
+            self.akimbo_finished = 0;
+            W_SetCurrentAmmo (FALSE, 0);
         }
 
-        if (self.super_damage_finished < time)
-        {   // just stopped
-// PM:  Guns akimbo don't use IT_QUAD.
-            self.super_damage_finished = 0;
-            self.super_time = 0;
-        }
-        if (self.super_damage_finished > time)
-        {
-            self.effects = self.effects | EF_DIMLIGHT;
-            #ifdef QUAKEWORLD
-            self.effects = self.effects | EF_BLUE;
-            #endif
-        }
+        // (un)set the entity effects
+        if (self.akimbo_finished > time)
+            self.effects = self.effects | EF_DIMLIGHT | EF_BLUE;
         else
-        {
-            self.effects = self.effects - (self.effects & EF_DIMLIGHT);
-            #ifdef QUAKEWORLD
-            self.effects = self.effects - (self.effects & EF_BLUE);
-            #endif
-        }
+            self.effects = self.effects - (self.effects & EF_DIMLIGHT & EF_BLUE);
     }
 
-// Reflective shots
+    // Reflective shots
     if (self.reflect_finished)
     {
         // In Blood, there is no warning when it stops.
 
         if (self.reflect_finished < time)
         {   // just stopped
-            self.items = self.items - IT_QUAD;
             self.reflect_finished = 0;
 
-            self.effects = self.effects - (self.effects & EF_DIMLIGHT);
-            #ifdef QUAKEWORLD
-            self.effects = self.effects - (self.effects & EF_BLUE);
-            #endif
+            self.effects = self.effects - (self.effects & EF_DIMLIGHT & EF_BLUE);
         }
         else
-        {
-            self.effects = self.effects | EF_DIMLIGHT;
-            #ifdef QUAKEWORLD
-            self.effects = self.effects | EF_BLUE;
-            #endif
-        }
+            self.effects = self.effects | EF_DIMLIGHT | EF_BLUE;
     }
 
     // Check inventory items.

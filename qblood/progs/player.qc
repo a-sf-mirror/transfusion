@@ -221,7 +221,6 @@ void() player_nail =
     if (self.weaponframe == 8)  // frame 7 is the last frame of the normal fire animation
         self.weaponframe = 1;
 
-    SuperDamageSound ();
     W_FireSpikes ();
     self.attack_finished = time + 0.1;
 
@@ -244,7 +243,6 @@ void() player_altnail =
     self.weaponframe = self.weaponframe + 1;
     if (self.weaponframe == 14 || self.weaponframe == 1)
         self.weaponframe = 8;
-    SuperDamageSound ();
     W_FireSpikes ();
     self.attack_finished = time + 0.1;
 
@@ -268,7 +266,6 @@ void() player_supernail =
 
     self.weaponframe = 3;
 
-    SuperDamageSound ();
     W_FireSuperSpikes ();
     self.attack_finished = time + 0.2;
 };
@@ -364,7 +361,28 @@ void() player_rocket2   =[$rockatt2, player_rocket3  ] {self.weaponframe=2;};
 void() player_rocket3   =[$rockatt3, player_rocket4  ] {self.weaponframe=3;};
 void() player_rocket4   =[$rockatt4, player_rocket5  ] {self.weaponframe=4;};
 void() player_rocket5   =[$rockatt5, player_rocket6  ] {self.weaponframe=5;};
-void() player_rocket6   =[$rockatt6, player_run  ] {self.weaponframe=6;};
+void() player_rocket6   =[$rockatt6, player_run      ] {self.weaponframe=6;};
+
+void() player_akrocket1   =[$rockatt1, player_akrocket2 ] {self.weaponframe=1; muzzleflash();};
+void() player_akrocket2   =[$rockatt2, player_akrocket3 ] {self.weaponframe=2;};
+void() player_akrocket3   =[$rockatt3, player_akrocket4 ] {self.weaponframe=3;};
+void() player_akrocket4   =[$rockatt2, player_akrocket5 ] {self.weaponframe=4; W_FireRocket ();};
+void() player_akrocket5   =[$rockatt3, player_akrocket6 ] {self.weaponframe=5;};
+void() player_akrocket6   =[$rockatt4, player_akrocket7 ] {self.weaponframe=6;};
+void() player_akrocket7   =[$rockatt5, player_akrocket8 ] {self.weaponframe=7;};
+void() player_akrocket8   =[$rockatt6, player_run       ]
+{
+    // If we don't have enough ammo anymore, drop the guns akimbo
+    if ((self.items & IT_GUNS_AKIMBO) && self.currentammo < 2)
+    {
+        W_SetCurrentAmmo (FALSE, 0);
+        self.weaponframe = 0;
+    }
+    else
+        self.weaponframe = 8;
+};
+
+
 void(float num_bubbles) DeathBubbles;
 
 float() PainSound =
@@ -838,12 +856,12 @@ void() PlayerDie =
 
     if (gametype != GAMETYPE_SINGLE_PLAYER)
     {
-        if (self.super_damage_finished > 0)
+        if (self.akimbo_finished > 0)
         {
-            DropQuad (self.super_damage_finished - time);
+            DropQuad (self.akimbo_finished - time);
             Bprint (PRINT_LOW, self.netname);
             Bprint (PRINT_LOW, " lost a Guns Akimbo with ");
-            s = ftos(rint(self.super_damage_finished - time));
+            s = ftos(rint(self.akimbo_finished - time));
             Bprint (PRINT_LOW, s);
             Bprint (PRINT_LOW, " seconds remaining\n");
         }
@@ -865,7 +883,7 @@ void() PlayerDie =
 
     self.invisible_finished = 0;    // don't die as eyes
     self.invincible_finished = 0;
-    self.super_damage_finished = 0;
+    self.akimbo_finished = 0;
     self.radsuit_finished = 0;
     self.modelindex = modelindex_player;    // don't use eyes
 
