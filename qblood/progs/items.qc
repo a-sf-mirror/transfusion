@@ -401,46 +401,6 @@ void() obj_cflmtrch =
     StartObject ();
 };
 
-// Locked chest
-void() obj_chest1 =
-{
-    precache_model("progs/chest1.mdl");
-    setmodel(self, "progs/chest1.mdl");
-
-    setsize (self, '-12 -16 -1', '13 16 23');
-    StartObject ();
-};
-
-// Rounded chest
-void() obj_chest2 =
-{
-    precache_model("progs/chest2.mdl");
-    setmodel(self, "progs/chest2.mdl");
-
-    setsize (self, '-12 -15 0', '12 17 25');
-    StartObject ();
-};
-
-// Squared chest
-void() obj_chest3 =
-{
-    precache_model("progs/chest3.mdl");
-    setmodel(self, "progs/chest3.mdl");
-
-    setsize (self, '-12 -16 -1', '12 16 22');
-    StartObject ();
-};
-
-// Nice book
-void() obj_clueb =
-{
-    precache_model("progs/clueb.mdl");
-    setmodel(self, "progs/clueb.mdl");
-
-    setsize (self, '-8 -11 -11', '7 11 12');
-    StartObject ();
-};
-
 // Corpse, Face up
 void() obj_corps2 =
 {
@@ -458,16 +418,6 @@ void() obj_cross =
     setmodel(self, "progs/cross.mdl");
 
     setsize (self, '-3 -12 -19', '3 12 21');
-    StartObject ();
-};
-
-// Chrome Skeleton Key
-void() obj_cskey =
-{
-    precache_model("progs/cskey.mdl");
-    setmodel(self, "progs/cskey.mdl");
-
-    setsize (self, '-1 -4 -12', '1 3 12');
     StartObject ();
 };
 
@@ -523,16 +473,6 @@ void() obj_goal =
     StartObject ();
 };
 
-// Head of Fallen Angel
-void() obj_hfangel =
-{
-    precache_model("progs/h_fangel.mdl");
-    setmodel(self, "progs/h_fangel.mdl");
-
-    setsize (self, '-9 -3 0', '5 3 14');
-    StartObject ();
-};
-
 // tall triangular hedge
 void() obj_hedge1 =
 {
@@ -570,16 +510,6 @@ void() obj_holycrss =
     setmodel(self, "progs/holycrss.mdl");
 
     setsize (self, '-6 -13 -19', '6 13 21');
-    StartObject ();
-};
-
-// Huge Moving Spider Web
-void() obj_megaweb =
-{
-    precache_model("progs/megaweb.mdl");
-    setmodel(self, "progs/megaweb.mdl");
-
-    setsize (self, '-1 -339 -411', '51 336 387');
     StartObject ();
 };
 
