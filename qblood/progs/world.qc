@@ -455,7 +455,9 @@ CORPSE MANAGEMENT
 ==============================================================================
 */
 
-void(string gibname, float dm) ThrowGib;  // In player.qc
+// In player.qc
+void() HeadDie;
+void(string gibname, float dm) ThrowGib;
 
 
 /*
@@ -499,7 +501,7 @@ void(float corpseHealth, void() corpseToGib) BecomeCorpse =
     self.deadflag = DEAD_DEAD;
 
     // Corpse will turn into gibs if destroyed
-    self.health = corpseHealth / 2;
+    self.health = corpseHealth;
     self.th_die = corpseToGib;
 
     // Get rid of it in 2 minutes anyway (to avoid too many entities)
@@ -508,7 +510,10 @@ void(float corpseHealth, void() corpseToGib) BecomeCorpse =
 
     // Allow some interactions (so the corpses can be destroyed by explosions)
     self.takedamage = DAMAGE_AIM;
-    if (self.classname != "head")  // only player's heads go through this function
+
+    // The following fields have already been set correctly for heads
+    // Note: only player's heads can be into this function
+    if (self.classname != "head")
     {
         self.touch = CorpseTouch;
         self.solid = SOLID_BBOX;
@@ -567,12 +572,12 @@ void(entity ent) CloneCorpse =
     setorigin (clone, ent.origin);
     setsize (clone, ent.mins, ent.maxs);
 
-    // If the entity is a head, we just need to remove it when it's destroyed
+    // If the entity is a head, we just need to call HeadDie when it's destroyed
     if (clone.classname == "head")
     {
         tempEnt = self;
         self = clone;
-        BecomeCorpse (120, SUB_Remove);
+        BecomeCorpse (80, HeadDie);
         self = tempEnt;
         return;
     }

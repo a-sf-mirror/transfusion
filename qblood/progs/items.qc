@@ -260,9 +260,9 @@ void() item_health =
     }
     else if (self.spawnflags & H_MEGA)
     {
-        precache_model("maps/b_bh100.bsp");
+        precache_model("progs/lifeseed.mdl");
         precache_sound("items/pickup.wav");
-        setmodel(self, "maps/b_bh100.bsp");
+        setmodel(self, "progs/lifeseed.mdl");
         self.noise = "items/pickup.wav";
         self.healamount = 100;
         self.healtype = 2;
@@ -690,6 +690,23 @@ void() weapon_touch =
     SUB_UseTargets();               // fire all targets / killtargets
 };
 
+
+/*QUAKED weapon_flaregun (0 .5 .8) (-16 -16 0) (16 16 32)
+*/
+
+void() weapon_flaregun =
+{
+    precache_model ("progs/g_flare.mdl");
+    setmodel (self, "progs/g_flare.mdl");
+    self.weapon = IT_SHOTGUN;
+    self.netname = "Flare Gun";
+    self.touch = weapon_touch;
+    setsize (self, '-16 -16 0', '16 16 56');
+
+    // FIXME: Precache the necessary sounds HERE
+
+    StartItem ();
+};
 
 /*QUAKED weapon_supershotgun (0 .5 .8) (-16 -16 0) (16 16 32)
 */

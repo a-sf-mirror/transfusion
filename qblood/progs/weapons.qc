@@ -76,7 +76,7 @@ void() W_Precache =
     // because the sound is also precached in item_voodoo
     precache_sound ("weapons/voodoodl/voostab.wav");
 
-/*    
+/*
     // common sounds - some are in the C code, some aren't
     precache_sound ("weapons/bflesh.wav");
     precache_sound ("weapons/bmetal.wav");
@@ -1873,17 +1873,6 @@ void() ImpulseCommands =
         ServerflagsCommand ();
     else if (self.impulse == 12)
         CycleWeaponReverseCommand ();
-
-    // FIXME: this is a Evil Hack (TM) to fix the ghost bug. Must be removed ASAP
-    else if (self.impulse == 38 && self.deadflag == DEAD_NO)
-    {
-        Bprint (PRINT_HIGH, "===== YOUR CURRENT VALUES =====\n>>> self.deadflag = ");
-        Bprint (PRINT_HIGH, ftos (self.deadflag));
-        Bprint (PRINT_HIGH, "\n>>> self.solid = ");
-        Bprint (PRINT_HIGH, ftos (self.solid));
-        Bprint (PRINT_HIGH, "\n>>> Setting self.solid to SOLID_SLIDEBOX (3)...\n");
-        self.solid = SOLID_SLIDEBOX;
-    }
 
     #ifndef QUAKEWORLD
     else if (self.impulse == 254)

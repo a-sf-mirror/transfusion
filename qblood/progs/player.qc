@@ -526,7 +526,7 @@ void() HeadTouch =
         self.health = self.health - 10;
         if (self.health < 0)
         {
-            HeadDie ();
+            self.th_die ();
             return;
         }
     }
@@ -619,13 +619,9 @@ void() GibPlayer =
 
     self.deadflag = DEAD_DEAD;
 
-    if (damage_attacker.classname == "teledeath")
-    {
-        sound (self, CHAN_VOICE, "firepod/fpodcol2.wav", 1, ATTN_NONE);
-        return;
-    }
-
-    if (damage_attacker.classname == "teledeath2")
+    if (damage_attacker.classname == "teledeath"  ||
+        damage_attacker.classname == "teledeath2" ||
+        damage_attacker.classname == "teledeath3" )
     {
         sound (self, CHAN_VOICE, "firepod/fpodcol2.wav", 1, ATTN_NONE);
         return;
