@@ -2049,6 +2049,8 @@ void() item_artifact_bag =
 // Boots of Jumping
 void() item_artifact_boots =
 {
+    precache_sound ("bludbath/powerup.wav");
+
     self.netname = "Boots of Jumping";
     self.model   = "progs/i_boots.mdl";
     item_powerup ();
@@ -2058,6 +2060,8 @@ void() item_artifact_boots =
 // Crystal Ball
 void() item_artifact_crystal =
 {
+    precache_sound ("bludbath/powerup.wav");
+
     self.netname = "Crystal Ball";
     self.model   = "progs/i_crysbl.mdl";
     item_powerup ();
@@ -2125,6 +2129,8 @@ void() item_artifact_super_damage =
 // Beast Vision
 void() item_artifact_vision =
 {
+    precache_sound ("bludbath/powerup.wav");
+
     self.netname = "Beast Vision";
     self.model   = "progs/i_vision.mdl";
     item_powerup ();
