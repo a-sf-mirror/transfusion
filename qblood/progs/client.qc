@@ -724,8 +724,6 @@ void() PutClientInServer =
 
     DecodeLevelParms ();
 
-    W_SetCurrentAmmo ();
-
     self.attack_finished = time;
     self.th_pain = player_pain;
     self.th_die = PlayerDie;
@@ -1202,12 +1200,6 @@ void() PlayerPreThink =
 // teleporters can force a non-moving pause time
     if (time < self.pausetime)
         self.velocity = '0 0 0';
-
-    if(time > self.attack_finished && self.currentammo == 0 && self.weapon != IT_AXE)
-    {
-        self.weapon = W_BestWeapon ();
-        W_SetCurrentAmmo ();
-    }
 };
 
 /*

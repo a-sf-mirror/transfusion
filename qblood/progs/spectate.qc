@@ -55,6 +55,7 @@ void() SpectatorConnect =
     bprint (PRINT_MEDIUM, " entered the game\n");
 
     self.goalentity = world; // used for impulse 1 below
+    self.classname = "spectator";
 };
 
 /*

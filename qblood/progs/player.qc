@@ -206,7 +206,7 @@ void() player_nail =
 {
     muzzleflash ();
 
-    if (!self.button0 || intermission_running || self.impulse)
+    if (!self.button0 || intermission_running || self.impulse || self.ammo_nails < 1)
     {
         player_run ();
         return;
@@ -228,7 +228,7 @@ void() player_light =
 {
     muzzleflash ();
 
-    if (!self.button0 || intermission_running)
+    if (!self.button0 || intermission_running || self.ammo_cells < 1)
     {
         player_run ();
         return;

@@ -86,6 +86,7 @@ void() W_Precache =
     precache_sound ("weapons/ric3.wav");    // ricochet (used in c code)
 
     precache_sound ("weapons/tink1.wav");    // spikes tink (used in c code)
+    precache_sound ("weapons/tommygun/tomcock.wav");  // Out of ammo
 //    precache_sound ("weapons/lstart.wav");
 };
 
@@ -784,11 +785,7 @@ void() W_FireLightning =
     local   float       cells;
 
     if (self.ammo_cells < 1)
-    {
-        self.weapon = W_BestWeapon ();
-        W_SetCurrentAmmo ();
         return;
-    }
 
 // explode if under water
     if (self.waterlevel > 1)
@@ -1105,11 +1102,7 @@ void() W_FireSpikes =
     }
 
     if (self.ammo_nails < 1)
-    {
-        self.weapon = W_BestWeapon ();
-        W_SetCurrentAmmo ();
         return;
-    }
 
     sound (self, CHAN_WEAPON, "weapons/tommygun/_tom.wav", 1, ATTN_NORM);
     self.attack_finished = time + 0.2;
@@ -1255,6 +1248,11 @@ PLAYER WEAPON USE
 
 void() W_SetCurrentAmmo =
 {
+    // If the player is not alive, exit so that we don't
+    // reset his current frame with "player_run ()"
+    if (self.deadflag != DEAD_NO)
+        return;
+
     player_run ();      // get out of any weapon firing states
 
     self.items = self.items - ( self.items & (IT_SHELLS | IT_NAILS | IT_ROCKETS | IT_CELLS) );
@@ -1346,19 +1344,11 @@ float() W_BestWeapon =
     return IT_AXE;
 };
 
-float() W_CheckNoAmmo =
+float() W_AmmoAvailable =
 {
-    if (self.currentammo > 0)
+    if (self.currentammo > 0 || self.weapon == IT_AXE)
         return TRUE;
 
-    if (self.weapon == IT_AXE)
-        return TRUE;
-
-    self.weapon = W_BestWeapon ();
-
-    W_SetCurrentAmmo ();
-
-// drop the weapon down
     return FALSE;
 };
 
@@ -1382,8 +1372,12 @@ void() W_Attack =
 {
     local   float   r;
 
-    if (!W_CheckNoAmmo ())
+    if (! W_AmmoAvailable ())
+    {
+        sound (self, CHAN_WEAPON, "weapons/tommygun/tomcock.wav", 1, ATTN_NORM);
+        self.attack_finished = time + 0.5;
         return;
+    }
 
     makevectors (self.v_angle);         // calculate forward angle for velocity
     self.show_hostile = time + 1;   // wake monsters up
