@@ -1008,8 +1008,10 @@ void() item_flares =
         precache_model ("progs/i_flares.mdl");
         setmodel (self, "progs/i_flares.mdl");
     if (self.spawnflags & AMMO_BIG)
-        self.netname = "box of flares"
-	self.aflag = 16;
+	{
+	        self.netname = "box of flares";
+		self.aflag = 16;
+	}	
     else
         self.aflag = 8;
     self.weapon = 1;
