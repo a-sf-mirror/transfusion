@@ -86,6 +86,7 @@ void () TeamCaptureRegenFlags =
 void() CTF_FlagTouch =
 {
     local entity p, oself;
+    local string newscore;
 
     if (other.classname != "player")
         return;
@@ -118,9 +119,11 @@ void() CTF_FlagTouch =
                 Bprint (PRINT_HIGH, " γαπτυςεδ the ÒΕΔ flag!\n"); // red
 
             Bprint (PRINT_HIGH, "RED: ");
-            Bprint (PRINT_HIGH, ftos (team1score));
+            newscore = ftos (team1score);
+            Bprint (PRINT_HIGH, newscore);
             Bprint (PRINT_HIGH, " / BLUE: ");
-            Bprint (PRINT_HIGH, ftos (team2score));
+            newscore = ftos (team2score);
+            Bprint (PRINT_HIGH, newscore);
             Bprint (PRINT_HIGH, "\n");
 
             sound (other, CHAN_VOICE, self.noise2, 1, ATTN_NONE);

@@ -446,9 +446,9 @@ void(float to, entity s) WriteEntity =
 float(float clientno) ClientIsActive =
 {
     if(clientno > 16)
-        return (active_clients2 & ClientBitFlag (clientno - 16));
+        return (active_clients2 & ClientBitFlag (clientno - 16)) != 0;
 
-    return (active_clients1 & ClientBitFlag (clientno));
+    return (active_clients1 & ClientBitFlag (clientno)) != 0;
 };
 
 
@@ -1325,7 +1325,12 @@ related functions.
 void() BotImpulses =
 {
     if (self.impulse == 100 || self.impulse == 101)
-        BotConnect (self.impulse - 100, 0, cvar ("skill"));
+    {
+        local float botskill;
+        
+        botskill = cvar ("skill");
+        BotConnect (self.impulse - 100, 0, botskill);
+    }
     else if (self.impulse == 102)
         KickABot();
 

@@ -364,6 +364,8 @@ Update the frag count of the player and his team
 */
 void(entity player, float fragsToAdd) UpdatePlayerFrags =
 {
+    local string score;
+
     player.frags = player.frags + fragsToAdd;
 
     if (gametype == GT_TEAM_BLOODBATH)
@@ -375,9 +377,11 @@ void(entity player, float fragsToAdd) UpdatePlayerFrags =
 
         // Show scores
         Bprint (PRINT_HIGH, "ред╨ ");            // "RED: "
-        Bprint (PRINT_HIGH, ftos (team1score));
+        score = ftos (team1score);
+        Bprint (PRINT_HIGH, score);
         Bprint (PRINT_HIGH, " ╞ блуе╨ ");        // " / BLUE: "
-        Bprint (PRINT_HIGH, ftos (team2score));
+        score = ftos (team2score);
+        Bprint (PRINT_HIGH, score);
         Bprint (PRINT_HIGH, "\n");
     }
 };
@@ -1259,6 +1263,8 @@ called when a player disconnects from a server
 */
 void() ClientDisconnect =
 {
+    local string finalscore;
+
     ClientDisconnected(); // FrikBot
 
     // if the level end trigger has been activated, just return
@@ -1269,7 +1275,8 @@ void() ClientDisconnect =
     // let everyone else know
     Bprint (PRINT_HIGH, self.netname);
     Bprint (PRINT_HIGH, " left this world for another with ");
-    Bprint (PRINT_HIGH, ftos(self.frags));
+    finalscore = ftos (self.frags);
+    Bprint (PRINT_HIGH, finalscore);
     Bprint (PRINT_HIGH, " kills\n");
     sound (self, CHAN_BODY, "thevoice/vo2.wav", 1, ATTN_NONE);
     CTF_PlayerDropFlag ();

@@ -60,6 +60,8 @@ Used when the vote for a gametype is passed
 */
 void(float newGametype) Vote_ChangeGametype =
 {
+    local string gt;
+
     // If it's a CTF game
     if (newGametype >= 4)
         cvar_set ("deathmatch", "2");
@@ -76,7 +78,8 @@ void(float newGametype) Vote_ChangeGametype =
         cvar_set ("teamplay", "1");
 
     Bprint (PRINT_HIGH, "Û Vote passed. Next game type: ");  // "[ Vote passed ..."
-    Bprint (PRINT_HIGH, Vote_GametypeToString (self.impulse));
+    gt = Vote_GametypeToString (self.impulse);
+    Bprint (PRINT_HIGH, gt);
     Bprint (PRINT_HIGH, " Ý\n");  // " ]\n"
 };
 
@@ -228,6 +231,8 @@ Handles the impulses when the client is in the game type menu
 */
 void() Menu_HandleVoteGametype =
 {
+    local string gt;
+
     // If we want to go back to main menu
     if (self.impulse == 10)
     {
@@ -248,7 +253,8 @@ void() Menu_HandleVoteGametype =
     Bprint (PRINT_HIGH, "Û ");  // "[ "
     Bprint (PRINT_HIGH, self.netname);
     Bprint (PRINT_HIGH, " votes for ");
-    Bprint (PRINT_HIGH, Vote_GametypeToString (self.impulse));
+    gt = Vote_GametypeToString (self.impulse);
+    Bprint (PRINT_HIGH, gt);
     Bprint (PRINT_HIGH, " Ý\n");  // " ]\n"
 
     // If the vote is passed

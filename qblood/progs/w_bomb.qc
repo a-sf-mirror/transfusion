@@ -776,6 +776,32 @@ void() DynaThink =
 
 
 /*
+====================
+proximity_mine
+
+Spawn function for proximity mines (BB6 map)
+====================
+*/
+void() proximity_mine =
+{
+    self.owner      = world;
+    #ifdef QUAKEWORLD
+    self.voided     = 0;
+    #endif
+    self.solid      = SOLID_BBOX;
+    self.takedamage = DAMAGE_AIM;
+    self.health     = 1;
+    self.th_die     = GrenadeExplode;
+    self.nextthink  = 0.1;
+    self.pausetime  = time;
+    self.think1     = ProximBombCheck;
+    self.think      = ProximBombThink;
+    self.dmg        = DMG_PROXIMITY_BOMB;
+    setsize (self, '-1 -1 -1', '1 1 1');
+};
+
+
+/*
 ================
 Bomb_Fire
 
