@@ -38,9 +38,11 @@ $frame shot_idle1
 // fire
 $frame shot_fire1 shot_fire2
 
+// alt
+$frame shot_alt1 shot_alt2 shot_alt3
+
 // reload
 $frame shot_reload1 shot_reload2 shot_reload3 shot_reload4 shot_reload5
-$frame shot_reload6 shot_reload7 shot_reload8 shot_reload9 shot_reload10
 
 // draw
 $frame shot_draw1 shot_draw2 shot_draw3 shot_draw4
@@ -69,17 +71,17 @@ $frame ashot_holster6 ashot_holster7
 void() player_shot1 = [$supatt1, player_shot2] { self.weaponframe = $shot_fire1; muzzleflash (); };
 void() player_shot2 = [$supatt2, player_run  ] { self.weaponframe = $shot_fire2; Shot_SpawnShell (); };
 
+// Altfire shot
+void() player_altshot1 = [$supatt1, player_altshot2] { self.weaponframe = $shot_alt1; muzzleflash (); };
+void() player_altshot2 = [$supatt2, player_altshot3] { self.weaponframe = $shot_alt2; };
+void() player_altshot3 = [$supatt2, player_run     ] { self.weaponframe = $shot_alt3; Shot_SpawnShell (); };
+
 // Reload
 void() player_reloadshot1  = [$supatt1, player_reloadshot2 ] { self.weaponframe = $shot_reload1; };
 void() player_reloadshot2  = [$supatt1, player_reloadshot3 ] { self.weaponframe = $shot_reload2; };
 void() player_reloadshot3  = [$supatt1, player_reloadshot4 ] { self.weaponframe = $shot_reload3; };
 void() player_reloadshot4  = [$supatt1, player_reloadshot5 ] { self.weaponframe = $shot_reload4; };
-void() player_reloadshot5  = [$supatt1, player_reloadshot6 ] { self.weaponframe = $shot_reload5; };
-void() player_reloadshot6  = [$supatt1, player_reloadshot7 ] { self.weaponframe = $shot_reload6; };
-void() player_reloadshot7  = [$supatt1, player_reloadshot8 ] { self.weaponframe = $shot_reload7; };
-void() player_reloadshot8  = [$supatt1, player_reloadshot9 ] { self.weaponframe = $shot_reload8; };
-void() player_reloadshot9  = [$supatt1, player_reloadshot10] { self.weaponframe = $shot_reload9; };
-void() player_reloadshot10 = [$supatt1, player_run         ] { self.weaponframe = $shot_reload10; };
+void() player_reloadshot5  = [$supatt1, player_run         ] { self.weaponframe = $shot_reload5; };
 
 // Akimbo shot
 void() player_akshot1 = [$supatt1, player_akshot2] { self.weaponframe = $ashot_fire1; };
@@ -227,7 +229,7 @@ Attack code for the sawed-off
 */
 void() Shot_Attack =
 {
-    self.attack_finished = time + 0.7;
+    self.attack_finished = time + 0.5;
 
     // If it's an altfire shot
     if (self.button1 || self.impulse == 12)
