@@ -1202,7 +1202,6 @@ void() armor_touch =
         Sprint(other, PRINT_MEDIUM, "Tried to pickup illegal armor.\n");
     }
 
-    other.armortype = 0;    // FIXME:  Remove -- this isn't needed.
     other.armorvalue = value;
     if (bit)
         other.items = other.items - (other.items & (IT_ARMOR1 | IT_ARMOR2 | IT_ARMOR3)) + bit;
@@ -1224,7 +1223,6 @@ void() armor_touch =
 };
 
 // Basic Armor
-// FIXME: merge with real armor code when damage types are coded
 
 void() item_armor0 =
     {
@@ -1237,8 +1235,6 @@ void() item_armor0 =
     };
 
 // Spirit Armor
-// FIXME: merge with real armor code when damage types are coded
-
 void() item_armor4 =
     {
     self.touch = armor_touch;
@@ -1304,12 +1300,12 @@ void() bound_other_ammo =
 {
     if (other.ammo_shells > 100)
         other.ammo_shells = 100;
-    if (other.ammo_nails > 200)
-        other.ammo_nails = 200;
+    if (other.ammo_nails > 500)
+        other.ammo_nails = 500;
     if (other.ammo_rockets > 100)
         other.ammo_rockets = 100;
-    if (other.ammo_cells > 100)
-        other.ammo_cells = 100;
+    if (other.ammo_cells > 250)
+        other.ammo_cells = 250;
 };
 
 
@@ -1414,35 +1410,35 @@ void() weapon_touch =
         if (leave && (other.items & IT_SHOTGUN) )
             return;
         new = IT_SHOTGUN;
-        other.ammo_shells = other.ammo_shells + 8;
+        other.ammo_shells = other.ammo_shells + 9;
     }
     else if (self.classname == "weapon_nailgun")
     {
         if (leave && (other.items & IT_NAILGUN) )
             return;
         new = IT_NAILGUN;
-        other.ammo_nails = other.ammo_nails + 30;
+        other.ammo_nails = other.ammo_nails + 50;
     }
     else if (self.classname == "weapon_supernailgun")
     {
         if (leave && (other.items & IT_SUPER_NAILGUN) )
             return;
         new = IT_SUPER_NAILGUN;
-        other.ammo_nails = other.ammo_nails + 30;
+        other.ammo_nails = other.ammo_nails + 48;
     }
     else if (self.classname == "weapon_supershotgun")
     {
         if (leave && (other.items & IT_SUPER_SHOTGUN) )
             return;
         new = IT_SUPER_SHOTGUN;
-        other.ammo_shells = other.ammo_shells + 5;
+        other.ammo_shells = other.ammo_shells + 8;
     }
     else if (self.classname == "weapon_rocketlauncher")
     {
         if (leave && (other.items & IT_ROCKET_LAUNCHER) )
             return;
         new = IT_ROCKET_LAUNCHER;
-        other.ammo_rockets = other.ammo_rockets + 5;
+        other.ammo_rockets = other.ammo_rockets + 6;
     }
     else if (self.classname == "weapon_grenadelauncher")
     {
@@ -1456,17 +1452,18 @@ void() weapon_touch =
         if (leave && (other.items & IT_LIGHTNING) )
             return;
         new = IT_LIGHTNING;
-        other.ammo_cells = other.ammo_cells + 15;
+        other.ammo_cells = other.ammo_cells + 64;
     }
     else if (self.classname == "weapon_voodoodoll")
     {
         if (leave && (other.items & IT_VOODOO_DOLL) )
             return;
         new = IT_VOODOO_DOLL;
-        other.ammo_cells = other.ammo_cells + 10;
+        other.ammo_cells = other.ammo_cells + 100;
     }
     else
         objerror ("weapon_touch: unknown classname");
+
 
     #ifndef QUAKEWORLD
     //ZOID--remove unnessary msgs
@@ -1673,16 +1670,19 @@ void() weapon_lightning =
 
     // Precache the necessary sounds
 
-//    precache_sound ("weapons/tesla/taltac3.wav");
+    precache_sound ("weapons/tesla/taltac3.wav");
 //    precache_sound ("weapons/tesla/tesaltf2.wav");
-    precache_sound ("weapons/tesla/tesaltfr.wav");
+    precache_sound ("weapons/tesla/tessngfr.wav"); //single fire
+    precache_sound ("weapons/tesla/tessnght.wav"); //single hit
+//    precache_sound ("weapons/tesla/tesaltfr.wav");
+ // alt fire
     precache_sound ("weapons/tesla/tesaltht.wav");
-    precache_sound ("weapons/tesla/tesla1.wav");
+ //alt hit
+//    precache_sound ("weapons/tesla/tesla1.wav");
+ // alt charge up
 
-//    precache_sound ("weapons/tesla/teslaz~1.wav");
-//    precache_sound ("weapons/tesla/teslaz~2.wav");
-    precache_sound ("weapons/tesla/tessngfr.wav");
-//    precache_sound ("weapons/tesla/tessnght.wav");  // Hit
+
+    precache_sound ("weapons/tesla/tessuper.wav"); //new alt fire charge up and fire
 
     StartItem ();
 };
