@@ -257,31 +257,32 @@ void(vector org, vector dir, float mspeed) Tesla_LaunchJolt =
 
     jolt = spawn();
 
-    jolt.owner      = self;
-    jolt.movetype   = MOVETYPE_FLYMISSILE;
-    jolt.solid      = SOLID_BBOX;
-    jolt.classname  = "tesla ball";
-    jolt.velocity   = dir * mspeed;
-    jolt.angles     = vectoangles (jolt.velocity);
+    jolt.owner = self;
+    jolt.movetype = MOVETYPE_FLYMISSILE;
+    jolt.solid = SOLID_BBOX;
+    jolt.classname = "tesla ball";
+    jolt.velocity = dir * mspeed;
+    jolt.angles = vectoangles (jolt.velocity);
     if (self.player_state == PS_ALTFIRE)
     {
-        jolt.dmg    = 180;
-        jolt.model  = "progs/bolt2.mdl";
-        jolt.style  = TESLA_BIGJOLT;
+        jolt.dmg = 180;
+        jolt.model = "progs/bolt2.mdl";
+        jolt.style = TESLA_BIGJOLT;
         setorigin (jolt, org);
     }
     else
     {
-        jolt.dmg    = 24;
-        jolt.model  = "progs/teslaball.spr";
-        jolt.style  = TESLA_NORMALJOLT;
-        jolt.alpha  = 0.5;
+        jolt.dmg = 24;
+        jolt.model = "progs/teslaball.spr";
+        jolt.style = TESLA_NORMALJOLT;
+        jolt.effects = EF_ADDITIVE;
+        jolt.alpha = 0.5;
         setorigin (jolt, org + '0 0 4');
     }
-    jolt.touch      = Tesla_JoltTouch;
-    jolt.nextthink  = time + (8000 / mspeed);
-    jolt.think      = SUB_Remove;
-    jolt.reset      = SUB_Remove;
+    jolt.touch = Tesla_JoltTouch;
+    jolt.nextthink = time + (8000 / mspeed);
+    jolt.think = SUB_Remove;
+    jolt.reset = SUB_Remove;
 
     setmodel (jolt, jolt.model);
     setsize (jolt, '0 0 0', '0 0 0');

@@ -111,11 +111,17 @@ void() light_globe =
     makestatic (self);
 };
 
-// Generic code for the foloowing torches / flames
-void(string flame_model) light_flame_generic =
+// Generic code for the following torches / flames
+void(string flame_model, float is_sprite) light_flame_generic =
 {
     precache_model (flame_model);
     setmodel (self, flame_model);
+    if (is_sprite)
+    {
+        self.effects = EF_ADDITIVE;
+        self.alpha = 0.8;
+    }
+
     FireAmbient ();
     makestatic (self);
 };
@@ -123,25 +129,25 @@ void(string flame_model) light_flame_generic =
 // Small wall torch
 void() light_torch_small_walltorch =
 {
-    light_flame_generic ("progs/flame.mdl");
+    light_flame_generic ("progs/flame.mdl", FALSE);
 };
 
 // Large yellow flame
 void() light_flame_large_yellow =
 {
-    light_flame_generic ("progs/flame2.spr");
+    light_flame_generic ("progs/flame2.spr", TRUE);
 };
 
 // Small yellow flame
 void() light_flame_small_yellow =
 {
-    light_flame_generic ("progs/flame.spr");
+    light_flame_generic ("progs/flame.spr", TRUE);
 };
 
 // Small white flame
 void() light_flame_small_white =
 {
-    light_flame_generic ("progs/flame2.mdl");
+    light_flame_generic ("progs/flame2.mdl", FALSE);
 };
 
 

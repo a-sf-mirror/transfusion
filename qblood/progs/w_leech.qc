@@ -412,7 +412,7 @@ void() Leech_Drop =
     #ifndef NEW_MODELS
     setmodel (item, "progs/g_leech.mdl");
     #else
-    setmodel (self, "models/weapons/g_leech.md3");
+    setmodel (item, "models/weapons/g_leech.md3");
     #endif
     setsize (item, '-6 -6 0', '6 8 60');
 
