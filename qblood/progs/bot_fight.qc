@@ -148,7 +148,7 @@ void() bot_dodge_stuff =
             }
         }
     }
-    if (coop)
+    if (gametype == GAMETYPE_COOPERATIVE)
     {
         if (!self.enemy)
         {

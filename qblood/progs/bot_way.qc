@@ -336,7 +336,7 @@ void() DynamicWaypoint =
     }
 // for speed sake, I won't have bots dynamic waypoint in coop
     if (!self.ishuman)
-        if (coop)
+        if (gametype == GAMETYPE_COOPERATIVE)
             return;
 
 // don't waypoint in single player

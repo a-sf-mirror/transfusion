@@ -685,7 +685,7 @@ float(entity thing) priority_for_thing =
             {
                 if (thing.items & IT_INVISIBILITY) //FIXME
                     thisp = 2;
-                else if (coop)
+                else if (gametype == GAMETYPE_COOPERATIVE)
                 {
                     thisp = 100;
                     if (thing.target1.classname == "player")
@@ -880,14 +880,6 @@ float stagger_think;
 
 void() BotAI =
 {
-    // If I'm an observer, enter the game as soon as possible
-    // FIXME: we shouldn't join the red team automatically
-    if (self.observer)
-    {
-        self.impulse = 1;
-        return;
-    }
-
     // am I dead? Fire randomly until I respawn
     // health < 1 is used because fractional healths show up as 0 on normal player
     // status bars, and the mod probably already compensated for that

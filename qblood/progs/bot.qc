@@ -151,56 +151,56 @@ float SVC_UPDATECOLORS  = 17;
 
 // used for the physics & movement AI
 float KEY_MOVEUP        = 1;
-float KEY_MOVEDOWN  = 2;
-float KEY_MOVELEFT  = 4;
+float KEY_MOVEDOWN      = 2;
+float KEY_MOVELEFT      = 4;
 float KEY_MOVERIGHT     = 8;
 float KEY_MOVEFORWARD   = 16;
-float KEY_MOVEBACK  = 32;
+float KEY_MOVEBACK      = 32;
 float KEY_LOOKUP        = 64;
-float KEY_LOOKDOWN  = 128;
-float KEY_LOOKLEFT  = 256;
-float KEY_LOOKRIGHT = 512;
+float KEY_LOOKDOWN      = 128;
+float KEY_LOOKLEFT      = 256;
+float KEY_LOOKRIGHT     = 512;
 
 // these are aiflags for waypoints
 // some overlap to the bot
-float AI_TELELINK_1 = 1; // link type
-float AI_TELELINK_2 = 2; // link type
-float AI_TELELINK_3 = 4; // link type
-float AI_TELELINK_4 = 8; // link type
-float AI_DOORFLAG       = 16; // read ahead
-float AI_PRECISION  = 32; // read ahead + point
-float AI_SURFACE        = 64; // point
-float AI_BLIND      = 128; // read ahead + point
-float AI_JUMP       = 256; // point + ignore
-float AI_DIRECTIONAL    = 512; // read ahead + ignore
-float AI_PLAT_BOTTOM    = 1024; // read ahead
-float AI_RIDE_TRAIN = 2048; // read ahead
-float AI_SUPER_JUMP = 4096; // point + ignore + route test
-float AI_SNIPER     = 8192; // point type
-float AI_AMBUSH     = 16384; // point type
-float AI_DOOR_NO_OPEN   = 32768; // read ahead
-float AI_DIFFICULT  = 65536; // route test
-float AI_TRACE_TEST = 131072; // route test
+float AI_TELELINK_1     = 1;       // link type
+float AI_TELELINK_2     = 2;       // link type
+float AI_TELELINK_3     = 4;       // link type
+float AI_TELELINK_4     = 8;       // link type
+float AI_DOORFLAG       = 16;      // read ahead
+float AI_PRECISION      = 32;      // read ahead + point
+float AI_SURFACE        = 64;      // point
+float AI_BLIND          = 128;     // read ahead + point
+float AI_JUMP           = 256;     // point + ignore
+float AI_DIRECTIONAL    = 512;     // read ahead + ignore
+float AI_PLAT_BOTTOM    = 1024;    // read ahead
+float AI_RIDE_TRAIN     = 2048;    // read ahead
+float AI_SUPER_JUMP     = 4096;    // point + ignore + route test
+float AI_SNIPER         = 8192;    // point type
+float AI_AMBUSH         = 16384;   // point type
+float AI_DOOR_NO_OPEN   = 32768;   // read ahead
+float AI_DIFFICULT      = 65536;   // route test
+float AI_TRACE_TEST     = 131072;  // route test
 
 // these are flags for bots/players (dynamic/editor flags)
-float AI_OBSTRUCTED = 1;
+float AI_OBSTRUCTED     = 1;
 float AI_HOLD_SELECT    = 2;
 float AI_ROUTE_FAILED   = 2;
-float AI_WAIT       = 4;
-float AI_DANGER     = 8;
+float AI_WAIT           = 4;
+float AI_DANGER         = 8;
 
 // addition masks
-float AI_POINT_TYPES    = 29152;
+float AI_POINT_TYPES        = 29152;
 float AI_READAHEAD_TYPES    = 36528;
-float AI_IGNORE_TYPES   = 4864;
+float AI_IGNORE_TYPES       = 4864;
 
-float WM_UNINIT     = 0;
+float WM_UNINIT         = 0;
 float WM_DYNAMIC        = 1;
 float WM_LOADING        = 2;
-float WM_LOADED     = 3;
+float WM_LOADED         = 3;
 // editor modes aren't available in QW, but we retain support of them
 // since the editor is still built into the AI in places
-float WM_EDITOR     = 4;
+float WM_EDITOR         = 4;
 float WM_EDITOR_DYNAMIC = 5;
 float WM_EDITOR_DYNLINK = 6;
 
@@ -213,29 +213,27 @@ float OPT_NOCHAT    = 2;
 #ifndef QUAKEWORLD
 float   active_clients;
 #else
-float       active_clients1, active_clients2;
+float   active_clients1, active_clients2;
 #endif
-float       max_clients, real_frametime;
-float       bot_count, b_options;
+float   max_clients, real_frametime;
+float   bot_count, b_options;
 #ifdef QUAKEWORLD
-float       lasttime;
+float   lasttime;
 #endif
-float       waypoint_mode, dump_mode;
-float       waypoints, direct_route;
+float   waypoint_mode, dump_mode;
+float   waypoints, direct_route;
 #ifdef QUAKEWORLD
-float       userid;
+float   userid;
 #endif
-float       sv_friction, sv_gravity;
-float       sv_accelerate, sv_maxspeed, sv_stopspeed;
+float   sv_friction, sv_gravity;
+float   sv_accelerate, sv_maxspeed, sv_stopspeed;
 entity  fixer;
 entity  route_table;
 entity  b_temp1, b_temp2, b_temp3;
 entity  player_head, phys_head, way_head;
-float       busy_waypoints;
+float   busy_waypoints;
 #ifndef QUAKEWORLD
-float       saved_bots, saved_skills1, saved_skills2, current_bots;
-#else
-float coop = 0; // hack
+float   saved_bots, saved_skills1, saved_skills2, current_bots;
 #endif
 
 // -------ProtoTypes------
@@ -839,7 +837,7 @@ void(string h) BotSayTeam =
     // FBX QW doesn't support teamplay...yet
     #ifndef QUAKEWORLD
     local entity t;
-    if (!teamplay)
+    if (gametype <= GAMETYPE_COOPERATIVE)
         return;
     t = player_head;
     while(t)
@@ -909,7 +907,7 @@ void() BotInit =
     precache_model("progs/s_bubble.spr");
     // the bots return!
     b_options = cvar("saved1");
-    if (coop || (b_options & OPT_SAVEBOTS))
+    if (gametype == GAMETYPE_COOPERATIVE || (b_options & OPT_SAVEBOTS))
     {
         saved_bots = cvar("scratch1");
         saved_skills1 = cvar("scratch2");
@@ -1256,7 +1254,7 @@ void(float whatbot, float whatskill) BotConnect =
     self.b_skill = whatskill;
 
     #ifndef QUAKEWORLD
-    if (teamplay && !coop)
+    if (gametype >= GAMETYPE_BLOODBATH)
     {
         if (whichteam)
             self.b_pants = FindAnotherColor(uself.team - 1);
@@ -1276,6 +1274,9 @@ void(float whatbot, float whatskill) BotConnect =
     PutClientInServer();
 
     #ifndef QUAKEWORLD
+	// Select a team at spawn time
+	self.impulse = whichteam + 1;
+
     // this is risky... could corrupt .way files if done wrong
     // If you're not the gambling type, comment this out
 
