@@ -578,9 +578,7 @@ void() ClientInRankings =
         player_head._last = self;
 
     self._next = player_head;
-    #ifndef QUAKEWORLD
     self._last = world;
-    #endif
     player_head = self;
     #ifdef QUAKEWORLD
     userid = userid + 1;
@@ -626,6 +624,10 @@ void() ClientDisconnected =
         active_clients2 = active_clients2 - (active_clients2 & ClientBitFlag(self.b_clientno - 16));
     else
         active_clients1 = active_clients1 - (active_clients1 & ClientBitFlag(self.b_clientno));
+
+    // If it's a real player, reset the client number
+    if (self.ishuman = TRUE)
+        self.b_clientno = -1;
 };
 /*
 -=-=-=-=-=-=-=-=-=-=-=-=-=-=-=-=-=-=-=-=-=-=-=
