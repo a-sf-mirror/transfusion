@@ -1183,12 +1183,8 @@ void(float big) W_FireLightning =
     {
         big = FALSE;
 
-        // FIXME:  Is the sound needed?
-        if (self.t_width < time)
-        {
-            sound (self, CHAN_WEAPON, "weapons/tesla/tessngfr.wav", 1, ATTN_NORM);
-            self.t_width = time + 0.3;
-        }
+        sound (self, CHAN_WEAPON, "weapons/tesla/tessngfr.wav", 1, ATTN_NORM);
+
         self.ammo_cells = self.ammo_cells - 1;
         mspeed = 1500;
     }
@@ -1951,6 +1947,7 @@ void()  player_axec1;
 void()  player_axed1;
 void()  player_shot1;
 void()  player_nail1;
+void()  player_altnail1;
 void()  player_light1;
 void()  player_altlight1;
 void()  player_rocket1;
@@ -2003,7 +2000,14 @@ void() W_Attack =
     }
     else if (self.weapon == IT_NAILGUN || self.weapon == IT_SUPER_NAILGUN)
     {
-        player_nail1 ();
+        // If it's a tommy gun altfire start
+        if (self.weapon == IT_NAILGUN && (self.impulse == 12 || self.button1))
+        {
+            player_altnail1 ();
+            self.attack_finished = time + 0.2;
+        }
+        else
+            player_nail1 ();
     }
     else if (self.weapon == IT_GRENADE_LAUNCHER || self.weapon == IT_PROXIMITY_BOMB)
     {
@@ -2022,8 +2026,7 @@ void() W_Attack =
         if (self.button0 || self.ammo_cells < 35)
         {
             player_light1();
-            W_FireLightning (FALSE);
-            self.attack_finished = time + 0.1;
+            self.attack_finished = time + 1;
         }
         else
         {
