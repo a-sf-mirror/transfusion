@@ -25,6 +25,11 @@
 	<h2 id="news-section" class="section">News</h2>
 	<ul>
 		<li>
+			<span class="title">October 13, 2003:</span> (by Elric)<br />
+			I am officially resigning from my Lead Programmer position today. Timothy Hale, another co-founder
+			of this project, takes the chair.<p />
+		</li>
+		<li>
 			<span class="title">August 13, 2003:</span> (by Elric)<br />
 			We are not dead yet! Some recent snapshots have been uploaded and the work on the single player
 			modes reintegration continue. The monsters may be back soon, and nearly all models are in MD3
@@ -44,11 +49,6 @@
 			on the CVS repository! I will also upload this website to the repository; so in case someone would
 			be interested in getting the couple of PHP files I use, go visit the CVS module
 			"<?php ViewCvsURL ("website", "website"); ?>".<p />
-		</li>
-		<li>
-			<span class="title">January 21, 2003:</span> (by Elric)<br />
-			The SDK for Transfusion 1.01 has finally been uploaded. It is available in 2 formats:
-			a Win32 installer and a Linux ZIP archive. You can get it from the "Files" page, as usual.<p />
 		</li>
 	</ul>
 </div>
@@ -115,8 +115,8 @@
 			(Lead Artist): any art / design topic
 		</li>
 		<li>
-			<a href="mailto:molivier@users.sourceforge.net">Mathieu "Elric" Olivier</a>
-			(Lead Programmer): any programming topic and the websites
+			<a href="mailto:timhale@planetblood.com">Timothy "protoplasmatic" Hale</a>
+			(Lead Programmer): any programming topic
 		</li>
 	</ul>
 	The Transfusion Project has also a mailing list:
