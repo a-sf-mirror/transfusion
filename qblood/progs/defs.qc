@@ -339,6 +339,11 @@ float       skill;
 #ifdef QUAKEWORLD
 .float          voided;
 #endif
+
+// Observer
+.float observer;
+.float do_observer;
+
 .float      walkframe;
 
 #ifdef QUAKEWORLD
@@ -551,7 +556,9 @@ void(string s) changelevel = #70;
 
 void(string var, string val) cvar_set = #72;    // sets cvar.value
 
-void(entity client, string s) centerprint = #73;    // sprint, but in middle
+// The various versions of centerprint (sprint, but in middle)
+void(entity client, string s) centerprint = #73;
+void(entity client, string s1, string s2) centerprint2 = #73;
 
 void(vector pos, string samp, float vol, float atten) ambientsound = #74;
 

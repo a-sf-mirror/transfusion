@@ -8,6 +8,7 @@ combat.qc
 items.qc
 weapons.qc
 world.qc
+observ.qc
 client.qc
 player.qc
 monsters.qc
@@ -33,3 +34,5 @@ fish.qc			// registered
 shalrath.qc		// registered
 enforcer.qc		// registered
 oldone.qc		// registered
+
+ctf.qc

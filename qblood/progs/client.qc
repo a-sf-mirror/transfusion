@@ -480,6 +480,10 @@ Player entered the suicide command
 */
 void() ClientKill =
 {
+    // can't suicide when observer
+    if (self.observer)
+        return;
+
     Bprint (PRINT_MEDIUM, "Kevorkian approves!\n");
     sound (self, CHAN_AUTO, "thevoice/vo5.wav", 1, ATTN_NORM);
     set_suicide_frame ();
@@ -752,6 +756,12 @@ void() PutClientInServer =
     self.velocity = '0 0 0';
 
     player_stand1 ();
+
+    if (self.do_observer)
+    {
+        BecomeObserver (self);
+        return;
+    }
 
     #ifndef QUAKEWORLD
     if (deathmatch || coop)
@@ -1187,6 +1197,12 @@ void() PlayerPreThink =
         return;
     }
 
+    //ZOID-Observer
+    if (self.observer) {
+        ObserverThink();
+        return;
+    }
+
     if (self.deadflag == DEAD_DYING)
         return; // dying, so do nothing
 
@@ -1395,6 +1411,12 @@ void() PlayerPostThink =
     if (self.deadflag)
         return;
 
+    if (self.observer)
+    {
+        self.modelindex = modelindex_player;  // from CheckPowerups(); the rest is useless
+        return;
+    }
+
     // check to see if player landed and play landing sound
     // no damage taken if not > 300 units high
     if ((self.jump_flag < -300) && (self.flags & FL_ONGROUND) && (self.health > 0))
@@ -1436,6 +1458,11 @@ void() ClientConnect =
     Bprint (PRINT_HIGH, " lives again!\n"); // entered the game
 
     sound (self, CHAN_AUTO, "thevoice/vo1.wav", 1, ATTN_NORM); //Let the Bloodbath Begin!
+
+    #ifndef QUAKEWORLD
+    if (deathmatch)
+    #endif
+        self.do_observer = 1;
 
     // a client connecting during an intermission can cause problems
     if (intermission_running)

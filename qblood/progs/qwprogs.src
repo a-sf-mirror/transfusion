@@ -6,6 +6,7 @@ combat.qc
 items.qc
 weapons.qc
 world.qc
+observ.qc
 client.qc
 spectate.qc
 player.qc
@@ -16,3 +17,4 @@ plats.qc
 misc.qc
 
 server.qc
+ctf.qc

@@ -25,6 +25,7 @@ void (entity targ, entity inflictor, entity attacker, float damage) T_Damage;
 void () player_run;
 void(entity bomb, entity attacker, float rad, entity ignore, string dtype) T_RadiusDamage;
 void() SuperDamageSound;
+entity() identify_player;
 
 
 #define ATTACK_NORMAL  0
@@ -1162,7 +1163,7 @@ void() W_FireGrenade =
     }
 
     setmodel (newmis, "progs/grenade.mdl");
-    setsize (newmis, '-2 -2 -2', '2 2 2');
+    setsize (newmis, '-1 -1 -1', '1 1 1');
     setorigin (newmis, self.origin);
 };
 
@@ -1912,6 +1913,7 @@ void() W_AltFire =
     W_Attack (ATTACK_ALTFIRE);
 };
 
+
 /*
 ============
 ImpulseCommands
@@ -1920,22 +1922,30 @@ ImpulseCommands
 */
 void() ImpulseCommands =
 {
-    if (self.impulse >= 1 && self.impulse <= 9)
-        W_ChangeWeapon ();
+    // Commands forbidden to observers
+    if (!self.observer)
+    {
+        if (self.impulse >= 1 && self.impulse <= 9)
+            W_ChangeWeapon ();
 
-    else if (self.impulse == 10)
-        CycleWeaponCommand ();
-    else if (self.impulse == 11)
-        CycleWeaponReverseCommand ();
-    else if (self.impulse == 12)
-        W_AltFire ();
+        else if (self.impulse == 10)
+            CycleWeaponCommand ();
+        else if (self.impulse == 11)
+            CycleWeaponReverseCommand ();
+        else if (self.impulse == 12)
+            W_AltFire ();
 
-    #ifndef QUAKEWORLD
-    else if (self.impulse == 254)
-        CheatCommand ();
-    else if (self.impulse == 255)
-        QuadCheat ();
-    #endif
+        #ifndef QUAKEWORLD
+        else if (self.impulse == 254)
+            CheatCommand ();
+        else if (self.impulse == 255)
+            QuadCheat ();
+        #endif
+    }
+
+    // Commands allowed to observers
+    if (self.impulse == 141)
+        identify_player ();
 
     self.impulse = 0;
 };

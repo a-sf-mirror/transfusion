@@ -181,7 +181,9 @@ void() PlaceItem =
     oldz = self.origin_z;
     if (!droptofloor())
     {
-        dprint ("Bonus item fell out of level at ");
+        dprint ("Bonus item \"");
+        dprint (self.classname);
+        dprint ("\" fell out of level at ");
         dprint (vtos(self.origin));
         dprint ("\n");
         remove(self);
@@ -578,10 +580,10 @@ void() weapon_touch =
 
     if (self.classname == "weapon_flaregun")
     {
-	if (leave && (other.items & IT_SHOTGUN) )
-	    return;
-	new = IT_SHOTGUN;
-	other.ammo_shells = other.ammo_shells + 8;
+        if (leave && (other.items & IT_SHOTGUN) )
+            return;
+        new = IT_SHOTGUN;
+        other.ammo_shells = other.ammo_shells + 8;
     }
     else if (self.classname == "weapon_nailgun")
     {
@@ -989,6 +991,25 @@ void() item_shells =
     }
     self.weapon = 1;
     self.netname = "box of shotgun shells";  // other choice is "%n shotgun shells"
+    setsize (self, '0 0 0', '32 32 56');
+    StartItem ();
+};
+
+/*QUAKED item_flares (0 .5 .8) (0 0 0) (32 32 32) big
+*/
+
+void() item_flares =
+{
+    self.touch = ammo_touch;
+
+        precache_model ("progs/i_flares.mdl");
+        setmodel (self, "progs/i_flares.mdl");
+    if (self.spawnflags & AMMO_BIG)
+        self.aflag = 40;
+    else
+        self.aflag = 20;
+    self.weapon = 1;
+    self.netname = "box of flares";
     setsize (self, '0 0 0', '32 32 56');
     StartItem ();
 };

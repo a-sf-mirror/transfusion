@@ -556,6 +556,10 @@ void(entity ent) CloneCorpse =
     local entity clone;
     local entity tempEnt;
 
+    // Checkings
+    if (ent.classname == "observer")
+        return;
+
     // Copy the entity characteristics
     clone = spawn ();
     clone.classname = ent.classname;

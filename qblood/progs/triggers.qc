@@ -21,7 +21,7 @@
 #include "common.qh"
 
 
-entity stemp, otemp, s, old;
+entity stemp, otemp, old;
 
 
 void() trigger_reactivate =
@@ -318,10 +318,12 @@ void() play_teleport =
 
 void(vector org) spawn_tfog =
 {
-    s = spawn ();
-    s.origin = org;
-    s.nextthink = time + 0.2;
-    s.think = play_teleport;
+    local entity ent;
+
+    ent = spawn ();
+    ent.origin = org;
+    ent.nextthink = time + 0.2;
+    ent.think = play_teleport;
 
     #ifdef QUAKEWORLD
     WriteByte (MSG_MULTICAST, SVC_TEMPENTITY);
