@@ -889,6 +889,8 @@ void() Bomb_Fire =
     newmis.health = 1;
     newmis.th_die = Bomb_Trigger;  // do not make it explode directly
 
+    newmis.reset = SUB_Remove;
+
     newmis.nextthink = 0.1;
     newmis.think     = BombThink;
 

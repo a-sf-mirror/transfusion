@@ -214,6 +214,7 @@ void() Leech_BallFire =
     // set newmis duration
     newmis.nextthink = time + 5;
     newmis.think = SUB_Remove;
+    newmis.reset = SUB_Remove;
 };
 
 
@@ -318,6 +319,7 @@ void() Leech_Think =
     setsize (newmis, '0 0 0', '0 0 0');
     setorigin (newmis, ballorigin);
     newmis.dmg = 15;
+    newmis.reset = SUB_Remove;
 };
 
 

@@ -277,6 +277,7 @@ void(vector org, vector dir, float mspeed) Tesla_LaunchJolt =
     jolt.touch      = Tesla_JoltTouch;
     jolt.nextthink  = time + (8000 / mspeed);
     jolt.think      = SUB_Remove;
+    jolt.reset      = SUB_Remove;
 
     setmodel (jolt, jolt.model);
     setsize (jolt, '0 0 0', '0 0 0');

@@ -379,6 +379,7 @@ void(entity victim, entity attacker, float burn, float dmgtype) Ignite =
     fire.style      = dmgtype;  // DF_FIRE or DF_MIND
     fire.nextthink  = 0.1;      // ASAP
     fire.think      = Burn;
+    fire.reset      = SUB_Remove;
 
     victim.burner   = fire;     // Link entity to fire.
 };
@@ -426,10 +427,7 @@ void() EmberThink =
 void(float ents) ThrowEmbers =
 {
     // Not in QuakeWorld!
-    #ifdef QUAKEWORLD
-    return;
-    #endif
-
+    #ifndef QUAKEWORLD
     local   entity  fire;
     local   vector  dir;
     local   float   loop;
@@ -466,6 +464,7 @@ void(float ents) ThrowEmbers =
             fire.touch = SUB_Remove;
             fire.nextthink = time + 0.1;
             fire.think = EmberThink;
+            fire.reset = SUB_Remove;
 
             ents = ents - 1;
             if (ents <= 0)
@@ -474,6 +473,7 @@ void(float ents) ThrowEmbers =
 
         loop = loop - 1;
     }
+    #endif
 };
 
 

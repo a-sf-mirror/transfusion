@@ -496,11 +496,12 @@ void(float corpseHealth, void() corpseToGib) BecomeCorpse =
     self.nextthink = time + 30;
     self.think = SUB_Remove;
 
+    self.reset = SUB_Remove;
+
     // Allow some interactions (so the corpses can be destroyed by explosions)
     self.takedamage = DAMAGE_AIM;
 
     // The following fields have already been set correctly for heads
-    // Note: only player's heads can be into this function
     if (self.classname != "head")
     {
         local vector minBbox, maxBbox;

@@ -84,6 +84,12 @@ void () TeamCaptureRegenFlags =
 };
 
 
+void() CTF_FlagReset =
+{
+    RegenFlag (self);
+};
+
+
 void() CTF_FlagTouch =
 {
     local entity p, oself;
@@ -365,6 +371,7 @@ void() item_flag_team1 =
     self.skin = 0;
     self.nextthink = time + 0.2;    // items start after other solids
     self.think = place_flag;
+    self.reset = CTF_FlagReset;
 };
 
 void() item_flag_team2 =
@@ -392,6 +399,7 @@ void() item_flag_team2 =
     self.skin = 1;
     self.nextthink = time + 0.2;    // items start after other solids
     self.think = place_flag;
+    self.reset = CTF_FlagReset;
 };
 
 

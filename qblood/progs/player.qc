@@ -473,6 +473,7 @@ void(string gibname, float dm) ThrowGib =
     new.avelocity_y = random()*600;
     new.avelocity_z = random()*600;
     new.think = SUB_Remove;
+    new.reset = SUB_Remove;
     new.ltime = time;
     new.nextthink = time + 5 + random()*7;
     new.frame = 0;
@@ -550,6 +551,7 @@ void(string gibname, float dm) ThrowHead =
         // Get rid of it in 2 minutes anyway (to avoid too many entities)
         self.nextthink = time + 120;
         self.think = SUB_Remove;
+        self.reset = SUB_Remove;
     }
     else
     {

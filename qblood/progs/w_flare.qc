@@ -280,6 +280,8 @@ entity(entity attacker, vector spot) NewFlare =
     fire.movetype   = MOVETYPE_FLYMISSILE;
     fire.solid      = SOLID_BBOX;
 
+    fire.reset      = SUB_Remove;
+
     return fire;
 };
 

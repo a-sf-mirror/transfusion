@@ -168,6 +168,7 @@ void() Spray_Fire =
 
     newmis.touch = flame_touch;
     newmis.classname = "spike";
+    newmis.reset = SUB_Remove;
     newmis.think = SUB_Remove;
     newmis.nextthink = time + 0.6;
     setmodel (newmis, "progs/sprayfir.spr");

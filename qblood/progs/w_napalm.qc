@@ -175,6 +175,8 @@ void(entity newball) Napalm_ThrowBouncingBall =
     newball.nextthink = time + 0.1;
     newball.think = Napalm_ActivateBall;
 
+    newball.reset = SUB_Remove;
+
     setmodel (newball, "progs/naltball.mdl");
     setsize (newball, '0 0 0', '0 0 0');
 };
@@ -339,6 +341,7 @@ void() Napalm_Fire =
         // set newmis duration
         newmis.nextthink = time + 5;
         newmis.think = SUB_Remove;
+        newmis.reset = SUB_Remove;
     }
     self.currentammo = self.ammo_rockets;
     setorigin (newmis, self.origin + v_forward * 8 + '0 0 16');
