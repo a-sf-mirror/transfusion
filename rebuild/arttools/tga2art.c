@@ -538,8 +538,8 @@ int main (int ArgC, char* ArgV [])
 
    // Header
    printf ("\n"
-           "Tga2Art version " VERSION " by Mathieu Olivier  <elric@mcm.net>\n"
-           "================================================================\n\n"
+           "Tga2Art version " VERSION " by Mathieu Olivier\n"
+           "======================================\n\n"
           );
 
    // Check arguments

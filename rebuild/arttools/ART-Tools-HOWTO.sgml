@@ -5,7 +5,7 @@
 
    <title> ART tools HOWTO </title>
    <author> Mathieu Olivier  <tt>&lt;elric@planetblood.com&gt;</tt> </author>
-   <date>v0.0.2, October 17, 2002 </date>
+   <date>v0.0.3, January 20, 2004 </date>
    <abstract>
       This document aims to describe how to use the ReBUILD Project's tools
       related to ART files.
@@ -33,11 +33,7 @@
       Art2Tga is the utility which extracts tiles from an ART file. It puts
       them in TGA files named "tilesXXXX.tga" where "XXXX" is the internal ART
       index of the tile. Generated pictures are uncompressed and color-mapped
-      (256 colors) TGA files. Unfortunately, their color palette is not included
-      in the ART file, so you need to have the proper "palette.dat" file in the
-      current directory in order to extract them. The palette for "Blood" can be
-      found on <url url="http://www.planetblood.com/bloodsource/rebuild.shtml"
-      name="the ReBUILD Project home page">. <p>
+      (256 colors) TGA files. <p>
       Art2Tga also produces a plain text file (<tt>anidata.ini</tt>) which
       contains the animation data for each tile of the ART file. You can find in
       this text informations related to the speed or the type of an animation
