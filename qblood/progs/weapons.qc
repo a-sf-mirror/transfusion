@@ -652,7 +652,7 @@ void() SpawnBouncingNapalmBall =
     setsize (newmis, '-1 -1 -1', '1 1 1');
 
     // spawn the ball just behind the missile
-    setorigin (newmis, self.origin - v_forward);
+    setorigin (newmis, self.origin - 8 * v_forward);
 };
 
 
