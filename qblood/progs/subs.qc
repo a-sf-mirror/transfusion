@@ -357,115 +357,58 @@ void() SUB_UseTargets =
 
 /*
 =======================
-SUB_GetPointedPlayer
+SUB_GetPointedClass
 
-Returns the player you are pointed towards
-
-Copyright (C) 1997  Nat Friedman
-By Suck (Nat Friedman); hacked by Zoid for CTF4
-=======================
-*/
-entity(float closeness) SUB_GetPointedPlayer =
-{
-    // e is a temp entity; guy is our current best guess
-    // as to at whom the player is pointing
-    local entity e, guy;
-
-    // Temp vars.
-    local vector diff, point, start_point;
-    local float currclose, length;
-	
-    // Normalize self.angles so we can do a length-independent
-    // consideration
-    makevectors (self.v_angle);
-
-    start_point = self.origin + self.view_ofs;
-
-    // Walk the list of players...
-    e = find(world, classname, "player");
-    while (e != world)
-    {
-        // Get a vector pointing from the viewer to the current
-        // player under consideration
-        diff = e.origin - start_point;
-        length = vlen (diff);
-
-        // Normalize it since we only care where he's pointing,
-        // not how far away the guy is.
-        diff = normalize (diff);
-
-        // Find the different between the current player's angle
-        // and the viewer's vision angle
-        diff = diff - v_forward;
-
-        // The length is going to be our definition of closeness
-        currclose = vlen (diff) * length / 500;
-        traceline (start_point, e.origin, FALSE, self);
-        if (trace_ent == e && (closeness == -1 || currclose < closeness)) {
-            closeness = currclose;
-            guy = e;
-        }
-        e = find (e, classname, "player");
-    }
-
-    return guy;
-};
-
-/*
-=======================
-SUB_GetPointedMonster
-
-Returns the player you are pointed towards
+Returns the entity of the relevant class you are pointed towards
 
 Copyright (C) 1997  Nat Friedman
 By Suck (Nat Friedman); hacked by Zoid for CTF4
 =======================
 */
-entity(float closeness) SUB_GetPointedMonster =
+entity(string targ_class, float closeness) SUB_GetPointedClass =
 {
-    // e is a temp entity; guy is our current best guess
-    // as to at whom the player is pointing
-    local entity e, guy;
+	// e is a temp entity; guy is our current best guess
+	// as to at whom the player is pointing
+	local entity e, guy;
 
-    // Temp vars.
-    local vector diff, point, start_point;
-    local float currclose, length;
+	// Temp vars.
+	local vector diff, point, start_point;
+	local float currclose, length;
 
-    // Normalize self.angles so we can do a length-independent
-    // consideration
-    makevectors (self.v_angle);
+	// Normalize self.angles so we can do a length-independent
+	// consideration
+	makevectors (self.v_angle);
 
-    start_point = self.origin + self.view_ofs;
+	start_point = self.origin + self.view_ofs;
 
-    // Walk the list of monsters...
-    e = find(world, netname, "monster");
-    while (e != world)
-    {	    
-        // Get a vector pointing from the viewer to the current
-        // player under consideration
-        diff = e.origin - start_point;
-        length = vlen (diff);
+	// Walk the list of entities...
+	e = find(world, classname, targ_class);
+	while (e != world)
+	{
+		// Get a vector pointing from the viewer to the current
+		// player under consideration
+		diff = e.origin - start_point;
+		length = vlen (diff);
 
-        // Normalize it since we only care where he's pointing,
-        // not how far away the guy is.
-        diff = normalize (diff);
+		// Normalize it since we only care where he's pointing,
+		// not how far away the guy is.
+		diff = normalize (diff);
 
-        // Find the different between the current player's angle
-        // and the viewer's vision angle
-        diff = diff - v_forward;
+		// Find the different between the current player's angle
+		// and the viewer's vision angle
+		diff = diff - v_forward;
 
-        // The length is going to be our definition of closeness
-        currclose = vlen (diff) * length / 500;
-        traceline (start_point, e.origin, FALSE, self);
-        if (trace_ent == e && (closeness == -1 || currclose < closeness)) 
-		{
-            closeness = currclose;
-            guy = e;
-        }
-        e = find (e, netname, "monster");
-    }
+		// The length is going to be our definition of closeness
+		currclose = vlen (diff) * length / 500;
+		traceline (start_point, e.origin, FALSE, self);
+		if (trace_ent == e && (closeness == -1 || currclose < closeness)) {
+			closeness = currclose;
+			guy = e;
+		}
+		e = find (e, classname, targ_class);
+	}
 
-    return guy;
+	return guy;
 };
 
 
@@ -480,7 +423,7 @@ void() identify_player =
 {
     local entity guy;
 
-    guy = SUB_GetPointedPlayer (-1);
+    guy = SUB_GetPointedClass ("player", -1);
 
     if (guy == world)
         centerprint (self, "You're not looking at anyone!");

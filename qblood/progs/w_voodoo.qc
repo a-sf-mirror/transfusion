@@ -123,40 +123,41 @@ Apply the spiritual damage of the voodoo doll
 */
 void(float damage) Voodoo_ApplyDamage =
 {
-    local entity targ;
-    local string death_type;
+	local entity targ;
+	local string death_type;
+	local string targ_class;
 
-    death_type = "voodoo";
+	death_type = "voodoo";
 
-    if (gametype != GT_COOPERATIVE && gametype != GT_SINGLE_PLAYER)
-	    targ = SUB_GetPointedPlayer (0.15);
-
+	if (gametype != GT_COOPERATIVE && gametype != GT_SINGLE_PLAYER)
+		targ_class = "player";
 	else // SP or Coop mode
-	    targ = SUB_GetPointedMonster (0.15);
+		targ_class = "monster";
+	targ = SUB_GetPointedClass (targ_class, 0.15);
 
-    // If we had a target that can be damaged and seems alive
-    if (targ != world && targ.takedamage)
-    {
-        SpawnBlood (targ.origin, '0 0 0', damage);
-    }
-    // Else, WE take the damage
-    else
-    {
-        targ = self;
-        damage = 1;
-    }
-
-    // We don't consume ammo if we don't hit a target (except for altfire)
-    if (self.player_state == PS_ALTFIRE)
+	// If we had a target that can be damaged and seems alive
+	if (targ != world && targ.takedamage)
 	{
-        self.ammo_voodoo = 0;
+		SpawnBlood (targ.origin, '0 0 0', damage);
+	}
+	// Else, WE take the damage
+	else
+	{
+		targ = self;
+		damage = 1;
+	}
+
+	// We don't consume ammo if we don't hit a target (except for altfire)
+	if (self.player_state == PS_ALTFIRE)
+	{
+		self.ammo_voodoo = 0;
 		death_type = "alt-voodoo";
 	}	
-    else if (targ != self)
-        self.ammo_voodoo = self.ammo_voodoo - damage / 4;
-    self.currentammo = self.ammo_voodoo;
+	else if (targ != self)
+		self.ammo_voodoo = self.ammo_voodoo - damage / 4;
+	self.currentammo = self.ammo_voodoo;
 
-    T_Damage (targ, self, self, damage, DF_MIND, death_type);
+	T_Damage (targ, self, self, damage, DF_MIND, death_type);
 };
 
 
