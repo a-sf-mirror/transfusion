@@ -53,24 +53,26 @@ void() W_Precache =
 /*
     precache_sound ("weapons/flaregun/flarefuw.wav");
 
+*/
     // sawed-off
-    precache_sound ("weapons/shotgun/sawcock1.wav");
+//    precache_sound ("weapons/shotgun/sawcock1.wav");
+ //same as shotcock.wav
     precache_sound ("weapons/shotgun/shotcock.wav");
     precache_sound ("weapons/shotgun/shotfir2.wav");
-*/
+  //shotgun alt-fire
     precache_sound ("weapons/shotgun/shotfire.wav");  // shotgun fired
-//    precache_sound ("weapons/shotgun/shotload.wav");
+    precache_sound ("weapons/shotgun/shotload.wav");
 
     // tommy gun
     precache_sound ("weapons/tommygun/_tom.wav");  // Tommy gun
-//    precache_sound ("weapons/tommygun/tomcock.wav");
+    precache_sound ("weapons/tommygun/tomcock.wav");
+ // out of bullet noise
 
     // napalm launcher
     precache_sound ("weapons/napalm/blaster.wav");  // Napalm launcher
-    precache_sound ("weapons/napalm/explodcs.wav");  // REMOVEME: not used
-    precache_sound ("weapons/napalm/explodfl.wav");  // REMOVEME: not used
-
 /*
+    precache_sound ("weapons/napalm/explodcs.wav");
+    precache_sound ("weapons/napalm/explodfl.wav");
     precache_sound ("weapons/napalm/burn.wav");
     precache_sound ("weapons/napalm/explodul.wav");
     precache_sound ("weapons/napalm/explodus.wav");
