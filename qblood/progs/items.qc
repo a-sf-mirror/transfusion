@@ -488,7 +488,9 @@ float(float w) RankForWeapon =
         return 5;
     if (w == IT_NAILGUN)
         return 6;
-    return 7;
+    if (w == IT_VOODOO_DOLL)
+        return 7;
+    return 8;
 };
 
 float (float w) WeaponCode =
@@ -505,6 +507,8 @@ float (float w) WeaponCode =
         return 7;
     if (w == IT_LIGHTNING)
         return 8;
+    if (w == IT_VOODOO_DOLL)
+        return 9;
     return 1;
 };
 
@@ -613,6 +617,13 @@ void() weapon_touch =
             return;
         new = IT_LIGHTNING;
         other.ammo_cells = other.ammo_cells + 15;
+    }
+    else if (self.classname == "weapon_voodoodoll")
+    {
+        if (leave && (other.items & IT_VOODOO_DOLL) )
+            return;
+        new = IT_VOODOO_DOLL;
+        other.ammo_cells = other.ammo_cells + 10;
     }
     else
         objerror ("weapon_touch: unknown classname");
@@ -752,7 +763,7 @@ void() weapon_grenadelauncher =
 {
     precache_model ("progs/g_rock.mdl");
     setmodel (self, "progs/g_rock.mdl");
-    self.weapon = 3;
+    self.weapon = IT_GRENADE_LAUNCHER;
     self.netname = "Dynamite";
     self.touch = weapon_touch;
     setsize (self, '-16 -16 0', '16 16 56');
@@ -766,7 +777,7 @@ void() weapon_rocketlauncher =
 {
     precache_model ("progs/g_rock2.mdl");
     setmodel (self, "progs/g_rock2.mdl");
-    self.weapon = 3;
+    self.weapon = IT_ROCKET_LAUNCHER;
     self.netname = "Napalm Launcher";
     self.touch = weapon_touch;
     setsize (self, '-16 -16 0', '16 16 56');
@@ -793,7 +804,7 @@ void() weapon_lightning =
 {
     precache_model ("progs/g_light.mdl");
     setmodel (self, "progs/g_light.mdl");
-    self.weapon = 3;
+    self.weapon = IT_LIGHTNING;
     self.netname = "Tesla Cannon";
     self.touch = weapon_touch;
     setsize (self, '-16 -16 0', '16 16 56');
@@ -810,6 +821,25 @@ void() weapon_lightning =
 //    precache_sound ("weapons/tesla/teslaz~2.wav");
     precache_sound ("weapons/tesla/tessngfr.wav");
 //    precache_sound ("weapons/tesla/tessnght.wav");  // Hit
+
+    StartItem ();
+};
+
+
+/*QUAKED weapon_voodoodoll (0 .5 .8) (-16 -16 0) (16 16 32)
+*/
+
+void() weapon_voodoodoll =
+{
+    precache_model ("progs/g_voodoo.mdl");
+    setmodel (self, "progs/g_voodoo.mdl");
+    self.weapon = IT_VOODOO_DOLL;
+    self.netname = "Voodoo Doll";
+    self.touch = weapon_touch;
+    setsize (self, '-16 -16 0', '16 16 56');
+
+    // Precache the necessary sounds
+    precache_sound ("weapons/voodoodl/voostab.wav");
 
     StartItem ();
 };
@@ -1635,6 +1665,8 @@ void() DropBackpack =
         item.netname = "Napalm Launcher";
     else if (item.items == IT_LIGHTNING)
         item.netname = "Tesla Cannon";
+    else if (item.items == IT_VOODOO_DOLL)
+        item.netname = "Voodoo Doll";
     else
         item.netname = "";
     // need voodoo doll, tnt variants, life leech

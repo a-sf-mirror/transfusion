@@ -585,6 +585,7 @@ void() fd_secret_done;
 #define SECRET_1ST_DOWN     4   // 1st move is down from arrow
 #define SECRET_NO_SHOOT     8   // only opened by trigger
 #define SECRET_YES_SHOOT    16  // shootable even if targeted
+#define SECRET_NEVER        32  // lock it shut
 
 
 void () fd_secret_use =
@@ -600,6 +601,9 @@ void () fd_secret_use =
     self.message = string_null;     // no more message
 
     SUB_UseTargets();               // fire all targets / killtargets
+
+    if (self.spawnflags & SECRET_NEVER)
+        return;  // it never opens
 
     if (!(self.spawnflags & SECRET_NO_SHOOT))
     {

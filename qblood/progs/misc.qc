@@ -487,22 +487,26 @@ void() sentry_detect_think =
     }
 
     // If the someone has entered the area since the last check
-    if (lcnt > self.cnt)
+    // NOTE: there's a mimimum time between each warning (6 sec)
+    if (lcnt > self.cnt && self.ltime < time)
+    {
         sound (self, CHAN_VOICE, self.noise, 1, ATTN_NORM);
+        self.ltime = time + 6;
+    }
 
+    // Update sentry data
     self.cnt = lcnt;
-    self.nextthink = time + self.ltime;
+    self.nextthink = time + 0.2;  // check every 200 ms
 };
 
 void(string soundname) sentry_detect_init =
 {
     // Set parameters
     self.noise = soundname;
-    self.ltime = 0.2;  // check every 200 ms
 
     // Initialize some stuff
     precache_sound (self.noise);
-    self.nextthink = time + self.ltime;
+    self.nextthink = time + 0.2;  // check every 200 ms
     self.think = sentry_detect_think;
 };
 

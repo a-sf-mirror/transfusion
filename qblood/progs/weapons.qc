@@ -70,7 +70,6 @@ void() W_Precache =
     precache_sound ("weapons/voodoodl/vooburn.wav");
     precache_sound ("weapons/voodoodl/voochant.wav");
     precache_sound ("weapons/voodoodl/voolaugh.wav");
-    precache_sound ("weapons/voodoodl/voostab.wav");
 
     // common sounds - some are in the C code, some aren't
     precache_sound ("weapons/bflesh.wav");
@@ -843,7 +842,83 @@ void() W_FireLightning =
 };
 
 
-//=============================================================================
+/*
+===============================================================================
+
+VOODOO DOLL
+
+===============================================================================
+*/
+
+#define DMG_VOODOO_DOLL 15
+
+/*
+================
+W_UseVoodooDoll
+
+Attack with the voodoo doll
+================
+*/
+void() W_UseVoodooDoll =
+{
+    local vector dir;
+    local vector src;
+    local vector vel, org;
+
+    sound (self, CHAN_WEAPON, "weapons/voodoodl/voostab.wav", 1, ATTN_NORM);
+
+    self.currentammo = self.ammo_cells = self.ammo_cells - 1;
+
+    dir = aim (self, 100000);
+
+    makevectors(self.v_angle);
+
+    src = self.origin + v_forward*10;
+    src_z = self.absmin_z + self.size_z * 0.7;
+
+    traceline (src, src + dir*2048, FALSE, self);
+
+    // If we had a target that can be damaged and seems alive
+    #ifdef QUAKEWORLD
+    if (trace_fraction != 1.0 && trace_ent.takedamage && trace_ent.classname == "player")
+    #else
+    if (trace_fraction != 1.0 && trace_ent.takedamage && ((trace_ent.flags & FL_MONSTER) || trace_ent.classname == "player"))
+    #endif
+    {
+        org = trace_endpos - dir*4;
+
+        vel = normalize(dir + v_up*crandom() + v_right*crandom());
+        vel = vel + 2*trace_plane_normal;
+        vel = vel * 200;
+
+        #ifdef QUAKEWORLD
+        WriteByte (MSG_MULTICAST, SVC_TEMPENTITY);
+        WriteByte (MSG_MULTICAST, TE_BLOOD);
+        WriteByte (MSG_MULTICAST, 1);
+        WriteCoord (MSG_MULTICAST, org_x);
+        WriteCoord (MSG_MULTICAST, org_y);
+        WriteCoord (MSG_MULTICAST, org_z);
+        multicast (puff_org, MULTICAST_PVS);
+        #else
+        SpawnBlood (org, vel*0.2, DMG_VOODOO_DOLL);
+        #endif
+
+        T_Damage (trace_ent, self, self, DMG_VOODOO_DOLL);
+    }
+
+    // Else, WE take the damage
+    else
+        T_Damage (self, self, self, DMG_VOODOO_DOLL);
+};
+
+
+/*
+===============================================================================
+
+GRENADES, TNT, BOMBS ...
+
+===============================================================================
+*/
 
 #define DMG_TNT            120
 #define DMG_PROXIMITY_BOMB 150
@@ -1312,6 +1387,13 @@ void() W_SetCurrentAmmo =
         self.weaponframe = 0;
         self.items = self.items | IT_CELLS;
     }
+    else if (self.weapon == IT_VOODOO_DOLL)
+    {
+        self.currentammo = self.ammo_cells;
+        self.weaponmodel = "progs/v_voodoo.mdl";
+        self.weaponframe = 0;
+        self.items = self.items | IT_CELLS;
+    }
     else
     {
         self.currentammo = 0;
@@ -1340,6 +1422,8 @@ float() W_BestWeapon =
         return IT_NAILGUN;
     if(self.ammo_shells >= 1 && (it & IT_SHOTGUN) )
         return IT_SHOTGUN;
+    if(self.ammo_cells >= 1 && (it & IT_VOODOO_DOLL) )
+        return IT_VOODOO_DOLL;
 
     return IT_AXE;
 };
@@ -1434,6 +1518,12 @@ void() W_Attack =
         sound (self, CHAN_AUTO, "weapons/tesla/teslaz~1.wav", 1, ATTN_NORM);
         player_light1();
     }
+    else if (self.weapon == IT_VOODOO_DOLL)
+    {
+        player_shot1 ();  // FIXME: we should call a "player_???"
+        self.attack_finished = time + 0.7;
+        W_UseVoodooDoll ();
+    }
 };
 
 /*
@@ -1495,6 +1585,12 @@ void() W_ChangeWeapon =
         if (self.ammo_cells < 1)
             am = 1;
     }
+    else if (self.impulse == 9)
+    {
+        fl = IT_VOODOO_DOLL;
+        if (self.ammo_cells < 1)
+            am = 1;
+    }
 
     self.impulse = 0;
 
@@ -1547,6 +1643,7 @@ void() CheatCommand =
     self.ammo_rockets = 100;
     self.ammo_nails = 200;
     self.ammo_shells = 100;
+    self.ammo_cells = 200;
     self.items = self.items |
         IT_AXE |
         IT_SHOTGUN |
@@ -1555,10 +1652,9 @@ void() CheatCommand =
         IT_SUPER_NAILGUN |
         IT_GRENADE_LAUNCHER |
         IT_ROCKET_LAUNCHER |
+        IT_LIGHTNING |
+        IT_VOODOO_DOLL |
         IT_KEY1 | IT_KEY2;
-
-    self.ammo_cells = 200;
-    self.items = self.items | IT_LIGHTNING;
 
     self.weapon = IT_ROCKET_LAUNCHER;
     self.impulse = 0;
@@ -1584,7 +1680,7 @@ void() CycleWeaponCommand =
     {
         am = 0;
 
-        if (self.weapon == IT_LIGHTNING)
+        if (self.weapon == IT_VOODOO_DOLL)
         {
             self.weapon = IT_AXE;
         }
@@ -1630,6 +1726,12 @@ void() CycleWeaponCommand =
             if (self.ammo_cells < 1)
                 am = 1;
         }
+        else if (self.weapon == IT_LIGHTNING)
+        {
+            self.weapon = IT_VOODOO_DOLL;
+            if (self.ammo_cells < 1)
+                am = 1;
+        }
 
         if ( (self.items & self.weapon) && am == 0)
         {
@@ -1657,7 +1759,13 @@ void() CycleWeaponReverseCommand =
     {
         am = 0;
 
-        if (self.weapon == IT_LIGHTNING)
+        if (self.weapon == IT_VOODOO_DOLL)
+        {
+            self.weapon = IT_LIGHTNING;
+            if (self.ammo_cells < 1)
+                am = 1;
+        }
+        else if (self.weapon == IT_LIGHTNING)
         {
             self.weapon = IT_ROCKET_LAUNCHER;
             if (self.ammo_rockets < 1)
@@ -1699,7 +1807,7 @@ void() CycleWeaponReverseCommand =
         }
         else if (self.weapon == IT_AXE)
         {
-            self.weapon = IT_LIGHTNING;
+            self.weapon = IT_VOODOO_DOLL;
             if (self.ammo_cells < 1)
                 am = 1;
         }
@@ -1748,7 +1856,7 @@ ImpulseCommands
 */
 void() ImpulseCommands =
 {
-    if (self.impulse >= 1 && self.impulse <= 8)
+    if (self.impulse >= 1 && self.impulse <= 9)
         W_ChangeWeapon ();
 
     else if (self.impulse == 10)
@@ -1758,8 +1866,19 @@ void() ImpulseCommands =
     else if (self.impulse == 12)
         CycleWeaponReverseCommand ();
 
+    // FIXME: this is a Evil Hack (TM) to fix the ghost bug. Must be removed ASAP
+    else if (self.impulse == 38 && self.deadflag == DEAD_NO)
+    {
+        Bprint (PRINT_HIGH, "===== YOUR CURRENT VALUES =====\n>>> self.deadflag = ");
+        Bprint (PRINT_HIGH, ftos (self.deadflag));
+        Bprint (PRINT_HIGH, "\n>>> self.solid = ");
+        Bprint (PRINT_HIGH, ftos (self.solid));
+        Bprint (PRINT_HIGH, "\n>>> Setting self.solid to SOLID_SLIDEBOX (3)...\n");
+        self.solid = SOLID_SLIDEBOX;
+    }
+
     #ifndef QUAKEWORLD
-    else if (self.impulse == 9)
+    else if (self.impulse == 254)
         CheatCommand ();
     else if (self.impulse == 255)
         QuadCheat ();

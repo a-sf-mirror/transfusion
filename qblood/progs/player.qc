@@ -521,11 +521,14 @@ void() HeadTouch =
     sound(other, CHAN_ITEM, "foley/punt.wav", 1, ATTN_NORM);
 
     // Destroy the head, kick after kick
-    self.health = self.health - 10;
-    if (self.health < 0)
+    if (self.takedamage != DAMAGE_NO)
     {
-        HeadDie ();
-        return;
+        self.health = self.health - 10;
+        if (self.health < 0)
+        {
+            HeadDie ();
+            return;
+        }
     }
 
     // define velocity
@@ -724,7 +727,7 @@ void() PlayerDie =
 };
 
 void() set_suicide_frame =
-{   // used by klill command and diconnect command
+{   // used by kill command and disconnect command
     if (self.model != "progs/player.mdl")
         return; // allready gibbed
     self.frame = $deatha11;

@@ -232,6 +232,7 @@ void() worldspawn =
     precache_sound ("foley/undchoke.wav");        // taking breath
     precache_sound ("bludbath/message.wav");    // talk
 //    precache_sound ("player/play1115.wav");    // telefrag - evil laugh
+    precache_sound ("firepod/fpodcol2.wav");    // telefrag sound
     precache_sound ("misc/r_tele1.wav");        // teleport sounds
     precache_sound ("misc/r_tele2.wav");    // these are all qbasetry.wav
     precache_sound ("misc/r_tele3.wav");
@@ -360,6 +361,8 @@ void() worldspawn =
     precache_model ("progs/v_shot2.mdl");
     precache_model ("progs/v_nail2.mdl");
     precache_model ("progs/v_rock2.mdl");
+    precache_model ("progs/v_light.mdl");
+    precache_model ("progs/v_voodoo.mdl");
 
     precache_model ("progs/shotshl.mdl");   // shotgun shell
     precache_model ("progs/tommyshl.mdl");  // tommy gun shell
@@ -377,8 +380,6 @@ void() worldspawn =
     precache_model ("progs/backpack.mdl");
 
     precache_model ("progs/zom_gib.mdl");
-
-    precache_model ("progs/v_light.mdl");
 
 
 //
@@ -492,6 +493,7 @@ void(float corpseHealth, void() corpseToGib) BecomeCorpse =
     self.th_melee = SUB_Null;
     self.th_pain = SUB_Null;
     self.flags = self.flags - (self.flags & FL_MONSTER);
+    self.deadflag = DEAD_DEAD;
 
     // Corpse will turn into gibs if destroyed
     self.health = corpseHealth / 2;
@@ -508,11 +510,7 @@ void(float corpseHealth, void() corpseToGib) BecomeCorpse =
         self.touch = CorpseTouch;
         self.solid = SOLID_BBOX;
 
-        // make shamblers bigger
-        if (self.classname == "monster_shambler")
-            setsize (self, '-32 -32 -24', '32 32 -14');
-        else
-            setsize (self, '-32 -32 -24', '32 32 -19');
+        setsize (self, '-32 -32 -24', '32 32 -19');
 
         self.classname = "corpse";
     }

@@ -81,16 +81,17 @@
 #define DAMAGE_YES  1
 #define DAMAGE_AIM  2
 
-// items (32 max; each value must be a power of 2)
+// items (24 max; each value must be a power of 2)
 #define IT_AXE              4096     // 13 - pitchfork
 #define IT_SHOTGUN          1        // 1  - flaregun
 #define IT_SUPER_SHOTGUN    2        // 2  - sawed-off
 #define IT_NAILGUN          4        // 3  - tommy gun
-#define IT_SUPER_NAILGUN    8        // 4  - spray can
+#define IT_ROCKET_LAUNCHER  8        // 4  - napalm launcher
 #define IT_GRENADE_LAUNCHER 16       // 5  - tnt
-#define IT_ROCKET_LAUNCHER  32       // 6  - napalm launcher
+#define IT_SUPER_NAILGUN    32       // 6  - spray can
 #define IT_LIGHTNING        64       // 7  - tesla cannon
 #define IT_PROXIMITY_BOMB   128      // 8  - proximity bomb
+#define IT_VOODOO_DOLL      8388608  // 24 - voodoo doll
 
 #define IT_SHELLS           256      // 9  - shot shells
 #define IT_NAILS            512      // 10 - drum of  bullets
