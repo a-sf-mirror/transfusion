@@ -699,7 +699,7 @@ float(entity thing) priority_for_thing =
             if (self.team == TEAM_COLOR1)
             {
                 // If we have the blue flag, we must return it to our base
-                if (self.items2 & IT2_ENEMY_FLAG)
+                if (self.items & IT_ENEMY_FLAG)
                     thisp = 150;
             }
             // else, let's capture the flag!
@@ -712,7 +712,7 @@ float(entity thing) priority_for_thing =
             if (self.team == TEAM_COLOR2)
             {
                 // If we have the red flag, we must return it to our base
-                if (self.items2 & IT2_ENEMY_FLAG)
+                if (self.items & IT_ENEMY_FLAG)
                     thisp = 150;
             }
             // else, let's capture the flag!

@@ -51,8 +51,18 @@
 #define FL_JUMPRELEASED     4096 // for jump debouncing
 
 // edict.spawnflags
-// let 6 flags (1 -> 32) free for each entity type
-#define SF_USABLE           64   // Can be triggered manually by a client
+// let 10 flags (1 -> 512) free for each entity type
+#define SF_PRIVATE1         1
+#define SF_PRIVATE2         2
+#define SF_PRIVATE3         4
+#define SF_PRIVATE4         8
+#define SF_PRIVATE5         16
+#define SF_PRIVATE6         32
+#define SF_PRIVATE7         64
+#define SF_PRIVATE8         128
+#define SF_PRIVATE9         256
+#define SF_PRIVATE10        512
+#define SF_USABLE           1024    // Can be triggered manually by a client
 
 
 // edict.movetype values
@@ -105,35 +115,97 @@
 #define DAMAGE_YES  1
 #define DAMAGE_AIM  2
 
-// --- Items (24 max; each value must be a power of 2) ---
+
+// ------ Impulses ------
+
+#define IMP_NONE             0
+
+// Standard weapons (1 - 10)
+#define IMP_PITCHFORK        1
+#define IMP_FLAREGUN         2
+#define IMP_SAWED_OFF        3
+#define IMP_TOMMYGUN         4
+#define IMP_NAPALM_LAUNCHER  5
+#define IMP_BOMBS            6
+#define IMP_SPRAY_CAN        7
+#define IMP_TESLA_CANNON     8
+#define IMP_LIFE_LEECH       9
+#define IMP_VOODOO_DOLL      10
+
+// Other weapons (11 - 20)
+// ... (?) ...
+
+// Other action impulses (21 - 34)
+#define IMP_WEAP_NEXT        21
+#define IMP_WEAP_PREV        22
+#define IMP_INV_NEXT         23
+#define IMP_INV_PREV         24
+#define IMP_INV_USE          25
+#define IMP_ARMOR_NEXT       26
+#define IMP_IDENT_PLAYER     27
+
+// Shortcuts for weapons (35 - 39)
+#define IMP_PROXIMITY_BOMB   35
+#define IMP_REMOTE_DETONATOR 36
+
+// Shortcuts for inventory (40 - 49)
+#define IMP_FIRST_AID        40
+#define IMP_CRYSTAL_BALL     41
+#define IMP_BEAST_VISION     42
+#define IMP_JUMP_BOOTS       43
+
+// Other impulses (50+)
+#define IMP_BOT_ADD_RED      50
+#define IMP_BOT_ADD_BLUE     51
+#define IMP_BOT_KICK         52
+#define IMP_BOT_CAM          53  // CHEAT PROTECTED
+#define IMP_BOT_WAYPT_EDIT   54  // Waypoints edit mode - CHEAT PROTECTED
+#define IMP_MENU             55
+#define IMP_OBSERVER         56
+
+// Cheats (from 254, going down)
+// WARNING: all of them are CHEAT PROTECTED
+#define IMP_CHEAT_BOD        250  // Brink Of Death
+#define IMP_CHEAT_ARMOR      251  // griswold - full armor
+#define IMP_CHEAT_IN_FIRE    252  // mcgee - you're in fire
+#define IMP_CHEAT_INVENT     253  // Inventory cheat
+#define IMP_CHEAT_AKIMBO     254  // Give you Akimbo!
+
+// Coredump; for debugging (CHEAT PROTECTED)
+#define IMP_COREDUMP         255
+
+
+// --- Items (24 max in each field; each value must be a power of 2) ---
+
 // In ".items"
-#define IT_PITCHFORK        4096     // 13 - pitchfork (formerly: axe)
-#define IT_FLAREGUN         1        // 1  - flaregun (formerly: shotgun)
-#define IT_SAWED_OFF        2        // 2  - sawed-off (formerly: super shotgun)
-#define IT_TOMMYGUN         4        // 3  - tommy gun (formerly: nailgun)
-#define IT_NAPALM_LAUNCHER  8        // 4  - napalm launcher (formerly: super nailgun)
-#define IT_TNT              16       // 5  - tnt (formerly: grenade launcher)
-#define IT_PROXIMITY_BOMB   128      // 8  - proximity bomb
-#define IT_REMOTE_DETONATOR 262144   // 19 - remote detonator
-#define IT_SPRAY_CAN        32       // 6  - spray can (formerly: rocket launcher)
-#define IT_TESLA_CANNON     64       // 7  - tesla cannon (formerly: lightning gun)
-#define IT_VOODOO_DOLL      8388608  // 24 - voodoo doll
-#define IT_LIFE_LEECH       131072   // 18 - life leech
+#define IT_PITCHFORK        1        // 1  - pitchfork (formerly: axe)
+#define IT_FLAREGUN         2        // 2  - flaregun (formerly: shotgun)
+#define IT_SAWED_OFF        4        // 3  - sawed-off (formerly: super shotgun)
+#define IT_TOMMYGUN         8        // 4  - tommy gun (formerly: nailgun)
+#define IT_NAPALM_LAUNCHER  16       // 5  - napalm launcher (formerly: super nailgun)
+#define IT_TNT              32       // 6  - tnt (formerly: grenade launcher)
+#define IT_PROXIMITY_BOMB   64       // 7  - proximity bomb
+#define IT_REMOTE_DETONATOR 128      // 8  - remote detonator
+#define IT_SPRAY_CAN        256      // 9  - spray can (formerly: rocket launcher)
+#define IT_TESLA_CANNON     512      // 10 - tesla cannon (formerly: lightning gun)
+#define IT_LIFE_LEECH       1024     // 11 - life leech
+#define IT_VOODOO_DOLL      2048     // 12 - voodoo doll
 
-#define IT_SHELLS           256      // 9  - shot shells
-#define IT_NAILS            512      // 10 - drum of  bullets
-#define IT_ROCKETS          1024     // 11 - gasoline can
-#define IT_CELLS            2048     // 12 - tesla charge
+#define IT_SHELLS           4096     // 13 - shot shells
+#define IT_NAILS            8192     // 14 - drum of  bullets
+#define IT_ROCKETS          16384    // 15 - gasoline can
+#define IT_CELLS            32768    // 16 - tesla charge
 
-#define IT_ARMOR1           8192     // 14 - basic armor
-#define IT_ARMOR2           16384    // 15 - fire armor
-#define IT_ARMOR3           32768    // 16 - spirit armor
-//#define IT_SUPERHEALTH      65536    // 17 - life essence. FREE SLOT. This item doesn't exist in Blood
+#define IT_ARMOR1           65536    // 17 - body armor
+#define IT_ARMOR2           131072   // 18 - fire armor
+#define IT_ARMOR3           262144   // 19 - spirit armor
 
 #define IT_INVISIBILITY     524288   // 20 - cloak
 #define IT_INVULNERABILITY  1048576  // 21 - deathmask
 #define IT_SUIT             2097152  // 22 - diving suit
 #define IT_GUNS_AKIMBO      4194304  // 23 - guns akimbo. Set when being in akimbo mode AND having enough ammo to use it
+
+#define IT_ENEMY_FLAG       8388608  // 24 - CTF enemy flag
 
 // In ".items2"
 #define IT2_KEY1            1        // 1 - skull
@@ -143,7 +215,6 @@
 #define IT2_KEY5            16       // 5 - spider
 #define IT2_KEY6            32       // 6 - moon
 
-#define IT2_ENEMY_FLAG      64       // 7 - CTF enemy flag
 
 // Inventory items
 #define INV_FIRST_AID       0

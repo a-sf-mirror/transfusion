@@ -903,194 +903,82 @@ void() W_ChangeWeapon =
 ============
 CycleWeaponCommand
 
-Go to the next weapon with ammo
+Go to the next/previous weapon with ammo
 ============
 */
-void() CycleWeaponCommand =
+void(float reverse) CycleWeaponCommand =
 {
-    local   float   am, newWeapon;
+    local float am, newWeapon;
 
-    self.impulse = 0;
     newWeapon = self.weapon;
 
     // Don't let player change weapons while holding lit dynamite.
     if (self.tnt_time)
         return;
+
     while (1)
     {
         am = 0;
 
-        if (newWeapon == IT_VOODOO_DOLL)
+        // Get the next possible weapon
+        if (reverse)
         {
-            newWeapon = IT_PITCHFORK;
+            newWeapon = newWeapon / 2;
+            if (newWeapon < IT_PITCHFORK)
+                newWeapon = IT_VOODOO_DOLL;
         }
-        else if (newWeapon == IT_PITCHFORK)
+        else
         {
-            newWeapon = IT_FLAREGUN;
+            newWeapon = newWeapon * 2;
+            if (newWeapon > IT_VOODOO_DOLL)
+                newWeapon = IT_PITCHFORK;
+        }
+
+        if (newWeapon == IT_FLAREGUN)
+        {
             if (self.ammo_flare < 1)
-                am = 1;
-        }
-        else if (newWeapon == IT_FLAREGUN)
-        {
-            newWeapon = IT_SAWED_OFF;
-            if (self.ammo_shells < 1)
                 am = 1;
         }
         else if (newWeapon == IT_SAWED_OFF)
         {
-            newWeapon = IT_TOMMYGUN;
-            if (self.ammo_nails < 1)
+            if (self.ammo_shells < 1)
                 am = 1;
         }
         else if (newWeapon == IT_TOMMYGUN)
         {
-            newWeapon = IT_NAPALM_LAUNCHER;
-            if (self.ammo_rockets < 1)
+            if (self.ammo_nails < 1)
                 am = 1;
         }
         else if (newWeapon == IT_NAPALM_LAUNCHER)
         {
-            newWeapon = IT_TNT;
+            if (self.ammo_rockets < 1)
+                am = 1;
+        }
+        else if (newWeapon == IT_TNT)
+        {
             // No TNT under water
             if (self.waterlevel == 3)
                 am = 1;
             // No need to check the ammo (it's removed as soon as there's no more ammo)
         }
-        else if (newWeapon == IT_TNT)
+        else if (newWeapon == IT_SPRAY_CAN)
         {
-            newWeapon = IT_PROXIMITY_BOMB;
-            // No need to check the ammo (it's removed as soon as there's no more ammo)
-        }
-        else if (newWeapon == IT_PROXIMITY_BOMB)
-        {
-            newWeapon = IT_REMOTE_DETONATOR;
-            // No need to check the ammo (it's removed as soon as there's
-            // no more ammo and no remaining bombs to trigger)
-        }
-        else if (newWeapon == IT_REMOTE_DETONATOR)
-        {
-            newWeapon = IT_SPRAY_CAN;
             // No spray can under water
             if (self.ammo_spray < 1 || self.waterlevel == 3)
                 am = 1;
         }
-        else if (newWeapon == IT_SPRAY_CAN)
+        else if (newWeapon == IT_TESLA_CANNON)
         {
-            newWeapon = IT_TESLA_CANNON;
             if (self.ammo_cells < 1)
                 am = 1;
         }
-        else if (newWeapon == IT_TESLA_CANNON)
+        else if (newWeapon == IT_VOODOO_DOLL)
         {
-            newWeapon = IT_LIFE_LEECH;
-            // Life Leech doesn't need ammo
-        }
-        else if (newWeapon == IT_LIFE_LEECH)
-        {
-            newWeapon = IT_VOODOO_DOLL;
             if (self.ammo_voodoo < 1)
                 am = 1;
         }
 
-        if ( (self.items & newWeapon) && am == 0)
-        {
-            W_SwitchToWeapon (newWeapon);
-            return;
-        }
-    }
-
-};
-
-/*
-============
-CycleWeaponReverseCommand
-
-Go to the prev weapon with ammo
-============
-*/
-void() CycleWeaponReverseCommand =
-{
-    local   float   am, newWeapon;
-
-    self.impulse = 0;
-    newWeapon = self.weapon;
-
-    // Don't let player change weapons while holding lit dynamite.
-    if (self.tnt_time)
-        return;
-    while (1)
-    {
-        am = 0;
-
-        if (newWeapon == IT_VOODOO_DOLL)
-        {
-            newWeapon = IT_LIFE_LEECH;
-            // Life Leech doesn't need ammo
-        }
-        else if (newWeapon == IT_LIFE_LEECH)
-        {
-            newWeapon = IT_TESLA_CANNON;
-            if (self.ammo_cells < 1)
-                am = 1;
-        }
-        else if (newWeapon == IT_TESLA_CANNON)
-        {
-            newWeapon = IT_SPRAY_CAN;
-            if (self.ammo_spray < 2)
-                am = 1;
-        }
-        else if (newWeapon == IT_SPRAY_CAN)
-        {
-            newWeapon = IT_REMOTE_DETONATOR;
-            // No need to check the ammo (it's removed as soon as there's
-            // no more ammo and no remaining bombs to trigger)
-        }
-        else if (newWeapon == IT_REMOTE_DETONATOR)
-        {
-            newWeapon = IT_PROXIMITY_BOMB;
-            // No need to check the ammo (it's removed as soon as there's no more ammo)
-        }
-        else if (newWeapon == IT_PROXIMITY_BOMB)
-        {
-            newWeapon = IT_TNT;
-            // No need to check the ammo (it's removed as soon as there's no more ammo)
-        }
-        else if (newWeapon == IT_TNT)
-        {
-            newWeapon = IT_NAPALM_LAUNCHER;
-            if (self.ammo_rockets < 1)
-                am = 1;
-        }
-        else if (newWeapon == IT_NAPALM_LAUNCHER)
-        {
-            newWeapon = IT_TOMMYGUN;
-            if (self.ammo_nails < 1)
-                am = 1;
-        }
-        else if (newWeapon == IT_TOMMYGUN)
-        {
-            newWeapon = IT_SAWED_OFF;
-            if (self.ammo_shells < 1)
-                am = 1;
-        }
-        else if (newWeapon == IT_SAWED_OFF)
-        {
-            newWeapon = IT_FLAREGUN;
-            if (self.ammo_flare < 1)
-                am = 1;
-        }
-        else if (newWeapon == IT_FLAREGUN)
-        {
-            newWeapon = IT_PITCHFORK;
-        }
-        else if (newWeapon == IT_PITCHFORK)
-        {
-            newWeapon = IT_VOODOO_DOLL;
-            if (self.ammo_voodoo < 1)
-                am = 1;
-        }
-
-        if ( (self.items & newWeapon) && am == 0)
+        if ((self.items & newWeapon) && am == 0)
         {
             W_SwitchToWeapon (newWeapon);
             return;
@@ -1162,7 +1050,7 @@ W_WeaponFrame
 Called every frame so impulse events can be handled as well as possible
 ============
 */
-void() Impulses_Player;
+void(float isAlive) Impulses_Player;
 float() W_FireCharge;
 void() W_WeaponFrame =
 {
@@ -1176,7 +1064,7 @@ void() W_WeaponFrame =
             return;
         }
 
-    Impulses_Player ();
+    Impulses_Player (TRUE);
 
     if (W_FireCharge ())
         return;

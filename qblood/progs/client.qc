@@ -1140,34 +1140,14 @@ Impulses_Player
 Impulse list for living players
 ============
 */
-void() Impulses_Player =
+void(float isAlive) Impulses_Player =
 {
     // Nothing to do
     if (self.impulse == 0)
         return;
 
-    if ((self.impulse >= 1 && self.impulse <= 9) || self.impulse == 17)
-        W_ChangeWeapon ();
-
-    else if (self.impulse == 10)
-        CycleWeaponCommand ();
-    else if (self.impulse == 11)
-        CycleWeaponReverseCommand ();
-
-    // Inventory selection/usage.
-    else if (self.impulse == 13)
-        InvenUse ();
-    else if (self.impulse == 14)
-        InvenSelect (FALSE, FALSE);
-    else if (self.impulse == 15)
-        InvenSelect (TRUE, FALSE);
-
-    // Armor cycle.
-    else if (self.impulse == 16)
-        ArmorTest ();
-
     // Toggle menu
-    else if (self.impulse == 50)
+    if (self.impulse == 50)
         Menu_Start ();
 
     #ifndef NO_FRIKBOT
@@ -1195,92 +1175,75 @@ void() Impulses_Player =
     else if (self.impulse == 141)
         identify_player ();
 
-    // These ones are considered cheats and are only allowed when the "sv_cheats" cvar is set
-    else if (cvar ("sv_cheats"))
+    // If we're dead
+    else if (!isAlive)
     {
-        #if !defined(NO_FRIKBOT)
-        if (self.impulse == 103)
-            botcam_u ();
-        else if (self.impulse == 104)
-            bot_way_edit ();
-        else
-        #endif
-
-        if (self.impulse == 250)
+        // If we want to go back to the observer mode
+        if (self.impulse == 20)
         {
-            coredump ();
+            self.do_observer = 1;
+            respawn (TRUE);
+            bprint2 (self.netname, " coardly flees this bloodbath!\n");
         }
-        else if (self.impulse == 251)
-        {
-            sprint (self, "griswold -- You have full armor.\n");
-            self.armor_fire = self.armor_body = self.armor_mind = self.armorvalue = 200;
-            self.items = self.items - (self.items & (IT_ARMOR1 | IT_ARMOR2 | IT_ARMOR3)) + IT_ARMOR2;
-        }
-        else if (self.impulse == 252)
-        {
-            sprint (self, "mcgee -- You're fired!\n");
-            Ignite (self, self, DF_FIRE, 10, 20);
-        }
-        else if (self.impulse == 253)
-            Cheat_Inventory ();
-        else if (self.impulse == 254)
-            Player_BrinkOfDeath (self, world);
-        else if (self.impulse == 255)
-            Cheat_Akimbo ();
     }
 
-    self.impulse = 0;
-};
-
-
-/*
-============
-Impulses_Dead
-
-Impulse list for dead players
-============
-*/
-void() Impulses_Dead =
-{
-    if (self.impulse == 0)
-        return;
-
-    // If we're dead, we are allowed to become an observer again
-    if (self.impulse == 20)
+    // If we aren't dead, we can play with our stuff
+    else
     {
-        self.do_observer = 1;
-        respawn (TRUE);
-        bprint2 (self.netname, " is an observer again\n");
-    }
+        if ((self.impulse >= 1 && self.impulse <= 9) || self.impulse == 17)
+            W_ChangeWeapon ();
 
-    // Toggle menu
-    else if (self.impulse == 50)
-        Menu_Start ();
+        else if (self.impulse == 10)
+            CycleWeaponCommand (FALSE);
+        else if (self.impulse == 11)
+            CycleWeaponCommand (TRUE);
 
-    #ifndef NO_FRIKBOT
-    // Bot management
-    else if (self.impulse == 100 || self.impulse == 101)
-    {
-        // If bots are disabled
-        if (cvar ("sv_disable") & SV_DISABLE_BOTS)
-            sprint (self, "Bots are disabled on this server\n");
-        else
+        // Inventory selection/usage.
+        else if (self.impulse == 13)
+            InvenUse ();
+        else if (self.impulse == 14)
+            InvenSelect (FALSE, FALSE);
+        else if (self.impulse == 15)
+            InvenSelect (TRUE, FALSE);
+
+        // Armor cycle.
+        else if (self.impulse == 16)
+            ArmorTest ();
+
+        // These ones are considered cheats and are only allowed when the "sv_cheats" cvar is set
+        else if (cvar ("sv_cheats"))
         {
-            local float botskill;
+            #if !defined(NO_FRIKBOT)
+            if (self.impulse == 103)
+                botcam_u ();
+            else if (self.impulse == 104)
+                bot_way_edit ();
+            else
+            #endif
 
-            botskill = cvar ("skill");
-            BotConnect (self.impulse - 100, 0, botskill);
+            if (self.impulse == 250)
+            {
+                coredump ();
+            }
+            else if (self.impulse == 251)
+            {
+                sprint (self, "griswold -- You have full armor.\n");
+                self.armor_fire = self.armor_body = self.armor_mind = self.armorvalue = 200;
+                self.items = self.items - (self.items & (IT_ARMOR1 | IT_ARMOR2 | IT_ARMOR3)) + IT_ARMOR2;
+            }
+            else if (self.impulse == 252)
+            {
+                sprint (self, "mcgee -- You're fired!\n");
+                Ignite (self, self, DF_FIRE, 10, 20);
+            }
+            else if (self.impulse == 253)
+                Cheat_Inventory ();
+            else if (self.impulse == 254)
+                Player_BrinkOfDeath (self, world);
+            else if (self.impulse == 255)
+                Cheat_Akimbo ();
         }
     }
-    else if (self.impulse == 102)
-        KickABot();
-    #else
-    else if (self.impulse >= 100 && self.impulse <= 102)
-        sprint (self, "Sorry, these progs don't have bot support\n");
-    #endif
-
-    else if (self.impulse == 141)
-        identify_player ();
 
     self.impulse = 0;
 };
@@ -1294,44 +1257,38 @@ Look for a usable entity in front of and below the player,
 and use it if it's possible.
 ====================
 */
+float(vector start, vector end) Cl_CheckUse =
+{
+    traceline (start, end, FALSE, self);
+    if (trace_fraction < 1)
+        if (trace_ent.spawnflags & SF_USABLE)
+            if (trace_ent.use)
+            {
+                local entity stemp;
+
+                activator = self;
+                other = self;
+                stemp = self;
+                self = trace_ent;
+                trace_ent.use ();
+                self = stemp;
+
+                return TRUE;
+            }
+
+    return FALSE;
+};
+
 void() Cl_Use =
 {
     local vector start_point;
 
     makevectors (self.v_angle);
-
-    // Look for a usable entity in front of the player
     start_point = self.origin + self.view_ofs;
-    traceline (start_point, start_point + v_forward * 64, FALSE, self);
-    if (trace_fraction < 1)
-        if (trace_ent.spawnflags & SF_USABLE)
-            if (trace_ent.use)
-            {
-                local entity stemp;
 
-                activator = self;
-                other = self;
-                stemp = self;
-                self = trace_ent;
-                trace_ent.use ();
-                self = stemp;
-            }
-
-    // Look for a usable entity below too
-    traceline (start_point, start_point - v_up * 256, FALSE, self);
-    if (trace_fraction < 1)
-        if (trace_ent.spawnflags & SF_USABLE)
-            if (trace_ent.use)
-            {
-                local entity stemp;
-
-                activator = self;
-                other = self;
-                stemp = self;
-                self = trace_ent;
-                trace_ent.use ();
-                self = stemp;
-            }
+    // Look for a usable entity in front of the player, or below him
+    if (!Cl_CheckUse (start_point, start_point + v_forward * 64))
+        Cl_CheckUse (start_point, start_point - v_up * 256);
 };
 
 
@@ -1356,15 +1313,18 @@ void() PlayerPostThink =
     if (self.player_state == PS_MENU)
         Menu_Update ();
 
-    // if we're not allowed to act (in intermission, or dead, or observer)
-    if (self.view_ofs == '0 0 0' || self.deadflag || self.observer)
+    // if we're not allowed to act (observer)
+    if (self.observer)
     {
-        // allow some impulses
-        if (self.observer)
-            Impulses_Observer ();
-        else if (self.deadflag == DEAD_RESPAWNABLE)
-            Impulses_Dead ();
+        Impulses_Observer ();
+        return;
+    }
 
+    // if we're not allowed to act (in intermission, or dead)
+    if (self.view_ofs == '0 0 0' || self.deadflag)
+    {
+        if (self.deadflag == DEAD_RESPAWNABLE)
+            Impulses_Player (FALSE);
         return;
     }
 
