@@ -251,7 +251,7 @@ void() execute_changelevel =
     WriteByte (MSG_ALL, 3);
 
     #ifndef QUAKEWORLD
-    WriteByte (MSG_ALL, 3);  // FIXME: molivier: Isn't it an error ? (we send '3' 2 times)
+    WriteByte (MSG_ALL, 3);
 
     #else
     WriteByte (MSG_ALL, SVC_INTERMISSION);
@@ -906,13 +906,12 @@ void() WaterMove =
     {
 
         // player enter water sound
-        // FIXME: we should have different sounds for each type of liquid
         if (self.watertype == CONTENT_LAVA)
             sound (self, CHAN_BODY, "weapons/napalm/burn.wav", 1, ATTN_NORM);
         if (self.watertype == CONTENT_WATER)
             sound (self, CHAN_BODY, "foley/submerge.wav", 1, ATTN_NORM);
         if (self.watertype == CONTENT_SLIME)
-            sound (self, CHAN_BODY, "ambience/sizzle.wav", 1, ATTN_NORM);  // FIXME: we shouldn't use an ambient sound here
+            sound (self, CHAN_BODY, "ambience/sizzle.wav", 1, ATTN_NORM);
 
         self.flags = self.flags + FL_INWATER;
         self.dmgtime = 0;

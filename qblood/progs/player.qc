@@ -118,14 +118,6 @@ local float     rs;
     if (self.health < 0)
         return FALSE;
 
-    // FIXME: Is it useful ? Aren't we dead (in this case,
-    //        the death sound may overwrite this one) ?
-    if (damage_attacker.classname == "teledeath")
-    {
-        sound (self, CHAN_AUTO, "butcher/fzomdie3.wav", 1, ATTN_NONE);
-        return TRUE;
-    }
-
     if (self.pain_finished > time)
         return FALSE;
 

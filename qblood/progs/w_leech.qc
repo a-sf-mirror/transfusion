@@ -26,20 +26,27 @@ void() Leech_BallTouch;
 
 //=======================================================================
 
-// ------------ Life Leech model ---------- //
+// ------------ Life Leech models ---------- //
 
-// Normal mode
+// Normal model
 $modelname v_leech
 
+// idle
+$frame leech_idle1
+
 // fire
-$frame leech_fire1 leech_fire2 leech_fire3 leech_fire4 leech_fire5
-$frame leech_fire6 leech_fire7 leech_fire8 leech_fire9 leech_fire10
+$frame leech_fire1  leech_fire2  leech_fire3  leech_fire4  leech_fire5
+$frame leech_fire6  leech_fire7  leech_fire8  leech_fire9  leech_fire10
+$frame leech_fire11 leech_fire12 leech_fire13 leech_fire14 leech_fire15
+$frame leech_fire16 leech_fire17 leech_fire18 leech_fire19 leech_fire20
+$frame leech_fire21 leech_fire22 leech_fire23 leech_fire24 leech_fire25
 
 // draw
-$frame leech_draw1 leech_draw2 leech_draw3 leech_draw4
+$frame leech_draw1 leech_draw2 leech_draw3
 
 //holster
-$frame leech_holster1 leech_holster2 leech_holster3 leech_holster4
+$frame leech_holster1 leech_holster2 leech_holster3
+
 
 // Akimbo model
 $modelname v_aleech
@@ -102,12 +109,15 @@ void() player_akleech10 = [$rockatt1, player_run]
 };
 
 // Normal draw
-// NOTE: no animation to play for now
-void() player_leechdraw1 = [$rockatt1, player_run] { self.weaponframe = 0; };
+void() player_leechdraw1 = [$rockatt1, player_leechdraw2] { self.weaponframe = $leech_draw1; };
+void() player_leechdraw2 = [$rockatt1, player_leechdraw3] { self.weaponframe = $leech_draw2; };
+void() player_leechdraw3 = [$rockatt1, player_run       ] { self.weaponframe = $leech_draw3; };
 
 // Normal holster
-// NOTE: no animation to play for now
-void() player_leechholster1 = [$rockatt1, player_run] { W_DrawWeapon (self.newweapon); };
+void() player_leechholster1 = [$rockatt1, player_leechholster2] { self.weaponframe = $leech_holster1; };
+void() player_leechholster2 = [$rockatt1, player_leechholster3] { self.weaponframe = $leech_holster2; };
+void() player_leechholster3 = [$rockatt1, player_leechholster4] { self.weaponframe = $leech_holster3; };
+void() player_leechholster4 = [$rockatt1, player_run          ] { W_DrawWeapon (self.newweapon); };
 
 
 //=================================================================
@@ -220,6 +230,6 @@ Choose the right life leech model to display
 */
 void() Leech_UpdateView =
 {
-    self.weaponmodel = "progs/v_rock2.mdl";
+    self.weaponmodel = "progs/v_leech.mdl";
     self.items = self.items - (self.items & IT_GUNS_AKIMBO);
 };

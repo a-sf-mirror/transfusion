@@ -22,6 +22,8 @@
 
 
 void() W_SetCurrentAmmo;
+void() FireAmbient;
+
 /* ALL LIGHTS SHOULD BE 0 1 0 IN COLOR ALL OTHER ITEMS SHOULD
 BE .8 .3 .4 IN COLOR */
 
@@ -165,20 +167,17 @@ void(float timeleft) DropRing =
 ============
 PlaceItem
 
-plants the object on the floor
+plants the item on the floor
 ============
 */
 void() PlaceItem =
 {
-    local float oldz;
-
     self.mdl = self.model;      // so it can be restored on respawn
     self.flags = FL_ITEM;       // make extra wide
     self.solid = SOLID_TRIGGER;
     self.movetype = MOVETYPE_TOSS;
     self.velocity = '0 0 0';
     self.origin_z = self.origin_z + 6;
-    oldz = self.origin_z;
     if (!droptofloor())
     {
         dprint ("Bonus item \"");
@@ -195,12 +194,12 @@ void() PlaceItem =
 ============
 StartItem
 
-Sets the clipping size and plants the object on the floor
+Sets the clipping size and plants the items on the floor
 ============
 */
 void() StartItem =
 {
-    self.nextthink = time + 0.2;    // items start after other solids
+    self.nextthink = time + 0.3;    // items start after other solids
     self.think = PlaceItem;
 };
 
@@ -250,7 +249,7 @@ void() item_lure =
     setmodel (self, self.model);
     precache_sound (self.noise);
 
-    setsize (self, '0 0 0', '16 16 16');
+    setsize (self, '0 0 0', '32 32 32');
     StartItem ();
 };
 
@@ -264,161 +263,285 @@ MISCELLANEOUS OBJECTS
 */
 
 // misc. objects that exist in maps as decorations. some are breakable
-// dturner 6/30/2001
+
+
+/*
+====================
+PlaceObject
+
+Plants the object on the floor.
+====================
+*/
+void() PlaceObject =
+{
+    self.solid = SOLID_BBOX;
+    self.movetype = MOVETYPE_TOSS;
+    self.velocity = '0 0 0';
+    self.origin_z = self.origin_z + 6;
+    if (!droptofloor())
+    {
+        dprint ("Object \"");
+        dprint (self.classname);
+        dprint ("\" fell out of level at ");
+        dprint (vtos(self.origin));
+        dprint ("\n");
+        remove(self);
+        return;
+    }
+
+    // If there's no spawn flag, make the object static
+    // (changes or interactions are then impossible, but as a consequence
+    // the object has virtually no cost from the server point of view)
+    if (!self.spawnflags)
+        makestatic (self);
+};
+
+/*
+============
+StartObject
+
+Sets the clipping size and plants the object on the floor
+============
+*/
+void() StartObject =
+{
+    self.nextthink = time + 0.2;    // objects start after other solids, but before items
+    self.think = PlaceObject;
+};
+
 
 // small tome or book, closed
-
 void() obj_tome =
-    {
+{
     precache_model("progs/a_tome.mdl");
-    precache_sound("items/pickup.wav");
     setmodel(self, "progs/a_tome.mdl");
-    self.noise = "items/pickup.wav";
 
-    setsize (self, '0 0 0', '32 32 56');
-    StartItem ();
-    };
+    setsize (self, '-10 -4 -10', '10 4 11');
+    StartObject ();
+};
 
 // small potion vial
-
 void() obj_boost =
-    {
+{
     precache_model("progs/a_boost.mdl");
     setmodel(self, "progs/a_boost.mdl");
 
-    setsize (self, '0 0 0', '32 32 56');
-    StartItem ();
-    };
+    setsize (self, '-5 -6 -9', '5 6 10');
+    StartObject ();
+};
 
 // large potion goblet
 
 void() obj_mboost =
-    {
+{
     precache_model("progs/a_mboost.mdl");
     setmodel(self, "progs/a_mboost.mdl");
 
-    setsize (self, '0 0 0', '32 32 56');
-    StartItem ();
-    };
+    setsize (self, '-9 -10 -9', '9 10 10');
+    StartObject ();
+};
+
+// Huge Statue of Praying Angel
+void() obj_anglstat =
+{
+    precache_model("progs/anglstat.mdl");
+    setmodel(self, "progs/anglstat.mdl");
+
+    setsize (self, '-50 -30 0', '44 29 132');
+    StartObject ();
+};
 
 // a slab of beef, found in restaraunt freezers
-
 void() obj_beefslab =
-    {
+{
     precache_model("progs/beefslab.mdl");
     setmodel(self, "progs/beefslab.mdl");
 
-    setsize (self, '0 0 0', '32 32 56');
-    StartItem ();
-    };
+    setsize (self, '-14 -14 1', '22 14 89');
+    StartObject ();
+};
 
 // pile of bones
-
 void() obj_bonepile =
-    {
+{
     precache_model("progs/bonepile.mdl");
     setmodel(self, "progs/bonepile.mdl");
 
-    setsize (self, '0 0 0', '32 32 56');
-    StartItem ();
-    };
+    setsize (self, '-16 -15 -3', '16 16 14');
+    StartObject ();
+};
 
 // another book, closed
-
 void() obj_bookclos =
-    {
+{
     precache_model("progs/bookclos.mdl");
     setmodel(self, "progs/bookclos.mdl");
 
-    setsize (self, '0 0 0', '32 32 56');
-    StartItem ();
-    };
+    setsize (self, '-9 -7 -1', '9 7 6');
+    StartObject ();
+};
 
 // another book, open
-
 void() obj_bookopen =
-    {
+{
     precache_model("progs/bookopen.mdl");
     setmodel(self, "progs/bookopen.mdl");
 
-    setsize (self, '0 0 0', '32 32 56');
-    StartItem ();
-    };
+    setsize (self, '-8 -14 -1', '9 14 5');
+    StartObject ();
+};
 
 // small bush
-
 void() obj_bush1 =
-    {
+{
     precache_model("progs/bush1.mdl");
     setmodel(self, "progs/bush1.mdl");
 
-    setsize (self, '0 0 0', '32 32 56');
-    StartItem ();
-    };
+    setsize (self, '-31 -34 -1', '31 32 39');
+    StartObject ();
+};
 
 // large cauldren
-
 void() obj_cauldren =
-    {
+{
     precache_model("progs/cauldren.mdl");
     setmodel(self, "progs/cauldren.mdl");
 
-    setsize (self, '0 0 0', '32 32 56');
-    StartItem ();
-    };
+    setsize (self, '-23 -21 0', '24 20 34');
+    StartObject ();
+};
 
 // chrome flaming torch
-
 void() obj_cflmtrch =
-    {
+{
     precache_model("progs/cflmtrch.mdl");
     setmodel(self, "progs/cflmtrch.mdl");
 
-    setsize (self, '0 0 0', '32 32 56');
-    StartItem ();
-    };
+    setsize (self, '-9 -6 -29', '8 6 27');
+    FireAmbient ();
+    StartObject ();
+};
+
+// Locked chest
+void() obj_chest1 =
+{
+    precache_model("progs/chest1.mdl");
+    setmodel(self, "progs/chest1.mdl");
+
+    setsize (self, '-12 -16 -1', '13 16 23');
+    StartObject ();
+};
+
+// Rounded chest
+void() obj_chest2 =
+{
+    precache_model("progs/chest2.mdl");
+    setmodel(self, "progs/chest2.mdl");
+
+    setsize (self, '-12 -15 0', '12 17 25');
+    StartObject ();
+};
+
+// Squared chest
+void() obj_chest3 =
+{
+    precache_model("progs/chest3.mdl");
+    setmodel(self, "progs/chest3.mdl");
+
+    setsize (self, '-12 -16 -1', '12 16 22');
+    StartObject ();
+};
+
+// Nice book
+void() obj_clueb =
+{
+    precache_model("progs/clueb.mdl");
+    setmodel(self, "progs/clueb.mdl");
+
+    setsize (self, '-8 -11 -11', '7 11 12');
+    StartObject ();
+};
+
+// Corpse, Face Down
+void() obj_corps1 =
+{
+    precache_model("progs/corps1.mdl");
+    setmodel(self, "progs/corps1.mdl");
+
+    setsize (self, '-38 -15 -1', '31 16 9');
+    StartObject ();
+};
+
+// Corpse, Face up
+void() obj_corps2 =
+{
+    precache_model("progs/corps2.mdl");
+    setmodel(self, "progs/corps2.mdl");
+
+    setsize (self, '-37 -17 -2', '39 17 13');
+    StartObject ();
+};
 
 // a rusty metal cross with a tilted cross beam
-
 void() obj_cross =
-    {
+{
     precache_model("progs/cross.mdl");
     setmodel(self, "progs/cross.mdl");
 
-    setsize (self, '0 0 0', '32 32 56');
-    StartItem ();
-    };
+    setsize (self, '-3 -12 -19', '3 12 21');
+    StartObject ();
+};
+
+// Chrome Skeleton Key
+void() obj_cskey =
+{
+    precache_model("progs/cskey.mdl");
+    setmodel(self, "progs/cskey.mdl");
+
+    setsize (self, '-1 -4 -12', '1 3 12');
+    StartObject ();
+};
 
 // an egyptian looking torch
-
 void() obj_eflmtrch =
-    {
+{
     precache_model("progs/eflmtrch.mdl");
     setmodel(self, "progs/eflmtrch.mdl");
 
-    setsize (self, '0 0 0', '32 32 56');
-    StartItem ();
-    };
+    setsize (self, '-12 -5 -21', '14 5 34');
+    FireAmbient ();
+    StartObject ();
+};
 
 // egytpian torch, unlit
-
 void() obj_egtorch =
-    {
+{
     precache_model("progs/egtorch.mdl");
     setmodel(self, "progs/egtorch.mdl");
 
-    setsize (self, '0 0 0', '32 32 56');
-    StartItem ();
-    };
+    setsize (self, '-12 -5 -21', '12 5 9');
+    StartObject ();
+};
+
+// Iron Fence Gateway
+void() obj_fence =
+{
+    precache_model("progs/fence.mdl");
+    setmodel(self, "progs/fence.mdl");
+
+    setsize (self, '-3 -25 0', '3 29 53');
+    StartObject ();
+};
 
 // large 2 tier fountain
 void() obj_fountain =
 {
     precache_model("progs/fountain.mdl");
     setmodel(self, "progs/fountain.mdl");
-    self.solid = SOLID_BBOX;
-    setsize (self, '0 0 0', '32 32 56');
-    StartItem ();
+
+    setsize (self, '-31 -27 -1', '31 27 95');
+    // TODO: Water sound here?
+    StartObject ();
 };
 
 // Soccer Goal
@@ -426,307 +549,314 @@ void() obj_goal =
 {
     precache_model ("progs/goalpost.mdl");
     setmodel (self, "progs/goalpost.mdl");
-    self.solid = SOLID_BBOX;
-    setsize (self, '0 0 0', '32 32 56');
-    StartItem ();
+
+    setsize (self, '-51 -65 -24', '55 65 90');
+    StartObject ();
+};
+
+// Head of Fallen Angel
+void() obj_hfangel =
+{
+    precache_model("progs/h_fangel.mdl");
+    setmodel(self, "progs/h_fangel.mdl");
+
+    setsize (self, '-9 -3 0', '5 3 14');
+    StartObject ();
 };
 
 // tall triangular hedge
-
 void() obj_hedge1 =
-    {
+{
     precache_model("progs/hedge1.mdl");
     setmodel(self, "progs/hedge1.mdl");
 
-    setsize (self, '0 0 0', '32 32 56');
-    StartItem ();
-    };
+    setsize (self, '-27 -27 -1', '26 26 92');
+    StartObject ();
+};
 
 // tall square hedge
-
 void() obj_hedge2 =
-    {
+{
     precache_model("progs/hedge2.mdl");
     setmodel(self, "progs/hedge2.mdl");
 
-    setsize (self, '0 0 0', '32 32 56');
-    StartItem ();
-    };
+    setsize (self, '-19 -28 0', '18 29 89');
+    StartObject ();
+};
 
 // tall rounded hedge
-
 void() obj_hedge3 =
-    {
+{
     precache_model("progs/hedge3.mdl");
     setmodel(self, "progs/hedge3.mdl");
 
-    setsize (self, '0 0 0', '32 32 56');
-    StartItem ();
-    };
+    setsize (self, '-27 -27 -1', '27 27 127');
+    StartObject ();
+};
 
 // cross with fluer de lis
-
 void() obj_holycrss =
-    {
+{
     precache_model("progs/holycrss.mdl");
     setmodel(self, "progs/holycrss.mdl");
 
-    setsize (self, '0 0 0', '32 32 56');
-    StartItem ();
-    };
+    setsize (self, '-6 -13 -19', '6 13 21');
+    StartObject ();
+};
+
+// Huge Moving Spider Web
+void() obj_megaweb =
+{
+    precache_model("progs/megaweb.mdl");
+    setmodel(self, "progs/megaweb.mdl");
+
+    setsize (self, '-1 -339 -411', '51 336 387');
+    StartObject ();
+};
 
 // small plant
-
 void() obj_plantgen =
-    {
+{
     precache_model("progs/plantgen.mdl");
     setmodel(self, "progs/plantgen.mdl");
 
-    setsize (self, '0 0 0', '32 32 56');
-    StartItem ();
-    };
+    setsize (self, '-30 -29 -1', '29 30 30');
+    StartObject ();
+};
 
 // potted plant
-
 void() obj_plantmez =
-    {
+{
     precache_model("progs/plantmez.mdl");
     setmodel(self, "progs/plantmez.mdl");
 
-    setsize (self, '0 0 0', '32 32 56');
-    StartItem ();
-    };
+    setsize (self, '-30 -29 -1', '29 30 39');
+    StartObject ();
+};
 
 // plant in vase
-
 void() obj_plantrom =
-    {
+{
     precache_model("progs/plantrom.mdl");
     setmodel(self, "progs/plantrom.mdl");
 
-    setsize (self, '0 0 0', '32 32 56');
-    StartItem ();
-    };
+    setsize (self, '-39 -38 -1', '39 39 95');
+    StartObject ();
+};
 
 // large 2 handled jug, 4 skins
-
 void() obj_pot1 =
-    {
+{
     precache_model("progs/pot1.mdl");
     setmodel(self, "progs/pot1.mdl");
 
-    setsize (self, '0 0 0', '32 32 56');
-    StartItem ();
-    };
+    setsize (self, '-19 -32 -1', '19 32 58');
+    StartObject ();
+};
 
 // large vase, 4 skins
-
 void() obj_pot2 =
-    {
+{
     precache_model("progs/pot2.mdl");
     setmodel(self, "progs/pot2.mdl");
-    self.solid = SOLID_BBOX;
-    setsize (self, '0 0 0', '32 32 56');
-    StartItem ();
-    };
+
+    setsize (self, '-12 -14 0', '12 14 42');
+    StartObject ();
+};
 
 // large vase, 4 skins
-
 void() obj_pot3 =
-    {
+{
     precache_model("progs/pot3.mdl");
     setmodel(self, "progs/pot3.mdl");
 
-    setsize (self, '0 0 0', '32 32 56');
-    StartItem ();
-    };
+    setsize (self, '-17 -19 -1', '17 20 48');
+    StartObject ();
+};
 
 // roman style flaming torch
-
 void() obj_rflmtrch =
-    {
+{
     precache_model("progs/rflmtrch.mdl");
     setmodel(self, "progs/rflmtrch.mdl");
 
-    setsize (self, '0 0 0', '32 32 56');
-    StartItem ();
-    };
+    setsize (self, '-10 -10 -15', '2 10 27');
+    FireAmbient ();
+    StartObject ();
+};
 
 // seaweed
-
 void() obj_seaweed =
-    {
+{
     precache_model("progs/seaweed.mdl");
     setmodel(self, "progs/seaweed.mdl");
 
-    setsize (self, '0 0 0', '32 32 56');
-    StartItem ();
-    };
+    setsize (self, '-4 -5 0', '4 5 72');
+    StartObject ();
+};
 
 // 1 skull on a stick
-
 void() obj_skllstk1 =
-    {
+{
     precache_model("progs/skllstk1.mdl");
     setmodel(self, "progs/skllstk1.mdl");
 
-    setsize (self, '0 0 0', '32 32 56');
-    StartItem ();
-    };
+    setsize (self, '-5 -5 -1', '5 3 55');
+    StartObject ();
+};
 
 // 2 skulls on a stick
-
 void() obj_skllstk2 =
-    {
+{
     precache_model("progs/skllstk2.mdl");
     setmodel(self, "progs/skllstk2.mdl");
 
-    setsize (self, '0 0 0', '32 32 56');
-    StartItem ();
-    };
+    setsize (self, '-5 -2 -1', '6 8 57');
+    StartObject ();
+};
 
 //  cross tombstone
-
 void() obj_tombstn1 =
-    {
+{
     precache_model("progs/tombstn1.mdl");
     setmodel(self, "progs/tombstn1.mdl");
 
-    setsize (self, '0 0 0', '32 32 56');
-    StartItem ();
-    };
+    setsize (self, '-8 -25 -1', '8 25 72');
+    StartObject ();
+};
 
 // oval tombstone
-
 void() obj_tombstn2 =
-    {
+{
     precache_model("progs/tombstn2.mdl");
     setmodel(self, "progs/tombstn2.mdl");
 
-    setsize (self, '0 0 0', '32 32 56');
-    StartItem ();
-    };
+    setsize (self, '-5 -16 -1', '5 16 44');
+    StartObject ();
+};
+
+// R. I. P. tombstone
+void() obj_tombstn3 =
+{
+    precache_model("progs/tombstn3.mdl");
+    setmodel(self, "progs/tombstn3.mdl");
+
+    setsize (self, '-7 -19 -1', '7 18 48');
+    StartObject ();
+};
 
 // dead tree
-
 void() obj_tree =
-    {
+{
     precache_model("progs/tree.mdl");
     setmodel(self, "progs/tree.mdl");
 
-    setsize (self, '0 0 0', '32 32 56');
-    StartItem ();
-    };
+    setsize (self, '-44 -74 0', '89 45 208');
+    StartObject ();
+};
 
 // leafy tree
-
 void() obj_tree2 =
-    {
+{
     precache_model("progs/tree2.mdl");
     setmodel(self, "progs/tree2.mdl");
 
-    setsize (self, '0 0 0', '32 32 56');
-    StartItem ();
-    };
+    setsize (self, '-138 -131 -20', '118 106 224');
+    StartObject ();
+};
 
 // small spider webs
-
+// TODO: Accept a spawn flag differentiating between the skins
 void() obj_webs =
-    {
+{
     precache_model("progs/webs.mdl");
     setmodel(self, "progs/webs.mdl");
 
-    setsize (self, '0 0 0', '32 32 56');
-    StartItem ();
-    };
+    // set skin ...
+    setsize (self, '-1 -23 -28', '4 23 26');
+    StartObject ();
+};
 
-// skull
-
+// Brown skull
 void() obj_skull =
-    {
+{
     precache_model("progs/skull.mdl");
     setmodel(self, "progs/skull.mdl");
 
-    setsize (self, '0 0 0', '32 32 56');
-    StartItem ();
-    };
+    setsize (self, '-6 -4 0', '6 4 11');
+    StartObject ();
+};
 
 // book with skull on it
-
 void() obj_skulbook =
-    {
+{
     precache_model("progs/skulbook.mdl");
     setmodel(self, "progs/skulbook.mdl");
 
-    setsize (self, '0 0 0', '32 32 56');
-    StartItem ();
-    };
+    setsize (self, '-7 -6 -1', '7 6 2');
+    StartObject ();
+};
 
 // bar stool
-
 void() obj_stool =
-    {
+{
     precache_model("progs/stool.mdl");
     setmodel(self, "progs/stool.mdl");
 
-    setsize (self, '0 0 0', '32 32 56');
-    StartItem ();
-    };
+    setsize (self, '-7 -7 0', '7 7 18');
+    StartObject ();
+};
 
 // another scroll
-
 void() obj_hbook =
-    {
-    precache_model("progs/hbook.mdl");
-    setmodel(self, "progs/hbook.mdl");
+{
+    precache_model("progs/h-book.mdl");
+    setmodel(self, "progs/h-book.mdl");
 
-    setsize (self, '0 0 0', '32 32 56');
-    StartItem ();
-    };
+    setsize (self, '-5 -9 -13', '5 9 14');
+    StartObject ();
+};
 
-// skull
-
+// White skull
 void() obj_m2 =
-    {
+{
     precache_model("progs/m2.mdl");
     setmodel(self, "progs/m2.mdl");
 
-    setsize (self, '0 0 0', '32 32 56');
-    StartItem ();
-    };
+    setsize (self, '-12 -8 -11', '12 8 11');
+    StartObject ();
+};
 
-// skull
-
+// Green skull
 void() obj_m3 =
-    {
+{
     precache_model("progs/m3.mdl");
     setmodel(self, "progs/m3.mdl");
 
-    setsize (self, '0 0 0', '32 32 56');
-    StartItem ();
-    };
+    setsize (self, '-12 -8 -11', '12 8 11');
+    StartObject ();
+};
 
 // another book
-
 void() obj_mage =
-    {
+{
     precache_model("progs/mage.mdl");
     setmodel(self, "progs/mage.mdl");
 
-    setsize (self, '0 0 0', '32 32 56');
-    StartItem ();
-    };
+    setsize (self, '-8 -11 -11', '7 11 12');
+    StartObject ();
+};
 
 // shovel
-
 void() obj_shovel =
-    {
+{
     precache_model("progs/shovl.mdl");
     setmodel(self, "progs/shovl.mdl");
 
-    setsize (self, '0 0 0', '32 32 56');
-    StartItem ();
-    };
+    setsize (self, '-3 -7 -26', '3 7 27');
+    StartObject ();
+};
+
 
 /*
 ===================================
@@ -853,7 +983,7 @@ void() item_artifact_boots =
     self.netname = "Boots of Jumping";
     self.model   = "progs/i_boots.mdl";
     self.noise   = "items/pickup.wav";
-    setsize (self, '-16 -16 -24', '16 16 32');
+    setsize (self, '-11 -10 0', '4 10 19');
     item_powerup ();
 };
 
@@ -863,7 +993,7 @@ void() item_artifact_crystal =
     self.netname = "Crystal Ball";
     self.model   = "progs/i_crysbl.mdl";
     self.noise   = "items/pickup.wav";
-    setsize (self, '-16 -16 -24', '16 16 32');
+    setsize (self, '-7 -7 -1', '7 7 14');
     item_powerup ();
 };
 
@@ -876,7 +1006,7 @@ void() item_artifact_reflect =
 
     self.effects = self.effects | EF_BLUE;
 
-    setsize (self, '-16 -16 -24', '16 16 32');
+    setsize (self, '-7 -7 0', '7 11 16');
     item_powerup ();
 };
 
@@ -886,7 +1016,7 @@ void() item_artifact_vision =
     self.netname = "Beast Vision";
     self.model   = "progs/i_vision.mdl";
     self.noise   = "items/pickup.wav";
-    setsize (self, '-16 -16 -24', '16 16 32');
+    setsize (self, '-10 -9 1', '11 9 9');
     item_powerup ();
 };
 
@@ -1677,8 +1807,7 @@ void() weapon_voodoodoll =
 void() weapon_lifeleech =
 {
     precache_model ("progs/g_leech.mdl");
-    //precache_model ("progs/v_leech.mdl");
-    precache_model ("progs/v_rock2.mdl"); //FIXME: use NL until weapon is finished
+    precache_model ("progs/v_leech.mdl");
     //precache_model ("progs/lechball.mdl");
     precache_model ("progs/bolt.mdl"); // FIXME: use Tesla shot until missile is finished
 
@@ -2264,7 +2393,7 @@ void() item_artifact_invisibility =
     setmodel (self, "progs/invisibl.mdl");
     self.netname = "Cloak of Invisibility";
     self.items = IT_INVISIBILITY;
-    setsize (self, '-16 -16 -24', '16 16 32');
+    setsize (self, '-3 -6 2', '6 7 23');
     StartItem ();
 };
 

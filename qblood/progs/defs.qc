@@ -295,7 +295,7 @@ float modelindex_eyes, modelindex_player;
 
 
 //
-// CTF stuff
+// Teamplay / CTF stuff
 //
 
 // Team scores
