@@ -4,6 +4,11 @@ into this package.
 
 Changes since MeQCC v1.4:
   * v0.2.0cvs
+    - BQCC used OP_STORE_V for copying any function parameter. It now use
+    OP_STORE_F when appropriate (it saves a few CPU cycles)
+    - the "-src" option has been removed (broken and useless)
+    - nested function calls are now also supported if the inner function
+    doesn't have any parameters.
     - bug fix: fixed a potential overflow of the statements buffer
     - bug fix: BQCC crashed silently if a function declaration contained too
     many parameters.

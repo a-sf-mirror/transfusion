@@ -65,7 +65,7 @@ FILE* SafeOpenWrite (const char *filename);
 FILE* SafeOpenRead (const char *filename);
 void SafeRead (FILE* handle, void *buffer, size_t count);
 void SafeWrite (FILE* handle, void *buffer, size_t count);
-long LoadFile (char *filename, void **bufferptr);
+long LoadFile (const char *filename, void **bufferptr);
 
 extern char com_token[1024];
 extern int com_eof;

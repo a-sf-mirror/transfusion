@@ -410,7 +410,8 @@ PR_ParseFunctionCall
 def_t *PR_ParseFunctionCall (def_t *func)
 {
 	def_t *e;
-	static int arg = 0;
+	static unsigned int total_nb_param = 0;
+	int arg;
 	type_t *t;
 
 	t = func->type;
@@ -418,13 +419,18 @@ def_t *PR_ParseFunctionCall (def_t *func)
 	if (t->type != ev_function)
 		PR_ParseError ("not a function");
 	// BQCC doesn't support nested function calls, except for the first parameter
-	if (arg != 0)
-		PR_ParseError ("nested function calls are only supported for the first parameter");
+	// or if the inner function doesn't have any parameters
+	if (total_nb_param != 0 && t->num_parms != 0)
+		PR_ParseError ("nested function calls are only supported for the first parameter, "
+					   "or if the inner function doesn't have any parameters");
 	// copy the arguments to the global parameter variables
+	arg = 0;
 	if (!PR_Check(")"))
 	{
 		do
 		{
+			unsigned int opcode;
+
 			if (t->num_parms != -1 && arg >= t->num_parms)
 				PR_ParseError ("too many parameters");
 
@@ -432,32 +438,30 @@ def_t *PR_ParseFunctionCall (def_t *func)
 			if (t->num_parms != -1 && (e->type != t->parm_types[arg]))
 				PR_ParseError ("type mismatch on parm %i", arg);
 
-			// a vector copy will copy everything
+			// We can copy everything (apart from vectors) using float copies
+			if (t->parm_types[arg] == &type_vector)
+				opcode = OP_STORE_V;
+			else
+				opcode = OP_STORE_F;
 			def_parms[arg].type = t->parm_types[arg];
-			PR_Statement (&pr_opcodes[OP_STORE_V], e, &def_parms[arg]);
+			PR_Statement (&pr_opcodes[opcode], e, &def_parms[arg]);
+
 			arg++;
+			total_nb_param++;
 		} while (PR_Check (","));
 
-//		if (t->num_parms != -1 && arg != t->num_parms)
-//			PR_ParseError ("too few parameters");
 		PR_Expect (")");
-	} //end if
-	if (arg > 8)
-	{
-		PR_ParseError("More than eight parameters");
-	} //end if
-	//MrE:
+	}
 	if (t->num_parms != -1 && arg != t->num_parms)
-	{
 		PR_ParseError("too few parameters");
-	} //end if
 
 	PR_Statement (&pr_opcodes[OP_CALL0+arg], func, 0);
 
-	arg = 0;  // reinitialize the counter
+	total_nb_param -= arg;
 	def_ret.type = t->aux_type;
 	return &def_ret;
-} //end of the function PR_ParseFunctionCall
+}
+
 
 /*
 ============

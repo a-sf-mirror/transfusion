@@ -879,9 +879,8 @@ main
 int main (int argc, char **argv)
 {
 	char *src;
-	char filename[1024];
+	const char* filename;
 	int p, crc;
-	char sourcedir[1024];
 	clock_t start_time;
 
 	myargc = argc;
@@ -899,7 +898,6 @@ int main (int argc, char **argv)
 		Log_Print("bqcc looks for a progs.src in the current directory.\n");
 		Log_Print("Command line options:\n");
 		Log_Print("-qw               QuakeWorld mode (define QUAKEWORLD and use qwprogs.src)\n");
-		Log_Print("-src <directory>  look for a progs.src in the specified directory\n");
 		Log_Print("-asm <functions>  output Quake ASM code of the specified functions\n");
 		Log_Print("-d <define>       add a precompiler definition\n");
 		Log_Print("-?                display command line options\n");
@@ -909,65 +907,45 @@ int main (int argc, char **argv)
 	} //end if
 
 	CMDPrecompilerDefinitions();
-
-	p = CheckParm ("src");
-	if (p && p < argc-1 )
-	{
-		strcpy(sourcedir, argv[p+1]);
-		if (sourcedir[strlen(sourcedir)-1] != '/' &&
-			sourcedir[strlen(sourcedir)-1] != '\\')
-#if defined(_WIN32) || defined(WIN32)
-			strcat(sourcedir, "\\");
-#else
-			strcat(sourcedir, "/");
-#endif
-		printf("Source directory: %s\n", sourcedir);
-	} //end if
-	else
-	{
-		strcpy(sourcedir, "");
-	} //end else
-
 	InitData ();
 
 	// QuakeWorld mode
 	if (CheckParm ("qw"))
 	{
 		PC_AddGlobalDefine ("QUAKEWORLD");
-		sprintf(filename, "%sqwprogs.src", sourcedir);
+		filename = "qwprogs.src";
 	}
 	else
-		sprintf(filename, "%sprogs.src", sourcedir);
+		filename = "progs.src";
 
-	LoadFile(filename, (void *)&src);
+	LoadFile (filename, (void *)&src);
 
 	//read the destination from the progs.src
 	src = COM_Parse(src);
 	if (!src)
 		Error ("No destination filename.\n");
-	strcpy(destfile, com_token);
+	strncpy (destfile, com_token, sizeof (destfile) - 1);
+	destfile[sizeof (destfile) - 1] = '\0';
 	Log_Print("output file: %s\n", destfile);
 
-	//the time started
+	// Compile all the files
 	start_time = clock();
-	//begin the compilation
 	PR_BeginCompilation(GetMemory(0x300000), 0x300000);
-	//compile all the files
 	do
 	{
-		//read next file from the progs.src
-		src = COM_Parse(src);
-		if (!src) break;
-		sprintf(filename, "%s%s", sourcedir, com_token);
-		Log_Print("%s\n", filename);
-		//compile the file
-		if (!PR_CompileFile(filename)) exit(1);
+		// Read next file from the progs.src
+		src = COM_Parse (src);
+		if (src == NULL)
+			break;
+		Log_Print ("%s\n", com_token);
+
+		if (!PR_CompileFile (com_token))
+			exit(1);
 	} while(1);
-	//finish the compilation
 	if (!PR_FinishCompilation())
 		Error("compilation errors");
-
-	Log_Print("compilation time was %1.2f seconds\n\n", ((double) clock() - start_time) / CLOCKS_PER_SEC);
+	Log_Print ("compilation time was %1.2f seconds\n\n",
+			   ((double) clock() - start_time) / CLOCKS_PER_SEC);
 
 	// Check if a function is to be dumped in asm code
 	p = CheckParm ("asm");

@@ -348,7 +348,7 @@ void SafeWrite (FILE* handle, void *buffer, size_t count)
 LoadFile
 ==============
 */
-long LoadFile (char *filename, void **bufferptr)
+long LoadFile (const char *filename, void **bufferptr)
 {
 	FILE* handle;
 	long length;
