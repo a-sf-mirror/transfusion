@@ -238,16 +238,19 @@ void() player_nail2 = [$nailatt2, player_nail1] { player_nail (); };
 
 void() player_doll =
 {
-    // Note: frame 17 -> 19 are the sit-up animation
+    // Note: frame 16 -> 18 are the sit-up animation
 
     self.weaponframe = self.weaponframe + 1;
-    if (self.weaponframe == 25 ||
-        self.weaponframe == 17 ||
-        self.weaponframe == 13 ||
-        self.weaponframe == 5  ||
-        self.weaponframe == 9
+    if (self.weaponframe == 24 ||
+        self.weaponframe == 16 ||
+        self.weaponframe == 12 ||
+        self.weaponframe == 4  ||
+        self.weaponframe == 8
        )
+    {
         player_run ();
+        self.weaponframe = 0;
+    }
 
     self.impulse = 0; // REMOVEME ... (cf above)
 };

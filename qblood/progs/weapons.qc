@@ -949,9 +949,8 @@ void() W_UseVoodooDoll =
     // Alt-fire mode
     if ((self.impulse == 12 || self.button1) && self.ammo_cells >= 10)
     {
-        damage = self.ammo_cells;
-        self.ammo_cells = 0;
-        self.weaponframe = 20;
+        damage = 60;
+        self.weaponframe = 19;
     }
 
     // Normal fire mode
@@ -962,29 +961,29 @@ void() W_UseVoodooDoll =
         if (stab_type >= 3) // Stab Groin
         {
             damage = damage*49 + 4;
-            self.weaponframe = 13;
+            self.weaponframe = 12;
         }
         else if (stab_type >= 2) // Stab Shoulder (supposed to make player lower weapon in MP mode)
         {
-            self.weaponframe = 9;
+            self.weaponframe = 8;
             damage = damage*9 + 4;
         }
         else if (stab_type >= 1) // Stab Chest
         {
-            self.weaponframe = 1;
+            self.weaponframe = 0;
             damage = damage*17 + 4;
         }
         else if (stab_type < 1) // Stab Eye (supposed to blind player in MP mode)
         {
-            self.weaponframe = 5;
+            self.weaponframe = 4;
             damage = damage*11 + 4;
         }
         else
             Sprint (self, PRINT_MEDIUM, "There's a problem with the voodoo doll code\n");
 
-        self.ammo_cells = self.ammo_cells - damage / 4;
     }
 
+    self.ammo_cells = self.ammo_cells - damage / 4;
     self.currentammo = self.ammo_cells;
 
     // Play the appropriate sound
