@@ -89,7 +89,7 @@ void(entity targ, entity attacker) Killed =
         self.health = -99;      // don't let sbar look bad if a player
 
     // doors, triggers, etc
-    if (self.movetype == MOVETYPE_PUSH || (self.movetype == MOVETYPE_NONE && self.player_state != PS_BRINK_OF_DEATH))
+    if (self.movetype == MOVETYPE_PUSH || self.movetype == MOVETYPE_NONE)
     {
         self.th_die ();
         self = oself;

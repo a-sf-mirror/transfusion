@@ -91,7 +91,9 @@
 #define PS_DRAW             5
 #define PS_HOLSTER          6
 #define PS_MENU             7   // when a player is browsing the menu
-#define PS_BRINK_OF_DEATH   8   // when a player reaches exactly 0 HP, he may survive
+#ifndef QUAKEWORLD
+# define PS_BRINK_OF_DEATH  8   // when a player reaches exactly 0 HP, he may survive
+#endif
 
 // takedamage values
 #define DAMAGE_NO   0

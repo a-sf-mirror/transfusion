@@ -323,6 +323,25 @@ void() Leech_Think =
 
 /*
 ==================
+Leech_FadeOut
+
+Used when a LL sentry fades out (when dying)
+==================
+*/
+void() Leech_FadeOut =
+{
+    if (self.alpha > 0.1)  // Warning: alpha = 0.0 means opaque
+    {
+        self.alpha = self.alpha - 0.1;
+        self.nextthink = time + 0.1;
+    }
+    else
+        remove (self);
+};
+
+
+/*
+==================
 Leech_Die
 
 Die function for a LL sentry
@@ -332,6 +351,25 @@ void() Leech_Die =
 {
     self.leech_sentry.leech_sentry = world;
     sound (self, CHAN_VOICE, "weapons/lifelech/llaltht.wav", 1, ATTN_NORM);
+
+    // If the engine supports the QC extension DP_ENT_ALPHA, make it fade out
+    if (qcextensions)
+        if (checkextension ("DP_ENT_ALPHA"))
+        {
+            self.solid = SOLID_NOT;
+            self.takedamage = DAMAGE_NO;
+            self.movetype = MOVETYPE_NONE;
+            self.effects = 0;
+            self.alpha = 1;
+
+            self.touch = SUB_Null;
+            self.th_die = SUB_Remove;
+            self.think = Leech_FadeOut;
+            self.nextthink = time + 0.1;
+
+            return;
+        }
+
     remove (self);
 };
 

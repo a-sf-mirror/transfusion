@@ -168,10 +168,9 @@ void(entity player, entity attacker) Player_BrinkOfDeath =
     self = player;
     player_bod1 ();
     self = oself;
-    player.movetype = MOVETYPE_NONE;
     player.weaponmodel = "";
 
-    player.attack_finished = time + 10;
+    player.t_length = time + 10;  // the effect will last 10 sec
     sound (player, CHAN_VOICE, "thevoice/vo15.wav", 1, ATTN_NONE);
     centerprint (player, "YOU ARE ON THE BRINK OF DEATH!!");
     // If there's a real attacker (not a BOD triggered by cheat code)
@@ -183,7 +182,6 @@ void(entity player, entity attacker) Player_BrinkOfDeath =
 void() Player_LiveAgain =
 {
     sound (self, CHAN_VOICE, "player/taunts/t1010.wav", 1, ATTN_NORM);  // I live ... again!
-    self.movetype = MOVETYPE_WALK;
     self.player_state = PS_IDLE;
     player_run ();
     W_DrawWeapon (self.weapon);
@@ -721,7 +719,11 @@ void() PlayerDie =
     if (self.velocity_z < 10)
         self.velocity_z = self.velocity_z + random()*300;
 
+    #ifdef QUAKEWORLD
+    if (self.health < -40)
+    #else
     if ((self.health < -40 && self.player_state != PS_BRINK_OF_DEATH) || self.health < -80)
+    #endif
     {
         GibPlayer ();
         return;

@@ -1069,6 +1069,16 @@ void() PlayerPreThink =
         return;
     }
 
+    #ifndef QUAKEWORLD
+    // Players on the BOD can't move
+    if (self.player_state == PS_BRINK_OF_DEATH)
+    {
+        self.velocity_x = 0;
+        self.velocity_y = 0;
+        return;
+    }
+    #endif
+
     if (self.observer)
     {
         ObserverThink();
@@ -1426,6 +1436,15 @@ void() PlayerPostThink =
     self.jump_flag = self.velocity_z;
 
     CheckPowerups ();
+
+    #ifndef QUAKEWORLD  // No BOD in QW
+    // If we are on the Brink Of Death
+    if (self.player_state == PS_BRINK_OF_DEATH)
+    {
+        if (self.t_length < time)
+            Player_LiveAgain ();
+    }
+    #endif
 
     W_WeaponFrame ();
 

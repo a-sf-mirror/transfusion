@@ -360,6 +360,7 @@ float team2score;
 .entity     leech_sentry;
 
 .float      button3;        // altfire; DP_INPUTBUTTONS extension
+.float      alpha;          // controls opacity of the entity (0.0 or 1.0 is solid, -1 is invisible); DP_ENT_ALPHA extension
 
 
 //
