@@ -3,6 +3,10 @@ For other informations, take a look at "qcc.txt" and "meqcc.txt", included
 into this package.
 
 Changes since MeQCC v1.4:
+  * v0.1.2
+    - a lot of strings were duplicated in the progs file. BQCC now makes sure it
+    doesn't happen.
+
   * v0.1.1
     - nested function calls are now forbidden, except for the first parameter.
     Quake VM can't handle them properly without temporary variables in the other

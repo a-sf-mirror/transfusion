@@ -83,13 +83,27 @@ CopyString returns an offset from the string heap
 int CopyString (char *str)
 {
 	int      old;
+	char   *ptr = strings, *final = strings + strofs;
+	size_t length;
+
+	// Search for this string in the heap
+	// FIXME: find some smarter way to do that, based on the more recent searches
+	while (ptr < final)
+	{
+		if (!strcmp (str, ptr))
+			return ptr - strings;
+
+		while (*ptr++);
+	}
 
 	old = strofs;
-	strcpy (strings+strofs, str);
-	strofs += strlen(str)+1;
+	length = strlen (str) + 1;
+	memcpy (final, str, length);
+	strofs += length;
+
 	CHECK_STRINGS_BUFFER;
 	return old;
-} //end of the function CopyString
+}
 
 /*
 =================
@@ -1246,7 +1260,7 @@ int main (int argc, char **argv)
 
 	Log_Open("bqcc.log");
 
-	Log_Print("\nBloody QuakeC compiler v0.1.1, %s %s\n", __DATE__, __TIME__);
+	Log_Print("\nBloody QuakeC compiler v0.1.2, %s %s\n", __DATE__, __TIME__);
 	Log_Print("BQCC is based on MrElusive's QuakeC compiler v1.4\n");
 	Log_Print("This compiler is not supported by id Software.\n");
 	Log_Print("bqcc -help for info.\n\n");
@@ -1343,9 +1357,12 @@ int main (int argc, char **argv)
 			PrintFunction (argv[p]);
 		} //end for
 	} //end if
-	//write progdefs.h
+
+	// Write progdefs.h
 	crc = PR_WriteProgdefs("progdefs.h");
-	//write data file: progs.dat
+
+	// Write data file: progs.dat
+	Log_Print ("writing dat file...\n", destfile);
 	WriteData(crc);
 
 	return EXIT_SUCCESS;
