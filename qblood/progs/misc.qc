@@ -938,6 +938,13 @@ void() exploding_wall =
     {
         if (self.skin > 4)  // if skin is set to glass, use the glass shards instead - d.turner
         {
+	    {       // use new skin numbers for glass models
+           	    if (self.skin == 5) //stained glass
+	            self.skin == 0; // stained glass
+	            else if (self.skin == 6) //clear glass
+	            self.skin == 1; // clear glass
+	    }
+	
             precache_model ("progs/glass1.mdl");
             precache_model ("progs/glass2.mdl");
             precache_model ("progs/glass3.mdl");
