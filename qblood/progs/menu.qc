@@ -415,8 +415,8 @@ void() Menu_Draw =
     {
         Sprint (self, PRINT_HIGH,
                 "Vote for a map:\n"
-                "1) dm2     Power!                | 2) dm3     Area 15\n"
-                "3) e6m8    Beauty and the Beast\n"
+                "1) dm1     Monolith Building 11  | 2) dm2     Power!\n"
+                "3) dm3     Area 15               | 4) e6m8    Beauty and the Beast\n"
                 "5) cpbb01  Crypt of Despair      | 6) cpbb03  Unholy Cathedral\n"
                 "\n"
                 "10) Go back to map menu\n");
@@ -691,10 +691,12 @@ void() Menu_HandleVoteMapBloodPacks =
     }
 
     else if (self.impulse == 1)
-        newmap = "dm2";
+        newmap = "dm1";
     else if (self.impulse == 2)
-        newmap = "dm3";
+        newmap = "dm2";
     else if (self.impulse == 3)
+        newmap = "dm3";
+    else if (self.impulse == 4)
         newmap = "e6m8";
     else if (self.impulse == 5)
         newmap = "cpbb01";
