@@ -413,8 +413,9 @@ void() Menu_Draw =
     {
         Sprint (self, PRINT_HIGH,
                 "Vote for a map:\n"
-                "1) e1m1  Cradle to Grave  | 2) e1m2  Wrong Side of the Tracks\n"
-                "3) e1m7  Altar of Stone   | 4) e4m8  The Hall Of Epiphany\n"
+                "1) e1m1  Cradle to Grave           | 2) e1m2  Wrong Side of the Tracks\n"
+                "3) e1m7  Altar of Stone            | 4) e3m7  The Pit of Cerberus\n"
+                "5) e4m8  The Hall of the Epiphany\n"
                 "\n"
                 "10) Go back to map menu\n");
     }
@@ -711,6 +712,8 @@ void() Menu_HandleVoteMapBloodSP =
     else if (self.impulse == 3)
         newmap = "e1m7";
     else if (self.impulse == 4)
+        newmap = "e3m7";
+    else if (self.impulse == 5)
         newmap = "e4m8";
     else
     {
