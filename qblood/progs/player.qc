@@ -171,7 +171,7 @@ void() player_bod17 = [$sway8, player_bod10] {};
 void() player_bod_die1 = [$deathc1, player_bod_die2] {};
 void() player_bod_die2 = [$deathc2, player_bod_die3] {};
 void() player_bod_die3 = [$deathc3, player_bod_die4] {};
-void() player_bod_die4 = [$deathc4, player_bod_die4] {PlayerDead();};
+void() player_bod_die4 = [$deathc4, SUB_Remove     ] {};
 
 void() player_bod_dieh1 = [$deathb1, player_bod_dieh2] {};
 void() player_bod_dieh2 = [$deathb2, player_bod_dieh3] {};
@@ -718,12 +718,9 @@ void() PlayerDie =
     if (self.velocity_z < 10)
         self.velocity_z = self.velocity_z + random()*300;
 
-    #ifdef QUAKEWORLD
     if (self.health < -40)
-    #else
-    if ((self.health < -40 && self.player_state != PS_BRINK_OF_DEATH) || self.health < -80)
-    #endif
     {
+        self.nextthink = -1;
         GibPlayer ();
         return;
     }
@@ -756,10 +753,27 @@ void() PlayerDie =
     if (self.player_state == PS_BRINK_OF_DEATH)
     {
         // If the head is removed in the process
-        if (self.health < -20)
+        if (self.health < -10)
         {
-            ThrowHead (self.health);
+            local entity player_head;
+
+            // The player entity will be the head, so we must
+            // create a new entity for the corpse
+            player_head = self;
+            self = spawn ();
+            setmodel (self, player_head.model);
+            setorigin (self, player_head.origin);
+            setsize (self, player_head.mins, player_head.maxs);
+            self.angles = player_head.angles;
+            self.frame = player_head.frame;
+            self.skin = player_head.skin;
+            self.colormap = player_head.colormap;
+            self.movetype = player_head.movetype;
+            self.velocity = player_head.velocity;
             player_bod_die1 ();
+
+            self = player_head;
+            ThrowHead (self.health);
         }
         else
             player_bod_dieh1 ();

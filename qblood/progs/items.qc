@@ -1639,6 +1639,7 @@ void() weapon_lifeleech =
     precache_model ("progs/g_leech.mdl");
     precache_model ("progs/v_leech.mdl");
     precache_model ("progs/bolt.mdl");
+    precache_model ("progs/teslaball.spr");
 
     setmodel (self, "progs/g_leech.mdl");
     self.weapon = IT_LIFE_LEECH;

@@ -317,10 +317,11 @@ void() Leech_Think =
     newmis.angles = vectoangles (newmis.velocity);
     newmis.movetype = MOVETYPE_FLYMISSILE;
     newmis.touch = Leech_AltBallTouch;
-    setmodel (newmis, "progs/bolt.mdl");  // the tesla ball is closer to the original look
+    setmodel (newmis, "progs/teslaball.spr");  // the tesla ball is closer to the original look
     setsize (newmis, '0 0 0', '0 0 0');
     setorigin (newmis, ballorigin);
     newmis.dmg = 15;
+    newmis.alpha  = 0.5;
     newmis.reset = SUB_Remove;
 };
 
@@ -430,7 +431,7 @@ void() Leech_Drop =
     // Drop the Life Leech
     item = spawn();
     setmodel (item, "progs/g_leech.mdl");
-    setsize (item, '-5 -5 0', '5 7 41');
+    setsize (item, '-6 -6 0', '6 8 60');
 
     item.owner = self;             // we don't want to trigger the touch function yet
     item.leech_sentry = self;      // we can't use "owner" because the owner of an entity is never clipped against it
