@@ -73,11 +73,7 @@ void () cultist_taunt =
 
 void () cultist_death1 = [$idle1, cultist_death1]
 {
-    CloneCorpse (self);
-
-    // In the last frame, spawn corpse, remove self 1 second after death
-    self.nextthink = time + 1;
-    self.think = SUB_Remove;
+    monster_become_corpse();
 };
 
 void () cultist_die =
@@ -90,7 +86,9 @@ void () cultist_die =
 	    if (self.health < -40)
         {
             sound (self, CHAN_VOICE, "cultist/cultdie3.wav", 1, ATTN_NORM);
-            RandomHumanGibs ();
+            // Very large blood splat!
+	        te_bloodshower (self.origin, self.origin + self.size, 100, 100);
+			RandomHumanGibs ();
             remove (self);
             return;
         }		
@@ -126,7 +124,7 @@ void () cultist_fireShotgun =
     local vector dir;
 	local vector org;
     local vector spread;
-
+    
     self.effects = self.effects | EF_MUZZLEFLASH;
 
     r = random();
@@ -261,27 +259,8 @@ void () cultist_TNT_touch =
     BecomeExplosion ();
 };
 
-void (float dist) cultist_ai =
-{
-    if (self.style == 1)
-        ai_stand ();
-    else
-    {
-        if (self.style == 2)
-            ai_walk (dist);
-        else
-        {
-            if (self.style == 3)
-            {
-                ai_run (dist * 2);
-                ai_face ();
-            }
-        }
-    }
-};
-
 //--- Basic idle
-void () cultist_stand1 = [$idle1, cultist_stand1] {cultist_ai(3);};
+void () cultist_stand1 = [$idle1, cultist_stand1] {basic_ai(3);};
 
 //--- Decide what to say
 
@@ -310,18 +289,18 @@ void () cultist_stand =
     cultist_stand1();
 };
 
-void () cultist_walk1 = [$walk1, cultist_walk2] {cultist_ai (3);};
-void () cultist_walk2 = [$walk2, cultist_walk3] {cultist_ai (3);};
-void () cultist_walk3 = [$walk3, cultist_walk4] {cultist_ai (3);};
-void () cultist_walk4 = [$walk4, cultist_walk5] {cultist_ai (3);};
-void () cultist_walk5 = [$walk5, cultist_walk6] {cultist_ai (3);};
-void () cultist_walk6 = [$walk6, cultist_walk7] {cultist_ai (3);};
-void () cultist_walk7 = [$walk7, cultist_walk8] {cultist_ai (3);};
-void () cultist_walk8 = [$walk8, cultist_walk9] {cultist_ai (3);};
-void () cultist_walk9 = [$walk9, cultist_walk10] {cultist_ai (3);};
-void () cultist_walk10 = [$walk10, cultist_walk11] {cultist_ai (3);};
-void () cultist_walk11 = [$walk11, cultist_walk12] {cultist_ai (3);};
-void () cultist_walk12 = [$walk12, cultist_walk1] {cultist_ai (3);};
+void () cultist_walk1 = [$walk1, cultist_walk2] {basic_ai (3);};
+void () cultist_walk2 = [$walk2, cultist_walk3] {basic_ai (3);};
+void () cultist_walk3 = [$walk3, cultist_walk4] {basic_ai (3);};
+void () cultist_walk4 = [$walk4, cultist_walk5] {basic_ai (3);};
+void () cultist_walk5 = [$walk5, cultist_walk6] {basic_ai (3);};
+void () cultist_walk6 = [$walk6, cultist_walk7] {basic_ai (3);};
+void () cultist_walk7 = [$walk7, cultist_walk8] {basic_ai (3);};
+void () cultist_walk8 = [$walk8, cultist_walk9] {basic_ai (3);};
+void () cultist_walk9 = [$walk9, cultist_walk10] {basic_ai (3);};
+void () cultist_walk10 = [$walk10, cultist_walk11] {basic_ai (3);};
+void () cultist_walk11 = [$walk11, cultist_walk12] {basic_ai (3);};
+void () cultist_walk12 = [$walk12, cultist_walk1] {basic_ai (3);};
 
 void () cultist_walk =
 {
@@ -330,7 +309,7 @@ void () cultist_walk =
 };
 
 void () cultist_run =
-{
+{    
     self.style = 3;
     cultist_walk1 ();
 };
@@ -447,6 +426,7 @@ void () cultist_spawn =
     self.th_run = cultist_run;
     self.th_die = cultist_die;
     self.th_pain = cultist_pain;
-	self.attack_state == AS_MISSILE;
+	self.touch = monster_stepped_on;
+	self.attack_state = AS_MISSILE;
 	walkmonster_start ();    
 };

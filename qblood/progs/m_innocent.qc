@@ -50,14 +50,7 @@ void() innocent_death4 =[$death4, innocent_death5] {};
 void() innocent_death5 =[$death5, innocent_death6] {};
 void() innocent_death6 =[$death6, innocent_death7] {};
 void() innocent_death7 =[$death7, innocent_death8] {};
-void() innocent_death8 =[$death8, innocent_death8]
-{
-    CloneCorpse (self);
-
-    // In the last frame, spawn corpse, remove self 1 second after death
-    self.nextthink = time + 1;
-    self.think = SUB_Remove;
-};
+void() innocent_death8 =[$death8, innocent_death8] {monster_become_corpse();};
 
 void() innocent_think =
 {
@@ -67,13 +60,7 @@ void() innocent_think =
 	    self.search_time = rint(time + 15 + rint(random()*5));
 		self.show_hostile = time + 1;       // wake up other monsters
 	}
-/*
-    if (self.enemy != world)
-	{
-	    if (!visible(self.enemy))
-		    self.enemy = world;
-	}
-*/
+
 	if (self.search_time >= time) //|| self.enemy != world)
         self.think = innocent_run1;
 	else 
@@ -90,7 +77,10 @@ void() innocent_death =
 	
 	if (self.health < -40)
     {
-        sound (self, CHAN_VOICE, "innocent/iscream1.wav", 1, ATTN_NORM);
+        // Very large blood splat!
+        te_bloodshower (self.origin, self.origin + self.size, 100, 100);
+		
+		sound (self, CHAN_VOICE, "innocent/iscream1.wav", 1, ATTN_NORM);
         RandomHumanGibs();
         remove (self);
         return;
@@ -223,6 +213,6 @@ void() monster_innocent =
     self.th_die = innocent_death;
     self.th_pain = innocent_pain;
     self.oldorigin = self.origin;
-	
+	self.touch = monster_stepped_on;
     walkmonster_start ();
 };

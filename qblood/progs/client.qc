@@ -666,8 +666,7 @@ void() PutClientInServer =
 
     player_stand ();
 
-    
-	if (self.do_observer && gametype != GT_SINGLE_PLAYER)
+	if (self.do_observer && gametype != GT_SINGLE_PLAYER && gametype != GT_COOPERATIVE)
     {
         BecomeObserver (self);
         World_CheckWarmup ();

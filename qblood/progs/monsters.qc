@@ -267,8 +267,11 @@ void() swimmonster_start =
 
 void () monster_stepped_on =
 {
+    SUB_SolidTouch();
+
     // If we've gotten here an enemy is touching my bbox.  But is the enemy on TOP of me?
-    if (self.enemy.absmin_z <= self.absmax_z + 3)		
+    if ((self.enemy.absmin_z <= self.absmax_z + 3) && 
+	    (self.enemy.absmin_z >= self.absmax_z - 3))		
 	    T_Damage (self, self.enemy, self.enemy, 1, DF_BODY, "squashing");		
 	else 
 	    return;
@@ -277,14 +280,34 @@ void () monster_stepped_on =
         self.th_pain(self.enemy, 0);
 };
 
+void () monster_drop_key =
+{
+	    local entity key;
+		
+		key = spawn();
+		key.spawnflags = self.items2;		
+		key.origin = self.origin;
+		key.think = item_key;
+		key.nextthink = time + 0.1;
+};
+
 void () monster_check =
-{    	
-    if ((gametype != GT_COOPERATIVE && gametype != GT_SINGLE_PLAYER) || cvar("nomonsters"))
+{
+    if (cvar("nomonsters")      && 
+	    self.items2 >= IT2_KEY1 && 
+		self.items2 <= IT2_KEY6 &&
+		(gametype == GT_COOPERATIVE || gametype == GT_SINGLE_PLAYER))
+    {
+	    monster_drop_key();
+	}
+
+	if (cvar("nomonsters") || self.spawnflags > skill || 
+	   (gametype != GT_COOPERATIVE && gametype != GT_SINGLE_PLAYER))
     {
 	    remove(self);
 		return;
 	}
-
+	
 	self.netname = "monster";
 };
 
@@ -293,6 +316,7 @@ void () monster_check =
 	
 	clears monster effects and sets corpse non-solid
 	drops random item based on monster class
+	drops key if monster has key
 
 */
 void () monster_death =
@@ -305,6 +329,12 @@ void () monster_death =
 	self.solid = SOLID_NOT;
 	self.deadflag = DEAD_DEAD;
 	SUB_UseTargets();
+	
+	if (self.items2 >= IT2_KEY1 && self.items2 <= IT2_KEY6)
+    {
+	    monster_drop_key();
+		return;
+	}
 	
 	// These monsters never drop anything
 	if (self.classname == "monster_bat"           ||
@@ -389,4 +419,33 @@ void () monster_death =
 	    }
 		drop_item.nextthink = time + 0.1;
 	}
+};
+
+void () monster_become_corpse =
+{
+	local vector minBbox, maxBbox;
+	
+	self.th_stand = self.th_walk = self.th_run = self.th_pain = self.th_missile = SUB_Null;
+
+	self.health = self.max_health / 2;
+
+	// FIXME: need to set bounding box based on angular data and size of corpse model
+    minBbox = '-32 -32 -20';
+    maxBbox = '32 32 0';
+
+    // Set corpse bbox min z based upon the monster's min z
+    minBbox_z = self.mins_z;
+
+    maxBbox_z = minBbox_z + 5;
+    self.solid = SOLID_BBOX;
+	setsize (self, minBbox, maxBbox);
+    self.touch = SUB_SolidTouch;
+	self.think = self.reset = FadeAway;
+	self.oldorigin = self.origin;
+	self.nextthink = time + 30;
+	self.th_die = GibPlayerCorpse;
+	self.classname = "corpse";
+	self.flags = 0;
+	self.movetype = MOVETYPE_TOSS;
+	self.takedamage = DAMAGE_AIM;
 };

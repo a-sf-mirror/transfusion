@@ -26,7 +26,6 @@ void(entity attacker) ClientObituary;
 void(entity inflictor, entity attacker, float damage, entity ignore, string dtype) T_RadiusDamage;
 void(entity player, entity attacker) Player_BrinkOfDeath;
 
-
 //============================================================================
 
 /*
@@ -197,10 +196,15 @@ void(entity targ, entity inflictor, entity attacker, float damage, float dflags,
 	
 	// Hellhound / Cerebrus can't be hurt by fire, but can be hurt by the napalm launcher and TNT
 	if ((targ.classname == "monster_hellhound" || targ.classname == "monster_cerebrus") && 
-	    (dflags & DF_FIRE) && 
-	    inflictor.weapon != IT_NAPALM_LAUNCHER &&
-		dtype != "grenade")
+	    (dflags & DF_FIRE) &&
+		inflictor.classname != "exploding_barrel" &&  // TNT barrels
+        inflictor.classname != "grenade"          &&  // All bombs, lighted Spray Can, Napalm Launcher (altfire)
+        inflictor.classname != "missile")             // Napalm Launcher (normal), Life Leech)
 	    return;	
+
+	// If monsters are attacked while idling this gets their attack AI going
+	if (targ.flags & FL_MONSTER && attacker.classname == "player" && targ.enemy.classname != "player")
+		targ.enemy = attacker;
 
     // Used by buttons and triggers to set activator for target firing
     damage_attacker = attacker;

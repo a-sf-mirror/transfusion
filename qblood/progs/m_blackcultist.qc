@@ -50,6 +50,7 @@ void () blackcultist_fireTommygun =
     local entity    old;
     local vector    orig;
     local vector    spread;
+	local vector    org;
     local float     damage;
 
     makevectors (self.v_angle);
@@ -66,15 +67,49 @@ void () blackcultist_fireTommygun =
     orig = self.origin + v_forward * 15 + v_up * 12 + v_right * 4;
 
     // Spawn 1 shell every 2 shots
-    // Tommy_SpawnShell (orig); // FIXME: Disabled until mdl issue is fixed
+    Tommy_SpawnShell (orig);
 
-    FireBullets (self.origin, dir, 1, 12, '0.1 0.1 0');
-
-    self.punchangle_x = -2;
+    org = self.origin;
 	
+	/* 
+	   There has to be a smarter way to do this...
+	   This adjust the angle that the shotgun pellets come from
+	   I.E. So you can't walk right into a cultist "blind spot" 
+	*/	
+	if (self.angles_y >= 315 || self.angles_y <= 45)
+	{
+	    org_x = org_x + 10;
+		org_y = org_y + 0;
+	}
+	else if (self.angles_y >= 225)
+	{
+	    org_x = org_x + 0;
+		org_y = org_y - 10;
+	}
+	else if (self.angles_y >= 135)
+	{
+	    org_x = org_x - 10;
+		org_y = org_y + 0;
+	}
+	else // self.angles_y > 45)
+	{
+	    org_x = org_x + 0;
+		org_y = org_y + 10;
+	}
+	
+	org_z = org_z + 35;
+	
+	FireBullets (org, dir, 1, 10, '0.1 0.1 0');
+
 	// Keep attacking until enemy is out of range or dead
-	if(visible(self.enemy))
-	    blackcultist_attack();
+	if(visible(self.enemy) && self.enemy.health > 1)
+	    self.think = blackcultist_attack;
+	
+	else
+	    self.think = self.th_run;
+		
+	self.nextthink = time + 0.1;
+	
 };
 
 void () monster_blackcultist =

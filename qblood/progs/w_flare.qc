@@ -144,14 +144,14 @@ void() FlareTouch =
 
     if (other.classname == "player" || (other.flags & FL_MONSTER))
     {
-        self.alpha = 0.1; // Until I get a new model
+        self.alpha = 0.3;
 		self.solid = SOLID_NOT;
         self.enemy = other;
         self.movetype = MOVETYPE_NONE;
         self.v_angle = self.enemy.origin - self.origin;
 		self.effects = EF_STARDUST;
 
-        // Flares stick for 6 seconds
+        // Flares stick for max of 6 seconds
         self.attack_finished = time + 6;
         FlareThink();
     }
@@ -167,19 +167,11 @@ void () FlareThink =
        self.enemy.health <=0)          // enemy is dead
         remove (self);
 
-    if (self.enemy.max_health == 0)
-        error2("!!!TIM!!! set max health value for entity: ", self.enemy.classname);
-
-    percent = self.enemy.health / self.enemy.max_health;
-
-    if (!VecInWater(self.origin))
-    if (percent <= 0.35 && (self.enemy.flags & FL_MONSTER))  // Monsters don't catch on fire until they're low on health
-        {
-            Ignite(self.enemy, self, DF_FIRE, 10, 1);
-            T_Damage (self.enemy, self, self, 3, DF_FIRE, "fire");
-        }
-    else if (self.enemy.flags & FL_MONSTER)
-        T_Damage (self.enemy, self, self, 3, DF_FIRE, "fire");
+    if (!VecInWater(self.origin) && self.enemy.flags & FL_MONSTER)
+    {
+        Ignite(self.enemy, self, DF_FIRE, 10, 1);
+        T_Damage (self.enemy, self, self.owner, 1, DF_FIRE, "fire");
+    }
 
     if ((self.enemy.origin - self.origin) != self.v_angle)
         self.origin = self.enemy.origin + self.v_angle;
@@ -218,7 +210,7 @@ entity(entity attacker, vector spot) NewFlare =
 	fire.effects    = fire.effects | EF_DIMLIGHT;
     fire.movetype   = MOVETYPE_FLYMISSILE;
     fire.solid      = SOLID_BBOX;
-
+    fire.owner      = self;
     fire.reset      = SUB_Remove;
 
     return fire;

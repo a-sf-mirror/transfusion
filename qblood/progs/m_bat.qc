@@ -107,7 +107,9 @@ void() bat_death =[$fly1, bat_death]
 
     if (self.health <= -20)
 	{
-        ThrowGib ("models/objects/gib4.md3", self.health);
+        // blood splat!
+	    te_bloodshower (self.origin, self.origin + self.size, 100, 25);
+		ThrowGib ("models/objects/gib4.md3", self.health);
 		remove (self);
 		return;
 	}

@@ -35,33 +35,14 @@ void () minicaleb_stand1;
 void () minicaleb_fireShotgun;
 void () minicaleb_attackDecide;
 
-void (float dist) minicaleb_ai =
-{
-    if (self.style == 1)
-        ai_stand ();
-    else
-    {
-        if (self.style == 2)
-            ai_walk (dist);
-        else
-        {
-            if (self.style == 3)
-            {
-                ai_run (dist * 2);
-                ai_face ();
-            }
-        }
-    }
-};
-
 //--- Walking around
 
-void () minicaleb_walk1 = [$run1, minicaleb_walk2] {minicaleb_ai (3);};
-void () minicaleb_walk2 = [$run2, minicaleb_walk3] {minicaleb_ai (3);};
-void () minicaleb_walk3 = [$run3, minicaleb_walk4] {minicaleb_ai (3);};
-void () minicaleb_walk4 = [$run4, minicaleb_walk5] {minicaleb_ai (3);};
-void () minicaleb_walk5 = [$run5, minicaleb_walk6] {minicaleb_ai (3);};
-void () minicaleb_walk6 = [$run6, minicaleb_walk1] {minicaleb_ai (3);};
+void () minicaleb_walk1 = [$run1, minicaleb_walk2] {basic_ai (3);};
+void () minicaleb_walk2 = [$run2, minicaleb_walk3] {basic_ai (3);};
+void () minicaleb_walk3 = [$run3, minicaleb_walk4] {basic_ai (3);};
+void () minicaleb_walk4 = [$run4, minicaleb_walk5] {basic_ai (3);};
+void () minicaleb_walk5 = [$run5, minicaleb_walk6] {basic_ai (3);};
+void () minicaleb_walk6 = [$run6, minicaleb_walk1] {basic_ai (3);};
 
 //--- Decide which idle to do
 
@@ -187,14 +168,7 @@ void () minicaleb_death2 = [$deatha2, minicaleb_death3]{};
 void () minicaleb_death3 = [$deatha3, minicaleb_death4]{};
 void () minicaleb_death4 = [$deatha4, minicaleb_death5]{};
 void () minicaleb_death5 = [$deatha5, minicaleb_death6]{};
-void () minicaleb_death6 = [$deatha6, minicaleb_death6]
-{
-    CloneCorpse (self);
-
-    // In the last frame, spawn corpse, remove self 1 second after death
-    self.nextthink = time + 1;
-    self.think = SUB_Remove;
-};
+void () minicaleb_death6 = [$deatha6, minicaleb_death6] {monster_become_corpse();};
 
 void () minicaleb_die =
 {
@@ -204,7 +178,10 @@ void () minicaleb_die =
 
     if (self.health <= -20)
 	{ 
-        if (random() <= 0.5)
+        // Very large blood splat!
+        te_bloodshower (self.origin, self.origin + self.size, 100, 25);
+		
+		if (random() <= 0.5)
             ThrowGib ("models/objects/gib4.md3", self.health);
         else
             ThrowGib ("models/objects/gib5.md3", self.health);
@@ -249,7 +226,6 @@ void () monster_minicaleb =
     self.th_pain = minicaleb_pain1;
     self.th_missile = minicaleb_attack;
     self.touch = monster_stepped_on;
-
     walkmonster_start ();
 };
 

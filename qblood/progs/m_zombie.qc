@@ -37,31 +37,12 @@ $frame attack1 attack2 attack3 attack4 attack5 attack6 attack7 attack8
 void () zombie_stand1;
 void () zombie_axeAttack;
 
-void (float dist) zombie_ai =
-{
-    if (self.style == 1)
-        ai_stand ();
-    else
-    {
-        if (self.style == 2)
-            ai_walk (dist);
-        else
-        {
-            if (self.style == 3)
-            {
-                ai_run (dist * 2);
-                ai_face ();
-            }
-        }
-    }
-};
-
-void () zombie_walk1 = [$run1, zombie_walk2] {zombie_ai (6);};
-void () zombie_walk2 = [$run2, zombie_walk3] {zombie_ai (4);};
-void () zombie_walk3 = [$run3, zombie_walk4] {zombie_ai (3);};
-void () zombie_walk4 = [$run4, zombie_walk5] {zombie_ai (5);};
-void () zombie_walk5 = [$run5, zombie_walk6] {zombie_ai (6);};
-void () zombie_walk6 = [$run6, zombie_walk1] {zombie_ai (4);};
+void () zombie_walk1 = [$run1, zombie_walk2] {basic_ai (4);};
+void () zombie_walk2 = [$run2, zombie_walk3] {basic_ai (4);};
+void () zombie_walk3 = [$run3, zombie_walk4] {basic_ai (4);};
+void () zombie_walk4 = [$run4, zombie_walk5] {basic_ai (4);};
+void () zombie_walk5 = [$run5, zombie_walk6] {basic_ai (4);};
+void () zombie_walk6 = [$run6, zombie_walk1] {basic_ai (4);};
 
 void () zombie_stand =
 {
@@ -171,11 +152,7 @@ void () zombie_pain =
 
 void () zombie_death1 = [$idle1, zombie_death1]
 {
-    CloneCorpse (self);
-
-    // In the last frame, spawn corpse, remove self 1 second after death
-    self.nextthink = time + 1;
-    self.think = SUB_Remove;
+    monster_become_corpse();
 };
 
 void () zombie_die =
@@ -184,7 +161,10 @@ void () zombie_die =
 	
     if (self.health < -40)
     {
-        sound (self, CHAN_VOICE, "axezombie/azomdie3.wav", 1, ATTN_NORM);
+        // Very large blood splat!
+        te_bloodshower (self.origin, self.origin + self.size, 100, 100);
+
+		sound (self, CHAN_VOICE, "axezombie/azomdie3.wav", 1, ATTN_NORM);
         RandomHumanGibs();
         remove (self);
         return;
@@ -231,5 +211,6 @@ void () monster_zombie =
     self.th_die = zombie_die;
     self.th_pain = zombie_pain;
     self.th_missile = zombie_attack;
+	self.touch = monster_stepped_on;
     walkmonster_start ();
 };

@@ -451,7 +451,12 @@ void() flame_touch =
 
     // hit something that bleeds
     if (other.takedamage)
-        BurnDamage (other, self, 5, DF_FIRE, 10, 3);
+    {
+	    BurnDamage (other, self, 5, DF_FIRE, 10, 3);
+		
+		if (other.flags & FL_MONSTER)
+		    T_Damage (other, self, self.owner, 4, DF_FIRE, "fire");
+	}
 
     remove(self);
 

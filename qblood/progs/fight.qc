@@ -127,19 +127,6 @@ void() ai_face =
 
 /*
 =============
-ai_face
-
-Stay facing away from the enemy
-=============
-*/
-void() ai_faceaway =
-{
-    self.ideal_yaw = vectoyaw(self.origin - self.enemy.origin);
-    ChangeYaw ();
-};
-
-/*
-=============
 ai_charge
 
 The monster is in a melee attack, so get as close as possible to .enemy

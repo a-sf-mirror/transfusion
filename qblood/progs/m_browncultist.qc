@@ -39,7 +39,7 @@ void () browncultist_attackb2 = [$idle1, cultist_run] {ai_face ();};
 
 void () browncultist_attack =
 {
-    if (!infront(self.enemy)) // If there's something blocking the shot
+    if (!visible(self.enemy)) // If there's something blocking the shot
         return;
 
     cultist_taunt(); // Talk some smack!
@@ -49,12 +49,18 @@ void () browncultist_attack =
 
 void () browncultist_attackDecide =
 {
-    if (self.attack_finished > time)
+    local float vis;
+	
+	vis = visible(self.enemy);
+	
+	if (self.attack_finished < time && vis)
     {
-        ai_face();                           // Face player
+        local float dist;		
+		ai_face();                           // Face player
+		
+		dist = range(self.enemy);
 
-        if (range(self.enemy) == RANGE_NEAR ||
-            range(self.enemy) == RANGE_MELEE)// If the player is near shoot them
+        if (dist == RANGE_NEAR || dist == RANGE_MELEE)// If the player is near shoot them		      
             browncultist_attacka1 ();
         else
             browncultist_attackb1 ();        // Otherwise TNT them

@@ -66,39 +66,20 @@ void () butcher_VomitTouch;         // When struck by vomit
 void () butcher_CleaverTouch;       // When struck by cleaver
 void () butcher_CleaverChop;        // Melee cleaver whack
 
-void (float dist) butcher_ai =
-{
-    if (self.style == 1)
-        ai_stand ();
-    else
-    {
-        if (self.style == 2)
-            ai_walk (dist);
-        else
-        {
-            if (self.style == 3)
-            {
-                ai_run (dist * 2);
-                ai_face ();
-            }
-        }
-    }
-};
-
 //--- Walking around
 
-void () butcher_walk1 = [$walk1, butcher_walk2] {butcher_ai (3);};
-void () butcher_walk2 = [$walk2, butcher_walk3] {butcher_ai (3);};
-void () butcher_walk3 = [$walk3, butcher_walk4] {butcher_ai (3);};
-void () butcher_walk4 = [$walk4, butcher_walk5] {butcher_ai (3);};
-void () butcher_walk5 = [$walk5, butcher_walk6] {butcher_ai (3);};
-void () butcher_walk6 = [$walk6, butcher_walk7] {butcher_ai (3);};
-void () butcher_walk7 = [$walk7, butcher_walk8] {butcher_ai (3);};
-void () butcher_walk8 = [$walk8, butcher_walk9] {butcher_ai (3);};
-void () butcher_walk9 = [$walk9, butcher_walk10] {butcher_ai (3);};
-void () butcher_walk10 = [$walk10, butcher_walk11] {butcher_ai (3);};
-void () butcher_walk11 = [$walk11, butcher_walk12] {butcher_ai (3);};
-void () butcher_walk12 = [$walk12, butcher_walk1] {butcher_ai (3);};
+void () butcher_walk1 = [$walk1, butcher_walk2] {basic_ai (3);};
+void () butcher_walk2 = [$walk2, butcher_walk3] {basic_ai (3);};
+void () butcher_walk3 = [$walk3, butcher_walk4] {basic_ai (3);};
+void () butcher_walk4 = [$walk4, butcher_walk5] {basic_ai (3);};
+void () butcher_walk5 = [$walk5, butcher_walk6] {basic_ai (3);};
+void () butcher_walk6 = [$walk6, butcher_walk7] {basic_ai (3);};
+void () butcher_walk7 = [$walk7, butcher_walk8] {basic_ai (3);};
+void () butcher_walk8 = [$walk8, butcher_walk9] {basic_ai (3);};
+void () butcher_walk9 = [$walk9, butcher_walk10] {basic_ai (3);};
+void () butcher_walk10 = [$walk10, butcher_walk11] {basic_ai (3);};
+void () butcher_walk11 = [$walk11, butcher_walk12] {basic_ai (3);};
+void () butcher_walk12 = [$walk12, butcher_walk1] {basic_ai (3);};
 
 
 //--- Decide which idle to do
@@ -260,7 +241,7 @@ void () butcher_launch_cleaver =
     newmis.solid = SOLID_BBOX;
     newmis.movetype = MOVETYPE_FLYMISSILE;
     setmodel (newmis, "models/enemies/butcher_cleaver.md3");
-    setsize (newmis, '0 0 0', '0 0 0');        // FIXME
+    setsize (newmis, '0 0 0', '0 0 0');
     newmis.origin = self.origin + '0 -8 20';
     newmis.velocity = vec * 600;
     newmis.avelocity = '500 500 500';
@@ -404,14 +385,7 @@ void () butcher_death9 = [$death9, butcher_death10] {};
 void () butcher_death10 = [$death10, butcher_death11] {};
 void () butcher_death11 = [$death11, butcher_death12] {};
 void () butcher_death12 = [$death12, butcher_death13] {};
-void () butcher_death13 = [$death13, butcher_death13]
-{
-    CloneCorpse (self);
-
-    // In the last frame, spawn corpse, remove self 1 second after death
-    self.nextthink = time + 1;
-    self.think = SUB_Remove;
-};
+void () butcher_death13 = [$death13, butcher_death13] {monster_become_corpse();};
 
 // Sequence for burn or voodoo death
 
@@ -429,7 +403,6 @@ void () butcher_explode10 = [9, butcher_explode10]
     // In the last frame, remove self 15 seconds after death
     self.nextthink = time + 15;
     self.think = SUB_Remove;
-
 };
 
 void () butcher_die =
@@ -439,17 +412,16 @@ void () butcher_die =
     if (self.health < -40)
     {
         sound (self, CHAN_VOICE, "butcher/fzomdie3.wav", 1, ATTN_NORM);
+		
+		// Very large blood splat!
+	    te_bloodshower (self.origin, self.origin + self.size, 100, 150);
 
         ThrowHead ("models/enemies/butcher_head.md3", self.health);
 
         // Make new head 100% null
-		self.think = SUB_Null;
-		self.th_stand = SUB_Null;
-        self.th_walk = SUB_Null;
-        self.th_run = SUB_Null;
-        self.th_pain = SUB_Null;
-        self.th_missile = SUB_Null;
-		self.nextthink = time + 0.2;
+		self.think = self.th_stand = self.th_walk = self.th_run = self.th_pain = self.th_missile = SUB_Null;
+		
+		self.nextthink = time + 0.1;
 		self.classname = "head";
         self.touch = HeadTouch;
         BecomeCorpse (80, HeadDie);
@@ -511,5 +483,6 @@ void () monster_butcher =
     self.th_die = butcher_die;
     self.th_pain = butcher_pain;
     self.th_missile = butcher_attack;
+	self.touch = monster_stepped_on;
     walkmonster_start ();
 };

@@ -431,7 +431,7 @@ void() func_door =
 
     // REMOVEME: temporary hack
     // shootable, fired, or key doors can't get triggered manually
-    if (!self.health && !self.targetname && !self.items2)
+    if (!self.health && !self.targetname && !self.items2 && !self.flags)
         self.spawnflags = self.spawnflags | SF_USABLE;
 
     // All key doors make Caleb say "I need a key!"

@@ -181,7 +181,7 @@ void() Spray_Fire =
     setorigin (newmis, self.origin + '0 0 10' + v_forward * 50 + v_right * 8);
 
     newmis.velocity = dir * 550;
-
+    newmis.owner = self;
     newmis.frame = floor (random () * 3);
 };
 

@@ -20,9 +20,6 @@
 
 #include "common.qh"
 
-
-float movedist;
-
 void() movetarget_f;
 void() t_movetarget;
 
@@ -35,14 +32,9 @@ Will be world if not currently angry at anyone.
 The next path spot to walk toward.  If .enemy, ignore .movetarget.
 When an enemy is killed, the monster will try to return to it's path.
 
-.huntt_ime
-Set to time + something when the player is in sight, but movement straight for
-him is blocked.  This causes the monster to use wall following code for
-movement direction instead of sighting on the player.
-
 .ideal_yaw
 A yaw angle of the intended direction, which will be turned towards at up
-to 45 deg / state.  If the enemy is in view and hunt_time is not active,
+to 45 deg / state.  If the enemy is in view,
 this will be the exact line towards the enemy.
 
 .pausetime
@@ -52,19 +44,6 @@ time > .pausetime.
 walkmove(angle, speed) primitive is all or nothing
 */
 
-
-//
-// globals
-//
-float   current_yaw;
-
-//
-// when a monster becomes angry at a player, that monster will be used
-// as the sight target the next frame so that monsters near that one
-// will wake up even if they wouldn't have noticed the player
-//
-entity  sight_entity;
-float   sight_entity_time;
 
 float(float v) anglemod =
 {
@@ -289,19 +268,23 @@ void() SightSound =
         else
             sound (self, CHAN_VOICE, "cultist/cultspt5.wav", 1, ATTN_NORM);
     }
+
+	self.voice_finished = time + 2;
 };
 
 void() FoundTarget =
 {
-    if (self.enemy.classname == "player")
+	if (self.enemy.classname == "player")
     {   // let other monsters see this monster for a while
-        sight_entity = self;
-        sight_entity_time = time;
+        sight_entity = self.enemy;
+        sight_entity_time = time + 1;
     }
 
     self.show_hostile = time + 1;       // wake up other monsters
 
-    SightSound ();
+    if (self.pain_finished < time && self.voice_finished < time)// To avoid several sounds at once
+	    SightSound ();
+
     HuntTarget ();
 };
 
@@ -327,17 +310,14 @@ float() FindTarget =
     local entity    client;
     local float     r;
 
-// if the first spawnflag bit is set, the monster will only wake up on
-// really seeing the player, not another monster getting angry
-
-// spawnflags & 3 is a big hack, because zombie crucified used the first
-// spawn flag prior to the ambush flag, and I forgot about it, so the second
-// spawn flag works as well
-    if (sight_entity_time >= time - 0.1 && !(self.spawnflags & 3) )
+	if (sight_entity_time >= time)
     {
-        client = sight_entity;
-        if (client.enemy == self.enemy)
-            return;
+		if (visible(sight_entity))
+        {
+			self.enemy = sight_entity;
+			FoundTarget();
+			return TRUE;
+		}
     }
     else
     {
@@ -352,15 +332,14 @@ float() FindTarget =
         return FALSE;
     
     r = range (client);
-//    if (r == RANGE_FAR)  // TESTME: Do all blood monsters respond to players as soon as they're spotted?
-//        return FALSE;
 
     if (!visible (client))
         return FALSE;
 
-    if (r == RANGE_NEAR)
+    // In skill settings 1 and 2 you can sneak up behind monsters
+	if (r == RANGE_NEAR)
     {
-        if (skill < 2 && !infront(client))
+        if (skill <= 2 && !infront(client))
             return FALSE;
     }
     else if (r == RANGE_MID)
@@ -630,12 +609,15 @@ void(float dist) ai_run =
     local   float   direct, ang_rint, ang_floor, ang_ceil;
 
     movedist = dist;
-    
+	
+	
+	
 	// see if the enemy is dead
     if (self.enemy.health <= 0)
     {
         self.enemy = world;
     // FIXME: look all around for other targets
+
         if (self.oldenemy.health > 0)
         {
             self.enemy = self.oldenemy;
@@ -651,7 +633,12 @@ void(float dist) ai_run =
         }
     }
 	
-    self.show_hostile = time + 1;       // wake up other monsters
+    if (visible(self.enemy) && self.enemy.classname == "player")
+	{
+	    self.show_hostile = time + 1;       // wake up other monsters
+	    sight_entity = self.enemy;
+        sight_entity_time = time + 1;
+	}
 
     // check knowledge of enemy
     enemy_vis = visible(self.enemy);
@@ -767,4 +754,34 @@ void(float dist) ai_run_away =
        self.ideal_yaw = self.ideal_yaw - 22.5;   // Turn a little bit
        self.ideal_yaw = anglemod(self.ideal_yaw);// Get rid of crazy values
     }	
+};
+
+void (float dist) basic_ai =
+{
+    if (self.enemy.classname == "player")
+	    self.style = 3;
+	
+	// Hellhounds are extinguished if they're in water
+	if (self.classname == "monster_hellhound")
+	    if (pointcontents(self.origin) == CONTENT_WATER)
+		    {
+			    self.think = self.th_die;
+				self.nextthink = time + 0.1;
+			}
+	
+	if (self.style == 1)
+        ai_stand ();
+    else
+    {
+        if (self.style == 2)
+            ai_walk (dist);
+        else
+        {
+            if (self.style == 3)
+            {
+                ai_run (dist * 2);
+                ai_face ();
+            }
+        }
+    }
 };

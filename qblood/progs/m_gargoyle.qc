@@ -34,28 +34,9 @@ void () gargoyle_launch_Bone;
 void () gargoyle_BoneTouch;       // When struck by bone
 void () gargoyle_claw;
 
-void (float dist) gargoyle_ai =
-{
-    if (self.style == 1)
-        ai_stand ();
-    else
-    {
-        if (self.style == 2)
-            ai_walk (dist);
-        else
-        {
-            if (self.style == 3)
-            {
-                ai_run (dist * 2);
-                ai_face ();
-            }
-        }
-    }
-};
-
 //--- Walking around
 
-void () gargoyle_walk1 = [$idle1, gargoyle_walk1] {gargoyle_ai (3);};
+void () gargoyle_walk1 = [$idle1, gargoyle_walk1] {basic_ai (3);};
 
 
 //--- Decide which idle to do
@@ -189,11 +170,7 @@ void () gargoyle_pain =
 
 void () gargoyle_death1 = [$idle1, gargoyle_death1]
 {
-    CloneCorpse (self);
-
-    // In the last frame, spawn corpse, remove self 1 second after death
-    self.nextthink = time + 1;
-    self.think = SUB_Remove;
+    monster_become_corpse();
 };
 
 void () gargoyle_die =
@@ -203,7 +180,10 @@ void () gargoyle_die =
 	
     if (self.health < -40)
     {
-        sound (self, CHAN_VOICE, "gargoyle/gargdie3.wav", 1, ATTN_NORM);
+        // Very large blood splat!
+	    te_bloodshower (self.origin, self.origin + self.size, 100, 150);
+		
+		sound (self, CHAN_VOICE, "gargoyle/gargdie3.wav", 1, ATTN_NORM);
         remove (self);
         return;
     }    

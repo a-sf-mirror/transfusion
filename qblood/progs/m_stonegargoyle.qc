@@ -34,25 +34,6 @@ void (vector misorig) stonegargoyle_eye_shot;
 //void () stonegargoyle_eye_shot_touch;       // When struck by eye projectiles
 void () stonegargoyle_claw;
 
-void (float dist) stonegargoyle_ai =
-{
-    if (self.style == 1)
-        ai_stand ();
-    else
-    {
-        if (self.style == 2)
-            ai_walk (dist);
-        else
-        {
-            if (self.style == 3)
-            {
-                ai_run (dist * 2);
-                ai_face ();
-            }
-        }
-    }
-};
-
 //--- Walking around
 
 void () stonegargoyle_walk1 = [$idle1, stonegargoyle_walk1]
@@ -62,9 +43,9 @@ void () stonegargoyle_walk1 = [$idle1, stonegargoyle_walk1]
     dist = vlen(self.enemy.origin - self.origin);
 
     if (dist < 300)
-        stonegargoyle_ai (10);
+        basic_ai (10);
     else
-        stonegargoyle_ai (2);
+        basic_ai (2);
 };
 
 
@@ -189,11 +170,7 @@ void () stonegargoyle_pain =
 
 void () stonegargoyle_death1 = [$idle1, stonegargoyle_death1]
 {
-    CloneCorpse (self);
-
-    // In the last frame, spawn corpse, remove self 1 second after death
-    self.nextthink = time + 1;
-    self.think = SUB_Remove;
+    monster_become_corpse();
 };
 
 void () stonegargoyle_die =
@@ -203,7 +180,10 @@ void () stonegargoyle_die =
 	
     if (self.health < -40)
     {
-        sound (self, CHAN_VOICE, "stonegargoyle/sargdie3.wav", 1, ATTN_NORM);
+        // Very large blood splat!
+        te_bloodshower (self.origin, self.origin + self.size, 100, 500);
+		
+		sound (self, CHAN_VOICE, "stonegargoyle/sargdie3.wav", 1, ATTN_NORM);
         remove (self);
         return;
     }    

@@ -55,38 +55,18 @@ void () hellhound_bite;
 void () hellhound_breath;
 void() hellhound_flameSpawn;
 
-void (float dist) hellhound_ai =
-{
-    if (self.style == 1)
-        ai_stand ();
-    else
-    {
-        if (self.style == 2)
-            ai_walk (dist);
-        else
-        {
-            if (self.style == 3)
-            {
-                ai_run (dist * 2);
-                ai_face ();
-            }
-        }
-    }
-};
-
-void () hellhound_walk1 = [$run1, hellhound_walk2] {hellhound_ai (10);};
-void () hellhound_walk2 = [$run2, hellhound_walk3] {hellhound_ai (10);};
-void () hellhound_walk3 = [$run3, hellhound_walk4] {hellhound_ai (10);};
-void () hellhound_walk4 = [$run4, hellhound_walk5] {hellhound_ai (10);};
-void () hellhound_walk5 = [$run5, hellhound_walk6] {hellhound_ai (10);};
-void () hellhound_walk6 = [$run6, hellhound_walk7] {hellhound_ai (10);};
-void () hellhound_walk7 = [$run7, hellhound_walk8] {hellhound_ai (10);};
-void () hellhound_walk8 = [$run8, hellhound_walk9] {hellhound_ai (10);};
-void () hellhound_walk9 = [$run9, hellhound_walk10] {hellhound_ai (10);};
-void () hellhound_walk10 = [$run10, hellhound_walk11] {hellhound_ai (10);};
-void () hellhound_walk11 = [$run11, hellhound_walk12] {hellhound_ai (10);};
-void () hellhound_walk12 = [$run12, hellhound_walk1] {hellhound_ai (10);};
-
+void () hellhound_walk1 = [$run1, hellhound_walk2] {basic_ai (10);};
+void () hellhound_walk2 = [$run2, hellhound_walk3] {basic_ai (10);};
+void () hellhound_walk3 = [$run3, hellhound_walk4] {basic_ai (10);};
+void () hellhound_walk4 = [$run4, hellhound_walk5] {basic_ai (10);};
+void () hellhound_walk5 = [$run5, hellhound_walk6] {basic_ai (10);};
+void () hellhound_walk6 = [$run6, hellhound_walk7] {basic_ai (10);};
+void () hellhound_walk7 = [$run7, hellhound_walk8] {basic_ai (10);};
+void () hellhound_walk8 = [$run8, hellhound_walk9] {basic_ai (10);};
+void () hellhound_walk9 = [$run9, hellhound_walk10] {basic_ai (10);};
+void () hellhound_walk10 = [$run10, hellhound_walk11] {basic_ai (10);};
+void () hellhound_walk11 = [$run11, hellhound_walk12] {basic_ai (10);};
+void () hellhound_walk12 = [$run12, hellhound_walk1] {basic_ai (10);};
 
 void () hellhound_stand =
 {
@@ -98,17 +78,17 @@ void () hellhound_stand =
 };
 
 // idle
-void () hellhound_stand1 = [$idle1, hellhound_stand2] {ai_stand();};
-void () hellhound_stand2 = [$idle2, hellhound_stand3] {ai_stand();};
-void () hellhound_stand3 = [$idle3, hellhound_stand4] {ai_stand();};
-void () hellhound_stand4 = [$idle4, hellhound_stand5] {ai_stand();};
-void () hellhound_stand5 = [$idle5, hellhound_stand6] {ai_stand();};
-void () hellhound_stand6 = [$idle6, hellhound_stand7] {ai_stand();};
-void () hellhound_stand7 = [$idle7, hellhound_stand8] {ai_stand();};
-void () hellhound_stand8 = [$idle8, hellhound_stand9] {ai_stand();};
-void () hellhound_stand9 = [$idle9, hellhound_stand10] {ai_stand();};
-void () hellhound_stand10 = [$idle10, hellhound_stand11] {ai_stand();};
-void () hellhound_stand11 = [$idle11, hellhound_stand12] {ai_stand();};
+void () hellhound_stand1 = [$idle1, hellhound_stand2] {basic_ai(0);};
+void () hellhound_stand2 = [$idle2, hellhound_stand3] {basic_ai(0);};
+void () hellhound_stand3 = [$idle3, hellhound_stand4] {basic_ai(0);};
+void () hellhound_stand4 = [$idle4, hellhound_stand5] {basic_ai(0);};
+void () hellhound_stand5 = [$idle5, hellhound_stand6] {basic_ai(0);};
+void () hellhound_stand6 = [$idle6, hellhound_stand7] {basic_ai(0);};
+void () hellhound_stand7 = [$idle7, hellhound_stand8] {basic_ai(0);};
+void () hellhound_stand8 = [$idle8, hellhound_stand9] {basic_ai(0);};
+void () hellhound_stand9 = [$idle9, hellhound_stand10] {basic_ai(0);};
+void () hellhound_stand10 = [$idle10, hellhound_stand11] {basic_ai(0);};
+void () hellhound_stand11 = [$idle11, hellhound_stand12] {basic_ai(0);};
 void () hellhound_stand12 = [$idle12, hellhound_stand] {};
 
 
@@ -286,11 +266,7 @@ void () hellhound_death4 = [$death4, hellhound_death5] {};
 void () hellhound_death5 = [$death5, hellhound_death6] {};
 void () hellhound_death6 = [$death6, hellhound_death6]
 {
-    CloneCorpse (self);
-
-    // In the last frame, spawn corpse, remove self 1 second after death
-    self.nextthink = time + 1;
-    self.think = SUB_Remove;
+    monster_become_corpse();
 };
 
 void () hellhound_die =
@@ -301,8 +277,9 @@ void () hellhound_die =
     {
         sound (self, CHAN_VOICE, "hellhound/cerbdie3.wav", 1, ATTN_NORM);
 
-        // ThrowHead (self.health);  // FIXME: At some point need to drop hellhound head, and it be kickable
-        // FIXME: ThrowGibs!!!
+        // Very large blood splat!
+        te_bloodshower (self.origin, self.origin + self.size, 100, 150);
+		
         remove (self);
         return;
     }
@@ -348,5 +325,6 @@ void () monster_hellhound =
     self.th_die = hellhound_die;
     self.th_pain = hellhound_pain;
     self.th_missile = hellhound_attack;
+	self.touch = monster_stepped_on;
     walkmonster_start ();
 };

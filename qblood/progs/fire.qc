@@ -72,7 +72,7 @@ void(entity targ, entity inflictor, entity attacker, float dmgtype, float damage
 //------------------------------------------------------------------------//
 void(entity victim, entity fire, float damage, float dmgtype, float burn, float burntime) BurnDamage =
 {
-    // Set victim on fire first.
+	// Set victim on fire first.
     if (burn > 0)
         Ignite (victim, fire.owner, dmgtype, burn, burntime);
 
@@ -305,6 +305,10 @@ void(entity victim, entity attacker, float dmgtype, float burn, float burntime) 
 		victim.classname == "corpse"            ||
 		victim.classname == "head")
         return;
+
+    if (victim.flags & FL_MONSTER) 
+	    if (victim.health / victim.max_health > 0.33) // Not every entity should have max_health, so only check monsters
+	        return;
 
     // Check if the entity is linked to a burning flame.
     if (victim.burner)

@@ -541,6 +541,9 @@ void() GibPlayer =
 {
     local float rs;
 	
+	// Very large blood splat!
+	te_bloodshower (self.origin, self.origin + self.size, 100, 200);
+	
 	ThrowHead ("progs/h_player.mdl", self.health);
     RandomHumanGibs ();
 

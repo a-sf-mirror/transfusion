@@ -40,29 +40,10 @@ $frame attack1 attack2
 void () rat_stand1;
 void () rat_bite;
 
-void (float dist) rat_ai =
-{    
-	if (self.style == 1)
-        ai_stand ();
-    else
-    {
-        if (self.style == 2)
-            ai_walk (dist);
-        else
-        {
-            if (self.style == 3)
-            {
-                ai_run (dist * 2);
-                ai_face ();
-            }
-        }
-    }
-};
-
-void () rat_walk1 = [$run1, rat_walk2] {rat_ai (3);};
-void () rat_walk2 = [$run2, rat_walk3] {rat_ai (3);};
-void () rat_walk3 = [$run3, rat_walk4] {rat_ai (3);};
-void () rat_walk4 = [$run4, rat_walk1] {rat_ai (3);};
+void () rat_walk1 = [$run1, rat_walk2] {basic_ai (3);};
+void () rat_walk2 = [$run2, rat_walk3] {basic_ai (3);};
+void () rat_walk3 = [$run3, rat_walk4] {basic_ai (3);};
+void () rat_walk4 = [$run4, rat_walk1] {basic_ai (3);};
 
 
 // FIXME: Unless more frames get added to the rat, we don't need two stand functions
@@ -170,7 +151,10 @@ void () rat_die =
 	
     if (self.health < -20)
     {
-        sound (self, CHAN_VOICE, "rat/ratdie3.wav", 1, ATTN_NORM);
+        // Very large blood splat!
+        te_bloodshower (self.origin, self.origin + self.size, 100, 25);
+		
+		sound (self, CHAN_VOICE, "rat/ratdie3.wav", 1, ATTN_NORM);
         ThrowGib ("models/objects/gib4.md3", self.health);
         remove (self);
         return;

@@ -99,7 +99,11 @@ void() button_touch =
     if (other.classname != "player")
         return;
 
-    if (self.attack_finished > time)
+    if (self.state == STATE_TOP && self.wait < 0)
+	    return;
+
+    // to avoid switching button 100 times a second  
+	if (self.attack_finished > time)
         return;
     else
         self.attack_finished = time + 1;

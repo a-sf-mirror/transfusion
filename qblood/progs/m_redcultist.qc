@@ -33,7 +33,7 @@ void () redcultist_attack3 = [$idle1, cultist_run] {ai_face ();};
 
 void () redcultist_attack =
 {
-    if (!infront(self.enemy)) // If there's something blocking the shot
+    if (!visible(self.enemy)) // If there's something blocking the shot
         return;
 
     cultist_taunt(); // Talk some smack!
@@ -44,7 +44,11 @@ void () redcultist_attack =
 
 void () redcultist_attackDecide =
 {
-    if (self.attack_finished > time)
+    local float vis;
+	
+	vis = visible(self.enemy);
+	
+    if (self.attack_finished < time && vis)
     {
         ai_face();                        // Face player
         redcultist_attack1 ();
