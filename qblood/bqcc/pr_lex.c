@@ -808,6 +808,8 @@ type_t *PR_ParseType (void)
       else
          do
          {
+            if (new.num_parms >= sizeof (new.parm_types) / sizeof (new.parm_types[0]))
+               PR_ParseError ("Too many parameters in function definition");
             type = PR_ParseType ();
             name = PR_ParseName ();
             strcpy (pr_parm_names[new.num_parms], name);

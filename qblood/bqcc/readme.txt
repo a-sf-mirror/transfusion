@@ -3,6 +3,10 @@ For other informations, take a look at "qcc.txt" and "meqcc.txt", included
 into this package.
 
 Changes since MeQCC v1.4:
+  * v0.2cvs
+    - bug fix: BQCC crashed silently if a function declaration contained too
+    many parameters.
+
   * v0.1.2
     - a lot of strings were duplicated in the progs file. BQCC now makes sure it
     doesn't happen.
