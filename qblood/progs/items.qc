@@ -703,7 +703,8 @@ void() weapon_flaregun =
     self.touch = weapon_touch;
     setsize (self, '-16 -16 0', '16 16 56');
 
-    // FIXME: Precache the necessary sounds HERE
+    // precache the necessary sounds
+    precache_sound ("sound/weapons/flaregun/flaref.wav");
 
     StartItem ();
 };
