@@ -413,9 +413,9 @@ void() Menu_Draw =
     {
         Sprint (self, PRINT_HIGH,
                 "Vote for a map:\n"
-                "1) e1m1  Cradle to Grave           | 2) e1m2  Wrong Side of the Tracks\n"
-                "3) e1m7  Altar of Stone            | 4) e3m7  The Pit of Cerberus\n"
-                "5) e4m8  The Hall of the Epiphany\n"
+                "1) e1m1  Cradle to Grave      | 2) e1m2  Wrong Side of the Tracks\n"
+                "3) e1m7  Altar of Stone       | 4) e2m8  The Lair of Shial\n"
+                "5) e3m7  The Pit of Cerberus  | 6) e4m8  The Hall of the Epiphany\n"
                 "\n"
                 "10) Go back to map menu\n");
     }
@@ -423,9 +423,10 @@ void() Menu_Draw =
     {
         Sprint (self, PRINT_HIGH,
                 "Vote for a map:\n"
-                "1) dm1     Monolith Building 11  | 2) dm2     Power!\n"
-                "3) dm3     Area 15               | 4) e6m8    Beauty and the Beast\n"
-                "5) cpbb01  Crypt of Despair      | 6) cpbb03  Unholy Cathedral\n"
+                "1) cpbb01  Crypt of Despair      | 2) cpbb03  Unholy Cathedral\n"
+                "3) dm1     Monolith Building 11  | 4) dm2     Power!\n"
+                "5) dm3     Area 15               | 6) e6m1    Welcome to your Life\n"
+                "7) e6m8    Beauty and the Beast\n"
                 "\n"
                 "10) Go back to map menu\n");
     }
@@ -712,8 +713,10 @@ void() Menu_HandleVoteMapBloodSP =
     else if (self.impulse == 3)
         newmap = "e1m7";
     else if (self.impulse == 4)
-        newmap = "e3m7";
+        newmap = "e2m8";
     else if (self.impulse == 5)
+        newmap = "e3m7";
+    else if (self.impulse == 6)
         newmap = "e4m8";
     else
     {
@@ -749,17 +752,19 @@ void() Menu_HandleVoteMapBloodPacks =
     }
 
     else if (self.impulse == 1)
-        newmap = "dm1";
-    else if (self.impulse == 2)
-        newmap = "dm2";
-    else if (self.impulse == 3)
-        newmap = "dm3";
-    else if (self.impulse == 4)
-        newmap = "e6m8";
-    else if (self.impulse == 5)
         newmap = "cpbb01";
-    else if (self.impulse == 6)
+    else if (self.impulse == 2)
         newmap = "cpbb03";
+    else if (self.impulse == 3)
+        newmap = "dm1";
+    else if (self.impulse == 4)
+        newmap = "dm2";
+    else if (self.impulse == 5)
+        newmap = "dm3";
+    else if (self.impulse == 6)
+        newmap = "e6m1";
+    else if (self.impulse == 7)
+        newmap = "e6m8";
     else
     {
         Sprint (self, PRINT_HIGH, "\n===== INVALID COMMAND =====\n\n");
