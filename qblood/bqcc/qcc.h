@@ -1,11 +1,10 @@
 // Copyright (C) 1999-2000 Id Software, Inc.
 //
 
-#include "cmdlib.h"
 #include <stdio.h>
 #include <setjmp.h>
+#include "cmdlib.h"
 
-#include "l_memory.h"
 #include "pr_comp.h"
 
 #define MAX_QPATH		144
@@ -243,9 +242,6 @@ typedef struct def_s
 	gofs_t ofs;
 	struct def_s *scope;    // function the var was defined in, or NULL
 	int initialized;        // 1 when a declaration included "= immediate"
-	//MrE
-	int internuse;          // 1 when the function is only used inside
-                           // the QuakeC code
 	struct def_s *valuehashnext;	// next def in the value hash chain
 	struct def_s *namehashnext;	// next def in the name hash chain
 } def_t;
@@ -324,8 +320,6 @@ typedef struct
 
 extern   opcode_t pr_opcodes[99];      // sized by initialization
 
-extern   boolean  pr_dumpasm;
-
 extern   def_t    *pr_global_defs[MAX_REGS]; // to find def for a global variable
 
 typedef enum {
@@ -373,8 +367,6 @@ extern   int      pr_error_count;
 void PR_NewLine (void);
 def_t *PR_GetDef (type_t *type, char *name, def_t *scope, boolean allocate);
 
-void PR_PrintDefs (void);
-
 void PR_SkipToSemicolon (void);
 
 extern   char     pr_parm_names[MAX_PARMS][MAX_NAME];
@@ -391,8 +383,6 @@ char *PR_ValueString (etype_t type, void *val);
 void PR_ClearGrabMacros (void);
 
 boolean  PR_CompileFile (char *filename);
-
-extern   boolean  pr_dumpasm;
 
 extern   string_t s_file;        // filename for function definition
 

@@ -3,9 +3,13 @@ For other informations, take a look at "qcc.txt" and "meqcc.txt", included
 into this package.
 
 Changes since MeQCC v1.4:
-  * v0.2cvs
+  * v0.2.0cvs
     - bug fix: BQCC crashed silently if a function declaration contained too
     many parameters.
+    - BQCC can no longer create undecompilable progs (useless, at best).
+    - a little trick was added to reduce the DAT file writing time
+    - writing time is also timed now.
+    - a lot of code cleaning.
 
   * v0.1.2
     - a lot of strings were duplicated in the progs file. BQCC now makes sure it

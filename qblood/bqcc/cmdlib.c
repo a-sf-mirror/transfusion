@@ -7,10 +7,6 @@
 
 #define PATHSEPERATOR   '/'
 
-// set these before calling CheckParm
-int myargc;
-char **myargv;
-
 char  com_token[1024];
 int      com_eof;
 
@@ -96,6 +92,49 @@ skipwhite:
 }
 
 
+/*
+=================
+GetClearedMemory
+=================
+*/
+void* GetClearedMemory (size_t size)
+{
+	void* ptr;
+
+	ptr = GetMemory (size);
+	memset (ptr, 0, size);
+
+	return ptr;
+}
+
+
+/*
+=================
+GetMemory
+=================
+*/
+void* GetMemory (size_t size)
+{
+	void* ptr;
+
+	ptr = malloc (size);
+	if (ptr == NULL)
+		Error ("Malloc failure for %lu bytes", size);
+
+	return ptr;
+}
+
+
+/*
+=================
+FreeMemory
+=================
+*/
+void FreeMemory (void *ptr)
+{
+	free (ptr);
+}
+
 
 #if defined(__unix__)
 /*
@@ -103,19 +142,8 @@ skipwhite:
 filelength
 ================
 */
-// MrE:
 int filelength (int handle)
 {
-	/*
-	struct stat fileinfo;
-
-	if (fstat (handle,&fileinfo) == -1)
-	{
-		Error ("Error fstating");
-	}
-
-	return fileinfo.st_size;
-	*/
 	int pos;
 	int end;
 
@@ -163,28 +191,6 @@ void Error (char *error, ...)
 }
 
 
-/*
-=================
-CheckParm
-
-Checks for the given parameter in the program's command line arguments
-Returns the argument number (1 to argc-1) or 0 if not present
-=================
-*/
-int CheckParm (char *check)
-{
-   int             i;
-
-   for (i = 1;i<myargc;i++)
-   {
-      if ( !strcmpi(check, myargv[i]) )
-         return i;
-   }
-
-   return 0;
-}
-
-
 #ifndef O_BINARY
 #define O_BINARY 0
 #endif
@@ -193,10 +199,7 @@ int SafeOpenWrite (char *filename)
 {
    int     handle;
 
-//   umask (0);
-
-   handle = open(filename,O_WRONLY | O_CREAT | O_TRUNC | O_BINARY
-   , 0666);
+   handle = open(filename,O_WRONLY | O_CREAT | O_TRUNC | O_BINARY, 0666);
 
    if (handle == -1)
       Error ("Error opening %s: %s",filename,strerror(errno));
@@ -231,19 +234,6 @@ void SafeWrite (int handle, void *buffer, long count)
 }
 
 
-void *SafeMalloc (long size)
-{
-   void *ptr;
-
-   ptr = malloc (size);
-
-   if (!ptr)
-      Error ("Malloc failure for %lu bytes",size);
-
-   return ptr;
-}
-
-
 /*
 ==============
 LoadFile
@@ -257,7 +247,7 @@ long    LoadFile (char *filename, void **bufferptr)
 
    handle = SafeOpenRead (filename);
    length = filelength (handle);
-   buffer = SafeMalloc (length+1);
+   buffer = GetMemory (length+1);
    ((byte *)buffer)[length] = 0;
    SafeRead (handle, buffer, length);
    close (handle);
@@ -265,183 +255,6 @@ long    LoadFile (char *filename, void **bufferptr)
    *bufferptr = buffer;
    return length;
 }
-
-
-/*
-==============
-SaveFile
-==============
-*/
-void    SaveFile (char *filename, void *buffer, long count)
-{
-   int             handle;
-
-   handle = SafeOpenWrite (filename);
-   SafeWrite (handle, buffer, count);
-   close (handle);
-}
-
-
-
-void DefaultExtension (char *path, char *extension)
-{
-   char    *src;
-//
-// if path doesn't have a .EXT, append extension
-// (extension should include the .)
-//
-   src = path + strlen(path) - 1;
-
-   while (*src != PATHSEPERATOR && src != path)
-   {
-      if (*src == '.')
-         return;                 // it has an extension
-      src--;
-   }
-
-   strcat (path, extension);
-}
-
-
-void DefaultPath (char *path, char *basepath)
-{
-   char    temp[128];
-
-   if (path[0] == PATHSEPERATOR)
-      return;                   // absolute path location
-   strcpy (temp,path);
-   strcpy (path,basepath);
-   strcat (path,temp);
-}
-
-
-void    StripFilename (char *path)
-{
-   int             length;
-
-   length = strlen(path)-1;
-   while (length > 0 && path[length] != PATHSEPERATOR)
-      length--;
-   path[length] = 0;
-}
-
-void    StripExtension (char *path)
-{
-   int             length;
-
-   length = strlen(path)-1;
-   while (length > 0 && path[length] != '.')
-   {
-      length--;
-      if (path[length] == '/')
-         return;     // no extension
-   }
-   if (length)
-      path[length] = 0;
-}
-
-
-/*
-====================
-Extract file parts
-====================
-*/
-void ExtractFilePath (char *path, char *dest)
-{
-   char    *src;
-
-   src = path + strlen(path) - 1;
-
-//
-// back up until a \ or the start
-//
-   while (src != path && *(src-1) != PATHSEPERATOR)
-      src--;
-
-   memcpy (dest, path, src-path);
-   dest[src-path] = 0;
-}
-
-void ExtractFileBase (char *path, char *dest)
-{
-   char    *src;
-
-   src = path + strlen(path) - 1;
-
-//
-// back up until a \ or the start
-//
-   while (src != path && *(src-1) != PATHSEPERATOR)
-      src--;
-
-   while (*src && *src != '.')
-   {
-      *dest++ = *src++;
-   }
-   *dest = 0;
-}
-
-void ExtractFileExtension (char *path, char *dest)
-{
-   char    *src;
-
-   src = path + strlen(path) - 1;
-
-//
-// back up until a . or the start
-//
-   while (src != path && *(src-1) != '.')
-      src--;
-   if (src == path)
-   {
-      *dest = 0;  // no extension
-      return;
-   }
-
-   strcpy (dest,src);
-}
-
-
-/*
-==============
-ParseNum / ParseHex
-==============
-*/
-long ParseHex (char *hex)
-{
-   char    *str;
-   long    num;
-
-   num = 0;
-   str = hex;
-
-   while (*str)
-   {
-      num <<= 4;
-      if (*str >= '0' && *str <= '9')
-         num += *str-'0';
-      else if (*str >= 'a' && *str <= 'f')
-         num += 10 + *str-'a';
-      else if (*str >= 'A' && *str <= 'F')
-         num += 10 + *str-'A';
-      else
-         Error ("Bad hex number: %s",hex);
-      str++;
-   }
-
-   return num;
-}
-
-
-long ParseNum (char *str)
-{
-   if (str[0] == '$')
-      return ParseHex (str+1);
-   if (str[0] == '0' && str[1] == 'x')
-      return ParseHex (str+2);
-   return atol (str);
-}
-
 
 
 /*

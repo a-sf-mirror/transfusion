@@ -3,7 +3,6 @@ CC = gcc
 EXE = bqcc
 OBJECTS = cmdlib.o \
           l_log.o \
-          l_memory.o \
           l_precomp.o \
           l_script.o \
           pr_comp.o \

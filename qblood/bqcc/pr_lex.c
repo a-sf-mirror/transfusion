@@ -12,7 +12,6 @@
 int pr_source_line;					//current source line
 char *pr_file_buf;					//buffer with the file
 char *pr_file_p;					//pointer in file buffer
-char *pr_line_start;				//start of current source line
 int pr_bracelevel;					//level of braces
 char pr_token[2048];				//current token
 token_type_t pr_token_type;			//current token type
@@ -61,21 +60,6 @@ source_t *pr_source;
 
 /*
 ==============
-PR_PrintNextLine
-==============
-*/
-void PR_PrintNextLine (void)
-{
-	char  *t;
-
-	printf ("%3i:",pr_source_line);
-	for (t=pr_line_start ; *t && *t != '\n' ; t++)
-		printf ("%c",*t);
-	printf ("\n");
-}
-
-/*
-==============
 PR_NewLine
 
 Call at start of file and when *pr_file_p == '\n'
@@ -83,23 +67,7 @@ Call at start of file and when *pr_file_p == '\n'
 */
 void PR_NewLine (void)
 {
-	boolean  m;
-
-	if (*pr_file_p == '\n')
-	{
-		pr_file_p++;
-		m = true;
-	}
-	else
-		m = false;
-
 	pr_source_line++;
-	pr_line_start = pr_file_p;
-
-//	if (pr_dumpasm)
-//		PR_PrintNextLine ();
-	if (m)
-		pr_file_p--;
 }
 
 /*
@@ -159,7 +127,6 @@ void PR_LexString (void)
          {
             c = '"';
          } //end else if
-//#if NEW_FEATURE
          else if (c >= '0' && c <= '9')
          {
             asciicode = c - '0';
@@ -180,7 +147,6 @@ void PR_LexString (void)
             } //end if
             c = asciicode;
          } //end else
-//#endif
          else
          {
             PR_ParseError ("Unknown escape char");

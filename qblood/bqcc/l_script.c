@@ -1,26 +1,8 @@
 // Copyright (C) 1999-2000 Id Software, Inc.
-//
-
-/*****************************************************************************
- * name:		l_precomp.h
- *
- * desc:		pre compiler
- *
- * $Archive: /source/code/botlib/l_precomp.h $
- * $Author$
- * $Revision$
- * $Modtime: 10/05/99 3:32p $
- * $Date$
- *
- *****************************************************************************/
 
 #include "qcc.h"
 #include "l_script.h"
-#include "l_memory.h"
 #include "l_log.h"
-
-#define qtrue	true
-#define qfalse	false
 
 
 #define PUNCTABLE
@@ -350,7 +332,7 @@ int PS_ReadEscapeCharacter(script_t *script, char *ch)
 //
 // Parameter:				script		: script to read from
 //								token			: buffer to store the string
-// Returns:					qtrue when a string was read succesfully
+// Returns:					true when a string was read succesfully
 // Changes Globals:		-
 //============================================================================
 int PS_ReadString(script_t *script, token_t *token, int quote)
@@ -473,7 +455,7 @@ int PS_ReadName(script_t *script, token_t *token)
 // Changes Globals:		-
 //============================================================================
 void NumberValue(char *string, int subtype, unsigned long int *intvalue,
-															long double *floatvalue)
+															double *floatvalue)
 {
 	unsigned long int dotfound = 0;
 
@@ -492,13 +474,13 @@ void NumberValue(char *string, int subtype, unsigned long int *intvalue,
 			} //end if
 			if (dotfound)
 			{
-				*floatvalue = *floatvalue + (long double) (*string - '0') /
-																	(long double) dotfound;
+				*floatvalue = *floatvalue + (double) (*string - '0') /
+																	(double) dotfound;
 				dotfound *= 10;
 			} //end if
 			else
 			{
-				*floatvalue = *floatvalue * 10.0 + (long double) (*string - '0');
+				*floatvalue = *floatvalue * 10.0 + (double) (*string - '0');
 			} //end else
 			string++;
 		} //end while
@@ -550,7 +532,7 @@ int PS_ReadNumber(script_t *script, token_t *token)
 	int octal, dot;
 	char c;
 //	unsigned long int intvalue = 0;
-//	long double floatvalue = 0;
+//	double floatvalue = 0;
 
 	token->type = TT_NUMBER;
 	//check for a hexadecimal number
@@ -576,7 +558,6 @@ int PS_ReadNumber(script_t *script, token_t *token)
 		} //end while
 		token->subtype |= TT_HEX;
 	} //end if
-#ifdef BINARYNUMBERS
 	//check for a binary number
 	else if (*script->script_p == '0' &&
 		(*(script->script_p + 1) == 'b' ||
@@ -598,12 +579,11 @@ int PS_ReadNumber(script_t *script, token_t *token)
 		} //end while
 		token->subtype |= TT_BINARY;
 	} //end if
-#endif //BINARYNUMBERS
 	else //decimal or octal integer or floating point number
 	{
-		octal = qfalse;
-		dot = qfalse;
-		if (*script->script_p == '0') octal = qtrue;
+		octal = false;
+		dot = false;
+		if (*script->script_p == '0') octal = true;
 		while(1)
 		{
 			token->string[len++] = *script->script_p++;
@@ -613,8 +593,8 @@ int PS_ReadNumber(script_t *script, token_t *token)
 				return 0;
 			} //end if
 			c = *script->script_p;
-			if (c == '.') dot = qtrue;
-			else if (c == '8' || c == '9') octal = qfalse;
+			if (c == '.') dot = true;
+			else if (c == '8' || c == '9') octal = false;
 			else if (c < '0' || c > '9') break;
 	   } //end while
 		if (octal) token->subtype |= TT_OCTAL;
@@ -638,9 +618,9 @@ int PS_ReadNumber(script_t *script, token_t *token)
 		} //end if
 	} //end for
 	token->string[len] = '\0';
-#ifdef NUMBERVALUE
+
 	NumberValue(token->string, token->subtype, &token->intvalue, &token->floatvalue);
-#endif //NUMBERVALUE
+
 	if (!(token->subtype & TT_FLOAT)) token->subtype |= TT_INTEGER;
 	return 1;
 } //end of the function PS_ReadNumber
@@ -1065,10 +1045,10 @@ void StripSingleQuotes(char *string)
 // Returns:					-
 // Changes Globals:		-
 //============================================================================
-long double ReadSignedFloat(script_t *script)
+double ReadSignedFloat(script_t *script)
 {
 	token_t token;
-	long double sign = 1;
+	double sign = 1;
 
 	PS_ExpectAnyToken(script, &token);
 	if (!strcmp(token.string, "-"))

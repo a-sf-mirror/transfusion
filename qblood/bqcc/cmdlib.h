@@ -24,17 +24,12 @@ int filelength (int handle);
 int tell (int handle);
 
 #define stricmp strcasecmp
-#define strcmpi strcasecmp
 #endif
 
-#if defined(WIN32)|defined(_WIN32)|defined(__NT__)|defined(__WINDOWS__)|defined(__WINDOWS_386__)
+#ifdef WIN32
 #include <conio.h>
 #include <io.h> //lseek, close, filelength
 #include <direct.h> //mkdir
-#endif
-
-#ifdef NeXT
-#include <libc.h>
 #endif
 
 #ifndef __BYTEBOOL__
@@ -43,41 +38,19 @@ typedef enum {false, true} boolean;
 typedef unsigned char byte;
 #endif
 
-// the dec offsetof macro doesn't work very well...
-#define myoffsetof(type,identifier) ((size_t)&((type *)0)->identifier)
 
-
-// set these before calling CheckParm
-extern int myargc;
-extern char **myargv;
-
-char *strupr (char *in);
-char *strlower (char *in);
-
-double I_FloatTime (void);
+void *GetClearedMemory(size_t size);
+void *GetMemory(size_t size);
+void FreeMemory(void *ptr);
 
 void  Error (char *error, ...);
-int      CheckParm (char *check);
 
 int   SafeOpenWrite (char *filename);
 int   SafeOpenRead (char *filename);
 void  SafeRead (int handle, void *buffer, long count);
 void  SafeWrite (int handle, void *buffer, long count);
-void  *SafeMalloc (long size);
 
 long  LoadFile (char *filename, void **bufferptr);
-void  SaveFile (char *filename, void *buffer, long count);
-
-void  DefaultExtension (char *path, char *extension);
-void  DefaultPath (char *path, char *basepath);
-void  StripFilename (char *path);
-void  StripExtension (char *path);
-
-void  ExtractFilePath (char *path, char *dest);
-void  ExtractFileBase (char *path, char *dest);
-void  ExtractFileExtension (char *path, char *dest);
-
-long  ParseNum (char *str);
 
 short LittleShort (short l);
 long  LittleLong (long l);

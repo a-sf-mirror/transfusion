@@ -3,8 +3,8 @@
 
 // pr_comp.c
 
+#include <math.h>
 #include "qcc.h"
-#include "math.h"   //fabs
 
 pr_info_t   pr;
 def_t    *pr_global_defs[MAX_REGS]; // to find def for a global variable
@@ -13,7 +13,6 @@ int         pr_edict_size;
 //========================================
 
 def_t    *pr_scope;     // the function being parsed, or NULL
-boolean  pr_dumpasm;
 string_t s_file;        // filename for function definition
 
 int         locals_end;    // for tracking local variables vs temps
@@ -126,9 +125,6 @@ def_t *PR_Expression (int priority);
 def_t junkdef;
 
 //===========================================================================
-#define OPCODEHACK
-
-#ifdef OPCODEHACK
 
 #define OPCODEHASHSIZE		256
 
@@ -192,7 +188,6 @@ void PrintOpcodeHashValues(void)
 	} //end for
 } //end of the function PrintOpcodeHashValues
 
-#endif //OPCODEHACK
 
 #define DEFHASHSIZE		2048
 def_t *defvaluehash[DEFHASHSIZE];
@@ -316,10 +311,6 @@ PR_ParseImmediate
 Looks for a preexisting constant
 ============
 */
-
-//MrE
-extern int pr_globals_isstring[MAX_REGS];
-
 def_t *PR_ParseImmediate (void)
 {
    def_t *cn;
@@ -375,7 +366,6 @@ def_t *PR_ParseImmediate (void)
 	cn->type = pr_immediate_type;
 	cn->name = "IMMEDIATE";
 	cn->initialized = 1;
-	cn->internuse = 0;
 
 	cn->scope = NULL;    // always share immediates
 
@@ -387,7 +377,6 @@ def_t *PR_ParseImmediate (void)
 	if (pr_immediate_type == &type_string)
 	{
 		pr_immediate.string = CopyString (pr_immediate_string);
-		pr_globals_isstring[cn->ofs] = 1;
 	}
 	memcpy (pr_globals + cn->ofs, &pr_immediate, 4*type_size[pr_immediate_type->type]);
 
@@ -413,8 +402,6 @@ def_t *PR_ParseFunctionCall (def_t *func)
 
 	if (t->type != ev_function)
 		PR_ParseError ("not a function");
-	//MrE: function is called from inside the Quake C code
-	func->internuse = 1;
 	// BQCC doesn't support nested function calls, except for the first parameter
 	if (arg != 0)
 		PR_ParseError ("nested function calls are only supported for the first parameter");
@@ -548,20 +535,11 @@ def_t *PR_Expression (int priority)
          return PR_ParseFunctionCall (e);
 
 		//find the operator
-#ifdef OPCODEHACK
 		op = opcodeindex[OpcodeHash(pr_token)];
 		if (!op) break;
 		if (!op->name) break;
 		if (op->priority != priority) break;
 		if (!PR_Check(op->name)) break;
-#else
-		for (op = pr_opcodes; op->name; op++)
-		{
-			if (op->priority != priority) continue;
-			if (PR_Check(op->name)) break;
-		} //end for
-		if (!op->name) break;
-#endif //OPCODEHACK
 
 		if (op->right_associative)
 		{
@@ -582,11 +560,6 @@ def_t *PR_Expression (int priority)
 		// type check
 		type_a = e->type->type;
 		type_b = e2->type->type;
-		//MrE function is used intern in an assignment
-		if (e2->type->type == ev_function)
-		{
-			e2->internuse = 1;
-		} //end if
 
 		if (op->name[0] == '.')// field access gets type from field
 		{
@@ -763,8 +736,6 @@ void PR_ParseState (void)
 
 	name = PR_ParseName ();
 	def = PR_GetDef (&type_function, name,0, true);
-	//MrE: the function is used intern
-	def->internuse = true;
 
 	PR_Expect ("]");
 
@@ -926,9 +897,6 @@ def_t *PR_GetDef (type_t *type, char *name, def_t *scope, boolean allocate)
 			pr.size_fields += type_size[type->aux_type->type];
 	}
 
-//	if (pr_dumpasm)
-//		PR_PrintOfs (def->ofs);
-
 	return def;
 }
 
@@ -975,10 +943,8 @@ void PR_ParseDefs (void)
             def->initialized = 1;
             G_FUNCTION(def->ofs) = numfunctions;
             f->def = def;
-//          if (pr_dumpasm)
-//             PR_PrintFunction (def);
 
-				// fill in the dfunction
+			// fill in the dfunction
             df = &functions[numfunctions];
             numfunctions++;
             CHECK_FUNCTIONS_BUFFER;
@@ -1022,14 +988,12 @@ compiles the 0 terminated text, adding defintions to the pr structure
 */
 boolean PR_CompileFile (char *filename)
 {
-#ifdef OPCODEHACK
 	CreateOpcodeIndex();
-#endif //OPCODEHACK
-	//
+
 	if (!pr.memory)
 		Error ("PR_CompileFile: Didn't clear");
 	//clear all the frame macros
-	PR_ClearGrabMacros();  //clear the frame macros
+	PR_ClearGrabMacros();
 	//copy the source file name
 	s_file = CopyString(filename);
 	//load the source file
