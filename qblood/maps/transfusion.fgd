@@ -570,6 +570,15 @@
 
 
 //
+// Monsters
+//
+
+@baseclass color(220 0 0) = Monster []
+
+@PointClass base(Monster) size(-32 -32 -24, 32 32 64) = monster_butcher : "Butcher" []
+
+
+//
 // Misc
 //
 
