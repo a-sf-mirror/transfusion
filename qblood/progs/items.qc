@@ -1942,7 +1942,7 @@ void() item_spikes =
         #ifndef NEW_MODELS
         self.model = "progs/i_drum.mdl";
         #else
-        self.model = "models/ammo/a_boxbullet.md3";
+        self.model = "models/ammo/a_drum.md3";
         #endif
         self.netname = "full drum of bullets";
         self.aflag = 100;
