@@ -369,8 +369,8 @@ void() Menu_Draw =
     {
         Sprint (self, PRINT_HIGH,
                 "Vote for a map:\n"
-                "1) b2a15  A15         | 2) bcrypt  The Crypt\n"
-                "3) bkeep  Blood Keep  | 4) bstar   Brownstar\n"
+                "1) b2a15  A15        | 2) bkeep  Blood Keep\n"
+                "3) bstar  Brownstar  | 4) crypt  The Crypt\n"
                 "\n"
                 "10) Go back to map menu\n");
     }
@@ -670,11 +670,11 @@ void() Menu_HandleVoteMapBlood2 =
     if (self.impulse == 1)
         newmap = "b2a15";
     else if (self.impulse == 2)
-        newmap = "bcrypt";
-    else if (self.impulse == 3)
         newmap = "bkeep";
-    else if (self.impulse == 4)
+    else if (self.impulse == 3)
         newmap = "bstar";
+    else if (self.impulse == 4)
+        newmap = "crypt";
     else
     {
         Sprint (self, PRINT_HIGH, "\n===== INVALID COMMAND =====\n\n");
