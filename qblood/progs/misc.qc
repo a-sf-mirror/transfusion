@@ -131,7 +131,7 @@ void() FireAmbient =
 {
     precache_sound ("ambience/sizzle.wav");
     // attenuate fast
-    ambientsound (self.origin, "ambience/sizzle.wav", 0.5, ATTN_STATIC);
+    ambientsound (self.origin, "ambience/sizzle.wav", 0.4, ATTN_STATIC);
 };
 
 /*QUAKED light_torch_small_walltorch (0 .5 0) (-10 -10 -20) (10 10 20)
@@ -1354,7 +1354,7 @@ void() ambient_sewage =
 void() ambient_sizzle =
 {
     precache_sound ("ambience/sizzle.wav");
-    ambientsound (self.origin, "ambience/sizzle.wav", 1, ATTN_STATIC);
+    ambientsound (self.origin, "ambience/sizzle.wav", 0.4, ATTN_STATIC);
 };
 
 /*QUAKED ambient_sizzle1 (0.3 0.1 0.6) (-10 -10 -8) (10 10 8)
@@ -1362,7 +1362,7 @@ void() ambient_sizzle =
 void() ambient_sizzle1 =
 {
     precache_sound ("ambience/sizzle1.wav");
-    ambientsound (self.origin, "ambience/sizzle1.wav", 1, ATTN_STATIC);
+    ambientsound (self.origin, "ambience/sizzle1.wav", 0.4, ATTN_STATIC);
 };
 
 /*QUAKED ambient_sizzle2 (0.3 0.1 0.6) (-10 -10 -8) (10 10 8)
@@ -1370,7 +1370,7 @@ void() ambient_sizzle1 =
 void() ambient_sizzle2 =
 {
     precache_sound ("ambience/sizzle2.wav");
-    ambientsound (self.origin, "ambience/sizzle2.wav", 1, ATTN_STATIC);
+    ambientsound (self.origin, "ambience/sizzle2.wav", 0.4, ATTN_STATIC);
 };
 
 /*QUAKED ambient_snakepit (0.3 0.1 0.6) (-10 -10 -8) (10 10 8)
