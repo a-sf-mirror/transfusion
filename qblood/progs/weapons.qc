@@ -701,8 +701,8 @@ void(entity client) PM_BoredCaleb =
 // This makes the player laugh or utter one of Caleb's signature one-liners.
 void(entity client) PM_PsychoCaleb =
 {
-    if (random() > 0.05)
-        return;     // Only 5% chance per call.
+    if (random() > 0.10)
+        return;     // Only 10% chance per call.
     if (client.health <= 0)
         return;
     if (client.deadflag)
@@ -713,7 +713,7 @@ void(entity client) PM_PsychoCaleb =
     local   float   rs;
     local   string  playit;
 
-    rs = floor (random() * 5);
+    rs = floor (random() * 3);
 
     if (rs == 0)
         playit = "player/quips/1039.wav";   // "Son of a bitch must pay!"

@@ -2332,7 +2332,6 @@ void() item_artifact_super_damage =
     setmodel (self, "progs/quaddama.mdl");
 
     self.netname = "Guns Akimbo";
-    self.effects = self.effects | EF_BLUE;
 
     setsize (self, '-16 -16 -24', '16 16 32');
     StartItem ();

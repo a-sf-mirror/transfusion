@@ -1296,9 +1296,9 @@ void() CheckPowerups =
 
         // (un)set the entity effects
         if (self.akimbo_finished > time)
-            self.effects = self.effects | EF_DIMLIGHT | EF_BLUE;
+            self.effects = self.effects | EF_DIMLIGHT;
         else
-            self.effects = self.effects - (self.effects & (EF_DIMLIGHT | EF_BLUE));
+            self.effects = self.effects - (self.effects & EF_DIMLIGHT);
     }
 
     // Reflective shots
@@ -1583,7 +1583,7 @@ void(entity attacker) ClientObituary =
             // Messages with no names
             if (rnum <= 1)
             {
-                Bprint (PRINT_MEDIUM, "Beaten like a Kirk.\n");
+                Bprint (PRINT_MEDIUM, "Beaten like a Cur.\n");
                 self.noise1 = "thevoice/vo39.wav";
             }
             else if (rnum <= 2)
