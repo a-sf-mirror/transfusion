@@ -6,7 +6,7 @@
    <title> Transfusion manual
    <author> Mathieu Olivier and Dave Turner
       <tt>&lt;elric and darth_linux at planetblood dot com&gt;</tt>
-   <date>v1.1cvs, September 24, 2004
+   <date>v1.1cvs, October 19 2004
    <abstract>
       This manual covers installation and usage of the
       <ref id="links" name="Transfusion"> game.
@@ -80,7 +80,8 @@
 
          Now that you are sure you want to give it a try, start by getting a
          copy of a good QuakeWorld based engine (<ref id="links" name="ZQuake">
-         is the best choice in my opinion). Then, (re)install Transfusion with
+         is the best choice in my opinion). Then, (re)install Transfusion
+         version 1.0 or 1.01 (later versions don't support QuakeWorld) with
          the QuakeWorld support if you haven't done it previously. You will get
          a "qw" directory in your install directory. This "qw" directory
          contains 2 PAK files. The first one, "pak0.pak", will stay in this
@@ -483,7 +484,7 @@
          the system used by several popular Quake mods, including FrikBotX and
          Omicron bots. It is based on a script file ("maps.cfg"), a cvar
          ("samelevel"), and a few console aliases. Basically, you have to write
-         a "maps.cfg" in your "transfusion" subdirectory so that it sets
+         a "maps.cfg" in your "basetf" subdirectory so that it sets
          "samelevel" to the number of maps in your list, and that it defines an
          alias for each of those maps, named "map1", "map2", "map3", ... you get
          the idea. Each alias must contain the command line to launch the map.
