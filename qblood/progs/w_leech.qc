@@ -176,7 +176,7 @@ void() Leech_BallFire =
     self.currentammo = self.ammo_leech;
 
     newmis.touch = Leech_BallTouch;
-    setmodel (newmis, "progs/bolt.mdl");
+    setmodel (newmis, "progs/leechball.spr");
     newmis.skin = 1;
     setsize (newmis, '0 0 0', '0 0 0');
     setorigin (newmis, self.origin + v_forward * 8 + '0 0 24');

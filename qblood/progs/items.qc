@@ -1561,7 +1561,7 @@ void() weapon_lifeleech =
 {
     precache_model ("models/weapons/v_leech.md3");
     precache_model ("models/weapons/g_leech.md3");
-    precache_model ("progs/bolt.mdl");
+    precache_model ("progs/leechball.spr");
 
     setmodel (self, "models/weapons/g_leech.md3");
     self.weapon = IT_LIFE_LEECH;
