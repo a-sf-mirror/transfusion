@@ -115,7 +115,7 @@ void(vector org, vector vel, entity ignore) BloodMeatSpray =
     missile.think       = SUB_Remove;
     missile.touch       = MeatSprayTouch;
 
-    setmodel (missile, "progs/zom_gib.mdl");
+    setmodel (missile, "progs/bitogore.mdl");
     setsize (missile, '0 0 0', '0 0 0');
     setorigin (missile, org);
 };
@@ -611,40 +611,6 @@ void(vector p1, vector p2, entity from, float damage) LightningDamage =
 
 //=============================================================================
 
-void() spike_touch;
-void() superspike_touch;
-
-
-/*
-===============
-launch_spike
-
-Used for both the player and the ogre
-===============
-*/
-void(vector org, vector dir) launch_spike =
-{
-    newmis = spawn ();
-    #ifdef QUAKEWORLD
-    newmis.voided=0;
-    #endif
-    newmis.owner = self;
-    newmis.movetype = MOVETYPE_FLYMISSILE;
-    newmis.solid = SOLID_BBOX;
-
-    newmis.angles = vectoangles(dir);
-
-    newmis.touch = spike_touch;
-    newmis.classname = "spike";
-    newmis.think = SUB_Remove;
-    newmis.nextthink = time + 6;
-    setmodel (newmis, "progs/spike.mdl");
-    setsize (newmis, VEC_ORIGIN, VEC_ORIGIN);
-    setorigin (newmis, org);
-
-    newmis.velocity = dir * 2000;
-};
-
 void() flame_touch =
 {
     local float rand;
@@ -671,122 +637,6 @@ void() flame_touch =
     // hit something that bleeds
     if (other.takedamage)
         BurnDamage (other, self, 5, 30);
-
-    remove(self);
-
-};
-
-
-void() spike_touch =
-{
-local float rand;
-    if (other == self.owner)
-        return;
-
-    #ifdef QUAKEWORLD
-    if (self.voided) {
-        return;
-    }
-    self.voided = 1;
-    #endif
-
-    if (other.solid == SOLID_TRIGGER)
-        return; // trigger field, do nothing
-
-    if (pointcontents(self.origin) == CONTENT_SKY)
-    {
-        remove(self);
-        return;
-    }
-
-// hit something that bleeds
-    if (other.takedamage)
-    {
-        spawn_touchblood (9);
-        other.deathtype = "nail";
-        T_Damage (other, self, self.owner, 9, DF_BODY, string_null);
-    }
-    else
-    {
-        #ifdef QUAKEWORLD
-        WriteByte (MSG_MULTICAST, SVC_TEMPENTITY);
-        if (self.classname == "wizspike")
-            WriteByte (MSG_MULTICAST, TE_WIZSPIKE);
-        else if (self.classname == "knightspike")
-            WriteByte (MSG_MULTICAST, TE_KNIGHTSPIKE);
-        else
-            WriteByte (MSG_MULTICAST, TE_SPIKE);
-        WriteCoord (MSG_MULTICAST, self.origin_x);
-        WriteCoord (MSG_MULTICAST, self.origin_y);
-        WriteCoord (MSG_MULTICAST, self.origin_z);
-        multicast (self.origin, MULTICAST_PHS);
-
-        #else
-        WriteByte (MSG_BROADCAST, SVC_TEMPENTITY);
-
-        if (self.classname == "wizspike")
-            WriteByte (MSG_BROADCAST, TE_WIZSPIKE);
-        else if (self.classname == "knightspike")
-            WriteByte (MSG_BROADCAST, TE_KNIGHTSPIKE);
-        else
-            WriteByte (MSG_BROADCAST, TE_SPIKE);
-        WriteCoord (MSG_BROADCAST, self.origin_x);
-        WriteCoord (MSG_BROADCAST, self.origin_y);
-        WriteCoord (MSG_BROADCAST, self.origin_z);
-        #endif
-    }
-
-    remove(self);
-
-};
-
-void() superspike_touch =
-{
-local float rand;
-    if (other == self.owner)
-        return;
-
-    #ifdef QUAKEWORLD
-    if (self.voided) {
-        return;
-    }
-    self.voided = 1;
-    #endif
-
-    if (other.solid == SOLID_TRIGGER)
-        return; // trigger field, do nothing
-
-    if (pointcontents(self.origin) == CONTENT_SKY)
-    {
-        remove(self);
-        return;
-    }
-
-// hit something that bleeds
-    if (other.takedamage)
-    {
-        spawn_touchblood (18);
-        other.deathtype = "supernail";
-        T_Damage (other, self, self.owner, 18, DF_BODY, string_null);
-    }
-    else
-    {
-        #ifdef QUAKEWORLD
-        WriteByte (MSG_MULTICAST, SVC_TEMPENTITY);
-        WriteByte (MSG_MULTICAST, TE_SUPERSPIKE);
-        WriteCoord (MSG_MULTICAST, self.origin_x);
-        WriteCoord (MSG_MULTICAST, self.origin_y);
-        WriteCoord (MSG_MULTICAST, self.origin_z);
-        multicast (self.origin, MULTICAST_PHS);
-
-        #else
-        WriteByte (MSG_BROADCAST, SVC_TEMPENTITY);
-        WriteByte (MSG_BROADCAST, TE_SUPERSPIKE);
-        WriteCoord (MSG_BROADCAST, self.origin_x);
-        WriteCoord (MSG_BROADCAST, self.origin_y);
-        WriteCoord (MSG_BROADCAST, self.origin_z);
-        #endif
-    }
 
     remove(self);
 

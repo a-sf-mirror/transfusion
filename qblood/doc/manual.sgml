@@ -5,7 +5,7 @@
 
    <title> QBlood manual
    <author> Mathieu Olivier <tt>&lt;elric@planetblood.com&gt;</tt>
-   <date>v?.?.? (development), January 1st, 2002
+   <date>v?.?.? (development), January 7, 2002
    <abstract>
       This manual covers <url url="http://www.planetblood.com/qblood/"
       name="qBlood"> installation and usage.
@@ -14,7 +14,7 @@
 
    <!-- Introduction -->
 
-   <sect> <heading> Introduction <p>
+   <sect><heading>Introduction<p>
       The qBlood Project aims to recreate an old DOS game from Monolith
       Productions called Blood, using the Quake engine. Although qBlood is
       still just a <it>mod</it>, we plan to make it an independant game. The
@@ -28,7 +28,7 @@
 
    <!-- Installation -->
 
-   <sect> <heading> Installation <p>
+   <sect><heading>Installation<p>
       Before you start qBlood installation, you'll need a working Quake
       installation. Which means a Quake compatible binary, either an official
       Quake binary or one of the enhanced versions that were created since its
@@ -135,8 +135,8 @@
 
    <sect><heading>Voting menu<label id="voting menu"><p>
       The voting menu is a mecanism that allows players to change server
-      settings via votes. For the moment, only map and game type selections are
-      available.
+      settings via votes. For the moment, the available settings are: map, game
+      type, frag limit and time limit.
 
       To enter the menu, you must use "impulse 50" while idle. The menu is
       entirely based on impulse commands. To enter into a submenu or vote for
@@ -153,9 +153,9 @@
    <sect> <heading> Frequently Asked Questions <p>
       <descrip>
          <tag>Quake exits with: <em>Z_Malloc: failed on allocation of XXX bytes</em></tag>
-         QBlood seems to use quite a lot of zone memory, so you may need to
-         increase its size with the "-zone" argument. I personally use "-zone
-         256".
+         The engine hasn't allocated enough "zone" memory. You can change this
+         with the "-zone" command line argument. With most engines, "-zone 256"
+         will be enough, but some of them may requier more (try 512).
 
          <tag>Boots of jumping doesn't work / I jump higher in NQ than in QW</tag>
          NQ relies on the game code to handle jumping, but QW does it in its

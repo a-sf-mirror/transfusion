@@ -53,6 +53,26 @@ void(string newmap) Vote_ChangeMap =
 
 /*
 ====================
+Vote_ChangeFraglimit
+
+Used when the vote for a frag limit is passed
+====================
+*/
+void(string newFraglimit) Vote_ChangeFraglimit =
+{
+    Bprint (PRINT_HIGH, "Û Vote passed. New frag limit: ");  // "[ Vote passed ..."
+    Bprint (PRINT_HIGH, newFraglimit);
+    Bprint (PRINT_HIGH, " Ý\n");  // " ]\n"
+
+    if (newFraglimit == "unlimited")
+        cvar_set ("fraglimit", "0");
+    else
+        cvar_set ("fraglimit", newFraglimit);
+};
+
+
+/*
+====================
 Vote_ChangeGametype
 
 Used when the vote for a gametype is passed
@@ -78,7 +98,7 @@ void(float newGametype) Vote_ChangeGametype =
         cvar_set ("teamplay", "1");
 
     Bprint (PRINT_HIGH, "Û Vote passed. Next game type: ");  // "[ Vote passed ..."
-    gt = Vote_GametypeToString (self.impulse);
+    gt = Vote_GametypeToString (newGametype);
     Bprint (PRINT_HIGH, gt);
     Bprint (PRINT_HIGH, " Ý\n");  // " ]\n"
 };
@@ -86,25 +106,45 @@ void(float newGametype) Vote_ChangeGametype =
 
 /*
 ====================
+Vote_ChangeTimelimit
+
+Used when the vote for a time limit is passed
+====================
+*/
+void(string newTimelimit) Vote_ChangeTimelimit =
+{
+    Bprint (PRINT_HIGH, "Û Vote passed. New time limit: ");  // "[ Vote passed ..."
+    Bprint (PRINT_HIGH, newTimelimit);
+    Bprint (PRINT_HIGH, " Ý\n");  // " ]\n"
+
+    if (newTimelimit == "unlimited")
+        cvar_set ("timelimit", "0");
+    else
+        cvar_set ("timelimit", newTimelimit);
+};
+
+
+/*
+====================
 Vote_GametypeToString
 
-Give the string describing the
+Give the string describing the game type
 ====================
 */
 string(float gtNumber) Vote_GametypeToString =
 {
     if (gtNumber == 1)
         return "Âlood Âath";
-    else if (gtNumber == 2)
+    if (gtNumber == 2)
         return "Ôeam Âlood Âath";
-    else if (gtNumber == 3)
+    if (gtNumber == 3)
         return "Ôeam Âlood Âath with friendly fire";
-    else if (gtNumber == 4)
+    if (gtNumber == 4)
         return "Ãapture Ôhe Ælag";
-    else if (gtNumber == 5)
+    if (gtNumber == 5)
         return "Ãapture Ôhe Ælag with friendly fire";
-    else
-        return "Invalid game type";
+
+    return "Invalid game type";
 };
 
 
@@ -148,6 +188,10 @@ float(.float vote_field, float value) Vote_IsPassed =
 #define MENU_MAIN           0
 #define MENU_VOTE_MAP       1
 #define MENU_VOTE_GAMETYPE  2
+#define MENU_VOTE_FRAGLIMIT 3
+#define MENU_VOTE_TIMELIMIT 4
+
+#define NB_MENUS            5
 
 
 /*
@@ -164,6 +208,8 @@ void() Menu_Draw =
         Sprint (self, PRINT_HIGH,
                 "1) Vote for a map\n"
                 "2) Vote for a game type\n"
+                "3) Vote for the frag limit\n"
+                "4) Vote for the time limit\n"
                 "\n"
                 "10) Exit menu\n");
     }
@@ -191,6 +237,38 @@ void() Menu_Draw =
                 "\n"
                 "10) Go back to main menu\n");
     }
+    else if (self.menu_index == MENU_VOTE_FRAGLIMIT)
+    {
+        Sprint (self, PRINT_HIGH,
+                "Vote for the frag limit:\n"
+                "1) 10\n"
+                "2) 20\n"
+                "3) 30\n"
+                "4) 50\n"
+                "5) 75\n"
+                "6) 100\n"
+                "7) 150\n"
+                "8) 200\n"
+                "9) Unlimited\n"
+                "\n"
+                "10) Go back to main menu\n");
+    }
+    else if (self.menu_index == MENU_VOTE_TIMELIMIT)
+    {
+        Sprint (self, PRINT_HIGH,
+                "Vote for the time limit:\n"
+                "1) 5 minutes\n"
+                "2) 10 minutes\n"
+                "3) 15 minutes\n"
+                "4) 20 minutes\n"
+                "5) 25 minutes\n"
+                "6) 30 minutes\n"
+                "7) 40 minutes\n"
+                "8) 60 minutes\n"
+                "9) Unlimited\n"
+                "\n"
+                "10) Go back to main menu\n");
+    }
 };
 
 
@@ -207,18 +285,78 @@ void() Menu_HandleMain =
     if (self.impulse == 10)
     {
         self.player_state = PS_IDLE;
+        Sprint (self, PRINT_HIGH, "\nExited from menu\n");
         return;
     }
 
     // Select the next menu to draw
-    if (self.impulse == 1)
-        self.menu_index = MENU_VOTE_MAP;
-    else if (self.impulse == 2)
-        self.menu_index = MENU_VOTE_GAMETYPE;
+    if (self.impulse >= 1 && self.impulse < NB_MENUS)
+        self.menu_index = self.impulse;
     else
         Sprint (self, PRINT_HIGH, "\n===== INVALID COMMAND =====\n\n");
 
     Menu_Draw ();
+};
+
+
+/*
+====================
+Menu_HandleVoteFraglimit
+
+Handles the impulses when the client is in the frag limit menu
+====================
+*/
+void() Menu_HandleVoteFraglimit =
+{
+    local string fl;
+
+    // If we want to go back to main menu
+    if (self.impulse == 10)
+    {
+        self.menu_index = MENU_MAIN;
+        Menu_Draw ();
+        return;
+    }
+
+    // If the command is invalid
+    if (self.impulse > 9 )
+    {
+        Sprint (self, PRINT_HIGH, "\n===== INVALID COMMAND =====\n\n");
+        Menu_Draw ();
+        return;
+    }
+
+    if (self.impulse == 1)
+        fl = "10";
+    else if (self.impulse == 2)
+        fl = "20";
+    else if (self.impulse == 3)
+        fl = "30";
+    else if (self.impulse == 4)
+        fl = "50";
+    else if (self.impulse == 5)
+        fl = "75";
+    else if (self.impulse == 6)
+        fl = "100";
+    else if (self.impulse == 7)
+        fl = "150";
+    else if (self.impulse == 8)
+        fl = "200";
+    else if (self.impulse == 9)
+        fl = "unlimited";
+
+    self.vote_fraglimit = self.impulse;
+    Bprint (PRINT_HIGH, "Û ");  // "[ "
+    Bprint (PRINT_HIGH, self.netname);
+    Bprint (PRINT_HIGH, " votes for a new frag limit: ");
+    Bprint (PRINT_HIGH, fl);
+    Bprint (PRINT_HIGH, " Ý\n");  // " ]\n"
+
+    // If the vote is passed
+    if (Vote_IsPassed (vote_fraglimit, self.impulse))
+        Vote_ChangeFraglimit (fl);
+
+    self.player_state = PS_IDLE;  // exit the menu
 };
 
 
@@ -328,6 +466,67 @@ void() Menu_HandleVoteMap =
 
 /*
 ====================
+Menu_HandleVoteTimelimit
+
+Handles the impulses when the client is in the time limit menu
+====================
+*/
+void() Menu_HandleVoteTimelimit =
+{
+    local string tl;
+
+    // If we want to go back to main menu
+    if (self.impulse == 10)
+    {
+        self.menu_index = MENU_MAIN;
+        Menu_Draw ();
+        return;
+    }
+
+    // If the command is invalid
+    if (self.impulse > 9 )
+    {
+        Sprint (self, PRINT_HIGH, "\n===== INVALID COMMAND =====\n\n");
+        Menu_Draw ();
+        return;
+    }
+
+    if (self.impulse == 1)
+        tl = "5";
+    else if (self.impulse == 2)
+        tl = "10";
+    else if (self.impulse == 3)
+        tl = "15";
+    else if (self.impulse == 4)
+        tl = "20";
+    else if (self.impulse == 5)
+        tl = "25";
+    else if (self.impulse == 6)
+        tl = "30";
+    else if (self.impulse == 7)
+        tl = "40";
+    else if (self.impulse == 8)
+        tl = "60";
+    else if (self.impulse == 9)
+        tl = "unlimited";
+
+    self.vote_timelimit = self.impulse;
+    Bprint (PRINT_HIGH, "Û ");  // "[ "
+    Bprint (PRINT_HIGH, self.netname);
+    Bprint (PRINT_HIGH, " votes for a new time limit: ");
+    Bprint (PRINT_HIGH, tl);
+    Bprint (PRINT_HIGH, " Ý\n");  // " ]\n"
+
+    // If the vote is passed
+    if (Vote_IsPassed (vote_timelimit, self.impulse))
+        Vote_ChangeTimelimit (tl);
+
+    self.player_state = PS_IDLE;  // exit the menu
+};
+
+
+/*
+====================
 Menu_Start
 
 Initialize the menu for the current client and show it
@@ -369,6 +568,10 @@ void() Menu_Update =
         Menu_HandleVoteMap ();
     else if (self.menu_index == MENU_VOTE_GAMETYPE)
         Menu_HandleVoteGametype ();
+    else if (self.menu_index == MENU_VOTE_FRAGLIMIT)
+        Menu_HandleVoteFraglimit ();
+    else if (self.menu_index == MENU_VOTE_TIMELIMIT)
+        Menu_HandleVoteTimelimit ();
 
     self.impulse = 0;
 };

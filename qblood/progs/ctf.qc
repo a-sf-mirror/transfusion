@@ -389,40 +389,6 @@ void() item_flag_team2 =
 };
 
 
-// Team base starting locations
-void() info_player_team1 =
-{
-};
-
-void() info_player_team2 =
-{
-};
-
-
-// self is player
-entity() CTF_Spawn =
-{
-    local entity spawnpoint;
-
-    if (self.team == TEAM_COLOR1)
-    {
-        team1_lastspawn = find(team1_lastspawn, classname, "info_player_team1");
-        if (team1_lastspawn == world)
-            team1_lastspawn = find(team1_lastspawn, classname, "info_player_team1");
-        return team1_lastspawn;
-
-    }
-    else if (self.team == TEAM_COLOR2)
-    {
-        team2_lastspawn = find(team2_lastspawn, classname, "info_player_team2");
-        if (team2_lastspawn == world)
-            team2_lastspawn = find(team2_lastspawn, classname, "info_player_team2");
-        return team2_lastspawn;
-    }
-    return world;
-};
-
-
 /*QUAKED func_ctf_wall (0 .5 .8) ?
 This is just a solid wall if not inhibitted
 Only appears in CTF teamplay

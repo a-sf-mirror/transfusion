@@ -177,7 +177,6 @@ void()              SetNewParms;
 
 // rankings
 float(float clientno)       ClientBitFlag;
-float()             ClientNextAvailable;
 void(float whichteam, float whatbot, float whatskill) BotConnect;
 void(entity bot)            BotDisconnect;
 void(float clientno)        BotInvalidClientNo;
@@ -955,14 +954,14 @@ float() ClientNextAvailable =
 {
     local float clientno;
 
-    // I want to do this top down, but QW won't let me
+    // Note: FrikaC want to do this top down, but QW won't let him
     clientno = 0;
     while(clientno < max_clients)
     {
-        clientno = clientno + 1;
-
         if(!ClientIsActive(clientno))
             return clientno;
+
+        clientno = clientno + 1;
     }
 
     return -1;
@@ -975,9 +974,9 @@ void(entity e1, entity e2, float flag) DeveloperLightning =
     // used to show waypoint links for debugging
     WriteByte (MSG_BROADCAST, 23);
     if (flag)
-        WriteByte (MSG_BROADCAST, TE_LIGHTNING3);
-    else
         WriteByte (MSG_BROADCAST, TE_LIGHTNING2);
+    else
+        WriteByte (MSG_BROADCAST, TE_LIGHTNING3);
     WriteEntity (MSG_BROADCAST, e2);
     WriteCoord (MSG_BROADCAST, e1.origin_x);
     WriteCoord (MSG_BROADCAST, e1.origin_y);
@@ -1327,7 +1326,7 @@ void() BotImpulses =
     if (self.impulse == 100 || self.impulse == 101)
     {
         local float botskill;
-        
+
         botskill = cvar ("skill");
         BotConnect (self.impulse - 100, 0, botskill);
     }

@@ -391,7 +391,7 @@ void(entity inflictor, entity attacker, float damage, entity ignore, string dtyp
                 if (points < 0)
                     points = 0;
                 points = damage - points;
-// PM:  Attacker takes full damage in Blood AFAIK.
+
                 if (points > 0)
                 {
                     if (CanDamage (head, inflictor))

@@ -250,7 +250,7 @@ void() item_lure =
     setmodel (self, self.model);
     precache_sound (self.noise);
 
-    setsize (self, '0 0 0', '32 32 32');
+    setsize (self, '0 0 0', '16 16 16');
     StartItem ();
 };
 
@@ -832,7 +832,6 @@ void() item_powerup =
     precache_sound (self.noise);
     setmodel (self, self.model);
 
-    setsize (self, '-16 -16 -24', '16 16 32');
     StartItem ();
 };
 
@@ -844,6 +843,7 @@ void() item_artifact_bag =
     self.netname = "Doctor's Bag";
     self.model   = "progs/i_docbag.mdl";
     self.noise   = "items/pickup.wav";
+    setsize (self, '-7 -11 -1', '7 11 19');
     item_powerup ();
 };
 
@@ -853,6 +853,7 @@ void() item_artifact_boots =
     self.netname = "Boots of Jumping";
     self.model   = "progs/i_boots.mdl";
     self.noise   = "items/pickup.wav";
+    setsize (self, '-16 -16 -24', '16 16 32');
     item_powerup ();
 };
 
@@ -862,6 +863,7 @@ void() item_artifact_crystal =
     self.netname = "Crystal Ball";
     self.model   = "progs/i_crysbl.mdl";
     self.noise   = "items/pickup.wav";
+    setsize (self, '-16 -16 -24', '16 16 32');
     item_powerup ();
 };
 
@@ -874,6 +876,7 @@ void() item_artifact_reflect =
 
     self.effects = self.effects | EF_BLUE;
 
+    setsize (self, '-16 -16 -24', '16 16 32');
     item_powerup ();
 };
 
@@ -883,16 +886,8 @@ void() item_artifact_vision =
     self.netname = "Beast Vision";
     self.model   = "progs/i_vision.mdl";
     self.noise   = "items/pickup.wav";
+    setsize (self, '-16 -16 -24', '16 16 32');
     item_powerup ();
-};
-
-// Cloak of Shadows
-void() item_artifact_shadow =
-{
-    self.netname = "Cloak of Shadows";
-    self.model   = "progs/i_shadow.mdl";
-    self.noise   = "bludbath/powerup.wav";
-    item_lure ();
 };
 
 
@@ -2290,255 +2285,4 @@ void() item_artifact_super_damage =
 
     setsize (self, '-16 -16 -24', '16 16 32');
     StartItem ();
-};
-
-
-
-/*
-===============================================================================
-
-PLAYER BACKPACKS
-
-===============================================================================
-*/
-
-void() BackpackTouch =
-{
-    local   string  s;
-    local   float   acount;
-
-    if (other.classname != "player")
-        return;
-    if (other.health <= 0)
-        return;
-
-    acount = 0;
-    Sprint (other, PRINT_LOW, "You get ");
-
-    if (self.items)
-        if ((other.items & self.items) == 0)
-        {
-            acount = 1;
-            Sprint (other, PRINT_LOW, "the ");
-            Sprint (other, PRINT_LOW, self.netname);
-        }
-
-    // update ammo counts
-    other.ammo_shells = other.ammo_shells + self.ammo_shells;
-    other.ammo_nails = other.ammo_nails + self.ammo_nails;
-    other.ammo_rockets = other.ammo_rockets + self.ammo_rockets;
-    other.ammo_cells = other.ammo_cells + self.ammo_cells;
-
-    // Custom ammo.
-    other.ammo_flares = other.ammo_flares + self.ammo_flares;
-    other.ammo_tnt_bundle = other.ammo_tnt_bundle + self.ammo_tnt_bundle;
-    other.ammo_tnt_proxy = other.ammo_tnt_proxy + self.ammo_tnt_proxy;
-    other.ammo_tnt_remote = other.ammo_tnt_remote + self.ammo_tnt_remote;
-    other.ammo_spray = other.ammo_spray + self.ammo_spray;
-    other.ammo_voodoo = other.ammo_voodoo + self.ammo_voodoo;
-    other.ammo_leech = other.ammo_leech + self.ammo_leech;
-
-    // Add the weapon (if any) to the player's equipment
-    other.items = other.items | self.items;
-
-    bound_other_ammo ();
-
-    if (self.ammo_shells)
-    {
-        if (acount)
-            Sprint(other, PRINT_LOW, ", ");
-        acount = 1;
-        s = ftos(self.ammo_shells);
-        Sprint (other, PRINT_LOW, s);
-        Sprint (other, PRINT_LOW, " shells");  // "Box of shotgun shells"
-    }
-    if (self.ammo_nails)
-    {
-        if (acount)
-            Sprint(other, PRINT_LOW, ", ");
-        acount = 1;
-        s = ftos(self.ammo_nails);
-        Sprint (other, PRINT_LOW, s);
-        Sprint (other, PRINT_LOW, " nails");  // "Full drum of bullets"
-    }
-    if (self.ammo_rockets)
-    {
-        if (acount)
-            Sprint(other, PRINT_LOW, ", ");
-        acount = 1;
-        s = ftos(self.ammo_rockets);
-        Sprint (other, PRINT_LOW, s);
-        Sprint (other, PRINT_LOW, " rockets");  // "Gasoline Can"
-    }
-    if (self.ammo_cells)
-    {
-        if (acount)
-            Sprint(other, PRINT_LOW, ", ");
-        acount = 1;
-        s = ftos(self.ammo_cells);
-        Sprint (other, PRINT_LOW, s);
-        Sprint (other, PRINT_LOW, " batteries");  // "Tesla Charge"
-    }
-
-    // Custom ammo.
-    if (self.ammo_flares)
-    {
-        if (acount)
-            Sprint(other, PRINT_LOW, ", ");
-        acount = 1;
-        s = ftos(self.ammo_flares);
-        Sprint (other, PRINT_LOW, s);
-        Sprint (other, PRINT_LOW, " flares");
-    }
-    if (self.ammo_tnt_bundle)
-    {
-        if (acount)
-            Sprint(other, PRINT_LOW, ", ");
-        acount = 1;
-        s = ftos(self.ammo_tnt_bundle);
-        Sprint (other, PRINT_LOW, s);
-        Sprint (other, PRINT_LOW, " TNT");
-
-        other.items = other.items | IT_TNT;
-    }
-    if (self.ammo_tnt_proxy)
-    {
-        if (acount)
-            Sprint(other, PRINT_LOW, ", ");
-        acount = 1;
-        s = ftos(self.ammo_tnt_proxy);
-        Sprint (other, PRINT_LOW, s);
-        Sprint (other, PRINT_LOW, " proximity bombs");
-
-        other.items = other.items | IT_PROXIMITY_BOMB;
-    }
-    if (self.ammo_tnt_remote)
-    {
-        if (acount)
-            Sprint(other, PRINT_LOW, ", ");
-        acount = 1;
-        s = ftos(self.ammo_tnt_remote);
-        Sprint (other, PRINT_LOW, s);
-        Sprint (other, PRINT_LOW, " remote detonators");
-
-        other.items = other.items | IT_REMOTE_DETONATOR;
-    }
-    if (self.ammo_spray)
-    {
-        if (acount)
-            Sprint(other, PRINT_LOW, ", ");
-        acount = 1;
-        s = ftos(self.ammo_spray);
-        Sprint (other, PRINT_LOW, s);
-        Sprint (other, PRINT_LOW, " spray cans");
-    }
-    if (self.ammo_voodoo)
-    {
-        if (acount)
-            Sprint(other, PRINT_LOW, ", ");
-        acount = 1;
-        s = ftos(self.ammo_voodoo);
-        Sprint (other, PRINT_LOW, s);
-        Sprint (other, PRINT_LOW, " voodoo dolls");
-    }
-    if (self.ammo_leech)
-    {
-        if (acount)
-            Sprint(other, PRINT_LOW, ", ");
-        acount = 1;
-        s = ftos(self.ammo_leech);
-        Sprint (other, PRINT_LOW, s);
-        Sprint (other, PRINT_LOW, " trapped souls");
-    }
-    Sprint(other, PRINT_LOW, "\n");
-
-    // backpack touch sound
-    sound (other, CHAN_ITEM, "items/ammo.wav", 1, ATTN_NORM);
-    stuffcmd (other, "bf\n");
-
-    // remove the backpack, change self to the player
-    remove(self);
-    self = other;
-
-    W_SetCurrentAmmo ();
-};
-
-/*
-===============
-DropBackpack
-===============
-*/
-void() DropBackpack =
-{
-    local entity    item;
-
-    if (!(self.ammo_shells + self.ammo_nails + self.ammo_rockets + self.ammo_cells +
-          self.ammo_flares + self.ammo_tnt_bundle + self.ammo_tnt_proxy + self.ammo_tnt_remote +
-          self.ammo_spray + self.ammo_voodoo + self.ammo_leech))
-        return; // nothing in it
-
-    item = spawn();
-    item.origin = self.origin - '0 0 24';
-
-    // If the current weapon is dynamite, don't record it (it's just ammo)
-    if (self.weapon == IT_TNT ||
-        self.weapon == IT_PROXIMITY_BOMB   ||
-        self.weapon == IT_REMOTE_DETONATOR )
-    {
-        item.items = 0;
-        item.netname = "";
-    }
-    // else, record the weapon name
-    else
-    {
-        item.items = self.weapon;
-        if (item.items == IT_PITCHFORK)
-            item.netname = "Pitchfork";
-        else if (item.items == IT_FLAREGUN)
-            item.netname = "Flare Gun";
-        else if (item.items == IT_SAWED_OFF)
-            item.netname = "Sawed-off";
-        else if (item.items == IT_TOMMYGUN)
-            item.netname = "Tommy Gun";
-        else if (item.items == IT_SPRAY_CAN)
-            item.netname = "Spray Can";
-        else if (item.items == IT_NAPALM_LAUNCHER)
-            item.netname = "Napalm Launcher";
-        else if (item.items == IT_TESLA_CANNON)
-            item.netname = "Tesla Cannon";
-        else if (item.items == IT_VOODOO_DOLL)
-            item.netname = "Voodoo Doll";
-        else if (item.items == IT_LIFE_LEECH)
-            item.netname = "Life Leech";
-        else
-            item.netname = "";
-    }
-
-    item.ammo_shells = self.ammo_shells;
-    item.ammo_nails = self.ammo_nails;
-    item.ammo_rockets = self.ammo_rockets;
-    item.ammo_cells = self.ammo_cells;
-
-    // Custom ammo.
-    item.ammo_flares = self.ammo_flares;
-    item.ammo_tnt_bundle = self.ammo_tnt_bundle;
-    item.ammo_tnt_proxy = self.ammo_tnt_proxy;
-    item.ammo_tnt_remote = self.ammo_tnt_remote;
-    item.ammo_spray = self.ammo_spray;
-    item.ammo_voodoo = self.ammo_voodoo;
-    item.ammo_leech = self.ammo_leech;
-
-    item.velocity_z = 300;
-    item.velocity_x = -100 + (random() * 200);
-    item.velocity_y = -100 + (random() * 200);
-
-    item.flags = FL_ITEM;
-    item.solid = SOLID_TRIGGER;
-    item.movetype = MOVETYPE_TOSS;
-    setmodel (item, "progs/backpack.mdl");
-    setsize (item, '-16 -16 0', '16 16 56');
-    item.touch = BackpackTouch;
-
-    item.nextthink = time + 120;    // remove after 2 minutes
-    item.think = SUB_Remove;
 };

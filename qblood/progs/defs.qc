@@ -395,6 +395,8 @@ entity team2_lastspawn;
 .float      menu_index;
 .float      vote_map;
 .float      vote_gametype;
+.float      vote_fraglimit;
+.float      vote_timelimit;
 
 // Observer
 .float      observer;

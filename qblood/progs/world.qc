@@ -37,10 +37,6 @@ Precache all necessary sounds
 */
 void() PrecacheSounds =
 {
-    // The area based ambient sounds MUST be the first precache_sounds
-    // NOTE (elric): I've checked the engine code and it doesn't seem
-    //               to care about this. It should be tested.
-
     // The following sounds are referenced by the engine code - DON'T TOUCH !!
     precache_sound ("ambience/water1.wav");
     precache_sound ("ambience/wind2.wav");
@@ -48,8 +44,8 @@ void() PrecacheSounds =
     precache_sound ("misc/menu2.wav");       // menu sound
     precache_sound ("misc/menu3.wav");       // menu sound
     precache_sound ("misc/talk.wav");        // message
-    precache_sound ("hknight/hit.wav");      // used for the TE_KNIGHTSPIKE event
-    precache_sound ("wizard/hit.wav");       // used for the TE_WIZSPIKE event
+    precache_sound ("hknight/hit.wav");      // used by the TE_KNIGHTSPIKE event
+    precache_sound ("wizard/hit.wav");       // used by the TE_WIZSPIKE event
     precache_sound ("weapons/tink1.wav");    // spikes tink
     precache_sound ("weapons/ric1.wav");     // ricochet
     precache_sound ("weapons/ric2.wav");     // ricochet
@@ -160,7 +156,6 @@ void() PrecacheSounds =
     // ----- Various game sounds ----- //
 
     // Fire
-    //precache_sound ("weapons/flaregun/burstflm.wav");  // when a monster is in fire
     precache_sound ("weapons/napalm/burn.wav");  // burning on lava
 
     // Death and gib sounds
@@ -171,7 +166,6 @@ void() PrecacheSounds =
     precache_sound ("player/die1.wav");
     precache_sound ("player/die2.wav");
     precache_sound ("player/die3.wav");
-    //precache_sound ("player/udeath.wav");  // monsters gib sound
 
     // Moving, swimming, jumping, ...
     precache_sound ("foley/emerge.wav");    // leaving water sound
@@ -286,8 +280,8 @@ void() worldspawn =
     // WARNING: these models are referenced by the engine itself
     precache_model ("progs/player.mdl");
     precache_model ("progs/eyes.mdl");
-    precache_model ("progs/spike.mdl");
-    precache_model ("progs/s_spike.mdl");
+    //precache_model ("progs/spike.mdl");
+    //precache_model ("progs/s_spike.mdl");
 
     // models and stuff
     precache_model ("progs/h_player.mdl");
@@ -303,16 +297,13 @@ void() worldspawn =
     precache_model ("progs/m_guts.mdl");
     precache_model ("progs/m_leg.mdl");
 
-    precache_model ("progs/s_bubble.spr");  // drowning bubbles
     precache_model ("progs/s_explod.spr");  // napalm sprite explosion
 
     precache_model ("progs/v_axe.mdl");
 
     precache_model ("progs/missile.mdl");  // napalm regular fire
 
-    precache_model ("progs/backpack.mdl");
-
-    precache_model ("progs/zom_gib.mdl");
+    precache_model ("progs/bitogore.mdl");  // gib
 
 
 //

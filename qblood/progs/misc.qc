@@ -21,25 +21,6 @@
 #include "common.qh"
 
 
-// No Single Player mode, so no monster
-void() monster_army             = { remove (self); };
-void() monster_boss             = { remove (self); };
-void() monster_demon1           = { remove (self); };
-void() monster_dog              = { remove (self); };
-void() monster_enforcer         = { remove (self); };
-void() monster_fish             = { remove (self); };
-void() monster_hell_knight      = { remove (self); };
-void() monster_knight           = { remove (self); };
-void() monster_ogre             = { remove (self); };
-//void() monster_ogre_marksman    = { remove (self); };  // FIXME: does he appear in any map?
-void() monster_oldone           = { remove (self); };
-void() monster_shalrath         = { remove (self); };
-void() monster_shambler         = { remove (self); };
-void() monster_tarbaby          = { remove (self); };
-void() monster_wizard           = { remove (self); };
-void() monster_zombie           = { remove (self); };
-
-
 /*QUAKED info_null (0 0.5 0) (-4 -4 -4) (4 4 4)
 Used as a positional target for spotlights, etc.
 */
@@ -202,58 +183,6 @@ void() light_flame_small_white =
 
 //============================================================================
 
-
-/*QUAKED misc_fireball (0 .5 .8) (-8 -8 -8) (8 8 8)
-Lava Balls
-*/
-
-void() fire_fly;
-void() fire_touch;
-void() misc_fireball =
-{
-
-    precache_model ("progs/lavaball.mdl");
-    self.classname = "fireball";
-    self.nextthink = time + (random() * 5);
-    self.think = fire_fly;
-    if (!self.speed)
-        self.speed == 1000;
-};
-
-void() fire_fly =
-{
-local entity    fireball;
-
-    fireball = spawn();
-    fireball.solid = SOLID_TRIGGER;
-    fireball.movetype = MOVETYPE_TOSS;
-    fireball.velocity = '0 0 1000';
-    fireball.velocity_x = (random() * 100) - 50;
-    fireball.velocity_y = (random() * 100) - 50;
-    fireball.velocity_z = self.speed + (random() * 200);
-    fireball.classname = "fireball";
-    setmodel (fireball, "progs/lavaball.mdl");
-    setsize (fireball, '0 0 0', '0 0 0');
-    setorigin (fireball, self.origin);
-    fireball.nextthink = time + 5;
-    fireball.think = SUB_Remove;
-    fireball.touch = fire_touch;
-
-    self.nextthink = time + (random() * 5) + 3;
-    self.think = fire_fly;
-};
-
-
-void() fire_touch =
-{
-    // Make fireballs do fire damage.
-    T_Damage (other, self, self, 20, DF_FIRE, "fire");
-    remove(self);
-};
-
-
-//============================================================================
-
 //  This fixes a bug in which barrel explosions cancel other explosions.
 //  Here, the barrel explosion is delayed for one frame so that other
 //  explosions can occur without interference from the barrel.
@@ -350,140 +279,6 @@ void() misc_explobox2 =
 };
 
 //============================================================================
-
-#define SPAWNFLAG_SUPERSPIKE    1
-#define SPAWNFLAG_LASER         2
-
-void() Laser_Touch =
-{
-    local vector org;
-
-    if (other == self.owner)
-        return;     // don't explode on owner
-
-    if (pointcontents(self.origin) == CONTENT_SKY)
-    {
-        remove(self);
-        return;
-    }
-
-    sound (self, CHAN_WEAPON, "ambience/spark.wav", 1, ATTN_STATIC);
-    org = self.origin - 8*normalize(self.velocity);
-
-    if (other.health)
-    {
-        SpawnBlood (org, self.velocity*0.2, 15);
-        other.deathtype = "laser";
-        T_Damage (other, self, self.owner, 15, DF_FIRE, "laser");
-    }
-    else
-    {
-        #ifdef QUAKEWORLD
-        WriteByte (MSG_MULTICAST, SVC_TEMPENTITY);
-        WriteByte (MSG_MULTICAST, TE_GUNSHOT);
-        WriteByte (MSG_MULTICAST, 5);
-        WriteCoord (MSG_MULTICAST, org_x);
-        WriteCoord (MSG_MULTICAST, org_y);
-        WriteCoord (MSG_MULTICAST, org_z);
-        multicast (org, MULTICAST_PVS);
-        #else
-        WriteByte (MSG_BROADCAST, SVC_TEMPENTITY);
-        WriteByte (MSG_BROADCAST, TE_GUNSHOT);
-        WriteCoord (MSG_BROADCAST, org_x);
-        WriteCoord (MSG_BROADCAST, org_y);
-        WriteCoord (MSG_BROADCAST, org_z);
-        #endif
-    }
-
-    remove(self);
-};
-
-void(vector org, vector vec) LaunchLaser =
-{
-    local   vector  vec;
-
-    vec = normalize(vec);
-
-    newmis = spawn();
-    newmis.owner = self;
-    newmis.movetype = MOVETYPE_FLY;
-    newmis.solid = SOLID_BBOX;
-    newmis.effects = EF_DIMLIGHT;
-
-    setmodel (newmis, "progs/laser.mdl");
-    setsize (newmis, '0 0 0', '0 0 0');
-
-    setorigin (newmis, org);
-
-    newmis.velocity = vec * 600;
-    newmis.angles = vectoangles(newmis.velocity);
-
-    newmis.nextthink = time + 5;
-    newmis.think = SUB_Remove;
-    newmis.touch = Laser_Touch;
-};
-
-void() spikeshooter_use =
-{
-    if (self.spawnflags & SPAWNFLAG_LASER)
-    {
-        sound (self, CHAN_VOICE, "weapons/tesla/tessngfr.wav", 1, ATTN_NORM);
-        LaunchLaser (self.origin, self.movedir);
-    }
-    else
-    {
-        sound (self, CHAN_VOICE, "weapons/tommygun/_tom.wav", 1, ATTN_NORM);
-        launch_spike (self.origin, self.movedir);
-        newmis.velocity = self.movedir * 500;
-        if (self.spawnflags & SPAWNFLAG_SUPERSPIKE)
-            newmis.touch = superspike_touch;
-    }
-};
-
-void() shooter_think =
-{
-    spikeshooter_use ();
-    self.nextthink = time + self.wait;
-    newmis.velocity = self.movedir * 500;
-};
-
-
-/*QUAKED trap_spikeshooter (0 .5 .8) (-8 -8 -8) (8 8 8) superspike laser
-When triggered, fires a spike in the direction set in QuakeEd.
-Laser is only for REGISTERED.
-*/
-
-void() trap_spikeshooter =
-{
-    SetMovedir ();
-    self.use = spikeshooter_use;
-    if (self.spawnflags & SPAWNFLAG_LASER)
-    {
-        precache_model ("progs/laser.mdl");
-
-        precache_sound ("weapons/tesla/tessngfr.wav");
-        precache_sound ("ambience/spark.wav");
-    }
-    else
-        precache_sound ("weapons/tommygun/_tom.wav");
-};
-
-
-/*QUAKED trap_shooter (0 .5 .8) (-8 -8 -8) (8 8 8) superspike laser
-Continuously fires spikes.
-"wait" time between spike (1.0 default)
-"nextthink" delay before firing first spike, so multiple shooters can be stagered.
-*/
-void() trap_shooter =
-{
-    trap_spikeshooter ();
-
-    if (self.wait == 0)
-        self.wait = 1;
-    self.nextthink = self.nextthink + self.wait + self.ltime;
-    self.think = shooter_think;
-};
-
 
 /*
 ===========================================================================
@@ -896,15 +691,10 @@ void() exploding_wall =
 
     // This flag toggles bsp/bounding box clipping
     if (self.spawnflags & 4)
-    {
         self.solid = SOLID_BSP;
-        self.movetype = MOVETYPE_PUSH;
-    }
     else
-    {
         self.solid = SOLID_BBOX;
-        self.movetype = MOVETYPE_NONE;
-    }
+    self.movetype = MOVETYPE_PUSH;
 
     // Only destroyable by triggering
     if (self.spawnflags & 1)

@@ -550,48 +550,6 @@ void() DeathFlameThink =
     self.nextthink = time + 0.1;
 };
 
-//------------------------------------------------------------------------//
-//  This spawns a large burning flame on a dying target.  This should
-//  be called ONLY from the target's 'th_die()' function.
-//
-//  NOTE:  Assumes 'self' == dying victim to be burned!
-//------------------------------------------------------------------------//
-void(vector offset) DeathFlame =
-{
-    // Make some fire!
-    local   entity  fire;       // The new fire that will be created.
-    local   vector  spot;       // The spot where the new fire will appear.
-
-    // Get the spot where the fire will erupt.
-    spot = self.origin + offset;
-
-    // Make a small flaming explosion.
-    MakeExplosion (spot);
-
-    // Remove flame generator if any... since this is a bigger fire.
-    KillBurner (self);
-
-    // Create the fire.
-    fire = spawn();
-    setmodel (fire, "progs/flame2.mdl");
-    setsize (fire, '0 0 0', '0 0 0');
-    setorigin (fire, spot);
-    fire.frame      = $flameb;  // Use a *big* flame.
-    fire.solid      = SOLID_NOT;
-    fire.takedamage = DAMAGE_NO;
-    fire.effects    = fire.effects | EF_DIMLIGHT;
-    fire.owner      = self.enemy;
-    fire.enemy      = self;
-    fire.mdl        = fire.model;
-    fire.dest       = offset;
-    fire.nextthink  = 0.1;  // ASAP
-    fire.think      = DeathFlameThink;
-    fire.classname  = "fire";
-
-    // Play some sound.
-    sound (fire, CHAN_AUTO, "weapons/flaregun/burstflm.wav", 1, ATTN_NORM);
-};
-
 
 ////////////////////////////////////////////////////////////////////////////
 //  Flame weapons (flares and napalm)

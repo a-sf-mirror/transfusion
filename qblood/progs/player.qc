@@ -550,7 +550,6 @@ void() PlayerDie =
         DropRing (self.invisible_finished - time);
     }
 
-    DropBackpack();
     CTF_PlayerDropFlag ();
 
     self.invisible_finished = 0;    // don't die as eyes

@@ -27,7 +27,6 @@ void() player_pain;
 void() player_stand1;
 void (vector org) spawn_tfog;
 void (vector org, entity death_owner) spawn_tdeath;
-entity() CTF_Spawn;
 
 /*
 =============================================================================
@@ -184,18 +183,6 @@ entity() FindIntermission =
         }
         return spot;
     }
-
-    // then look for the start position
-    spot = find (world, classname, "info_player_start");
-    if (spot)
-        return spot;
-
-    #ifndef QUAKEWORLD
-    // testinfo_player_start is only found in regioned levels
-    spot = find (world, classname, "testplayerstart");
-    if (spot)
-        return spot;
-    #endif
 
     objerror ("FindIntermission: no spot");
 };
@@ -428,6 +415,7 @@ void() ClientKill =
     respawn ();
 };
 
+
 float(vector v) CheckSpawnPoint =
 {
     return FALSE;
@@ -442,19 +430,28 @@ Returns the entity to spawn at
 */
 entity() SelectSpawnPoint =
 {
-    // testinfo_player_start is only found in regioned levels
-    lastspawn = find (world, classname, "testplayerstart");
-    if (lastspawn)
-        return lastspawn;
-
     local float totalspots;
 
-    // If it's a CTF game, try to spawn on one of the team's points
-    if (gametype == GT_CAPTURE_THE_FLAG)
+    // If it's a team based game, try to spawn on one of the team's points
+    if (gametype != GT_BLOODBATH)
     {
-        lastspawn = CTF_Spawn ();
-        if (lastspawn != world)
-            return lastspawn;
+        if (self.team == TEAM_COLOR1)
+        {
+            team1_lastspawn = find(team1_lastspawn, classname, "info_player_team1");
+            if (! team1_lastspawn)
+                team1_lastspawn = find(team1_lastspawn, classname, "info_player_team1");
+            if (team1_lastspawn)
+                return team1_lastspawn;
+
+        }
+        else if (self.team == TEAM_COLOR2)
+        {
+            team2_lastspawn = find(team2_lastspawn, classname, "info_player_team2");
+            if (! team2_lastspawn)
+                team2_lastspawn = find(team2_lastspawn, classname, "info_player_team2");
+            if (team1_lastspawn)
+                return team2_lastspawn;
+        }
     }
 
     // Get a list of all DM spots
@@ -478,12 +475,8 @@ entity() SelectSpawnPoint =
         return lastspawn;
     }
 
-    // We haven't found a suitable spawn point, so we take the SP one
-    lastspawn = find (world, classname, "info_player_start");
-    if (! lastspawn)
-        error ("SelectSpawnPoint: no info_player_start on level");
-
-    return lastspawn;
+    // We haven't found a suitable spawn point
+    error ("SelectSpawnPoint: no spawn point on level");
 };
 
 
@@ -602,22 +595,6 @@ void() info_player_start =
 };
 
 
-/*QUAKED info_player_start2 (1 0 0) (-16 -16 -24) (16 16 24)
-Only used on start map for the return point from an episode.
-*/
-void() info_player_start2 =
-{
-};
-
-#ifndef QUAKEWORLD
-/*
-saved out by quaked in region mode
-*/
-void() testplayerstart =
-{
-};
-#endif
-
 /*QUAKED info_player_deathmatch (1 0 1) (-16 -16 -24) (16 16 24)
 potential spawning position for deathmatch games
 */
@@ -625,12 +602,16 @@ void() info_player_deathmatch =
 {
 };
 
-/*QUAKED info_player_coop (1 0 1) (-16 -16 -24) (16 16 24)
-potential spawning position for coop games
-*/
-void() info_player_coop =
+
+// Team base starting locations
+void() info_player_team1 =
 {
 };
+
+void() info_player_team2 =
+{
+};
+
 
 /*
 ===============================================================================
