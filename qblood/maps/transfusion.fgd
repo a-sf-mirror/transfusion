@@ -56,12 +56,13 @@
 
 
 //
-// Lights
+// Lights, torches and flames
 //
 
-@baseclass = Light [
-	light(integer) : "Brightness" : 200
-	style(Choices) : "Appearance" : 0 =
+@baseclass size(-8 -8 -8, 8 8 8) = Light
+[
+	light(integer) : "Brightness" : 300
+	style(choices) : "Behaviour" : 0 =
 	[
 		0 : "Normal"
 		10: "Fluorescent flicker"
@@ -78,37 +79,22 @@
 	]
 ]
 
-@PointClass size(-8 -8 -8, 8 8 8) base(Light, Targetname) =
-	light : "Invisible lightsource"
-	[
-		spawnflags(Flags) = [ 1 : "Initially dark" : 0 ]
-	]
-@PointClass size(-8 -8 -8, 8 8 8) base(Light, Targetname) =
-	light_fluoro : "Fluorescent light"
-	[
-		spawnflags(Flags) = [ 1 : "Initially dark" : 0 ]
-	]
-@PointClass size(-8 -8 -8, 8 8 8) base(Light, Targetname) =
-	light_fluorospark : "Sparking fluorescent light"
-	[
-		spawnflags(Flags) = [ 1 : "Initially dark" : 0 ]
-	]
-@PointClass size(-8 -8 -8, 8 8 8) base(Light, Targetname) =
-	light_globe : "Globe light" []
-@PointClass size(-10 -10 -12, 12 12 18) base(Light, Targetname) =
-	light_flame_large_yellow : "Large yellow flame" []
-@PointClass size(-10 -10 -12, 12 12 18) base(Light, Targetname) =
-	light_flame_small_yellow : "Small yellow flame"
-	[
-		spawnflags(Flags) = [ 1 : "Initially dark" : 0 ]
-	]
-@PointClass size(-10 -10 -12, 12 12 18) base(Light, Targetname) =
-	light_flame_small_white : "Small white flame"
-	[
-		spawnflags(Flags) = [ 1 : "Initially dark" : 0 ]
-	]
-@PointClass size(-10 -10 -20, 10 10 20) base(Light, Targetname) =
-	light_torch_small_walltorch : "Small walltorch" []
+@PointClass base(Light, Targetname) = light : "Invisible lightsource"
+[
+	spawnflags(flags) = [ 1 : "Initially dark" : 0 ]
+]
+@PointClass base(Light, Targetname) = light_fluoro : "Fluorescent light"
+[
+	spawnflags(Flags) = [ 1 : "Initially dark" : 0 ]
+]
+@PointClass base(Light) = light_fluorospark : "Sparking fluorescent light" []
+@PointClass base(Light) = light_globe : "Globe light" []
+@PointClass base(Light) size(-4 -4 -14, 4 4 30) = light_torch_small_walltorch : "Small walltorch" []
+
+@baseclass base(Light) size(-10 -10 -12, 12 12 18) = Flame []
+@PointClass base(Flame) = light_flame_large_yellow : "Large yellow flame" []
+@PointClass base(Flame) = light_flame_small_yellow : "Small yellow flame" []
+@PointClass base(Flame) = light_flame_small_white : "Small white flame" []
 
 
 //
@@ -341,15 +327,6 @@
 	message(string) : "Message (set sound too!)"
 ]
 
-@SolidClass = trigger_changelevel : "Trigger: Change level"
-[
-	map(string) : "New map name"
-	spawnflags(flags) =
-	[
-		1: "No Intermission" : 0
-	]
-]
-
 @SolidClass base(Trigger) = trigger_once : "Trigger: Activate once"
 [
 	spawnflags(flags) = [ 1: "Entity only" : 0 ]
@@ -359,11 +336,6 @@
 [
 	spawnflags(flags) = [ 1: "Entity only" : 0 ]
 	wait(integer) : "Delay before reset" : 10
-]
-
-@SolidClass base(Trigger) = trigger_onlyregistered : "Trigger: Registered only" 
-[
-	spawnflags(flags) = [ 1: "Entity only" : 0 ]
 ]
 
 @SolidClass base(Trigger) = trigger_secret : "Trigger: Secret" 
@@ -381,21 +353,7 @@
 	]
 ]
 
-// need updates:
-
-@SolidClass = trigger_setskill : "Trigger set skill" 
-[
-	message(choices) : "Skill to change to" : 1 =
-	[
-		0 : "Pink on the Inside"
-		1 : "Lightly Broiled"
-		2 : "Well Done"
-		3 : "Extra Crispy"
-	]
-]
-@PointClass base(Trigger, Targetname) = trigger_relay : "Trigger relay"
-[
-]
+@PointClass base(Trigger, Targetname) = trigger_relay : "Trigger relay" []
 @SolidClass base(Trigger) = trigger_monsterjump : "Trigger monster jump"
 [
 	speed(integer) : "Jump Speed" : 40

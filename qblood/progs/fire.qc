@@ -232,13 +232,8 @@ void() FlameThink =
 {
     self.nextthink  = time + 0.1;
 
-    if (self.frame < 13)
-        self.frame = self.frame + 1;
-    else
-        self.frame = 0;
-
-    self.alpha = self.alpha - 0.1;
-    if (self.alpha <= 0.1)
+    self.alpha = self.alpha - 0.15;
+    if (self.alpha <= 0.15)
     {
         self.think = SUB_Remove;
         self.velocity = '0 0 0';
@@ -275,8 +270,7 @@ void() MakeEmbers =
     fire.velocity   = '0 0 100';
 
     // Animate the flame.
-    fire.frame      = rint (13 * random ());
-    fire.alpha      = 1;
+    fire.alpha      = 0.9 - rint (0.4 * random ());
     fire.think      = FlameThink;
     fire.nextthink  = time + 0.1;
 };

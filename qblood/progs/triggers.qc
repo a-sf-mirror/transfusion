@@ -134,14 +134,14 @@ void() trigger_multiple =
 {
     if (self.sounds == 1)
     {
-        precache_sound ("bludbath/powerup.wav");  // was misc/secret.wav
+        precache_sound ("bludbath/powerup.wav");
         self.noise = "bludbath/powerup.wav";
     }
     else if (self.sounds == 2)
         self.noise = "bludbath/message.wav";
     else if (self.sounds == 3)
     {
-        precache_sound ("locks/baseuse.wav");  // was misc/trigger1.wav
+        precache_sound ("locks/baseuse.wav");
         self.noise = "locks/baseuse.wav";
     }
 
@@ -267,13 +267,9 @@ void() counter_use =
     multi_trigger ();
 };
 
-/*QUAKED trigger_counter (.5 .5 .5) ? nomessage
-Acts as an intermediary for an action that takes multiple inputs.
-
-If nomessage is not set, t will print "1 more.. " etc when triggered and "sequence complete" when finished.
-
-After the counter has been triggered "count" times (default 2), it will fire all of it's targets and remove itself.
-*/
+// Acts as an intermediary for an action that takes multiple inputs.
+// If nomessage is not set, t will print "1 more.. " etc when triggered and "sequence complete" when finished.
+// After the counter has been triggered "count" times (default 2), it will fire all of it's targets and remove itself.
 void() trigger_counter =
 {
     self.wait = -1;
@@ -349,7 +345,7 @@ void() tdeath_touch =
     if (other == self.owner)
         return;
 
-// frag anyone who teleports in on top of an invincible player
+    // Frag anyone who teleports in on top of an invincible player
     if (other.classname == "player")
     {
         if (other.invincible_finished > time && self.owner.invincible_finished > time) {
@@ -370,7 +366,8 @@ void() tdeath_touch =
         }
 
         if (self.owner.classname != "player")
-        {   // other monsters explode themselves
+        {
+            // Other monsters explode themselves
             T_Damage (self.owner, self, self, 50000, DF_NO_PROTECT, string_null);
             return;
         }
@@ -462,12 +459,11 @@ local vector    org;
     other.flags = other.flags - other.flags & FL_ONGROUND;
 };
 
-/*QUAKED info_teleport_destination (.5 .5 .5) (-8 -8 -8) (8 8 32)
-This is the destination marker for a teleporter.  It should have a "targetname" field with the same value as a teleporter's "target" field.
-*/
+// Destination marker for a teleporter
+// It should have a "targetname" field with the same value as a teleporter's "target" field.
 void() info_teleport_destination =
 {
-// this does nothing, just serves as a target spot
+    // this does nothing, just serves as a target spot
     self.mangle = self.angles;
     self.angles = '0 0 0';
     self.model = "";
@@ -483,18 +479,18 @@ void() teleport_use =
     self.think = SUB_Null;
 };
 
-/*QUAKED trigger_teleport (.5 .5 .5) ? PLAYER_ONLY SILENT
-Any object touching this will be transported to the corresponding info_teleport_destination entity. You must set the "target" field, and create an object with a "targetname" field that matches.
-
-If the trigger_teleport has a targetname, it will only teleport entities when it has been fired.
-*/
+// Teleporter
+// Any object touching this will be transported to the corresponding info_teleport_destination entity.
+// You must set the "target" field, and create an object with a "targetname" field that matches.
+// If the trigger_teleport has a targetname, it will only teleport entities when it has been fired.
 void() trigger_teleport =
 {
     local vector o;
 
     InitTrigger ();
     self.touch = teleport_touch;
-    // find the destination
+
+    // Find the destination
     if (!self.target)
         objerror ("no target");
     self.use = teleport_use;
@@ -507,73 +503,6 @@ void() trigger_teleport =
     }
 };
 
-/*
-==============================================================================
-
-trigger_setskill
-
-==============================================================================
-*/
-
-void() trigger_skill_touch =
-{
-    if (other.classname != "player")
-        return;
-
-    cvar_set ("skill", self.message);
-};
-
-/*QUAKED trigger_setskill (.5 .5 .5) ?
-sets skill level to the value of "message".
-Only used on start map.
-*/
-void() trigger_setskill =
-{
-    InitTrigger ();
-    self.touch = trigger_skill_touch;
-};
-
-
-/*
-==============================================================================
-
-ONLY REGISTERED TRIGGERS
-
-==============================================================================
-*/
-
-void() trigger_onlyregistered_touch =
-{
-    if (other.classname != "player")
-        return;
-    if (self.attack_finished > time)
-        return;
-
-    self.attack_finished = time + 2;
-    if (cvar("registered"))
-    {
-        self.message = "";
-        SUB_UseTargets ();
-        remove (self);
-    }
-    else
-    {
-        if (self.message != "")
-        {
-            centerprint (other, self.message);
-            sound (other, CHAN_BODY, "bludbath/message.wav", 1, ATTN_NORM);
-        }
-    }
-};
-
-/*QUAKED trigger_onlyregistered (.5 .5 .5) ?
-Only fires if playing the registered version, otherwise prints the message
-*/
-void() trigger_onlyregistered =
-{
-    InitTrigger ();
-    self.touch = trigger_onlyregistered_touch;
-};
 
 //============================================================================
 
@@ -645,22 +574,3 @@ void() trigger_push =
     if (!self.speed)
         self.speed = 1000;
 };
-
-//============================================================================
-
-/*QUAKED trigger_monsterjump (.5 .5 .5) ?
-Walking monsters that touch this will jump in the direction of the trigger's angle
-"speed" default to 200, the speed thrown forward
-"height" default to 200, the speed thrown upwards
-*/
-void() trigger_monsterjump =
-{
-    if (!self.speed)
-        self.speed = 200;
-    if (!self.height)
-        self.height = 200;
-    if (self.angles == '0 0 0')
-        self.angles = '0 360 0';
-    InitTrigger ();
-};
-

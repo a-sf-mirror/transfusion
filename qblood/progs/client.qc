@@ -168,7 +168,11 @@ void() GotoNextMap =
         changelevel (newmap);
     else
     #endif
+    {
+        if (nextmap == string_null || nextmap == "")
+            nextmap = mapname;
         changelevel (nextmap);
+    }
 };
 
 
@@ -246,75 +250,43 @@ void() execute_changelevel =
     WriteAngle (MSG_ALL, pos.mangle_z);
     #endif
 
-    other = find (world, classname, "player");
+    other = nextent (world);
     while (other != world)
     {
-        #ifndef QUAKEWORLD
-        KillBurner (other);
-        other.view_ofs = '0 0 0';
-        other.angles = other.v_angle = pos.mangle;
-        other.fixangle = TRUE;      // turn this way immediately
-        other.nextthink = time + 0.5;
+        // If it's a (real) player
+        #ifndef NO_FRIKBOT
+        if (other.ishuman == TRUE && other.b_clientno != -1)
+        #else
+        if (other.classname == "player" ||
+            other.classname == "observer" ||
+            (other.classname == "head" && !other.takedamage))
         #endif
+        {
+            KillBurner (other);
+            #ifndef QUAKEWORLD
+            other.view_ofs = '0 0 0';
+            other.angles = other.v_angle = pos.mangle;
+            other.fixangle = TRUE;      // turn this way immediately
+            other.nextthink = time + 0.5;
+            #endif
 
-        other.takedamage = DAMAGE_NO;
-        other.solid = SOLID_NOT;
-        other.movetype = MOVETYPE_NONE;
-        other.modelindex = 0;
-        other.health = 1;
+            other.takedamage = DAMAGE_NO;
+            other.solid = SOLID_NOT;
+            other.movetype = MOVETYPE_NONE;
+            other.modelindex = 0;
+            other.health = 1;
 
-        #ifndef QUAKEWORLD
-        setorigin (other, pos.origin);
-        #endif
-        other = find (other, classname, "player");
+            #ifndef QUAKEWORLD
+            setorigin (other, pos.origin);
+            #endif
+        }
+
+        other = nextent (other);
     }
 
     #ifndef QUAKEWORLD
     WriteByte (MSG_ALL, SVC_INTERMISSION);
     #endif
-};
-
-
-void() changelevel_touch =
-{
-    local entity    pos;
-
-    if (other.classname != "player")
-        return;
-
-    // if "noexit" is set, blow up the player trying to leave
-    if ((cvar("noexit") == 1) || ((cvar("noexit") == 2) && (mapname != "start")))
-    {
-        T_Damage (other, self, self, 50000, DF_NO_PROTECT, "noexit");
-        return;
-    }
-
-    Bprint (PRINT_HIGH, other.netname);
-    Bprint (PRINT_HIGH," checked out for good\n");
-
-    nextmap = self.map;
-
-    SUB_UseTargets ();
-
-    self.touch = SUB_Null;
-
-// we can't move people right now, because touch functions are called
-// in the middle of C movement code, so set a think time to do it
-    self.think = execute_changelevel;
-    self.nextthink = time + 0.1;
-};
-
-/*QUAKED trigger_changelevel (0.5 0.5 0.5) ? NO_INTERMISSION
-When the player touches this, he gets sent to the map listed in the "map" variable.
-Unless the NO_INTERMISSION flag is set, the view will go to the info_intermission spot and display stats.
-*/
-void() trigger_changelevel =
-{
-    if (!self.map)
-        objerror ("changelevel trigger doesn't have map");
-
-    InitTrigger ();
-    self.touch = changelevel_touch;
 };
 
 
@@ -637,7 +609,7 @@ void() PutClientInServer =
 /*
 =============================================================================
 
-                QUAKED FUNCTIONS
+STARTING POINTS
 
 =============================================================================
 */
@@ -663,36 +635,27 @@ RULES
 */
 
 /*
-go to the next level for deathmatch
-only called if a time or frag limit has expired
+============
+Cl_ChangeLevel
+
+End the current game and switch to intermission
+============
 */
-void() NextLevel =
+void() Cl_ChangeLevel =
 {
-    local entity o;
+    local entity warp;
 
-    #ifdef QUAKEWORLD
-    if (nextmap != "")
-        return; // already done
-    #endif
+    // Already done?
+    if (gameover)
+        return;
 
-    // find a trigger changelevel
-    o = find(world, classname, "trigger_changelevel");
+    // we can't move people right now, because touch functions are called
+    // in the middle of C movement code, so set a think time to do it
+    warp = spawn();
+    warp.think = execute_changelevel;
+    warp.nextthink = time + 0.1;
 
-    // go back to same map if no trigger_changelevel
-    if (!o)
-    {
-        o = spawn();
-        o.map = mapname;
-    }
-
-    nextmap = o.map;
     gameover = TRUE;
-
-    if (o.nextthink < time)
-    {
-        o.think = execute_changelevel;
-        o.nextthink = time + 0.1;
-    }
 };
 
 /*
@@ -709,7 +672,7 @@ void() CheckRules =
 
     if (timelimit && time >= timelimit)
     {
-        NextLevel ();
+        Cl_ChangeLevel ();
         return;
     }
 
@@ -720,13 +683,13 @@ void() CheckRules =
         {
             if (team1score >= fraglimit || team2score >= fraglimit)
             {
-                NextLevel ();
+                Cl_ChangeLevel ();
                 return;
             }
         }
         else if (self.frags >= fraglimit)
         {
-            NextLevel ();
+            Cl_ChangeLevel ();
             return;
         }
     }

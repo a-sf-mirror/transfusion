@@ -21,20 +21,24 @@
 #include "common.qh"
 
 
-/*QUAKED info_null (0 0.5 0) (-4 -4 -4) (4 4 4)
-Used as a positional target for spotlights, etc.
-*/
+// Used as a positional target for spotlights, etc
 void() info_null =
 {
     remove(self);
 };
 
-/*QUAKED info_notnull (0 0.5 0) (-4 -4 -4) (4 4 4)
-Used as a positional target for lightning.
-*/
+// Used as a positional target for lightning
 void() info_notnull =
 {
 };
+
+// Emit a fire ambient sound
+void() FireAmbient =
+{
+    precache_sound ("ambience/sizzle.wav");
+    ambientsound (self.origin, "ambience/sizzle.wav", 0.4, ATTN_STATIC);
+};
+
 
 //============================================================================
 
@@ -54,20 +58,19 @@ void() light_use =
     }
 };
 
-/*QUAKED light (0 1 0) (-8 -8 -8) (8 8 8) START_OFF
-Non-displayed light.
-Default light value is 300
-Default style is 0
-If targeted, it will toggle between on or off.
-*/
+// Invisible lightsource
+// Default light value is 300, default style is 0
+// If targeted, it will toggle between on or off.
 void() light =
 {
+    // Inert light
     if (!self.targetname)
-    {   // inert light
+    {
         remove(self);
         return;
     }
 
+    // Styles < 32 are reserved
     if (self.style >= 32)
     {
         self.use = light_use;
@@ -78,34 +81,19 @@ void() light =
     }
 };
 
-/*QUAKED light_fluoro (0 1 0) (-8 -8 -8) (8 8 8) START_OFF
-Non-displayed light.
-Default light value is 300
-Default style is 0
-If targeted, it will toggle between on or off.
-Makes steady fluorescent humming sound
-*/
+// Fluorescent light
+// As "light" + makes steady fluorescent humming sound
 void() light_fluoro =
 {
-    if (self.style >= 32)
-    {
-        self.use = light_use;
-        if (self.spawnflags & START_OFF)
-            lightstyle(self.style, "a");
-        else
-            lightstyle(self.style, "m");
-    }
-
     precache_sound ("ambience/amb2.wav");
     ambientsound (self.origin, "ambience/amb2.wav", 0.5, ATTN_STATIC);
+
+    light ();
 };
 
-/*QUAKED light_fluorospark (0 1 0) (-8 -8 -8) (8 8 8)
-Non-displayed light.
-Default light value is 300
-Default style is 10
-Makes sparking, broken fluorescent sound
-*/
+// Sparking fluorescent light
+// Makes sparking, broken fluorescent sound
+// Default style is 10 (0 forced to 10)
 void() light_fluorospark =
 {
     if (!self.style)
@@ -115,11 +103,7 @@ void() light_fluorospark =
     ambientsound (self.origin, "ambience/elecgen2.wav", 0.5, ATTN_STATIC);
 };
 
-/*QUAKED light_globe (0 1 0) (-8 -8 -8) (8 8 8)
-Sphere globe light.
-Default light value is 300
-Default style is 0
-*/
+// Globe light
 void() light_globe =
 {
     precache_model ("progs/s_light.spr");
@@ -127,57 +111,37 @@ void() light_globe =
     makestatic (self);
 };
 
-void() FireAmbient =
+// Generic code for the foloowing torches / flames
+void(string flame_model) light_flame_generic =
 {
-    precache_sound ("ambience/sizzle.wav");
-    // attenuate fast
-    ambientsound (self.origin, "ambience/sizzle.wav", 0.4, ATTN_STATIC);
+    precache_model (flame_model);
+    setmodel (self, flame_model);
+    FireAmbient ();
+    makestatic (self);
 };
 
-/*QUAKED light_torch_small_walltorch (0 .5 0) (-10 -10 -20) (10 10 20)
-Short wall torch
-Default light value is 200
-Default style is 0
-*/
+// Small wall torch
 void() light_torch_small_walltorch =
 {
-    precache_model ("progs/flame.mdl");
-    setmodel (self, "progs/flame.mdl");
-    FireAmbient ();
-    makestatic (self);
+    light_flame_generic ("progs/flame.mdl");
 };
 
-/*QUAKED light_flame_large_yellow (0 1 0) (-10 -10 -12) (12 12 18)
-Large yellow flame ball
-*/
+// Large yellow flame
 void() light_flame_large_yellow =
 {
-    precache_model ("progs/flame2.spr");
-    setmodel (self, "progs/flame2.spr");
-    FireAmbient ();
-    makestatic (self);
+    light_flame_generic ("progs/flame2.spr");
 };
 
-/*QUAKED light_flame_small_yellow (0 1 0) (-8 -8 -8) (8 8 8) START_OFF
-Small yellow flame ball
-*/
+// Small yellow flame
 void() light_flame_small_yellow =
 {
-    precache_model ("progs/flame.spr");
-    setmodel (self, "progs/flame.spr");
-    FireAmbient ();
-    makestatic (self);
+    light_flame_generic ("progs/flame.spr");
 };
 
-/*QUAKED light_flame_small_white (0 1 0) (-10 -10 -40) (10 10 40) START_OFF
-Small white flame ball
-*/
+// Small white flame
 void() light_flame_small_white =
 {
-    precache_model ("progs/flame2.mdl");
-    setmodel (self, "progs/flame2.mdl");
-    FireAmbient ();
-    makestatic (self);
+    light_flame_generic ("progs/flame2.mdl");
 };
 
 

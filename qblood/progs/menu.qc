@@ -19,7 +19,7 @@
 
 #include "common.qh"
 
-void() execute_changelevel;
+void() Cl_ChangeLevel;
 string(float gtNumber) Vote_GametypeToString;
 
 
@@ -32,21 +32,11 @@ Used when the vote for a map is passed
 */
 void(string newmap) Vote_ChangeMap =
 {
-    local entity warp;
-
     nextmap = newmap;
-
-    // we can't move people right now, because touch functions are called
-    // in the middle of C movement code, so set a think time to do it
-    warp = spawn();
-    warp.map = nextmap;
-    warp.think = execute_changelevel;
-    warp.nextthink = time + 0.1;
-
-    gameover = TRUE;
+    Cl_ChangeLevel ();
 
     Bprint (PRINT_HIGH, "Û Vote passed. Switching to map ");  // "[ Vote passed ..."
-    Bprint (PRINT_HIGH, nextmap);
+    Bprint (PRINT_HIGH, newmap);
     Bprint (PRINT_HIGH, " Ý\n");  // " ]\n"
 };
 
