@@ -1620,6 +1620,22 @@ void() ambient_laugh =
     ambientsound (self.origin, "ambience/laugh.wav", 1, ATTN_STATIC);
 };
 
+/*QUAKED ambient_thunder3 (0.3 0.1 0.6) (-10 -10 -8) (10 10 8)
+*/
+void() ambient_thunder3 =
+{
+    precache_sound ("ambience/thunder3.wav");
+    ambientsound (self.origin, "ambience/thunder3.wav", 1, ATTN_STATIC);
+};
+
+/*QUAKED ambient_chant3lp (0.3 0.1 0.6) (-10 -10 -8) (10 10 8)
+*/
+void() ambient_chant3lp =
+{
+    precache_sound ("ambience/chant3lp.wav");
+    ambientsound (self.origin, "ambience/chant3lp.wav", 1, ATTN_STATIC);
+};
+
 //============================================================================
 
 void() noise_think =
