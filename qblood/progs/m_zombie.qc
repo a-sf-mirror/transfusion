@@ -183,7 +183,8 @@ void () zombie_die =
 void () monster_zombie =
 {
     //  Disable for testing
-    monster_check();
+    if(monster_check())
+	    return;
 
     precache_model ("models/enemies/zombie.md3");
 

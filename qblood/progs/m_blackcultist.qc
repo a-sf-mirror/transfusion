@@ -114,8 +114,9 @@ void () blackcultist_fireTommygun =
 
 void () monster_blackcultist =
 {
+    //  Disable for testing
+    if(monster_check())
+	    return;
 
-    // Disable for testing the model
-    monster_check();
 	cultist_spawn();
 };

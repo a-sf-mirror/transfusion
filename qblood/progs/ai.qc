@@ -43,7 +43,7 @@ time > .pausetime.
 
 walkmove(angle, speed) primitive is all or nothing
 */
-
+entity () FindInnocent;
 
 float(float v) anglemod =
 {
@@ -274,11 +274,11 @@ void() SightSound =
 
 void() FoundTarget =
 {
-	if (self.enemy.classname == "player")
-    {   // let other monsters see this monster for a while
+	//if (self.enemy.classname == "player")
+    //{   // let other monsters see this monster for a while
         sight_entity = self.enemy;
         sight_entity_time = time + 1;
-    }
+    //}
 
     self.show_hostile = time + 1;       // wake up other monsters
 
@@ -286,6 +286,27 @@ void() FoundTarget =
 	    SightSound ();
 
     HuntTarget ();
+};
+
+
+entity () FindInnocent =
+{
+    local entity ent;
+	
+	ent = findradius(self.origin, 1000);
+
+    while (ent != world)
+	{
+        if (ent.classname == "monster_innocent")
+		{
+		    if (visible(ent))
+			    return ent;
+		}
+
+        ent = ent.chain;
+    }
+	
+	return world;
 };
 
 /*
@@ -322,8 +343,12 @@ float() FindTarget =
     else
     {
         client = checkclient ();
-        if (!client)
-            return FALSE;   // current check entity isn't in PVS
+        
+		if (!client)   // current check entity isn't in PVS
+		    client = FindInnocent();
+		
+		if (client == world)		
+            return FALSE;
     }
 
     if (client == self.enemy ||
@@ -351,10 +376,10 @@ float() FindTarget =
     // got one
 
     self.enemy = client;
-    if (self.enemy.classname != "player")
+    if (self.enemy.classname != "player" && self.enemy.classname != "monster_innocent")
     {
         self.enemy = self.enemy.enemy;
-        if (self.enemy.classname != "player")
+        if (self.enemy.classname != "player" && self.enemy.classname != "monster_innocent")
         {
             self.enemy = world;
             return FALSE;
@@ -444,6 +469,20 @@ void() ai_stand =
 {
     if (FindTarget ())
         return;
+	else
+	{
+	    local entity ent;
+		
+		ent = FindInnocent();
+		
+		if (ent != world)
+		{
+		    self.enemy = ent;
+			FoundTarget();
+			return;
+		}
+	}
+	
 
     if (time > self.pausetime)
     {
@@ -679,9 +718,6 @@ void(float dist) ai_run =
     if ((self.flags & FL_FLY) &&
 	    (self.origin_z > self.enemy.absmin_z + 10))
 	    setorigin(self, self.origin - '0 0 1');
-
-    // FIXME: Needs further testing
-	//walkmove (self.ideal_yaw, dist);
 
 	// head straight in
     movetogoal (dist);      // done in C code...

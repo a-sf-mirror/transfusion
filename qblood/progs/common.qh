@@ -290,11 +290,13 @@
 #define TE_EXPLOSION2       12  // color mapped explosion. No sprite
 #define TE_BEAM             13  // WARNING: "progs/beam.mdl" required
 #define TE_TEI_G3           76
+#define TE_TEI_SMOKE        77
 #define TE_TEI_BIGEXPLOSION 78
+#define TE_TEI_PLASMAHIT    79
 
 // sound channels
 // channel 0 never willingly overrides
-// other channels (1-7) allways override a playing sound on that channel
+// other channels (1-7) always override a playing sound on that channel
 #define CHAN_AUTO   0
 #define CHAN_WEAPON 1
 #define CHAN_VOICE  2

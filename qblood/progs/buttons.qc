@@ -149,27 +149,36 @@ void() func_button =
 {
 local float     gtemp, ftemp;
 
-    if (self.sounds == 0)
+    if (self.noise)
+	{
+	    precache_sound (self.noise);
+	}	
+	else if (self.sounds == 0)
     {
         precache_sound ("locks/switch1.wav");
         self.noise = "locks/switch1.wav";
     }
-    if (self.sounds == 1)
+    else if (self.sounds == 1)
     {
         precache_sound ("locks/runeuse.wav");
         self.noise = "locks/runeuse.wav";
     }
-    if (self.sounds == 2)
+    else if (self.sounds == 2)
     {
         precache_sound ("locks/qlatch2.wav");
         self.noise = "locks/qlatch2.wav";
     }
-    if (self.sounds == 3)
+    else if (self.sounds == 3)
     {
         precache_sound ("locks/qlatch2.wav");
         self.noise = "locks/qlatch2.wav";
     }
-
+	else if (self.sounds == 4)
+	{
+	    precache_sound ("misc/null.wav");
+        self.noise = "misc/null.wav";
+	}
+	
     SetMovedir ();
 
     self.movetype = MOVETYPE_PUSH;

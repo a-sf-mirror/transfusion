@@ -196,7 +196,8 @@ void () minicaleb_die =
 void () monster_minicaleb =
 {
     //  Disable for testing
-    monster_check();
+    if(monster_check())
+	    return;
 
     precache_model ("progs/player.mdl");
 

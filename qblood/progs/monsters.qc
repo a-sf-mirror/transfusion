@@ -71,7 +71,7 @@ void() walkmonster_start_go =
     if (!walkmove(0,0))
     {
 	    bprint (self.classname);
-        bprint (" in wall at: ");
+        bprint (" stuck at: ");
         bprint (vtos(self.origin));
         bprint ("\n");		
     }
@@ -291,7 +291,7 @@ void () monster_drop_key =
 		key.nextthink = time + 0.1;
 };
 
-void () monster_check =
+float () monster_check =
 {
     if (cvar("nomonsters")      && 
 	    self.items2 >= IT2_KEY1 && 
@@ -305,7 +305,7 @@ void () monster_check =
 	   (gametype != GT_COOPERATIVE && gametype != GT_SINGLE_PLAYER))
     {
 	    remove(self);
-		return;
+		return 1;
 	}
 	
 	self.netname = "monster";

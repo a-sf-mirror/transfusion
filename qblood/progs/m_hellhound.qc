@@ -226,13 +226,7 @@ void() hellhound_bite =
 
     r = random ();
 
-    if (r < 0.33)
-        sound (self, CHAN_VOICE, "hellhound/houndbit.wav", 1, ATTN_NORM);
-    else if (r < 0.66)
-        sound (self, CHAN_VOICE, "hellhound/houndbt2.wav", 1, ATTN_NORM); // Does this sound work?
-    else
-        sound (self, CHAN_VOICE, "hellhound/houndbt3.wav", 1, ATTN_NORM); // Does this sound work?
-
+    sound (self, CHAN_VOICE, "hellhound/houndbit.wav", 1, ATTN_NORM);
 };
 
 //--- Pain sequence
@@ -279,7 +273,7 @@ void () hellhound_die =
 
         // Very large blood splat!
         te_bloodshower (self.origin, self.origin + self.size, 100, 150);
-		
+		RandomHumanGibs();
         remove (self);
         return;
     }
@@ -297,7 +291,8 @@ void () hellhound_die =
 void () monster_hellhound =
 {
     //  Disable for testing
-    monster_check();
+    if(monster_check())
+	    return;
 
     precache_model ("models/enemies/hellhound.md3");
     precache_model ("progs/sprayfir.spr");
@@ -308,8 +303,6 @@ void () monster_hellhound =
     precache_sound ("hellhound/cerbpain.wav");
     precache_sound ("hellhound/cerbspot.wav");
     precache_sound ("hellhound/houndbit.wav");
-    precache_sound ("hellhound/houndbt2.wav");
-    precache_sound ("hellhound/houndbt3.wav");
     precache_sound ("hellhound/smalpain.wav");
     precache_sound ("hellhound/smalwoof.wav");
 

@@ -26,7 +26,6 @@ void () cultist_fireShotgun; // Brown, Red
 void () cultist_pain;        // all
 void () cultist_stand;       // all
 void () cultist_throw_TNT;   // Brown, Green
-void () cultist_TNT_touch;   // Brown, Green
 
 void () browncultist_attack;
 void () blackcultist_attack;
@@ -230,33 +229,24 @@ void () cultist_throw_TNT =
     missile.solid = SOLID_BBOX;
 
     // set missile speed
-
     makevectors (self.angles);
-
     delta = (self.enemy.origin - self.origin);
     dist = vlen(delta);
-
     missile.velocity = normalize(self.enemy.origin - self.origin);
-    missile.velocity = missile.velocity * dist; // instead of distance, was 600
+    missile.velocity = missile.velocity * dist;
     missile.velocity_z = 425;
-
     missile.avelocity = '300 300 300';
-
     missile.angles = vectoangles(missile.velocity);
-
-    missile.touch = cultist_TNT_touch;
+    missile.dmg = DMG_TNT;
+	missile.netname = "TNT";
+	missile.think = BombThink;
+	missile.nextthink = time + 0.1;
+	missile.touch = Bomb_Trigger;
 
     setmodel (missile, "models/weapons/grenades/gr_tnt.md3");
     setsize (missile, '0 0 0', '0 0 0');
     setorigin (missile, self.origin);
 
-};
-
-void () cultist_TNT_touch =
-{
-    sound (self, CHAN_WEAPON, "weapons/r_exp3.wav", 1, ATTN_NORM);
-    T_RadiusDamage (self, self.owner, 130, world, "grenade"); // FIXME: Make w_bomb.qc defines global?
-    BecomeExplosion ();
 };
 
 //--- Basic idle

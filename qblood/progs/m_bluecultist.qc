@@ -75,6 +75,8 @@ void () bluecultist_fireTesla =
 void () monster_bluecultist =
 {
     //  Disable for testing
-    monster_check();
+    if(monster_check())
+	    return;
+
 	cultist_spawn();
 };

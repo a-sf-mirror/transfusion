@@ -64,9 +64,6 @@ $frame atommy_draw1 atommy_draw2 atommy_draw3
 $frame atommy_fire1 atommy_fire2
 
 // altfire
-// atommy_alt1 = atommy_alt5 = center
-// atommy_alt2 = atommy_alt4 = near left
-// atommy_alt6 = atommy_alt8 = near right
 $frame atommy_alt1 atommy_alt2 atommy_alt3 atommy_alt4 atommy_alt5
 $frame atommy_alt6 atommy_alt7 atommy_alt8
 

@@ -255,11 +255,6 @@ void() worldspawn =
     // Save the map index before BotInit has a chance to overwrite it
     map_cycle = cvar ("saved1");
 
-    #ifndef NO_FRIKBOT
-    // FrikBot X initialization
-    Bot_Init();
-    #endif
-
     // Compute the game type
     	
     if (cvar("coop"))
@@ -287,6 +282,12 @@ void() worldspawn =
 		cvar_set("deathmatch", "1");
 		//gametype = GT_SINGLE_PLAYER;
 	}
+	
+	#ifndef NO_FRIKBOT
+    // FrikBot X initialization
+    if (gametype != GT_SINGLE_PLAYER && gametype != GT_COOPERATIVE)
+	    Bot_Init();
+    #endif
 
     friendlyfire = (cvar("teamplay") == 2);  // NOTE: should we allow friendlyfire changes during the game ?
     

@@ -45,7 +45,24 @@ float(void() idleFunction) player_idleWeapon =
 
     if (self.player_state != PS_HOLD_FIRE && self.player_state != PS_MENU)
     {
-        self.weaponframe = 0;
+        // Do pretty lighter flame motion (if you're holding a lighter)
+		if (self.weapon == IT_TNT || self.weapon == IT_SPRAY_CAN)
+		{
+			if (self.weaponframe >= 2)
+			{
+			    self.weaponframe = 1;
+				self.lefty = TRUE;     // Move flames to the left
+			}
+			else if (self.lefty)
+			{
+			    self.weaponframe = self.weaponframe - 1;
+				self.lefty = FALSE;
+			}			
+			else
+			    self.weaponframe = self.weaponframe + 1;
+		}
+		else
+		    self.weaponframe = 0;
 
         // If there's a pending weapon change
         if (self.newweapon)
@@ -377,6 +394,8 @@ void(string gibname, float dm) ThrowGib =
     new.nextthink = time + 5 + random()*7;
     new.frame = 0;
     new.flags = 0;
+	new.cnt = ceil(random() * 25);
+	te_blood(new.origin, new.avelocity, new.cnt);
 };
 
 /*
@@ -429,6 +448,8 @@ void() HeadTouch =
     self.avelocity_x = crandom() * 600;
     self.avelocity_y = crandom() * 600;
     self.avelocity_z = crandom() * 600;
+	self.cnt = ceil(random() * 25);
+	te_blood(self.origin, self.avelocity, self.cnt);
 
     self.flags = self.flags - (self.flags & FL_ONGROUND);
 };

@@ -293,6 +293,25 @@ void(string objmodel, vector bbox_min, vector bbox_max) StartObject =
     self.think = PlaceObject;
 };
 
+// Dead innocent sitting FIXME: BBox is from frame 0
+void() obj_body_sitting =
+{
+    self.frame = 21;
+	StartObject ("models/enemies/innocent.md3", '-6 -14 0', '15 10 55');
+};
+
+// Dead innocent spread out FIXME: BBox is from frame 0
+void() obj_body_spread =
+{
+    self.frame = 22;
+	StartObject ("models/enemies/innocent.md3", '-6 -14 0', '15 10 55');
+};
+
+// Soccer Goal
+void() obj_goal =
+{
+    StartObject ("models/world/goalposts.md3", '-40 -52 0', '44 52 90');
+};
 
 // Large Vase (tile0537)
 void() obj_pot1 =
@@ -310,6 +329,12 @@ void() obj_pot2 =
 void() obj_pot5 =
 {
     StartObject ("models/world/pot5.md3", '-7 -7 0', '7 7 15');
+};
+
+// Shovel (tile1713)
+void() obj_shovel =
+{
+    StartObject ("models/world/shovel.md3", '-0 -7 -27', '3 7 26');
 };
 
 // Stake w/ 1 skull (tile0257)
@@ -378,34 +403,29 @@ void() obj_tree2 =
     StartObject ("models/world/tree2.md3", '-32 -41 0', '52 45 174');
 };
 
-// Shovel (tile1713)
-void() obj_shovel =
+// Wooden Barrel (tile0907)
+// NOTE: the model has 2 static frames (0- standing on end, 1- lying on side)
+void() obj_world_barrel =
 {
-    StartObject ("models/world/shovel.md3", '-0 -7 -27', '3 7 26');
+    StartObject ("models/world/barrel.md3", '-15 -15 0', '15 15 43');
 };
 
-// Glass Jar w/brain (tile0075)
-void() obj_world_jar1 =
+// Dead body (tile2333)
+void() obj_world_body1 =
 {
-    StartObject ("models/world/jar1.md3", '-8 -8 0', '9 9 18');
+    StartObject ("models/world/body1.md3", '-21 -12 -1', '27 23 19');
 };
 
-// Pram (tile0183)
-void() obj_world_pram =
+// Bottle (tile0759)
+void() obj_world_bottle2 =
 {
-    StartObject ("models/world/pram.md3", '-17 -32 0', '17 35 43');
+    StartObject ("models/world/bottle2.md3", '-2 -2 0', '2 2 16');
 };
 
-// Ceiling Light (tile0468)
-void() obj_world_light1 =
+// Boulder (tile804)
+void() obj_world_boulder =
 {
-    StartObject ("models/world/light1.md3", '-5 -6 -13', '5 6 13');
-};
-
-// Sink taps (tile0485)
-void() obj_world_sinktaps =
-{
-    StartObject ("models/world/sinktaps.md3", '-3 -11 0', '12 11 9');
+    StartObject ("models/world/boulder.md3", '-18 -13 0', '18 13 10');
 };
 
 // Waste bucket (tile0505)
@@ -414,16 +434,10 @@ void() obj_world_bucket1 =
     StartObject ("models/world/bucket1.md3", '-6 -6 0', '6 6 24');
 };
 
-// Wall torch (tile0570)
-void() obj_world_torch =
+// Calipers (tile1715)
+void() obj_world_calipers =
 {
-    StartObject ("models/world/torch.md3", '-5 -5 -6', '5 5 6');
-};
-
-// Wreath (tile0575)
-void() obj_world_wreath1 =
-{
-    StartObject ("models/world/wreath1.md3", '-11 -16 0', '11 16 58');
+    StartObject ("models/world/calipers.md3", '-0 -5 -9', '2 5 10');
 };
 
 // Short Candelabra (tile0584)
@@ -446,22 +460,17 @@ void() obj_world_candlbr2 =
     StartObject ("models/world/candlbr2.md3", '-5 -7 0', '5 7 54');
 };
 
-// Skull on stake w/rags (tile0607)
-void() obj_world_skullrag =
+// Clock (tile1165)
+void() obj_world_clock =
 {
-    StartObject ("models/world/skullrag.md3", '-6 -19 0', '5 20 71');
+    StartObject ("models/world/clock.md3", '0 -10 -10', '2 10 10');
 };
 
-// Big Wreath (tile0633)
-void() obj_world_wreath2 =
+// Draven Tombstone (tile1159)
+void() obj_world_draven =
 {
-    StartObject ("models/world/wreath2.md3", '0 -49 -42', '11 50 47');
-};
-
-// Garden Lantern (tile0640)
-void() obj_world_lantern1 =
-{
-    StartObject ("models/world/lantern1.md3", '-6 -8 0', '8 8 63');
+    // FIXME: Needs self.spawnflags = SF_USABLE; self.use = play sound
+	StartObject ("models/world/draven.md3", '-6 -18 0', '6 18 47');
 };
 
 // Fire Extinguisher (tile0658)
@@ -474,22 +483,16 @@ void() obj_world_extngsh =
     StartObject ("models/world/extngsh.md3", '-4 -12 16', '4 13 61');
 };
 
-// Stone Statue (tile0679)
-void() obj_world_statue4 =
+// IV Drip (tile0962)
+void() obj_world_ivdrip =
 {
-    StartObject ("models/world/statue4.md3", '-15 -17 0', '15 17 112');
+    StartObject ("models/world/ivdrip.md3", '-11 -11 0', '11 11 55');
 };
 
-// Severed Leg (tile0682)
-void() obj_world_leg1 =
+// Glass Jar w/brain (tile0075)
+void() obj_world_jar1 =
 {
-    StartObject ("models/world/leg1.md3", '-8 -3 0', '9 4 7');
-};
-
-// Bottle (tile0759)
-void() obj_world_bottle2 =
-{
-    StartObject ("models/world/bottle2.md3", '-2 -2 0', '2 2 16');
+    StartObject ("models/world/jar1.md3", '-8 -8 0', '9 9 18');
 };
 
 // Stone Jar (tile0802)
@@ -498,29 +501,34 @@ void() obj_world_jar2 =
     StartObject ("models/world/jar2.md3", '-3 -3 0', '3 3 9');
 };
 
-// Boulder (tile804)
-void() obj_world_boulder =
+// Garden Lantern (tile0640)
+void() obj_world_lantern1 =
 {
-    StartObject ("models/world/boulder.md3", '-18 -13 0', '18 13 10');
+    StartObject ("models/world/lantern1.md3", '-6 -8 0', '8 8 63');
 };
 
-// Skull (tile807)
-void() obj_world_skull1 =
+// Severed Leg (tile0682)
+void() obj_world_leg1 =
 {
-    StartObject ("models/world/skull1.md3", '-5 -5 0', '5 5 8');
+    StartObject ("models/world/leg1.md3", '-8 -3 0', '9 4 7');
 };
 
-// Wooden Barrel (tile0907)
-// NOTE: the model has 2 static frames (0- standing on end, 1- lying on side)
-void() obj_world_barrel =
+// Ceiling Light (tile0468)
+void() obj_world_light1 =
 {
-    StartObject ("models/world/barrel.md3", '-15 -15 0', '15 15 43');
+    StartObject ("models/world/light1.md3", '-5 -6 -13', '5 6 13');
 };
 
-// IV Drip (tile0962)
-void() obj_world_ivdrip =
+// Metal Barrel (tile0201)
+void() obj_world_metbarrel =
 {
-    StartObject ("models/world/ivdrip.md3", '-11 -11 0', '11 11 55');
+    StartObject ("models/world/metbarrel.md3", '-14 -14 0', '14 14 36');
+};
+
+// Metal Body Barrel (tile0563)
+void() obj_world_metbarrel2 =
+{
+    StartObject ("models/world/metbarrel2.md3", '-14 -14 0', '14 14 36');
 };
 
 // Potted Plant (tile1009)
@@ -529,17 +537,16 @@ void() obj_world_plant1 =
     StartObject ("models/world/plant1.md3", '-4 -4 0', '4 4 8');
 };
 
-// Draven Tombstone (tile1159)
-void() obj_world_draven =
+// Poker (tile1716)
+void() obj_world_poker =
 {
-    // FIXME: Needs self.spawnflags = SF_USABLE; self.use = play sound
-	StartObject ("models/world/draven.md3", '-6 -18 0', '6 18 47');
+    StartObject ("models/world/poker.md3", '-1 -1 8', '1 3 36');
 };
 
-// Spade (tile1712)
-void() obj_world_spade =
+// Pram (tile0183)
+void() obj_world_pram =
 {
-    StartObject ("models/world/spade.md3", '-1 -5 -18', '1 5 18');
+    StartObject ("models/world/pram.md3", '-17 -32 0', '17 35 43');
 };
 
 // Saw (tile1714)
@@ -548,62 +555,52 @@ void() obj_world_saw =
     StartObject ("models/world/saw.md3", '-1 -4 -9', '1 6 15');
 };
 
-// Calipers (tile1715)
-void() obj_world_calipers =
+// Sink taps (tile0485)
+void() obj_world_sinktaps =
 {
-    StartObject ("models/world/calipers.md3", '-0 -5 -9', '2 5 10');
+    StartObject ("models/world/sinktaps.md3", '-3 -11 0', '12 11 9');
 };
 
-// Poker (tile1716)
-void() obj_world_poker =
+// Skull (tile807)
+void() obj_world_skull1 =
 {
-    StartObject ("models/world/poker.md3", '-1 -1 8', '1 3 36');
+    StartObject ("models/world/skull1.md3", '-5 -5 0', '5 5 8');
 };
 
-// Dead body (tile2333)
-void() obj_world_body1 =
+// Skull on stake w/rags (tile0607)
+void() obj_world_skullrag =
 {
-    StartObject ("models/world/body1.md3", '-21 -12 -1', '27 23 19');
+    StartObject ("models/world/skullrag.md3", '-6 -19 0', '5 20 71');
 };
 
-// Clock (tile1165)
-void() obj_world_clock =
+// Spade (tile1712)
+void() obj_world_spade =
 {
-    StartObject ("models/world/clock.md3", '0 -10 -10', '2 10 10');
+    StartObject ("models/world/spade.md3", '-1 -5 -18', '1 5 18');
 };
 
-
-// Metal Barrel (tile0201)
-void() obj_world_metbarrel =
+// Stone Statue (tile0679)
+void() obj_world_statue4 =
 {
-    StartObject ("models/world/metbarrel.md3", '-14 -14 0', '14 14 36');
+    StartObject ("models/world/statue4.md3", '-15 -17 0', '15 17 112');
 };
 
-
-// Metal Body Barrel (tile0563)
-void() obj_world_metbarrel2 =
+// Wall torch (tile0570)
+void() obj_world_torch =
 {
-    StartObject ("models/world/metbarrel2.md3", '-14 -14 0', '14 14 36');
+    StartObject ("models/world/torch.md3", '-5 -5 -6', '5 5 6');
 };
 
-// Soccer Goal
-void() obj_goal =
+// Wreath (tile0575)
+void() obj_world_wreath1 =
 {
-    StartObject ("models/world/goalposts.md3", '-40 -52 0', '44 52 90');
+    StartObject ("models/world/wreath1.md3", '-11 -16 0', '11 16 58');
 };
 
-// Dead innocent sitting FIXME: BBox is from frame 0
-void() obj_body_sitting =
+// Big Wreath (tile0633)
+void() obj_world_wreath2 =
 {
-    self.frame = 21;
-	StartObject ("models/enemies/innocent.md3", '-6 -14 0', '15 10 55');
-};
-
-// Dead innocent spread out FIXME: BBox is from frame 0
-void() obj_body_spread =
-{
-    self.frame = 22;
-	StartObject ("models/enemies/innocent.md3", '-6 -14 0', '15 10 55');
+    StartObject ("models/world/wreath2.md3", '0 -49 -42', '11 50 47');
 };
 
 /*
@@ -1514,8 +1511,8 @@ void() weapon_teslacannon =
 	    precache_teslacannon();
 	else
 	    self.classname = "weapon_teslacannon";
-
-    setmodel (self, "models/weapons/g_tesla.md3");
+	
+	setmodel (self, "models/weapons/g_tesla.md3");
     self.weapon = IT_TESLA_CANNON;
     self.netname = "Tesla Cannon";
     self.touch = weapon_touch;
@@ -1553,7 +1550,6 @@ void() weapon_lifeleech =
 {
     precache_model ("models/weapons/v_leech.md3");
     precache_model ("models/weapons/g_leech.md3");
-    precache_model ("progs/lechball.mdl"); // leechball.spr
     precache_model ("progs/bolt.mdl");
 
     setmodel (self, "models/weapons/g_leech.md3");

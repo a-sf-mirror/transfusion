@@ -75,6 +75,8 @@ void () redcultist_fireShotgun =
 void () monster_redcultist =
 {
     //  Disable for testing
-    monster_check();
+    if(monster_check())
+	    return;
+
     cultist_spawn();
 };

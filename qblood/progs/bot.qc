@@ -680,7 +680,7 @@ void() Bot_Init =
     local entity ent, fisent;
     local float numents;
 
-    // spawn entities for the physics
+	// spawn entities for the physics
     ent = nextent(world);
     max_clients = 0;
 
@@ -831,7 +831,10 @@ void(float whichteam, float whatbot, float whatskill) BotConnect =
     local string h;
     local entity uself;
 
-    f = ClientNextAvailable();
+    if (gametype == GT_SINGLE_PLAYER || gametype == GT_COOPERATIVE)
+	    return;
+	
+	f = ClientNextAvailable();
     uself = self;
     if(f == -1)
     {

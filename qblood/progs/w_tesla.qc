@@ -189,7 +189,7 @@ void() Tesla_JoltTouch =
         self.origin = self.origin - 8 * normalize (self.velocity);
         sound (self, CHAN_AUTO, "weapons/tesla/tesaltht.wav", 1, ATTN_NORM);
 
-        WriteByte  (MSG_BROADCAST, SVC_TEMPENTITY);
+		WriteByte  (MSG_BROADCAST, SVC_TEMPENTITY);
         WriteByte  (MSG_BROADCAST, TE_EXPLOSION2);
         WriteCoord (MSG_BROADCAST, self.origin_x);
         WriteCoord (MSG_BROADCAST, self.origin_y);

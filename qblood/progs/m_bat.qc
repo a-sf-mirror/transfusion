@@ -137,7 +137,8 @@ void(entity attacker, float damage)    bat_pain =
 void() monster_bat =
 {
     //  Disable for testing
-    monster_check();
+    if(monster_check())
+	    return;
  
     precache_model ("models/enemies/bat.md3");
 

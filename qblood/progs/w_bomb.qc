@@ -620,6 +620,24 @@ void() BombContents =
 void() BombThink =
 {
     self.nextthink  = time + 0.1;
+	if (!checkbottom(self) && self.netname == "TNT")
+	{
+	    local float density;
+		density = ceil(random() * 20);
+		
+		
+		makevectors(self.angles);
+
+		WriteByte (MSG_BROADCAST, SVC_TEMPENTITY);
+	    WriteByte (MSG_BROADCAST, TE_TEI_SMOKE);
+	    WriteCoord (MSG_BROADCAST, self.origin_x + v_right_x);
+        WriteCoord (MSG_BROADCAST, self.origin_y + v_right_y);
+        WriteCoord (MSG_BROADCAST, self.origin_z);
+	    WriteCoord (MSG_BROADCAST, 0);
+        WriteCoord (MSG_BROADCAST, 0);
+        WriteCoord (MSG_BROADCAST, density);
+	    WriteByte  (MSG_BROADCAST, density);
+	}
     BombContents ();
 };
 
@@ -775,7 +793,7 @@ void() proximity_mine =
     self.think1     = ProximBombCheck;
     self.think      = ProximBombThink;
     self.dmg        = DMG_PROXIMITY_BOMB;
-    setsize (self, '-1 -1 -1', '1 1 1');
+    setsize (self, '-1 -1 -1', '1 1 1');	
 };
 
 
@@ -810,8 +828,8 @@ void() Bomb_Fire =
 
     newmis = spawn ();
     newmis.owner = self;
-    newmis.movetype = MOVETYPE_BOUNCE;
     newmis.solid = SOLID_BBOX;
+	newmis.movetype = MOVETYPE_BOUNCE;
     newmis.classname = "grenade";
 
     self.punchangle_x = -2;
@@ -844,7 +862,7 @@ void() Bomb_Fire =
     newmis.touch = GrenadeTouch;
 
     // Explodes as soon as it takes 1 point of damage
-    newmis.takedamage = DAMAGE_AIM;
+    newmis.takedamage = DAMAGE_YES;
     newmis.health = 1;
     newmis.th_die = Bomb_Trigger;  // do not make it explode directly
 
@@ -893,7 +911,8 @@ void() Bomb_Fire =
             newmis.dmg       = DMG_SPRAY_CAN;
             newmis.model     = "models/weapons/grenades/gr_aerosol.md3";
             newmis.angles    = '0 -300 0';
-            if (newmis.style == TNT_TYPE_NORMAL)
+
+			if (newmis.style == TNT_TYPE_NORMAL)
                 newmis.avelocity = '150 150 150';
             else
                 newmis.avelocity = '0 150 150';
@@ -905,13 +924,12 @@ void() Bomb_Fire =
             newmis.netname   = "TNT";
             newmis.dmg       = DMG_TNT;
             newmis.model     = "models/weapons/grenades/gr_tnt.md3";
-            newmis.avelocity = '300 300 300';
             newmis.angles    = vectoangles(newmis.velocity);
         }
     }
 
     setmodel (newmis, newmis.model);
-    setsize (newmis, '0 0 0', '0 0 0');
+    setsize (newmis, '-1 -1 -1', '1 1 1');
 
     // If we have no more dynamite, we "lose" the weapon
     // (expect for remote detonators: we always have the remote)

@@ -22,7 +22,7 @@
 
 
 void() plat_center_touch;
-void() plat_outside_touch;
+//void() plat_outside_touch;
 void() plat_trigger_use;
 void() plat_go_up;
 void() plat_go_down;
@@ -124,6 +124,7 @@ void() plat_center_touch =
     self.cnt = time + 2;
 };
 
+/*
 void() plat_outside_touch =
 {
     if (other.classname != "player" ||  // Monster
@@ -135,6 +136,7 @@ void() plat_outside_touch =
     if (self.state == STATE_TOP)
         plat_go_down ();
 };
+*/
 
 void() plat_trigger_use =
 {
@@ -190,7 +192,6 @@ void() func_plat =
         self.t_width = 10;
 
     precache_sound ("thevoice/squash.wav");
-
 
     if (self.noise)
      if (self.noise1) // If mapper set the sounds manually in the map
@@ -251,7 +252,7 @@ void() func_plat =
         setorigin (self, self.pos2);
         self.state = STATE_BOTTOM;
 
-        if (self.style > 0) //TESTME:
+        if (self.style)
             plat_go_up();
     }
 };

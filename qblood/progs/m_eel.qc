@@ -141,7 +141,8 @@ void(entity attacker, float damage)    eel_pain =
 void() monster_eel =
 {
     //  Disable for testing
-    monster_check();
+    if(monster_check())
+	    return;
 
     precache_model ("models/enemies/bone_eel.md3");
 

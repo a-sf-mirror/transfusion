@@ -188,7 +188,8 @@ void(entity attacker, float damage)    innocent_pain =
 void() monster_innocent =
 {
     //  Disable for testing
-    monster_check();
+    if(monster_check())
+	    return;
 
     precache_model ("models/enemies/innocent.md3");
     precache_sound ("innocent/icrying.wav");

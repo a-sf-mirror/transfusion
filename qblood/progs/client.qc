@@ -365,15 +365,34 @@ void(entity player, float fragsToAdd) Cl_UpdatePlayerFrags =
 // called by ClientKill and DeadThink
 void(float cloneCorpse) respawn =
 {
-	// make a copy of the dead body for appearances sake
-    if (cloneCorpse)
-        CloneCorpse (self);
+	if (gametype == GT_COOPERATIVE)
+	{
+		// make a copy of the dead body for appearances sake
+        if (cloneCorpse)
+            CloneCorpse (self);
 
-    // set default spawn parms
-    SetNewParms ();
+		// get the spawn parms as they were at level start
+		setspawnparms (self);
 
-    // respawn
-    PutClientInServer ();
+		// respawn		
+		PutClientInServer ();
+	}
+	else if (gametype != GT_SINGLE_PLAYER)
+	{
+		// make a copy of the dead body for appearances sake
+        if (cloneCorpse)
+            CloneCorpse (self);
+
+		// set default spawn parms
+		SetNewParms ();
+
+		// respawn		
+		PutClientInServer ();
+	}
+	else
+	{	// restart the entire server
+		localcmd ("restart\n");
+	}
 };
 
 
@@ -701,16 +720,38 @@ STARTING POINTS
 */
 
 // The normal starting point for a level.
-// NOTE: info_player_start is useless for now
-void() info_player_start = { remove (self); };
+void() info_player_start = 
+{
+    if (gametype != GT_SINGLE_PLAYER && gametype != GT_COOPERATIVE)
+	    remove(self);	
+};
+
+// Starting point for coop games
+void() info_player_coop = 
+{
+    if (gametype != GT_SINGLE_PLAYER && gametype != GT_COOPERATIVE)
+	    remove(self);	
+};
 
 // Potential spawning position for deathmatch games
-void() info_player_deathmatch = {};
+void() info_player_deathmatch = 
+{
+    if (gametype == GT_SINGLE_PLAYER || gametype == GT_COOPERATIVE)
+	    remove(self);
+};
 
 // Team base starting locations
-void() info_player_team1 = {};
-void() info_player_team2 = {};
+void() info_player_team1 =
+{
+    if (gametype == GT_SINGLE_PLAYER || gametype == GT_COOPERATIVE)
+	    remove(self);
+};
 
+void() info_player_team2 =
+{
+    if (gametype == GT_SINGLE_PLAYER || gametype == GT_COOPERATIVE)
+	    remove(self);
+};
 
 /*
 ===============================================================================
@@ -746,7 +787,8 @@ void(float forcemap) Cl_ChangeLevel =
     gameover = TRUE;
 
     // Load the map list before GotoNextMap
-    localcmd ("exec maps.cfg\n");
+    if (gametype != GT_SINGLE_PLAYER && gametype != GT_COOPERATIVE)
+	    localcmd ("exec maps.cfg\n");
 };
 
 /*
@@ -855,7 +897,6 @@ void() PlayerJump =
             else
                 sound (self, CHAN_BODY, "foley/submerge.wav", 1, ATTN_NORM);
         }
-
         return;
     }
 

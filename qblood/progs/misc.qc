@@ -903,16 +903,6 @@ void() exploding_wall =
     // Save the model name for wall_reset
     self.mdl = self.model;
 
-    // Set to be destroyed by TNT only by default
-    if ( (self.skin <= 3)      &&
-	    !(self.spawnflags & 1) &&
-		!(self.spawnflags & 2) &&
-		!(self.spawnflags & 32))
-	{
-	    self.spawnflags = self.spawnflags | 32;
-		self.health = 1;
-	}
-		
 	// precache rubble models (two models used since red trails on gibs, grey on other rubble)
     if (! (self.spawnflags & 16))  // if rubble is not turned off
     {
@@ -1076,6 +1066,9 @@ void() sound_player =
 {
     if (self.noise)
         precache_sound (self.noise);
+	else
+	    remove(self);
+	
     self.use = sound_player_use;
 };
 

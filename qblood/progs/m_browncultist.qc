@@ -87,6 +87,8 @@ void () browncultist_fireShotgun =
 void () monster_browncultist =
 {
     //  Disable for testing
-    monster_check();
+    if(monster_check())
+	    return;
+
     cultist_spawn();
 };

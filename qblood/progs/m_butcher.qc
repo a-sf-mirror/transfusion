@@ -451,7 +451,8 @@ void () butcher_die =
 void () monster_butcher =
 {
     //  Disable for testing
-    monster_check();	
+    if(monster_check())
+	    return;
 	
     precache_model ("models/enemies/butcher.md3");
     precache_model ("models/enemies/butcher_cleaver.md3");

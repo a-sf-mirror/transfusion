@@ -36,7 +36,15 @@ SpawnBlood
 void(vector org, vector vel, float damage) SpawnBlood =
 {
 	damage = ceil (damage / 2);
-	te_particlecube(org, org + '0 0 32', vel, damage, 73, TRUE, 250);
+	//te_particlecube(org, org + '0 0 32', vel, damage, 73, TRUE, 250);
+	
+	local   vector  vel;
+
+    vel_x = crandom() * 300;
+    vel_y = crandom() * 300;
+    vel_z = crandom() * 300 + 200;
+	
+	te_blood(org, vel, damage);
 };
 
 
@@ -65,7 +73,6 @@ Modified to behave more like Blood's blood spray
 void(vector org, vector vel, entity ignore) BloodMeatSpray =
 {
     local   entity  missile;
-    local   vector  org;
 
     missile = spawn ();
     missile.owner       = ignore;
@@ -201,7 +208,7 @@ void(float damage, vector dir) TraceAttack =
         SpawnBlood (org, vel*0.2, damage);
         SpawnBloodSpray (trace_ent, org);
     }
-    else
+	else
     {
         WriteByte (MSG_BROADCAST, SVC_TEMPENTITY);
         WriteByte (MSG_BROADCAST, TE_GUNSHOT);
@@ -216,7 +223,7 @@ void(float damage, vector dir) TraceAttack =
 ================
 FireBullets
 
-Used by shotgun, super shotgun, and enemy soldier firing
+Used by shotgun, tommy gun, trap_tommy
 Go to the trouble of combining multiple pellets into a single damage call.
 ================
 */
@@ -837,7 +844,7 @@ void() W_ChangeWeapon =
             {
                 if (self.items & IT_REMOTE_DETONATOR)
                     new = IT_REMOTE_DETONATOR;
-                else if (self.ammo_tnt_bundle > 0)
+                else if (self.ammo_tnt_bundle > 0 && self.waterlevel < 3)
                     new = IT_TNT;
                 else
                     new = IT_PROXIMITY_BOMB;
@@ -846,12 +853,14 @@ void() W_ChangeWeapon =
             // Else (if the previous weapon was the remote detonators or a non-dynamite weapon)
             else
             {
-                if (self.ammo_tnt_bundle > 0)
+                if (self.ammo_tnt_bundle > 0 && self.waterlevel < 3)
                     new = IT_TNT;
                 else if (self.ammo_tnt_proxy > 0)
                     new = IT_PROXIMITY_BOMB;
-                else
+                else if (self.items & IT_REMOTE_DETONATOR)
                     new = IT_REMOTE_DETONATOR;
+				else
+				    new = IT_TNT; // Print can't use in water message
             }
         }
     }
@@ -885,21 +894,21 @@ void() W_ChangeWeapon =
 
     self.impulse = IMP_NONE;
 
-    // don't have the weapon
-    if (!(self.items & new))
-    {
-        sprint (self, "You don't have that weapon.\n");
-        return;
-    }
-
     // No TNT or spray can under water
     if (self.waterlevel == 3)
     {
-        if (new == IT_TNT || new == IT_SPRAY_CAN)
+        if (new == IT_SPRAY_CAN || new == IT_TNT)
         {
             sprint (self, "You can't select that weapon under water.\n");
             return;
         }
+    }
+	
+	// don't have the weapon
+    if (!(self.items & new))
+    {
+        sprint (self, "You don't have that weapon.\n");
+        return;
     }
 
     // don't have the ammo

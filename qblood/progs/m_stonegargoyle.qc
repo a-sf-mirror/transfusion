@@ -200,7 +200,8 @@ void () stonegargoyle_die =
 void () monster_stonegargoyle =
 {
     //  Disable for testing
-    monster_check();
+    if(monster_check())
+	    return;
 
     precache_model ("models/enemies/gargoyle.md3");
     precache_model ("progs/teslaball.spr");
@@ -218,8 +219,16 @@ void () monster_stonegargoyle =
     self.movetype = MOVETYPE_FLY;
     setmodel (self, "models/enemies/gargoyle.md3");
     self.scale = 2;
-    setsize (self,'-25 -31 0', '18 31 45');
-    self.health = 200;
+    
+	// Original "flesh" gargoyle model size
+	setsize (self,'-25 -31 0', '18 31 45');
+    
+	// Set up new "stone" gargoyle bbox based upon scale
+	self.mins = self.mins * self.scale;
+	self.maxs = self.maxs * self.scale;	
+	setsize (self, self.mins, self.maxs);
+	
+	self.health = 200;
     self.max_health = self.health;
     self.th_stand = stonegargoyle_stand;
     self.th_walk = stonegargoyle_walk;

@@ -174,6 +174,13 @@ void() door_use =
 
     oself = self;
     self = self.owner;
+	
+	if (!self.cnt && self.classname == "func_door_secret")
+	{
+	    found_secrets = found_secrets + 1;
+		self.cnt = 1;
+	}	
+
     door_fire ();
     self = oself;
 };
@@ -543,7 +550,8 @@ void() func_door =
         self.th_die = door_killed;
     }
 
-    if (self.items2)
+    // Once a key door is opened, it stays opened
+	if (self.items2)
         self.wait = -1;
 
     // If the door can't be opened manually, it can be opened by touch
@@ -557,246 +565,7 @@ void() func_door =
 
 };
 
-/*
-=============================================================================
-
-SECRET DOORS
-
-=============================================================================
-*/
-
-void() fd_secret_move1;
-void() fd_secret_move2;
-void() fd_secret_move3;
-void() fd_secret_move4;
-void() fd_secret_move5;
-void() fd_secret_move6;
-void() fd_secret_done;
-
-void () fd_secret_use =
-{
-    local float temp;
-
-    self.health = 10000;
-
-    // exit if still moving around...
-    if (self.origin != self.oldorigin)
-        return;
-
-    self.message = string_null;     // no more message
-
-    SUB_UseTargets();               // fire all targets / killtargets
-
-    if (self.spawnflags & SECRET_NEVER)
-        return;  // it never opens
-
-    if (!(self.spawnflags & SECRET_NO_SHOOT))
-    {
-        self.th_pain = SUB_Null;
-        self.takedamage = DAMAGE_NO;
-    }
-    self.velocity = '0 0 0';
-
-    // Make a sound, wait a little...
-
-    sound(self, CHAN_VOICE, self.noise1, 1, ATTN_NORM);
-    self.nextthink = self.ltime + 0.1;
-
-    temp = 1 - (self.spawnflags & SECRET_1ST_LEFT); // 1 or -1
-    makevectors(self.mangle);
-
-    if (!self.t_width)
-    {
-        if (self.spawnflags & SECRET_1ST_DOWN)
-            self. t_width = fabs(v_up * self.size);
-        else
-            self. t_width = fabs(v_right * self.size);
-    }
-
-    if (!self.t_length)
-        self. t_length = fabs(v_forward * self.size);
-
-    if (self.spawnflags & SECRET_1ST_DOWN)
-        self.dest1 = self.origin - v_up * self.t_width;
-    else
-        self.dest1 = self.origin + v_right * (self.t_width * temp);
-
-    self.dest2 = self.dest1 + v_forward * self.t_length;
-    SUB_CalcMove(self.dest1, self.speed, fd_secret_move1);
-    sound(self, CHAN_VOICE, self.noise2, 1, ATTN_NORM);
-};
-
-// Wait after first movement...
-void () fd_secret_move1 =
-{
-    self.nextthink = self.ltime + 1.0;
-    self.think = fd_secret_move2;
-    sound(self, CHAN_VOICE, self.noise3, 1, ATTN_NORM);
-};
-
-// Start moving sideways w/sound...
-void () fd_secret_move2 =
-{
-    sound(self, CHAN_VOICE, self.noise2, 1, ATTN_NORM);
-    SUB_CalcMove(self.dest2, self.speed, fd_secret_move3);
-};
-
-// Wait here until time to go back...
-void () fd_secret_move3 =
-{
-    sound(self, CHAN_VOICE, self.noise3, 1, ATTN_NORM);
-    if (!(self.spawnflags & SECRET_OPEN_ONCE))
-    {
-        self.nextthink = self.ltime + self.wait;
-        self.think = fd_secret_move4;
-    }
-};
-
-// Move backward...
-void () fd_secret_move4 =
-{
-    sound(self, CHAN_VOICE, self.noise2, 1, ATTN_NORM);
-    SUB_CalcMove(self.dest1, self.speed, fd_secret_move5);
-};
-
-// Wait 1 second...
-void () fd_secret_move5 =
-{
-    self.nextthink = self.ltime + 1.0;
-    self.think = fd_secret_move6;
-    sound(self, CHAN_VOICE, self.noise3, 1, ATTN_NORM);
-};
-
-void () fd_secret_move6 =
-{
-    sound(self, CHAN_VOICE, self.noise2, 1, ATTN_NORM);
-    SUB_CalcMove(self.oldorigin, self.speed, fd_secret_done);
-};
-
-void () fd_secret_done =
-{
-    if (!self.targetname || self.spawnflags&SECRET_YES_SHOOT)
-    {
-        self.health = 10000;
-        self.takedamage = DAMAGE_YES;
-        self.th_pain = fd_secret_use;
-        self.th_die = fd_secret_use;
-    }
-    sound(self, CHAN_VOICE, self.noise3, 1, ATTN_NORM);
-};
-
-void () secret_blocked =
-{
-    if (time < self.attack_finished)
-        return;
-    self.attack_finished = time + 0.5;
-    other.deathtype = "squish";  // FIXME: is it still useful (New T_Damage is here now) ?
-
-    // Used to do self.dmg for damage.
-    T_Damage (other, self, self, other.health + 10, DF_NO_PROTECT, "squish");
-};
-
-/*
-================
-secret_touch
-
-Prints messages
-================
-*/
-void() secret_touch =
-{
-    if (other.classname != "player")
-        return;
-    if (self.attack_finished > time)
-        return;
-
-    self.attack_finished = time + 2;
-
-    if (self.message)
-    {
-        centerprint (other, self.message);
-        sound (other, CHAN_BODY, "bludbath/message.wav", 1, ATTN_NORM);
-    }
-};
-
-
-/*QUAKED func_door_secret (0 .5 .8) ? open_once 1st_left 1st_down no_shoot always_shoot
-Basic secret door. Slides back, then to the side. Angle determines direction.
-wait  = # of seconds before coming back
-1st_left = 1st move is left of arrow
-1st_down = 1st move is down from arrow
-always_shoot = even if targeted, keep shootable
-t_width = override WIDTH to move back (or height if going down)
-t_length = override LENGTH to move sideways
-"dmg"       damage to inflict when blocked (2 default)
-
-If a secret door has a targetname, it will only be opened by it's botton or trigger, not by damage.
-"sounds"
-1) medieval
-2) metal
-3) base
-*/
-
 void () func_door_secret =
 {
-    local string sound1, sound2, sound3;
-
-    precache_sound ("thevoice/squash.wav");
-
-    if (self.sounds == 0)
-        self.sounds = 3;
-    if (self.sounds == 1)
-    {
-        sound1 = "locks/qlatch2.wav";
-        sound2 = "doors/rustdoor.wav";
-        sound3 = "doors/qdrclos4.wav";
-    }
-    if (self.sounds == 2)
-    {
-        sound1 = "doors/qdrclos4.wav";
-        sound2 = "doors/qairdoor.wav";
-        sound3 = "doors/qdrclos4.wav";
-    }
-    if (self.sounds == 3)
-    {
-        sound1 = "ambience/hydro2.wav";
-        sound2 = "ambience/qhydro1.wav";
-        sound3 = "ambience/hydro3.wav";
-    }
-    if (self.noise1 == string_null)
-        self.noise1 = sound1;
-    if (self.noise2 == string_null)
-        self.noise2 = sound2;
-    if (self.noise3 == string_null)
-        self.noise3 = sound3;
-    precache_sound (self.noise1);
-    precache_sound (self.noise2);
-    precache_sound (self.noise3);
-
-    if (!self.dmg)
-        self.dmg = 2;
-
-    // Magic formula...
-    self.mangle = self.angles;
-    self.angles = '0 0 0';
-    self.solid = SOLID_BSP;
-    self.movetype = MOVETYPE_PUSH;
-    self.classname = "door";
-    setmodel (self, self.model);
-    setorigin (self, self.origin);
-
-    self.touch = secret_touch;
-    self.blocked = secret_blocked;
-    self.speed = 50;
-    self.use = fd_secret_use;
-    if ( !self.targetname || self.spawnflags&SECRET_YES_SHOOT)
-    {
-        self.health = 10000;
-        self.takedamage = DAMAGE_YES;
-        self.th_pain = fd_secret_use;
-        self.th_die = fd_secret_use;
-    }
-    self.oldorigin = self.origin;
-    if (!self.wait)
-        self.wait = 4;      // 4 seconds before closing
+    func_door();
 };

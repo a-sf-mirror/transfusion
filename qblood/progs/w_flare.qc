@@ -144,7 +144,7 @@ void() FlareTouch =
 
     if (other.classname == "player" || (other.flags & FL_MONSTER))
     {
-        self.alpha = 0.3;
+        self.alpha = 0.1;
 		self.solid = SOLID_NOT;
         self.enemy = other;
         self.movetype = MOVETYPE_NONE;
@@ -236,6 +236,7 @@ void() AltFlareTouch =
         self.charge = 18;
         self.dmgtime = 5;
         FlareTouch ();
+		return;
     }
 
     if (pointcontents(self.origin) == CONTENT_SKY)

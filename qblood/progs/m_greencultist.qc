@@ -47,6 +47,8 @@ void () greencultist_attack =
 void () monster_greencultist =
 {
     //  Disable for testing
-    monster_check();
+    if(monster_check())
+	    return;
+
     cultist_spawn();
 };

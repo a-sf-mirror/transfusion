@@ -200,7 +200,8 @@ void () gargoyle_die =
 void () monster_gargoyle =
 {
     //  Disable for testing
-    monster_check();
+    if(monster_check())
+	    return;
 
     precache_model ("models/enemies/gargoyle.md3");
     precache_model ("models/world/leg1.md3");

@@ -173,7 +173,8 @@ void () rat_die =
 void () monster_rat =
 {
     //  Disable for testing
-    monster_check();
+    if(monster_check())
+	    return;
 
     precache_model ("models/enemies/rat.md3");
 
