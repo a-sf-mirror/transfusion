@@ -24,7 +24,7 @@
 void() CTF_PlayerDropFlag;
 void() PlayerDead;
 void(float cloneCorpse) respawn;
-
+void(entity ent) CloneCorpse;
 
 /*
 ==============================================================================
@@ -697,14 +697,17 @@ void() set_suicide_frame =
     {
         self.frame = $deatha6;
     }
-    else if (self.observer)
-    {
-        self.model = string_null;
-        self.modelindex = 0;
-    }
 
+    // Make copy of self
+    CloneCorpse(self);
+
+    // Then disappear - Kind of a hack to handle persistant corpse on disconnect
+    self.model = string_null;
+    self.modelindex = 0;
     self.solid = SOLID_NOT;
     self.movetype = MOVETYPE_TOSS;
     self.deadflag = DEAD_DEAD;
-    self.nextthink = -1;
+    self.reset = SUB_Remove;
+    self.think = SUB_Remove;
+    self.nextthink = time + 0.1;
 };
