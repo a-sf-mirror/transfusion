@@ -2993,6 +2993,8 @@ void() W_WeaponFrame =
         PM_ResetIdle (self);
         SuperDamageSound ();
         W_Attack ();
+
+        self.impulse = 0;
     }
 };
 
