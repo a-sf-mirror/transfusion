@@ -298,6 +298,8 @@ void() worldspawn =
     precache_model ("progs/m_foot.mdl");
     precache_model ("progs/m_guts.mdl");
     precache_model ("progs/m_leg.mdl");
+    precache_model ("progs/i_eyebal.mdl");
+    precache_model ("progs/i_sevhnd.mdl");
 
     precache_model ("progs/s_explod.spr");  // napalm sprite explosion
 

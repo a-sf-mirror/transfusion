@@ -425,76 +425,64 @@ void() RandomHumanGibs =
 // gib2 = rib cage
 // gib3 = heart
 // m_arm = upper arm
-// m_brain = brain
+// m_brain = brain (used when the head "dies")
 // m_chest = torso
 // m_farm = forearm with fist
 // m_fist = hand/fist
 // m_foot = looks like a bloody shoe?
 // m_guts = intestines
 // m_leg = femur with meat
+// i_eyebal = severed eyeball
+// i_sevhnd = severed hand
 //
 
     local   float   gibs, r;
 
-    // Throw 4-5 gibs
-    gibs = random() * 2;
-    gibs = 4 + floor(gibs);
-
-    // throw torso
-    ThrowGib ("progs/m_chest.mdl", self.health);
-    gibs = gibs - 1;
-
-    // throw hands (either or both)
-    r = random();
-    if (r < 0.4)
-    {
-        ThrowGib ("progs/m_farm.mdl", self.health);
-        gibs = gibs - 1;
-    }
-    else if (r < 0.8)
-    {
-        ThrowGib ("progs/m_fist.mdl", self.health);
-        gibs = gibs - 1;
-    }
-    else
-    {
-        ThrowGib ("progs/m_farm.mdl", self.health);
-        ThrowGib ("progs/m_fist.mdl", self.health);
-        gibs = gibs - 2;
-    }
-
-    // throw misc. organs (either or both)
-    r = random();
-    if (r < 0.4)
-    {
+    // throw torso, and heart
+    if (random () < 0.75)
+        ThrowGib ("progs/m_chest.mdl", self.health);
+    if (random () < 0.25)
         ThrowGib ("progs/gib3.mdl", self.health);
-        gibs = gibs - 1;
-    }
-    else if (r < 0.8)
-    {
-        ThrowGib ("progs/m_guts.mdl", self.health);
-        gibs = gibs - 1;
-    }
-    else
-    {
-        ThrowGib ("progs/gib3.mdl", self.health);
-        ThrowGib ("progs/m_guts.mdl", self.health);
-        gibs = gibs - 2;
-    }
 
-    // throw arm/leg limbs until we run out of gibs
+    // throw eyes
+    r = random ();
+    if (r > 0.33)
+        ThrowGib ("progs/i_eyebal.mdl", self.health);
+    if (r > 0.66)
+        ThrowGib ("progs/i_eyebal.mdl", self.health);
+
+    // throw guts
+    r = random ();
+    if (r > 0.33)
+        ThrowGib ("progs/m_guts.mdl", self.health);
+    if (r > 0.66)
+        ThrowGib ("progs/m_guts.mdl", self.health);
+
+    // throw arms / hands
+    gibs = 2;
     while (gibs > 0)
     {
-        r = random() * 3;
-        r = ceil (r);
-
-        if (r == 1)
+        r = random ();
+        if (r < 0.2)
+            ThrowGib ("progs/m_farm.mdl", self.health);
+        else if (r < 0.4)
+            ThrowGib ("progs/m_fist.mdl", self.health);
+        else if (r < 0.6)
             ThrowGib ("progs/m_arm.mdl", self.health);
-        else if (r == 2)
-            ThrowGib ("progs/m_foot.mdl", self.health);
-        else //if (r == 3)
-            ThrowGib ("progs/m_leg.mdl", self.health);
+        else if (r < 0.8)
+            ThrowGib ("progs/i_sevhnd.mdl", self.health);
+        gibs = gibs - 1;
+    }
 
+    // throw legs
+    gibs = 2;
+    while (gibs > 0)
+    {
+        r = random();
+        if (r < 0.33)
+            ThrowGib ("progs/m_leg.mdl", self.health);
+        else if (r < 66)
+            ThrowGib ("progs/m_foot.mdl", self.health);
         gibs = gibs - 1;
     }
 };
