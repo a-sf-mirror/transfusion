@@ -25,6 +25,13 @@
 	<h2 id="news-section" class="section">News</h2>
 	<ul>
 		<li>
+			<span class="title">August 26, 2004:</span> (by Elric)<br />
+			I just discovered today that <a href="http://www.planetblood.com/bloodsource/">the BloodSource website</a>
+			seems to have been removed from PlanetBlood.com. Fortunately, I have a backup of the whole site, so I'll
+			try to gather and summarize all information related to this project on a brand new
+			<a href="bloodsource.php">BloodSource section</a>.<p />
+		</li>
+		<li>
 			<span class="title">August 12, 2004:</span> (by Elric)<br />
 			The Transfusion official website has moved! Willis very kindly offered us a webspace on
 			his <a href="http://www.deathmask.net/">deathmask</a>. New forums are online and I used that

@@ -11,14 +11,14 @@
 	// ----- ViewCvsURL ----- //
 
 	function ViewCvsURL ($url, $link) {
-		echo ("<a href=\"http://cvs.sourceforge.net/cgi-bin/viewcvs.cgi/blood/$url/\">$link</a>");
+		echo ("<a href=\"http://cvs.sourceforge.net/viewcvs.py/blood/$url/\">$link</a>");
 	}
 
 
 
 	// ********** Common header ********** //
 
-	echo ("<?xml version=\"1.0\" encoding=\"UTF-8\"?>\n");
+	echo ("<?xml version=\"1.0\"?>\n");
 ?>
 <!DOCTYPE html PUBLIC "-//W3C//DTD XHTML 1.1//EN"
 	"http://www.w3.org/TR/xhtml11/DTD/xhtml11.dtd">
@@ -130,7 +130,9 @@
 				&nbsp;::&nbsp;
 				<a href="transfusion.php">Transfusion</a>
 				&nbsp;::&nbsp;
-				<a href="awakening.php">Transfusion II: Caleb's Awakening</a>
+				<a href="awakening.php">Transfusion II</a>
+				&nbsp;::&nbsp;
+				<a href="bloodsource.php">BloodSource</a>
 				&nbsp;::&nbsp;
 				<a href="rebuild.php">ReBUILD</a>
 				&nbsp;::&nbsp;
