@@ -80,7 +80,7 @@ $frame atommy_holster1 atommy_holster2 atommy_holster3
 
 void() player_tommy =
 {
-    if ((!self.button0 && !self.button3)  || intermission_running || self.ammo_nails < 1)
+    if (!self.button0 || intermission_running || self.ammo_nails < 1)
     {
         player_run ();
         return;
