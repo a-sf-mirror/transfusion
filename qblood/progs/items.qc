@@ -2080,6 +2080,21 @@ void() item_cells =
 };
 
 
+void() item_soul =
+{
+    self.touch = ammo_touch;
+
+    precache_model ("progs/soul.mdl");
+    setmodel (self, "progs/soul.mdl");
+
+    self.netname = "trapped soul";
+    self.aflag = 35;
+    self.weapon = 11;
+
+    setsize (self, '0 0 0', '32 32 56');
+    StartItem ();
+};
+
 // Rewritten to use 'item_*' ammo boxes.
 // Some levels such as dm5.bsp use this function.
 

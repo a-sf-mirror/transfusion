@@ -194,13 +194,11 @@ void() T_MissileTouch =
         return;
     }
 
-    damg = 75 + random()*50;
-
     self.deathtype = "rocket";  // Done for the fire code.
     if (other.health)
     {
         other.deathtype = "rocket";
-        BurnDamage (other, self, damg*0.75, damg*0.25);
+        BurnDamage (other, self, self.dmg*0.75, self.dmg*0.25);
     }
 
     // don't do radius damage to the other, because all the damage
@@ -318,6 +316,8 @@ void() Napalm_Fire =
         newmis.touch = T_MissileTouch;
         setmodel (newmis, "progs/missile.mdl");
         setsize (newmis, '-2 -2 -2', '2 2 2');
+
+        newmis.dmg = 75 + random () * 50;
 
         // set newmis duration
         newmis.nextthink = time + 5;
