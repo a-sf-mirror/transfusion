@@ -433,6 +433,7 @@ void() Leech_Drop =
     setmodel (item, "progs/g_leech.mdl");
     setsize (item, '-6 -6 0', '6 8 60');
 
+    item.classname = "sentry";
     item.owner = self;             // we don't want to trigger the touch function yet
     item.leech_sentry = self;      // we can't use "owner" because the owner of an entity is never clipped against it
     item.team = self.team;

@@ -736,9 +736,19 @@ float(entity thing) priority_for_thing =
                     if (thing.target1.classname == "player")
                         return 0;
                 }
-                else thisp = 30;
+                else
+                    thisp = 30;
             }
         }
+    }
+    else if (thing.classname == "sentry")
+    {
+        if (gametype >= GT_TEAM_BLOODBATH && thing.team == self.team)
+            return 0;
+        if (!thing.takedamage)
+            return 0;
+
+        thisp = 30;
     }
     else if (thing.classname == "waypoint")
     {

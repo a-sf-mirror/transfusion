@@ -144,7 +144,7 @@ void() bot_dodge_stuff =
             {
                 if (foe.health > 0)
                 {
-                    if (!(gametype >= GT_TEAM_BLOODBATH && self.team == foe.team))
+                    if (gametype < GT_TEAM_BLOODBATH || self.team != foe.team)
                     {
                         flen = vlen(foe.origin - self.origin);
                         if (flen < foedist)
@@ -157,7 +157,7 @@ void() bot_dodge_stuff =
                                     if (fisible(foe))
                                     {
                                         self.enemy = foe;
-                                        foedist = vlen(foe.origin - self.origin);
+                                        foedist = flen;
                                     }
                                 }
                             }
@@ -167,6 +167,35 @@ void() bot_dodge_stuff =
             }
         }
         foe = foe._next;
+    }
+
+    // Look for Life Leech Sentries
+    foe = findradius (self.origin, 600);
+    while (foe != world)
+    {
+        if (foe.classname == "sentry")
+        {
+            if (gametype < GT_TEAM_BLOODBATH || self.team != foe.team)
+            {
+                flen = vlen(foe.origin - self.origin);
+                if (flen < foedist)
+                {
+                    tsz = bot_size_player(foe);
+                    if (tsz < foesz)
+                    {
+                        if (fov(foe) || foe.b_sound > time || self.b_skill == 3)
+                        {
+                            if (fisible(foe))
+                            {
+                                self.enemy = foe;
+                                foedist = flen;
+                            }
+                        }
+                    }
+                }
+            }
+        }
+        foe = foe.chain;
     }
 };
 
