@@ -489,7 +489,7 @@ Attack code for the flaregun
 void() Flare_Attack =
 {
     // Normal fire or altfire?
-    if (self.impulse == 12 || self.button1)
+    if (self.impulse == 12 || self.button3)
         self.player_state = PS_ALTFIRE;
     else
         self.player_state = PS_FIRE;

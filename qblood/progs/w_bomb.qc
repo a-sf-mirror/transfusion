@@ -345,7 +345,7 @@ void() W_ChargeNormal =
 {
     local   float   altfire;
 
-    if ((self.impulse == 12) || self.button1)
+    if ((self.impulse == 12) || self.button3)
     {
         altfire = TRUE;
         self.impulse = 0;
@@ -445,7 +445,7 @@ void() W_ChargeBomb =
 {
     local   float   altfire;
 
-    if ((self.impulse == 12) || self.button1)
+    if ((self.impulse == 12) || self.button3)
     {
         altfire = TRUE;
         self.impulse = 0;
@@ -563,7 +563,7 @@ float() W_CheckRemote =
 {
     // Check if holding the remote
     if (self.weapon == IT_REMOTE_DETONATOR && self.player_state == PS_HOLD_FIRE &&
-        (self.button0 || self.button1 || self.impulse == 12))
+        (self.button0 || self.button3 || self.impulse == 12))
     {
         // If we trigger the bombs
         if (self.button0)

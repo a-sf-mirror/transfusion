@@ -223,7 +223,7 @@ void() IntermissionThink =
     if (time < intermission_exittime)
         return;
 
-    if (!self.button0 && !self.button1 && !self.button2)
+    if (!self.button0 && !self.button3 && !self.button2)
         return;
 
     GotoNextMap ();
@@ -796,7 +796,7 @@ void() PlayerDeathThink =
     // wait for all buttons released
     if (self.deadflag == DEAD_DEAD)
     {
-        if (self.button2 || self.button1 || self.button0)
+        if (self.button2 || self.button3 || self.button0)
             return;
         self.deadflag = DEAD_RESPAWNABLE;
 
@@ -811,11 +811,11 @@ void() PlayerDeathThink =
     }
 
     // wait for any button down
-    if (!self.button2 && !self.button1 && !self.button0)
+    if (!self.button2 && !self.button3 && !self.button0)
         return;
 
     self.button0 = 0;
-    self.button1 = 0;
+    self.button3 = 0;
     self.button2 = 0;
     respawn();
 };

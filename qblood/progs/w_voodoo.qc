@@ -213,7 +213,7 @@ void() Voodoo_Attack =
     muzzleflash ();
 
     // Alt-fire mode
-    if ((self.impulse == 12 || self.button1) && self.ammo_voodoo >= 1)
+    if ((self.impulse == 12 || self.button3) && self.ammo_voodoo >= 1)
     {
         self.player_state = PS_ALTFIRE;
 

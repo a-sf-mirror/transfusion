@@ -277,6 +277,8 @@ entity  damage_inflictor;
 
 float   recursioncount;  // used to avoid stack overflow with explosions
 
+float   qcextensions;  // Does the engine support QC extensions?
+
 
 // cvars checked each frame
 float timelimit;
@@ -356,6 +358,9 @@ float team2score;
 .float      newweapon;      // used during the draw/holster weapon process
 
 .entity     leech_sentry;
+
+.float      button3;        // altfire; DP_INPUTBUTTONS extension
+
 
 //
 // Fire
@@ -644,3 +649,7 @@ float(string s) stof                    = #81;  // convert string to float
 void(vector where, float set) multicast = #82;  // sends the temp message to a set
                                                 // of clients, possibly in PVS or PHS
 #endif
+
+// QC extensions
+float(string name, string value) registercvar = #93;
+float(string s) checkextension = #99;

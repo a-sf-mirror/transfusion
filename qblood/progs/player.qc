@@ -605,7 +605,7 @@ void() PlayerDie =
     if (self.velocity_z < 10)
         self.velocity_z = self.velocity_z + random()*300;
 
-    if (self.health < -40)
+    if ((self.health < -40 && self.player_state != PS_BRINK_OF_DEATH) || self.health < -80)
     {
         GibPlayer ();
         return;

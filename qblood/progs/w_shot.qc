@@ -255,7 +255,7 @@ void() Shot_Attack =
     self.attack_finished = time + 0.5;
 
     // If it's an altfire shot
-    if (self.button1 || self.impulse == 12)
+    if (self.button3 || self.impulse == 12)
         self.player_state = PS_ALTFIRE;
     else
         self.player_state = PS_FIRE;

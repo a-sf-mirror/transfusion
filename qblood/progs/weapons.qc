@@ -1383,7 +1383,7 @@ void() W_WeaponFrame =
         return;
 
     // Check for attack
-    if (self.button0 || self.button1 || self.impulse == 12)
+    if (self.button0 || self.button3 || self.impulse == 12)
     {
         ResetIdle (self);
         W_Attack ();

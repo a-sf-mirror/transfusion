@@ -425,7 +425,7 @@ Life Leech Attack Code
 void() Leech_Attack =
 {
     // Normal fire or altfire?
-    if (self.impulse == 12 || self.button1)
+    if (self.impulse == 12 || self.button3)
     {
         self.player_state = PS_ALTFIRE;
 

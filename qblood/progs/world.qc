@@ -222,10 +222,23 @@ void() worldspawn =
 
     lastspawn = world;
 
+    // Check for QC extensions
+    qcextensions = cvar ("pr_checkextension");
+
     // Try to create our own cvars as soon as possible
-    cvar ("g_weaponStay");
-    cvar ("sv_allowCheat");
-    cvar ("sv_disable");
+    if (qcextensions && checkextension ("DP_REGISTERCVAR"))
+    {
+        registercvar ("g_weaponStay", "0");
+        registercvar ("sv_allowCheat", "0");
+        registercvar ("sv_disable", "0");
+    }
+    // Some engines create them on the fly
+    else
+    {
+        cvar ("g_weaponStay");
+        cvar ("sv_allowCheat");
+        cvar ("sv_disable");
+    }
 
     #ifdef FRIKBOT
     // FrikBot X initialization
@@ -246,8 +259,7 @@ void() worldspawn =
     coop = 0;
     #endif
 
-    // NOTE: CTF play cannot be set with the interface only.
-    // You must use the console
+    // Select the game type
     if (deathmatch == 2)
     {
         gametype = GT_CAPTURE_THE_FLAG;
