@@ -706,14 +706,6 @@ void() GibPlayerCorpse =
     RandomHumanGibs ();
     sound (self, CHAN_ITEM, "misc/gibsq.wav", 1, ATTN_NORM);
 
-    if (self.enemy.netname)
-    {
-        Bprint (PRINT_MEDIUM, self.enemy.netname);
-        Bprint (PRINT_MEDIUM, " desecrated ");
-        Bprint (PRINT_MEDIUM, self.netname);
-        Bprint (PRINT_MEDIUM, "'s corpse\n");
-    }
-
     remove (self);
 };
 

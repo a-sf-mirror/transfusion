@@ -53,21 +53,6 @@ float(entity targ, entity inflictor) CanDamage =
         return FALSE;
     }
 
-    // Some exploding_wall entities are only destroyable with explosives
-    // FIXME: The damage code should really be rewritten to prevent this kind of hacks
-    if (targ.spawnflags & 32)
-        if (targ.classname == "exploding_wall")
-        {
-            if (inflictor.classname == "misc_explobox2")  // TNT barrels
-                return TRUE;
-            if (inflictor.classname == "grenade")         // All bombs, lighted Spray Can, Napalm Launcher (altfire)
-                return TRUE;
-            if (inflictor.classname == "missile")         // Napalm Launcher (normal), Life Leech
-                return TRUE;
-
-            return FALSE;
-        }
-
     traceline(inflictor.origin, targ.origin, TRUE, self);
     if (trace_fraction == 1)
         return TRUE;
@@ -196,6 +181,15 @@ void(entity targ, entity inflictor, entity attacker, float damage, float dflags,
 
     if (!targ.takedamage)
         return;
+
+    // Some exploding_wall entities are only destroyable by explosives
+    // FIXME: The damage code should really be rewritten to prevent these kinds of hack
+    if (targ.spawnflags & 32)
+        if (targ.classname == "exploding_wall")
+            if (inflictor.classname != "misc_explobox2" &&  // TNT barrels
+                inflictor.classname != "grenade"        &&  // All bombs, lighted Spray Can, Napalm Launcher (altfire)
+                inflictor.classname != "missile")           // Napalm Launcher (normal), Life Leech
+                return;
 
     // Used by buttons and triggers to set activator for target firing
     damage_attacker = attacker;
@@ -426,15 +420,3 @@ void(entity inflictor, entity attacker, float damage, entity ignore, string dtyp
         head = head.chain;
     }
 };
-/*
-=============
-T_BeamDamage
-=============
-*/
-
-void(entity attacker, float damage) T_BeamDamage =
-{
-     // PM: Default to another function.  is 'T_BeamDamage()' ever used?
-     T_RadiusDamage (attacker, attacker, damage, world, string_null);
-};
-

@@ -1,11 +1,9 @@
-// Additional BloodBath entities and crap
+// Additional entities and crap
 //
 // Authors: Jeff "Alastair" Dennis (jdennis97@home.com)
 //          Tim "protoplasmatic" Hale (timothyhale@hotmail.com)
 //          Dave "Darth Linux" Turner (darth_linux@planetblood.com)
 //          Mathieu "Elric" Olivier (elric@planetblood.com)
-//
-// BloodBath can be found at http://www.planetblood.com/qblood/
 
 //
 // worldspawn
@@ -13,7 +11,7 @@
 
 @SolidClass = worldspawn : "World entity"
 [
-	message(string) : "LEVELNAME \n by MAPPER NAME \n http://www.planetblood.com/qblood/"
+	message(string) : "LEVELNAME \n by MAPPER NAME"
 	worldtype(choices) : "Ambience" : 0 =
 	[
 		0 : "Medieval"
@@ -192,23 +190,13 @@
 // ambient sounds
 //
 
-@PointClass = ambient_drip : "Dripping sound" []
-@PointClass = ambient_drone : "Engine/machinery sound" []
-@PointClass = ambient_comp_hum : "Computer background sounds" []
-@PointClass = ambient_flouro_buzz : "Fluorescent buzzing sound" []
-@PointClass = ambient_light_buzz : "Buzzing sound from light" []
-@PointClass = ambient_suck_wind : "Wind sound" []
-@PointClass = ambient_swamp1 : "Frogs croaking" []
-@PointClass = ambient_swamp2 : "Frogs croaking B" []
-@PointClass = ambient_thunder : "Loud wind rush" []
-@PointClass = ambient_amb2 : "Humming, violin sound" []
-@PointClass = ambient_amb3 : "Underwater Music" []
-@PointClass = ambient_amb4 : "Ominous Cello Note" []
-@PointClass = ambient_amb5 : "Pinging Sound, EKG" []
-@PointClass = ambient_amb6 : "A Couple of Crickets" []
-@PointClass = ambient_amb7 : "Underwater" []
-@PointClass = ambient_amb8 : "Throb of distant machinery" []
-@PointClass = ambient_amb9 : "Pulsing Machinery" []
+@PointClass = ambient_custom : "Custom ambient sound"
+[
+	noise(string) : "Ambient sound file"
+]
+
+@PointClass = ambient_1wind : "Windstorm" []
+@PointClass = ambient_altair2 : "Soft Blowing Wind" []
 @PointClass = ambient_amb10 : "Flock of chirping birds" []
 @PointClass = ambient_amb11 : "Persistent cricket" []
 @PointClass = ambient_amb12 : "Running water - pipe" []
@@ -218,18 +206,23 @@
 @PointClass = ambient_amb16 : "Wind of approaching storm" []
 @PointClass = ambient_amb17 : "Low volume wind rush - e1m1 crypt" []
 @PointClass = ambient_amb18 : "Louder wind rush" []
+@PointClass = ambient_amb2 : "Humming, violin sound" []
 @PointClass = ambient_amb20 : "Distant Hum" []
 @PointClass = ambient_amb21 : "Ocean with floating creaky pier" []
 @PointClass = ambient_amb22 : "Ocean with floating creaky pier, longer" []
 @PointClass = ambient_amb24 : "Pulsing underwater engine" []
 @PointClass = ambient_amb25 : "Fluorescent hum" []
 @PointClass = ambient_amb26 : "Electric Hum" []
-@PointClass = ambient_1wind : "Windstorm" []
-@PointClass = ambient_altair2 : "Soft Blowing Wind" []
+@PointClass = ambient_amb3 : "Underwater Music" []
+@PointClass = ambient_amb4 : "Ominous Cello Note" []
+@PointClass = ambient_amb5 : "Pinging Sound, EKG" []
+@PointClass = ambient_amb6 : "A Couple of Crickets" []
+@PointClass = ambient_amb7 : "Underwater" []
+@PointClass = ambient_amb8 : "Throb of distant machinery" []
+@PointClass = ambient_amb9 : "Pulsing Machinery" []
 @PointClass = ambient_brgloop : "Background Noise Loop" []
 @PointClass = ambient_buzslow2 : "Slow buzzing sound" []
-@PointClass = ambient_buzz2 : "Buzzing noise" []
-@PointClass = light_office : "noisy flou. office lights" []
+@PointClass = ambient_buzz2 : "noisy flou. office lights" []
 @PointClass = ambient_chain1 : "Dangling Chains 1" []
 @PointClass = ambient_chain2 : "Dangling chains 2" []
 @PointClass = ambient_chain4 : "Dangling Chains 3" []
@@ -237,19 +230,29 @@
 @PointClass = ambient_chain6 : "Dangling Chains 5" []
 @PointClass = ambient_chant1lp : "Chanting Cultists Looped" []
 @PointClass = ambient_chant2lp : "Chanting Cultists 2 Looped" []
-@PointClass = ambient_cryptlp : "Spooky crypt sound, looped" []
+@PointClass = ambient_chant3lp : "Greogorian like chanting" []
 @PointClass = ambient_clock : "Grandfather clock ticking" []
+@PointClass = ambient_comp_hum : "Computer background sounds" []
+@PointClass = ambient_cryptlp : "Spooky crypt sound, looped" []
 @PointClass = ambient_dialtone : "phone dialtone" []
+@PointClass = ambient_drip : "Dripping sound" []
+@PointClass = ambient_drip1 : "water dripping" []
+@PointClass = ambient_drip2 : "More water dripping" []
+@PointClass = ambient_drip5 : "Still more water dripping" []
+@PointClass = ambient_drone : "Engine/machinery sound" []
 @PointClass = ambient_elcloop1 : "Arcing tesla coil" []
 @PointClass = ambient_eriedrne : "Erie droning noise" []
 @PointClass = ambient_erthloop : "earthquake rumblings" []
 @PointClass = ambient_flatlin2 : "patient flatlines" []
+@PointClass = ambient_flouro_buzz : "Fluorescent buzzing sound" []
 @PointClass = ambient_flybuzz : "buzzing flies" []
 @PointClass = ambient_grglng : "gurgling, gargling  . . ." []
 @PointClass = ambient_howling : "howling wolves/dogs" []
 @PointClass = ambient_hrtbt : "heartbeat in Click!" []
 @PointClass = ambient_icemllp : "ice melting, breaking up looped" []
 @PointClass = ambient_icevio : "violent ice breakup" []
+@PointClass = ambient_laugh : "Crazy laugh used in Area 15" []
+@PointClass = ambient_light_buzz : "Buzzing sound from light" []
 @PointClass = ambient_mfly : "Mfly" []
 @PointClass = ambient_moan2lp : "more moaning, looped" []
 @PointClass = ambient_mtldrn : "Metallic droning noise" []
@@ -276,6 +279,10 @@
 @PointClass = ambient_sizzle2 : "another torch burning" []
 @PointClass = ambient_snakepit : "hiss of the JoJo snake pit" []
 @PointClass = ambient_sngair2 : "More airy noise" []
+@PointClass = ambient_suck_wind : "Wind sound" []
+@PointClass = ambient_swamp1 : "Frogs croaking" []
+@PointClass = ambient_swamp2 : "Frogs croaking B" []
+@PointClass = ambient_thunder : "Loud wind rush" []
 @PointClass = ambient_torch : "yet another torch" []
 @PointClass = ambient_train1 : "Train noise" []
 @PointClass = ambient_underwat : "Underwater ambient noise" []
@@ -283,11 +290,7 @@
 @PointClass = ambient_water1 : "more water noises" []
 @PointClass = ambient_waterlap : "water lapping up to shore" []
 @PointClass = ambient_wind2 : "More wind noise" []
-@PointClass = ambient_drip1 : "water dripping" []
-@PointClass = ambient_drip2 : "More water dripping" []
-@PointClass = ambient_drip5 : "Still more water dripping" []
-@PointClass = ambient_laugh : "Crazy laugh used in Area 15" []
-@PointClass = ambient_chant3lp : "Greogorian like chanting" []
+@PointClass = light_office : "noisy flou. office lights" []
 
 //
  // moving things
@@ -498,7 +501,7 @@
 	dmg(integer) : "Damage" : 10]
 
 //
-// BloodBath Weapons
+// Weapons
 //
 
 @baseclass size(-16 -16 0, 16 16 56) color(0 0 200) base(Appearflags) = Weapon []
@@ -518,7 +521,7 @@
 @PointClass base(Weapon) size(-8 -8 0, 8 8 32) = weapon_supernailgun : "Spray Can" []
 
 //
-// BloodBath Ammunitions
+// Ammunitions
 //
 
 @baseclass size(0 0 0, 32 32 56) color(80 0 200) base(Appearflags) = Ammo
@@ -537,7 +540,7 @@
 @PointClass base(Ammo) = item_soul : "Trapped Soul" []
 
 //
-// BloodBath Powerups
+// Powerups
 //
 
 @PointClass base(Appearflags) size(-7 -11 -1, 7 11 19) =
@@ -577,7 +580,7 @@
  	item_artifact_invulnerability : "Death Mask" []
 
 //
-// BloodBath Keys
+// Keys
 //
 
 @PointClass size(-16 -16 -24, 16 16 32) base(Appearflags) =
@@ -594,7 +597,7 @@
  	item_key6 : "Moon Key" []
 
 //
-// BloodBath Armor
+// Armor
 //
 
 @PointClass size(-7 -18 0, 10 18 38) base(Appearflags) =
@@ -609,7 +612,7 @@
  	item_armorInv : "Super Armor" []
 
 //
-// BloodBath Objects
+// Objects
 //
 
 @baseclass color(130 255 64) = Object
@@ -703,7 +706,7 @@
 ]
 
 //
-// BloodBath MISC
+// Misc
 //
 @SolidClass base(Target, Targetname) = sentry_detect_laugh : "Laugh sound for Area 15" []
 @SolidClass base(Target, Targetname) = sentry_detect_switch1 : "Switch Sound for Bodies" []
@@ -732,4 +735,8 @@
 		16 : "No Rubble" : 0
 		32 : "Explosive only" : 0
 	]
+]
+@PointClass base(Targetname)= sound_player : "Triggered sound player"
+[
+	noise(string) : "Sound file"
 ]
