@@ -48,9 +48,9 @@
 .float      boots_time;
 .float      dive_on;
 .float      dive_time;
-.float      beast_on;
+//.float      beast_on;
 .float      beast_time;
-.float      xray_on;
+//.float      xray_on;
 .float      xray_time;
 
 //-----------------//

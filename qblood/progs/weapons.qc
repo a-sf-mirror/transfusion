@@ -120,18 +120,6 @@ void(vector org, vector vel, entity ignore) BloodMeatSpray =
     setorigin (missile, org);
 };
 
-/*
-================
-SpawnMeatSpray
-
-Default to modified function above
-================
-*/
-void(vector org, vector vel) SpawnMeatSpray =
-{
-    vel_z = vel_z + 250 + 50*random();
-    BloodMeatSpray (org, vel, self);
-};
 
 /*
 ================
@@ -141,15 +129,14 @@ SpawnBloodSpray
 void(entity targ, vector org) SpawnBloodSpray =
 {
     if (random() < 0.25)    // 25% chance per call of spawning blood.
-        if ((targ.flags & FL_MONSTER) || targ.classname == "player")
-        {
-            local   vector  vel;
+    {
+        local   vector  vel;
 
-            vel_x = crandom() * 300;
-            vel_y = crandom() * 300;
-            vel_z = random() * 300 + 200;
-            BloodMeatSpray (org, vel, targ);
-        }
+        vel_x = crandom() * 300;
+        vel_y = crandom() * 300;
+        vel_z = random() * 300 + 200;
+        BloodMeatSpray (org, vel, targ);
+    }
 };
 
 
@@ -277,6 +264,10 @@ void(float damage, vector dir) TraceAttack =
     org = trace_endpos - dir*4;
 
     if (trace_ent.takedamage)
+        AddMultiDamage (trace_ent, damage);
+
+    // Make players bleed
+    if (trace_ent.takedamage && trace_ent.classname == "player")
     {
         #ifdef QUAKEWORLD
         blood_count = blood_count + 1;
@@ -284,7 +275,6 @@ void(float damage, vector dir) TraceAttack =
         #else
         SpawnBlood (org, vel*0.2, damage);
         #endif
-        AddMultiDamage (trace_ent, damage);
         SpawnBloodSpray (trace_ent, org);
     }
     else
@@ -680,7 +670,7 @@ void() flame_touch =
 
     // hit something that bleeds
     if (other.takedamage)
-        PM_BurnDamage (other, self, 5, 30);
+        BurnDamage (other, self, 5, 30);
 
     remove(self);
 
@@ -1041,11 +1031,12 @@ void() W_Attack =
             sound (self, CHAN_WEAPON, "weapons/tommygun/tomcock.wav", 1, ATTN_NORM);
 
         self.attack_finished = time + 0.5;
+        self.impulse = 0;
         return;
     }
 
-    makevectors (self.v_angle);         // calculate forward angle for velocity
-    self.show_hostile = time + 1;   // wake monsters up
+    makevectors (self.v_angle);    // calculate forward angle for velocity
+    self.show_hostile = time + 1;  // wake monsters up
 
     if (self.weapon == IT_PITCHFORK)
         Fork_Attack ();
@@ -1083,7 +1074,7 @@ W_ChangeWeapon
 */
 void() W_ChangeWeapon =
 {
-    local   float   old, am, new;
+    local float old, am, new;
 
     // Don't let player change weapons while holding lit dynamite.
     if (self.tnt_time)
@@ -1465,7 +1456,7 @@ void() QuadCheat =
 
 
 // PM:  Let's player change the armor shown if he has more than one armor.
-void() PM_ArmorTest =
+void() ArmorTest =
 {
     if (self.items & IT_ARMOR2)
     {
@@ -1517,63 +1508,61 @@ ImpulseCommands
 */
 void() ImpulseCommands =
 {
-    // Commands forbidden to observers
-    if (!self.observer)
-    {
-        if ((self.impulse >= 1 && self.impulse <= 9) || self.impulse == 17)
-            W_ChangeWeapon ();
+    if ((self.impulse >= 1 && self.impulse <= 9) || self.impulse == 17)
+        W_ChangeWeapon ();
 
-        else if (self.impulse == 10)
-            CycleWeaponCommand ();
-        else if (self.impulse == 11)
-            CycleWeaponReverseCommand ();
+    else if (self.impulse == 10)
+        CycleWeaponCommand ();
+    else if (self.impulse == 11)
+        CycleWeaponReverseCommand ();
 
-        // Altfire (will be treated later; just return)
-        else if (self.impulse == 12)
-            return;
+    // Altfire (will be treated later; just return)
+    else if (self.impulse == 12)
+        return;
 
-        // Inventory selection/usage.
-        else if (self.impulse == 13)
-            InvenUse ();
-        else if (self.impulse == 14)
-            InvenSelect (FALSE);
-        else if (self.impulse == 15)
-            InvenSelect (TRUE);
+    // Inventory selection/usage.
+    else if (self.impulse == 13)
+        InvenUse ();
+    else if (self.impulse == 14)
+        InvenSelect (FALSE);
+    else if (self.impulse == 15)
+        InvenSelect (TRUE);
 
-        // Armor cycle.
-        else if (self.impulse == 16)
-            PM_ArmorTest ();
+    // Armor cycle.
+    else if (self.impulse == 16)
+        ArmorTest ();
 
-        // Cheat codes are not allowed in multiplayer games (except when the "sv_allowCheat" cvar is set)
-        else if (gametype == GAME_SINGLE_PLAYER || cvar ("sv_allowCheat"))
-        {
-            if (self.impulse == 250)
-            {
-                coredump ();
-            }
-            else if (self.impulse == 251)
-            {
-                Sprint (self, PRINT_MEDIUM, "griswold -- You have full armor.\n");
-                self.armor_fire = self.armor_body = self.armor_mind = self.armorvalue = 200;
-                self.items = self.items - (self.items & (IT_ARMOR1 | IT_ARMOR2 | IT_ARMOR3)) + IT_ARMOR2;
-            }
-            else if (self.impulse == 252)
-            {
-                Sprint (self, PRINT_MEDIUM, "mcgee -- You're fired!\n");
-                PM_Ignite (self, self, 200);
-            }
-            else if (self.impulse == 253)
-                InvenCheat ();
-            else if (self.impulse == 254)
-                CheatCommand ();
-            else if (self.impulse == 255)
-                QuadCheat ();
-        }
-    }
+    else if (self.impulse == 50)
+        Menu_Start ();
 
-    // Commands allowed to observers
-    if (self.impulse == 141)
+    else if (self.impulse == 141)
         identify_player ();
+
+    // Cheat codes are only allowed when the "sv_allowCheat" cvar is set
+    else if (cvar ("sv_allowCheat"))
+    {
+        if (self.impulse == 250)
+        {
+            coredump ();
+        }
+        else if (self.impulse == 251)
+        {
+            Sprint (self, PRINT_MEDIUM, "griswold -- You have full armor.\n");
+            self.armor_fire = self.armor_body = self.armor_mind = self.armorvalue = 200;
+            self.items = self.items - (self.items & (IT_ARMOR1 | IT_ARMOR2 | IT_ARMOR3)) + IT_ARMOR2;
+        }
+        else if (self.impulse == 252)
+        {
+            Sprint (self, PRINT_MEDIUM, "mcgee -- You're fired!\n");
+            Ignite (self, self, 200);
+        }
+        else if (self.impulse == 253)
+            InvenCheat ();
+        else if (self.impulse == 254)
+            CheatCommand ();
+        else if (self.impulse == 255)
+            QuadCheat ();
+    }
 
     self.impulse = 0;
 };

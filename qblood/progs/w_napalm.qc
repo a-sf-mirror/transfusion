@@ -200,16 +200,14 @@ void() T_MissileTouch =
     if (other.health)
     {
         other.deathtype = "rocket";
-        if (other.classname == "monster_shambler")
-            damg = damg * 0.5;  // mostly immune
-        PM_BurnDamage (other, self, damg*0.75, damg*0.25);
+        BurnDamage (other, self, damg*0.75, damg*0.25);
     }
 
     // don't do radius damage to the other, because all the damage
     // was done in the impact
     BurnRadius (self, 90, 30, other);
 
-    ThrowEmbers (8);
+    ThrowEmbers (4);
     MakeBlastDamage (self, 160, 20, 10);
     PsychoCaleb (self.owner);
 
@@ -245,6 +243,8 @@ void() Napalm_BallTouch =
     if (self.cnt > 1)
     {
         local entity newball;
+
+        //makevectors (self.v_angle);
 
         newmis = spawn ();
         newmis.cnt = floor (self.cnt / 2);
@@ -286,9 +286,8 @@ void() Napalm_Fire =
 
     newmis = spawn ();
 
-    // set newmis speed
     makevectors (self.v_angle);
-    newmis.velocity = aim(self, 1000);
+    newmis.velocity = aim (self, 1000);  // base velocity
 
     if (self.player_state == PS_ALTFIRE)
     {

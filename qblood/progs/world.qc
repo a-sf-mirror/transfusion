@@ -95,77 +95,72 @@ void() PrecacheSounds =
 
     // ----- The Voice ----- //
 
-    if (gametype > GAME_COOPERATIVE)
-        precache_sound ("thevoice/vo1.wav");  // Let the bloodbath begins !
+    precache_sound ("thevoice/vo1.wav");  // Let the bloodbath begins !
     precache_sound ("thevoice/vo2.wav");
     precache_sound ("thevoice/vo5.wav");
     precache_sound ("thevoice/splatt.wav");
 
-    // Multiplayer obituary sounds
-    if (gametype != GAME_SINGLE_PLAYER)
-    {
-        precache_sound ("thevoice/boned.wav");
-        precache_sound ("thevoice/castra.wav");
-        precache_sound ("thevoice/creamed.wav");
-        precache_sound ("thevoice/decimat.wav");
-        precache_sound ("thevoice/destro.wav");
-        precache_sound ("thevoice/diced.wav");
-        precache_sound ("thevoice/disembo.wav");
-        precache_sound ("thevoice/flatte.wav");
-        precache_sound ("thevoice/justice.wav");
-        precache_sound ("thevoice/killed.wav");
-        precache_sound ("thevoice/madness.wav");
-        precache_sound ("thevoice/massacr.wav");
-        precache_sound ("thevoice/mincmeat.wav");
-        precache_sound ("thevoice/mutila.wav");
-        precache_sound ("thevoice/reamed.wav");
-        precache_sound ("thevoice/ripped.wav");
-        precache_sound ("thevoice/slaught.wav");
-        precache_sound ("thevoice/sliced.wav");
-        precache_sound ("thevoice/smashed.wav");
-        precache_sound ("thevoice/sodomiz.wav");
-        precache_sound ("thevoice/throttl.wav");
-        precache_sound ("thevoice/wasted.wav");
-        precache_sound ("thevoice/vo10.wav");
-        precache_sound ("thevoice/vo12.wav");  // Population control
-        precache_sound ("thevoice/vo13.wav");  // Unassisted death
-        precache_sound ("thevoice/vo14.wav");
-        precache_sound ("thevoice/vo16.wav");  // Darwin Award
-        precache_sound ("thevoice/vo19.wav");
-        precache_sound ("thevoice/vo20.wav");
-        precache_sound ("thevoice/vo21.wav");
-        precache_sound ("thevoice/vo22.wav");
-        precache_sound ("thevoice/vo23.wav");
-        precache_sound ("thevoice/vo24.wav");
-        precache_sound ("thevoice/vo25.wav");
-        precache_sound ("thevoice/vo26.wav");
-        precache_sound ("thevoice/vo27.wav");
-        precache_sound ("thevoice/vo28.wav");
-        precache_sound ("thevoice/vo29.wav");
-        precache_sound ("thevoice/vo30.wav");
-        precache_sound ("thevoice/vo31.wav");
-        precache_sound ("thevoice/vo32.wav");
-        precache_sound ("thevoice/vo33.wav");
-        precache_sound ("thevoice/vo34.wav");
-        precache_sound ("thevoice/vo35.wav");
-        precache_sound ("thevoice/vo36.wav");
-        precache_sound ("thevoice/vo38.wav");
-        precache_sound ("thevoice/vo39.wav");
-        precache_sound ("thevoice/vo40.wav");
-        precache_sound ("thevoice/vo41.wav");
-        precache_sound ("thevoice/vo42.wav");
-        precache_sound ("thevoice/vo43.wav");
-        precache_sound ("thevoice/vo44.wav");
-        precache_sound ("thevoice/vo7.wav");
-        precache_sound ("thevoice/vo8.wav");  // Hamburger
-        precache_sound ("thevoice/vo9.wav");
-    }
+    // Obituary sounds
+    precache_sound ("thevoice/boned.wav");
+    precache_sound ("thevoice/castra.wav");
+    precache_sound ("thevoice/creamed.wav");
+    precache_sound ("thevoice/decimat.wav");
+    precache_sound ("thevoice/destro.wav");
+    precache_sound ("thevoice/diced.wav");
+    precache_sound ("thevoice/disembo.wav");
+    precache_sound ("thevoice/flatte.wav");
+    precache_sound ("thevoice/justice.wav");
+    precache_sound ("thevoice/killed.wav");
+    precache_sound ("thevoice/madness.wav");
+    precache_sound ("thevoice/massacr.wav");
+    precache_sound ("thevoice/mincmeat.wav");
+    precache_sound ("thevoice/mutila.wav");
+    precache_sound ("thevoice/reamed.wav");
+    precache_sound ("thevoice/ripped.wav");
+    precache_sound ("thevoice/slaught.wav");
+    precache_sound ("thevoice/sliced.wav");
+    precache_sound ("thevoice/smashed.wav");
+    precache_sound ("thevoice/sodomiz.wav");
+    precache_sound ("thevoice/throttl.wav");
+    precache_sound ("thevoice/wasted.wav");
+    precache_sound ("thevoice/vo10.wav");
+    precache_sound ("thevoice/vo12.wav");  // Population control
+    precache_sound ("thevoice/vo13.wav");  // Unassisted death
+    precache_sound ("thevoice/vo14.wav");
+    precache_sound ("thevoice/vo16.wav");  // Darwin Award
+    precache_sound ("thevoice/vo19.wav");
+    precache_sound ("thevoice/vo20.wav");
+    precache_sound ("thevoice/vo21.wav");
+    precache_sound ("thevoice/vo22.wav");
+    precache_sound ("thevoice/vo23.wav");
+    precache_sound ("thevoice/vo24.wav");
+    precache_sound ("thevoice/vo25.wav");
+    precache_sound ("thevoice/vo26.wav");
+    precache_sound ("thevoice/vo27.wav");
+    precache_sound ("thevoice/vo28.wav");
+    precache_sound ("thevoice/vo29.wav");
+    precache_sound ("thevoice/vo30.wav");
+    precache_sound ("thevoice/vo31.wav");
+    precache_sound ("thevoice/vo32.wav");
+    precache_sound ("thevoice/vo33.wav");
+    precache_sound ("thevoice/vo34.wav");
+    precache_sound ("thevoice/vo35.wav");
+    precache_sound ("thevoice/vo36.wav");
+    precache_sound ("thevoice/vo38.wav");
+    precache_sound ("thevoice/vo39.wav");
+    precache_sound ("thevoice/vo40.wav");
+    precache_sound ("thevoice/vo41.wav");
+    precache_sound ("thevoice/vo42.wav");
+    precache_sound ("thevoice/vo43.wav");
+    precache_sound ("thevoice/vo44.wav");
+    precache_sound ("thevoice/vo7.wav");
+    precache_sound ("thevoice/vo8.wav");  // Hamburger
+    precache_sound ("thevoice/vo9.wav");
 
     // ----- Various game sounds ----- //
 
     // Fire
-    if (gametype <= GAME_COOPERATIVE)
-        precache_sound ("weapons/flaregun/burstflm.wav");  // when a monster is in fire
+    //precache_sound ("weapons/flaregun/burstflm.wav");  // when a monster is in fire
     precache_sound ("weapons/napalm/burn.wav");  // burning on lava
 
     // Death and gib sounds
@@ -176,8 +171,7 @@ void() PrecacheSounds =
     precache_sound ("player/die1.wav");
     precache_sound ("player/die2.wav");
     precache_sound ("player/die3.wav");
-    if (gametype <= GAME_COOPERATIVE)
-        precache_sound ("player/udeath.wav");  // monsters gib sound
+    //precache_sound ("player/udeath.wav");  // monsters gib sound
 
     // Moving, swimming, jumping, ...
     precache_sound ("foley/emerge.wav");    // leaving water sound
@@ -200,8 +194,7 @@ void() PrecacheSounds =
     // Miscellaneous sounds
     precache_sound ("ambience/bubrise.wav");       // bubble sound
     precache_sound ("ambience/sizzle.wav");        // smelt on slime
-    if (gametype > GAME_COOPERATIVE)
-        precache_sound ("bludbath/reappear.wav");  // item respawn sound
+    precache_sound ("bludbath/reappear.wav");  // item respawn sound
     precache_sound ("bludbath/message.wav");       // Messages  (TODO: not always used...)
     precache_sound ("items/ammo.wav");             // ammo pick up
     precache_sound ("items/pickarmr.wav");         // armor pick up
@@ -238,23 +231,23 @@ void() worldspawn =
 
     // Compute the game type
     #ifdef QUAKEWORLD
-    local float teamplay, deathmatch, coop;
+    local float teamplay, deathmatch;
     #endif
+
     teamplay = cvar("teamplay");
     deathmatch = cvar("deathmatch");
-    coop = cvar("coop");
-    if (! deathmatch)
-    {
-        if (coop)
-            gametype = GAME_COOPERATIVE;
-        else
-            gametype = GAME_SINGLE_PLAYER;
-    }
+
+    // we don't care about SP cooperative play anyway
+    cvar_set ("coop", "0");
+    #ifndef QUAKEWORLD
+    coop = 0;
+    #endif
+
     // NOTE: CTF play cannot be set with the interface only.
     // You must use the console
-    else if (deathmatch == 2)
+    if (deathmatch == 2)
     {
-        gametype = GAME_CAPTURE_THE_FLAG;
+        gametype = GT_CAPTURE_THE_FLAG;
 
         // Tell the engine that we're actually in a team play
         if (teamplay == 0)
@@ -265,18 +258,20 @@ void() worldspawn =
     }
     else
     {
+        cvar_set ("deathmatch", "1");
+        #ifndef QUAKEWORLD
+        deathmatch = 1;
+        #endif
+
         if (! teamplay)
-            gametype = GAME_BLOODBATH;
+            gametype = GT_BLOODBATH;
         else
-            gametype = GAME_TEAM_BLOODBATH;
+            gametype = GT_TEAM_BLOODBATH;
     }
     friendlyfire = (teamplay == 2);  // NOTE: should we allow friendlyfire changes during the game ?
 
     // custom map attributes
-    if (self.model == "maps/e1m8.bsp")
-        cvar_set ("sv_gravity", "100");
-    else
-        cvar_set ("sv_gravity", "800");
+    cvar_set ("sv_gravity", "800");
 
     // Some CTF variables need an initialization
     team1score = team2score = 0;
@@ -420,21 +415,15 @@ void(float corpseHealth, void() corpseToGib) BecomeCorpse =
     self.target = string_null;
     self.killtarget = string_null;
     self.targetname = string_null;
-    self.th_stand = SUB_Null;
-    self.th_walk = SUB_Null;
-    self.th_run = SUB_Null;
-    self.th_missile = SUB_Null;
-    self.th_melee = SUB_Null;
     self.th_pain = SUB_Null;
-    self.flags = self.flags - (self.flags & FL_MONSTER);
     self.deadflag = DEAD_DEAD;
 
     // Corpse will turn into gibs if destroyed
     self.health = corpseHealth;
     self.th_die = corpseToGib;
 
-    // Get rid of it in 2 minutes anyway (to avoid too many entities)
-    self.nextthink = time + 120;
+    // Get rid of it in 1 minute anyway
+    self.nextthink = time + 60;
     self.think = SUB_Remove;
 
     // Allow some interactions (so the corpses can be destroyed by explosions)
@@ -467,7 +456,7 @@ void() GibPlayerCorpse =
     RandomHumanGibs ();
     sound (self, CHAN_ITEM, "misc/gibsq.wav", 1, ATTN_NORM);
 
-    if (gametype != GAME_SINGLE_PLAYER)
+    if (self.enemy.netname)
     {
         Bprint (PRINT_MEDIUM, self.enemy.netname);
         Bprint (PRINT_MEDIUM, " desecrated ");
@@ -491,10 +480,6 @@ void(entity ent) CloneCorpse =
     local entity clone;
     local entity tempEnt;
 
-    // Checkings
-    if (ent.classname == "observer")
-        return;
-
     // Copy the entity characteristics
     clone = spawn ();
     clone.classname = ent.classname;
@@ -512,19 +497,15 @@ void(entity ent) CloneCorpse =
     setorigin (clone, ent.origin);
     setsize (clone, ent.mins, ent.maxs);
 
-    // If the entity is a head, we just need to call HeadDie when it's destroyed
-    if (clone.classname == "head")
-    {
-        tempEnt = self;
-        self = clone;
-        BecomeCorpse (80, HeadDie);
-        self = tempEnt;
-        return;
-    }
-
-    // Corpse will turn into gibs if destroyed
     tempEnt = self;
     self = clone;
-    BecomeCorpse (100, GibPlayerCorpse);
+
+    // If the entity is a head, we just need to call HeadDie when it's destroyed
+    if (clone.classname == "head")
+        BecomeCorpse (80, HeadDie);
+    // Corpse will turn into gibs if destroyed
+    else
+        BecomeCorpse (100, GibPlayerCorpse);
+
     self = tempEnt;
 };

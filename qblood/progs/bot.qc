@@ -147,11 +147,7 @@ float OPT_SAVEBOTS  = 1;
 float OPT_NOCHAT    = 2;
 
 // -------globals-----
-#ifndef QUAKEWORLD
-float   active_clients;
-#else
 float   active_clients1, active_clients2;
-#endif
 float   max_clients, real_frametime;
 float   bot_count, b_options;
 #ifdef QUAKEWORLD
@@ -182,11 +178,7 @@ void()              SetNewParms;
 // rankings
 float(float clientno)       ClientBitFlag;
 float()             ClientNextAvailable;
-#ifndef QUAKEWORLD
 void(float whichteam, float whatbot, float whatskill) BotConnect;
-#else
-void(float whatbot, float whatskill) BotConnect;
-#endif
 void(entity bot)            BotDisconnect;
 void(float clientno)        BotInvalidClientNo;
 void(entity who)            UpdateClient;
@@ -272,7 +264,7 @@ frik_big_centerprint = #73;
 /*
 -=-=-=-=-=-=-=-=-=-=-=-=-=-=-=-=-=-=-=-=-=-=-=
 
-Function redclarations. These allow function
+Function redeclarations. These allow function
 designed to work for clients (sprint, so forth)
 to mainly not complain when working with a bot
 
@@ -451,25 +443,14 @@ void(float to, entity s) WriteEntity =
     frik_WriteEntity(to, s);
 };
 
-#ifdef QUAKEWORLD
 float(float clientno) ClientIsActive =
 {
     if(clientno > 16)
-    {
-        if(active_clients2 & ClientBitFlag(clientno - 16))
-            return TRUE;
-        else
-            return FALSE;
-    }
-    else
-    {
-        if(active_clients1 & ClientBitFlag(clientno))
-            return TRUE;
-        else
-            return FALSE;
-    }
+        return (active_clients2 & ClientBitFlag (clientno - 16));
+
+    return (active_clients1 & ClientBitFlag (clientno));
 };
-#endif
+
 
 #ifndef QUAKEWORLD
 /*
@@ -585,11 +566,7 @@ void() ClientFixRankings =
 
     while (cno < max_clients)
     {
-        #ifndef QUAKEWORLD
-        if ((!b_temp2.ishuman) && (active_clients & ClientBitFlag(cno)))
-        #else
         if ((!b_temp2.ishuman) && ClientIsActive(cno))
-        #endif
             UpdateClient(b_temp2);
         cno = cno + 1;
         b_temp2 = nextent(b_temp2);
@@ -627,14 +604,10 @@ void() ClientInRankings =
     }
     cno = self.colormap - 1;
     BotInvalidClientNo (cno);
-    #ifndef QUAKEWORLD
-    active_clients = active_clients | ClientBitFlag(cno);
-    #else
     if(cno > 16)
         active_clients2 = active_clients2 | ClientBitFlag(cno - 16);
     else
         active_clients1 = active_clients1 | ClientBitFlag(cno);
-    #endif
 
     self.b_clientno = cno;
     self.ishuman = TRUE;
@@ -651,14 +624,10 @@ void() ClientDisconnected =
     if (self._last)
         self._last._next = self._next;
 
-    #ifndef QUAKEWORLD
-    active_clients = active_clients - active_clients & ClientBitFlag(self.b_clientno);
-    #else
     if(self.b_clientno > 16)
         active_clients2 = active_clients2 - (active_clients2 & ClientBitFlag(self.b_clientno - 16));
     else
         active_clients1 = active_clients1 | (active_clients1 & ClientBitFlag(self.b_clientno));
-    #endif
 };
 /*
 -=-=-=-=-=-=-=-=-=-=-=-=-=-=-=-=-=-=-=-=-=-=-=
@@ -774,8 +743,7 @@ void(string h) BotSayTeam =
     // FBX QW doesn't support teamplay...yet
     #ifndef QUAKEWORLD
     local entity t;
-    if (gametype <= GAME_COOPERATIVE)
-        return;
+
     t = player_head;
     while(t)
     {
@@ -819,10 +787,8 @@ void() BotInit =
         ent = nextent(ent);
     }
 
-    #ifndef QUAKEWORLD
-    if (max_clients > 16)
-        max_clients = 16;
-    #endif
+    if (max_clients > 32)
+        max_clients = 32;
 
     ent = nextent(world);
     fisent = world;
@@ -844,7 +810,7 @@ void() BotInit =
     precache_model("progs/s_bubble.spr");
     // the bots return!
     b_options = cvar("saved1");
-    if (gametype == GAME_COOPERATIVE || (b_options & OPT_SAVEBOTS))
+    if (b_options & OPT_SAVEBOTS)
     {
         saved_bots = cvar("scratch1");
         saved_skills1 = cvar("scratch2");
@@ -862,6 +828,7 @@ void() BotInit =
     else
         waypoint_mode = WM_LOADED;
     #else
+    waypoint_mode = WM_DYNAMIC;
     bot_map_load();
     #endif
 
@@ -974,42 +941,6 @@ void(entity who) UpdateClient =
 
 float(float clientno) ClientBitFlag =
 {
-    #ifndef QUAKEWORLD
-    // bigger, but faster
-    if (clientno == 0)
-        return 1;
-    else if (clientno == 1)
-        return 2;
-    else if (clientno == 2)
-        return 4;
-    else if (clientno == 3)
-        return 8;
-    else if (clientno == 4)
-        return 16;
-    else if (clientno == 5)
-        return 32;
-    else if (clientno == 6)
-        return 64;
-    else if (clientno == 7)
-        return 128;
-    else if (clientno == 8)
-        return 256;
-    else if (clientno == 9)
-        return 512;
-    else if (clientno == 10)
-        return 1024;
-    else if (clientno == 11)
-        return 2048;
-    else if (clientno == 12)
-        return 4096;
-    else if (clientno == 13)
-        return 8192;
-    else if (clientno == 14)
-        return 16384;
-    else if (clientno == 15)
-        return 32768;
-    return 0;
-    #else
     local float bitflag;
     bitflag = 1;
     while(clientno > 0)
@@ -1018,23 +949,12 @@ float(float clientno) ClientBitFlag =
         clientno = clientno - 1;
     }
     return bitflag;
-    #endif
 };
 
 float() ClientNextAvailable =
 {
     local float clientno;
 
-    #ifndef QUAKEWORLD
-    clientno = max_clients;
-    while(clientno > 0)
-    {
-        clientno = clientno - 1;
-
-        if(!(active_clients & ClientBitFlag(clientno)))
-            return clientno;
-    }
-    #else
     // I want to do this top down, but QW won't let me
     clientno = 0;
     while(clientno < max_clients)
@@ -1044,7 +964,6 @@ float() ClientNextAvailable =
         if(!ClientIsActive(clientno))
             return clientno;
     }
-    #endif
 
     return -1;
 };
@@ -1056,9 +975,9 @@ void(entity e1, entity e2, float flag) DeveloperLightning =
     // used to show waypoint links for debugging
     WriteByte (MSG_BROADCAST, 23);
     if (flag)
-        WriteByte (MSG_BROADCAST, 6);
+        WriteByte (MSG_BROADCAST, TE_LIGHTNING3);
     else
-        WriteByte (MSG_BROADCAST, 13);
+        WriteByte (MSG_BROADCAST, TE_LIGHTNING2);
     WriteEntity (MSG_BROADCAST, e2);
     WriteCoord (MSG_BROADCAST, e1.origin_x);
     WriteCoord (MSG_BROADCAST, e1.origin_y);
@@ -1069,54 +988,6 @@ void(entity e1, entity e2, float flag) DeveloperLightning =
     #endif
 };
 
-
-#ifndef QUAKEWORLD
-/*
--=-=-=-=-=-=-=-=-=-=-=-=-=-=-=-=-=-=-=-=-=-=-=
-
-Find Another Color
-
-Team finding code
-
--=-=-=-=-=-=-=-=-=-=-=-=-=-=-=-=-=-=-=-=-=-=-=
-*/
-
-float(float tcolor) FindAnotherColor =
-{
-    local float bestbet, scolor, pcount, bestp;
-    bestbet = -1;
-    bestp = 16;
-    while(scolor < 14)
-    {
-        if (scolor != tcolor)
-        {
-            b_temp2 = player_head;
-            pcount = 0;
-            while(b_temp2 != world)
-            {
-                if (b_temp2.team == scolor + 1)
-                    pcount = pcount + 1;
-                b_temp2 = b_temp2._next;
-            }
-            if ((pcount < bestp) && pcount)
-            {
-                bestbet = scolor;
-                bestp = pcount;
-            }
-        }
-        scolor = scolor + 1;
-    }
-    if (bestbet < 0)
-    {
-        bestbet = tcolor;
-        while (bestbet == tcolor)
-        {
-            bestbet = floor(random() * 13);
-        }
-    }
-    return bestbet;
-};
-#endif
 
 /*
 -=-=-=-=-=-=-=-=-=-=-=-=-=-=-=-=-=-=-=-=-=-=-=
@@ -1138,11 +1009,7 @@ entity(float num) GetClientEntity =
     return upsy;
 };
 
-#ifndef QUAKEWORLD
 void(float whichteam, float whatbot, float whatskill) BotConnect =
-#else
-void(float whatbot, float whatskill) BotConnect =
-#endif
 {
     local float f;
     local string h;
@@ -1152,23 +1019,16 @@ void(float whatbot, float whatskill) BotConnect =
     uself = self;
     if(f == -1)
     {
-        #ifndef QUAKEWORLD
-        bprint("Unable to connect a bot, server is full.\n");
-        #else
-        bprint(PRINT_HIGH, "Unable to connect a bot, server is full.\n");
-        #endif
+        Bprint (PRINT_HIGH, "Unable to connect a bot, server is full.\n");
         return;
     }
 
     // chat thing
-    #ifndef QUAKEWORLD
-    active_clients = active_clients | ClientBitFlag(f);
-    #else
     if(f > 16)
         active_clients2 = active_clients2 | ClientBitFlag(f - 16);
     else
         active_clients1 = active_clients1 | ClientBitFlag(f);
-    #endif
+
     bot_count = bot_count + 1;
     self = GetClientEntity(f);
     #ifndef QUAKEWORLD
@@ -1190,30 +1050,20 @@ void(float whatbot, float whatskill) BotConnect =
         whatskill = 0;
     self.b_skill = whatskill;
 
-    #ifndef QUAKEWORLD
-    if (gametype >= GAME_BLOODBATH)
-    {
-        if (whichteam)
-            self.b_pants = FindAnotherColor(uself.team - 1);
-        else
-            self.b_pants = uself.team - 1;
-        self.b_shirt = self.b_pants;
-    }
-    #else
+    #ifdef QUAKEWORLD
     self.b_entertime = time;
     #endif
 
-    self.team = self.b_pants + 1;
     UpdateClient(self);
     SetNewParms();
     self.ishuman = 2;
     ClientConnect();
     PutClientInServer();
 
-    #ifndef QUAKEWORLD
     // Select a team at spawn time
     self.impulse = whichteam + 1;
 
+    #ifndef QUAKEWORLD
     // this is risky... could corrupt .way files if done wrong
     // If you're not the gambling type, comment this out
 
@@ -1272,14 +1122,10 @@ void(entity bot) BotDisconnect =
         self.b_shirt = 0;
         self.ammo_shells = self.ammo_nails = self.ammo_rockets = self.ammo_cells = 0;
         UpdateClient(self);
-        #ifndef QUAKEWORLD
-        active_clients = active_clients - (active_clients & ClientBitFlag(self.b_clientno));
-        #else
         if(self.b_clientno > 16)
             active_clients2 = active_clients2 - (active_clients2 & ClientBitFlag(self.b_clientno - 16));
         else
             active_clients1 = active_clients1 | (active_clients1 & ClientBitFlag(self.b_clientno));
-        #endif
         self.b_clientno = -1;
     }
     self = uself;
@@ -1304,14 +1150,12 @@ void(float clientno) BotInvalidClientNo =
         {
             bot.b_clientno = -1;
             BotDisconnect(bot);
-            #ifndef QUAKEWORLD
-            active_clients = active_clients | ClientBitFlag(self.b_clientno);
-            BotConnect(0, bot.b_num, bot.b_skill);
-            #else
             if(self.b_clientno > 16)
                 active_clients2 = active_clients2 | ClientBitFlag(self.b_clientno - 16);
             else
                 active_clients1 = active_clients1 | ClientBitFlag(self.b_clientno);
+            #ifndef QUAKEWORLD
+            BotConnect(0, bot.b_num, bot.b_skill);  // FIXME: what is it supposed to do?
             #endif
             return;
         }
@@ -1433,11 +1277,7 @@ void() BotFrame =
     {
         if (self.ishuman == FALSE)
         {
-            #ifndef QUAKEWORLD
-            if (active_clients & ClientBitFlag(num))
-            #else
             if (self.b_clientno > 0)
-            #endif
             {
                 frik_obstacles();
                 CL_KeyMove();
@@ -1484,35 +1324,14 @@ related functions.
 
 void() BotImpulses =
 {
-    local float f;
-    #ifdef QUAKEWORLD
-    local string h;
-    #endif
-
-    if (self.impulse == 100)
-    {
-        #ifndef QUAKEWORLD
-        f = cvar("skill");
-        BotConnect(0, 0, f);
-        #else
-        h = infokey(world, "skill");
-        f = stof(h);
-        BotConnect(0, f);
-        #endif
-    }
-    #ifndef QUAKEWORLD
-    else if (self.impulse == 101)
-    {
-        f = cvar("skill");
-        BotConnect(1, 0, f);
-    }
-    #endif
+    if (self.impulse == 100 || self.impulse == 101)
+        BotConnect (self.impulse - 100, 0, cvar ("skill"));
     else if (self.impulse == 102)
         KickABot();
 
     #ifndef QUAKEWORLD
-    // These ones are considered cheats
-    else if (gametype == GAME_SINGLE_PLAYER || cvar ("sv_allowCheat"))
+    // Those ones are considered cheats
+    else if (cvar ("sv_allowCheat"))
     {
         if (self.impulse == 103)
             botcam_u ();

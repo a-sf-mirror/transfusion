@@ -28,16 +28,12 @@
 
 #include "common.qh"
 
-//--------------------//
-//  NEW EDICT FIELDS  //
-//--------------------//
-.entity burner;         // The flame generator linked on an entity.
-
 
 //==========================================================================
 //  Frame Data
 
 //  Frame Macros for modified 'flame2.mdl'.
+$modelname flame2
 $cd id1/models/flame2
 $origin 0 0 12
 $base base
@@ -59,7 +55,7 @@ $frame  ember1 ember2 ember3 ember4 ember5 ember6
 //------------------------------------------------------------------------//
 //  This makes an entity do a think function right now.
 //------------------------------------------------------------------------//
-void(entity ent, void() thinkst) PM_Think =
+void(entity ent, void() thinkst) Think =
 {
     local   entity  oself;
 
@@ -72,7 +68,7 @@ void(entity ent, void() thinkst) PM_Think =
 //------------------------------------------------------------------------//
 //  This checks if a given point in space is in water.
 //------------------------------------------------------------------------//
-float(vector vec) PM_VecInWater =
+float(vector vec) VecInWater =
 {
     local   float   content;
 
@@ -92,19 +88,19 @@ float(vector vec) PM_VecInWater =
 //------------------------------------------------------------------------//
 //  This returns the water level of an entity.
 //------------------------------------------------------------------------//
-float(entity ent) PM_WaterLevel =
+float(entity ent) WaterLevel =
 {
     local   vector  spot;
 
     spot = ent.origin;
     spot_z = ent.origin_z + ent.view_ofs_z;
-    if (PM_VecInWater (spot))
+    if (VecInWater (spot))
         return 3;
     spot_z = ent.origin_z + (ent.mins_z + ent.maxs_z) * 0.5;
-    if (PM_VecInWater (spot))
+    if (VecInWater (spot))
         return 2;
     spot_z = ent.origin_z + ent.mins_z + 1;
-    if (PM_VecInWater (spot))
+    if (VecInWater (spot))
         return 1;
     return 0;
 };
@@ -113,40 +109,27 @@ float(entity ent) PM_WaterLevel =
 //==========================================================================
 //  Fire Damage
 
-void(entity victim, entity attacker, float burn) PM_Ignite;
+void(entity victim, entity attacker, float burn) Ignite;
 
-void(entity ent) PM_RemoveFlares;
+void(entity ent) RemoveFlares;
 void() muzzleflash;
-
-//------------------------------------------------------------------------//
-//  This checks if entity resists fire.
-//------------------------------------------------------------------------//
-float(entity ent) PM_FireResistant =
-{
-    if (ent.classname == "monster_shambler")
-        return TRUE;
-
-    // Everything not listed takes normal damage from fire.
-    return FALSE;
-};
 
 //------------------------------------------------------------------------//
 //  This inflicts standard fire damage like in Blood.
 //------------------------------------------------------------------------//
-void(entity targ, entity inflictor, entity attacker) PM_FireDamage =
+void(entity targ, entity inflictor, entity attacker) FireDamage =
 {
-    if (!PM_FireResistant (targ))
-        T_Damage (targ, inflictor, attacker, 0.75, DF_FIRE | DF_MIN_PAIN, "fire");
+    T_Damage (targ, inflictor, attacker, 0.75, DF_FIRE | DF_MIN_PAIN, "fire");
 };
 
 //------------------------------------------------------------------------//
 //  This damages a single entity and possibly sets it on fire.
 //------------------------------------------------------------------------//
-void(entity victim, entity fire, float damage, float burn) PM_BurnDamage =
+void(entity victim, entity fire, float damage, float burn) BurnDamage =
 {
     // Set victim on fire first.
     if (burn > 0)
-        PM_Ignite (victim, fire.owner, burn);
+        Ignite (victim, fire.owner, burn);
 
     // Apply damage next immediately.
     if (damage > 0)
@@ -200,7 +183,7 @@ void(entity fire, float damage, float burn, entity ignore) BurnRadius =
                 org = head.origin + (head.mins + head.maxs)*0.5;
                 dist = vlen (fire.origin - org);
                 dist = 1 - (dist * fade / radius);
-                PM_BurnDamage (head, fire, damage * dist, burn * dist);
+                BurnDamage (head, fire, damage * dist, burn * dist);
             }
 
         head = head.chain;
@@ -216,7 +199,7 @@ void(entity fire, float damage, float burn, entity ignore) BurnRadius =
 //
 //  FIXME:  Useless in QW.
 //------------------------------------------------------------------------//
-void(entity fire) PM_MakeSmoke =
+void(entity fire) MakeSmoke =
 {
     #ifndef QUAKEWORLD
     particle (fire.origin, '0 0 100', 6, 50);
@@ -226,17 +209,17 @@ void(entity fire) PM_MakeSmoke =
 //------------------------------------------------------------------------//
 //  This make some steam.
 //------------------------------------------------------------------------//
-void(entity fire) PM_MakeSteam =
+void(entity fire) MakeSteam =
 {
     sound (fire, CHAN_AUTO, "player/slimbrn2.wav", 1, ATTN_NORM);
-    PM_MakeSmoke (fire);
+    MakeSmoke (fire);
 };
 
 
 //==========================================================================
 //  Burn Control
 
-//----------------------------------------------------/ New Code /--------//
+//------------------------------------------------------------------------//
 //  This extinguishes the fire burning on a player (or other entity).
 //  This function should be called whenever the fire burning on an
 //  entity must be removed immediately.
@@ -245,7 +228,7 @@ void(entity fire) PM_MakeSteam =
 //  * All players (and their surrogates) when the level ends.
 //  * Anytime a player respawns after dying (from the 'kill' command).
 //------------------------------------------------------------------------//
-void(entity ent) PM_KillBurner =
+void(entity ent) KillBurner =
 {
     // Check if the entity is linked to a burning flame.
     if (ent.burner)
@@ -256,13 +239,13 @@ void(entity ent) PM_KillBurner =
     }
 
     // Remove the flares too.
-    PM_RemoveFlares (ent);
+    RemoveFlares (ent);
 };
 
 //------------------------------------------------------------------------//
 //  This checks if 'ent' is on fire and burning.
 //------------------------------------------------------------------------//
-float(entity ent) PM_IsBurning =
+float(entity ent) IsBurning =
 {
     return ent.burner;
 };
@@ -282,71 +265,50 @@ void()  m_ember6 =[   $ember6,    SUB_Remove] {};
 //
 //  NOTE:  Assumes 'self' == flame generator!
 //------------------------------------------------------------------------//
-void() PM_MakeEmbers =
+void() MakeEmbers =
 {
     local   entity  fire;       // The new fire that will be created.
     local   vector  spot;       // The spot where the new fire will appear.
-    local   float   loop, r;
+    local   float   r;
 
-    if (gametype != GAME_SINGLE_PLAYER)
-    {
-        // In netgames, keep flames down to a minimum.
-        if ((floor(time * 10) & 3) == 0)
-            return;     // No flames on each 4th frame.
-        loop = 1;
-    }
-    else if (self.dmg > 100)
-        loop = 2;
-    else if (self.dmg > 50)
-    {
-        if (floor(time * 10) & 1)
-            loop = 2;
-        else
-            loop = 1;
-    }
+    // No flames on each 4th frame.
+    if ((floor(time * 10) & 3) == 0)
+        return;
+
+    spot   = self.enemy.size * 0.5;
+    spot_x = spot_x * (random() - 0.5);
+    spot_y = spot_y * (random() - 0.5);
+    spot_z = spot_z * (random() - 0.5);
+    spot   = spot + self.enemy.origin +
+        (self.enemy.mins + self.enemy.maxs) * 0.5;
+
+    // Create the fire.
+    fire = spawn();
+    setmodel (fire, "progs/flame2.mdl");
+    setsize (fire, '0 0 0', '0 0 0');
+    setorigin (fire, spot);
+
+    fire.solid      = SOLID_NOT;
+    fire.takedamage = DAMAGE_NO;
+    fire.frame      = $ember1;
+    fire.owner      = self.enemy;
+    fire.movetype   = MOVETYPE_FLY;
+    fire.velocity   = '0 0 100';
+
+    // Animate the flame.
+    r = random() * 3;
+    if (r > 2)
+        Think (fire, m_ember3);
+    else if (r > 1)
+        Think (fire, m_ember2);
     else
-        loop = 1;
-
-    while (loop > 0)
-    {
-        spot   = self.enemy.size * 0.5;
-        spot_x = spot_x * (random() - 0.5);
-        spot_y = spot_y * (random() - 0.5);
-        spot_z = spot_z * (random() - 0.5);
-        spot   = spot + self.enemy.origin +
-            (self.enemy.mins + self.enemy.maxs) * 0.5;
-
-        // Create the fire.
-        fire = spawn();
-        setmodel (fire, "progs/flame2.mdl");
-        setsize (fire, '0 0 0', '0 0 0');
-        setorigin (fire, spot);
-
-        fire.solid      = SOLID_NOT;
-        fire.takedamage = DAMAGE_NO;
-        fire.frame      = $ember1;
-        fire.owner      = self.enemy;
-        fire.movetype   = MOVETYPE_FLY;
-        fire.velocity   = '0 0 100';
-
-        // Animate the flame.
-        r = random() * 3;
-        if (r > 2)
-            PM_Think (fire, m_ember3);
-        else if (r > 1)
-            PM_Think (fire, m_ember2);
-        else
-            PM_Think (fire, m_ember1);
-
-        // Advance the loop.
-        loop = loop - 1;
-    }
+        Think (fire, m_ember1);
 };
 
 //------------------------------------------------------------------------//
 //  This keeps the fire on an entity burning.
 //------------------------------------------------------------------------//
-void() PM_Burn =
+void() Burn =
 {
     // Check for removal.
     if (self.dmg <= 0)
@@ -373,14 +335,14 @@ void() PM_Burn =
     else
         spot = self.enemy.origin + self.enemy.view_ofs;
 
-    if (PM_VecInWater (spot))
+    if (VecInWater (spot))
     {
         // Victim is submerged under some liquid.
         setorigin (self, spot);     // So steam comes from enemy.
 
         // Put out the fire and make some steam.
         self.enemy.burner = world;
-        PM_MakeSteam (self);
+        MakeSteam (self);
         remove (self);
         return;
     }
@@ -391,10 +353,10 @@ void() PM_Burn =
         self.dmg = 200;
 
     // Keep on burning.
-    PM_MakeEmbers ();
+    MakeEmbers ();
 
     self.dmg = self.dmg - 1;    // Update the burn damage limit.
-    PM_FireDamage (self.enemy, self.enemy, self.owner);
+    FireDamage (self.enemy, self.enemy, self.owner);
 
     self.nextthink  = time + 0.1;
 };
@@ -402,7 +364,7 @@ void() PM_Burn =
 //------------------------------------------------------------------------//
 //  This sets the victim on fire.
 //------------------------------------------------------------------------//
-void(entity victim, entity attacker, float burn) PM_Ignite =
+void(entity victim, entity attacker, float burn) Ignite =
 {
     // Check for fire immunity.
     if (!victim.takedamage)
@@ -436,7 +398,7 @@ void(entity victim, entity attacker, float burn) PM_Ignite =
     fire.wait       = time;
     fire.dmg        = burn;
     fire.nextthink  = 0.1;      // ASAP
-    fire.think      = PM_Burn;
+    fire.think      = Burn;
 
     victim.burner   = fire;     // Link entity to fire.
 };
@@ -447,11 +409,11 @@ void(entity victim, entity attacker, float burn) PM_Ignite =
 
 // NOTE:  Used by monsters only.
 
-void() PM_BecomeOldExplosion;
+void() BecomeOldExplosion;
 //------------------------------------------------------------------------//
 //  The creates an explosion entity from scratch.
 //------------------------------------------------------------------------//
-void(vector spot) PM_MakeExplosion =
+void(vector spot) MakeExplosion =
 {
     local   entity  e;
 
@@ -460,14 +422,14 @@ void(vector spot) PM_MakeExplosion =
     setsize (e, '0 0 0', '0 0 0');
     setorigin (e, spot);
 
-    PM_Think (e, PM_BecomeOldExplosion);
+    Think (e, BecomeOldExplosion);
 };
 
 //------------------------------------------------------------------------//
 //  This makes the death flame produce a little smoke and embers
 //  before it disappears.
 //------------------------------------------------------------------------//
-void() PM_DeathFlameDying =
+void() DeathFlameDying =
 {
     if (self.wait <= time)
     {
@@ -491,9 +453,9 @@ void() PM_DeathFlameDying =
         #ifndef QUAKEWORLD
         particle (spot, '0 0 100', 6, 5);
         #endif
-        if (!PM_VecInWater (spot))
+        if (!VecInWater (spot))
             if ((ftime & 2) || (random() < 0.5))
-                PM_MakeEmbers ();
+                MakeEmbers ();
     }
 
     self.nextthink = time + 0.1;
@@ -502,37 +464,32 @@ void() PM_DeathFlameDying =
 //------------------------------------------------------------------------//
 //  This checks if the death flame should stop burning.
 //------------------------------------------------------------------------//
-float() PM_EndDeathFlame =
+float() EndDeathFlame =
 {
-    // Stop burning once the enemy is really dead.
-    if (self.enemy.deadflag == DEAD_DEAD)
+    // Stop burning once the enemy is really dead or once he becomes non-solid
+    if (self.enemy.deadflag == DEAD_DEAD || self.enemy.solid == SOLID_NOT)
         return TRUE;
 
-    // If solid-only burn is on, then stop once enemy becomes non-solid.
-    if (self.style)
-        if (self.enemy.solid == SOLID_NOT)
-            return TRUE;
-
-    // Keep on burning.
+    // Keep on burning
     return FALSE;
 };
 
 //------------------------------------------------------------------------//
 //  This makes the death flame burn.
 //------------------------------------------------------------------------//
-void() PM_DeathFlameThink =
+void() DeathFlameThink =
 {
-    if (PM_EndDeathFlame ())
+    if (EndDeathFlame ())
     {
         // Done burning.
         if (self.model == self.mdl)
         {
-            PM_MakeExplosion (self.origin);
+            MakeExplosion (self.origin);
             setmodel (self, string_null);
         }
-        self.think = PM_DeathFlameDying;
+        self.think = DeathFlameDying;
         self.wait = time + 1 + random() * 2;
-        PM_DeathFlameDying ();
+        DeathFlameDying ();
         return;
     }
 
@@ -549,14 +506,14 @@ void() PM_DeathFlameThink =
     particle (spot + '0 0 24', '0 0 100', 6, 5);
     #endif
     if (floor(time * 10) & 1)
-        PM_MakeEmbers ();
+        MakeEmbers ();
 
     // In case enemy is not dead, do some damage.
     if (self.enemy.takedamage)
         T_Damage (self.enemy, self, self.owner, 1, DF_FIRE, "fire");
 
     // Flame has different effects depending on its contents.
-    if (PM_VecInWater (spot))
+    if (VecInWater (spot))
     {
         // Hide the flame and make more steam in its place.
         if (self.model == self.mdl)
@@ -572,7 +529,7 @@ void() PM_DeathFlameThink =
     {
         if (self.model != self.mdl)
         {
-            PM_MakeExplosion (spot);
+            MakeExplosion (spot);
             setmodel (self, self.mdl);
         }
 
@@ -584,7 +541,7 @@ void() PM_DeathFlameThink =
         {
             if (head != self.enemy)
                 if (CanDamage (head, self))
-                    PM_FireDamage (head, self, self.owner);
+                    FireDamage (head, self, self.owner);
 
             head = head.chain;
         }
@@ -599,7 +556,7 @@ void() PM_DeathFlameThink =
 //
 //  NOTE:  Assumes 'self' == dying victim to be burned!
 //------------------------------------------------------------------------//
-void(vector offset) PM_DeathFlame =
+void(vector offset) DeathFlame =
 {
     // Make some fire!
     local   entity  fire;       // The new fire that will be created.
@@ -609,10 +566,10 @@ void(vector offset) PM_DeathFlame =
     spot = self.origin + offset;
 
     // Make a small flaming explosion.
-    PM_MakeExplosion (spot);
+    MakeExplosion (spot);
 
     // Remove flame generator if any... since this is a bigger fire.
-    PM_KillBurner (self);
+    KillBurner (self);
 
     // Create the fire.
     fire = spawn();
@@ -628,14 +585,8 @@ void(vector offset) PM_DeathFlame =
     fire.mdl        = fire.model;
     fire.dest       = offset;
     fire.nextthink  = 0.1;  // ASAP
-    fire.think      = PM_DeathFlameThink;
+    fire.think      = DeathFlameThink;
     fire.classname  = "fire";
-
-    // HACK:  Zombie...
-    if (self.classname != "monster_zombie")
-        fire.style = TRUE;
-    else
-        fire.style = FALSE;
 
     // Play some sound.
     sound (fire, CHAN_AUTO, "weapons/flaregun/burstflm.wav", 1, ATTN_NORM);
@@ -645,8 +596,6 @@ void(vector offset) PM_DeathFlame =
 ////////////////////////////////////////////////////////////////////////////
 //  Flame weapons (flares and napalm)
 ////////////////////////////////////////////////////////////////////////////
-
-.float  flare_time;     // Used so only one flare can burn per frame.
 
 
 //==========================================================================
@@ -658,7 +607,7 @@ void(vector offset) PM_DeathFlame =
 //------------------------------------------------------------------------//
 //  This enforces air resistance on embers and updates their angles.
 //------------------------------------------------------------------------//
-void() PM_EmberThink =
+void() EmberThink =
 {
     if (self.pausetime <= time)
     {
@@ -694,10 +643,6 @@ void(float ents) ThrowEmbers =
     local   vector  dir;
     local   float   loop;
 
-    // Make fewer embers in netgames.
-    if (gametype != GAME_SINGLE_PLAYER)
-        ents = floor(ents * 0.5);
-
     loop = ents * 6;
     while (loop > 0)
     {
@@ -725,15 +670,11 @@ void(float ents) ThrowEmbers =
             fire.velocity = dir * (200 + random() * 800);
             fire.angles = vectoangles(dir) + '90 0 0';
 
-            // Make embers disappear faster in netgames.
-            if (gametype != GAME_SINGLE_PLAYER)
-                fire.pausetime = time + random();
-            else
-                fire.pausetime = time + 3 + random() * 2;
+            fire.pausetime = time + random();
 
             fire.touch = SUB_Remove;
             fire.nextthink = time + 0.1;
-            fire.think = PM_EmberThink;
+            fire.think = EmberThink;
 
             ents = ents - 1;
             if (ents <= 0)
@@ -752,7 +693,7 @@ void(float ents) ThrowEmbers =
 //  This removes all flares from a single entity.
 //  This should be called when a player disconnects from the server.
 //------------------------------------------------------------------------//
-void(entity ent) PM_RemoveFlares =
+void(entity ent) RemoveFlares =
 {
     local   entity  head;
 
@@ -778,7 +719,7 @@ void(entity client) PsychoCaleb;
 //------------------------------------------------------------------------//
 //  This animates the napalm cloud, and makes it burn things around it.
 //------------------------------------------------------------------------//
-void() PM_OldExThink =
+void() OldExThink =
 {
     if (self.frame >= 5)
     {
@@ -794,7 +735,7 @@ void() PM_OldExThink =
 //------------------------------------------------------------------------//
 //  Turns entity into a flaming napalm cloud.
 //------------------------------------------------------------------------//
-void() PM_BecomeOldExplosion =
+void() BecomeOldExplosion =
 {
     self.movetype   = MOVETYPE_NONE;
     self.velocity   = '0 0 0';
@@ -804,14 +745,12 @@ void() PM_BecomeOldExplosion =
     self.solid      = SOLID_NOT;
 
     self.nextthink  = time + 0.1;
-    self.think      = PM_OldExThink;
+    self.think      = OldExThink;
 };
 
 
 //==========================================================================
 //  Burn Trigger
-
-.float  burn_time;
 
 void() burn_touch =
 {
@@ -819,7 +758,7 @@ void() burn_touch =
     {
         other.burn_time = time + 0.1;
         if (other.takedamage)
-            PM_FireDamage (other, self, self);
+            FireDamage (other, self, self);
     }
 
     // Once an object moves into the field, make sure it takes more hits

@@ -169,11 +169,11 @@ void() Tommy_Fire =
     // set the bullet direction according to the weapon real direction
     dir = aim (self, 1000);
     if (self.weaponframe == $tommy_alt2 || self.weaponframe == $tommy_alt4)
-        dir = dir - v_right * (1 / 8);
+        dir = dir - v_right * (1 / 6);
     else if (self.weaponframe == $tommy_alt3)
-        dir = dir - v_right * (1 / 4);
+        dir = dir - v_right * (1 / 3);
     else if (self.weaponframe == $tommy_alt6)
-        dir = dir + v_right * (1 / 8);
+        dir = dir + v_right * (1 / 6);
 
     // If we're in akimbo mode
     orig = self.origin + v_forward * 15 + v_up * 12 + v_right * 4;

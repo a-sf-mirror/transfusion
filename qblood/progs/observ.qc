@@ -154,8 +154,8 @@ void(entity player,entity tele) ObserverTeleporter =
 
 float() DoObserverImpulse =
 {
-    // If we're not in CTF mode, join the game on impulse 1 or 2, or on "jump"
-    if (gametype != GAME_CAPTURE_THE_FLAG)
+    // If we're not in a team mode (Team BB ot CTF), join the game on impulse 1 or 2, or on "jump"
+    if (gametype < GT_TEAM_BLOODBATH)
     {
         if (self.impulse == 1 || self.impulse == 2 || self.button2)
         {
@@ -164,7 +164,7 @@ float() DoObserverImpulse =
         }
     }
 
-    // Else (in CTF mode)
+    // Else (in a team mode)
     else
     {
         if (self.button2)
@@ -175,13 +175,11 @@ float() DoObserverImpulse =
             if (self.impulse == 1)
             {
                 self.team = TEAM_COLOR1;
-                self.skin = 1;
                 centerprint (self, "You have joined the RED team");
             }
             else
             {
                 self.team = TEAM_COLOR2;
-                self.skin = 2;
                 centerprint (self, "You have joined the BLUE team");
             }
 
@@ -190,11 +188,9 @@ float() DoObserverImpulse =
             respawn();
         }
     }
-
-    self.impulse = 0;
 };
 
-void () ObserverThink =
+void() ObserverThink =
 {
     local entity e;
     local float cont;
@@ -258,15 +254,17 @@ void(entity player) BecomeObserver =
     player.movetype         = MOVETYPE_FLY;
     player.deadflag         = DEAD_NO;
     player.player_state     = PS_IDLE;
+    player.team             = 0;
 
+    player.skin = 0;
     setmodel (player, "progs/eyes.mdl");
-    setsize (player, '-12 -12 -24', '12 12 32');
+    setsize (player, '-10 -10 -20', '10 10 28');
 
-    player.weaponmodel      = "";
-    player.weaponframe      = 0;
-    player.weapon           = 0;
+    player.weaponmodel = "";
+    player.weaponframe = 0;
+    player.weapon      = 0;
 
-    player.observer = 1;
+    player.observer    = 1;
     player.do_observer = 0;
 
     player.classname = "observer";

@@ -15,9 +15,8 @@ subs.qc
 inven.qc
 combat.qc
 fire.qc
-fight.qc
-ai.qc
 items.qc
+menu.qc
 weapons.qc
 w_bomb.qc
 w_flare.qc
@@ -33,28 +32,9 @@ player.qc
 world.qc
 observ.qc
 client.qc
-monsters.qc
 doors.qc
 buttons.qc
 triggers.qc
 plats.qc
 misc.qc
-
-ogre.qc
-demon.qc
-shambler.qc
-knight.qc
-soldier.qc
-wizard.qc
-dog.qc
-zombie.qc
-boss.qc
-
-tarbaby.qc		// registered
-hknight.qc		// registered
-fish.qc			// registered
-shalrath.qc		// registered
-enforcer.qc		// registered
-oldone.qc		// registered
-
 ctf.qc

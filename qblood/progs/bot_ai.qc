@@ -221,8 +221,7 @@ void(entity targ) bot_check_lost =
     {
         if (targ.health <= 0)
             bot_lost(targ, TRUE);
-        else if ((gametype == GAME_COOPERATIVE) ||
-                 (gametype == GAME_TEAM_BLOODBATH && targ.team == self.team))
+        else if (gametype >= GT_TEAM_BLOODBATH && targ.team == self.team)
         {
             if (targ.target1.classname == "player")
             {
@@ -654,8 +653,6 @@ float(entity thing) priority_for_thing =
                 thisp = 50;
         }
     }
-    else if ((thing.flags & FL_MONSTER) && thing.health > 0)
-        thisp = 45;
     else if (thing.classname == "player")
     {
         if (thing.health > 0)
@@ -666,14 +663,7 @@ float(entity thing) priority_for_thing =
             {
                 if (thing.items & IT_INVISIBILITY) //FIXME
                     thisp = 2;
-                else if (gametype == GAME_COOPERATIVE)
-                {
-                    thisp = 100;
-                    if (thing.target1.classname == "player")
-                        if (!thing.target1.ishuman)
-                            return 0;
-                }
-                else if (gametype >= GAME_TEAM_BLOODBATH && thing.team == self.team)
+                else if (gametype >= GT_TEAM_BLOODBATH && thing.team == self.team)
                 {
                     thisp = 100;
                     if (thing.target1.classname == "player")

@@ -21,25 +21,6 @@
 #include "common.qh"
 
 
-//--------------------//
-//  NEW EDICT FIELDS  //
-//--------------------//
-// PM:  Custom ammo.
-.float      ammo_flares;        // flare gun
-.float      ammo_tnt_bundle;    // standard dynamite
-.float      ammo_tnt_proxy;     // proxy bombs
-.float      ammo_tnt_remote;    // pipebombs
-.float      ammo_spray;         // spray can
-.float      ammo_voodoo;        // voodoo doll
-.float      ammo_leech;         // leech life
-
-//  NOTE:  The existing Quake ammo are used for the following weapons.
-//    ammo_shells  -> sawed-off shotgun
-//    ammo_nails   -> tommy sub-machinegun
-//    ammo_rockets -> napalm launcher (a.k.a. incinerator)
-//    ammo_cells   -> telsa cannon
-
-
 void() W_SetCurrentAmmo;
 /* ALL LIGHTS SHOULD BE 0 1 0 IN COLOR ALL OTHER ITEMS SHOULD
 BE .8 .3 .4 IN COLOR */
@@ -240,8 +221,7 @@ void() lure_touch =
 
     self.solid = SOLID_NOT;
     self.model = string_null;
-    if (gametype > GAME_COOPERATIVE)
-        self.nextthink = time + 20;
+    self.nextthink = time + 20;
     self.think = SUB_regen;
 
     Sprint (other, PRINT_LOW, "Picked up a LURE\n");
@@ -823,18 +803,13 @@ void() powerup_touch =
     Sprint (other, PRINT_LOW,  self.netname);
     Sprint (other, PRINT_LOW, "\n");
 
-    if (gametype > GAME_COOPERATIVE)
-    {
-        self.mdl = self.model;
-
-        if ((self.classname == "item_artifact_invulnerability") ||
-            (self.classname == "item_artifact_invisibility"))
-            self.nextthink = time + 60*5;
-        else
-            self.nextthink = time + 60;
-
-        self.think = SUB_regen;
-    }
+    self.mdl = self.model;
+    if ((self.classname == "item_artifact_invulnerability") ||
+        (self.classname == "item_artifact_invisibility"))
+        self.nextthink = time + 60*5;
+    else
+        self.nextthink = time + 60;
+    self.think = SUB_regen;
 
     sound (other, CHAN_VOICE, self.noise, 1, ATTN_NORM);
     stuffcmd (other, "bf\n");
@@ -932,22 +907,21 @@ HEALTH BOX
 // T_Heal: add health to an entity, limiting health to max_health
 // "ignore" will ignore max_health limit
 //
-float (entity e, float healamount, float ignore) T_Heal =
+float (entity e, float healpoints, float ignore) T_Heal =
 {
     if (e.health <= 0)
-        return 0;
+        return FALSE;
     if ((!ignore) && (e.health >= other.max_health))
-        return 0;
-    healamount = ceil(healamount);
+        return FALSE;
 
-    e.health = e.health + healamount;
+    e.health = e.health + ceil(healpoints);
     if ((!ignore) && (e.health >= other.max_health))
         e.health = other.max_health;
 
-// PM:  In Blood, life seed and cheats maxed out health at 200.
+    // In Blood, life seed and cheats maxed out health at 200
     if (e.health > 200)
         e.health = 200;
-    return 1;
+    return TRUE;
 };
 
 /*QUAKED item_health (.3 .3 1) (0 0 0) (32 32 32) rotten megahealth
@@ -955,8 +929,6 @@ Health box. Normally gives 50 points.
 Rotten box heals 20 points,
 megahealth will add 100 health.
 */
-.float  healamount, healtype;
-
 void() health_touch =
 {
     local   float amount;
@@ -991,12 +963,8 @@ void() health_touch =
     self.model = string_null;
     self.solid = SOLID_NOT;
 
-    // Do NOT rot health after taking life seed.
-    if (gametype > GAME_COOPERATIVE)
-    {
-        self.nextthink = time + 20;
-        self.think = SUB_regen;
-    }
+    self.nextthink = time + 20;
+    self.think = SUB_regen;
 
     activator = other;
     SUB_UseTargets();       // fire all targets / killtargets
@@ -1149,8 +1117,7 @@ void() armor_touch =
 
     self.solid = SOLID_NOT;
     self.model = string_null;
-    if (gametype > GAME_COOPERATIVE)
-        self.nextthink = time + 20;
+    self.nextthink = time + 20;
     self.think = SUB_regen;
 
     Sprint(other, PRINT_LOW, "Picked up ");
@@ -1300,7 +1267,7 @@ void() weapon_touch =
     if (!(other.flags & FL_CLIENT))
         return;
 
-    if (cvar ("g_weaponStay") || gametype == GAME_COOPERATIVE)  // Always leave weapons on SP coop
+    if (cvar ("g_weaponStay"))
         leave = 1;
     else
         leave = 0;
@@ -1417,8 +1384,7 @@ void() weapon_touch =
     // remove it in single player, or setup for respawning in deathmatch
     self.model = string_null;
     self.solid = SOLID_NOT;
-    if (gametype > GAME_COOPERATIVE)
-        self.nextthink = time + 30;
+    self.nextthink = time + 30;
     self.think = SUB_regen;
 
     activator = other;
@@ -1853,11 +1819,10 @@ void() ammo_touch =
     W_SetCurrentAmmo ();
     self = temp;
 
-    // remove it in single player, or setup for respawning in deathmatch
+    // setup for respawning
     self.model = string_null;
     self.solid = SOLID_NOT;
-    if (gametype > GAME_COOPERATIVE)
-        self.nextthink = time + 30;
+    self.nextthink = time + 30;
 
     self.think = SUB_regen;
 
@@ -2075,11 +2040,8 @@ local float     best;
     // Changed to .items2 since that is where key bits are stored.
     other.items2 = other.items2 | self.items2;
 
-    if (gametype != GAME_COOPERATIVE)
-    {
-        self.solid = SOLID_NOT;
-        self.model = string_null;
-    }
+    self.solid = SOLID_NOT;
+    self.model = string_null;
 
     activator = other;
     SUB_UseTargets();               // fire all targets / killtargets
@@ -2225,17 +2187,17 @@ void() item_sigil =
     }
     if (self.spawnflags & 2)
     {
-        precache_model2 ("progs/end2.mdl");
+        precache_model ("progs/end2.mdl");
         setmodel (self, "progs/end2.mdl");
     }
     if (self.spawnflags & 4)
     {
-        precache_model2 ("progs/end3.mdl");
+        precache_model ("progs/end3.mdl");
         setmodel (self, "progs/end3.mdl");
     }
     if (self.spawnflags & 8)
     {
-        precache_model2 ("progs/end4.mdl");
+        precache_model ("progs/end4.mdl");
         setmodel (self, "progs/end4.mdl");
     }
 

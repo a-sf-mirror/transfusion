@@ -5,7 +5,7 @@
 
    <title> QBlood manual
    <author> Mathieu Olivier <tt>&lt;elric@planetblood.com&gt;</tt>
-   <date>v?.?.? (development), December 19, 2001
+   <date>v?.?.? (development), January 1st, 2002
    <abstract>
       This manual covers <url url="http://www.planetblood.com/qblood/"
       name="qBlood"> installation and usage.
@@ -42,12 +42,10 @@
 
    <sect><heading> Basic usage<p>
       <sect1>Game types<p>
-         QBlood supports 5 game types:
+         QBlood supports 3 game types:
          <itemize>
-            <item> Single player game (deathmatch = 0, and coop = 0)<p>
-            <item> Cooperative game (deathmatch = 0, and coop = 1)<p>
-            <item> BloodBath / DeathMatch (deathmatch = 1, and teamplay = 0)<p>
-            <item> Team BloodBath (deathmatch = 1, and teamplay not 0). If you
+            <item> BloodBath / DeathMatch (deathmatch not 2, and teamplay = 0)<p>
+            <item> Team BloodBath (deathmatch not 2, and teamplay not 0). If you
             set teamplay to 2, team members can damage each other.<p>
             <item> Capture The Flag (deathmatch = 2). This game type can't be
             set via the interface. You need to use the console. As with TBB,
@@ -65,6 +63,7 @@
             <item> impulses 14 and 15: select previous/next item<p>
             <item> impulse 16: view the current value of the next armor type<p>
             <item> impulse 20: become an observer (only allowed when dead)<p>
+            <item> impulse 50: enter the <ref id="voting menu" name="voting menu"><p>
             <item> impulse 100: add a bot (to the red team if available)<p>
             <item> impulse 101: add a bot (to the blue team if available)<p>
             <item> impulse 102: kick a bot<p>
@@ -130,6 +129,23 @@
          secondes.
          <tag>Reflective Shots</tag> ...
       </descrip>
+   </sect>
+
+   <!-- Voting menu -->
+
+   <sect><heading>Voting menu<label id="voting menu"><p>
+      The voting menu is a mecanism that allows players to change server
+      settings via votes. For the moment, only map and game type selections are
+      available.
+
+      To enter the menu, you must use "impulse 50" while idle. The menu is
+      entirely based on impulse commands. To enter into a submenu or vote for
+      something, just send the impulse number corresponding to your choice.
+      Once you have voted, you will be exited from the menu automatically, but
+      until you vote or you explicitely exit the menu, all your impulses will
+      be handled by it.
+
+      Observers don't have access to the menu.
    </sect>
 
    <!-- FAQ -->

@@ -21,6 +21,25 @@
 #include "common.qh"
 
 
+// No Single Player mode, so no monster
+void() monster_army             = { remove (self); };
+void() monster_boss             = { remove (self); };
+void() monster_demon1           = { remove (self); };
+void() monster_dog              = { remove (self); };
+void() monster_enforcer         = { remove (self); };
+void() monster_fish             = { remove (self); };
+void() monster_hell_knight      = { remove (self); };
+void() monster_knight           = { remove (self); };
+void() monster_ogre             = { remove (self); };
+//void() monster_ogre_marksman    = { remove (self); };  // FIXME: does he appear in any map?
+void() monster_oldone           = { remove (self); };
+void() monster_shalrath         = { remove (self); };
+void() monster_shambler         = { remove (self); };
+void() monster_tarbaby          = { remove (self); };
+void() monster_wizard           = { remove (self); };
+void() monster_zombie           = { remove (self); };
+
+
 /*QUAKED info_null (0 0.5 0) (-4 -4 -4) (4 4 4)
 Used as a positional target for spotlights, etc.
 */
@@ -310,7 +329,7 @@ void() misc_explobox2 =
 
     self.solid = SOLID_BBOX;
     self.movetype = MOVETYPE_NONE;
-    precache_model2 ("progs/barrel.mdl"); // maps/b_exbox2.bsp
+    precache_model ("progs/barrel.mdl"); // maps/b_exbox2.bsp
     setmodel (self, "progs/barrel.mdl"); // maps/b_exbox2.bsp");
     setsize (self, '-16 -16 0', '16 16 32');
     precache_sound ("weapons/napalm/explodfl.wav");
@@ -440,7 +459,7 @@ void() trap_spikeshooter =
     self.use = spikeshooter_use;
     if (self.spawnflags & SPAWNFLAG_LASER)
     {
-        precache_model2 ("progs/laser.mdl");
+        precache_model ("progs/laser.mdl");
 
         precache_sound ("weapons/tesla/tessngfr.wav");
         precache_sound ("ambience/spark.wav");
@@ -527,127 +546,6 @@ void() sentry_detect_switch1 =
     sentry_detect_init ("locks/switch1.wav");
 };
 
-
-/*
-===============================================================================
-
-
-===============================================================================
-*/
-
-
-void() make_bubbles;
-void() bubble_remove;
-void() bubble_bob;
-
-/*QUAKED air_bubbles (0 .5 .8) (-8 -8 -8) (8 8 8)
-
-testing air bubbles
-*/
-
-void() air_bubbles =
-
-{
-    if (gametype > GAME_COOPERATIVE)
-    {
-        remove (self);
-        return;
-    }
-    precache_model ("progs/s_bubble.spr");
-    self.nextthink = time + 1;
-    self.think = make_bubbles;
-};
-
-void() make_bubbles =
-{
-local entity    bubble;
-
-    bubble = spawn();
-    setmodel (bubble, "progs/s_bubble.spr");
-    setorigin (bubble, self.origin);
-    bubble.movetype = MOVETYPE_NOCLIP;
-    bubble.solid = SOLID_NOT;
-    bubble.velocity = '0 0 15';
-    bubble.nextthink = time + 0.5;
-    bubble.think = bubble_bob;
-    bubble.touch = bubble_remove;
-    bubble.classname = "bubble";
-    bubble.frame = 0;
-    bubble.cnt = 0;
-    setsize (bubble, '-8 -8 -8', '8 8 8');
-    self.nextthink = time + random() + 0.5;
-    self.think = make_bubbles;
-};
-
-void() bubble_split =
-{
-local entity    bubble;
-    bubble = spawn();
-    setmodel (bubble, "progs/s_bubble.spr");
-    setorigin (bubble, self.origin);
-    bubble.movetype = MOVETYPE_NOCLIP;
-    bubble.solid = SOLID_NOT;
-    bubble.velocity = self.velocity;
-    bubble.nextthink = time + 0.5;
-    bubble.think = bubble_bob;
-    bubble.touch = bubble_remove;
-    bubble.classname = "bubble";
-    bubble.frame = 1;
-    bubble.cnt = 10;
-    setsize (bubble, '-8 -8 -8', '8 8 8');
-    self.frame = 1;
-    self.cnt = 10;
-    if (self.waterlevel != 3)
-        remove (self);
-};
-
-void() bubble_remove =
-{
-    if (other.classname == self.classname)
-    {
-//      dprint ("bump");
-        return;
-    }
-    remove(self);
-};
-
-void() bubble_bob =
-{
-local float     rnd1, rnd2, rnd3;
-local vector    vtmp1, modi;
-
-    self.cnt = self.cnt + 1;
-    if (self.cnt == 4)
-        bubble_split();
-    if (self.cnt == 20)
-        remove(self);
-
-    rnd1 = self.velocity_x + (-10 + (random() * 20));
-    rnd2 = self.velocity_y + (-10 + (random() * 20));
-    rnd3 = self.velocity_z + 10 + random() * 10;
-
-    if (rnd1 > 10)
-        rnd1 = 5;
-    if (rnd1 < -10)
-        rnd1 = -5;
-
-    if (rnd2 > 10)
-        rnd2 = 5;
-    if (rnd2 < -10)
-        rnd2 = -5;
-
-    if (rnd3 < 10)
-        rnd3 = 15;
-    if (rnd3 > 30)
-        rnd3 = 25;
-
-    self.velocity_x = rnd1;
-    self.velocity_y = rnd2;
-    self.velocity_z = rnd3;
-
-    self.nextthink = time + 0.5;
-    self.think = bubble_bob;
-};
 
 /*~>~<~>~<~>~<~>~<~>~<~>~<~>~<~>~<~>~<~>~<~>~<~>~<~>~<~>~<~>~<~>~<~>~<~>
 ~>~<~>~<~>~<~>~<~>~<~>~<~>~<~>~<~>~<~>~<~>~<~>~<~>~<~>~<~>~<~>~<~>~<~>~*/
@@ -768,7 +666,7 @@ void() brik_touch =
     if (self.attack_finished < time && pointcontents (self.origin) > -3)
     {
         // bounce sound
-        if(self.noise1) // if noise has been set, sound is enabled so play sounds
+        if (self.noise1) // if noise has been set, sound is enabled so play sounds
         {
             if (self.cnt == 1)
                 sound (self, CHAN_AUTO, self.noise1, 1, ATTN_NORM);
@@ -800,14 +698,12 @@ void(string gibname, float dm) ThrowRubble=
         new.cnt = 2;
 
     // set the skin of the piece of rubble/glass
-    if (self.skin <= 4)
-        new.skin = self.skin; // rubble models have 4 skins
-    
-    else if (self.skin == 5) //glass model has 2 skins, so if mapper sets skin to "5", use first skin in model
-         new.skin = 0;
+    if (self.skin <= 4)  // rubble models have 4 skins
+        new.skin = self.skin;
+    else
+        new.skin = self.skin - 5;   // glass model has 2 skins, so if mapper sets skin to "5", use first skin in model
+                                    // else if mapper has chosen skin 6, so use skin1 in the actual model
 
-    else new.skin = 1; //mapper has chosen skin 6, so use skin1 in the actual model
-    
     // set the proper noise
     if (self.noise1)
     {
@@ -858,7 +754,7 @@ void () wall_killed =
             self.dest_y = (random() * 100) - 50;
             self.dest_z = (random() * 100);
 
-            if (self.skin == 5 || self.skin == 6)
+            if (self.skin > 4)
             {
                 ThrowRubble ("progs/glass1.mdl", self.health);
                 ThrowRubble ("progs/glass2.mdl", self.health);
@@ -941,7 +837,7 @@ void() exploding_wall =
     // precache rubble models (two models used since red trails on gibs, grey on other rubble)
     if (! (self.spawnflags & 16))  // if rubble is not turned off
     {
-        if (self.skin == 5 || self.skin == 6)  // if skin is set to glass, use the glass shards instead - d.turner
+        if (self.skin > 4)  // if skin is set to glass, use the glass shards instead - d.turner
         {
             precache_model ("progs/glass1.mdl");
             precache_model ("progs/glass2.mdl");
@@ -962,7 +858,7 @@ void() exploding_wall =
         // self.noise1 - rubble bounce 1
         // self.noise2 - rubble bounce 2
 
-        if (self.skin == 5 || self.skin == 6)
+        if (self.skin > 4)
         {
             self.noise = "misc/glashit2.wav";
             self.noise1 = "misc/glashit3.wav";
@@ -1015,7 +911,7 @@ void() exploding_wall =
         self.takedamage = DAMAGE_NO;
     else
     {
-        self.takedamage = DAMAGE_YES;
+        self.takedamage = DAMAGE_AIM;
         if (! self.health)
             self.health = 15;  // set default health if none set
     }
@@ -1803,18 +1699,17 @@ For optimzation testing, starts a lot of sounds.
 */
 
 void() misc_noisemaker =
-
 {
-    precache_sound2 ("enforcer/enfire.wav");
-    precache_sound2 ("enforcer/enfstop.wav");
-    precache_sound2 ("enforcer/sight1.wav");
-    precache_sound2 ("enforcer/sight2.wav");
-    precache_sound2 ("enforcer/sight3.wav");
-    precache_sound2 ("enforcer/sight4.wav");
-    precache_sound2 ("enforcer/pain1.wav");
-    precache_sound2 ("enforcer/pain2.wav");
-    precache_sound2 ("enforcer/death1.wav");
-    precache_sound2 ("enforcer/idle1.wav");
+    precache_sound ("enforcer/enfire.wav");
+    precache_sound ("enforcer/enfstop.wav");
+    precache_sound ("enforcer/sight1.wav");
+    precache_sound ("enforcer/sight2.wav");
+    precache_sound ("enforcer/sight3.wav");
+    precache_sound ("enforcer/sight4.wav");
+    precache_sound ("enforcer/pain1.wav");
+    precache_sound ("enforcer/pain2.wav");
+    precache_sound ("enforcer/death1.wav");
+    precache_sound ("enforcer/idle1.wav");
 
     self.nextthink = time + 0.1 + random();
     self.think = noise_think;

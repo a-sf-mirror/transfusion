@@ -129,16 +129,16 @@ void() bot_dodge_stuff =
             }
         }
     }
-    if (gametype == GAME_COOPERATIVE)
+    foe = player_head;
+    while(foe)
     {
-        if (!self.enemy)
+        if(foe != self)
         {
-            foe = findradius(self.origin, foedist);
-            while(foe)
+            if (foe.modelindex != 0)
             {
-                if(foe.flags & FL_MONSTER)
+                if (foe.health > 0)
                 {
-                    if(foe.health > 0)
+                    if (!(gametype >= GT_TEAM_BLOODBATH && self.team == foe.team))
                     {
                         flen = vlen(foe.origin - self.origin);
                         if (flen < foedist)
@@ -146,46 +146,12 @@ void() bot_dodge_stuff =
                             tsz = bot_size_player(foe);
                             if (tsz < foesz)
                             {
-                                if (fisible(foe))
+                                if (fov(foe) || foe.b_sound > time || self.b_skill == 3)
                                 {
-                                    self.enemy = foe;
-                                    foedist = flen;
-                                    foesz = tsz;
-                                }
-                            }
-                        }
-                    }
-                }
-                foe = foe.chain;
-            }
-        }
-    }
-    else
-    {
-        foe = player_head;
-        while(foe)
-        {
-            if(foe != self)
-            {
-                if (foe.modelindex != 0)
-                {
-                    if (foe.health > 0)
-                    {
-                        if (!(gametype >= GAME_TEAM_BLOODBATH && self.team == foe.team))
-                        {
-                            flen = vlen(foe.origin - self.origin);
-                            if (flen < foedist)
-                            {
-                                tsz = bot_size_player(foe);
-                                if (tsz < foesz)
-                                {
-                                    if (fov(foe) || foe.b_sound > time || self.b_skill == 3)
+                                    if (fisible(foe))
                                     {
-                                        if (fisible(foe))
-                                        {
-                                            self.enemy = foe;
-                                            foedist = vlen(foe.origin - self.origin);
-                                        }
+                                        self.enemy = foe;
+                                        foedist = vlen(foe.origin - self.origin);
                                     }
                                 }
                             }
@@ -193,8 +159,8 @@ void() bot_dodge_stuff =
                     }
                 }
             }
-            foe = foe._next;
         }
+        foe = foe._next;
     }
 };
 
@@ -371,8 +337,7 @@ void() bot_fight_style =
         {
             // try to avoid shooting teammates
             if (trace_ent.classname == "player")
-                if ((trace_ent.team == self.team && gametype >= GAME_TEAM_BLOODBATH) ||
-                    (gametype == GAME_COOPERATIVE))
+                if (trace_ent.team == self.team && gametype >= GT_TEAM_BLOODBATH)
                     return;
             bot_shoot();
         }
@@ -387,7 +352,7 @@ void() bot_fight_style =
 
         if (foesz > mysz)
         {
-            if (gametype >= GAME_TEAM_BLOODBATH)
+            if (gametype >= GT_TEAM_BLOODBATH)
             {
                 if (random() < 0.02)
                 {
@@ -416,7 +381,7 @@ void() bot_fight_style =
             else
                 frik_walkmove(v1);
         }
-        else if (!self.enemy.flags & FL_MONSTER)
+        else
         {
             if (foedist + 32 <  v_x)
                 frik_walkmove(self.origin - org);

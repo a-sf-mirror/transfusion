@@ -21,14 +21,10 @@
 #include "common.qh"
 
 
-void() FoundTarget;
-
-
 void() T_MissileTouch;
 void() info_player_start;
 void(entity attacker) ClientObituary;
 void(entity inflictor, entity attacker, float damage, entity ignore, string dtype) T_RadiusDamage;
-void() monster_death_use;
 
 
 //============================================================================
@@ -98,20 +94,23 @@ void(entity targ, entity attacker) Killed =
 
     self.enemy = attacker;
 
-// bump the monster counter
-    if (self.flags & FL_MONSTER)
-    {
-        killed_monsters = killed_monsters + 1;
-        WriteByte (MSG_ALL, SVC_KILLEDMONSTER);
-    }
-
     ClientObituary (attacker);
 
     self.takedamage = DAMAGE_NO;
     self.touch = SUB_Null;
     self.effects = 0;
 
-    monster_death_use();
+    // fall to ground
+    if (self.flags & FL_FLY)
+        self.flags = self.flags - FL_FLY;
+    if (self.flags & FL_SWIM)
+        self.flags = self.flags - FL_SWIM;
+
+    if (self.target)
+    {
+        activator = self.enemy;
+        SUB_UseTargets ();
+    }
 
     self.th_die ();
 
@@ -127,43 +126,8 @@ The damage is coming from inflictor, but get mad at attacker
 This should be the only function that ever reduces health.
 ============
 */
-// PM:  Support function that checks if both sides are friendly enough.
-float(entity victim, entity attacker) PM_MonsterAlly =
-{
-    // Check if target should fight back.
-    if (victim == attacker.enemy)
-        if (attacker.flags & FL_MONSTER)
-            return FALSE;   // Always defend against deliberate attack.
-    if (victim.classname == "monster_army")
-        return FALSE;   // Standard -- Grunts attack anything.
-    if (victim.classname != attacker.classname)
-        return FALSE;   // Standard -- Different species don't get along.
-
-    // No reason to get angry.
-    return TRUE;
-};
-
-// PM:  Support function to check if target should fight the attacker.
-float(entity victim, entity attacker) PM_GetMad =
-{
-    // Check if fighting back is even possible.
-    if (victim == attacker)
-        return FALSE;   // Don't attack itself.
-    if (victim.enemy == attacker)
-        return FALSE;   // Already mad at attacker.
-    if (attacker.health <= 0)
-        return FALSE;   // Attacker is already dead.
-    if (attacker.classname == "monster_boss")
-        return FALSE;   // Chthon is immune to normal damage.
-    if (PM_MonsterAlly (victim, attacker))
-        return FALSE;   // Both sides are friendly.
-
-    // Fight back!
-    return TRUE;
-};
-
 // PM:  Blood's armor damage protection algorithm, or close to it.
-float(entity targ, float armour, float damage) PM_ArmorSave =
+float(entity targ, float armour, float damage) ArmorSave =
 {
     local   float   hi, lo, save, add;
 
@@ -223,18 +187,6 @@ void(entity targ, entity inflictor, entity attacker, float damage, float dflags,
     damage_attacker = attacker;
     damage_inflictor = inflictor;
 
-    if (dflags & DF_RADIUS)
-    {
-        // shambler takes half damage from all explosions
-        if (targ.classname == "monster_shambler")
-            damage = damage * 0.5;
-    }
-
-    // Players take more damage at higher skill levels.
-    if (gametype <= GAME_COOPERATIVE)
-        if (targ.classname == "player")
-            damage = damage * (1 + (cvar("skill") * 0.4));
-
     // Save fractions for later use.
     take = damage + targ.remain_dmg;
     damage = floor (take);
@@ -254,31 +206,6 @@ void(entity targ, entity inflictor, entity attacker, float damage, float dflags,
             // Target is most likely a player.
             targ.velocity = targ.velocity + dir;
         }
-        else if ((targ.flags & (FL_MONSTER|FL_SWIM|FL_FLY)) == FL_MONSTER)
-        {
-            // Target is a walkmonster.
-            if (targ.flags & FL_ONGROUND)
-            {
-                // Remove onground so velocity can affect monster.
-                targ.velocity = dir;
-                targ.flags = targ.flags - FL_ONGROUND;
-
-                if (damage > 30)
-                {
-                    // If big enough hit, pop the target up a bit.
-                    local   float   up;
-
-                    up = 150 + random() * 100;
-                    if (targ.velocity_z < up)
-                        targ.velocity_z = up;
-                }
-            }
-            else
-            {
-                // In mid-air, so simply add to current velocity.
-                targ.velocity = targ.velocity + dir;
-            }
-        }
      }
 
     protected = FALSE;
@@ -290,11 +217,11 @@ void(entity targ, entity inflictor, entity attacker, float damage, float dflags,
         // Save damage based on the target's armor level, but do not apply
         // the savings to the armor yet... in case target is invulnerable.
         if (dflags & DF_FIRE)
-            save = PM_ArmorSave (targ, targ.armor_fire, damage);
+            save = ArmorSave (targ, targ.armor_fire, damage);
         else if (dflags & DF_BODY)
-            save = PM_ArmorSave (targ, targ.armor_body, damage);
+            save = ArmorSave (targ, targ.armor_body, damage);
         else if (dflags & DF_MIND)
-            save = PM_ArmorSave (targ, targ.armor_mind, damage);
+            save = ArmorSave (targ, targ.armor_mind, damage);
         take = ceil(damage-save);
 
         // Check for godmode or invincibility.
@@ -312,20 +239,10 @@ void(entity targ, entity inflictor, entity attacker, float damage, float dflags,
             protected = TRUE;
         }
         // Team play avoidance.
-        else if (gametype >= GAME_TEAM_BLOODBATH && ! friendlyfire &&
+        else if (gametype >= GT_TEAM_BLOODBATH && ! friendlyfire &&
                  targ != attacker && attacker.classname == "player" && inflictor.classname != "door")
         {
-            #ifdef QUAKEWORLD
-            local   string  attackerteam, targteam;
-
-            //ZOID 12-13-96: self.team doesn't work in QW.  Use keys
-            attackerteam = infokey(attacker, "team");
-            targteam = infokey(targ, "team");
-
-            if (targteam == attackerteam && attackerteam != "")
-            #else
             if (targ.team == attacker.team)
-            #endif
                 protected = TRUE;
         }
     }
@@ -421,16 +338,6 @@ void(entity targ, entity inflictor, entity attacker, float damage, float dflags,
     // React to the damage.
     oldself = self;
     self = targ;
-
-    if ( (self.flags & FL_MONSTER) && attacker != world)
-        if (!(dflags & DF_MIN_PAIN) || !self.enemy)
-            if (PM_GetMad (self, attacker))
-            {
-                if (self.enemy.classname == "player")
-                    self.oldenemy = self.enemy;
-                self.enemy = attacker;
-                FoundTarget ();
-            }
 
     if (self.th_pain)
     {

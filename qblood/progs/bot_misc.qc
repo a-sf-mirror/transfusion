@@ -43,97 +43,97 @@ string(float r) BotName =
     {
         self.b_pants = 11;
         self.b_shirt = 0;
-        return "Vincent";
+        return "Barker";
     }
     else if (r == 2)
     {
         self.b_pants = 1;
         self.b_shirt = 3;
-        return "Bishop";
+        return "Bloch";
     }
     else if (r == 3)
     {
         self.b_pants = 13;
         self.b_shirt = 2;
-        return "Nomad";
+        return "Bradbury";
     }
     else if (r == 4)
     {
         self.b_pants = 7;
         self.b_shirt = 6;
-        return "Hudson";
+        return "Campbell";
     }
     else if (r == 5)
     {
         self.b_pants = 12;
         self.b_shirt = 6;
-        return "Lore";
+        return "DeSade";
     }
     else if (r == 6)
     {
         self.b_pants = 4;
         self.b_shirt = 4;
-        return "Servo";
+        return "King";
     }
     else if (r == 7)
     {
         self.b_pants = 2;
         self.b_shirt = 5;
-        return "Gort";
+        return "Koontz";
     }
     else if (r == 8)
     {
         self.b_pants = 10;
         self.b_shirt = 3;
-        return "Kryten";
+        return "Lee";
     }
     else if (r == 9)
     {
         self.b_pants = 9;
         self.b_shirt = 4;
-        return "Pimp Bot";
+        return "Lovecraft";
     }
     else if (r == 10)
     {
         self.b_pants = 4;
         self.b_shirt = 7;
-        return "Max";
+        return "McCammon";
     }
     else if (r == 11)
     {
         self.b_pants = 3;
         self.b_shirt = 11;
-        return "Marvin";
+        return "Poe";
     }
     else if (r == 12)
     {
         self.b_pants = 13;
         self.b_shirt = 12;
-        return "Erwin";
+        return "Saul";
     }
     else if (r == 13)
     {
         self.b_pants = 11;
         self.b_shirt = 2;
-        return "FrikBot";
+        return "Stine";
     }
     else if (r == 14)
     {
         self.b_pants = 0;
         self.b_shirt = 2;
-        return "Krosis";
+        return "Stoker";
     }
     else if (r == 15)
     {
         self.b_pants = 8;
         self.b_shirt = 9;
-        return "Gypsy";
+        return "Straub";
     }
     else if (r == 16)
     {
         self.b_pants = 5;
         self.b_shirt = 10;
-        return "Hal";
+        return "Wells";
     }
 };
 string () PickARandomName =

@@ -315,13 +315,9 @@ void() DynamicWaypoint =
         if (!editor)
             return;
     }
-// for speed sake, I won't have bots dynamic waypoint in coop
-    if (!self.ishuman)
-        if (gametype == GAME_COOPERATIVE)
-            return;
 
-// don't waypoint in single player
-    if (max_clients < 2)
+// don't waypoint in single player or if we're an observer (can fly)
+    if (max_clients < 2 || self.observer)
         return;
 // if you're dead
     else if (self.health <= 0)

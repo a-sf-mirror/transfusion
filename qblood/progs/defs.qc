@@ -260,11 +260,11 @@ void    end_sys_fields;         // flag for structure dumping
 //
 // globals
 //
-float   movedist;
 float   gameover;       // set when a rule exits
 
+string  nextmap;
+
 string  string_null;    // null string, nothing should be held here
-float   empty_float;
 
 #ifndef QUAKEWORLD
 entity  newmis;         // launch_spike sets this after spawning it
@@ -286,7 +286,7 @@ float skill;
 float friendlyfire;
 
 // USE THIS VARIABLE TO KNOW THE CURRENT GAME TYPE. The other ones are considered obsolete
-// Set once for the entire game (when the world is spawned). cf GAME_* values in common.qh
+// Set once for the entire game (when the world is spawned). cf GT_* values in common.qh
 float gametype;
 
 float intermission_running;
@@ -312,19 +312,32 @@ entity team2_lastspawn;
 //
 // world fields (FIXME: make globals)
 //
-.string     wad;
+.string     wad;        // FIXME: It doesn't seem to be used anymore
 .string     map;
 .float      worldtype;  // 0=medieval 1=metal 2=base
 
 //================================================
-
-.float      hit_z;
 
 .string     killtarget;
 
 //
 // combat
 //
+
+// Custom ammo.
+// NOTE:  The existing Quake ammo are used for the following weapons.
+//   ammo_shells  -> sawed-off shotgun
+//   ammo_nails   -> tommy sub-machinegun
+//   ammo_rockets -> napalm launcher (a.k.a. incinerator)
+//   ammo_cells   -> telsa cannon
+.float      ammo_flares;        // flare gun
+.float      ammo_tnt_bundle;    // standard dynamite
+.float      ammo_tnt_proxy;     // proxy bombs
+.float      ammo_tnt_remote;    // pipebombs
+.float      ammo_spray;         // spray can
+.float      ammo_voodoo;        // voodoo doll
+.float      ammo_leech;         // leech life
+
 .float      armor_fire;
 .float      armor_body;
 .float      armor_mind;
@@ -344,6 +357,15 @@ entity team2_lastspawn;
 
 .float      newweapon;      // used during the draw/holster weapon process
 
+
+//
+// Fire
+//
+.float      burn_time;
+.entity     burner;         // The flame generator linked on an entity
+.float      flare_time;     // Used so only one flare can burn per frame
+
+
 //
 // quakeed fields
 //
@@ -354,22 +376,12 @@ entity team2_lastspawn;
 //
 // monster ai
 //
-.void()     th_stand;
-.void()     th_walk;
-.void()     th_run;
-.void()     th_missile;
-.void()     th_melee;
 .void(entity attacker, float damage) th_pain;
 .void()     th_die;
 
-.entity     oldenemy;       // mad at this player before taking damage
-
 .float      speed;
 
-.float      lefty;
-
 .float      search_time;
-.float      attack_state;
 
 
 //
@@ -378,6 +390,11 @@ entity team2_lastspawn;
 #ifdef QUAKEWORLD
 .float      voided;
 #endif
+
+// Menu / voting system
+.float      menu_index;
+.float      vote_map;
+.float      vote_gametype;
 
 // Observer
 .float      observer;
@@ -397,6 +414,9 @@ entity team2_lastspawn;
 .float      attack_finished;
 .float      pain_finished;
 
+.float      healamount, healtype;
+.float      dmgtime;
+
 .float      invincible_finished;
 .float      invisible_finished;
 .float      akimbo_finished;
@@ -404,10 +424,7 @@ entity team2_lastspawn;
 
 .float      invincible_time, invincible_sound;
 .float      invisible_time, invisible_sound;
-.float      rad_time;
 .float      fly_sound;
-
-.float      axhitme;
 
 .float      show_hostile;   // set to time+0.2 whenever a client fires a
                             // weapon or takes damage.  Used to alert
@@ -415,7 +432,6 @@ entity team2_lastspawn;
 .float      jump_flag;      // player jump flag
 .float      swim_flag;      // player swimming sound flag
 .float      air_finished;   // when time > air_finished, start drowning
-.float      bubble_count;   // keeps track of the number of bubbles
 .string     deathtype;      // keeps track of how the player died
 
 //
@@ -423,8 +439,6 @@ entity team2_lastspawn;
 //
 .string     mdl;
 .vector     mangle;         // angle at start
-
-.vector     oldorigin;      // only used by secret door
 
 .float      t_length, t_width;
 
@@ -479,11 +493,7 @@ entity team2_lastspawn;
 //
 // sounds
 //
-.float      waitmin, waitmax;
 .float      distance;
-.float      volume;
-
-
 
 
 //===========================================================================

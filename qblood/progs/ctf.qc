@@ -334,7 +334,7 @@ void() place_flag = {
 void() item_flag_team1 =
 {
     // If CTF is not the current mode
-    if (gametype != GAME_CAPTURE_THE_FLAG)
+    if (gametype != GT_CAPTURE_THE_FLAG)
     {
         remove(self);
         return;
@@ -361,7 +361,7 @@ void() item_flag_team1 =
 void() item_flag_team2 =
 {
     // If CTF is not the current mode
-    if (gametype != GAME_CAPTURE_THE_FLAG)
+    if (gametype != GT_CAPTURE_THE_FLAG)
     {
         remove(self);
         return;
@@ -426,7 +426,7 @@ Only appears in CTF teamplay
 */
 void() func_ctf_wall =
 {
-    if (gametype != GAME_CAPTURE_THE_FLAG)
+    if (gametype != GT_CAPTURE_THE_FLAG)
     {
         remove(self);
         return;

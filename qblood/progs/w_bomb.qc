@@ -468,7 +468,6 @@ void() W_ChargeBomb =
         Sprint (self, PRINT_LOW, "Bomb dropped\n");
         self.charge = 0;    // Make sure it's dropped, not thrown
         W_Attack ();
-        return;
     }
 };
 
@@ -494,8 +493,7 @@ void() GrenadeExplode =
 
     if (self.netname == "Napalm Ball")
     {
-        self.owner = self.oldenemy;
-        ThrowEmbers (4);
+        ThrowEmbers (2);
         local   float   radius, damage, burn;
         radius = self.dmg + 40;
         damage = self.dmg / 6;
@@ -667,7 +665,7 @@ void() ProximBombCheck =
     while (thing)
     {
         // If it's a player or a monster, explode in 400 msec
-        if (thing.classname == "player" || (thing.flags & FL_MONSTER))
+        if (thing.classname == "player")
         {
             sound (self, CHAN_WEAPON, "weapons/tnt/proxdet.wav", 1, ATTN_NORM);
             self.pausetime = time + 0.4;
@@ -733,7 +731,6 @@ GrenadeTouch
 */
 void() GrenadeTouch =
 {
-// PM:  Removed dynamite stuff.
     if (self.velocity == '0 0 0')
         self.avelocity = '0 0 0';
 };
@@ -745,16 +742,9 @@ void() DynaTouch =
     // Normal grenades are the only ones which can explode on touch
     if (self.style == TNT_TYPE_NORMAL)
     {
-        local   float   blow;
-
-        blow = TRUE;
-
         // Rebound if it hits the ceiling.  Otherwise, explode.
         traceline (self.origin - self.dest*4, self.origin + self.dest*16, TRUE, self);
-        if (trace_fraction < 1 && trace_plane_normal_z < 0)
-            blow = FALSE;
-
-        if (blow)
+        if (trace_fraction == 1 || trace_plane_normal_z >= 0)
         {
             GrenadeExplode ();
             return;
@@ -805,7 +795,7 @@ void() Bomb_Fire =
         // If we have at least one full spray can, we use it
         if (self.currentammo >= 48)
             self.ammo_spray = self.ammo_spray - 48;
-        // Else, we burns our last one
+        // Else, we burn our last one
         else
             self.ammo_spray = 0;
 
@@ -851,18 +841,16 @@ void() Bomb_Fire =
     if (!self.charge)
         newmis.velocity = '0 0 0';
 
-    newmis.angles = vectoangles(newmis.velocity);
     newmis.touch = GrenadeTouch;
 
     // Explodes as soon as it takes 1 point of damage
-    newmis.takedamage = DAMAGE_YES;
+    newmis.takedamage = DAMAGE_AIM;
     newmis.health = 1;
     newmis.th_die = GrenadeExplode;
 
     newmis.nextthink = 0.1;
     newmis.think     = BombThink;
 
-    setsize (newmis, '-1 -1 -1', '1 1 1');
     setorigin (newmis, self.origin);
 
     self.player_state = PS_FIRE;
@@ -910,14 +898,17 @@ void() Bomb_Fire =
         }
         else
         {
-            newmis.netname = "TNT";
-            newmis.dmg     = DMG_TNT;
-            newmis.model   = "progs/grd_bund.mdl";
+            newmis.netname   = "TNT";
+            newmis.dmg       = DMG_TNT;
+            newmis.model     = "progs/grd_bund.mdl";
             newmis.avelocity = '300 300 300';
+            newmis.angles    = vectoangles(newmis.velocity);
         }
     }
 
     setmodel (newmis, newmis.model);
+    setsize (newmis, '-10 -5 0', '10 5 10');
+
     // If we have no more dynamite, we "lose" the weapon
     // (expect for remote detonators: we always have the remote)
     if (self.currentammo == 0 && self.weapon != IT_REMOTE_DETONATOR)
@@ -1104,7 +1095,16 @@ void() Remote_Draw =
     Remote_UpdateView ();
 
     self.attack_finished = time + 0.5;
-    player_remotedraw1 ();
+
+    // If we have just the remote
+    if (self.currentammo == 0)
+    {
+        // FIXME: we should have a "half-draw" animation for this
+        self.weaponframe = $remote_fire1;
+        self.player_state = PS_HOLD_FIRE;
+    }
+    else
+        player_remotedraw1 ();
 };
 
 

@@ -145,7 +145,7 @@ void() FlareThink =
 
         // Do burn damage if not already burning.
         if (!self.enemy.burner)
-            PM_FireDamage (self.enemy, self, self.owner);
+            FireDamage (self.enemy, self, self.owner);
     }
 
     self.nextthink = nextframe;
@@ -179,32 +179,8 @@ void() FlareTouch =
     // hit something that bleeds
     if (other.takedamage)
     {
-        if (other.flags & FL_MONSTER)
-        {
-            // Change flare properties so it can stick without interference.
-            self.velocity   = '0 0 0';
-            self.solid      = SOLID_NOT;
-            self.movetype   = MOVETYPE_NONE;
-            self.enemy      = other;
-            self.angles     = '180 0 0';    // Turn flame upside-down.
-
-            // Find difference of angles between the directions of the
-            // enemy and the flare.
-            self.dest   = other.origin + (other.mins + other.maxs)*0.5;
-            self.dest   = normalize(self.origin - self.dest);
-            self.dest   = vectoangles (self.dest);
-            self.dest   = self.dest - other.angles;
-
-            // Make the flame stick to its target.
-            FlareStick ();
-            self.nextthink  = 0.1;
-            self.think      = FlareThink;
-
-            return;
-        }
-
         // Just set the target on fire.
-        PM_BurnDamage (other, self, 0, self.dmg);
+        BurnDamage (other, self, 0, self.dmg);
     }
 
     FlareSpark ();   // Throw a few sparks.
@@ -281,14 +257,14 @@ void() AltFlareTouch =
     BurnRadius (self, self.dmg, self.cnt, other);
     self.origin = self.origin - 8*normalize(self.velocity);
     if (other.takedamage)
-        PM_BurnDamage (other, self, self.dmg, self.cnt);
+        BurnDamage (other, self, self.dmg, self.cnt);
 
     // Make some fire.
     self.solid = SOLID_NOT;     // So embers can't touch 'self'.
-    ThrowEmbers (self.count);
+    ThrowEmbers (floor (self.count * 0.5));
     PsychoCaleb (self.owner);
     sound (self, CHAN_AUTO, "weapons/napalm/explodfs.wav", 1, ATTN_NORM);
-    PM_BecomeOldExplosion ();
+    BecomeOldExplosion ();
 };
 
 

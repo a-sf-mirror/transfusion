@@ -167,6 +167,10 @@ void() player_akteslaholster4 = [$shotatt1, player_run            ] { W_DrawWeap
 
 //============================================================================
 
+#define TESLA_NORMALJOLT 0
+#define TESLA_BIGJOLT    1
+
+
 /*
 ============
 Tesla_JoltTouch
@@ -197,7 +201,7 @@ void() Tesla_JoltTouch =
     if (other.takedamage)
         T_Damage (other, self, self.owner, self.dmg, DF_BODY, "tesla");
 
-    if (self.style)
+    if (self.style == TESLA_BIGJOLT)
     {
         // Alt-fire touch.
         T_RadiusDamage (self, self.owner, self.dmg, other, "tesla");
@@ -263,23 +267,20 @@ void(vector org, vector dir, float mspeed) Tesla_LaunchJolt =
     {
         jolt.dmg    = 170;
         jolt.model  = "progs/bolt2.mdl";
-        jolt.style  = 1;
-	jolt.skin   = 0;
+        jolt.style  = TESLA_BIGJOLT;
     }
     else
     {
         jolt.dmg       = 25;
         jolt.model     = "progs/bolt.mdl";
-	jolt.skin      = 0; //skin 0 is for tesla, skin 1 is for life leech
         jolt.avelocity = '300 300 300';
-        jolt.style     = 0;
+        jolt.style     = TESLA_NORMALJOLT;
     }
     jolt.touch      = Tesla_JoltTouch;
     jolt.nextthink  = time + (8000 / mspeed);
     jolt.think      = SUB_Remove;
 
     setmodel (jolt, jolt.model);
-    self.skin = jolt.skin;
     setsize (jolt, '-2 -2 -2', '2 2 2');
     setorigin (jolt, org);
 };

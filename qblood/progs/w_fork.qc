@@ -106,12 +106,15 @@ void(entity targ, vector org, float damage) TineHit =
             targ = self;
             org = self.origin;
         }
-        targ.axhitme = 1;
-        if ((targ.flags & FL_MONSTER) || targ.classname == "player")
+        if (targ.classname == "player")
+        {
             SpawnBlood (org, '0 0 0', damage);
+            SpawnBloodSpray (trace_ent, org);
+            sound (self, CHAN_WEAPON, "weapons/pitchfrk/pflesh.wav", 1, ATTN_NORM);
+        }
+        else
+            sound (self, CHAN_WEAPON, "weapons/pitchfrk/pstone.wav", 1, ATTN_NORM);
         AddMultiDamage (targ, damage);
-        SpawnBloodSpray (trace_ent, org);  // NOTE: doesn't spawn blood spray on non-living entities
-        sound (self, CHAN_WEAPON, "weapons/pitchfrk/pflesh.wav", 1, ATTN_NORM);
     }
     else
     {

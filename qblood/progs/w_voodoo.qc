@@ -122,7 +122,7 @@ void(float damage) Voodoo_ApplyDamage =
     traceline (src, src + dir * 2048, FALSE, self);
 
     // If we had a target that can be damaged and seems alive
-    if (trace_fraction != 1.0 && trace_ent.takedamage && ((trace_ent.flags & FL_MONSTER) || trace_ent.classname == "player"))
+    if (trace_fraction != 1.0 && trace_ent.takedamage && trace_ent.classname == "player")
     {
         org = trace_endpos - dir*4;
 

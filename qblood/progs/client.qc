@@ -37,8 +37,6 @@ entity() CTF_Spawn;
 =============================================================================
 */
 
-string nextmap;
-
 float   intermission_exittime;
 
 /*QUAKED info_intermission (1 0.5 0.5) (-16 -16 -16) (16 16 16)
@@ -225,162 +223,6 @@ void() GotoNextMap =
 };
 
 
-void() ExitIntermission =
-{
-    // skip any text in deathmatch
-    if (gametype > GAME_COOPERATIVE)
-    {
-        GotoNextMap ();
-        return;
-    }
-
-    intermission_exittime = time + 1;
-    intermission_running = intermission_running + 1;
-
-    //
-    // run some text if at the end of an episode
-    //
-    if (intermission_running == 2)
-    {
-        if (world.model == "maps/e1m7.bsp")
-        {
-            WriteByte (MSG_ALL, SVC_CDTRACK);
-            WriteByte (MSG_ALL, 2);
-            WriteByte (MSG_ALL, 3);
-            if (!cvar("registered"))
-            {
-                WriteByte (MSG_ALL, SVC_FINALE);
-                WriteString (MSG_ALL, "As the corpse of the monstrous entity\n"
-                                      "Chthon sinks back into the lava whence\n"
-                                      "it rose, you grip the Rune of Earth\n"
-                                      "Magic tightly. Now that you have\n"
-                                      "conquered the Dimension of the Doomed,\n"
-                                      "realm of Earth Magic, you are ready to\n"
-                                      "complete your task in the other three\n"
-                                      "haunted lands of Quake. Or are you? If\n"
-                                      "you don't register Quake, you'll never\n"
-                                      "know what awaits you in the Realm of\n"
-                                      "Black Magic, the Netherworld, and the\n"
-                                      "Elder World!");
-            }
-            else
-            {
-                WriteByte (MSG_ALL, SVC_FINALE);
-                WriteString (MSG_ALL, "As the corpse of the monstrous entity\n"
-                                      "Chthon sinks back into the lava whence\n"
-                                      "it rose, you grip the Rune of Earth\n"
-                                      "Magic tightly. Now that you have\n"
-                                      "conquered the Dimension of the Doomed,\n"
-                                      "realm of Earth Magic, you are ready to\n"
-                                      "complete your task. A Rune of magic\n"
-                                      "power lies at the end of each haunted\n"
-                                      "land of Quake. Go forth, seek the\n"
-                                      "totality of the four Runes!");
-            }
-            return;
-        }
-        else if (world.model == "maps/e2m6.bsp")
-        {
-            WriteByte (MSG_ALL, SVC_CDTRACK);
-            WriteByte (MSG_ALL, 2);
-            WriteByte (MSG_ALL, 3);
-
-            WriteByte (MSG_ALL, SVC_FINALE);
-            WriteString (MSG_ALL, "The Rune of Black Magic throbs evilly in\n"
-                                  "your hand and whispers dark thoughts\n"
-                                  "into your brain. You learn the inmost\n"
-                                  "lore of the Hell-Mother; Shub-Niggurath!\n"
-                                  "You now know that she is behind all the\n"
-                                  "terrible plotting which has led to so\n"
-                                  "much death and horror. But she is not\n"
-                                  "inviolate! Armed with this Rune, you\n"
-                                  "realize that once all four Runes are\n"
-                                  "combined, the gate to Shub-Niggurath's\n"
-                                  "Pit will open, and you can face the\n"
-                                  "Witch-Goddess herself in her frightful\n"
-                                  "otherworld cathedral.");
-            return;
-        }
-        else if (world.model == "maps/e3m6.bsp")
-        {
-            WriteByte (MSG_ALL, SVC_CDTRACK);
-            WriteByte (MSG_ALL, 2);
-            WriteByte (MSG_ALL, 3);
-
-            WriteByte (MSG_ALL, SVC_FINALE);
-            WriteString (MSG_ALL, "The charred viscera of diabolic horrors\n"
-                                  "bubble viscously as you seize the Rune\n"
-                                  "of Hell Magic. Its heat scorches your\n"
-                                  "hand, and its terrible secrets blight\n"
-                                  "your mind. Gathering the shreds of your\n"
-                                  "courage, you shake the devil's shackles\n"
-                                  "from your soul, and become ever more\n"
-                                  "hard and determined to destroy the\n"
-                                  "hideous creatures whose mere existence\n"
-                                  "threatens the souls and psyches of all\n"
-                                  "the population of Earth.");
-            return;
-        }
-        else if (world.model == "maps/e4m7.bsp")
-        {
-            WriteByte (MSG_ALL, SVC_CDTRACK);
-            WriteByte (MSG_ALL, 2);
-            WriteByte (MSG_ALL, 3);
-
-            WriteByte (MSG_ALL, SVC_FINALE);
-            WriteString (MSG_ALL, "Despite the awful might of the Elder\n"
-                                  "World, you have achieved the Rune of\n"
-                                  "Elder Magic, capstone of all types of\n"
-                                  "arcane wisdom. Beyond good and evil,\n"
-                                  "beyond life and death, the Rune\n"
-                                  "pulsates, heavy with import. Patient and\n"
-                                  "potent, the Elder Being Shub-Niggurath\n"
-                                  "weaves her dire plans to clear off all\n"
-                                  "life from the Earth, and bring her own\n"
-                                  "foul offspring to our world! For all the\n"
-                                  "dwellers in these nightmare dimensions\n"
-                                  "are her descendants! Once all Runes of\n"
-                                  "magic power are united, the energy\n"
-                                  "behind them will blast open the Gateway\n"
-                                  "to Shub-Niggurath, and you can travel\n"
-                                  "there to foil the Hell-Mother's plots\n"
-                                  "in person.");
-            return;
-        }
-
-        GotoNextMap();
-    }
-
-    if (intermission_running == 3)
-    {
-        if (!cvar("registered"))
-        {
-            // shareware episode has been completed, go to sell screen
-            WriteByte (MSG_ALL, SVC_SELLSCREEN);
-            return;
-        }
-
-        if ( (serverflags&15) == 15)
-        {
-            WriteByte (MSG_ALL, SVC_FINALE);
-            WriteString (MSG_ALL, "Now, you have all four Runes. You sense\n"
-                                  "tremendous invisible forces moving to\n"
-                                  "unseal ancient barriers. Shub-Niggurath\n"
-                                  "had hoped to use the Runes Herself to\n"
-                                  "clear off the Earth, but now instead,\n"
-                                  "you will use them to enter her home and\n"
-                                  "confront her as an avatar of avenging\n"
-                                  "Earth-life. If you defeat her, you will\n"
-                                  "be remembered forever as the savior of\n"
-                                  "the planet. If she conquers, it will be\n"
-                                  "as if you had never been born.");
-            return;
-        }
-    }
-
-    GotoNextMap();
-};
-
 /*
 ============
 IntermissionThink
@@ -396,7 +238,7 @@ void() IntermissionThink =
     if (!self.button0 && !self.button1 && !self.button2)
         return;
 
-    ExitIntermission ();
+    GotoNextMap ();
 };
 
 /*
@@ -414,10 +256,7 @@ void() execute_changelevel =
     intermission_running = 1;
 
     // enforce a wait time before allowing changelevel
-    if (gametype <= GAME_COOPERATIVE)
-        intermission_exittime = time + 2;
-    else
-        intermission_exittime = time + 5;
+    intermission_exittime = time + 5;
 
     pos = FindIntermission ();
 
@@ -441,7 +280,7 @@ void() execute_changelevel =
     while (other != world)
     {
         #ifndef QUAKEWORLD
-        PM_KillBurner (other);
+        KillBurner (other);
         other.view_ofs = '0 0 0';
         other.angles = other.v_angle = pos.mangle;
         other.fixangle = TRUE;      // turn this way immediately
@@ -479,21 +318,12 @@ void() changelevel_touch =
         return;
     }
 
-    if (gametype != GAME_SINGLE_PLAYER)
-    {
-        Bprint (PRINT_HIGH, other.netname);
-        Bprint (PRINT_HIGH," checked out for good\n");
-    }
+    Bprint (PRINT_HIGH, other.netname);
+    Bprint (PRINT_HIGH," checked out for good\n");
 
     nextmap = self.map;
 
     SUB_UseTargets ();
-
-    if ((self.spawnflags & 1) && gametype <= GAME_COOPERATIVE)
-    {   // NO_INTERMISSION
-        GotoNextMap();
-        return;
-    }
 
     self.touch = SUB_Null;
 
@@ -525,32 +355,46 @@ void() trigger_changelevel =
 =============================================================================
 */
 
-void() set_suicide_frame;
+/*
+====================
+UpdatePlayerFrags
+
+Update the frag count of the player and his team
+====================
+*/
+void(entity player, float fragsToAdd) UpdatePlayerFrags =
+{
+    player.frags = player.frags + fragsToAdd;
+
+    if (gametype == GT_TEAM_BLOODBATH)
+    {
+        if (player.team == TEAM_COLOR1)
+            team1score = team1score + fragsToAdd;
+        else
+            team2score = team2score + fragsToAdd;
+
+        // Show scores
+        Bprint (PRINT_HIGH, "ÒÅÄº ");            // "RED: "
+        Bprint (PRINT_HIGH, ftos (team1score));
+        Bprint (PRINT_HIGH, " ¯ ÂÌÕÅº ");        // " / BLUE: "
+        Bprint (PRINT_HIGH, ftos (team2score));
+        Bprint (PRINT_HIGH, "\n");
+    }
+};
+
 
 // called by ClientKill and DeadThink
 void() respawn =
 {
-    if (gametype == GAME_COOPERATIVE)
-    {
-        // make a copy of the dead body for appearances sake
+    // make a copy of the dead body for appearances sake
+    if (self.classname != "observer")
         CloneCorpse (self);
-        // get the spawn parms as they were at level start
-        setspawnparms (self);
-        // respawn
-        PutClientInServer ();
-    }
-    else if (gametype != GAME_SINGLE_PLAYER)
-    {
-        // make a copy of the dead body for appearances sake
-        CloneCorpse (self);
-        // set default spawn parms
-        SetNewParms ();
-        // respawn
-        PutClientInServer ();
-    }
-    else
-        // restart the entire server
-        localcmd ("restart\n");
+
+    // set default spawn parms
+    SetNewParms ();
+
+    // respawn
+    PutClientInServer ();
 };
 
 
@@ -561,6 +405,7 @@ ClientKill
 Player entered the suicide command
 ============
 */
+void() set_suicide_frame;
 void() ClientKill =
 {
     // can't suicide when observer
@@ -575,7 +420,7 @@ void() ClientKill =
     #ifdef QUAKEWORLD
     logfrag (self, self);
     #endif
-    self.frags = self.frags - 2;    // extra penalty
+    UpdatePlayerFrags (self, -2);  // extra penalty
     respawn ();
 };
 
@@ -598,57 +443,35 @@ entity() SelectSpawnPoint =
     if (lastspawn)
         return lastspawn;
 
-    // If we're in a deathmatch
-    if (gametype > GAME_COOPERATIVE)
+    local float totalspots;
+
+    // If it's a CTF game, try to spawn on one of the team's points
+    if (gametype == GT_CAPTURE_THE_FLAG)
     {
-        local float totalspots;
-
-        // If it's a CTF game, try to spawn on one of the team's points
-        if (gametype == GAME_CAPTURE_THE_FLAG)
-        {
-            lastspawn = CTF_Spawn ();
-            if (lastspawn != world)
-                return lastspawn;
-        }
-
-        // Get a list of all DM spots
-        totalspots = 0;
-        lastspawn = find (world, classname, "info_player_deathmatch");
-        while (lastspawn)
-        {
-            totalspots = totalspots + 1;
-            lastspawn = find (lastspawn, classname, "info_player_deathmatch");
-        }
-
-        // Choose one at random
-        if (totalspots > 0)
-        {
-            totalspots = rint((random() * (totalspots - 1)));
-            lastspawn = find (world, classname, "info_player_deathmatch");
-            while (totalspots > 0) {
-                totalspots = totalspots - 1;
-                lastspawn = find (lastspawn, classname, "info_player_deathmatch");
-            }
-            return lastspawn;
-        }
-    }
-
-    // If we're in a SP coop game
-    else if (gametype == GAME_COOPERATIVE)
-    {
-        lastspawn = find (lastspawn, classname, "info_player_coop");
-        if (lastspawn == world)
-            lastspawn = find (world, classname, "info_player_coop");
+        lastspawn = CTF_Spawn ();
         if (lastspawn != world)
             return lastspawn;
     }
 
-    // If we have a least one rune in a SP game
-    if (serverflags && gametype <= GAME_COOPERATIVE)
+    // Get a list of all DM spots
+    totalspots = 0;
+    lastspawn = find (world, classname, "info_player_deathmatch");
+    while (lastspawn)
     {
-        lastspawn = find (world, classname, "info_player_start2");
-        if (lastspawn)
-            return lastspawn;
+        totalspots = totalspots + 1;
+        lastspawn = find (lastspawn, classname, "info_player_deathmatch");
+    }
+
+    // Choose one at random
+    if (totalspots > 0)
+    {
+        totalspots = rint((random() * (totalspots - 1)));
+        lastspawn = find (world, classname, "info_player_deathmatch");
+        while (totalspots > 0) {
+            totalspots = totalspots - 1;
+            lastspawn = find (lastspawn, classname, "info_player_deathmatch");
+        }
+        return lastspawn;
     }
 
     // We haven't found a suitable spawn point, so we take the SP one
@@ -693,7 +516,7 @@ void() PutClientInServer =
     self.invincible_finished = 0;
     self.effects = 0;
     self.invincible_time = 0;
-    PM_KillBurner (self);
+    KillBurner (self);
 
     self.reflect_finished = 0;
     self.remain_dmg = 0;
@@ -706,6 +529,7 @@ void() PutClientInServer =
 
     // You surely don't want to toss your brand new TNT *right now*...
     self.attack_finished = time + 0.3;
+    self.impulse = 0;
 
     self.th_pain = player_pain;
     self.th_die = PlayerDie;
@@ -740,11 +564,14 @@ void() PutClientInServer =
         return;
     }
 
-    if (gametype != GAME_SINGLE_PLAYER)
-    {
-        makevectors(self.angles);
-        spawn_tfog (self.origin + v_forward*20);
-    }
+    // Select the appropriate skin
+    if (self.team == TEAM_COLOR1)
+        self.skin = 1;
+    else if (self.team == TEAM_COLOR2)
+        self.skin = 2;
+
+    makevectors(self.angles);
+    spawn_tfog (self.origin + v_forward*20);
 
     spawn_tdeath (self.origin, self);
 
@@ -893,10 +720,22 @@ void() CheckRules =
         return;
     }
 
-    if (fraglimit && self.frags >= fraglimit)
+    if (fraglimit)
     {
-        NextLevel ();
-        return;
+        // If we are in a team based mode
+        if (gametype > GT_BLOODBATH)
+        {
+            if (team1score >= fraglimit || team2score >= fraglimit)
+            {
+                NextLevel ();
+                return;
+            }
+        }
+        else if (self.frags >= fraglimit)
+        {
+            NextLevel ();
+            return;
+        }
     }
 };
 
@@ -1007,8 +846,6 @@ WaterMove
 
 ============
 */
-.float  dmgtime;
-
 void() WaterMove =
 {
 //dprint (ftos(self.waterlevel));
@@ -1334,6 +1171,10 @@ void() PlayerPostThink =
     if (BotPostFrame()) // FrikBot
         return;
 
+    // Check for menu commands
+    if (self.player_state == PS_MENU)
+        Menu_Update ();
+
     // if we're not allowed to act (in intermission, or dead, or observer)
     if (self.view_ofs == '0 0 0' || self.deadflag || self.observer)
     {
@@ -1382,9 +1223,7 @@ void() PlayerPostThink =
         self.idle_done = TRUE;
     }
     else
-    {
         ResetIdle (self);
-    }
 };
 
 
@@ -1402,17 +1241,12 @@ void() ClientConnect =
     Bprint (PRINT_HIGH, self.netname);
     Bprint (PRINT_HIGH, " lives again!\n"); // entered the game
 
-    if (gametype > GAME_COOPERATIVE)
-    {
-        sound (self, CHAN_AUTO, "thevoice/vo1.wav", 1, ATTN_NORM); // Let the Bloodbath Begin!
-        self.do_observer = 1;
-    }
-    else
-        sound (self, CHAN_AUTO, "player/taunts/t1010.wav", 1, ATTN_NORM);  // I live ... again!
+    sound (self, CHAN_AUTO, "thevoice/vo1.wav", 1, ATTN_NORM); // Let the Bloodbath Begin!
+    self.do_observer = 1;
 
     // a client connecting during an intermission can cause problems
     if (intermission_running)
-        ExitIntermission ();
+        GotoNextMap ();
 };
 
 
@@ -1453,17 +1287,8 @@ void(entity attacker) ClientObituary =
 {
     local   float rnum;
     local   string deathstring, deathstring2;
-    #ifdef QUAKEWORLD
-    local   string  attackerteam, targteam;
-    #endif
 
     rnum = random();
-
-    #ifdef QUAKEWORLD
-    //ZOID 12-13-96: self.team doesn't work in QW.  Use keys
-    attackerteam = infokey(attacker, "team");
-    targteam = infokey(self, "team");
-    #endif
 
     if (self.classname != "player")
         return;  // Maybe we should print an error message
@@ -1479,7 +1304,7 @@ void(entity attacker) ClientObituary =
         logfrag (attacker.owner, self);
         #endif
 
-        attacker.owner.frags = attacker.owner.frags + 1;
+        UpdatePlayerFrags (attacker.owner, 1);
         return;
     }
 
@@ -1493,7 +1318,7 @@ void(entity attacker) ClientObituary =
         logfrag (self, self);
         #endif
 
-        self.frags = self.frags - 1;
+        UpdatePlayerFrags (self, -1);
         return;
     }
 
@@ -1504,7 +1329,7 @@ void(entity attacker) ClientObituary =
         Bprint (PRINT_MEDIUM," was overcome by  ");
         Bprint (PRINT_MEDIUM,attacker.owner.netname);
         Bprint (PRINT_MEDIUM, "'s Death Mask power\n");
-        self.frags = self.frags - 1;
+        UpdatePlayerFrags (self, -1);
         self.noise1 = "thevoice/splatt.wav";
         #ifdef QUAKEWORLD
         logfrag (self, self);
@@ -1517,7 +1342,7 @@ void(entity attacker) ClientObituary =
         Bprint (PRINT_MEDIUM,self.netname);
         Bprint (PRINT_MEDIUM," was squashed\n");
         self.noise1 = "thevoice/squash.wav";
-        self.frags = self.frags - 1;            // killed self
+        UpdatePlayerFrags (self, -1);  // killed self
         #ifdef QUAKEWORLD
         logfrag (self, self);
         #endif
@@ -1532,7 +1357,7 @@ void(entity attacker) ClientObituary =
             #ifdef QUAKEWORLD
             logfrag (attacker, attacker);
             #endif
-            attacker.frags = attacker.frags - 1;
+            UpdatePlayerFrags (attacker, -1);
             Bprint (PRINT_MEDIUM,self.netname);
 
             if (rnum < 0.33)
@@ -1554,11 +1379,7 @@ void(entity attacker) ClientObituary =
             Bprint (PRINT_MEDIUM, deathstring);
             return;
         }
-        #ifndef QUAKEWORLD
-        else if (friendlyfire && self.team > 0      && self.team == attacker.team)
-        #else
-        else if (friendlyfire && attackerteam != "" && targteam == attackerteam)
-        #endif
+        else if (friendlyfire && self.team > 0 && self.team == attacker.team)
         {
             if (rnum < 0.25)
                 deathstring = " mows down a teammate\n";
@@ -1571,7 +1392,7 @@ void(entity attacker) ClientObituary =
             Bprint (PRINT_MEDIUM, attacker.netname);
             Bprint (PRINT_MEDIUM, deathstring);
 
-            attacker.frags = attacker.frags - 1;
+            UpdatePlayerFrags (attacker, -1);
 
             #ifdef QUAKEWORLD
             // killing a teammate logs as suicide
@@ -1585,7 +1406,7 @@ void(entity attacker) ClientObituary =
             #ifdef QUAKEWORLD
             logfrag (attacker, self);
             #endif
-            attacker.frags = attacker.frags + 1;
+            UpdatePlayerFrags (attacker, 1);
 
             rnum = random()*54;
 
@@ -1892,49 +1713,10 @@ void(entity attacker) ClientObituary =
         #ifdef QUAKEWORLD
         logfrag (self, self);
         #endif
-        Bprint (PRINT_MEDIUM, self.netname);
-        self.frags = self.frags - 1;
-
-        // killed by a monster?
-        if (attacker.flags & FL_MONSTER)
-        {
-            if (attacker.classname == "monster_army")
-                Bprint (PRINT_MEDIUM, " was shot by a Grunt\n");
-            if (attacker.classname == "monster_demon1")
-                Bprint (PRINT_MEDIUM, " was eviscerated by a Fiend\n");
-            if (attacker.classname == "monster_dog")
-                Bprint (PRINT_MEDIUM, " was mauled by a Rottweiler\n");
-            if (attacker.classname == "monster_dragon")
-                Bprint (PRINT_MEDIUM, " was fried by a Dragon\n");
-            if (attacker.classname == "monster_enforcer")
-                Bprint (PRINT_MEDIUM, " was blasted by an Enforcer\n");
-            if (attacker.classname == "monster_fish")
-                Bprint (PRINT_MEDIUM, " was fed to the Rotfish\n");
-            if (attacker.classname == "monster_hell_knight")
-                Bprint (PRINT_MEDIUM, " was slain by a Death Knight\n");
-            if (attacker.classname == "monster_knight")
-                Bprint (PRINT_MEDIUM, " was slashed by a Knight\n");
-            if (attacker.classname == "monster_ogre")
-                Bprint (PRINT_MEDIUM, " was destroyed by an Ogre\n");
-            if (attacker.classname == "monster_oldone")
-                Bprint (PRINT_MEDIUM, " became one with Shub-Niggurath\n");
-            if (attacker.classname == "monster_shalrath")
-                Bprint (PRINT_MEDIUM, " was exploded by a Vore\n");
-            if (attacker.classname == "monster_shambler")
-                Bprint (PRINT_MEDIUM, " was smashed by a Shambler\n");
-            if (attacker.classname == "monster_tarbaby")
-                Bprint (PRINT_MEDIUM, " was slimed by a Spawn\n");
-            if (attacker.classname == "monster_vomit")
-                Bprint (PRINT_MEDIUM, " was vomited on by a Vomitus\n");
-            if (attacker.classname == "monster_wizard")
-                Bprint (PRINT_MEDIUM, " was scragged by a Scrag\n");
-            if (attacker.classname == "monster_zombie")
-                Bprint (PRINT_MEDIUM, " joins the Zombies\n");
-
-            return;
-        }
+        UpdatePlayerFrags (self, -1);
 
         // hell if I know; he's just dead!!!
+        Bprint (PRINT_MEDIUM, self.netname);
         Bprint (PRINT_MEDIUM," died\n");
     }
 };

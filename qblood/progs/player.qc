@@ -21,7 +21,6 @@
 #include "common.qh"
 #include "player.qh"
 
-void() bubble_bob;
 void() CTF_PlayerDropFlag;
 
 
@@ -63,7 +62,10 @@ void()  player_stand1 =[    $axstnd1,   player_stand1   ]
 void()  player_run =[   $rockrun1,  player_run  ]
 {
     if (self.player_state != PS_HOLD_FIRE)
+    {
         self.weaponframe = 0;
+        self.player_state = PS_IDLE;
+    }
 
     if (!self.velocity_x && !self.velocity_y)
     {
@@ -109,8 +111,6 @@ void() player_rocket5   =[$rockatt5, player_rocket6  ] {self.weaponframe=5;};
 void() player_rocket6   =[$rockatt6, player_run      ] {self.weaponframe=6;};
 
 
-void(float num_bubbles) DeathBubbles;
-
 float() PainSound =
 {
 local float     rs;
@@ -129,12 +129,10 @@ local float     rs;
     if (self.pain_finished > time)
         return FALSE;
 
-    self.axhitme = 0;   // No need for this in qBlood.
     self.pain_finished = time + 0.5;
 
     if (self.deathtype == "drowning")
     {
-        DeathBubbles(1);
         if (random() > 0.5)
             sound (self, CHAN_VOICE, "ambience/bubrise.wav", 1, ATTN_NORM);
         else
@@ -222,50 +220,6 @@ void() player_died1;
 void() player_diee1;
 void() player_die_ax1;
 
-void() DeathBubblesSpawn =
-{
-    local entity    bubble;
-    if (self.owner.waterlevel != 3)
-    {
-        // Bug fix -- won't think anymore so remove bubble spawner entity.
-        remove (self);
-        return;
-    }
-    bubble = spawn();
-    setmodel (bubble, "progs/s_bubble.spr");
-    setorigin (bubble, self.owner.origin + '0 0 24');
-    bubble.movetype = MOVETYPE_NOCLIP;
-    bubble.solid = SOLID_NOT;
-    bubble.velocity = '0 0 15';
-    bubble.nextthink = time + 0.5;
-    bubble.think = bubble_bob;
-    bubble.classname = "bubble";
-    bubble.frame = 0;
-    bubble.cnt = 0;
-    setsize (bubble, '-8 -8 -8', '8 8 8');
-    self.nextthink = time + 0.1;
-    self.think = DeathBubblesSpawn;
-    self.air_finished = self.air_finished + 1;
-    if (self.air_finished >= self.bubble_count)
-        remove(self);
-};
-
-void(float num_bubbles) DeathBubbles =
-{
-local entity    bubble_spawner;
-
-    bubble_spawner = spawn();
-    setorigin (bubble_spawner, self.origin);
-    bubble_spawner.movetype = MOVETYPE_NONE;
-    bubble_spawner.solid = SOLID_NOT;
-    bubble_spawner.nextthink = time + 0.1;
-    bubble_spawner.think = DeathBubblesSpawn;
-    bubble_spawner.air_finished = 0;
-    bubble_spawner.owner = self;
-    bubble_spawner.bubble_count = num_bubbles;
-    return;
-};
-
 
 void() DeathSound =
 {
@@ -274,7 +228,6 @@ local float     rs;
     // water death sounds
     if (self.waterlevel == 3)
     {
-        DeathBubbles(20);
         sound (self, CHAN_VOICE, "ambience/bubrise.wav", 1, ATTN_NONE);
         return;
     }
@@ -419,6 +372,7 @@ void(string gibname, float dm) ThrowHead =
 {
     setmodel (self, gibname);
     self.frame = 0;
+    self.skin = 0;
     self.nextthink = -1;
     self.movetype = MOVETYPE_BOUNCE;
 
@@ -441,11 +395,6 @@ void(string gibname, float dm) ThrowHead =
     self.target = string_null;
     self.killtarget = string_null;
     self.targetname = string_null;
-    self.th_stand = SUB_Null;
-    self.th_walk = SUB_Null;
-    self.th_run = SUB_Null;
-    self.th_missile = SUB_Null;
-    self.th_melee = SUB_Null;
     self.th_pain = SUB_Null;
     self.flags = self.flags - (self.flags & (FL_MONSTER | FL_ONGROUND));
 
@@ -581,32 +530,28 @@ void() PlayerDie =
 
     self.items = self.items - (self.items & IT_INVISIBILITY);
 
-    if (gametype != GAME_SINGLE_PLAYER)
+    if (self.akimbo_finished > 0)
     {
-        if (self.akimbo_finished > 0)
-        {
-            DropQuad (self.akimbo_finished - time);
-            Bprint (PRINT_LOW, self.netname);
-            Bprint (PRINT_LOW, " lost a Guns Akimbo with ");
-            s = ftos(rint(self.akimbo_finished - time));
-            Bprint (PRINT_LOW, s);
-            Bprint (PRINT_LOW, " seconds remaining\n");
-        }
-
-        if (self.invisible_finished > 0)
-        {
-            Bprint (PRINT_LOW, self.netname);
-            Bprint (PRINT_LOW, " lost a cloak with ");
-            s = ftos(rint(self.invisible_finished - time));
-            Bprint (PRINT_LOW, s);
-            Bprint (PRINT_LOW, " seconds remaining\n");
-            DropRing (self.invisible_finished - time);
-        }
-
-        DropBackpack();
-
-        CTF_PlayerDropFlag ();
+        DropQuad (self.akimbo_finished - time);
+        Bprint (PRINT_LOW, self.netname);
+        Bprint (PRINT_LOW, " lost a Guns Akimbo with ");
+        s = ftos(rint(self.akimbo_finished - time));
+        Bprint (PRINT_LOW, s);
+        Bprint (PRINT_LOW, " seconds remaining\n");
     }
+
+    if (self.invisible_finished > 0)
+    {
+        Bprint (PRINT_LOW, self.netname);
+        Bprint (PRINT_LOW, " lost a cloak with ");
+        s = ftos(rint(self.invisible_finished - time));
+        Bprint (PRINT_LOW, s);
+        Bprint (PRINT_LOW, " seconds remaining\n");
+        DropRing (self.invisible_finished - time);
+    }
+
+    DropBackpack();
+    CTF_PlayerDropFlag ();
 
     self.invisible_finished = 0;    // don't die as eyes
     self.invincible_finished = 0;
