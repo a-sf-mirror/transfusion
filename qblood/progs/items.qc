@@ -1010,10 +1010,10 @@ void() item_flares =
     if (self.spawnflags & AMMO_BIG)
 	{
 	        self.netname = "box of flares";
-		self.aflag = 16;
+		self.aflag = 8;
 	}	
     else
-        self.aflag = 8;
+        self.aflag = 4;
     self.weapon = 1;
     self.netname = "a few flares";
     setsize (self, '0 0 0', '32 32 56');
@@ -1032,7 +1032,7 @@ void() item_spikes =
         precache_model ("progs/i_drum.mdl");
         setmodel (self, "progs/i_drum.mdl");
         self.netname = "full drum of bullets";
-	self.aflag = 150;
+	self.aflag = 100;
     }
     else
     {
@@ -1057,13 +1057,13 @@ void() item_rockets =
     {
         precache_model ("progs/i_gascan.mdl");
         setmodel (self, "progs/i_gascan.mdl");
-        self.aflag = 10;
+        self.aflag = 6;
     }
     else
     {
         precache_model ("progs/i_gascan.mdl");
         setmodel (self, "progs/i_gascan.mdl");
-        self.aflag = 5;
+        self.aflag = 6;
     }
     self.weapon = 3;
     self.netname = "gasoline cans";
@@ -1083,13 +1083,13 @@ void() item_cells =
     {
         precache_model ("progs/i_teschg.mdl");
         setmodel (self, "progs/i_teschg.mdl");
-        self.aflag = 12;
+        self.aflag = 32;
     }
     else
     {
         precache_model ("progs/i_teschg.mdl");
         setmodel (self, "progs/i_teschg.mdl");
-        self.aflag = 6;
+        self.aflag = 32;
     }
     self.weapon = 4;
     self.netname = "tesla charges";
@@ -1136,7 +1136,7 @@ void() item_weapon =
             precache_model ("progs/i_drum.mdl");
             setmodel (self, "progs/i_drum.mdl");
 	    self.netname = "full drum of bullets";
-            self.aflag = 150;
+            self.aflag = 100;
         }
         else
         {
@@ -1155,13 +1155,13 @@ void() item_weapon =
         {
             precache_model ("progs/i_gascan.mdl");
             setmodel (self, "progs/i_gascan.mdl");
-            self.aflag = 10;
+            self.aflag = 6;
         }
         else
         {
             precache_model ("progs/i_gascan.mdl");
             setmodel (self, "progs/i_gascan.mdl");
-            self.aflag = 5;
+            self.aflag = 6;
         }
         self.weapon = 3;
         self.netname = "gasoline can";
