@@ -5,7 +5,7 @@
 
    <title> BloodBath manual
    <author> Mathieu Olivier <tt>&lt;elric@planetblood.com&gt;</tt>
-   <date>v?.?.? (development), January 17, 2002
+   <date>v?.?.? (development), February 1, 2002
    <abstract>
       This manual covers <url url="http://www.planetblood.com/qblood/"
       name="BloodBath"> installation and usage.
@@ -176,9 +176,9 @@
         to keep his server under control despite the new voting system. Its value
         must be set by adding the following numbers: 1 to disable bots, 2 to
         disable map voting, 4 to disable game type voting, 8 to disable frag
-        limit voting, and 16 to disable time limit voting. For example, setting
-        "sv_disable" to 5 (1+4) will ensure your server won't have bots and
-        won't change its initial game type.<p>
+        limit voting, 16 to disable time limit voting, and 32 to disable options
+		voting. For example, setting "sv_disable" to 5 (1+4) will ensure your
+		server won't have bots and won't change its initial game type.<p>
      </itemize>
      Your server must have the "set" command to use the new cvars though. It's
      not the case of the original QW server and even of a few modern versions.

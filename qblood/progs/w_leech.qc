@@ -138,9 +138,9 @@ void() Leech_BallFire =
     self.currentammo = self.ammo_leech;
 
     newmis.touch = T_MissileTouch;
-    setmodel (newmis, "progs/missile.mdl");
-    setsize (newmis, '-1 -1 -1', '1 1 1');
-    setorigin (newmis, self.origin + v_forward * 20 + '0 0 12');
+    setmodel (newmis, "progs/lechball.mdl");
+    setsize (newmis, '0 0 0', '0 0 0');
+    setorigin (newmis, self.origin + v_forward * 8 + '0 0 16');
 
     self.dmg = 20;
 

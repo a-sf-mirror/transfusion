@@ -570,6 +570,3 @@ void() trigger_burn =
     InitTrigger ();
     self.touch = burn_touch;
 };
-
-
-//===========================/  END OF FILE  /===========================//

@@ -152,12 +152,23 @@ void(entity player,entity tele) ObserverTeleporter =
     player.velocity = v_forward * 300;
 };
 
-float() DoObserverImpulse =
+
+/*
+============
+Impulses_Observer
+
+Impulse list for observers
+============
+*/
+void() Impulses_Observer =
 {
-    // If we're not in a team mode (Team BB ot CTF), join the game on impulse 1 or 2, or on "jump"
+    if (self.impulse == 0 && !self.button0 && !self.button2)
+        return;
+
+    // If we're not in a team mode, join the game on impulse 1 or 2, or on "jump" or "fire"
     if (gametype < GT_TEAM_BLOODBATH)
     {
-        if (self.impulse == 1 || self.impulse == 2 || self.button2)
+        if (self.impulse == 1 || self.impulse == 2 || self.button0 || self.button2)
         {
             self.observer = 0;
             respawn();
@@ -167,7 +178,7 @@ float() DoObserverImpulse =
     // Else (in a team mode)
     else
     {
-        if (self.button2)
+        if (self.button0 || self.button2)
             centerprint (self, "Type:\nimpulse 1 for joining the RED team\nimpulse 2 for joining the BLUE team\n");
         else if (self.impulse == 1 || self.impulse == 2)
         {
@@ -188,7 +199,13 @@ float() DoObserverImpulse =
             respawn();
         }
     }
+
+    if (self.impulse == 141)
+        identify_player ();
+
+    self.impulse = 0;
 };
+
 
 void() ObserverThink =
 {
@@ -240,8 +257,6 @@ void() ObserverThink =
         e = e.chain;
         if (!e) e = world;
     }
-
-    DoObserverImpulse();
 };
 
 void(entity player) BecomeObserver =

@@ -126,6 +126,23 @@ void(string newTimelimit) Vote_ChangeTimelimit =
 
 /*
 ====================
+Vote_ChangeOptions
+
+Used when the vote for an option is passed
+====================
+*/
+void(string newOptions) Vote_ChangeOptions =
+{
+    Bprint (PRINT_HIGH, "Û Vote passed. New options: g_weaponStay = ");  // "[ Vote passed ..."
+    Bprint (PRINT_HIGH, newOptions);
+    Bprint (PRINT_HIGH, " Ý\n");  // " ]\n"
+
+    cvar_set ("g_weaponStay", newOptions);
+};
+
+
+/*
+====================
 Vote_GametypeToString
 
 Give the string describing the game type
@@ -200,6 +217,28 @@ float(.float vote_field, float value) Vote_IsPassed =
 };
 
 
+/*
+====================
+Vote_AddMapVote
+
+Add one vote to the map
+====================
+*/
+void(float vote, string newmap) Vote_AddMapVote =
+{
+    self.vote_map = vote;
+    Bprint (PRINT_HIGH, "Û ");  // "[ "
+    Bprint (PRINT_HIGH, self.netname);
+    Bprint (PRINT_HIGH, " votes for map ");
+    Bprint (PRINT_HIGH, newmap);
+    Bprint (PRINT_HIGH, " Ý\n");  // " ]\n"
+
+    // If the vote is passed
+    if (Vote_IsPassed (vote_map, vote))
+        Vote_ChangeMap (newmap);
+};
+
+
 //=========================================================================
 
 // The menus
@@ -208,8 +247,14 @@ float(.float vote_field, float value) Vote_IsPassed =
 #define MENU_VOTE_GAMETYPE  2
 #define MENU_VOTE_FRAGLIMIT 3
 #define MENU_VOTE_TIMELIMIT 4
+#define MENU_VOTE_OPTIONS   5
 
-#define NB_MENUS            5
+#define MENU_VOTE_MAP_BB    10
+#define MENU_VOTE_MAP_OTHER 11
+
+// The map groups
+#define MAPS_BB     0
+#define MAPS_OTHER  10
 
 
 /*
@@ -228,18 +273,16 @@ void() Menu_Draw =
                 "2) Vote for a game type\n"
                 "3) Vote for the frag limit\n"
                 "4) Vote for the time limit\n"
+                "5) Vote for an option\n"
                 "\n"
                 "10) Exit menu\n");
     }
     else if (self.menu_index == MENU_VOTE_MAP)
     {
         Sprint (self, PRINT_HIGH,
-                "Vote for a map:\n"
-                "1) bb2      Winter Wonderland  | 2) bb3  Bodies\n"
-                "3) bb3_2k1  Bodies Classic     | 4) bb4  The Tower\n"
-                "5) bb5      Click!             | 6) bb7  Midgard\n"
-                "7) bb8      Fun With Heads     | 8) dm2  Power!\n"
-                "9) dm3      Area15\n"
+                "Choose a map group:\n"
+                "1) BB maps\n"
+                "2) Other maps\n"
                 "\n"
                 "10) Go back to main menu\n");
     }
@@ -286,6 +329,35 @@ void() Menu_Draw =
                 "9) Unlimited\n"
                 "\n"
                 "10) Go back to main menu\n");
+    }
+    else if (self.menu_index == MENU_VOTE_OPTIONS)
+    {
+        Sprint (self, PRINT_HIGH,
+                "Vote for an option:\n"
+                "1) Toggle \"weapon stay\"\n"
+                "\n"
+                "10) Go back to main menu\n");
+    }
+    else if (self.menu_index == MENU_VOTE_MAP_BB)
+    {
+        Sprint (self, PRINT_HIGH,
+                "Vote for a map:\n"
+                "1) bb1  The Stronghold  | 2) bb2  Winter Wonderland\n"
+                "3) bb3  Bodies          | 4) bb4  The Tower\n"
+                "5) bb5  Click!          | 6) bb7  Midgard\n"
+                "7) bb8  Fun With Heads\n"
+                "\n"
+                "10) Go back to map menu\n");
+    }
+    else if (self.menu_index == MENU_VOTE_MAP_OTHER)
+    {
+        Sprint (self, PRINT_HIGH,
+                "Vote for a map:\n"
+                "1) dm2      Power!               | 2) dm3  Area15\n"
+                "3) bb3_2k1  Bodies Classic\n"
+                "4) qe1m7    The House of Chthon\n"
+                "\n"
+                "10) Go back to map menu\n");
     }
 };
 
@@ -339,6 +411,14 @@ void() Menu_HandleMain =
             Sprint (self, PRINT_HIGH, "\n===== Time limit voting is disabled on this server =====\n\n");
         else
             self.menu_index = MENU_VOTE_TIMELIMIT;
+    }
+    else if (self.impulse == MENU_VOTE_OPTIONS)
+    {
+        // If time limit voting is disabled
+        if (cvar ("sv_disable") & SV_DISABLE_VOTE_OPTIONS)
+            Sprint (self, PRINT_HIGH, "\n===== Options voting is disabled on this server =====\n\n");
+        else
+            self.menu_index = MENU_VOTE_OPTIONS;
     }
     else
         Sprint (self, PRINT_HIGH, "\n===== INVALID COMMAND =====\n\n");
@@ -453,6 +533,98 @@ void() Menu_HandleVoteGametype =
 
 /*
 ====================
+Menu_HandleVoteMapBB
+
+Handles the impulses when the client is in the BB map menu
+====================
+*/
+void() Menu_HandleVoteMapBB =
+{
+    local string newmap;
+
+    // If we want to go back to map menu
+    if (self.impulse == 10)
+    {
+        self.menu_index = MENU_VOTE_MAP;
+        Menu_Draw ();
+        return;
+    }
+
+    // If the command is invalid
+    if (self.impulse > 7)
+    {
+        Sprint (self, PRINT_HIGH, "\n===== INVALID COMMAND =====\n\n");
+        Menu_Draw ();
+        return;
+    }
+
+    if (self.impulse == 1)
+        newmap = "bb1";
+    else if (self.impulse == 2)
+        newmap = "bb2";
+    else if (self.impulse == 3)
+        newmap = "bb3";
+    else if (self.impulse == 4)
+        newmap = "bb4";
+    else if (self.impulse == 5)
+        newmap = "bb5";
+    else if (self.impulse == 6)
+        newmap = "bb7";
+    else if (self.impulse == 7)
+        newmap = "bb8";
+
+    // Validate the vote
+    Vote_AddMapVote (MAPS_BB + self.impulse, newmap);
+
+    self.player_state = PS_IDLE;  // exit the menu
+};
+
+
+/*
+====================
+Menu_HandleVoteMapOther
+
+Handles the impulses when the client is in the other map menu
+====================
+*/
+void() Menu_HandleVoteMapOther =
+{
+    local string newmap;
+
+    // If we want to go back to map menu
+    if (self.impulse == 10)
+    {
+        self.menu_index = MENU_VOTE_MAP;
+        Menu_Draw ();
+        return;
+    }
+
+    // If the command is invalid
+    if (self.impulse > 4)
+    {
+        Sprint (self, PRINT_HIGH, "\n===== INVALID COMMAND =====\n\n");
+        Menu_Draw ();
+        return;
+    }
+
+    if (self.impulse == 1)
+        newmap = "dm2";
+    else if (self.impulse == 2)
+        newmap = "dm3";
+    else if (self.impulse == 3)
+        newmap = "bb3_2k1";
+    else if (self.impulse == 4)
+        newmap = "qe1m7";
+
+    // Validate the vote
+    Vote_AddMapVote (MAPS_OTHER + self.impulse, newmap);
+
+    self.player_state = PS_IDLE;  // exit the menu
+};
+
+
+/*
+====================
 Menu_HandleVoteMap
 
 Handles the impulses when the client is in the map menu
@@ -460,8 +632,35 @@ Handles the impulses when the client is in the map menu
 */
 void() Menu_HandleVoteMap =
 {
-    local string newmap;
+    // If we want to go back to main menu
+    if (self.impulse == 10)
+    {
+        self.menu_index = MENU_MAIN;
+        Menu_Draw ();
+        return;
+    }
 
+    // Select the next menu to draw
+    if (self.impulse == 1)
+        self.menu_index = MENU_VOTE_MAP_BB;
+    else if (self.impulse == 2)
+        self.menu_index = MENU_VOTE_MAP_OTHER;
+    else
+        Sprint (self, PRINT_HIGH, "\n===== INVALID COMMAND =====\n\n");
+
+    Menu_Draw ();
+};
+
+
+/*
+====================
+Menu_HandleVoteOptions
+
+Handles the impulses when the client is in the option menu
+====================
+*/
+void() Menu_HandleVoteOptions =
+{
     // If we want to go back to main menu
     if (self.impulse == 10)
     {
@@ -471,42 +670,21 @@ void() Menu_HandleVoteMap =
     }
 
     // If the command is invalid
-    if (self.impulse > 9)
+    if (self.impulse > 1 )
     {
         Sprint (self, PRINT_HIGH, "\n===== INVALID COMMAND =====\n\n");
         Menu_Draw ();
         return;
     }
 
-    if (self.impulse == 1)
-        newmap = "bb2";
-    else if (self.impulse == 2)
-        newmap = "bb3";
-    else if (self.impulse == 3)
-        newmap = "bb3_2k1";
-    else if (self.impulse == 4)
-        newmap = "bb4";
-    else if (self.impulse == 5)
-        newmap = "bb5";
-    else if (self.impulse == 6)
-        newmap = "bb7";
-    else if (self.impulse == 7)
-        newmap = "bb8";
-    else if (self.impulse == 8)
-        newmap = "dm2";
-    else if (self.impulse == 9)
-        newmap = "dm3";
-
-    self.vote_map = self.impulse;
+    self.vote_options = ! cvar ("g_weaponStay");
     Bprint (PRINT_HIGH, "Û ");  // "[ "
     Bprint (PRINT_HIGH, self.netname);
-    Bprint (PRINT_HIGH, " votes for map ");
-    Bprint (PRINT_HIGH, newmap);
-    Bprint (PRINT_HIGH, " Ý\n");  // " ]\n"
+    Bprint (PRINT_HIGH, " votes for toggling \"weapon stay\" Ý\n");  // " ]\n"
 
     // If the vote is passed
-    if (Vote_IsPassed (vote_map, self.impulse))
-        Vote_ChangeMap (newmap);
+    if (Vote_IsPassed (vote_options, self.vote_options))
+        Vote_ChangeOptions (ftos (self.vote_options));
 
     self.player_state = PS_IDLE;  // exit the menu
 };
@@ -620,6 +798,12 @@ void() Menu_Update =
         Menu_HandleVoteFraglimit ();
     else if (self.menu_index == MENU_VOTE_TIMELIMIT)
         Menu_HandleVoteTimelimit ();
+    else if (self.menu_index == MENU_VOTE_OPTIONS)
+        Menu_HandleVoteOptions ();
+    else if (self.menu_index == MENU_VOTE_MAP_BB)
+        Menu_HandleVoteMapBB ();
+    else if (self.menu_index == MENU_VOTE_MAP_OTHER)
+        Menu_HandleVoteMapOther ();
 
     self.impulse = 0;
 };

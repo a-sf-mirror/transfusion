@@ -1265,25 +1265,6 @@ void() Impulses_Dead =
 
 
 /*
-============
-Impulses_Observer
-
-Impulse list for observers
-============
-*/
-void() Impulses_Observer =
-{
-    if (self.impulse == 0)
-        return;
-
-    if (self.impulse == 141)
-        identify_player ();
-
-    self.impulse = 0;
-};
-
-
-/*
 ================
 PlayerPostThink
 

@@ -1822,8 +1822,7 @@ void() weapon_lifeleech =
 {
     precache_model ("progs/g_leech.mdl");
     precache_model ("progs/v_leech.mdl");
-    //precache_model ("progs/lechball.mdl");
-    precache_model ("progs/missile.mdl");  // FIXME: use napalm shot until leech ball is finished
+    precache_model ("progs/lechball.mdl");
 
     setmodel (self, "progs/g_leech.mdl");
     self.weapon = IT_LIFE_LEECH;
