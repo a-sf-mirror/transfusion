@@ -461,6 +461,63 @@ void() trap_shooter =
 };
 
 
+/*
+===========================================================================
+SENTRIES
+
+these entities are like sector effects in BUILD - when they 'see' a player
+come near, they emit a sound to alert other players in the match that
+someone has entered a 'special' area containing a powerup.
+===========================================================================
+*/
+
+void() sentry_detect_think =
+{
+    local entity ent;
+    local float lcnt;
+
+    // store count of players in .cnt
+    lcnt = 0;
+    ent = findradius (self.origin, 200);
+    while (ent)
+    {
+        if (ent.classname == "player")
+            lcnt = lcnt + 1;
+        ent = ent.chain;
+    }
+
+    // If the someone has entered the area since the last check
+    if (lcnt > self.cnt)
+        sound (self, CHAN_VOICE, self.noise, 1, ATTN_NORM);
+
+    self.cnt = lcnt;
+    self.nextthink = time + self.ltime;
+};
+
+void(string soundname) sentry_detect_init =
+{
+    // Set parameters
+    self.noise = soundname;
+    self.ltime = 0.2;  // check every 200 ms
+
+    // Initialize some stuff
+    precache_sound (self.noise);
+    self.nextthink = time + self.ltime;
+    self.think = sentry_detect_think;
+};
+
+// Bloodbath `CLUE' entity for Area 15
+void() sentry_detect_laugh =
+{
+    sentry_detect_init ("ambience/laugh.wav");
+};
+
+// Bloodbath `CLUE' entity for Bodies
+void() sentry_detect_switch1 =
+{
+    sentry_detect_init ("locks/switch1.wav");
+};
+
 
 /*
 ===============================================================================

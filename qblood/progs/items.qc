@@ -691,6 +691,16 @@ void() weapon_supershotgun =
     self.netname = "Sawed-off";
     self.touch = weapon_touch;
     setsize (self, '-16 -16 0', '16 16 56');
+
+    // Precache the necessary sounds
+//    precache_sound ("weapons/shotgun/sawcock1.wav"); //same as shotcock.wav
+    precache_sound ("weapons/shotgun/shotcock.wav");
+//    precache_sound ("weapons/shotgun/shotfir2.wav");  //shotgun alt-fire
+    precache_sound ("weapons/shotgun/shotfire.wav");  // shotgun fired
+//    precache_sound ("weapons/shotgun/shotload.wav");
+    precache_sound ("weapons/shtshl2.wav");  // shell hitting ground
+//    precache_sound ("weapons/shtshl4.wav");  // same as shtshl2.wav
+
     StartItem ();
 };
 
@@ -705,6 +715,13 @@ void() weapon_nailgun =
     self.netname = "Tommy Gun";
     self.touch = weapon_touch;
     setsize (self, '-16 -16 0', '16 16 56');
+
+    // Precache the necessary sounds
+    precache_sound ("weapons/tommygun/_tom.wav");  // Fire
+//    precache_sound ("weapons/tommygun/tomcock.wav");  // Out of bullet noise
+    precache_sound ("weapons/shtshl.wav");   // shell hitting ground
+    precache_sound ("weapons/shtshl3.wav");  // shell hitting ground (2nd)
+
     StartItem ();
 };
 
@@ -719,6 +736,12 @@ void() weapon_supernailgun =
     self.netname = "Spray Can";
     self.touch = weapon_touch;
     setsize (self, '-16 -16 0', '16 16 56');
+
+    // Precache the necessary sounds
+//    precache_sound ("weapons/spraycan/burstflm.wav");
+//    precache_sound ("weapons/spraycan/spraycan.wav");
+    precache_sound ("weapons/spraycan/sprayfir.wav");  // fire
+
     StartItem ();
 };
 
@@ -747,6 +770,18 @@ void() weapon_rocketlauncher =
     self.netname = "Napalm Launcher";
     self.touch = weapon_touch;
     setsize (self, '-16 -16 0', '16 16 56');
+
+    // Precache the necessary sounds
+    precache_sound ("weapons/napalm/blaster.wav");  // Napalm launcher
+/*
+    precache_sound ("weapons/napalm/explodcs.wav");
+    precache_sound ("weapons/napalm/explodfl.wav");
+    precache_sound ("weapons/napalm/burn.wav");
+    precache_sound ("weapons/napalm/explodul.wav");
+    precache_sound ("weapons/napalm/explodus.wav");
+    precache_sound ("weapons/napalm/naplmex2.wav");
+*/
+
     StartItem ();
 };
 
@@ -762,6 +797,20 @@ void() weapon_lightning =
     self.netname = "Tesla Cannon";
     self.touch = weapon_touch;
     setsize (self, '-16 -16 0', '16 16 56');
+
+    // Precache the necessary sounds
+/*
+    precache_sound ("weapons/tesla/taltac3.wav");
+    precache_sound ("weapons/tesla/tesaltf2.wav");
+    precache_sound ("weapons/tesla/tesaltfr.wav");
+    precache_sound ("weapons/tesla/tesaltht.wav");
+    precache_sound ("weapons/tesla/tesla1.wav");
+*/
+    precache_sound ("weapons/tesla/teslaz~1.wav");
+//    precache_sound ("weapons/tesla/teslaz~2.wav");
+//    precache_sound ("weapons/tesla/tessngfr.wav");
+    precache_sound ("weapons/tesla/tessnght.wav");  // Hit
+
     StartItem ();
 };
 
@@ -1258,9 +1307,6 @@ POWERUPS
 
 ===============================================================================
 */
-
-void() powerup_touch;
-
 
 void() powerup_touch =
 {

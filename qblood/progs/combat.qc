@@ -23,7 +23,7 @@
 
 void() T_MissileTouch;
 void() info_player_start;
-void(entity targ, entity attacker) ClientObituary;
+void(entity attacker) ClientObituary;
 void(entity inflictor, entity attacker, float damage, entity ignore, string dtype) T_RadiusDamage;
 #ifndef QUAKEWORLD
 void() monster_death_use;
@@ -104,7 +104,7 @@ void(entity targ, entity attacker) Killed =
         WriteByte (MSG_ALL, SVC_KILLEDMONSTER);
     }
 
-    ClientObituary(self, attacker);
+    ClientObituary (attacker);
 
     self.takedamage = DAMAGE_NO;
     self.touch = SUB_Null;

@@ -448,7 +448,8 @@ local float     rs;
 void() PlayerDead =
 {
     self.nextthink = -1;
-// allow respawn after a certain time
+
+    // allow respawn after a certain time
     self.deadflag = DEAD_DEAD;
 };
 
@@ -570,7 +571,7 @@ void(string gibname, float dm) ThrowHead =
     if (self.classname != "player")
     {
         self.takedamage = DAMAGE_AIM;
-        self.health = 120;
+        self.health = 80;
 
         // Get rid of it in 2 minutes anyway (to avoid too many entities)
         self.nextthink = time + 120;

@@ -30,11 +30,9 @@ void() SuperDamageSound;
 // called by worldspawn
 void() W_Precache =
 {
-/*
     // pitchfork
-    precache_sound ("weapons/pitchfrk/pflesh.wav");
-    precache_sound ("weapons/pitchfrk/pmetal.wav");
-*/
+//    precache_sound ("weapons/pitchfrk/pflesh.wav");
+//    precache_sound ("weapons/pitchfrk/pmetal.wav");
     precache_sound ("weapons/pitchfrk/pstone.wav");
 /*
     precache_sound ("weapons/pitchfrk/pwood.wav");
@@ -45,31 +43,7 @@ void() W_Precache =
     precache_sound ("weapons/flaregun/flarair2.wav");
 */
     precache_sound ("weapons/flaregun/flaref.wav");  // Flaregun fire
-/*
-    precache_sound ("weapons/flaregun/flarefuw.wav");
-*/
-
-    // sawed-off
-//    precache_sound ("weapons/shotgun/sawcock1.wav"); //same as shotcock.wav
-    precache_sound ("weapons/shotgun/shotcock.wav");
-//    precache_sound ("weapons/shotgun/shotfir2.wav");  //shotgun alt-fire
-    precache_sound ("weapons/shotgun/shotfire.wav");  // shotgun fired
-//    precache_sound ("weapons/shotgun/shotload.wav");
-
-    // tommy gun
-    precache_sound ("weapons/tommygun/_tom.wav");  // Tommy gun
-    precache_sound ("weapons/tommygun/tomcock.wav"); // out of bullet noise
-
-    // napalm launcher
-    precache_sound ("weapons/napalm/blaster.wav");  // Napalm launcher
-/*
-    precache_sound ("weapons/napalm/explodcs.wav");
-    precache_sound ("weapons/napalm/explodfl.wav");
-    precache_sound ("weapons/napalm/burn.wav");
-    precache_sound ("weapons/napalm/explodul.wav");
-    precache_sound ("weapons/napalm/explodus.wav");
-    precache_sound ("weapons/napalm/naplmex2.wav");
-*/
+//    precache_sound ("weapons/flaregun/flarefuw.wav");
 
     // dynamite bundles/proximity/remote detonators
     precache_sound ("weapons/tnt/tntfuse.wav");  // tnt lighted
@@ -83,28 +57,6 @@ void() W_Precache =
     precache_sound ("weapons/tnt/ziplight.wav");
     precache_sound ("weapons/tnt/zipopen.wav");
 
-    // spray can
-    precache_sound ("weapons/spraycan/burstflm.wav");
-    precache_sound ("weapons/spraycan/spraycan.wav");
-*/
-    precache_sound ("weapons/spraycan/sprayfir.wav");  // spraycan fire
-
-    // tesla cannon
-/*
-    precache_sound ("weapons/tesla/taltac3.wav");
-    precache_sound ("weapons/tesla/tesaltf2.wav");
-    precache_sound ("weapons/tesla/tesaltfr.wav");
-    precache_sound ("weapons/tesla/tesaltht.wav");
-    precache_sound ("weapons/tesla/tesla1.wav");
-*/
-    precache_sound ("weapons/tesla/teslaz~1.wav");
-/*
-    precache_sound ("weapons/tesla/teslaz~2.wav");
-    precache_sound ("weapons/tesla/tessngfr.wav");
-*/
-    precache_sound ("weapons/tesla/tessnght.wav");  // Tesla hit
-
-/*
     // lifeleech
     precache_sound ("weapons/lifelech/laltfr1.wav");
     precache_sound ("weapons/lifelech/llaltfr2.wav");
@@ -133,13 +85,6 @@ void() W_Precache =
     precache_sound ("weapons/ric2.wav");    // ricochet (used in c code)
     precache_sound ("weapons/ric3.wav");    // ricochet (used in c code)
 
-    // shells hitting ground
-    precache_sound ("weapons/shtshl.wav");   // tommy gun shell
-    precache_sound ("weapons/shtshl2.wav");  // shotgun shell
-    precache_sound ("weapons/shtshl3.wav");  // tommy gun shell (2nd)
-/*
-    precache_sound ("weapons/shtshl4.wav");
-*/
     precache_sound ("weapons/tink1.wav");    // spikes tink (used in c code)
 //    precache_sound ("weapons/lstart.wav");
 };
@@ -544,9 +489,6 @@ Spawns new shell entity but doesn't display it until reloadtime
 void() SpawnShell =
 {
     local entity shell;
-    local float rnum;
-
-    rnum = random ();
 
     shell = spawn ();
     shell.owner = self;
@@ -581,9 +523,9 @@ void() SpawnShell =
         local entity player;
 
         shell.mdl    = "progs/tommyshl.mdl";
-        if (rnum < 0.5)
+        if (random() < 0.5)
             shell.noise  = "weapons/shtshl.wav";
-	else
+        else
             shell.noise  = "weapons/shtshl3.wav";
 
         // since we directly call DropShell, the shell must be "self" temporary
@@ -985,6 +927,7 @@ void() ProximBombArmed =
 {
     sound (self, CHAN_WEAPON, "weapons/tnt/proxarm.wav", 1, ATTN_NORM);
 
+    self.nextthink = time;
     self.think = ProximBombCheck;
 };
 

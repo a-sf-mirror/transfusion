@@ -494,7 +494,7 @@ void(float corpseHealth, void() corpseToGib) BecomeCorpse =
     self.flags = self.flags - (self.flags & FL_MONSTER);
 
     // Corpse will turn into gibs if destroyed
-    self.health = corpseHealth;
+    self.health = corpseHealth / 2;
     self.th_die = corpseToGib;
 
     // Get rid of it in 2 minutes anyway (to avoid too many entities)
