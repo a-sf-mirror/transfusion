@@ -30,7 +30,7 @@ called when a spectator connects to a server
 */
 void() SpectatorConnect =
 {
-    #ifdef FRIKBOT
+    #ifndef NO_FRIKBOT
     ClientFixRankings();
     #endif
 

@@ -466,25 +466,25 @@ void(string soundname) sentry_detect_init =
     self.think = sentry_detect_think;
 };
 
-// Bloodbath `CLUE' entity for Area 15
+// 'CLUE' entity for Area 15
 void() sentry_detect_laugh =
 {
     sentry_detect_init ("ambience/laugh.wav");
 };
 
-// Bloodbath `CLUE' entity for Bodies
+// 'CLUE' entity for Bodies
 void() sentry_detect_switch1 =
 {
     sentry_detect_init ("locks/switch1.wav");
 };
 
-// BloodBath 'CLUE' entity for The Crypt
+// 'CLUE' entity for The Crypt
 void() sentry_detect_crypt =
 {
     sentry_detect_init ("misc/b2_crypt.wav");
 };
 
-// BloodBath generic Thunder sound triggered in any map desired
+// Generic Thunder sound triggered in any map desired
 void() sentry_detect_thunder =
 {
     sentry_detect_init ("ambience/thunder3.wav");

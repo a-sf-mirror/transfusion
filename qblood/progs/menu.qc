@@ -217,7 +217,7 @@ float(.float vote_field, float bitmask, float value) Vote_IsPassed =
     while (player != world)
     {
         // If it's a (real) player
-        #ifdef FRIKBOT
+        #ifndef NO_FRIKBOT
         if (player.ishuman == TRUE && player.b_clientno != -1)
         #else
         if (player.classname == "player" || (player.classname == "head" && ! player.takedamage))
@@ -285,13 +285,13 @@ void(float vote, string newmap) Vote_AddMapVote =
 #define MENU_VOTE_MAP_BLOOD         10
 #define MENU_VOTE_MAP_BLOODPACKS    11  // Plasma Pack + Cryptic Passage
 #define MENU_VOTE_MAP_BLOOD2        12
-#define MENU_VOTE_MAP_BLOODBATH     13
+#define MENU_VOTE_MAP_CUSTOM        13
 
 // The groups of maps
 #define MAPS_BLOOD      0
 #define MAPS_BLOODPACKS 20  // Plasma Pack + Cryptic Passage
 #define MAPS_BLOOD2     40
-#define MAPS_BLOODBATH  60
+#define MAPS_CUSTOM     60
 
 // Options
 #define OPTION_WEAPONS_STAY    1
@@ -326,7 +326,7 @@ void() Menu_Draw =
                 "1) Blood Episode maps\n"
                 "2) Blood Add-on Mission maps\n"
                 "3) Blood 2 maps\n"
-                "4) BloodBath maps\n"
+                "4) Custom maps\n"
                 "\n"
                 "10) Go back to main menu\n");
     }
@@ -431,7 +431,7 @@ void() Menu_Draw =
                 "\n"
                 "10) Go back to map menu\n");
     }
-    else if (self.menu_index == MENU_VOTE_MAP_BLOODBATH)
+    else if (self.menu_index == MENU_VOTE_MAP_CUSTOM)
     {
         Sprint (self, PRINT_HIGH,
                 "Vote for a map:\n"
@@ -761,12 +761,12 @@ void() Menu_HandleVoteMapBlood2 =
 
 /*
 ====================
-Menu_HandleVoteMapBloodBath
+Menu_HandleVoteMapCustom
 
-Handles the impulses when the client is in the BloodBath menu
+Handles the impulses when the client is in the Custom menu
 ====================
 */
-void() Menu_HandleVoteMapBloodBath =
+void() Menu_HandleVoteMapCustom =
 {
     local string newmap;
 
@@ -800,7 +800,7 @@ void() Menu_HandleVoteMapBloodBath =
     }
 
     // Validate the vote
-    Vote_AddMapVote (MAPS_BLOODBATH + self.impulse, newmap);
+    Vote_AddMapVote (MAPS_CUSTOM + self.impulse, newmap);
 
     self.player_state = PS_IDLE;  // exit the menu
 };
@@ -831,7 +831,7 @@ void() Menu_HandleVoteMap =
     else if (self.impulse == 3)
         self.menu_index = MENU_VOTE_MAP_BLOOD2;
     else if (self.impulse == 4)
-        self.menu_index = MENU_VOTE_MAP_BLOODBATH;
+        self.menu_index = MENU_VOTE_MAP_CUSTOM;
     else
         Sprint (self, PRINT_HIGH, "\n===== INVALID COMMAND =====\n\n");
 
@@ -1072,8 +1072,8 @@ void() Menu_Update =
         Menu_HandleVoteMapBloodPacks ();
     else if (self.menu_index == MENU_VOTE_MAP_BLOOD2)
         Menu_HandleVoteMapBlood2 ();
-    else if (self.menu_index == MENU_VOTE_MAP_BLOODBATH)
-        Menu_HandleVoteMapBloodBath ();
+    else if (self.menu_index == MENU_VOTE_MAP_CUSTOM)
+        Menu_HandleVoteMapCustom ();
 
     self.impulse = 0;
 };

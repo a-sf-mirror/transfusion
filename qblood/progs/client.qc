@@ -1017,7 +1017,7 @@ void() PlayerPreThink =
         self.impulse = 0;
     }
 
-    #ifdef FRIKBOT
+    #ifndef NO_FRIKBOT
     if (BotPreFrame())
         return;
     #endif
@@ -1225,9 +1225,9 @@ void() Impulses_Player =
     else if (self.impulse == 13)
         InvenUse ();
     else if (self.impulse == 14)
-        InvenSelect (FALSE);
+        InvenSelect (FALSE, FALSE);
     else if (self.impulse == 15)
-        InvenSelect (TRUE);
+        InvenSelect (TRUE, FALSE);
 
     // Armor cycle.
     else if (self.impulse == 16)
@@ -1237,7 +1237,7 @@ void() Impulses_Player =
     else if (self.impulse == 50)
         Menu_Start ();
 
-    #ifdef FRIKBOT
+    #ifndef NO_FRIKBOT
     // Bot management
     else if (self.impulse == 100 || self.impulse == 101)
     {
@@ -1265,7 +1265,7 @@ void() Impulses_Player =
     // These ones are considered cheats and are only allowed when the "sv_cheats" cvar is set
     else if (cvar ("sv_cheats"))
     {
-        #if defined(FRIKBOT) && !defined (QUAKEWORLD)
+        #if !defined(NO_FRIKBOT) && !defined (QUAKEWORLD)
         if (self.impulse == 103)
             botcam_u ();
         else if (self.impulse == 104)
@@ -1327,7 +1327,7 @@ void() Impulses_Dead =
     else if (self.impulse == 50)
         Menu_Start ();
 
-    #ifdef FRIKBOT
+    #ifndef NO_FRIKBOT
     // Bot management
     else if (self.impulse == 100 || self.impulse == 101)
     {
@@ -1368,7 +1368,7 @@ void() PlayerPostThink =
     local   float   mspeed, aspeed;
     local   float   r;
 
-    #ifdef FRIKBOT
+    #ifndef NO_FRIKBOT
     if (BotPostFrame())
         return;
     #endif
@@ -1446,7 +1446,7 @@ called when a player connects to a server
 */
 void() ClientConnect =
 {
-    #ifdef FRIKBOT
+    #ifndef NO_FRIKBOT
     ClientInRankings();
     #endif
 
@@ -1492,7 +1492,7 @@ void() ClientDisconnect =
         self = theplayer;
     }
 
-    #ifdef FRIKBOT
+    #ifndef NO_FRIKBOT
     ClientDisconnected();
     #endif
 

@@ -349,7 +349,13 @@ void(entity victim, entity attacker, float burn, float dmgtype) Ignite =
     if (!victim.takedamage)
         return;     // Immune to damage.
 
-    // FIXME:  If not a creature, don't burn.
+    // If it's a door, a plat or a wall, don't burn
+    if (victim.classname == "door")
+        return;
+    if (victim.classname == "plat")
+        return;
+    if (victim.classname == "exploding_wall")  // the other types of walls can't burn anyway
+        return;
 
     // Check if the entity is linked to a burning flame.
     if (victim.burner)

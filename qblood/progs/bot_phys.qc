@@ -26,7 +26,7 @@
  */
 
 
-#ifdef FRIKBOT
+#ifndef NO_FRIKBOT
 
 #include "common.qh"
 
@@ -660,4 +660,4 @@ void() SV_Physics_Client =
 };
 
 
-#endif  // #ifdef FRIKBOT
+#endif  // #ifndef NO_FRIKBOT

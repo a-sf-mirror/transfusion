@@ -24,7 +24,7 @@
  */
 
 
-#ifdef FRIKBOT
+#ifndef NO_FRIKBOT
 
 #include "common.qh"
 
@@ -1290,4 +1290,4 @@ void() BotFrame =
 };
 
 
-#endif  // #ifdef FRIKBOT
+#endif  // #ifndef NO_FRIKBOT

@@ -24,7 +24,7 @@
  */
 
 
-#ifdef FRIKBOT
+#ifndef NO_FRIKBOT
 
 #include "common.qh"
 
@@ -738,7 +738,7 @@ void(entity e2, float b_bit) FollowLink =
     else
         dist = vlen(self.origin - e2.origin) + self.items;
 
-    // check if this is an RJ link (no RJ in BloodBath!)
+    // check if this is an RJ link (no RJ!)
     if (e2.b_aiflags & AI_SUPER_JUMP)
         return;
     if (e2.b_aiflags & AI_DIFFICULT)
@@ -979,4 +979,4 @@ void(vector org) SpawnTempWaypoint =
 };
 
 
-#endif  // #ifdef FRIKBOT
+#endif  // #ifndef NO_FRIKBOT

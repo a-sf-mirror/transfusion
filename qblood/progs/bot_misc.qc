@@ -24,7 +24,7 @@
  */
 
 
-#ifdef FRIKBOT
+#ifndef NO_FRIKBOT
 
 #include "common.qh"
 
@@ -764,4 +764,4 @@ float(float v) frik_anglemod =
 };
 
 
-#endif  // #ifdef FRIKBOT
+#endif  // #ifndef NO_FRIKBOT

@@ -24,7 +24,7 @@
  */
 
 
-#ifdef FRIKBOT
+#ifndef NO_FRIKBOT
 
 #include "common.qh"
 
@@ -1341,4 +1341,4 @@ void() BSPDumpWaypoints =
 };
 
 
-#endif  // #ifdef FRIKBOT
+#endif  // #ifndef NO_FRIKBOT

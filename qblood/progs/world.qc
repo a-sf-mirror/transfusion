@@ -250,7 +250,7 @@ void() worldspawn =
     // Empty the lists of available weapons
     available_weapons = IT_PITCHFORK;
 
-    #ifdef FRIKBOT
+    #ifndef NO_FRIKBOT
     // FrikBot X initialization
     BotInit();
     #endif
@@ -390,7 +390,7 @@ void() StartFrame =
 
     World_WarmupCountdown ();
 
-    #ifdef FRIKBOT
+    #ifndef NO_FRIKBOT
     BotFrame();
     #endif
 };
@@ -615,7 +615,7 @@ void() World_CheckWarmup =
         ent = find (ent, classname, "head");
     }
 
-    // At least 2 players in BloodBath, and at least 1 player in each team for teamplay
+    // At least 2 players in BloodBath mode, and at least 1 player in each team for teamplay
     if (gametype == GT_BLOODBATH)
         doWarmup = (count1 >= 2);
     else
@@ -659,7 +659,7 @@ void(float corpseHealth, void() corpseToGib) BecomeCorpse =
     self.th_pain = SUB_Null;
     self.deadflag = DEAD_DEAD;
 
-    #ifdef FRIKBOT
+    #ifndef NO_FRIKBOT
     self.ishuman = 0;
     #endif
 

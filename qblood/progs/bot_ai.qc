@@ -24,7 +24,7 @@
  */
 
 
-#ifdef FRIKBOT
+#ifndef NO_FRIKBOT
 
 #include "common.qh"
 
@@ -384,7 +384,7 @@ void() bot_handle_ai =
     {
         if (self.flags & FL_ONGROUND)
         {
-            // No Rocket Jump in BloodBath!
+            // No Rocket Jump!
             self.b_aiflags = self.b_aiflags - AI_SUPER_JUMP;
             bot_lost(self.target1, FALSE);
         }
@@ -1052,4 +1052,4 @@ void() BotAI =
 };
 
 
-#endif  // #ifdef FRIKBOT
+#endif  // #ifndef NO_FRIKBOT

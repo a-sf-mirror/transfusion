@@ -517,7 +517,7 @@ void(entity e, vector min, vector max) setsize = #4;
 // #5 was removed
 void() break                        = #6;
 float() random                      = #7;       // returns 0 - 1
-#ifndef FRIKBOT
+#ifdef NO_FRIKBOT
 void(entity e, float chan, string samp, float vol, float atten) sound = #8;
 #endif
 vector(vector v) normalize          = #9;
@@ -539,18 +539,18 @@ entity() checkclient                = #17;  // returns a client to look for
 entity(entity start, .string fld, string match) find = #18;
 string(string s) precache_sound     = #19;
 string(string s) precache_model     = #20;
-#ifndef FRIKBOT
+#ifdef NO_FRIKBOT
 void(entity client, string s)stuffcmd = #21;
 #endif
 entity(vector org, float rad) findradius = #22;
 #ifdef QUAKEWORLD
 void(float level, string s) bprint  = #23;
-#ifndef FRIKBOT
+#ifdef NO_FRIKBOT
 void(entity client, float level, string s) sprint = #24;
 #endif
 #else
 void(string s) bprint               = #23;
-#ifndef FRIKBOT
+#ifdef NO_FRIKBOT
 void(entity client, string s) sprint = #24;
 #endif
 #endif
@@ -573,7 +573,7 @@ float(entity e) checkbottom         = #40;      // true if self is on ground
 float(vector v) pointcontents       = #41;      // returns a CONTENT_*
 // #42 was removed
 float(float f) fabs = #43;
-#ifndef FRIKBOT
+#ifdef NO_FRIKBOT
 vector(entity e, float speed) aim = #44;        // returns the shooting vector
 #endif
 float(string s) cvar = #45;                     // return cvar.value
@@ -589,7 +589,7 @@ void() ChangeYaw = #49;                     // turn towards self.ideal_yaw
 // #50 was removed
 vector(vector v) vectoangles            = #51;
 
-#ifndef FRIKBOT
+#ifdef NO_FRIKBOT
 //
 // direct client message generation
 //
@@ -626,7 +626,7 @@ void(string s) changelevel = #70;
 
 void(string var, string val) cvar_set = #72;    // sets cvar.value
 
-#ifndef FRIKBOT
+#ifdef NO_FRIKBOT
 // The various versions of centerprint (sprint, but in middle)
 void(entity client, string s) centerprint = #73;
 void(entity client, string s1, string s2) centerprint2 = #73;
@@ -638,7 +638,7 @@ string(string s) precache_model2    = #75;      // registered version only
 string(string s) precache_sound2    = #76;      // registered version only
 string(string s) precache_file2     = #77;      // registered version only
 
-#ifndef FRIKBOT
+#ifdef NO_FRIKBOT
 void(entity e) setspawnparms        = #78;      // set parm1... to the
                                                 // values at level start
                                                 // for coop respawn

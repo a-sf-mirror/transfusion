@@ -439,7 +439,7 @@ void() func_door =
     precache_sound ("player/hunt4.wav");
     self.noise3 = "player/hunt4.wav";
 
-    // Worldtype for key doors.  Should not be necessary for qblood.
+    // Worldtype for key doors
     if (world.worldtype == 0)
     {
         precache_sound ("locks/baseuse.wav");

@@ -2113,7 +2113,7 @@ local float     best;
 
 /*QUAKED item_key (0 .5 .8) (-16 -16 -24) (16 16 32)
 one of six keys in Blood
-the following keys need to exist in single player qBlood:
+the following keys need to exist in single player:
 Skull, Eye, Fire, Dagger, Spider, Moon
 */
 void() item_key =

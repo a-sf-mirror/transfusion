@@ -39,7 +39,6 @@
 .float      inven2;
 
 .float      it_select;      // Current item selected from inventory.
-.float      it_on;          // If > time, inventory should be on screen.
 
 // *_on are boolean fields.  If TRUE, item is on.
 // *_time are float fields.  If <= time while item is on, fuel decreases.
@@ -69,6 +68,15 @@
 
 //========================================================================
 //  Item Power Settings
+
+void(float add, float noprint) InvenSelect;
+
+// Set the current item as the first available one
+void() InvenSetOnFirst =
+{
+    self.it_select  = 0;    // Default to first-aid.
+    InvenSelect (TRUE, TRUE);
+};
 
 // This returns the amount of power left in an item.
 float(float itype) InvenFuel =
@@ -223,19 +231,15 @@ void() Use_FirstAid =
 
     InvenSet (self, S_FIRST_AID, faid);
     sound (self, CHAN_ITEM, "items/pickheal.wav", 1, ATTN_NORM);
+
+    if (!faid)
+        InvenSetOnFirst ();
 };
 
 void() Use_DivingSuit =
 {
     if (!InvenFuel (S_DIVING_SUIT))
-    {
-        // No more dive suit.
-        self.items      = self.items - (self.items & IT_SUIT);
-        self.dive_on    = 0;
-        self.dive_time  = 0;
-        self.it_select  = 0;    // Default to first-aid.
         return;
-    }
 
     self.dive_on = !self.dive_on;
     if (self.dive_on)
@@ -247,14 +251,14 @@ void() Use_DivingSuit =
             return;
         }
 
-//        Sprint (self, PRINT_MEDIUM, "Diving Suit ON\n");
+        Sprint (self, PRINT_MEDIUM, "Diving Suit ON\n");
         self.items = self.items | IT_SUIT;
         self.dive_time = time + self.dive_time;
         sound (self, CHAN_ITEM, "foley/swimuw.wav", 1, ATTN_NORM);
     }
     else
     {
-//        Sprint (self, PRINT_MEDIUM, "Diving Suit OFF\n");
+        Sprint (self, PRINT_MEDIUM, "Diving Suit OFF\n");
         self.items = self.items - (self.items & IT_SUIT);
         self.dive_time = self.dive_time - time;
     }
@@ -283,13 +287,7 @@ void() Use_BeastVision =
 void() Use_JumpBoots =
 {
     if (!InvenFuel (S_JUMP_BOOTS))
-    {
-        // No more jump power.
-        self.boots_on   = 0;
-        self.boots_time = 0;
-        self.it_select  = 0;    // Default to first-aid.
         return;
-    }
 
     self.boots_on = !self.boots_on;
     if (self.boots_on)
@@ -398,72 +396,70 @@ void(float chosen) InvenList =
         else
             Sprint (self, PRINT_MEDIUM, "Boots of Jumping: ");
         Sprint (self, PRINT_MEDIUM, text);
+        i = i + 1;
     }
 
-//    if (!i)
-//        Sprint (self, PRINT_MEDIUM, "You aren't carrying anything");
+    if (!i)
+        Sprint (self, PRINT_MEDIUM, "You aren't carrying anything");
 
     Sprint (self, PRINT_MEDIUM, "\n");
 };
 
 // This lets a player select another item in the inventory.
-void(float add) InvenSelect =
+void(float add, float noprint) InvenSelect =
 {
     if (!self.inven1)
         if (!self.inven2)
         {
             // No items.
             self.it_select = 0;
-            Sprint (self, PRINT_MEDIUM, "You aren't carrying anything\n");
+            if (!noprint)
+                Sprint (self, PRINT_MEDIUM, "You aren't carrying anything\n");
             return;
         }
 
-    if (self.it_on > time)
-    {
-        // Change items while inventory is onscreen.
-        local   float   fuel;
-        local   float   old;
+    local float fuel;
+    local float old;
 
-        old = self.it_select;   // Remember old item in case selection fails.
-        if (add)
+    old = self.it_select;   // Remember old item in case selection fails.
+    if (add)
+    {
+        // Scroll to the right.
+        do
         {
-            // Scroll to the right.
-            do
+            self.it_select = self.it_select + 1;
+            if (self.it_select > 4)
             {
-                self.it_select = self.it_select + 1;
-                if (self.it_select > 4)
-                {
-                    // Failed -- select old item back and abort.
-                    self.it_select = old;
-                    fuel = -1;
-                }
-                else
-                    fuel = InvenFuel (self.it_select);
+                // Failed -- select old item back and abort.
+                self.it_select = old;
+                fuel = -1;
             }
-            while (!fuel);
+            else
+                fuel = InvenFuel (self.it_select);
         }
-        else
+        while (!fuel);
+    }
+    else
+    {
+        // Scroll to the left.
+        do
         {
-            // Scroll to the left.
-            do
+            self.it_select = self.it_select - 1;
+            if (self.it_select < 0)
             {
-                self.it_select = self.it_select - 1;
-                if (self.it_select < 0)
-                {
-                    // Failed -- select old item back and abort.
-                    self.it_select = old;
-                    fuel = -1;
-                }
-                else
-                    fuel = InvenFuel (self.it_select);
+                // Failed -- select old item back and abort.
+                self.it_select = old;
+                fuel = -1;
             }
-            while (!fuel);
+            else
+                fuel = InvenFuel (self.it_select);
         }
+        while (!fuel);
     }
 
     // Display inventory.
-    self.it_on = time + 5;
-    InvenList (self.it_select);
+    if (!noprint)
+        InvenList (self.it_select);
 };
 
 // This gives the cheater all items.
@@ -489,7 +485,7 @@ void() InvenCheck =
     local   float   fuel;
     local   string  text;
 
-// Diving Suit
+    // Diving Suit
     if (self.dive_on)
     {
         self.air_finished = time + 12;      // Don't drown!
@@ -503,7 +499,7 @@ void() InvenCheck =
                 InvenSet (self, S_DIVING_SUIT, fuel);
                 self.dive_time = time + 0.3;
 
-            // Debug message.
+                // Debug message.
                 fuel = fuel * 0.1;
                 if (floor(fuel) == fuel)
                 {
@@ -513,17 +509,18 @@ void() InvenCheck =
                     Sprint (self, PRINT_MEDIUM, "%\n");
                 }
             }
+            // All gone. Turn it off
             else
             {
-                // All gone -- turn it off.
-                self.it_select = 0;
-                self.dive_time = 0;
-                Use_DivingSuit ();
+                self.dive_time  = 0;
+                self.items      = self.items - (self.items & IT_SUIT);
+                self.dive_on    = 0;
+                InvenSetOnFirst ();
             }
         }
     }
 
-// Jump Boots
+    // Jump Boots
     if (self.boots_on)
     {
         if (self.boots_time <= time)
@@ -535,7 +532,7 @@ void() InvenCheck =
                 InvenSet (self, S_JUMP_BOOTS, fuel);
                 self.boots_time = time + 0.3;
 
-            // Debug message.
+                // Debug message.
                 fuel = fuel * 0.1;
                 if (floor(fuel) == fuel)
                 {
@@ -545,14 +542,13 @@ void() InvenCheck =
                     Sprint (self, PRINT_MEDIUM, "%\n");
                 }
             }
+            // All gone. Turn it off
             else
             {
-                // All gone -- turn it off.
-                Use_JumpBoots ();
+                self.boots_on   = 0;
+                self.boots_time = 0;
+                InvenSetOnFirst ();
             }
         }
     }
 };
-
-
-//===========================/  END OF FILE  /===========================//
