@@ -41,6 +41,14 @@ void() player_flare2 = [$shotatt2, player_flare3] { self.weaponframe = $flare_fi
 void() player_flare3 = [$shotatt3, player_flare4] { self.weaponframe = $flare_fire3; };
 void() player_flare4 = [$shotatt4, player_run  ]  { self.weaponframe = $flare_idle1; };
 
+// Normal draw
+// NOTE: no animation to play for now
+void() player_flaredraw1 = [$shotatt1, player_run] { self.weaponframe = 0; };
+
+// Normal holster
+// NOTE: no animation to play for now
+void() player_flareholster1 = [$shotatt1, player_run] { W_DrawWeapon (self.newweapon); };
+
 
 //============================================================================
 
@@ -452,4 +460,52 @@ void() Flare_Attack =
     player_flare1 ();
     Flare_Fire ();
     self.attack_finished = time + 0.5;
+};
+
+
+/*
+============
+Flare_Draw
+
+Draw code for the flaregun
+============
+*/
+void() Flare_Draw =
+{
+    self.weapon = IT_FLAREGUN;
+    self.currentammo = self.ammo_flares;
+    self.items = self.items - (self.items & (IT_SHELLS | IT_NAILS | IT_CELLS | IT_ROCKETS));
+
+    Flare_UpdateView ();
+
+    self.attack_finished = time + 0.1;
+    player_flaredraw1 ();
+};
+
+
+/*
+============
+Flare_Holster
+
+Holster code for the flaregun
+============
+*/
+void() Flare_Holster =
+{
+    self.attack_finished = time + 0.1;
+    player_flareholster1 ();
+};
+
+
+/*
+============
+Flare_UpdateView
+
+Choose the right flaregun model to display
+============
+*/
+void() Flare_UpdateView =
+{
+    self.weaponmodel = "progs/v_shot.mdl";
+    self.items = self.items - (self.items & IT_GUNS_AKIMBO);
 };

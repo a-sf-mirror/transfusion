@@ -35,7 +35,8 @@ void() player_run;
 
 void()  player_stand1 =[    $axstnd1,   player_stand1   ]
 {
-    self.weaponframe = 0;
+    if (self.player_state != PS_HOLD_FIRE)
+        self.weaponframe = 0;
 
     if (self.velocity_x || self.velocity_y)
     {
@@ -61,7 +62,8 @@ void()  player_stand1 =[    $axstnd1,   player_stand1   ]
 
 void()  player_run =[   $rockrun1,  player_run  ]
 {
-    self.weaponframe = 0;
+    if (self.player_state != PS_HOLD_FIRE)
+        self.weaponframe = 0;
 
     if (!self.velocity_x && !self.velocity_y)
     {

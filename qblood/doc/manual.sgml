@@ -5,7 +5,7 @@
 
    <title> QBlood manual
    <author> Mathieu Olivier <tt>&lt;elric@planetblood.com&gt;</tt>
-   <date>v?.?.? (development), December 8, 2001
+   <date>v?.?.? (development), December 19, 2001
    <abstract>
       This manual covers <url url="http://www.planetblood.com/qblood/"
       name="qBlood"> installation and usage.
@@ -58,7 +58,7 @@
       <sect1>Impulses<p>
          Let's start with the impulse list:
          <itemize>
-            <item> impulses 1 to 9: select a weapon<p>
+            <item> impulses 1 to 9, and impulse 17: select a weapon<p>
             <item> impulses 10 and 11: cycle to next/previous weapon<p>
             <item> impulse 12: secondary fire<p>
             <item> impulse 13: use the currently selected item<p>

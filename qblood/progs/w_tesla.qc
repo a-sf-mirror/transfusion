@@ -120,6 +120,7 @@ void()  player_alttesla1  = [$shotatt1, player_alttesla2 ]
     self.weaponframe = $atesla_alt1;
 };
 
+// Altfire
 void()  player_alttesla2  = [$shotatt1, player_alttesla3 ] { self.weaponframe = $atesla_alt2; };
 void()  player_alttesla3  = [$shotatt2, player_alttesla4 ] { self.weaponframe = $atesla_alt3; };
 void()  player_alttesla4  = [$shotatt1, player_alttesla5 ] { self.weaponframe = $atesla_alt4; };
@@ -140,6 +141,28 @@ void()  player_alttesla18 = [$shotatt1, player_alttesla19] { self.weaponframe = 
 void()  player_alttesla19 = [$shotatt2, player_alttesla20] { self.weaponframe = $atesla_alt19; };
 void()  player_alttesla20 = [$shotatt1, player_alttesla21] { self.weaponframe = $atesla_alt20; };
 void()  player_alttesla21 = [$shotatt2, player_run       ] {};
+
+// Normal draw
+void() player_tesladraw1 = [$shotatt1, player_tesladraw2] { self.weaponframe = $tesla_draw1; };
+void() player_tesladraw2 = [$shotatt1, player_tesladraw3] { self.weaponframe = $tesla_draw2; };
+void() player_tesladraw3 = [$shotatt1, player_run       ] { self.weaponframe = $tesla_draw3; };
+
+// Normal holster
+void() player_teslaholster1 = [$shotatt1, player_teslaholster2] { self.weaponframe = $tesla_holster1; };
+void() player_teslaholster2 = [$shotatt1, player_teslaholster3] { self.weaponframe = $tesla_holster2; };
+void() player_teslaholster3 = [$shotatt1, player_teslaholster4] { self.weaponframe = $tesla_holster3; };
+void() player_teslaholster4 = [$shotatt1, player_run          ] { W_DrawWeapon (self.newweapon); };
+
+// Akimbo draw
+void() player_aktesladraw1 = [$shotatt1, player_aktesladraw2] { self.weaponframe = $atesla_draw1; };
+void() player_aktesladraw2 = [$shotatt1, player_aktesladraw3] { self.weaponframe = $atesla_draw2; };
+void() player_aktesladraw3 = [$shotatt1, player_run         ] { self.weaponframe = $atesla_draw3; };
+
+// Akimbo holster
+void() player_akteslaholster1 = [$shotatt1, player_akteslaholster2] { self.weaponframe = $atesla_holster1; };
+void() player_akteslaholster2 = [$shotatt1, player_akteslaholster3] { self.weaponframe = $atesla_holster2; };
+void() player_akteslaholster3 = [$shotatt1, player_akteslaholster4] { self.weaponframe = $atesla_holster3; };
+void() player_akteslaholster4 = [$shotatt1, player_run            ] { W_DrawWeapon (self.newweapon); };
 
 
 //============================================================================
@@ -323,7 +346,7 @@ void() Tesla_Fire =
 
         // If we don't have enough ammo anymore, drop the akimbo mode for now
         if (self.ammo_cells < 2)
-            W_SetCurrentAmmo (FALSE, 0);
+            W_SetCurrentAmmo ();
     }
 };
 
@@ -346,5 +369,77 @@ void() Tesla_Attack =
     {
         player_alttesla1();
         self.attack_finished = time + 2.1;
+    }
+};
+
+
+/*
+============
+Tesla_Draw
+
+Draw code for the tesla cannon
+============
+*/
+void() Tesla_Draw =
+{
+    self.weapon = IT_TESLA_CANNON;
+    self.currentammo = self.ammo_cells;
+    self.items = (self.items - (self.items & (IT_SHELLS | IT_NAILS | IT_ROCKETS))) | IT_CELLS;
+
+    Tesla_UpdateView ();
+
+    if (self.items & IT_GUNS_AKIMBO)
+    {
+        self.attack_finished = time + 0.4;
+        player_aktesladraw1 ();
+    }
+    else
+    {
+        self.attack_finished = time + 0.4;
+        player_tesladraw1 ();
+    }
+};
+
+
+/*
+============
+Tesla_Holster
+
+Holster code for the tesla cannon
+============
+*/
+void() Tesla_Holster =
+{
+    if (self.items & IT_GUNS_AKIMBO)
+    {
+        self.attack_finished = time + 0.5;
+        player_akteslaholster1 ();
+    }
+    else
+    {
+        self.attack_finished = time + 0.5;
+        player_teslaholster1 ();
+    }
+};
+
+
+/*
+============
+Tesla_UpdateView
+
+Choose the right tesla cannon model to display
+============
+*/
+void() Tesla_UpdateView =
+{
+    if (self.akimbo_finished > time && self.currentammo >= 2)
+    {
+        self.weaponmodel = "progs/v_alight.mdl";
+        self.items = self.items | IT_GUNS_AKIMBO;
+    }
+    else
+    {
+        self.weaponmodel = "progs/v_light.mdl";
+        self.items = self.items - (self.items & IT_GUNS_AKIMBO);
     }
 };

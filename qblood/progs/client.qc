@@ -699,7 +699,7 @@ void() PutClientInServer =
     self.remain_dmg = 0;
     self.remain_arm = 0;
 
-    W_Uncharge ();
+    Bomb_Uncharge ();
     ResetIdle (self);
 
     DecodeLevelParms ();
@@ -750,7 +750,7 @@ void() PutClientInServer =
 
     // Let's start with our best weapon
     self.weapon = W_BestWeapon ();
-    W_SetCurrentAmmo (TRUE, 0);
+    W_DrawWeapon (self.weapon);
 };
 
 
@@ -1289,7 +1289,7 @@ void() CheckPowerups =
         if (self.akimbo_finished < time)
         {
             self.akimbo_finished = 0;
-            W_SetCurrentAmmo (FALSE, 0);
+            W_SetCurrentAmmo ();
         }
 
         // (un)set the entity effects

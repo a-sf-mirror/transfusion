@@ -40,7 +40,7 @@
 //    ammo_cells   -> telsa cannon
 
 
-void(float weaponHasChanged, float oldWeapon) W_SetCurrentAmmo;
+void() W_SetCurrentAmmo;
 /* ALL LIGHTS SHOULD BE 0 1 0 IN COLOR ALL OTHER ITEMS SHOULD
 BE .8 .3 .4 IN COLOR */
 
@@ -88,7 +88,7 @@ void() q_touch =
     other.akimbo_finished = self.nextthink;
     stemp = self;
     self = other;
-    W_SetCurrentAmmo (FALSE, 0);
+    W_SetCurrentAmmo ();
     self = stemp;
 
     s=ftos(rint(other.akimbo_finished - time));
@@ -810,7 +810,7 @@ void() powerup_touch =
 
         stemp = self;
         self = other;
-        W_SetCurrentAmmo (FALSE, 0);
+        W_SetCurrentAmmo ();
         self = stemp;
     }
     else if (self.classname == "item_artifact_vision")
@@ -1324,9 +1324,9 @@ void() weapon_touch =
     }
     else if (self.classname == "weapon_supernailgun")
     {
-        if (leave && (other.items & IT_SUPER_NAILGUN) )
+        if (leave && (other.items & IT_SPRAY_CAN) )
             return;
-        new = IT_SUPER_NAILGUN;
+        new = IT_SPRAY_CAN;
         other.ammo_spray = other.ammo_spray + 48;
     }
     else if (self.classname == "weapon_supershotgun")
@@ -1345,14 +1345,14 @@ void() weapon_touch =
     }
     else if (self.classname == "weapon_grenadelauncher")
     {
-        if (leave && (other.items & IT_GRENADE_LAUNCHER) )
+        if (leave && (other.items & IT_TNT) )
             return;
-        new = IT_GRENADE_LAUNCHER;
+        new = IT_TNT;
         other.ammo_tnt_bundle = other.ammo_tnt_bundle + 5;
     }
     else if (self.classname == "item_tnt")
     {
-        new = IT_GRENADE_LAUNCHER;
+        new = IT_TNT;
         other.ammo_tnt_bundle = other.ammo_tnt_bundle + 1;
         leave = 0;
     }
@@ -1382,15 +1382,15 @@ void() weapon_touch =
         new = IT_VOODOO_DOLL;
         other.ammo_voodoo = other.ammo_voodoo + 100;
     }
-    
+
     else if (self.classname == "weapon_lifeleech")
     {
-	if (leave && (other.items & IT_LIFE_LEECH) )
-	    return;
-	new = IT_LIFE_LEECH;
-	other.ammo_leech = other.ammo_leech + 35;
+        if (leave && (other.items & IT_LIFE_LEECH) )
+            return;
+        new = IT_LIFE_LEECH;
+        other.ammo_leech = other.ammo_leech + 35;
     }
-     
+
     else
         objerror ("weapon_touch: unknown classname");
 
@@ -1406,7 +1406,7 @@ void() weapon_touch =
 
     temp = self;
     self = other;
-    W_SetCurrentAmmo (FALSE, 0);
+    W_SetCurrentAmmo ();
     self = temp;
 
     // add the weapon to the player's equipment
@@ -1513,7 +1513,7 @@ void() weapon_supernailgun =
     precache_model ("progs/grd_aero.mdl");
 
     setmodel (self, "progs/g_nail2.mdl");
-    self.weapon = IT_SUPER_NAILGUN;
+    self.weapon = IT_SPRAY_CAN;
     self.netname = "Spray Can";
     self.touch = weapon_touch;
     setsize (self, '-16 -16 0', '16 16 56');
@@ -1540,7 +1540,7 @@ void() weapon_grenadelauncher =
     precache_model ("progs/grd_bund.mdl");
 
     setmodel (self, "progs/g_rock.mdl");
-    self.weapon = IT_GRENADE_LAUNCHER;
+    self.weapon = IT_TNT;
     self.netname = "Dynamite";
     self.touch = weapon_touch;
     setsize (self, '-16 -16 0', '16 16 56');
@@ -1566,7 +1566,7 @@ void() item_tnt =
     precache_model ("progs/grd_bund.mdl");
 
     setmodel (self, "progs/i_tnt.mdl");
-    self.weapon = IT_GRENADE_LAUNCHER;
+    self.weapon = IT_TNT;
     self.netname = "Dynamite";
     self.touch = weapon_touch;
     setsize (self, '0 0 0', '32 32 32');
@@ -1721,13 +1721,13 @@ void() weapon_lifeleech =
     precache_model ("progs/v_rock2.mdl"); //FIXME: use NL until weapon is finished
     //precache_model ("progs/lechball.mdl");
     precache_model ("progs/bolt.mdl"); // FIXME: use Tesla shot until missile is finished
-    
+
     setmodel (self, "progs/g_leech.mdl");
     self.weapon = IT_LIFE_LEECH;
     self.netname = "Life Leech";
     self.touch = weapon_touch;
     setsize (self, '-16 -16 0', '16 16 56');
-    
+
     // precache the necessary sounds
     precache_sound ("weapons/lifelech/llaltht.wav");
     precache_sound ("weapons/lifelech/laltfr1.wav");
@@ -1739,7 +1739,6 @@ void() weapon_lifeleech =
     precache_sound ("weapons/lifelech/skulair4.wav");
 
     StartItem ();
-    
 };
 
 
@@ -1852,7 +1851,7 @@ void() ammo_touch =
 
     temp = self;
     self = other;
-    W_SetCurrentAmmo (FALSE, 0);
+    W_SetCurrentAmmo ();
     self = temp;
 
     // remove it in single player, or setup for respawning in deathmatch
@@ -2439,7 +2438,7 @@ void() BackpackTouch =
         Sprint (other, PRINT_LOW, s);
         Sprint (other, PRINT_LOW, " TNT");
 
-        other.items = other.items | IT_GRENADE_LAUNCHER;
+        other.items = other.items | IT_TNT;
     }
     if (self.ammo_tnt_proxy)
     {
@@ -2500,7 +2499,7 @@ void() BackpackTouch =
     remove(self);
     self = other;
 
-    W_SetCurrentAmmo (FALSE, 0);
+    W_SetCurrentAmmo ();
 };
 
 /*
@@ -2521,7 +2520,7 @@ void() DropBackpack =
     item.origin = self.origin - '0 0 24';
 
     // If the current weapon is dynamite, don't record it (it's just ammo)
-    if (self.weapon == IT_GRENADE_LAUNCHER ||
+    if (self.weapon == IT_TNT ||
         self.weapon == IT_PROXIMITY_BOMB   ||
         self.weapon == IT_REMOTE_DETONATOR )
     {
@@ -2540,7 +2539,7 @@ void() DropBackpack =
             item.netname = "Sawed-off";
         else if (item.items == IT_TOMMYGUN)
             item.netname = "Tommy Gun";
-        else if (item.items == IT_SUPER_NAILGUN)
+        else if (item.items == IT_SPRAY_CAN)
             item.netname = "Spray Can";
         else if (item.items == IT_NAPALM_LAUNCHER)
             item.netname = "Napalm Launcher";
@@ -2549,8 +2548,8 @@ void() DropBackpack =
         else if (item.items == IT_VOODOO_DOLL)
             item.netname = "Voodoo Doll";
         else if (item.items == IT_LIFE_LEECH)
-	    item.netname = "Life Leech";
-	else
+            item.netname = "Life Leech";
+        else
             item.netname = "";
     }
 

@@ -85,6 +85,14 @@ void() player_altvoodoo6 = [$light2, player_altvoodoo7] { self.weaponframe = $vo
 void() player_altvoodoo7 = [$light1, player_altvoodoo8] { self.weaponframe = $voodoo_altfire7; };
 void() player_altvoodoo8 = [$light2, player_run       ] { self.weaponframe = $voodoo_altfire8; };
 
+// Normal draw
+// NOTE: no animation to play for now
+void() player_voodoodraw1 = [$light1, player_run] { self.weaponframe = 0; };
+
+// Normal holster
+// NOTE: no animation to play for now
+void() player_voodooholster1 = [$light1, player_run] { W_DrawWeapon (self.newweapon); };
+
 
 //============================================================================
 
@@ -228,4 +236,52 @@ void() Voodoo_Attack =
 
         self.attack_finished = time + 0.5;
     }
+};
+
+
+/*
+============
+Voodoo_Draw
+
+Draw code for the voodoo doll
+============
+*/
+void() Voodoo_Draw =
+{
+    self.weapon = IT_VOODOO_DOLL;
+    self.currentammo = self.ammo_voodoo;
+    self.items = self.items - (self.items & (IT_SHELLS | IT_NAILS | IT_CELLS | IT_ROCKETS));
+
+    Voodoo_UpdateView ();
+
+    self.attack_finished = time + 0.1;
+    player_voodoodraw1 ();
+};
+
+
+/*
+============
+Voodoo_Holster
+
+Holster code for the voodoo doll
+============
+*/
+void() Voodoo_Holster =
+{
+    self.attack_finished = time + 0.1;
+    player_voodooholster1 ();
+};
+
+
+/*
+============
+Voodoo_UpdateView
+
+Choose the right voodoo doll model to display
+============
+*/
+void() Voodoo_UpdateView =
+{
+    self.weaponmodel = "progs/v_voodoo.mdl";
+    self.items = self.items - (self.items & IT_GUNS_AKIMBO);
 };

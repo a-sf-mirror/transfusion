@@ -65,9 +65,11 @@ $frame ashot_holster6 ashot_holster7
 
 // ----- Player related code ----- //
 
+// Normal shot
 void() player_shot1 = [$supatt1, player_shot2] { self.weaponframe = $shot_fire1; muzzleflash (); };
 void() player_shot2 = [$supatt2, player_run  ] { self.weaponframe = $shot_fire2; Shot_SpawnShell (); };
 
+// Reload
 void() player_reloadshot1  = [$supatt1, player_reloadshot2 ] { self.weaponframe = $shot_reload1; };
 void() player_reloadshot2  = [$supatt1, player_reloadshot3 ] { self.weaponframe = $shot_reload2; };
 void() player_reloadshot3  = [$supatt1, player_reloadshot4 ] { self.weaponframe = $shot_reload3; };
@@ -79,18 +81,51 @@ void() player_reloadshot8  = [$supatt1, player_reloadshot9 ] { self.weaponframe 
 void() player_reloadshot9  = [$supatt1, player_reloadshot10] { self.weaponframe = $shot_reload9; };
 void() player_reloadshot10 = [$supatt1, player_run         ] { self.weaponframe = $shot_reload10; };
 
+// Akimbo shot
 void() player_akshot1 = [$supatt1, player_akshot2] { self.weaponframe = $ashot_fire1; };
 void() player_akshot2 = [$supatt2, player_akshot3] { self.weaponframe = $ashot_fire2; muzzleflash (); Shot_Fire (); };
 void() player_akshot3 = [$supatt1, player_akshot4] { self.weaponframe = $ashot_fire3; };
 void() player_akshot4 = [$supatt2, player_akshot5] { self.weaponframe = $ashot_fire4; muzzleflash (); Shot_Fire (); };
 void() player_akshot5 = [$supatt1, player_run    ]
 {
-    self.weaponframe = $ashot_fire5;
-
     // If we don't have enough ammo anymore, drop the akimbo mode for now
     if (self.ammo_shells < 2)
-        W_SetCurrentAmmo (FALSE, 0);
+    {
+        Shot_UpdateView ();
+        self.weaponframe = 0;
+    }
+    else
+        self.weaponframe = $ashot_fire5;
 };
+
+// Normal draw
+void() player_shotdraw1 = [$supatt1, player_shotdraw2] { self.weaponframe = $shot_draw1; };
+void() player_shotdraw2 = [$supatt1, player_shotdraw3] { self.weaponframe = $shot_draw2; };
+void() player_shotdraw3 = [$supatt1, player_shotdraw4] { self.weaponframe = $shot_draw3; };
+void() player_shotdraw4 = [$supatt1, player_run      ] { self.weaponframe = $shot_draw4; };
+
+// Normal holster
+void() player_shotholster1 = [$supatt1, player_shotholster2] { self.weaponframe = $shot_holster1; };
+void() player_shotholster2 = [$supatt1, player_shotholster3] { self.weaponframe = $shot_holster2; };
+void() player_shotholster3 = [$supatt1, player_shotholster4] { self.weaponframe = $shot_holster3; };
+void() player_shotholster4 = [$supatt1, player_shotholster5] { self.weaponframe = $shot_holster4; };
+void() player_shotholster5 = [$supatt1, player_run         ] { W_DrawWeapon (self.newweapon); };
+
+// Akimbo draw
+void() player_akshotdraw1 = [$supatt1, player_akshotdraw2] { self.weaponframe = $ashot_draw1; };
+void() player_akshotdraw2 = [$supatt1, player_akshotdraw3] { self.weaponframe = $ashot_draw2; };
+void() player_akshotdraw3 = [$supatt1, player_akshotdraw4] { self.weaponframe = $ashot_draw3; };
+void() player_akshotdraw4 = [$supatt1, player_run        ] { self.weaponframe = $ashot_draw4; };
+
+// Akimbo holster
+void() player_akshotholster1 = [$supatt1, player_akshotholster2] { self.weaponframe = $ashot_holster1; };
+void() player_akshotholster2 = [$supatt1, player_akshotholster3] { self.weaponframe = $ashot_holster2; };
+void() player_akshotholster3 = [$supatt1, player_akshotholster4] { self.weaponframe = $ashot_holster3; };
+void() player_akshotholster4 = [$supatt1, player_akshotholster5] { self.weaponframe = $ashot_holster4; };
+void() player_akshotholster5 = [$supatt1, player_akshotholster6] { self.weaponframe = $ashot_holster5; };
+void() player_akshotholster6 = [$supatt1, player_akshotholster7] { self.weaponframe = $ashot_holster6; };
+void() player_akshotholster7 = [$supatt1, player_akshotholster8] { self.weaponframe = $ashot_holster7; };
+void() player_akshotholster8 = [$supatt1, player_run           ] { W_DrawWeapon (self.newweapon); };
 
 
 //============================================================================
@@ -132,7 +167,7 @@ void() Shot_SpawnShell =
 
         // play the reload scene at the next frame
         self.think = player_reloadshot1;
-        self.attack_finished = time + 1.0;
+        self.attack_finished = time + 1.1;
         sound (shell, CHAN_WEAPON, "weapons/shotgun/shotcock.wav", 1, ATTN_NORM);
     }
 };
@@ -183,29 +218,13 @@ Attack code for the sawed-off
 */
 void() Shot_Attack =
 {
+    self.attack_finished = time + 0.7;
 
-    // If it's an altfire regular shot
+    // If it's an altfire shot
     if (self.button1 || self.impulse == 12)
         self.player_state = PS_ALTFIRE;
-    
     else
         self.player_state = PS_FIRE;
-
-    // if the shotgun has two shells and a single shot is fired
-    if (self.player_state == PS_FIRE)
-	self.attack_finished = time + 0.1; 
-
-    // or if we have Guns Akimbo and are alt-firing
-    else if ((self.items & IT_GUNS_AKIMBO) && self.player_state == PS_ALTFIRE)
-	self.attack_finished = time + 0.6; 
-
-    // or if we are regular firing with Guns Akimbo
-    else if (self.items & IT_GUNS_AKIMBO)
-	self.attack_finished = time + 0.3;
-	
-    // otherwise we are alt-firing without Guns Akimbo	
-    else
-	self.attack_finished = time + 0.5;
 
     // if we have guns akimbo
     if (self.items & IT_GUNS_AKIMBO)
@@ -214,5 +233,77 @@ void() Shot_Attack =
     {
         player_shot1 ();
         Shot_Fire ();
+    }
+};
+
+
+/*
+============
+Shot_Draw
+
+Draw code for the sawed-off
+============
+*/
+void() Shot_Draw =
+{
+    self.weapon = IT_SAWED_OFF;
+    self.currentammo = self.ammo_shells;
+    self.items = (self.items - (self.items & (IT_NAILS | IT_CELLS | IT_ROCKETS))) | IT_SHELLS;
+
+    Shot_UpdateView ();
+
+    if (self.items & IT_GUNS_AKIMBO)
+    {
+        self.attack_finished = time + 0.5;
+        player_akshotdraw1 ();
+    }
+    else
+    {
+        self.attack_finished = time + 0.5;
+        player_shotdraw1 ();
+    }
+};
+
+
+/*
+============
+Shot_Holster
+
+Holster code for the sawed-off
+============
+*/
+void() Shot_Holster =
+{
+    if (self.items & IT_GUNS_AKIMBO)
+    {
+        self.attack_finished = time + 0.9;
+        player_akshotholster1 ();
+    }
+    else
+    {
+        self.attack_finished = time + 0.6;
+        player_shotholster1 ();
+    }
+};
+
+
+/*
+============
+Shot_UpdateView
+
+Choose the right sawed-off model to display
+============
+*/
+void() Shot_UpdateView =
+{
+    if (self.akimbo_finished > time && self.currentammo >= 2)
+    {
+        self.weaponmodel = "progs/v_ashot2.mdl";
+        self.items = self.items | IT_GUNS_AKIMBO;
+    }
+    else
+    {
+        self.weaponmodel = "progs/v_shot2.mdl";
+        self.items = self.items - (self.items & IT_GUNS_AKIMBO);
     }
 };

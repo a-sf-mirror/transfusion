@@ -106,10 +106,10 @@
 #define IT_SAWED_OFF        2        // 2  - sawed-off (formerly: super shotgun)
 #define IT_TOMMYGUN         4        // 3  - tommy gun (formerly: nailgun)
 #define IT_NAPALM_LAUNCHER  8        // 4  - napalm launcher (formerly: super nailgun)
-#define IT_GRENADE_LAUNCHER 16       // 5  - tnt
+#define IT_TNT              16       // 5  - tnt (formerly: grenade launcher)
 #define IT_PROXIMITY_BOMB   128      // 8  - proximity bomb
 #define IT_REMOTE_DETONATOR 262144   // 19 - remote detonator
-#define IT_SUPER_NAILGUN    32       // 6  - spray can (formerly: rocket launcher)
+#define IT_SPRAY_CAN        32       // 6  - spray can (formerly: rocket launcher)
 #define IT_TESLA_CANNON     64       // 7  - tesla cannon (formerly: lightning gun)
 #define IT_VOODOO_DOLL      8388608  // 24 - voodoo doll
 #define IT_LIFE_LEECH       131072   // 18 - life leech
@@ -296,12 +296,12 @@
 #define MAX_NAILS       500
 #define MAX_ROCKETS     100
 #define MAX_TNT          50
-#define MAX_PROXY        50     
-#define MAX_REMOTE       50     
-#define MAX_SPRAY       288     
+#define MAX_PROXY        50
+#define MAX_REMOTE       50
+#define MAX_SPRAY       288
 #define MAX_CELLS       250
-#define MAX_VOODOO      100     
-#define MAX_LEECH       100     
+#define MAX_VOODOO      100
+#define MAX_LEECH       100
 
 
 /* ----------------- */

@@ -19,6 +19,7 @@ fight.qc
 ai.qc
 items.qc
 weapons.qc
+w_bomb.qc
 w_flare.qc
 w_fork.qc
 w_napalm.qc

@@ -222,9 +222,9 @@ vector(float wep) weapon_range =
         return '128 0 99999';
     else if (wep == IT_TOMMYGUN)
         return '180 0 3000';
-    else if (wep == 8) // IT_SUPER_NAILGUN
+    else if (wep == IT_SPRAY_CAN)
         return '180 0 3000';
-    else if (wep == 16) // IT_GRENADE_LAUNCHER
+    else if (wep == IT_TNT)
         return '180 48 3000';
     else if (wep == IT_NAPALM_LAUNCHER)
         return '180 48 3000';

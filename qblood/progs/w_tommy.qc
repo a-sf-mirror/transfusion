@@ -103,6 +103,14 @@ void() player_alttommy =
 void() player_alttommy1 = [$nailatt1, player_alttommy2] { player_alttommy (); };
 void() player_alttommy2 = [$nailatt2, player_alttommy1] { player_alttommy (); };
 
+// Normal draw
+// NOTE: no animation to play for now
+void() player_tommydraw1 = [$nailatt1, player_run] { self.weaponframe = 0; };
+
+// Normal holster
+// NOTE: no animation to play for now
+void() player_tommyholster1 = [$nailatt1, player_run] { W_DrawWeapon (self.newweapon); };
+
 
 //============================================================================
 
@@ -192,7 +200,7 @@ void() Tommy_Fire =
 
         // If we don't have enough ammo anymore, drop the akimbo mode for now
         if (self.currentammo < 2)
-            W_SetCurrentAmmo (FALSE, 0);
+            W_SetCurrentAmmo ();
     }
     else
     {
@@ -235,5 +243,61 @@ void() Tommy_Attack =
     {
         self.player_state = PS_FIRE;
         player_tommy1 ();
+    }
+};
+
+
+/*
+============
+Tommy_Draw
+
+Draw code for the tommygun
+============
+*/
+void() Tommy_Draw =
+{
+    self.weapon = IT_TOMMYGUN;
+    self.currentammo = self.ammo_nails;
+    self.items = (self.items - (self.items & (IT_SHELLS | IT_CELLS | IT_ROCKETS))) | IT_NAILS;
+
+    Tommy_UpdateView ();
+
+    self.attack_finished = time + 0.1;
+    player_tommydraw1 ();
+};
+
+
+/*
+============
+Tommy_Holster
+
+Holster code for the tommygun
+============
+*/
+void() Tommy_Holster =
+{
+    self.attack_finished = time + 0.1;
+    player_tommyholster1 ();
+};
+
+
+/*
+============
+Tommy_UpdateView
+
+Choose the right tommygun model to display
+============
+*/
+void() Tommy_UpdateView =
+{
+    if (self.akimbo_finished > time && self.currentammo >= 2)
+    {
+        self.weaponmodel = "progs/v_anail.mdl";
+        self.items = self.items | IT_GUNS_AKIMBO;
+    }
+    else
+    {
+        self.weaponmodel = "progs/v_nail.mdl";
+        self.items = self.items - (self.items & IT_GUNS_AKIMBO);
     }
 };

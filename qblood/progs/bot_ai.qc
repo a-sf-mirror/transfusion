@@ -635,12 +635,12 @@ float(entity thing) priority_for_thing =
         }
         else if (thing.classname == "weapon_supernailgun")
         {
-            if (!(self.items & 8)) // IT_SUPER_NAILGUN
+            if (!(self.items & IT_SPRAY_CAN))
                 thisp = 35;
         }
         else if (thing.classname == "weapon_grenadelauncher")
         {
-            if (!(self.items & 16)) // IT_GRENADE_LAUNCHER
+            if (!(self.items & IT_TNT))
                 thisp = 45;
         }
         else if (thing.classname == "weapon_rocketlauncher")

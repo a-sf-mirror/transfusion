@@ -75,6 +75,14 @@ void() player_fork1 =
     self.player_state = PS_FIRE;
 };
 
+// Normal draw
+// NOTE: no animation to play for now
+void() player_forkdraw1 = [$axstnd1, player_run] { self.weaponframe = 0; };
+
+// Normal holster
+// NOTE: no animation to play for now
+void() player_forkholster1 = [$axstnd1, player_run] { W_DrawWeapon (self.newweapon); };
+
 
 //============================================================================
 
@@ -193,4 +201,52 @@ void() Fork_Attack =
 
     player_fork1 ();
     self.attack_finished = time + 0.5;
+};
+
+
+/*
+============
+Fork_Draw
+
+Draw code for the pitchfork
+============
+*/
+void() Fork_Draw =
+{
+    self.weapon = IT_PITCHFORK;
+    self.currentammo = 0;
+    self.items = self.items - (self.items & (IT_SHELLS | IT_NAILS | IT_CELLS | IT_ROCKETS));
+
+    Fork_UpdateView ();
+
+    self.attack_finished = time + 0.1;
+    player_forkdraw1 ();
+};
+
+
+/*
+============
+Fork_Holster
+
+Holster code for the pitchfork
+============
+*/
+void() Fork_Holster =
+{
+    self.attack_finished = time + 0.1;
+    player_forkholster1 ();
+};
+
+
+/*
+============
+Fork_UpdateView
+
+Choose the right pitchfork model to display
+============
+*/
+void() Fork_UpdateView =
+{
+    self.weaponmodel = "progs/v_axe.mdl";
+    self.items = self.items - (self.items & IT_GUNS_AKIMBO);
 };

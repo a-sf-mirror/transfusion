@@ -20,6 +20,44 @@
 
 #include "common.qh"
 
+// A bunch of monsters that aren't yet implemented...
+void() monster_bat                  = { remove (self); };
+void() monster_beast                = { remove (self); };
+void() monster_blackcultist         = { remove (self); };
+void() monster_blackspider          = { remove (self); };
+void() monster_bluecultist          = { remove (self); };
+void() monster_browncultist         = { remove (self); };
+void() monster_brownspider          = { remove (self); };
+void() monster_butcher              = { remove (self); };
+void() monster_cerberus             = { remove (self); };
+void() monster_chrysalid            = { remove (self); };
+void() monster_eel                  = { remove (self); };
+void() monster_emergingzombie       = { remove (self); };
+void() monster_firechrysalid        = { remove (self); };
+void() monster_firetentacle         = { remove (self); };
+void() monster_gargoyle             = { remove (self); };
+void() monster_gilbeast             = { remove (self); };
+void() monster_greencultist         = { remove (self); };
+void() monster_greygargoyle         = { remove (self); };
+void() monster_hand                 = { remove (self); };
+void() monster_hellhound            = { remove (self); };
+void() monster_innocent             = { remove (self); };
+void() monster_lilcaleb             = { remove (self); };
+void() monster_mime                 = { remove (self); };
+void() monster_phantasm             = { remove (self); };
+void() monster_rat                  = { remove (self); };
+void() monster_redcultist           = { remove (self); };
+void() monster_redspider            = { remove (self); };
+void() monster_shial                = { remove (self); };
+void() monster_sleepingzombie       = { remove (self); };
+void() monster_statuegargoyle       = { remove (self); };
+void() monster_statuegreygargoyle   = { remove (self); };
+void() monster_tchernobog           = { remove (self); };
+void() monster_tentacle             = { remove (self); };
+//void() monster_zombie               = { remove (self); };  // FIXME: This one conflicts with the Quake zombie
+
+
+//============================================================================
 
 /* ALL MONSTERS SHOULD BE 1 0 0 IN COLOR */
 
@@ -255,5 +293,3 @@ void() swimmonster_start =
     self.think = swimmonster_start_go;
     total_monsters = total_monsters + 1;
 };
-
-

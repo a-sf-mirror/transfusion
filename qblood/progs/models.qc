@@ -80,35 +80,6 @@ $frame shot1
 /*
 ===============================================================================
 
-VIEW WEAPONS
-
-===============================================================================
-*/
-
-$modelname v_rock
-$cd id1/models/v_rock
-$origin 0 0 54
-$base base
-$skin skin
-$frame shot1 shot2 shot3 shot4 shot5 shot6 shot7
-
-
-$modelname v_tnt
-$cd id1/models/v_tnt
-$origin 0 0 54
-$base base
-$skin skin
-$framegroupstart
-$frame frame1 0.6
-$frame frame2 0.6
-$frame frame3 0.6
-$frame frame4 0.7
-$framegroupend
-
-
-/*
-===============================================================================
-
 ITEMS
 
 ===============================================================================

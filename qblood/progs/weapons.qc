@@ -619,416 +619,6 @@ void(vector p1, vector p2, entity from, float damage) LightningDamage =
 };
 
 
-/*
-===============================================================================
-
-GRENADES, TNT, BOMBS ...
-
-===============================================================================
-*/
-
-#define DMG_TNT              120
-#define DMG_PROXIMITY_BOMB   150
-#define DMG_REMOTE_DETONATOR 120
-#define DMG_SPRAY_CAN        20
-
-void() GrenadeExplode =
-{
-    #ifdef QUAKEWORLD
-    if (self.voided) {
-        return;
-    }
-    self.voided = 1;
-    #endif
-
-    // Stop the fuse sound if any
-    sound (self, CHAN_BODY, "misc/null.wav", 0, ATTN_NORM);
-
-    // Don't let the remote find and detonate grenades that are already
-    // exploding
-    self.classname = "exploded";
-
-    // Don't let grenade explode twice.
-    self.takedamage = DAMAGE_NO;
-
-    if (self.netname == "Napalm Ball")
-    {
-        self.owner = self.oldenemy;
-        ThrowEmbers (4);
-        local   float   radius, damage, burn;
-        radius = self.dmg + 40;
-        damage = self.dmg / 6;
-        burn   = self.dmg / 12;
-        MakeBlastDamage (self, radius, damage, burn);
-    }
-    else if (self.netname == "Lit Spray Can")
-        MakeBlastDamage (self, 250, 20, 15);
-
-    PsychoCaleb (self.owner);
-
-    T_RadiusDamage (self, self.owner, self.dmg, world, "grenade");
-
-    #ifdef QUAKEWORLD
-    WriteByte (MSG_MULTICAST, SVC_TEMPENTITY);
-    WriteByte (MSG_MULTICAST, TE_EXPLOSION);
-    WriteCoord (MSG_MULTICAST, self.origin_x);
-    WriteCoord (MSG_MULTICAST, self.origin_y);
-    WriteCoord (MSG_MULTICAST, self.origin_z);
-    multicast (self.origin, MULTICAST_PHS);
-    remove (self);
-
-    #else
-    WriteByte (MSG_BROADCAST, SVC_TEMPENTITY);
-    WriteByte (MSG_BROADCAST, TE_EXPLOSION);
-    WriteCoord (MSG_BROADCAST, self.origin_x);
-    WriteCoord (MSG_BROADCAST, self.origin_y);
-    WriteCoord (MSG_BROADCAST, self.origin_z);
-    BecomeExplosion ();
-    #endif
-};
-
-
-// This makes bomb take damage if in slime/lava.  Assumes 'self' == bomb
-void() BombContents =
-{
-    // Dynamite will take damage then explode if in slime or lava.
-    local   float   pc;
-
-    pc = pointcontents (self.origin);
-    if (pc == CONTENT_SLIME)
-        T_Damage (self, world, world, 4, DF_BODY, "acid");
-    else if (pc == CONTENT_LAVA)
-        T_Damage (self, world, world, 10, DF_FIRE, "fire");
-};
-
-void() BombThink =
-{
-    self.nextthink  = time + 0.1;
-    BombContents ();
-};
-
-
-/*
-================
-ProximBombCheck
-
-The proximity bomb checks its neighborhood and explodes if a living being is nearby
-================
-*/
-void() ProximBombCheck =
-{
-    local entity thing;
-
-    // Try to find something interesting nearby
-    // Note: in T_RadiusDamage, an explosion can damage someone up to a distance of its damage + 40
-    thing = findradius (self.origin, self.dmg + 20);
-    while (thing)
-    {
-        // If it's a player or a monster, explode in 400 msec
-        if (thing.classname == "player" || (thing.flags & FL_MONSTER))
-        {
-            sound (self, CHAN_WEAPON, "weapons/tnt/proxdet.wav", 1, ATTN_NORM);
-            self.pausetime = time + 0.4;
-            self.think1 = SUB_Null;
-            return;
-        }
-
-        // Next one
-        thing = thing.chain;
-    }
-
-    // Retry in a moment
-    self.pausetime = time + 0.25;
-};
-
-
-/*
-================
-ProximBombArmed
-
-The proximity bomb becomes armed, ready to explode as soon as someone is nearby
-================
-*/
-void() ProximBombArmed =
-{
-    sound (self, CHAN_WEAPON, "weapons/tnt/proxarm.wav", 1, ATTN_NORM);
-
-    self.pausetime = time;
-    self.think1 = ProximBombCheck;
-};
-
-
-/*
-================
-ProximBombThink
-
-The proximity bomb does a generic think, then is checked against the world
-================
-*/
-void() ProximBombThink =
-{
-    if (self.pausetime <= time)
-    {
-        if (self.think1 == SUB_Null)
-        {
-            GrenadeExplode ();
-            return;
- 
-        }
-        self.think1 ();
-    }
-
-    // Do the standard bomb thinking
-    BombThink ();
-};
-
-
-/*
-================
-GrenadeTouch
-
-"Touch" function for grenades
-================
-*/
-void() GrenadeTouch =
-{
-// PM:  Removed dynamite stuff.
-    if (self.velocity == '0 0 0')
-        self.avelocity = '0 0 0';
-};
-
-
-// The 2 types of TNT
-#define TNT_TYPE_NORMAL  0
-#define TNT_TYPE_ALTFIRE 1
-
-// Dynamite stuff.
-void() DynaTouch =
-{
-    // Normal grenades are the only ones which can explode on touch
-    if (self.style == TNT_TYPE_NORMAL)
-    {
-        local   float   blow;
-
-        blow = TRUE;
-
-        // Rebound if it hits the ceiling.  Otherwise, explode.
-        traceline (self.origin - self.dest*4, self.origin + self.dest*16, TRUE, self);
-        if (trace_fraction < 1 && trace_plane_normal_z < 0)
-            blow = FALSE;
-
-        if (blow)
-        {
-            GrenadeExplode ();
-            return;
-        }
-    }
-
-    if (self.velocity == '0 0 0')
-        self.avelocity = '0 0 0';
-};
-
-
-void() DynaThink =
-{
-    if (self.pausetime <= time)
-    {
-        GrenadeExplode ();
-        return;
-    }
-
-    if (self.t_width <= time)
-    {
-        self.t_width    = time + 3;
-        sound (self, CHAN_BODY, "weapons/tnt/tntfuse.wav", 0.5, ATTN_NORM);
-    }
-    self.dest = normalize (self.velocity);
-
-    BombThink ();
-};
-
-
-/*
-================
-W_ActivateRemoteBombs
-
-Make all remote bombs owned by "self" explode
-================
-*/
-void() W_ActivateRemoteBombs =
-{
-    local entity grenadeEnt;
-    local entity tempEnt;
-
-    grenadeEnt = find (world, classname, "grenade");
-    while (grenadeEnt)
-    {
-        if (grenadeEnt.netname == "Remote Detonator" && grenadeEnt.owner == self)
-        {
-            sound (self, CHAN_BODY, "weapons/tnt/remfire.wav", 1, ATTN_NORM);
-            tempEnt = self;
-            self = grenadeEnt;
-            GrenadeExplode ();
-            self = tempEnt;
-        }
-        grenadeEnt = find (grenadeEnt, classname, "grenade");
-    }
-
-    self.attack_finished = time + 0.6;
-};
-
-
-/*
-================
-W_FireGrenade
-
-Fire a grenade
-================
-*/
-void() W_FireGrenade =
-{
-    if (self.weapon == IT_PROXIMITY_BOMB)
-        self.currentammo = self.ammo_tnt_proxy = self.ammo_tnt_proxy - 1;
-    else if (self.weapon == IT_REMOTE_DETONATOR)
-        self.currentammo = self.ammo_tnt_remote = self.ammo_tnt_remote - 1;
-    else if (self.weapon == IT_GRENADE_LAUNCHER)
-        self.currentammo = self.ammo_tnt_bundle = self.ammo_tnt_bundle - 1;
-    else  // if (self.weapon == IT_SUPER_NAILGUN)
-    {
-        // If we have at least one full spray can, we use it
-        if (self.currentammo >= 48)
-            self.ammo_spray = self.ammo_spray - 48;
-        // Else, we burns our last one
-        else
-            self.ammo_spray = 0;
-
-        self.currentammo = self.ammo_spray;
-    }
-
-    sound (self, CHAN_AUTO, "weapons/tnt/tnttoss.wav", 1, ATTN_NORM);
-
-    newmis = spawn ();
-    newmis.owner = self;
-    newmis.movetype = MOVETYPE_BOUNCE;
-    newmis.solid = SOLID_BBOX;
-    newmis.classname = "grenade";
-    #ifdef QUAKEWORLD
-    newmis.voided=0;
-
-    msg_entity = self;
-    WriteByte (MSG_ONE, SVC_SMALLKICK);
-    #else
-    self.punchangle_x = -2;
-    #endif
-
-    // set newmis speed
-    makevectors (self.v_angle);
-
-    // TNT Charge/throw meter power.
-    local   float   mspeed, mup;
-
-    mspeed = 200 + (self.charge * 50);
-    if (mspeed < 300)
-        mspeed = 300;  // don't throw the grenade on our own feet !
-    mup = mspeed / 2;
-
-    if (self.v_angle_x)
-        newmis.velocity = v_forward * (mspeed / 1.25) + v_up * mup + crandom () * v_right * 10 + crandom () * v_up * 10;
-    else
-    {
-        newmis.velocity = aim(self, 10000);
-        newmis.velocity = newmis.velocity * mspeed;
-        newmis.velocity_z = mup;
-    }
-
-    if (!self.charge)
-        newmis.velocity = '0 0 0';
-
-    newmis.angles = vectoangles(newmis.velocity);
-    newmis.touch = GrenadeTouch;
-
-    // Explodes as soon as it takes 1 point of damage
-    newmis.takedamage = DAMAGE_YES;
-    newmis.health = 1;
-    newmis.th_die = GrenadeExplode;
-
-    newmis.nextthink = 0.1;
-    newmis.think     = BombThink;
-
-    setsize (newmis, '-1 -1 -1', '1 1 1');
-    setorigin (newmis, self.origin);
-
-    // If we fire a proximity bomb
-    if (self.weapon == IT_PROXIMITY_BOMB)
-    {
-        newmis.pausetime = time + 2.5;
-        newmis.think = ProximBombThink;
-        newmis.think1 = ProximBombArmed;
-        newmis.netname = "Proximity Bomb";
-        newmis.dmg = DMG_PROXIMITY_BOMB;
-        newmis.avelocity = '0 300 0';
-        newmis.angles = '0 0 0';
-        self.weaponmodel = "progs/v_proxy.mdl";
-	newmis.model = "progs/grd_prox.mdl";
-    }
-    // else if we fire a remote detonator
-    else if (self.weapon == IT_REMOTE_DETONATOR)
-    {
-        newmis.netname = "Remote Detonator";
-        newmis.dmg = DMG_REMOTE_DETONATOR;
-        newmis.avelocity = '0 300 0';
-        newmis.angles = '0 0 0';
-        newmis.model = "progs/grd_remo.mdl";
-
-        // We switch to the remote model / frames
-        self.weaponmodel = "progs/v_remote.mdl"; 
-        Sprint (self, PRINT_LOW, "You now have the remote in your hands...\n");
-    }
-    // Else, it's TNT or a spray can!
-    else
-    {
-        newmis.style     = self.tnt_type;
-        newmis.pausetime = self.tnt_time;
-        newmis.think     = DynaThink;
-        newmis.touch     = DynaTouch;
-        newmis.dest      = normalize (newmis.velocity);
-
-        if (self.weapon == IT_SUPER_NAILGUN)
-        {
-            newmis.netname   = "Lit Spray Can";
-            newmis.dmg       = DMG_SPRAY_CAN;
-            newmis.model     = "progs/grd_aero.mdl";
-            newmis.angles    = '0 -300 0';
-            newmis.avelocity = '150 150 150';
-            setorigin (newmis, self.origin + v_forward * 35 + '0 0 20' + v_right * 8);
-
-            self.weaponframe = 0;  // reset the weapon view
-        }
-        else
-        {
-            newmis.netname = "TNT";
-            newmis.dmg     = DMG_TNT;
-            newmis.model   = "progs/grd_bund.mdl";
-            newmis.avelocity = '300 300 300';
-        }
-    }
-
-    setmodel (newmis, newmis.model);
-    // If we have no more dynamite, we "lose" the weapon
-    // (expect for remote detonators: we always have the remote)
-    if (self.currentammo == 0 && self.weapon != IT_REMOTE_DETONATOR)
-    {
-        local float oldWeapon;
-
- 
-        oldWeapon = self.weapon;
-        self.items = self.items - self.weapon;
-        self.weapon = W_BestWeapon();
-        W_SetCurrentAmmo (TRUE, oldWeapon);
-    }
-};
-
-
 //=============================================================================
 
 void() spike_touch;
@@ -1221,170 +811,176 @@ PLAYER WEAPON USE
 ===============================================================================
 */
 
-void(float weaponHasChanged, float oldWeapon) W_SetCurrentAmmo =
+// Functions defined later in weapon files (w_*.qc)
+void() Fork_Attack;     void() Fork_Draw;   void() Fork_Holster;    void() Fork_UpdateView;
+void() Flare_Attack;    void() Flare_Draw;  void() Flare_Holster;   void() Flare_UpdateView;
+void() Shot_Attack;     void() Shot_Draw;   void() Shot_Holster;    void() Shot_UpdateView;
+void() Tommy_Attack;    void() Tommy_Draw;  void() Tommy_Holster;   void() Tommy_UpdateView;
+void() Spray_Attack;    void() Spray_Draw;  void() Spray_Holster;   void() Spray_UpdateView;
+void() TNT_Attack;      void() TNT_Draw;    void() TNT_Holster;     void() TNT_UpdateView;
+void() Proxy_Attack;    void() Proxy_Draw;  void() Proxy_Holster;   void() Proxy_UpdateView;
+void() Remote_Attack;   void() Remote_Draw; void() Remote_Holster;  void() Remote_UpdateView;
+void() Tesla_Attack;    void() Tesla_Draw;  void() Tesla_Holster;   void() Tesla_UpdateView;
+void() Napalm_Attack;   void() Napalm_Draw; void() Napalm_Holster;  void() Napalm_UpdateView;
+void() Voodoo_Attack;   void() Voodoo_Draw; void() Voodoo_Holster;  void() Voodoo_UpdateView;
+void() Leech_Attack;    void() Leech_Draw;  void() Leech_Holster;   void() Leech_UpdateView;
+
+
+/*
+====================
+W_DrawWeapon
+
+Draw a new weapon
+====================
+*/
+void(float weap) W_DrawWeapon =
 {
-    // If the player is not alive, exit so that we don't
-    // reset his current frame with "player_run ()"
-    if (self.deadflag != DEAD_NO)
+    if (! (self.items & weap))
         return;
 
-    if (weaponHasChanged)
-    {
-        player_run ();      // get out of any weapon firing states
+    self.player_state = PS_DRAW;
 
-        self.items = self.items - (self.items & (IT_SHELLS | IT_NAILS | IT_ROCKETS | IT_CELLS));
-        self.weaponframe = 0;
+    if (weap == IT_PITCHFORK)
+        Fork_Draw ();
+    else if (weap == IT_FLAREGUN)
+        Flare_Draw ();
+    else if (weap == IT_SAWED_OFF)
+        Shot_Draw ();
+    else if (weap == IT_TOMMYGUN)
+        Tommy_Draw ();
+    else if (weap == IT_SPRAY_CAN)
+        Spray_Draw ();
+    else if (weap == IT_TNT)
+        TNT_Draw ();
+    else if (weap == IT_PROXIMITY_BOMB)
+        Proxy_Draw ();
+    else if (weap == IT_REMOTE_DETONATOR)
+        Remote_Draw ();
+    else if (weap == IT_NAPALM_LAUNCHER)
+        Napalm_Draw ();
+    else if (weap == IT_TESLA_CANNON)
+        Tesla_Draw ();
+    else if (weap == IT_VOODOO_DOLL)
+        Voodoo_Draw ();
+    else if (weap == IT_LIFE_LEECH)
+        Leech_Draw ();
+};
 
-        // If we need to pop up the lighter
-        if ((self.weapon == IT_GRENADE_LAUNCHER || self.weapon == IT_SUPER_NAILGUN) &&
-            oldWeapon != IT_GRENADE_LAUNCHER && oldWeapon != IT_SUPER_NAILGUN)
-            sound (self, CHAN_WEAPON, "weapons/tnt/lighter.wav", 1, ATTN_NORM);
-        // Else, if we need to close the lighter
-        else if (self.weapon != IT_GRENADE_LAUNCHER && self.weapon != IT_SUPER_NAILGUN &&
-                 (oldWeapon == IT_GRENADE_LAUNCHER || oldWeapon == IT_SUPER_NAILGUN))
-            sound (self, CHAN_WEAPON, "weapons/tnt/zipclose.wav", 1, ATTN_NORM);
-    }
 
+/*
+====================
+W_SwitchToWeapon
+
+Switch to another player's weapon
+====================
+*/
+void(float newWeapon) W_SwitchToWeapon =
+{
+    if (! (self.items & newWeapon))
+        return;
+
+    self.newweapon = newWeapon;
+    self.player_state = PS_HOLSTER;
+
+    if (self.weapon == IT_PITCHFORK)
+        Fork_Holster ();
+    else if (self.weapon == IT_FLAREGUN)
+        Flare_Holster ();
+    else if (self.weapon == IT_SAWED_OFF)
+        Shot_Holster ();
+    else if (self.weapon == IT_TOMMYGUN)
+        Tommy_Holster ();
+    else if (self.weapon == IT_SPRAY_CAN)
+        Spray_Holster ();
+    else if (self.weapon == IT_TNT)
+        TNT_Holster ();
+    else if (self.weapon == IT_PROXIMITY_BOMB)
+        Proxy_Holster ();
+    else if (self.weapon == IT_REMOTE_DETONATOR)
+        Remote_Holster ();
+    else if (self.weapon == IT_NAPALM_LAUNCHER)
+        Napalm_Holster ();
+    else if (self.weapon == IT_TESLA_CANNON)
+        Tesla_Holster ();
+    else if (self.weapon == IT_VOODOO_DOLL)
+        Voodoo_Holster ();
+    else if (self.weapon == IT_LIFE_LEECH)
+        Leech_Holster ();
+};
+
+
+void() W_SetCurrentAmmo =
+{
     if (self.weapon == IT_PITCHFORK)
     {
         self.currentammo = 0;
-        self.weaponmodel = "progs/v_axe.mdl";
+        Fork_UpdateView ();
     }
     else if (self.weapon == IT_FLAREGUN)
     {
         self.currentammo = self.ammo_flares;
-        self.weaponmodel = "progs/v_shot.mdl";
-//        self.items = self.items | IT_SHELLS;
+        Flare_UpdateView ();
+        //self.items = self.items | IT_SHELLS;
     }
     else if (self.weapon == IT_SAWED_OFF)
     {
         self.currentammo = self.ammo_shells;
-        if (self.akimbo_finished > time && self.currentammo >= 2)
-        {
-            self.weaponmodel = "progs/v_ashot2.mdl";
-            self.items = self.items | IT_GUNS_AKIMBO;
-        }
-        else
-        {
-            self.weaponmodel = "progs/v_shot2.mdl";
-            self.items = self.items - (self.items & IT_GUNS_AKIMBO);
-        }
+        Shot_UpdateView ();
         self.items = self.items | IT_SHELLS;
     }
     else if (self.weapon == IT_TOMMYGUN)
     {
         self.currentammo = self.ammo_nails;
-        if (self.akimbo_finished > time && self.currentammo >= 2)
-        {
-            self.weaponmodel = "progs/v_anail.mdl";
-            self.items = self.items | IT_GUNS_AKIMBO;
-        }
-        else
-        {
-            self.weaponmodel = "progs/v_nail.mdl";
-            self.items = self.items - (self.items & IT_GUNS_AKIMBO);
-        }
+        Tommy_UpdateView ();
         self.items = self.items | IT_NAILS;
     }
-    else if (self.weapon == IT_SUPER_NAILGUN)
+    else if (self.weapon == IT_SPRAY_CAN)
     {
         self.currentammo = self.ammo_spray;
-        self.weaponmodel = "progs/v_nail2.mdl";
-
-//        self.items = self.items | IT_NAILS;
+        Spray_UpdateView ();
+        //self.items = self.items | IT_NAILS;
     }
-    else if (self.weapon == IT_GRENADE_LAUNCHER)
+    else if (self.weapon == IT_TNT)
     {
         self.currentammo = self.ammo_tnt_bundle;
-        self.weaponmodel = "progs/v_rock.mdl";
-//        self.items = self.items | IT_ROCKETS;
-//        Sprint (self, PRINT_MEDIUM, "TNT Bundle selected\n");
+        TNT_UpdateView ();
+        //self.items = self.items | IT_ROCKETS;
     }
     else if (self.weapon == IT_PROXIMITY_BOMB)
     {
         self.currentammo = self.ammo_tnt_proxy;
-
-        // Don't print a message if the current weapon hasn't changed
-        if (weaponHasChanged)
-        {
-            self.weaponmodel = "progs/v_proxy.mdl";
-//            self.items = self.items | IT_ROCKETS;
-//            Sprint (self, PRINT_MEDIUM, "Promixity Bombs selected\n");
-        }
+        Proxy_UpdateView ();
+        //self.items = self.items | IT_ROCKETS;
     }
     else if (self.weapon == IT_REMOTE_DETONATOR)
     {
         self.currentammo = self.ammo_tnt_remote;
-
-        // Don't print a message if the current weapon hasn't changed
-        if (weaponHasChanged)
-        {
-            if (!self.currentammo)
-            {
-                self.weaponmodel = "progs/v_remote.mdl"; 
-//              Sprint (self, PRINT_MEDIUM, "Remote Detonator selected\n");
-            }
-            else
-            {
-                self.weaponmodel = "progs/v_remote.mdl";
-//                Sprint (self, PRINT_MEDIUM, "Remote Detonator selected\n");
-            }
-
-//            self.items = self.items | IT_ROCKETS;
-        }
+        Remote_UpdateView ();
+        //self.items = self.items | IT_ROCKETS;
     }
     else if (self.weapon == IT_NAPALM_LAUNCHER)
     {
         self.currentammo = self.ammo_rockets;
-        if (self.akimbo_finished > time && self.currentammo >= 2)
-        {
-            self.weaponmodel = "progs/v_arock2.mdl";
-            self.items = self.items | IT_GUNS_AKIMBO;
-        }
-        else
-        {
-            self.weaponmodel = "progs/v_rock2.mdl";
-            self.items = self.items - (self.items & IT_GUNS_AKIMBO);
-        }
+        Napalm_UpdateView ();
         self.items = self.items | IT_ROCKETS;
     }
     else if (self.weapon == IT_TESLA_CANNON)
     {
         self.currentammo = self.ammo_cells;
-        if (self.akimbo_finished > time && self.currentammo >= 2)
-        {
-            self.weaponmodel = "progs/v_alight.mdl";
-            self.items = self.items | IT_GUNS_AKIMBO;
-        }
-        else
-        {
-            self.weaponmodel = "progs/v_light.mdl";
-            self.items = self.items - (self.items & IT_GUNS_AKIMBO);
-        }
+        Tesla_UpdateView ();
         self.items = self.items | IT_CELLS;
     }
     else if (self.weapon == IT_VOODOO_DOLL)
     {
         self.currentammo = self.ammo_voodoo;
-        self.weaponmodel = "progs/v_voodoo.mdl";
-//        self.items = self.items | IT_CELLS;
+        Voodoo_UpdateView ();
+        //self.items = self.items | IT_CELLS;
     }
     else if (self.weapon == IT_LIFE_LEECH)
     {
-	self.currentammo = self.ammo_leech;
-	self.weaponmodel = "progs/v_rock2.mdl"; // FIXME: remove if not needed
-	
-	if (self.akimbo_finished > time && self.currentammo >= 14)
-	{	
-	    self.weaponmodel = "progs/v_arock2.mdl"; // FIXME: change to v_aleech.mdl when done
-	    self.items = self.items | IT_GUNS_AKIMBO;
-	}
-	else
-	Sprint (self, PRINT_MEDIUM, "Life Leech selected\n"); //FIXME: remove
-	{
-	    self.weaponmodel = "progs/v_rock2.mdl"; // FIXME: change to v_leech.mdl when done
-	    self.items = self.items - (self.items & IT_GUNS_AKIMBO);
-	}
+        self.currentammo = self.ammo_leech;
+        Leech_UpdateView ();
+        //self.items = self.items | IT_CELLS;
     }
     else
     {
@@ -1392,6 +988,7 @@ void(float weaponHasChanged, float oldWeapon) W_SetCurrentAmmo =
         self.weaponmodel = "";
     }
 };
+
 
 float() W_BestWeapon =
 {
@@ -1403,10 +1000,12 @@ float() W_BestWeapon =
         return IT_NAPALM_LAUNCHER;
     if (self.waterlevel <= 1 && self.ammo_cells >= 1 && (it & IT_TESLA_CANNON) )
         return IT_TESLA_CANNON;
-    if(self.ammo_spray >= 1 && (it & IT_SUPER_NAILGUN) )
-        return IT_SUPER_NAILGUN;
-    if(self.ammo_tnt_bundle >= 1 && (it & IT_GRENADE_LAUNCHER) )
-        return IT_GRENADE_LAUNCHER;
+    if(self.ammo_leech >= 1 && (it & IT_LIFE_LEECH) )
+        return IT_LIFE_LEECH;
+    if(self.ammo_spray >= 1 && (it & IT_SPRAY_CAN) )
+        return IT_SPRAY_CAN;
+    if(self.ammo_tnt_bundle >= 1 && (it & IT_TNT) )
+        return IT_TNT;
     if(self.ammo_shells >= 1 && (it & IT_SAWED_OFF) )
         return IT_SAWED_OFF;
     if(self.ammo_nails >= 1 && (it & IT_TOMMYGUN) )
@@ -1415,8 +1014,6 @@ float() W_BestWeapon =
         return IT_FLAREGUN;
     if(self.ammo_voodoo >= 1 && (it & IT_VOODOO_DOLL) )
         return IT_VOODOO_DOLL;
-    if(self.ammo_leech >=1 && (it & IT_LIFE_LEECH) )
-	return IT_LIFE_LEECH;	
 
     return IT_PITCHFORK;
 };
@@ -1436,17 +1033,6 @@ W_Attack
 An attack impulse can be triggered now
 ============
 */
-void() Fork_Attack;
-void() Flare_Attack;
-void() Shot_Attack;
-void() Tommy_Attack;
-void() Spray_Attack;
-void() player_rocket1;
-void() Tesla_Attack;
-void() Napalm_Attack;
-void() Voodoo_Attack;
-void() Leech_Attack;
-
 void() W_Attack =
 {
     if (! W_AmmoAvailable ())
@@ -1469,16 +1055,14 @@ void() W_Attack =
         Shot_Attack ();
     else if (self.weapon == IT_TOMMYGUN)
         Tommy_Attack ();
-    else if (self.weapon == IT_SUPER_NAILGUN)
+    else if (self.weapon == IT_SPRAY_CAN)
         Spray_Attack ();
-    else if (self.weapon == IT_GRENADE_LAUNCHER ||
-             self.weapon == IT_PROXIMITY_BOMB   ||
-             self.weapon == IT_REMOTE_DETONATOR )
-    {
-        player_rocket1();
-        self.attack_finished = time + 0.5;
-        W_FireGrenade();
-    }
+    else if (self.weapon == IT_TNT)
+        TNT_Attack ();
+    else if (self.weapon == IT_PROXIMITY_BOMB)
+        Proxy_Attack ();
+    else if (self.weapon == IT_REMOTE_DETONATOR)
+        Remote_Attack ();
     else if (self.weapon == IT_NAPALM_LAUNCHER)
         Napalm_Attack ();
     else if (self.weapon == IT_TESLA_CANNON)
@@ -1486,7 +1070,7 @@ void() W_Attack =
     else if (self.weapon == IT_VOODOO_DOLL)
         Voodoo_Attack ();
     else if (self.weapon == IT_LIFE_LEECH)
-	Leech_Attack ();
+        Leech_Attack ();
 
     self.impulse = 0;
 };
@@ -1500,6 +1084,10 @@ W_ChangeWeapon
 void() W_ChangeWeapon =
 {
     local   float   old, am, new;
+
+    // Don't let player change weapons while holding lit dynamite.
+    if (self.tnt_time)
+        return;
 
     old = self.weapon;
     am = 0;
@@ -1545,14 +1133,14 @@ void() W_ChangeWeapon =
         else
         {
             // If the TNT was already selected
-            if (self.weapon == IT_GRENADE_LAUNCHER)
+            if (self.weapon == IT_TNT)
             {
                 if (self.ammo_tnt_proxy > 0)
                     new = IT_PROXIMITY_BOMB;
                 else if (self.items & IT_REMOTE_DETONATOR)
                     new = IT_REMOTE_DETONATOR;
                 else
-                    new = IT_GRENADE_LAUNCHER;
+                    new = IT_TNT;
             }
 
             // Else, if the proximity bombs were already selected
@@ -1561,7 +1149,7 @@ void() W_ChangeWeapon =
                 if (self.items & IT_REMOTE_DETONATOR)
                     new = IT_REMOTE_DETONATOR;
                 else if (self.ammo_tnt_bundle > 0)
-                    new = IT_GRENADE_LAUNCHER;
+                    new = IT_TNT;
                 else
                     new = IT_PROXIMITY_BOMB;
             }
@@ -1570,7 +1158,7 @@ void() W_ChangeWeapon =
             else
             {
                 if (self.ammo_tnt_bundle > 0)
-                    new = IT_GRENADE_LAUNCHER;
+                    new = IT_TNT;
                 else if (self.ammo_tnt_proxy > 0)
                     new = IT_PROXIMITY_BOMB;
                 else
@@ -1580,7 +1168,7 @@ void() W_ChangeWeapon =
     }
     else if (self.impulse == 7)
     {
-        new = IT_SUPER_NAILGUN;
+        new = IT_SPRAY_CAN;
         if (self.ammo_spray < 1)
             am = 1;
     }
@@ -1598,35 +1186,30 @@ void() W_ChangeWeapon =
     }
     else if (self.impulse == 17)
     {
-	new = IT_LIFE_LEECH;
-	if (self.ammo_leech < 1)
-	    am = 1;
+        new = IT_LIFE_LEECH;
+        if (self.ammo_leech < 1)
+            am = 1;
     }
 
     self.impulse = 0;
 
-    // Don't let player change weapons while holding lit dynamite.
-    if (self.tnt_time)
-        return;
+    // don't have the weapon
     if (!(self.items & new))
     {
-        // don't have the weapon
         Sprint (self, PRINT_MEDIUM, "You don't have that weapon.\n");
         return;
     }
 
+    // don't have the ammo
     if (am)
-    {   // don't have the ammo
+    {
         Sprint (self, PRINT_MEDIUM, "You are out of ammo.\n");
         return;
     }
 
     // If the weapon has really changed
     if (new != old)
-    {
-        self.weapon = new;
-        W_SetCurrentAmmo (TRUE, old);
-    }
+        W_SwitchToWeapon (new);
 };
 
 
@@ -1654,23 +1237,20 @@ void() CheatCommand =
         IT_FLAREGUN |
         IT_SAWED_OFF |
         IT_TOMMYGUN |
-        IT_SUPER_NAILGUN |
-        IT_GRENADE_LAUNCHER |
+        IT_SPRAY_CAN |
+        IT_TNT |
         IT_PROXIMITY_BOMB |
         IT_REMOTE_DETONATOR |
         IT_NAPALM_LAUNCHER |
         IT_TESLA_CANNON |
         IT_VOODOO_DOLL |
-	IT_LIFE_LEECH;
+        IT_LIFE_LEECH;
     self.items2 = self.items2 |
         IT2_KEY1 | IT2_KEY2;
 
     // FIXME: we should precache all the weapons sounds
 
-    local float oldWeapon;
-    oldWeapon = self.weapon;
-    self.weapon = IT_NAPALM_LAUNCHER;
-    W_SetCurrentAmmo (TRUE, oldWeapon);
+    W_SwitchToWeapon (IT_NAPALM_LAUNCHER);
     self.impulse = 0;
 };
 
@@ -1684,10 +1264,10 @@ Go to the next weapon with ammo
 */
 void() CycleWeaponCommand =
 {
-    local   float   am, oldWeapon;
+    local   float   am, newWeapon;
 
     self.impulse = 0;
-    oldWeapon = self.weapon;
+    newWeapon = self.weapon;
 
     // Don't let player change weapons while holding lit dynamite.
     if (self.tnt_time)
@@ -1696,79 +1276,78 @@ void() CycleWeaponCommand =
     {
         am = 0;
 
-        if (self.weapon == IT_VOODOO_DOLL)
+        if (newWeapon == IT_LIFE_LEECH)
         {
-            self.weapon = IT_PITCHFORK;
+            newWeapon = IT_PITCHFORK;
         }
-        else if (self.weapon == IT_PITCHFORK)
+        else if (newWeapon == IT_PITCHFORK)
         {
-            self.weapon = IT_FLAREGUN;
+            newWeapon = IT_FLAREGUN;
             if (self.ammo_flares < 1)
                 am = 1;
         }
-        else if (self.weapon == IT_FLAREGUN)
+        else if (newWeapon == IT_FLAREGUN)
         {
-            self.weapon = IT_SAWED_OFF;
+            newWeapon = IT_SAWED_OFF;
             if (self.ammo_shells < 1)
                 am = 1;
         }
-        else if (self.weapon == IT_SAWED_OFF)
+        else if (newWeapon == IT_SAWED_OFF)
         {
-            self.weapon = IT_TOMMYGUN;
+            newWeapon = IT_TOMMYGUN;
             if (self.ammo_nails < 1)
                 am = 1;
         }
-        else if (self.weapon == IT_TOMMYGUN)
+        else if (newWeapon == IT_TOMMYGUN)
         {
-            self.weapon = IT_NAPALM_LAUNCHER;
+            newWeapon = IT_NAPALM_LAUNCHER;
             if (self.ammo_rockets < 1)
                 am = 1;
         }
-        else if (self.weapon == IT_NAPALM_LAUNCHER)
+        else if (newWeapon == IT_NAPALM_LAUNCHER)
         {
-            self.weapon = IT_GRENADE_LAUNCHER;
+            newWeapon = IT_TNT;
             // No need to check the ammo (it's removed as soon as there's no more ammo)
         }
-        else if (self.weapon == IT_GRENADE_LAUNCHER)
+        else if (newWeapon == IT_TNT)
         {
-            self.weapon = IT_PROXIMITY_BOMB;
+            newWeapon = IT_PROXIMITY_BOMB;
             // No need to check the ammo (it's removed as soon as there's no more ammo)
         }
-        else if (self.weapon == IT_PROXIMITY_BOMB)
+        else if (newWeapon == IT_PROXIMITY_BOMB)
         {
-            self.weapon = IT_REMOTE_DETONATOR;
+            newWeapon = IT_REMOTE_DETONATOR;
             // No need to check the ammo (it's removed as soon as there's
             // no more ammo and no remaining bombs to trigger)
         }
-        else if (self.weapon == IT_REMOTE_DETONATOR)
+        else if (newWeapon == IT_REMOTE_DETONATOR)
         {
-            self.weapon = IT_SUPER_NAILGUN;
+            newWeapon = IT_SPRAY_CAN;
             if (self.ammo_spray < 1)
                 am = 1;
         }
-        else if (self.weapon == IT_SUPER_NAILGUN)
+        else if (newWeapon == IT_SPRAY_CAN)
         {
-            self.weapon = IT_TESLA_CANNON;
+            newWeapon = IT_TESLA_CANNON;
             if (self.ammo_cells < 1)
                 am = 1;
         }
-        else if (self.weapon == IT_TESLA_CANNON)
+        else if (newWeapon == IT_TESLA_CANNON)
         {
-            self.weapon = IT_VOODOO_DOLL;
+            newWeapon = IT_VOODOO_DOLL;
             if (self.ammo_voodoo < 1)
                 am = 1;
         }
-
-	else if (self.weapon == IT_VOODOO_DOLL)
-	{
-	    self.weapon = IT_LIFE_LEECH;
-	    if (self.ammo_leech < 1)
-		am = 1;
-	}
-	
-        if ( (self.items & self.weapon) && am == 0)
+        else if (newWeapon == IT_VOODOO_DOLL)
         {
-            W_SetCurrentAmmo (self.weapon != oldWeapon, oldWeapon);
+            newWeapon = IT_LIFE_LEECH;
+            if (self.ammo_leech < 1)
+                am = 1;
+        }
+
+        if ( (self.items & newWeapon) && am == 0)
+        {
+            W_SwitchToWeapon (newWeapon);
             return;
         }
     }
@@ -1784,10 +1363,10 @@ Go to the prev weapon with ammo
 */
 void() CycleWeaponReverseCommand =
 {
-    local   float   am, oldWeapon;
+    local   float   am, newWeapon;
 
     self.impulse = 0;
-    oldWeapon = self.weapon;
+    newWeapon = self.weapon;
 
     // Don't let player change weapons while holding lit dynamite.
     if (self.tnt_time)
@@ -1796,79 +1375,78 @@ void() CycleWeaponReverseCommand =
     {
         am = 0;
 
-	if (self.weapon == IT_LIFE_LEECH)
-	{
-	    self.weapon = IT_VOODOO_DOLL;
-	    if (self.ammo_voodoo < 1)
-		am = 1;
-	}
-
-        else if (self.weapon == IT_VOODOO_DOLL)
+        if (newWeapon == IT_LIFE_LEECH)
         {
-            self.weapon = IT_TESLA_CANNON;
-            if (self.ammo_cells < 1)
-                am = 1;
-        }
-        else if (self.weapon == IT_TESLA_CANNON)
-        {
-            self.weapon = IT_SUPER_NAILGUN;
-            if (self.ammo_spray < 2)
-                am = 1;
-        }
-        else if (self.weapon == IT_SUPER_NAILGUN)
-        {
-            self.weapon = IT_REMOTE_DETONATOR;
-            // No need to check the ammo (it's removed as soon as there's
-            // no more ammo and no remaining bombs to trigger)
-        }
-        else if (self.weapon == IT_REMOTE_DETONATOR)
-        {
-            self.weapon = IT_PROXIMITY_BOMB;
-            // No need to check the ammo (it's removed as soon as there's no more ammo)
-        }
-        else if (self.weapon == IT_PROXIMITY_BOMB)
-        {
-            self.weapon = IT_GRENADE_LAUNCHER;
-            // No need to check the ammo (it's removed as soon as there's no more ammo)
-        }
-        else if (self.weapon == IT_GRENADE_LAUNCHER)
-        {
-            self.weapon = IT_NAPALM_LAUNCHER;
-            if (self.ammo_rockets < 1)
-                am = 1;
-        }
-        else if (self.weapon == IT_NAPALM_LAUNCHER)
-        {
-            self.weapon = IT_TOMMYGUN;
-            if (self.ammo_nails < 1)
-                am = 1;
-        }
-        else if (self.weapon == IT_TOMMYGUN)
-        {
-            self.weapon = IT_SAWED_OFF;
-            if (self.ammo_shells < 1)
-                am = 1;
-        }
-        else if (self.weapon == IT_SAWED_OFF)
-        {
-            self.weapon = IT_FLAREGUN;
-            if (self.ammo_flares < 1)
-                am = 1;
-        }
-        else if (self.weapon == IT_FLAREGUN)
-        {
-            self.weapon = IT_PITCHFORK;
-        }
-        else if (self.weapon == IT_PITCHFORK)
-        {
-            self.weapon = IT_VOODOO_DOLL;
+            newWeapon = IT_VOODOO_DOLL;
             if (self.ammo_voodoo < 1)
                 am = 1;
         }
-
-        if ( (self.items & self.weapon) && am == 0)
+        else if (newWeapon == IT_VOODOO_DOLL)
         {
-            W_SetCurrentAmmo (self.weapon != oldWeapon, oldWeapon);
+            newWeapon = IT_TESLA_CANNON;
+            if (self.ammo_cells < 1)
+                am = 1;
+        }
+        else if (newWeapon == IT_TESLA_CANNON)
+        {
+            newWeapon = IT_SPRAY_CAN;
+            if (self.ammo_spray < 2)
+                am = 1;
+        }
+        else if (newWeapon == IT_SPRAY_CAN)
+        {
+            newWeapon = IT_REMOTE_DETONATOR;
+            // No need to check the ammo (it's removed as soon as there's
+            // no more ammo and no remaining bombs to trigger)
+        }
+        else if (newWeapon == IT_REMOTE_DETONATOR)
+        {
+            newWeapon = IT_PROXIMITY_BOMB;
+            // No need to check the ammo (it's removed as soon as there's no more ammo)
+        }
+        else if (newWeapon == IT_PROXIMITY_BOMB)
+        {
+            newWeapon = IT_TNT;
+            // No need to check the ammo (it's removed as soon as there's no more ammo)
+        }
+        else if (newWeapon == IT_TNT)
+        {
+            newWeapon = IT_NAPALM_LAUNCHER;
+            if (self.ammo_rockets < 1)
+                am = 1;
+        }
+        else if (newWeapon == IT_NAPALM_LAUNCHER)
+        {
+            newWeapon = IT_TOMMYGUN;
+            if (self.ammo_nails < 1)
+                am = 1;
+        }
+        else if (newWeapon == IT_TOMMYGUN)
+        {
+            newWeapon = IT_SAWED_OFF;
+            if (self.ammo_shells < 1)
+                am = 1;
+        }
+        else if (newWeapon == IT_SAWED_OFF)
+        {
+            newWeapon = IT_FLAREGUN;
+            if (self.ammo_flares < 1)
+                am = 1;
+        }
+        else if (newWeapon == IT_FLAREGUN)
+        {
+            newWeapon = IT_PITCHFORK;
+        }
+        else if (newWeapon == IT_PITCHFORK)
+        {
+            newWeapon = IT_LIFE_LEECH;
+            if (self.ammo_leech < 1)
+                am = 1;
+        }
+
+        if ( (self.items & newWeapon) && am == 0)
+        {
+            W_SwitchToWeapon (newWeapon);
             return;
         }
     }
@@ -1879,312 +1457,10 @@ void() CycleWeaponReverseCommand =
 void() QuadCheat =
 {
     self.akimbo_finished = time + 30;
-    W_SetCurrentAmmo (FALSE, 0);
+    W_SetCurrentAmmo ();
 
     Sprint (self, PRINT_MEDIUM, "Tequila !\n");
     dprint ("Akimbo cheat\n");
-};
-
-
-void() ShowThrowMeter =
-{
-    local   string  text;
-
-    if (self.charge == 20)
-        text = "žžžžžžžžžžžžžžžžžžžž";
-    else if (self.charge == 19)
-        text = "žžžžžžžžžžžžžžžžžžž ";
-    else if (self.charge == 18)
-        text = "žžžžžžžžžžžžžžžžžž  ";
-    else if (self.charge == 17)
-        text = "žžžžžžžžžžžžžžžžž   ";
-    else if (self.charge == 16)
-        text = "žžžžžžžžžžžžžžžž    ";
-    else if (self.charge == 15)
-        text = "žžžžžžžžžžžžžžž     ";
-    else if (self.charge == 14)
-        text = "žžžžžžžžžžžžžž      ";
-    else if (self.charge == 13)
-        text = "žžžžžžžžžžžžž       ";
-    else if (self.charge == 12)
-        text = "žžžžžžžžžžžž        ";
-    else if (self.charge == 11)
-        text = "žžžžžžžžžžž         ";
-    else if (self.charge == 10)
-        text = "žžžžžžžžžž          ";
-    else if (self.charge == 9)
-        text = "žžžžžžžžž           ";
-    else if (self.charge == 8)
-        text = "žžžžžžžž            ";
-    else if (self.charge == 7)
-        text = "žžžžžžž             ";
-    else if (self.charge == 6)
-        text = "žžžžžž              ";
-    else if (self.charge == 5)
-        text = "žžžžž               ";
-    else if (self.charge == 4)
-        text = "žžžž                ";
-    else if (self.charge == 3)
-        text = "žžž                 ";
-    else if (self.charge == 2)
-        text = "žž                  ";
-    else if (self.charge == 1)
-        text = "ž                   ";
-    else
-        text = "";
-
-    centerprint (self, text);
-};
-
-void() W_Uncharge =
-{
-    // Stop the fuse sound if any
-    sound (self, CHAN_WEAPON, "misc/null.wav", 0, ATTN_NORM);
-
-    self.charge     = 0;
-    self.powertime  = 0;
-    self.tnt_time   = 0;
-};
-
-#define FUSE_TIME   5.5
-
-// This throws some dynamite and resets the charge
-void() ThrowBomb =
-{
-    // Throw the dynamite
-    W_Attack ();
-    W_Uncharge ();
-    ShowThrowMeter ();  // Remove throw meter
-};
-
-// This charges up and displays the throw meter
-void() BuildThrowMeter =
-{
-    ResetIdle (self);  // Don't let Caleb rave
-
-    self.player_state = PS_CHARGE;
-
-    if (self.charge >= 20)
-    {
-        // Maxed out
-        self.powertime = 0;
-    }
-    else if (self.powertime <= time)
-    {
-        self.powertime = time + 0.1;
-        self.charge = self.charge + 1;
-    }
-    ShowThrowMeter ();
-};
-
-
-// This controls charging and firing of normal dynamite and spray can
-void() player_lightcan1;
-void() W_ChargeNormal =
-{
-    local   float   altfire;
-
-    if ((self.impulse == 12) || self.button1)
-    {
-        altfire = TRUE;
-        self.impulse = 0;
-    }
-    else
-        altfire = FALSE;
-
-    // Check if player is holding lit dynamite or spray can
-    if (self.tnt_time)
-    {
-        // If the fuse is burned up, the TNT explodes in our hands...
-        if (self.tnt_time && self.tnt_time <= time)
-        {
-            Sprint (self, PRINT_LOW, "Sorry. . . Timed out . . .\n");
-
-            // Indeed, we use a little trick: we drop the dynamite with a zero match time
-            self.charge = 0;    // Make sure it's dropped, not thrown
-            ThrowBomb ();
-            return;
-        }
-
-        // Check for throwing
-        // NOTE:  In Blood, normal-fire has priority over alt-fire
-        if (self.button0)
-        {
-            BuildThrowMeter ();
-        }
-        else if (self.charge)
-        {
-            if (self.weapon == IT_SUPER_NAILGUN)
-                W_Attack ();
-            else
-                ThrowBomb ();
-            return;
-        }
-        if (altfire && self.weapon == IT_GRENADE_LAUNCHER)
-        {
-            self.charge = 0;    // Make sure it's dropped, not thrown
-            ThrowBomb ();
-            return;
-        }
-
-        // Play the fuse sound if needed
-        if (self.t_width <= time)
-        {
-            // Fuse sound not playing, so play it again
-            if (self.weapon == IT_SUPER_NAILGUN)
-            {
-                sound (self, CHAN_WEAPON, "weapons/spraycan/spraycan.wav", 0.5, ATTN_NORM);
-                self.t_width = time + 2.6;
-            }
-            else
-            {
-                sound (self, CHAN_WEAPON, "weapons/tnt/tntfuse.wav", 0.5, ATTN_NORM);
-                self.t_width = time + 3.2;
-            }
-        }
-
-        return;
-    }
-
-    // Dynamite is not lit, so check for ignition.  If either button is
-    // held, start the fuse
-    if ((self.button0 && self.weapon == IT_GRENADE_LAUNCHER) || altfire)
-    {
-        if (self.button0)
-        {
-            BuildThrowMeter ();
-            self.tnt_type = TNT_TYPE_NORMAL;
-        }
-        else // if (altfire)
-        {
-            if (self.weapon == IT_GRENADE_LAUNCHER)
-            {
-                self.tnt_type = TNT_TYPE_ALTFIRE;
-                self.attack_finished = time + 0.3;  // avoid the light-and-drop bug with +use
-            }
-            else  // if (self.weapon == IT_SUPER_NAILGUN)
-            {
-                self.tnt_type = TNT_TYPE_NORMAL;
-                self.attack_finished = time + 0.6;  // let the animation play
-                player_lightcan1 ();
-            }
-        }
-
-        self.tnt_time = time + FUSE_TIME;
-        Sprint (self, PRINT_LOW, "WARNING: you've just lit the fuse (5 sec)...\n");
-
-        self.t_width = 0;  // So the fuse wav starts at the next frame
-    }
-};
-
-// This controls charging and firing of the dynamite variants
-void() W_ChargeBomb =
-{
-    local   float   altfire;
-
-    if ((self.impulse == 12) || self.button1)
-    {
-        altfire = TRUE;
-        self.impulse = 0;
-    }
-    else
-        altfire = FALSE;
-
-    if (self.button0)
-    {
-        BuildThrowMeter ();
-    }
-    else if (self.charge)
-    {
-        ThrowBomb ();
-        return;
-    }
-
-    // Altfire -> drop the bomb at the current position
-    if (altfire)
-    {
-        Sprint (self, PRINT_LOW, "Bomb dropped\n");
-        self.charge = 0;    // Make sure it's dropped, not thrown
-        ThrowBomb ();
-        return;
-    }
-};
-
-// This fires the remote if the player is hold it
-float() W_CheckRemote =
-{
-    // Check if holding the remote
-    if (self.weaponmodel == "" &&
-        (self.button0 || self.button1 || self.impulse == 12))
-    {
-        // If we trigger the bombs
-        if (self.button0)
-        {
-            sound (self, CHAN_WEAPON, "weapons/tnt/remfire.wav", 1, ATTN_NORM);
-            W_ActivateRemoteBombs ();
-
-            // If we have no more remote bombs, we "lose" this weapon
-            if (self.currentammo == 0)
-            {
-                self.items = self.items - self.weapon;
-                self.weapon = W_BestWeapon();
-                W_SetCurrentAmmo (TRUE, IT_REMOTE_DETONATOR);
-            }
-            else
-                self.weaponmodel = "progs/v_remote.mdl";
-        }
-        // Else (altfire: take another bomb in our hands)
-        else
-        {
-            if (self.currentammo != 0)
-            {
-                self.weaponmodel = "progs/v_remote.mdl";
-                self.attack_finished = time + 0.4;
-            }
-            else
-                Sprint (self, PRINT_LOW, "You have no more remote bombs\n");
-        }
-
-        self.impulse = 0;
-        return TRUE;
-    }
-
-    return FALSE;
-};
-
-// The checks if the player is using a charge weapon
-float() W_FireCharge =
-{
-    // Check if we are using dynamite
-    if (self.weapon == IT_GRENADE_LAUNCHER || (self.weapon == IT_SUPER_NAILGUN && self.ammo_spray >= 1))
-    {
-        W_ChargeNormal ();
-
-        // If the spray can isn't lit
-        if (self.weapon == IT_SUPER_NAILGUN && !self.tnt_time)
-            return FALSE;
-
-        return TRUE;
-    }
-    if (self.weapon == IT_PROXIMITY_BOMB)
-    {
-        W_ChargeBomb ();
-        return TRUE;
-    }
-    if (self.weapon == IT_REMOTE_DETONATOR)
-    {
-        if (W_CheckRemote ())
-            return TRUE;
-        if (self.ammo_tnt_remote >= 1)
-        {
-            W_ChargeBomb ();
-            return TRUE;
-        }
-    }
-
-    // Player can rapid-fire the weapon
-    //W_Uncharge ();
-    return FALSE;
 };
 
 
@@ -2244,12 +1520,8 @@ void() ImpulseCommands =
     // Commands forbidden to observers
     if (!self.observer)
     {
-        if (self.impulse >= 1 && self.impulse <= 9)
+        if ((self.impulse >= 1 && self.impulse <= 9) || self.impulse == 17)
             W_ChangeWeapon ();
-
-	// select the Life Leech
-	else if (self.impulse == 17)
-	    W_ChangeWeapon ();
 
         else if (self.impulse == 10)
             CycleWeaponCommand ();
@@ -2271,8 +1543,6 @@ void() ImpulseCommands =
         // Armor cycle.
         else if (self.impulse == 16)
             PM_ArmorTest ();
-	    
-	
 
         // Cheat codes are not allowed in multiplayer games (except when the "sv_allowCheat" cvar is set)
         else if (gametype == GAME_SINGLE_PLAYER || cvar ("sv_allowCheat"))
@@ -2315,6 +1585,7 @@ W_WeaponFrame
 Called every frame so impulse events can be handled as well as possible
 ============
 */
+float() W_FireCharge;
 void() W_WeaponFrame =
 {
     if (time < self.attack_finished)

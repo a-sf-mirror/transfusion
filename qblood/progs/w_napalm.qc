@@ -31,11 +31,11 @@ void() Napalm_Fire;
 // Normal model
 $modelname v_rock2
 
-// fire (0 -> 5)
+// fire
 $frame napalm_fire1 napalm_fire2 napalm_fire3 napalm_fire4 napalm_fire5
 $frame napalm_fire6
 
-// altfire (6 -> 11)
+// altfire
 $frame napalm_alt1 napalm_alt2 napalm_alt3 napalm_alt4 napalm_alt5
 $frame napalm_alt6
 
@@ -43,21 +43,21 @@ $frame napalm_alt6
 // Akimbo model
 $modelname v_arock2
 
-// idle (0)
+// idle
 $frame anapalm_idle1
 
-// fire (1 -> 8)
+// fire
 $frame anapalm_fire1 anapalm_fire2 anapalm_fire3 anapalm_fire4 anapalm_fire5
 $frame anapalm_fire6 anapalm_fire7 anapalm_fire8
 
-// altfire (9 -> 16)
+// altfire
 $frame anapalm_alt1  anapalm_alt2  anapalm_alt3  anapalm_alt4  anapalm_alt5
 $frame anapalm_alt6  anapalm_alt7  anapalm_alt8
 
-// draw (17 -> 19)
+// draw
 $frame anapalm_draw1 anapalm_draw2 anapalm_draw3
 
-// holster (20 -> 22)
+// holster
 $frame anapalm_holstr1 anapalm_holstr2 anapalm_holstr3
 
 
@@ -70,7 +70,7 @@ void() player_napalm3 = [$rockatt3, player_napalm4] { self.weaponframe = $napalm
 void() player_napalm4 = [$rockatt4, player_napalm5] { self.weaponframe = $napalm_fire5; };
 void() player_napalm5 = [$rockatt5, player_run    ] { self.weaponframe = $napalm_fire6; };
 
-// Akimbo mode
+// Akimbo fire
 void() player_aknapalm1 = [$rockatt1, player_aknapalm2] { self.weaponframe = $anapalm_fire2; muzzleflash (); };
 void() player_aknapalm2 = [$rockatt2, player_aknapalm3] { self.weaponframe = $anapalm_fire3; };
 void() player_aknapalm3 = [$rockatt1, player_aknapalm4] { self.weaponframe = $anapalm_fire4; Napalm_Fire (); };
@@ -81,12 +81,31 @@ void() player_aknapalm6 = [$rockatt5, player_run      ]
     // If we don't have enough ammo anymore, drop the guns akimbo
     if ((self.items & IT_GUNS_AKIMBO) && self.currentammo < 2)
     {
-        W_SetCurrentAmmo (FALSE, 0);
+        Napalm_UpdateView ();
         self.weaponframe = $anapalm_fire1;
     }
     else
         self.weaponframe = $anapalm_fire7;
 };
+
+// Normal draw
+// NOTE: no animation to play for now
+void() player_napalmdraw1 = [$rockatt1, player_run] { self.weaponframe = 0; };
+
+// Normal holster
+// NOTE: no animation to play for now
+void() player_napalmholst1 = [$rockatt1, player_run] { W_DrawWeapon (self.newweapon); };
+
+// Akimbo draw
+void() player_aknapalmdraw1 = [$rockatt1, player_aknapalmdraw2] { self.weaponframe = $anapalm_draw1; };
+void() player_aknapalmdraw2 = [$rockatt1, player_aknapalmdraw3] { self.weaponframe = $anapalm_draw2; };
+void() player_aknapalmdraw3 = [$rockatt1, player_run          ] { self.weaponframe = $anapalm_draw3; };
+
+// Akimbo holster
+void() player_aknapalmholst1 = [$rockatt1, player_aknapalmholst2] { self.weaponframe = $anapalm_holstr1; };
+void() player_aknapalmholst2 = [$rockatt1, player_aknapalmholst3] { self.weaponframe = $anapalm_holstr2; };
+void() player_aknapalmholst3 = [$rockatt1, player_aknapalmholst4] { self.weaponframe = $anapalm_holstr3; };
+void() player_aknapalmholst4 = [$rockatt1, player_run           ] { W_DrawWeapon (self.newweapon); };
 
 
 //============================================================================
@@ -342,4 +361,76 @@ void() Napalm_Attack =
     }
 
     Napalm_Fire ();
+};
+
+
+/*
+============
+Napalm_Draw
+
+Draw code for the napalm launcher
+============
+*/
+void() Napalm_Draw =
+{
+    self.weapon = IT_NAPALM_LAUNCHER;
+    self.currentammo = self.ammo_rockets;
+    self.items = (self.items - (self.items & (IT_SHELLS | IT_NAILS | IT_CELLS))) | IT_ROCKETS;
+
+    Napalm_UpdateView ();
+
+    if (self.items & IT_GUNS_AKIMBO)
+    {
+        self.attack_finished = time + 0.4;
+        player_aknapalmdraw1 ();
+    }
+    else
+    {
+        self.attack_finished = time + 0.1;
+        player_napalmdraw1 ();
+    }
+};
+
+
+/*
+============
+Napalm_Holster
+
+Holster code for the napalm launcher
+============
+*/
+void() Napalm_Holster =
+{
+    if (self.items & IT_GUNS_AKIMBO)
+    {
+        self.attack_finished = time + 0.4;
+        player_aknapalmholst1 ();
+    }
+    else
+    {
+        self.attack_finished = time + 0.1;
+        player_napalmholst1 ();
+    }
+};
+
+
+/*
+============
+Napalm_UpdateView
+
+Choose the right napalm launcher model to display
+============
+*/
+void() Napalm_UpdateView =
+{
+    if (self.akimbo_finished > time && self.currentammo >= 2)
+    {
+        self.weaponmodel = "progs/v_arock2.mdl";
+        self.items = self.items | IT_GUNS_AKIMBO;
+    }
+    else
+    {
+        self.weaponmodel = "progs/v_rock2.mdl";
+        self.items = self.items - (self.items & IT_GUNS_AKIMBO);
+    }
 };

@@ -31,7 +31,7 @@ void() Spray_Fire;
 $modelname v_nail2
 
 // idle (animation; 3 frames)
-$frame spray_idle1 /* idle2 idle3 */
+$frame spray_idle1 /* spray_idle2 spray_idle3 */
 
 // fire
 $frame spray_fire1
@@ -87,7 +87,7 @@ void() player_supernail =
 void() player_supernail1 = [$nailatt1, player_supernail2] { player_supernail (); };
 void() player_supernail2 = [$nailatt2, player_supernail1] { player_supernail (); };
 
-void() player_lightcan1 = [$shotatt1, player_lightcan2] { self.weaponframe = $spray_alt1; self.player_state = PS_HOLD_FIRE; };
+void() player_lightcan1 = [$shotatt1, player_lightcan2] { self.weaponframe = $spray_alt1; };
 void() player_lightcan2 = [$shotatt1, player_lightcan3] { self.weaponframe = $spray_alt2; };
 void() player_lightcan3 = [$shotatt1, player_lightcan4] { self.weaponframe = $spray_alt3; };
 void() player_lightcan4 = [$shotatt1, player_lightcan5] { self.weaponframe = $spray_alt4; };
@@ -100,11 +100,37 @@ void() player_altsupernail3 = [$shotatt1, player_altsupernail4] { self.weaponfra
 void() player_altsupernail4 = [$shotatt1, player_altsupernail5]
 {
     self.weaponframe = $spray_alt10;
-    W_FireGrenade ();
-    W_Uncharge ();
+    Bomb_Fire ();
+    Bomb_Uncharge ();
     ShowThrowMeter ();
 };
 void() player_altsupernail5 = [$shotatt1, player_run] { self.weaponframe = $spray_alt11; };
+
+// Half draw
+void() player_sprayhalfdraw1 = [$shotatt1, player_sprayhalfdraw2] { self.weaponframe = $spray_drawhlf1; };
+void() player_sprayhalfdraw2 = [$shotatt1, player_sprayhalfdraw3] { self.weaponframe = $spray_drawhlf2; };
+void() player_sprayhalfdraw3 = [$shotatt1, player_sprayhalfdraw4] { self.weaponframe = $spray_drawhlf3; };
+void() player_sprayhalfdraw4 = [$shotatt1, player_run           ] { self.weaponframe = $spray_drawhlf4; };
+
+// Normal draw
+void() player_spraydraw1 = [$shotatt1, player_spraydraw2] { self.weaponframe = $spray_draw1; };
+void() player_spraydraw2 = [$shotatt1, player_spraydraw3] { self.weaponframe = $spray_draw2; };
+void() player_spraydraw3 = [$shotatt1, player_spraydraw4] { self.weaponframe = $spray_draw3; };
+void() player_spraydraw4 = [$shotatt1, player_run       ] { self.weaponframe = $spray_draw4; };
+
+// Half holster
+void() player_sprayhalfholster1 = [$shotatt1, player_sprayhalfholster2] { self.weaponframe = $spray_holsthlf1; };
+void() player_sprayhalfholster2 = [$shotatt1, player_sprayhalfholster3] { self.weaponframe = $spray_holsthlf2; };
+void() player_sprayhalfholster3 = [$shotatt1, player_sprayhalfholster4] { self.weaponframe = $spray_holsthlf3; };
+void() player_sprayhalfholster4 = [$shotatt1, player_sprayhalfholster5] { self.weaponframe = $spray_holsthlf4; };
+void() player_sprayhalfholster5 = [$shotatt1, player_run              ] { W_DrawWeapon (self.newweapon); };
+
+// Normal holster
+void() player_sprayholster1 = [$shotatt1, player_sprayholster2] { self.weaponframe = $spray_holster1; };
+void() player_sprayholster2 = [$shotatt1, player_sprayholster3] { self.weaponframe = $spray_holster2; };
+void() player_sprayholster3 = [$shotatt1, player_sprayholster4] { self.weaponframe = $spray_holster3; };
+void() player_sprayholster4 = [$shotatt1, player_sprayholster5] { self.weaponframe = $spray_holster4; };
+void() player_sprayholster5 = [$shotatt1, player_run          ] { W_DrawWeapon (self.newweapon); };
 
 
 //============================================================================
@@ -161,6 +187,8 @@ Attack code for the spray can
 */
 void() Spray_Attack =
 {
+    self.player_state = PS_FIRE;
+
     // Altfire
     if (self.tnt_time)
     {
@@ -168,8 +196,70 @@ void() Spray_Attack =
         player_altsupernail1 ();
     }
     else
-    {
-        self.player_state = PS_FIRE;
         player_supernail1 ();
+};
+
+
+/*
+============
+Spray_Draw
+
+Draw code for the spray can
+============
+*/
+void() Spray_Draw =
+{
+    self.currentammo = self.ammo_spray;
+    self.items = (self.items - (self.items & (IT_NAILS | IT_SHELLS | IT_CELLS | IT_ROCKETS)));
+
+    Spray_UpdateView ();
+
+    self.attack_finished = time + 0.5;
+
+    // If we need to pop up the lighter
+    if (self.weapon != IT_TNT)
+    {
+        sound (self, CHAN_WEAPON, "weapons/tnt/lighter.wav", 1, ATTN_NORM);
+        player_spraydraw1 ();
     }
+    else
+        player_sprayhalfdraw1 ();
+
+    self.weapon = IT_SPRAY_CAN;
+};
+
+
+/*
+============
+Spray_Holster
+
+Holster code for the spray can
+============
+*/
+void() Spray_Holster =
+{
+    self.attack_finished = time + 0.6;
+
+    // If we need to close the lighter
+    if (self.newweapon != IT_TNT)
+    {
+        sound (self, CHAN_WEAPON, "weapons/tnt/zipclose.wav", 1, ATTN_NORM);
+        player_sprayholster1 ();
+    }
+    else
+        player_sprayhalfholster1 ();
+};
+
+
+/*
+============
+Spray_UpdateView
+
+Choose the right spray can model to display
+============
+*/
+void() Spray_UpdateView =
+{
+    self.weaponmodel = "progs/v_nail2.mdl";
+    self.items = self.items - (self.items & IT_GUNS_AKIMBO);
 };
