@@ -946,6 +946,10 @@ void() WaterMove =
     }
     else if (self.air_finished < time)
     {   // drown!
+
+        // Darken screen as player slowly drowns
+        self.poison = (time - self.air_finished) * 25;
+
         if (self.pain_finished < time)
         {
             self.dmg = self.dmg + 2;
