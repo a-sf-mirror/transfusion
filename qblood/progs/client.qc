@@ -229,6 +229,21 @@ void() IntermissionThink =
     GotoNextMap ();
 };
 
+
+/*
+====================
+Cl_PlayIntermissionSound
+
+Think fonction to make the intermission sound loop
+====================
+*/
+void() Cl_PlayIntermissionSound =
+{
+    sound (self.enemy, CHAN_VOICE, "misc/moans.wav", 0.5, ATTN_NONE);
+    self.nextthink = time + 5.2;
+};
+
+
 /*
 ============
 execute_changelevel
@@ -248,7 +263,11 @@ void() execute_changelevel =
 
     pos = FindIntermission ();
 
-    sound (pos, CHAN_VOICE, "misc/moans.wav", 0.5, ATTN_NORM);
+    // Play the intermission sound
+    sound (pos, CHAN_VOICE, "misc/moans.wav", 0.5, ATTN_NONE);
+    self.enemy = pos;
+    self.nextthink = time + 5.2;
+    self.think = Cl_PlayIntermissionSound;
 
     WriteByte (MSG_ALL, SVC_CDTRACK);
     WriteByte (MSG_ALL, 3);

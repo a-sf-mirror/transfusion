@@ -278,7 +278,126 @@ void() misc_explobox2 =
     }
 };
 
-//============================================================================
+
+/*
+===========================================================================
+TRAPS
+
+Tommy Gun Trap - shoots steady stream of bullets for 30 seconds
+Flame Trap - shoots stream of fire for 30 seconds
+Napalm Trap - shoots one napalm shot every 5 seconds until switched off
+===========================================================================
+*/
+
+// ------ Tommy Gun Trap ------ //
+
+void() trap_tommygun_think =
+{
+    sound (self, CHAN_WEAPON, "weapons/tommygun/_tom.wav", 1, ATTN_NORM);
+    FireBullets (self.origin, aim (self, 1000), 1, 5, '0.05 0.02 0');
+
+    // Continue until we have shot all our bullets
+    self.ammo_nails = self.ammo_nails - 1;
+    if (self.ammo_nails)
+        self.nextthink = time + 0.1;
+};
+
+void() trap_tommygun_use =
+{
+    if (!self.ammo_nails)
+    {
+        self.ammo_nails = 300;  // 300 bullets * 0.1 sec = 30 sec
+        self.think = trap_tommygun_think;
+        self.nextthink = time + 0.1;
+    }
+    else
+    {
+        self.ammo_nails = 0;
+        self.think = SUB_Null;
+    }
+};
+
+void() trap_tommygun =
+{
+    self.use = trap_tommygun_use;
+};
+
+
+// ------ Flame Trap ------ //
+
+void() trap_flame_think =
+{
+    if (self.t_width < time)
+    {
+        sound (self, CHAN_WEAPON, "weapons/spraycan/sprayfir.wav", 0.5, ATTN_NORM);
+        self.t_width = time + 2.5;
+    }
+
+    Spray_Fire ();
+
+    if (self.ammo_spray)
+        self.nextthink = time + 0.1;
+    else
+        sound (self, CHAN_WEAPON, "misc/null.wav", 0, ATTN_NORM);
+};
+
+void() trap_flame_use =
+{
+    if (self.think == SUB_Null)
+    {
+        self.ammo_spray = 300;  // 300 fire clouds * 0.1 sec = 30 sec
+        self.nextthink = time + 0.1;
+        self.t_width = 0;
+        self.think = trap_flame_think;
+    }
+    else
+        self.think = SUB_Null;
+};
+
+void() trap_flame =
+{
+    // a little hack so it will shot from its origin...
+    self.origin = self.origin - '0 0 10';
+
+    self.player_state = PS_FIRE;
+
+    self.use = trap_flame_use;
+    self.think = SUB_Null;
+};
+
+
+// ------ Napalm trap ------ //
+
+void() trap_napalm_think =
+{
+    Napalm_Fire ();
+    self.ammo_rockets = 999;
+    self.nextthink = time + 5;
+};
+
+void() trap_napalm_use =
+{
+    if (self.think == SUB_Null)
+    {
+        self.think = trap_napalm_think;
+        self.nextthink = time + 5;
+    }
+    else
+        self.think = SUB_Null;
+};
+
+void() trap_napalm =
+{
+    // a little hack so it will shot from its origin...
+    self.origin = self.origin - '0 0 16';
+
+    self.player_state = PS_FIRE;
+    self.ammo_rockets = 999;
+
+    self.use = trap_napalm_use;
+    self.think = SUB_Null;
+};
+
 
 /*
 ===========================================================================
