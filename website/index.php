@@ -25,53 +25,37 @@
 	<h2 id="news-section" class="section">News</h2>
 	<ul>
 		<li>
-                        <span class="title">November 2, 2003:</span> (by Tim)<br/>
-                        Finally figuring out how to work some of the stuff on the site.<br/>
-                        It's good to be working with Mathieu again, albiet a little sad since he's inactive these days.<br/>
-                        My main desire for joining up (again) was to motivate the great 3D animators/artists that have been 
-                        with the project through it's great period of inactivity.  I seriously thought that the project
-                        would have ended if not for their persistance.  Thanks Luke and Chris!<br/>
-                        I like to do updates every week, so I figure I'll start things off today.<br/><br/>
-                        <b>The good stuff for this week as follows:</b><br/>
-                        Blood splattering was lost for some reason. 
-                        Put it back, and made it do a nifty splattering confetti style effect.<br/>
-                        Initial screen shaking code is in place.  Now to implement it for beast's stomp, etc.<br/>
-                        Monsters can be disabled via nomonsters cvar now.  Works like nodudes.<br/>
-                        A lot of Single Player specific code tweaks added.
-                        I.E. keys not spawning in blood bath, all doors open, keys respawning in 15 seconds in coop games,
-                        life leech sentries attacking monsters in SP and coop, etc.<br/>
-                        Of course all the monster related code is SP specific.<br/>
-                        The most notable update this week is that monsters no longer stand around when being attacked.  
-                        They "wake up" and wake up nearby monsters that can see you.<br/>
-                        Stepping on monsters hurts them, and can slowly kill them.<br/>
-                        Lots of code cleaning and fat trimming. Many bug/behavior fixes for the monsters.<br/>
-                        
-                        <p/>   
-                <li>
+			<span class="title">January 22, 2004:</span> (by Elric)<br />
+			Some code and binary snapshots have been uploaded. We try to cook a new release for ASAP.
+			Stay tuned and pray: it may well be the last release this project will ever produce.<p />
+		</li>
+		<li>
+			<span class="title">November 2, 2003:</span> (by Tim)<br/>
+			Finally figuring out how to work some of the stuff on the site.<br/>
+			It's good to be working with Mathieu again, albiet a little sad since he's inactive these days.<br/>
+			My main desire for joining up (again) was to motivate the great 3D animators/artists that have been 
+			with the project through it's great period of inactivity.  I seriously thought that the project
+			would have ended if not for their persistance.  Thanks Luke and Chris!<br/>
+			I like to do updates every week, so I figure I'll start things off today.<br/>
+			<br/>
+			<b>The good stuff for this week as follows:</b><br/>
+			Blood splattering was lost for some reason. 
+			Put it back, and made it do a nifty splattering confetti style effect.<br/>
+			Initial screen shaking code is in place.  Now to implement it for beast's stomp, etc.<br/>
+			Monsters can be disabled via nomonsters cvar now.  Works like nodudes.<br/>
+			A lot of Single Player specific code tweaks added.
+			I.E. keys not spawning in blood bath, all doors open, keys respawning in 15 seconds in coop games,
+			life leech sentries attacking monsters in SP and coop, etc.<br/>
+			Of course all the monster related code is SP specific.<br/>
+			The most notable update this week is that monsters no longer stand around when being attacked.  
+			They "wake up" and wake up nearby monsters that can see you.<br/>
+			Stepping on monsters hurts them, and can slowly kill them.<br/>
+			Lots of code cleaning and fat trimming. Many bug/behavior fixes for the monsters.<p/>
+		</li>
+		<li>
 			<span class="title">October 13, 2003:</span> (by Elric)<br />
 			I am officially resigning from my Lead Programmer position today. Timothy Hale, another co-founder
 			of this project, will be taking up the chair in my place.<p />
-		</li>
-		<li>
-			<span class="title">August 13, 2003:</span> (by Elric)<br />
-			We are not dead yet! Some recent snapshots have been uploaded and the work on the single player
-			modes reintegration continue. The monsters may be back soon, and nearly all models are in MD3
-			format now. The project seems to be back on tracks, so let's roll!<p />
-		</li>
-		<li>
-			<span class="title">April 2, 2003:</span> (by Elric)<br />
-			Because of a lack of coders, Awakening is set aside for some time. We now focus on improving
-			Transfusion 1. We won't support QuakeWorld anymore, neither the standard Quake engine. We will
-			use DarkPlaces exclusively, which should allow us to create a much better and polished game than
-			before. And yes, single player campaigns are planned.<br />
-			The website will be updated with fresh informations soon. Stay tuned.<p />
-		</li>
-		<li>
-			<span class="title">February 11, 2003:</span> (by Elric)<br />
-			I'm happy to announce you the official opening of the <?php ViewCvsURL ("awakening", "Awakening tree"); ?>
-			on the CVS repository! I will also upload this website to the repository; so in case someone would
-			be interested in getting the couple of PHP files I use, go visit the CVS module
-			"<?php ViewCvsURL ("website", "website"); ?>".<p />
 		</li>
 	</ul>
 </div>
