@@ -1,13 +1,8 @@
-//
-// groupspr.c
-//
-// Group all frames in a Quake SPR file so that they
-// will be automatically animated by the engine
-//
-// Development version (2002-03-23)
-//
-
-/* Copyright (C) 2002  Mathieu Olivier  <elric@planetblood.com>
+/*
+ * Copyright (C) 2002-2005  Mathieu Olivier
+ *
+ * Group/ungroup all frames in a Quake SPR file so that they will be
+ * automatically animated by the engine
  *
  * This program is free software; you can redistribute it and/or modify
  * it under the terms of the GNU General Public License as published by
@@ -24,114 +19,504 @@
  * Foundation, Inc., 59 Temple Place, Suite 330, Boston, MA  02111-1307  USA
  */
 
+
 #include <assert.h>
 #include <stdio.h>
 #include <stdlib.h>
+#include <string.h>
+
+
+// ====================================================================
+//                             CONSTANTS
+// ====================================================================
+
+#define VERSION "1.0cvs"
+
+// Default time interval for a frame (in sec)
+#define DEFAULT_TIME_INTERVAL 0.1f
+
+
+// ====================================================================
+//                             TYPES
+// ====================================================================
+
+typedef unsigned char byte;
+typedef enum { SPR_SINGLE, SPR_GROUP } frame_group_t;
+typedef enum { false, true } boolean;
 
 typedef struct
 {
-    char  name [4];
-    int   version;
-    int   type;
-    float radius;
-    int maxwidth;
-    int maxheight;
-    int nbframes;
-    float beamlength;
-    int synchtype;
+	char	name [4];
+	int		version;
+	int		type;
+	float	radius;
+	int		maxwidth;
+	int		maxheight;
+	int		nbframes;
+	float	beamlength;
+	int		synchtype;
 } spr_header_t;
 
 
 typedef struct
 {
-    int offsetx;
-    int offsety;
-    int width;
-    int height;
+	int offsetx;
+	int offsety;
+	int width;
+	int height;
 } frame_header_t;
 
 
+// ====================================================================
+//                             VARIABLES
+// ====================================================================
+
+// Work buffer. Used when extracting file contents
+unsigned char Buffer [16384];
+
+boolean VerboseMode = false;
+
+
+// ====================================================================
+//                             FUNCTIONS
+// ====================================================================
+
+/*
+====================
+GetLittleEndianUint
+====================
+*/
+unsigned int GetLittleEndianUint (const byte* Ptr)
+{
+	return (Ptr[0]) | (Ptr[1] << 8) | (Ptr[2] << 16) | (Ptr[3] << 24);
+}
+
+
+/*
+====================
+PutLittleEndianUint
+====================
+*/
+void PutLittleEndianUint (unsigned int Uint, byte* Ptr)
+{
+	Ptr[0] = (byte)(Uint      );
+	Ptr[1] = (byte)(Uint >>  8);
+	Ptr[2] = (byte)(Uint >> 16);
+	Ptr[3] = (byte)(Uint >> 24);
+}
+
+
+/*
+====================
+GetLittleEndianFloat
+====================
+*/
+float GetLittleEndianFloat (const byte* Ptr)
+{
+	unsigned int Float = GetLittleEndianUint (Ptr);
+	return *((float*)(&Float));
+}
+
+
+/*
+====================
+PutLittleEndianFloat
+====================
+*/
+void PutLittleEndianFloat (float Float, byte* Ptr)
+{
+	PutLittleEndianUint(*((unsigned int*)(&Float)), Ptr);
+}
+
+
+/*
+====================
+ExportSprHeader
+====================
+*/
+void ExportSprHeader (const spr_header_t* Header, byte* Ptr)
+{
+	memcpy (Ptr, Header->name, sizeof(Header->name));	Ptr += 4;
+	PutLittleEndianUint (Header->version, Ptr);			Ptr += 4;
+	PutLittleEndianUint (Header->type, Ptr);			Ptr += 4;
+	PutLittleEndianFloat (Header->radius, Ptr);			Ptr += 4;
+	PutLittleEndianUint (Header->maxwidth, Ptr);		Ptr += 4;
+	PutLittleEndianUint (Header->maxheight, Ptr);		Ptr += 4;
+	PutLittleEndianUint (Header->nbframes, Ptr);		Ptr += 4;
+	PutLittleEndianFloat (Header->beamlength, Ptr);		Ptr += 4;
+	PutLittleEndianUint (Header->synchtype, Ptr);
+}
+
+
+/*
+====================
+ImportSprHeader
+====================
+*/
+void ImportSprHeader (const byte* Ptr, spr_header_t* Header)
+{
+	memcpy (Header->name, Ptr, sizeof(Header->name));	Ptr += 4;
+	Header->version = GetLittleEndianUint(Ptr);			Ptr += 4;
+	Header->type = GetLittleEndianUint(Ptr);			Ptr += 4;
+	Header->radius = GetLittleEndianFloat(Ptr);			Ptr += 4;
+	Header->maxwidth = GetLittleEndianUint(Ptr);		Ptr += 4;
+	Header->maxheight = GetLittleEndianUint(Ptr);		Ptr += 4;
+	Header->nbframes = GetLittleEndianUint(Ptr);		Ptr += 4;
+	Header->beamlength = GetLittleEndianFloat(Ptr);		Ptr += 4;
+	Header->synchtype = GetLittleEndianUint(Ptr);
+}
+
+
+/*
+====================
+ExportFrameHeader
+====================
+*/
+void ExportFrameHeader (const frame_header_t* Header, byte* Ptr)
+{
+	PutLittleEndianUint (Header->offsetx, Ptr);	Ptr += 4;
+	PutLittleEndianUint (Header->offsety, Ptr);	Ptr += 4;
+	PutLittleEndianUint (Header->width, Ptr);	Ptr += 4;
+	PutLittleEndianUint (Header->height, Ptr);
+}
+
+
+/*
+====================
+ImportFrameHeader
+====================
+*/
+void ImportFrameHeader (const byte* Ptr, frame_header_t* Header)
+{
+	Header->offsetx = GetLittleEndianUint(Ptr);	Ptr += 4;
+	Header->offsety = GetLittleEndianUint(Ptr);	Ptr += 4;
+	Header->width = GetLittleEndianUint(Ptr);	Ptr += 4;
+	Header->height = GetLittleEndianUint(Ptr);
+}
+
+
+/*
+====================
+UngroupAll
+====================
+*/
+int UngroupAll (FILE *InFile, FILE *OutFile)
+{
+	unsigned int NbGroups, NbFrames, Ind;
+	spr_header_t SprHeader;
+
+	// Copy the header
+	if (fread (Buffer, 1, sizeof (spr_header_t), InFile) != sizeof (spr_header_t))
+	{
+		printf ("Error: file too small (header)\n");
+		return EXIT_FAILURE;
+	}
+	ImportSprHeader (Buffer, &SprHeader);
+
+	// Check magic number and version
+	if (memcmp (SprHeader.name, "IDSP", 4) != 0)
+	{
+		printf ("Error: file is not a Quake sprite\n");
+		return EXIT_FAILURE;
+	}
+	if (SprHeader.version != 1)
+	{
+		printf ("Error: wrong sprite version (%d instead of 1)\n", SprHeader.version);
+		return EXIT_FAILURE;
+	}
+
+	NbGroups = SprHeader.nbframes;
+	fwrite (Buffer, 1, sizeof (spr_header_t), OutFile);
+
+	// Ungroup all the frames
+	printf ("Processing %i element(s)...\n", NbGroups);
+	NbFrames = 0;
+	for (Ind = 0; Ind < NbGroups; Ind++)
+	{
+		frame_group_t FrameType;
+		unsigned int Size;
+		frame_header_t FrameHeader;
+
+		// Read the single frame header
+		fread (Buffer, 1, 4, InFile);
+		FrameType = GetLittleEndianUint(Buffer);
+
+		if (FrameType == SPR_SINGLE)
+		{
+			if (VerboseMode)
+				printf ("* Parsing element %i (single frame)\n", Ind);
+
+			fwrite (Buffer, 1, 4, OutFile);
+			fread (Buffer, 1, sizeof (frame_header_t), InFile);
+			fwrite (Buffer, 1, sizeof (frame_header_t), OutFile);
+
+			// Extract the picture itself
+			ImportFrameHeader (Buffer, &FrameHeader);
+			Size = FrameHeader.width * FrameHeader.height;
+			assert (Size <= sizeof (Buffer));
+			if (VerboseMode)
+				printf ("  -> Properties: dimensions = %u x %u, origin = (%i, %i)\n",
+						FrameHeader.width, FrameHeader.height,
+						FrameHeader.offsetx, FrameHeader.offsety);
+			if (fread (Buffer, 1, Size, InFile) != Size)
+			{
+				printf ("Error: file too small (frame picture %i)\n", Ind);
+				return EXIT_FAILURE;
+			}
+			fwrite (Buffer, 1, Size, OutFile);
+
+			NbFrames++;
+		}
+		else
+		{
+			unsigned int NbGroupFrames;
+			unsigned int FrameInd;
+
+			if (VerboseMode)
+				printf ("* Parsing element %i (frame group)\n", Ind);
+
+			// Get the number of grouped frames and skip the time intervals
+			fread (Buffer, 1, 4, InFile);
+			NbGroupFrames = GetLittleEndianUint (Buffer);
+			if (VerboseMode)
+				printf ("  -> Group contains %i frames\n", NbGroupFrames);
+			if (VerboseMode)
+			{
+				float TimeInterval;
+				fseek (InFile, (NbGroupFrames - 1) * 4, SEEK_CUR);
+				fread (Buffer, 1, 4, InFile);
+				TimeInterval = GetLittleEndianFloat (Buffer);
+				printf ("  -> Total animation time is: %g sec\n", TimeInterval);
+			}
+			else
+				fseek (InFile, NbGroupFrames * 4, SEEK_CUR);
+
+			for (FrameInd = 0; FrameInd < NbGroupFrames; FrameInd++)
+			{
+				PutLittleEndianUint (SPR_SINGLE, Buffer);
+				fwrite (Buffer, 1, 4, OutFile);
+				fread (Buffer, 1, sizeof (frame_header_t), InFile);
+				fwrite (Buffer, 1, sizeof (frame_header_t), OutFile);
+
+				// Extract the picture itself
+				ImportFrameHeader (Buffer, &FrameHeader);
+				Size = FrameHeader.width * FrameHeader.height;
+				assert (Size <= sizeof (Buffer));
+				if (VerboseMode)
+					printf ("  -> Properties of frame %u: dimensions = %u x %u, origin = (%i, %i)\n",
+							FrameInd, FrameHeader.width, FrameHeader.height,
+							FrameHeader.offsetx, FrameHeader.offsety);
+				if (fread (Buffer, 1, Size, InFile) != Size)
+				{
+					printf ("Error: file too small (frame picture %i.%i)\n", Ind, FrameInd);
+					return EXIT_FAILURE;
+				}
+				fwrite (Buffer, 1, Size, OutFile);
+			}
+
+			NbFrames += NbGroupFrames;
+		}
+		printf("\n");
+	}
+
+	// Update the header with the real number of frames
+	fseek (OutFile, 24, SEEK_SET);
+	PutLittleEndianUint (NbFrames, Buffer);
+	fwrite (Buffer, 1, 4, OutFile);
+
+	return EXIT_SUCCESS;
+}
+
+
+/*
+====================
+GroupAll
+====================
+*/
+int GroupAll (FILE *InFile, FILE *OutFile, float AnimationTime)
+{
+	unsigned int NbFrames;
+	spr_header_t SprHeader;
+	frame_header_t FrameHeader;
+	unsigned int Ind, Size;
+
+	// Copy the header
+	if (fread (Buffer, 1, sizeof (spr_header_t), InFile) != sizeof (spr_header_t))
+	{
+		printf ("Error: file too small (header)\n");
+		return EXIT_FAILURE;
+	}
+	ImportSprHeader (Buffer, &SprHeader);
+
+	// Check magic number and version
+	if (memcmp (SprHeader.name, "IDSP", 4) != 0)
+	{
+		printf ("Error: file is not a Quake sprite\n");
+		return EXIT_FAILURE;
+	}
+	if (SprHeader.version != 1)
+	{
+		printf ("Error: wrong sprite version (%d instead of 1)\n", SprHeader.version);
+		return EXIT_FAILURE;
+	}
+
+	NbFrames = SprHeader.nbframes;
+	ExportSprHeader (&SprHeader, Buffer);
+	fwrite (Buffer, 1, sizeof (spr_header_t), OutFile);
+
+	// Write the group header (SPR_GROUP + nb of frames + time intervals)
+	PutLittleEndianUint(SPR_GROUP, Buffer);
+	PutLittleEndianUint(NbFrames, Buffer + 4);
+	fwrite (Buffer, 2, 4, OutFile);
+
+	if (AnimationTime < 0.01f)
+		AnimationTime = DEFAULT_TIME_INTERVAL * NbFrames;
+	for (Ind = 0; Ind < NbFrames; Ind++)
+	{
+		float TimeInterval = (Ind + 1) * AnimationTime / (float)NbFrames;
+		fwrite (&TimeInterval, 1, 4, OutFile);
+	}
+
+	// Group all the frames
+	printf ("Processing %i element(s)...\n", NbFrames);
+	for (Ind = 0; Ind < NbFrames; Ind++)
+	{
+		frame_group_t FrameType;
+
+		// Read the single frame header
+		fread (Buffer, 1, 4, InFile);
+		FrameType = GetLittleEndianUint(Buffer);
+
+		// Make sure it's a single frame, not a group
+		if (FrameType != SPR_SINGLE)
+		{
+			printf ("Error: sprite already contains grouped frames (frame %i)\n", Ind);
+			return EXIT_FAILURE;
+		}
+		if (VerboseMode)
+			printf ("* Parsing element %i (single frame)\n", Ind);
+
+		if (fread (Buffer, 1, sizeof (frame_header_t), InFile) != sizeof (frame_header_t))
+		{
+			printf ("Error: file too small (frame header %i)\n", Ind);
+			return EXIT_FAILURE;
+		}
+		fwrite (Buffer, 1, sizeof (frame_header_t), OutFile);
+		ImportFrameHeader (Buffer, &FrameHeader);
+		Size = FrameHeader.width * FrameHeader.height;
+		assert (Size <= sizeof (Buffer));
+		if (VerboseMode)
+			printf ("  -> Properties: dimensions = %u x %u, origin = (%i, %i)\n"
+					"\n",
+					FrameHeader.width, FrameHeader.height,
+					FrameHeader.offsetx, FrameHeader.offsety);
+
+		// Extract the picture itself
+		if (fread (Buffer, 1, Size, InFile) != Size)
+		{
+			printf ("Error: file too small (frame picture %i)\n", Ind);
+			return EXIT_FAILURE;
+		}
+		fwrite (Buffer, 1, Size, OutFile);
+	}
+
+	return EXIT_SUCCESS;
+}
+
+
+/*
+====================
+PrintHelp
+====================
+*/
+void PrintHelp (void)
+{
+	printf ("This tool groups (or ungroups) all the frames in a Quake sprite\n"
+			"\n"
+			"Syntax: groupspr [options] <SPR file> <new file>\n"
+			"Available options are:\n"
+			"   -h        : this help\n"
+			"   -t <time> : set the total animation time in seconds.\n"
+			"               By default, each frame is given %g seconds\n"
+			"   -u        : ungroup the frames instead of grouping them\n"
+			"   -v        : verbose mode\n",
+			DEFAULT_TIME_INTERVAL);
+}
+
+
+/*
+====================
+Main
+====================
+*/
 int main (int argc, char* argv [])
 {
-    // Variables
-    FILE *InFile, *OutFile;
-    unsigned char Buffer [4096];
-    unsigned int NbFrames;
-    spr_header_t* SprHeader;
-    frame_header_t* FrameHeader;
-    unsigned int Ind, Size;
-    int Integer;
-    float AnimationTime;
+	FILE *InFile, *OutFile;
+	int Result, ArgInd;
+	float TimeInterval = 0.0f;
+	boolean Ungroup = false;
 
-    // Syntax checking
-    if (argc != 4)
-    {
-        printf ("Syntax: groupspr <SPR file> <new file> <total animation time (sec)>\n");
-        return EXIT_FAILURE;
-    }
+	printf ("\n"
+			"GroupSPR, version " VERSION ", by Mathieu Olivier\n"
+			"============================================\n"
+			"\n");
 
-    // Open the files
-    InFile = fopen (argv[1], "rb");
-    OutFile = fopen (argv[2], "wb");
-    if (InFile == NULL || OutFile == NULL)
-    {
-        printf ("Error while openging files\n");
-        return EXIT_FAILURE;
-    }
+	// Check options
+	for (ArgInd = 1; (ArgInd < argc) && (argv[ArgInd][0] == '-'); ArgInd++)
+	{
+		switch (argv[ArgInd][1])
+		{
+			// Animation time
+			case 't':
+				ArgInd++;
+				if (ArgInd < argc)
+					TimeInterval = (float)atof(argv[ArgInd]);
+				break;
 
-    // Copy the header
-    if (fread (Buffer, 1, sizeof (spr_header_t), InFile) != sizeof (spr_header_t))
-    {
-        printf ("Error: file too small (header)\n");
-        return EXIT_FAILURE;
-    }
-    SprHeader = (spr_header_t*)Buffer;
-    NbFrames = SprHeader->nbframes;
-    SprHeader->nbframes = 1;
-    fwrite (Buffer, 1, sizeof (spr_header_t), OutFile);
+			// Ungrouping
+			case 'u':
+				Ungroup = true;
+				break;
 
-    // Write the group header (SPR_GROUP + nb of frames + time intervals)
-    Integer = 1;
-    fwrite (&Integer, 1, 4, OutFile);
-    fwrite (&NbFrames, 1, 4, OutFile);
+				// Verbose mode
+			case 'v':
+				VerboseMode = true;
+				break;
 
-    AnimationTime = (float)atof (argv[3]);
-    if (AnimationTime < 0.01f)
-        AnimationTime = 1.0f;
-    for (Ind = 0; Ind < NbFrames; Ind++)
-    {
-        float TimeInterval = (Ind + 1) * AnimationTime / (float)NbFrames;
-        fwrite (&TimeInterval, 1, 4, OutFile);
-    }
+			// Wrong option and help
+			default:
+				printf ("ERROR: unknown option (%s)\n", argv[ArgInd]);
+			case 'h':
+				PrintHelp ();
+				return EXIT_FAILURE;
+		}
+	}
 
-    // Group all the remaining frames
-    printf ("Processing %i frames...\n", NbFrames);
-    for (Ind = 0; Ind < NbFrames; Ind++)
-    {
-        // Read the single frame header
-        fread (Buffer, 1, 4, InFile);  // skip the group type
-        if (fread (Buffer, 1, sizeof (frame_header_t), InFile) != sizeof (frame_header_t))
-        {
-            printf ("Error: file too small (frame header %i)\n", Ind);
-            return EXIT_FAILURE;
-        }
-        fwrite (Buffer, 1, sizeof (frame_header_t), OutFile);
-        FrameHeader = (frame_header_t*)Buffer;
-        Size = FrameHeader->width * FrameHeader->height;
-        assert (Size <= sizeof (Buffer));
+	// Check we still have enough arguments for the file names
+	if (ArgInd + 1 >= argc)
+	{
+		PrintHelp();
+		return EXIT_FAILURE;
+	}
 
-        // Extract the picture itself
-        if (fread (Buffer, 1, Size, InFile) != Size)
-        {
-            printf ("Error: file too small (frame picture %i)\n", Ind);
-            return EXIT_FAILURE;
-        }
-        fwrite (Buffer, 1, Size, OutFile);
-    }
+	// Open the files
+	InFile = fopen (argv[ArgInd++], "rb");
+	OutFile = fopen (argv[ArgInd++], "wb");
+	if (InFile == NULL || OutFile == NULL)
+	{
+		printf ("Error while opening the files\n");
+		return EXIT_FAILURE;
+	}
 
-    printf ("Conversion successfully completed\n");
+	if (Ungroup)
+		Result = UngroupAll(InFile, OutFile);
+	else
+		Result = GroupAll(InFile, OutFile, TimeInterval);
 
-    fclose (InFile);
-    fclose (OutFile);
-    return EXIT_SUCCESS;
+	if (Result == EXIT_SUCCESS)
+		printf ("Conversion successfully completed\n");
+
+	fclose (InFile);
+	fclose (OutFile);
+	return Result;
 }
