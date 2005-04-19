@@ -47,7 +47,7 @@ short G_2va(long x1, long y1, long x2, long y2, long *x, long *y)
  else return 0;
 }
 
-// ?? Gets the Z for a sloped wall ?? If so, use it to fix nearby walls
+// Gets the Z for a sloped floor. Use it to fix nearby walls
 long GetZ(double point1x, double point1y, double point3x, double point3y, double Z, double angle)
 {
  long h = tan(angle) * sqrt((point3x - point1x) * (point3x - point1x) + 
@@ -56,7 +56,7 @@ long GetZ(double point1x, double point1y, double point3x, double point3y, double
 }
 
 // This will test how complicated a sector is (i.e. "fakey curves")
-short TestAngles(const long SectorNumber)
+short TestAngles(const unsigned short SectorNumber)
 {
  double TotalAngle, TestAngle, radian;
  TPoint vertex1, vertex2;
@@ -117,12 +117,12 @@ short TestAngles(const long SectorNumber)
 }
 
 // Writes a sectors floor
-void WriteFloor(FILE *f, const long SectorNumber, const long Plus)
+void WriteFloor(FILE *f, const unsigned short SectorNumber, const long Plus)
 {
  char Texture[40];
  long SBot, STop, j, wallpointer; 
  TPoint point1, point2, vertex1, vertex2, vertex3;
- short ret, Stat;
+ short ret, Stat, PreviousSector, NextSector;
  double Angle;
 
  fprintf(f, "{\n");
@@ -157,32 +157,40 @@ void WriteFloor(FILE *f, const long SectorNumber, const long Plus)
  {
  vertex1.x  = wall[j].x;
  vertex1.y  = wall[j].y;
- vertex1.zt = STop;
- vertex1.zb = STop;
-
  vertex2.x  = wall[wall[j].point2].x;
  vertex2.y  = wall[wall[j].point2].y;
- vertex2.zt = STop;
- vertex2.zb = STop;
-
+ vertex1.zt = vertex1.zb = vertex2.zt = vertex2.zb = STop;
+   
  ret = G_2va(vertex1.x, vertex1.y, vertex2.x, vertex2.y, &vertex3.x, &vertex3.y);
 
- vertex3.zt = STop;
- vertex3.zb = STop;
- 
+ vertex3.zt = vertex3.zb = STop;
+  
  if (sector[SectorNumber].floorheinum < 0) // Slope
-	 Angle = (-1 * (sector[SectorNumber].floorheinum-512)) * PI/4/4096;
+    Angle = (-1 * (sector[SectorNumber].floorheinum-512)) * PI/4/4096;
  
  else Angle = (-1 * (sector[SectorNumber].floorheinum+512)) * PI/4/4096;
 
- vertex3.zt = GetZ(vertex1.x, vertex1.y, vertex3.x, vertex3.y, STop, Angle);
- vertex3.zb = vertex3.zt-10;
+ /* This should be tested...
+  NextSector = wall[sector[SectorNumber].wallptr].nextsector;
+  PreviousSector = FindSector(SectorNumber);
+
+  if (NextSector != -1 && PreviousSector != -1 && sector[NextSector].floorheinum == 0)
+  vertex3.zt = 
+  abs (sector[NextSector].floorz - sector[PreviousSector].floorz) + sector[PreviousSector].floorz;
+  
+  else */
+  vertex3.zt = GetZ(vertex1.x, vertex1.y, vertex3.x, vertex3.y, STop, Angle);
+
+  vertex3.zb = vertex3.zt-10;
 
  if (ret == 0)
- fprintf(f, "  (%d %d %d) (%d %d %d) (%d %d %d) %s 0 0 0 1.00 1.00 1 0 0\n", vertex1.x, vertex1.y, vertex1.zt, vertex2.x, vertex2.y, vertex2.zt, vertex3.x, vertex3.y, vertex3.zt, Texture); 
+ fprintf(f, "(%d %d %d) (%d %d %d) (%d %d %d) %s 0 0 0 1.00 1.00 1 0 0\n", 
+              vertex1.x, vertex1.y, vertex1.zt,
+              vertex2.x, vertex2.y, vertex2.zt, 
+              vertex3.x, vertex3.y, vertex3.zt, Texture);
  else
- fprintf(f, "  ( %d %d %d ) ( %d %d %d ) ( %d %d %d ) %s\n", 
-                 0, 0, STop, 0, 500, STop, 500, 0, STop, Texture); // Why 0 and 500?
+ fprintf(f, "( %d %d %d ) ( %d %d %d ) ( %d %d %d ) %s\n", 
+               0, 0, STop, 0, 500, STop, 500, 0, STop, Texture); // Why 0 and 500?
  
  } // if (sector[SectorNumber].floorheinum != 0) 
  
@@ -298,3 +306,19 @@ long FindWall(const long SectorNumber)
  }//for
  return -1; // Not found
 }
+
+// Locates the sector before the current sector for proper sloping 
+short FindSector(const unsigned short SectorNumber)
+{
+    unsigned short i = 0, j = 0;
+
+    for (i = 0; i < numsectors; i++)
+    {
+        for (j = 0; j < sector[i].wallnum; j++)
+            if (wall[sector[i].wallptr + j].nextsector == SectorNumber)
+                return i; // Sector found!
+    }
+
+    return -1; // Sector not found
+}
+

@@ -101,11 +101,13 @@ void DrawSector(FILE *f, const unsigned short i)
     
      else // It's all good- write the sector regularly
     {
+    
         WriteFloor  (f, i, Dn);
         WriteCeiling(f, i, Up);
         DrawSectorWalls(f, i);
     }
  // Otherwise it'll get turned into a rectangle (lame, but it works)
  } else DivAndWrite(f, i, Up, Dn);
+ 
  
 }

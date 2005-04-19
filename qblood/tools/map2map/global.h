@@ -126,14 +126,15 @@ short G_2va(long x1, long y1, long x2, long y2, long *x, long *y);
 long GetZ(double p1x, double p1y, double p3x, double p3y, double Z, double ang);
 
 // Tests how complicated a sector is (i.e. "fakey curves")
-short TestAngles(const long SectorNumber);
+short TestAngles(const unsigned short  SectorNumber);
 
 // Writes a sectors floor
-void WriteFloor  (FILE *NewMap, const long SectorNumber, const long Plus);
+void WriteFloor  (FILE *NewMap, const unsigned short SectorNumber, const long Plus);
 
 // Validates the number of walls in a sector
 long FindWall(const long SectorNumber);
 
+short FindSector(const unsigned short SectorNumber);
 
 /***** items.c *****/
 
@@ -141,7 +142,7 @@ long FindWall(const long SectorNumber);
 void WriteFlatSprites(FILE *NewMap);
 
 // Writes a duke style sfx (will die soon)
-void W_MusicanDSFX(const unsigned short i, char *Name, FILE *NewMap);
+void W_MusicanDSFX(const unsigned short Sprite, char *Name, FILE *NewMap);
 
 // Writes a simple item
 void WriteSimpleItem(const unsigned short i, char *Name, FILE *NewMap);

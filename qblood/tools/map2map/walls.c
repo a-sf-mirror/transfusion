@@ -2,14 +2,13 @@
 
 void DrawSectorWalls(FILE *f, const unsigned short i)
 {
- long   wallpointer, SectorCeiling, SectorFloor, j;
+ long   wallpointer, SectorCeiling, SectorFloor, j, k;
  short TimeOut = 1000;
  TPoint vertex1, vertex2;
  TWall  pwall;
 
  j = wallpointer  = sector[i].wallptr;
- 
- 
+ if (sector[i].wallnum > 2)
  do 
  {
      wall_t Wall1, Wall2, Wall3;
@@ -18,9 +17,11 @@ void DrawSectorWalls(FILE *f, const unsigned short i)
      Wall2 = wall[wall[j].point2];
      Wall3 = wall[wall[wall[j].point2].point2];
 
+     
      if (Wall1.point2 == wallpointer || // No further optimizing to be done
-         Wall2.point2 == wallpointer ||
-         Wall3.point2 == wallpointer )
+         Wall2.point2 == wallpointer
+         // || Wall3.point2 == wallpointer 
+         )
          break;
 
      /* This next chunk is some magic, so here's my explanation:
@@ -30,20 +31,40 @@ void DrawSectorWalls(FILE *f, const unsigned short i)
         The third chunk is to make sure if the extra wall is merely added for a special texture.
       */
   
-     if ( ( (Wall1.nextsector == -1 && Wall1.nextwall == -1) &&         // Connected
-            (Wall2.nextsector == -1 && Wall2.nextwall == -1) &&         // Connected
-            (Wall3.nextsector == -1 && Wall3.nextwall == -1) ) &&       // Connected
-        ((Wall1.x == Wall2.x && Wall1.x == Wall3.x) ||                  // Redundant point
-         (Wall1.y == Wall2.y && Wall1.y == Wall3.y)) &&                 // Redundant point
-        (Wall1.picnum == Wall2.picnum && Wall2.picnum == Wall3.picnum)) // Different art
+     if ( 
+         (Wall1.nextsector == -1 && Wall1.nextwall == -1  &&       // Connected
+           Wall2.nextsector == -1 && Wall2.nextwall == -1)  
+           &&       // Connected
+           //Wall3.nextsector == -1 && Wall3.nextwall == -1) &&       // Connected
+        ( 
+        (Wall1.x == Wall2.x     && Wall1.x == Wall3.x)   
+        ||       // Redundant point
+          (Wall1.y == Wall2.y     && Wall1.y == Wall3.y)
+          )  &&       // Redundant point
+          (Wall1.picnum == Wall2.picnum && Wall2.picnum == Wall3.picnum)
+          ) // Different art
           
-     { // Make Wall 1 point to wall 3 to save from drawing a redundant wall
+     {
+        // Nuke all references to the wall we're replacing
+         for (k = 0; k < numwalls; k++)
+            if (wall[k].nextwall == wall[j].point2)
+            {
+                wall[k].nextwall = wall[wall[j].point2].point2;
+                break;
+            }
+        
+            // This should clear up any crazy wandering points in the level
+        wall[wall[j].point2].x = wall[wall[wall[j].point2].point2].x;
+        wall[wall[j].point2].y = wall[wall[wall[j].point2].point2].y;
+       
+        
+            // Make Wall 1 point to wall 3 to save from drawing a redundant wall
          wall[j].point2 = wall[wall[j].point2].point2;
-         M_Wall[wall[j].point2] = 2;
+
      }
      else j = wall[j].point2; // Nothing can be tweaked, go to next wall
- } while ( (j != wallpointer) && (TimeOut > 0) );
- 
+ } while (j != wallpointer);
+
 
  j = wallpointer = sector[i].wallptr;
  SectorCeiling = sector[i].ceilingz;

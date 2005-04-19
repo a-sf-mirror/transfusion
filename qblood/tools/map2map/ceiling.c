@@ -7,7 +7,7 @@ void WriteCeiling(FILE *f, const long SectorNumber, const long Plus)
  
  long CeilingBottom, CeilingTop, j, wallpointer; 
  TPoint point1, point2, vertex1, vertex2, vertex3;
- short ret;
+ short ret;//, SectorPointer;
 
  short Stat = sector[SectorNumber].ceilingstat;
  
@@ -51,8 +51,17 @@ sprintf(Texture, "sky1 0 0 0 1.00 1.00 1 0 0");
 
   ret = G_2va(vertex1.x, vertex1.y, vertex2.x, vertex2.y, &vertex3.x, &vertex3.y); // vertex3 is getting worked on
   vertex3.zt = vertex3.zb = CeilingTop;
+
+  /*
+  SectorPointer = wall[sector[SectorNumber].wallptr].nextsector;
   
+  // This should be tested...
+  if (SectorPointer != -1 && sector[SectorPointer].ceilingheinum == 0)
+  vertex3.zt = sector[SectorPointer].ceilingz;
+
+  else */
   vertex3.zt = GetZ(vertex1.x, vertex1.y, vertex3.x, vertex3.y, CeilingTop, (-1 * sector[SectorNumber].ceilingheinum) * PI/4/4096);
+  
   vertex3.zb = vertex3.zt-10;
 
   if (vertex3.zt < CeilingTop) 

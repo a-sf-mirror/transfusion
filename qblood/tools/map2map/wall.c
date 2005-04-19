@@ -6,6 +6,8 @@ void WriteWall(TPoint point1, TPoint point2, FILE *f, const unsigned short i)
  char Texture[10] = "";
  double radian = 0;
 
+ printf("Write wall called\n");
+
  // This should be tweaked per "to" game
 sprintf(Texture, "tile%.4d", wall[i].picnum);
 
