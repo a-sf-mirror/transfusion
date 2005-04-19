@@ -154,7 +154,7 @@ void WriteFlaggedItem(const unsigned short i, char *Name, FILE *NewMap, short Sp
 void WriteItems(FILE *NewMap);
 
 // Places a light entity in a map
-void AddLight(FILE* f, const short i, const short brightness);
+void AddLight(FILE* newmap, const short i, const short brightness, const char* Lightname);
 
 // Will get the tile sizes from a group or art file
 void GetSizes(char *FName, const long pos);

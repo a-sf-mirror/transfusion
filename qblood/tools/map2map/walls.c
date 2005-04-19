@@ -45,6 +45,9 @@ void DrawSectorWalls(FILE *f, const unsigned short i)
           ) // Different art
           
      {
+         // Before any numbers are changed, count this as an eliminated wall
+         M_Wall[wall[j].point2] = 2;
+
         // Nuke all references to the wall we're replacing
          for (k = 0; k < numwalls; k++)
             if (wall[k].nextwall == wall[j].point2)
@@ -60,6 +63,7 @@ void DrawSectorWalls(FILE *f, const unsigned short i)
         
             // Make Wall 1 point to wall 3 to save from drawing a redundant wall
          wall[j].point2 = wall[wall[j].point2].point2;
+         
 
      }
      else j = wall[j].point2; // Nothing can be tweaked, go to next wall

@@ -122,13 +122,14 @@ void WriteItems(FILE *f)
 }
 
 // Places a light entity in a map
-void AddLight(FILE* newmap, const short i, const short brightness)
+void AddLight(FILE* newmap, const short i, const short brightness, const char* Lightname)
 {
  fprintf(newmap, " {\n"
-			     "  \"classname\"     \"light\"\n"
+			     "  \"classname\"     \"%s\"\n"
 			     "  \"origin\"        \"%d %d %d\"\n"
 			     "  \"light\"         \"%d\"\n"
 			     " }\n",
+                 Lightname,
 			     sprite[i].x, sprite[i].y, sprite[i].z+35, brightness);
 }
 

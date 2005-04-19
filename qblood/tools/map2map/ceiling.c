@@ -41,6 +41,7 @@ sprintf(Texture, "sky1 0 0 0 1.00 1.00 1 0 0");
         sprintf(Texture, "tile%.4d 0 0 0 1.00 1.00 1 0 0", sector[SectorNumber].ceilingpicnum); 
      
 
+    // This chunk starts the floor drawing, it draws ???
  if (sector[SectorNumber].ceilingheinum != 0) // Slope
  {
   vertex1.x  = wall[j].x;
@@ -82,7 +83,7 @@ sprintf(Texture, "sky1 0 0 0 1.00 1.00 1 0 0");
    fprintf(f, "  ( %d %d %d ) ( %d %d %d ) ( %d %d %d ) %s\n", // 0 and 500?
                    0, 0, CeilingTop, 0, 500, CeilingTop, 500, 0, CeilingTop, Texture); 
 
- do 
+ do // Write all the ceilings sides
  {
   point1.x = wall[j].x;
   point1.y = wall[j].y;
@@ -112,6 +113,8 @@ sprintf(Texture, "sky1 0 0 0 1.00 1.00 1 0 0");
 
  else sprintf(Texture, "tile%.4d 0 0 0 0.50 0.50 1 0 0", sector[SectorNumber].ceilingpicnum);
 
+ 
+ // This chunk ends the floor drawing, it draws ???
  if (sector[SectorNumber].ceilingheinum != 0) // Slope
  {
   vertex1.x  = wall[j].x;

@@ -125,7 +125,7 @@ void WriteFloor(FILE *f, const unsigned short SectorNumber, const long Plus)
  short ret, Stat, PreviousSector, NextSector;
  double Angle;
 
- fprintf(f, "{\n");
+
  Stat = sector[SectorNumber].floorstat;
 
  if (Plus < 0)
@@ -139,31 +139,26 @@ void WriteFloor(FILE *f, const unsigned short SectorNumber, const long Plus)
   SBot = sector[SectorNumber].floorz;
  }
 
- wallpointer = sector[SectorNumber].wallptr;
- j   = wallpointer; 
-
+ j = wallpointer = sector[SectorNumber].wallptr;
+ 
  point1.x = point2.x = wall[j].x;
  point1.y = point2.y = wall[j].y;
  point1.zt = STop;
-
- /* Disabled: floors aren't paralaxxed
- if (Stat % 2 == 1) // this indicates paralaxxing 
- sprintf(Texture, "sky1 0 0 0 1.00 1.00 0 133 1"); // Why 133?
- else 
- */
+ 
  sprintf(Texture, "tile%.4d 0 0 0 1.00 1.00 1 0 0", sector[SectorNumber].floorpicnum);
+ 
+ fprintf(f, "{\n");
 
+ // This chunk starts the floor drawing, it draws ???
  if (sector[SectorNumber].floorheinum != 0) // Sloped floor
  {
  vertex1.x  = wall[j].x;
  vertex1.y  = wall[j].y;
  vertex2.x  = wall[wall[j].point2].x;
  vertex2.y  = wall[wall[j].point2].y;
- vertex1.zt = vertex1.zb = vertex2.zt = vertex2.zb = STop;
+ vertex1.zt = vertex1.zb = vertex2.zt = vertex2.zb = vertex3.zt = vertex3.zb = STop;
    
  ret = G_2va(vertex1.x, vertex1.y, vertex2.x, vertex2.y, &vertex3.x, &vertex3.y);
-
- vertex3.zt = vertex3.zb = STop;
   
  if (sector[SectorNumber].floorheinum < 0) // Slope
     Angle = (-1 * (sector[SectorNumber].floorheinum-512)) * PI/4/4096;
@@ -174,9 +169,9 @@ void WriteFloor(FILE *f, const unsigned short SectorNumber, const long Plus)
   NextSector = wall[sector[SectorNumber].wallptr].nextsector;
   PreviousSector = FindSector(SectorNumber);
 
-  if (NextSector != -1 && PreviousSector != -1 && sector[NextSector].floorheinum == 0)
-  vertex3.zt = 
-  abs (sector[NextSector].floorz - sector[PreviousSector].floorz) + sector[PreviousSector].floorz;
+  if (NextSector != -1 && PreviousSector != -1 && sector[NextSector].floorheinum == 0
+      && sector[PreviousSector].floorheinum == 0)
+  vertex3.zt = sector[NextSector].floorz + (sector[PreviousSector].floorz - sector[NextSector].floorz);
   
   else */
   vertex3.zt = GetZ(vertex1.x, vertex1.y, vertex3.x, vertex3.y, STop, Angle);
@@ -187,18 +182,19 @@ void WriteFloor(FILE *f, const unsigned short SectorNumber, const long Plus)
  fprintf(f, "(%d %d %d) (%d %d %d) (%d %d %d) %s 0 0 0 1.00 1.00 1 0 0\n", 
               vertex1.x, vertex1.y, vertex1.zt,
               vertex2.x, vertex2.y, vertex2.zt, 
-              vertex3.x, vertex3.y, vertex3.zt, Texture);
- else
+              vertex3.x, vertex3.y, vertex3.zt, Texture); // Line 1
+ 
+ else // ret == 1
  fprintf(f, "( %d %d %d ) ( %d %d %d ) ( %d %d %d ) %s\n", 
-               0, 0, STop, 0, 500, STop, 500, 0, STop, Texture); // Why 0 and 500?
+               0, 0, STop, 0, 500, STop, 500, 0, STop, Texture); // Why 0 and 500? Line 1
  
  } // if (sector[SectorNumber].floorheinum != 0) 
  
  else // No slope
  fprintf(f, "  ( %d %d %d ) ( %d %d %d ) ( %d %d %d ) %s\n", 
-                 0, 0, STop, 0, 500, STop, 500, 0, STop, Texture); // Why 0 and 500?
+                 0, 0, STop, 0, 500, STop, 500, 0, STop, Texture); // Why 0 and 500? Line 1
  
- do 
+ do // Write all the floors sides
  {
   point1.x = wall[j].x;
   point1.y = wall[j].y;
@@ -212,10 +208,9 @@ void WriteFloor(FILE *f, const unsigned short SectorNumber, const long Plus)
 
   if (Stat % 2 == 1) // Parallaxxing, highly unlikely for a floor
         fprintf(f, "  ( %d %d %d ) ( %d %d %d ) ( %d %d %d ) e1u2/sky1 0 0 0 1.00 1.00 0 133 1\n", 
-          point2.x, point2.y, 500, point1.x, point1.y, 500, point1.x, point1.y, 0, Texture);  
+          point2.x, point2.y, 500, point1.x, point1.y, 500, point1.x, point1.y, 0, Texture);   
   
-  // Why 0 and 500?
-  else 
+  else // Why 0 and 500? 
   fprintf(f, "  ( %d %d %d ) ( %d %d %d ) ( %d %d %d ) %s 0 0 0 1.00 1.00 1 0 0\n", 
           point2.x, point2.y, 500, point1.x, point1.y, 500, point1.x, point1.y, 0, Texture);
   
@@ -231,6 +226,7 @@ void WriteFloor(FILE *f, const unsigned short SectorNumber, const long Plus)
  sprintf(Texture, "tile%.4d", sector[SectorNumber].floorpicnum);
 #endif
 
+ // This chunk ends the floor drawing, it draws ???
  if (sector[SectorNumber].floorheinum != 0) 
  {
   point2.zb = STop - 100 * tan( (-1 * sector[SectorNumber].floorheinum) * PI / 4 / 4096) + 5;  
@@ -239,13 +235,20 @@ void WriteFloor(FILE *f, const unsigned short SectorNumber, const long Plus)
  vertex1.y  = wall[j].y;
  vertex2.x  = wall[wall[j].point2].x;
  vertex2.y  = wall[wall[j].point2].y;
- vertex1.zt = vertex2.zt = STop;
- vertex1.zb = vertex2.zb = SBot;
+ vertex1.zt = vertex2.zt = vertex3.zt = STop;
+ vertex1.zb = vertex2.zb = vertex3.zb = SBot;
 
  ret = G_2va(vertex1.x, vertex1.y, vertex2.x, vertex2.y, &vertex3.x, &vertex3.y);
- vertex3.zt = STop;
- vertex3.zb = SBot;
+ 
+ /* This should be tested...
+  NextSector = wall[sector[SectorNumber].wallptr].nextsector;
+  PreviousSector = FindSector(SectorNumber);
 
+ if (NextSector != -1 && PreviousSector != -1 && sector[NextSector].floorheinum == 0
+     && sector[PreviousSector].floorheinum == 0)
+  vertex3.zt = sector[NextSector].floorz; // sector[PreviousSector].floorz;
+  
+  else */
  vertex3.zt = GetZ(vertex1.x, vertex1.y, vertex3.x, vertex3.y, STop, (-1 * sector[SectorNumber].floorheinum) * PI/4/4096);
  vertex3.zb = vertex3.zt-10;
 
@@ -258,14 +261,15 @@ void WriteFloor(FILE *f, const unsigned short SectorNumber, const long Plus)
  if (ret == 0)
  fprintf(f, "(%d %d %d) (%d %d %d) (%d %d %d) %s 0 0 0 1.00 1.00 1 0 0\n", 
  vertex1.x, vertex1.y, vertex1.zb, vertex3.x, vertex3.y, vertex3.zb, vertex2.x, vertex2.y, 
- vertex2.zb, Texture);
+ vertex2.zb, Texture); // Last line
  
- else // Why 0 and 500?
+ else // Why 0 and 500?  Last line
  fprintf(f, "( %d %d %d ) ( %d %d %d ) ( %d %d %d ) %s 0 0 0 1.00 1.00 1 0 0\n", 
  0, 0, SBot, 500, 0, SBot, 0, 500, SBot, Texture); 
  
  } // if (sector[SectorNumber].floorheinum != 0)
- else
+ 
+ else // Last line, no slope
  fprintf(f, "( %d %d %d ) ( %d %d %d ) ( %d %d %d ) %s 0 0 0 1.00 1.00 1 0 0\n", 
  0, 0, SBot, 500, 0, SBot, 0, 500, SBot, Texture); 
 

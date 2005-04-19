@@ -425,6 +425,41 @@ void Blood_To_qBlood (const unsigned short i, FILE *f)
         WriteSimpleItem(i, "obj_bush", f);
 		return;
 
+/* Lights */
+    case FLAME:				// 2101 - 2114 this should catch all the values
+    case 2102:
+    case 2103:
+    case 2104:
+    case 2105:
+    case 2106:
+    case 2107:
+    case 2108:
+    case 2109:
+    case 2110:
+    case 2111:
+    case 2112:
+    case 2113:
+    case 2114:
+        AddLight(f, i, 100, "light_flame_small_yellow");
+        return;
+
+    case BIGFLAME:			// 3566 - 3579 this should catch all the values
+    case 3567:
+    case 3568:
+    case 3569:
+    case 3570:
+    case 3571:
+    case 3572:
+    case 3573:
+    case 3574:
+    case 3575:
+    case 3576:
+    case 3577:
+    case 3578:
+    case 3579:
+        AddLight(f, i, 200, "light_flame_large_yellow");
+        return;
+
 /* Atmospheric stuff (i.e. sets the blood "mood" */
     case CROSSTOMBSTONE:	//678
         WriteSimpleItem(i, "obj_tombstn1", f);

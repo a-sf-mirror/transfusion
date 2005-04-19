@@ -27,20 +27,31 @@ Foundation, Inc., 59 Temple Place - Suite 330, Boston, MA  02111-1307, USA.
 #define BARS				58
 #define NET					112 // MASKED - need a custom model for this
 #define TOMBCOVER			128
+#define CURTAIN             146 
 #define CURTAINRAGS			147 // MASKED
 #define LIONSHIELD			165 // MASKED
-#define SEWERLID			219
+#define DOORJAM             195 // Door thing, unsure name
+#define SEWERLID1           218 // MASKED
+#define SEWERLID2			219
 #define GOTHICMANTLE		227 // MASKED
+#define GRILL               228 // MASKED
+#define FLAMEGRILL          229 // MASKED
 #define WOODENBRIDGE        256 // MASKED
-#define STAINEDGLASS        263 // GIBBABLE, TAGGED FUNNY
+#define STAINEDGLASS1       263 // GIBBABLE, TAGGED FUNNY
+#define STAINEDGLASS2       265
 #define MONSTERPIC			269 // FACE
 #define STOOL				284
 #define GREYPIC_HUMAN		316 
 #define LEVELEND			318 // FLAT, MUST
+#define OPENBOOK            349 // simular hexen model
+#define STONE1              355
 #define JOJOSIGN			356
 #define OPHELIA             370 // MASKED
 #define TRAINSCHEDULE		431
+#define MONKEYWRESTLING     440 // Monkeys wrestling... odd
 #define POSSUMSIGN			453
+#define STAINEDGLASS3       471 
+#define STAINEDGLASS4       482
 #define GRATEMASK			483 // MASKED, gibabble
 #define SINKTOP				485
 #define MASKEDGRILL			502
@@ -48,9 +59,12 @@ Foundation, Inc., 59 Temple Place - Suite 330, Boston, MA  02111-1307, USA.
 #define SCATTEREDHAY		515 // MASKED
 #define WINEGLASS1			521 // custom model
 #define STATUE1				536 // BETTER NAME?
+#define COPPERSTAND         560 // MASKED
+#define BRASSSTAND          561 // MASKED
 #define WINEGLASS2			574 // custom model
 #define WREATH_STAND_ILM	575
 #define SHIELDCREST			578 // MASKED
+#define BOWL                579 // MASKED
 #define MEATBARREL			563 // BARREL THAT PRODUCES MASS GIB JUICE
 #define GOTHICRAIL			588 // MASKED, BETTER NAME?
 #define BRAINJAR			604
@@ -58,15 +72,24 @@ Foundation, Inc., 59 Temple Place - Suite 330, Boston, MA  02111-1307, USA.
 #define WINEBOTTLE_BLUE		606
 #define VOODOOWARD			607 // SKULL/CROSS THINGIE
 #define SWAMPWEED			608
+#define TREETRUNK           609
+#define LASTSUPPER          610
+#define ANATOMY             611
+#define SHIPPIC             612
 #define ARTPIC1				613
+#define ARTPIC2				614
+#define MACHINERYWALL       615
+#define WHISKEYJUG          616
 #define OLDLADYPIC			617
 #define UGLYGUYPIC			621 // MY FAVE
 #define RIP_WREATH			633
+#define WORLDMAP            644
 #define MISKATONICSIGN		646
 #define RAILROADSIGN		647 // MASKED
 #define CRUCIFIEDINNOCENT	648 // MASKED, REPLACE WITH THE QUAKE WALL ZOMBIE?
 #define TABLE				649 // custom model needed
 #define BLOODYCURTAINRAGS	651 // MASKED
+#define BLACKSQUARE         652
 #define FIRE_EXSTINGUISHER	658 // EXPLODABLE
 #define ROUNDLIGHT			676
 #define STATUE2				679
@@ -104,11 +127,13 @@ Foundation, Inc., 59 Temple Place - Suite 330, Boston, MA  02111-1307, USA.
 #define ROCK4				808 // GIBBY
 #define NOADMITSIGN			823
 #define RANDOMITEM          832 // Can quake do this?
+#define DECOY               836
+#define ASBESTOSARMOR       837
 #define BULLETHOLE			838
-#define SHROOM1             840
-#define SHROOM2             841
-#define SHROOM3             842
-#define SHROOM4             843
+#define RAGESHROOM          840 // Rage
+#define DELIRIUMSHROOM      841 // Delirium shroom
+#define GROWSHROOM          842 // Grow
+#define SHRINKSHROOM        843 // Shrink
 #define UNDERCONSTRUCTION	844
 #define BLUEBANNER			845 // LION
 #define ORANGEBANNER		846
@@ -131,6 +156,7 @@ Foundation, Inc., 59 Temple Place - Suite 330, Boston, MA  02111-1307, USA.
 #define CRACKEDWALL_GREEN	964
 #define WELCOMETOHELL		974
 #define JOJO_CIRCUSSIGN		981
+#define RIGHTARROW          1042 // Something map specific?
 #define STEELGATE			1044 // MASKED, BETTER NAME	
 #define BUTTON				1046 // use a brush
 #define SKULLBUTTON			1048 // use a brush
@@ -177,15 +203,21 @@ Foundation, Inc., 59 Temple Place - Suite 330, Boston, MA  02111-1307, USA.
 #define FOOTSTEP_BROWN		1904
 #define FOOTSTEP_GREY		1905
 #define FOOTSTEP_GREEN		1906
+#define MOREBLOOD           2044
+#define BLOODLOGO           2046
+#define MONOLITH            2050
 #define GUTS1				2053
 #define GUTS2				2054
 #define GUTS3				2055
 #define GUTS4				2056
+#define EARTHQUAKE          2072 // target_earthquake in Q2.
 #define BLOODYPULP1			2073
 #define BLOODYPULP2			2074
 #define BLOODYPULP3			2075
 #define BLOODYPULP4			2076
 #define CLEAVER				2139 // 2138 -2145 custom model
+#define MACHINEGUN          2178 // 2178 - 2184 = TRAPSHOOTER
+#define FLAMETRAP           2183 // = ? IN QUAKE
 #define TEXTRED0			2190
 #define TEXTBLUE0			2240
 #define FLUORESCENTLIGHT1		2288 // use a brush		
@@ -202,6 +234,7 @@ Foundation, Inc., 59 Temple Place - Suite 330, Boston, MA  02111-1307, USA.
 #define DOWNARROW_SMALL		2332
 #define DEADINNOCENT2		2333
 #define DEADINNOCENT3		2334 // custom model
+#define STAR                2446
 #define SOUND				2519
 #define SSOUND				2520
 #define STAR_SKULL			2540
@@ -213,8 +246,11 @@ Foundation, Inc., 59 Temple Place - Suite 330, Boston, MA  02111-1307, USA.
 #define JUKEBOX				2546
 #define CULTIST_CORPSE		2584
 #define ZOMBIEHEAD			3405 // 3405-3421 - custom model
+#define ACTIVEPROXIMITY     3444 // Land mine, invisible
 #define BARREL_SIDE			3490
 #define PAIL				3540 // 3540-3548 - custom model
+#define NOTHING             3549
+#define FLAG                3558 // pal tells the color 7 & 10 = blue & red.
 #define INNOCENT_CORPSE		3791
 #define TEXT_A				3808 // LATER
 #define	TEXT_Z				3833		
@@ -287,7 +323,7 @@ Foundation, Inc., 59 Temple Place - Suite 330, Boston, MA  02111-1307, USA.
 /* Enemies - done */ 
 #define RAT					1745
 #define BAT					1948
-#define BONE_EEL            1870
+#define BONE_EEL            1870 // 1870 - 1889
 #define BLACKSPIDER         1920 // The colors are taken from mapedit
 #define REDSPIDER           1925
 #define BROWNSPIDER         1935
@@ -296,23 +332,23 @@ Foundation, Inc., 59 Temple Place - Suite 330, Boston, MA  02111-1307, USA.
 #define CUTLIST_PRONE       3385
 #define CHRYSALIDPOD		1792 // pal defines what type 
 #define CHRYSALIDTENTACLE	1797 // 0 for green, 2 for fire
-#define ZOMBIE		        1170
+#define ZOMBIE		        1170 // 1170 - 1258
 #define ZOMBIESLEEPING      1209
-#define INNOCENT			3798
+#define INNOCENT			3798 // 3754 - 3807
 #define MIME                2400
-#define HELLHOUND           1270
-#define GILBEAST            1570
+#define HELLHOUND           1270 // 1270 - 1325
+#define GILBEAST            1570 // 1558 - 1664
 #define HAND                1980
 #define ZOMBIEEMERGING		3054
 #define GARGOYLE_STATUE     1530 // pal defines what type  
-#define GARGOYLE    		1470 // 0 for regular, 5 for stone
-#define LILCALEB            3870
-#define BUTCHER             1370
+#define GARGOYLE    		1470 // 0 for regular, 5 for stone  1470-1529
+#define LILCALEB            3870 // 3840 - 3965
+#define BUTCHER             1370 // 1370 - 1406, 1408-1412
 #define PHANTASM            3060
-#define SHIAL				1930
-#define CERBERUS			2680
+#define SHIAL				1930 // 1908 - 1947
+#define CERBERUS			2680 // 2569 - 2806
 #define TCHERNOBOG			3140 
-#define BEAST               2960
+#define BEAST               2960 // 2955 - 3045
 
 /* Lights */
 #define HANGINGLIGHT		468 // custom model
@@ -325,10 +361,13 @@ Foundation, Inc., 59 Temple Place - Suite 330, Boston, MA  02111-1307, USA.
 #define GARGOYLETORCH		572 // custom model
 #define THREE_CANDLE_STAND	580 // 580-583
 #define CANDLEABRA			584 // 584-587
-#define CANDLE				650 // SMALL LIGHT
+#define CANDLE1				650 // SMALL LIGHT
 #define LIGHTPOST			640 // 1800'S STYLE LIGHT
-#define FLAME				2101 // 2101-2114
-#define BIGFLAME			3566 // 3566-3579
+#define HANGINGOLDLIGHT     641 // HANGING 1800'S STYLE LIGHT
+#define CANDLE2             938
+#define HANGINGFLAMEPOT     1701 // 1701 - 1707
+#define FLAME				2101 // 2101 - 2114
+#define BIGFLAME			3566 // 3566 - 3579
 
 /* Tombstones */
 #define RIPSKULL			702 // TEXTURE ONLY??
