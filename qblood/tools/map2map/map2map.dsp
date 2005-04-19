@@ -126,6 +126,10 @@ SOURCE=.\wall.c
 # End Source File
 # Begin Source File
 
+SOURCE=.\wall2.c
+# End Source File
+# Begin Source File
+
 SOURCE=.\walls.c
 # End Source File
 # End Group

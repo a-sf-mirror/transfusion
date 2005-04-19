@@ -373,7 +373,6 @@ Foundation, Inc., 59 Temple Place - Suite 330, Boston, MA  02111-1307, USA.
 
 /* Tombstones */
 #define RIPSKULL			702 // TEXTURE ONLY??
-#define RIPTOMBSTONE		704 
 #define KLKTOMBSTONE		705
 #define SKULLTOMBSTONE		706
 #define DRAVENTOMBSTONE		1159
@@ -406,6 +405,7 @@ Foundation, Inc., 59 Temple Place - Suite 330, Boston, MA  02111-1307, USA.
 #define WOODCROSSTOMBSTONE  700 
 #define OVALTOMBSTONE		701
 #define TILTEDCROSS 		703 // WOODEN CROSS
+#define RIPTOMBSTONE		704 
 #define LARGEVASE2			739
 #define TREE10              797
 #define SKULLSIDE			807

@@ -1,16 +1,13 @@
 #include "global.h"
 
 // Writes a two sided wall (connects two sectors)
-void WriteWall(TPoint point1, TPoint point2, FILE *f, const unsigned short i)
+void WriteTwoSidedWall(TPoint point1, TPoint point2, FILE *f, const unsigned short i)
 {
  char Texture[10] = "";
  double radian = 0;
-
- printf("Write wall called\n");
-
+ 
  // This should be tweaked per "to" game
 sprintf(Texture, TEXTUREPREFIX "tile%.4d", wall[i].picnum);
-
 
  if ((point1.x == point2.x) && (point1.y == point2.y))
  {
@@ -57,48 +54,48 @@ sprintf(Texture, TEXTUREPREFIX "tile%.4d", wall[i].picnum);
  {
   fprintf(f, " {\n");
   fprintf(f, "  (%d %d %d) (%d %d %d) (%d %d %d) %s 0 0 0 1 1 1 0 0\n", 0, 0, point1.zt, 0, 500, point1.zt, 500,  0,      point2.zt, Texture);
-  fprintf(f, "  (%d %d %d) (%d %d %d) (%d %d %d) %s 0 0 0 1 1 1 0 0\n", point1.x, point1.y-1, point1.zt,   point2.x,   point2.y-1, point2.zt,   point2.x, point2.y-1, point2.zb, Texture);
-  fprintf(f, "  (%d %d %d) (%d %d %d) (%d %d %d) %s 0 0 0 1 1 1 0 0\n", point2.x, point2.y-1, point2.zt,   point2.x,   point2.y,   point2.zt,   point2.x, point2.y,   point2.zb, Texture);
+  fprintf(f, "  (%d %d %d) (%d %d %d) (%d %d %d) %s 0 0 0 1 1 1 0 0\n", point1.x, point1.y-THICK, point1.zt,   point2.x,   point2.y-THICK, point2.zt,   point2.x, point2.y-THICK, point2.zb, Texture);
+  fprintf(f, "  (%d %d %d) (%d %d %d) (%d %d %d) %s 0 0 0 1 1 1 0 0\n", point2.x, point2.y-THICK, point2.zt,   point2.x,   point2.y,   point2.zt,   point2.x, point2.y,   point2.zb, Texture);
   fprintf(f, "  (%d %d %d) (%d %d %d) (%d %d %d) %s 0 0 0 1 1 1 0 0\n", point2.x, point2.y,   point2.zt,   point1.x,   point1.y, point1.zt,   point1.x, point1.y,   point1.zb, Texture);
-  fprintf(f, "  (%d %d %d) (%d %d %d) (%d %d %d) %s 0 0 0 1 1 1 0 0\n", point1.x, point1.y, point1.zt,   point1.x,   point1.y-1, point1.zt,   point1.x, point1.y-1, point1.zb, Texture);
+  fprintf(f, "  (%d %d %d) (%d %d %d) (%d %d %d) %s 0 0 0 1 1 1 0 0\n", point1.x, point1.y, point1.zt,   point1.x,   point1.y-THICK, point1.zt,   point1.x, point1.y-THICK, point1.zb, Texture);
   fprintf(f, "  (%d %d %d) (%d %d %d) (%d %d %d) %s 0 0 0 1 1 1 0 0\n", 0, 0,     point1.zb, 500, 0,     point1.zb, 0, 500,  point2.zb, Texture);
   fprintf(f, " }\n");
  }
   
- if ((radian >= 45) & (radian <= 135))
+ if ((radian >= 45) && (radian <= 135))
  {
   fprintf(f, " {\n");
   fprintf(f, "  (%d %d %d) (%d %d %d) (%d %d %d) %s 0 0 0 1 1 1 0 0\n", 0, 0, point1.zt, 0, 500, point1.zt, 500, 0,    point2.zt, Texture); 
-  fprintf(f, "  (%d %d %d) (%d %d %d) (%d %d %d) %s 0 0 0 1 1 1 0 0\n", point1.x+1, point1.y, point1.zt, point2.x+1, point2.y,  point2.zt, point2.x+1, point2.y, point2.zb, Texture); 
-  fprintf(f, "  (%d %d %d) (%d %d %d) (%d %d %d) %s 0 0 0 1 1 1 0 0\n", point2.x+1, point2.y,  point2.zt, point2.x,   point2.y,  point2.zt, point2.x,   point2.y, point2.zb, Texture);   
+  fprintf(f, "  (%d %d %d) (%d %d %d) (%d %d %d) %s 0 0 0 1 1 1 0 0\n", point1.x+THICK, point1.y, point1.zt, point2.x+THICK, point2.y,  point2.zt, point2.x+THICK, point2.y, point2.zb, Texture); 
+  fprintf(f, "  (%d %d %d) (%d %d %d) (%d %d %d) %s 0 0 0 1 1 1 0 0\n", point2.x+THICK, point2.y,  point2.zt, point2.x,   point2.y,  point2.zt, point2.x,   point2.y, point2.zb, Texture);   
   fprintf(f, "  (%d %d %d) (%d %d %d) (%d %d %d) %s 0 0 0 1 1 1 0 0\n", point2.x,   point2.y,  point2.zt, point1.x,   point1.y, point1.zt, point1.x,   point1.y, point1.zb, Texture); 
-  fprintf(f, "  (%d %d %d) (%d %d %d) (%d %d %d) %s 0 0 0 1 1 1 0 0\n", point1.x,   point1.y, point1.zt, point1.x+1, point1.y, point1.zt, point1.x+1, point1.y, point1.zb, Texture); 
+  fprintf(f, "  (%d %d %d) (%d %d %d) (%d %d %d) %s 0 0 0 1 1 1 0 0\n", point1.x,   point1.y, point1.zt, point1.x+THICK, point1.y, point1.zt, point1.x+THICK, point1.y, point1.zb, Texture); 
   fprintf(f, "  (%d %d %d) (%d %d %d) (%d %d %d) %s 0 0 0 1 1 1 0 0\n", 0, 0,     point1.zb, 500, 0,     point1.zb, 0, 500,  point2.zb, Texture); 
   fprintf(f, " }\n");
  }
 
- if ((radian > 135) & (radian <= 225))
+ if ((radian > 135) && (radian <= 225))
  {
   fprintf(f, " {\n");
   fprintf(f, "  (%d %d %d) (%d %d %d) (%d %d %d) %s 0 0 0 1 1 1 0 0\n", 0, 0, point1.zt, 0, 500, point1.zt, 500,  0,      point2.zt, Texture); 
-  fprintf(f, "  (%d %d %d) (%d %d %d) (%d %d %d) %s 0 0 0 1 1 1 0 0\n", point2.x, point2.y-1, point2.zt, point1.x, point1.y-1, point1.zt, point1.x, point1.y-1, point1.zb, Texture); 
-  fprintf(f, "  (%d %d %d) (%d %d %d) (%d %d %d) %s 0 0 0 1 1 1 0 0\n", point1.x, point1.y-1, point1.zt, point1.x, point1.y, point1.zt, point1.x, point1.y,   point1.zb, Texture); 
+  fprintf(f, "  (%d %d %d) (%d %d %d) (%d %d %d) %s 0 0 0 1 1 1 0 0\n", point2.x, point2.y-THICK, point2.zt, point1.x, point1.y-THICK, point1.zt, point1.x, point1.y-THICK, point1.zb, Texture); 
+  fprintf(f, "  (%d %d %d) (%d %d %d) (%d %d %d) %s 0 0 0 1 1 1 0 0\n", point1.x, point1.y-THICK, point1.zt, point1.x, point1.y, point1.zt, point1.x, point1.y,   point1.zb, Texture); 
   fprintf(f, "  (%d %d %d) (%d %d %d) (%d %d %d) %s 0 0 0 1 1 1 0 0\n", point1.x, point1.y, point1.zt, point2.x, point2.y,   point2.zt, point2.x, point2.y,   point2.zb, Texture); 
-  fprintf(f, "  (%d %d %d) (%d %d %d) (%d %d %d) %s 0 0 0 1 1 1 0 0\n", point2.x, point2.y,   point2.zt, point2.x, point2.y-1, point2.zt, point2.x, point2.y-1, point2.zb, Texture); 
+  fprintf(f, "  (%d %d %d) (%d %d %d) (%d %d %d) %s 0 0 0 1 1 1 0 0\n", point2.x, point2.y,   point2.zt, point2.x, point2.y-THICK, point2.zt, point2.x, point2.y-THICK, point2.zb, Texture); 
   fprintf(f, "  (%d %d %d) (%d %d %d) (%d %d %d) %s 0 0 0 1 1 1 0 0\n", 0, 0,      point1.zb, 500,  0,      point1.zb, 0, 500,    point2.zb, Texture); 
   fprintf(f, " }\n");
  } 
 
- if ((radian > 225) & (radian <= 315))
+ if ((radian > 225) && (radian <= 315))
  {
   fprintf(f, " {\n");
   fprintf(f, "  (%d %d %d) (%d %d %d) (%d %d %d) %s 0 0 0 1 1 1 0 0\n", 0, 0, point1.zt, 0, 500, point1.zt, 500,  0,      point2.zt, Texture); 
-  fprintf(f, "  (%d %d %d) (%d %d %d) (%d %d %d) %s 0 0 0 1 1 1 0 0\n",  point2.x+1, point2.y, point2.zt, point1.x+1, point1.y, point1.zt,  point1.x+1, point1.y, point1.zb, Texture); 
-  fprintf(f, "  (%d %d %d) (%d %d %d) (%d %d %d) %s 0 0 0 1 1 1 0 0\n",  point1.x+1, point1.y, point1.zt, point1.x, point1.y, point1.zt, point1.x, point1.y, point1.zb, Texture); 
+  fprintf(f, "  (%d %d %d) (%d %d %d) (%d %d %d) %s 0 0 0 1 1 1 0 0\n",  point2.x+THICK, point2.y, point2.zt, point1.x+THICK, point1.y, point1.zt,  point1.x+THICK, point1.y, point1.zb, Texture); 
+  fprintf(f, "  (%d %d %d) (%d %d %d) (%d %d %d) %s 0 0 0 1 1 1 0 0\n",  point1.x+THICK, point1.y, point1.zt, point1.x, point1.y, point1.zt, point1.x, point1.y, point1.zb, Texture); 
   fprintf(f, "  (%d %d %d) (%d %d %d) (%d %d %d) %s 0 0 0 1 1 1 0 0\n",  point1.x, point1.y, point1.zt, point2.x, point2.y, point2.zt, point2.x, point2.y, point2.zb, Texture); 
-  fprintf(f, "  (%d %d %d) (%d %d %d) (%d %d %d) %s 0 0 0 1 1 1 0 0\n",  point2.x, point2.y, point2.zt, point2.x+1, point2.y, point2.zt, point2.x+1, point2.y, point2.zb, Texture); 
+  fprintf(f, "  (%d %d %d) (%d %d %d) (%d %d %d) %s 0 0 0 1 1 1 0 0\n",  point2.x, point2.y, point2.zt, point2.x+THICK, point2.y, point2.zt, point2.x+THICK, point2.y, point2.zb, Texture); 
   fprintf(f, "  (%d %d %d) (%d %d %d) (%d %d %d) %s 0 0 0 1 1 1 0 0\n", 0, 0,      point1.zb, 500,  0,      point1.zb, 0, 500,    point2.zb, Texture); 
   fprintf(f, " }\n");
  }
  
-} // Writewall
+} // WriteTwoSidedWall

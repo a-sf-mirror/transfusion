@@ -3,7 +3,7 @@
 // Scales a map, and Recenters it. Also fixes the angles format.
 void CalcAll()
 {
- long MinX = 9999, MinY = 9999, MaxX = -9999, MaxY = -9999; //MaxH = -9999, 
+ long MinX = 9999, MinY = 9999, MaxX = -9999, MaxY = -9999, wallpointer, j, k;
  short i, Xadjust, Yadjust; 
 
  printf("Scaling and recentering the coordinates\n");
@@ -69,6 +69,82 @@ void CalcAll()
 
   starty = -4000+(MaxY - starty) / SCALE/MAPSCALE;
   startz /= ZSCALE; //(MaxH - startz / SCALE) / SCALE/MAPSCALE;
+
+
+ for (i = 0; i < numsectors; i++)
+ {
+     j = wallpointer  = sector[i].wallptr;
+
+     // Redundant wall reduction starts here
+ if (sector[i].wallnum > 2)
+ do 
+ {
+     wall_t Wall1, Wall2, Wall3;
+     unsigned short Protect1 = 1, Protect2 = 1; // Protects from divison by zero
+
+     Wall1 = wall[j];
+     Wall2 = wall[wall[j].point2];
+     Wall3 = wall[wall[wall[j].point2].point2];
+
+     
+     if (Wall1.point2 == wallpointer || // No further optimizing to be done
+         Wall2.point2 == wallpointer)
+         break;
+
+     if (Wall1.x - Wall2.x == 0) // No dividing by zero
+         Protect1 = 1;
+     else Protect1 = 0;
+
+     if (Wall2.x - Wall3.x == 0) // No dividing by zero
+         Protect2 = 1;
+     else Protect2 = 0;
+         
+      /* This next chunk is some magic, so here's my explanation:
+        The first if segment checks the walls to see if they're connected to another sector
+        it would be bad to smooth a wall out that had a window or step nearby.
+        The second chunk is checking for a redundant point between wall 1 and 3
+        The third chunk is a rise/run check for redundant points in a diagonal wall
+        many thanks to Chad Smith (math teacher) for helping my memory on this one
+        The fourth chunk is to make sure if the extra wall is merely added for a special texture.
+      */
+  
+     if ( 
+         (Wall1.nextsector == -1 && Wall1.nextwall == -1  &&      // Connected
+          Wall2.nextsector == -1 && Wall2.nextwall == -1) &&      // Connected
+        (
+         (Wall1.x == Wall2.x  && Wall1.x == Wall3.x) ||           // Redundant point horizontal
+         (Wall1.y == Wall2.y  && Wall1.y == Wall3.y) ||           // Redundant point vertical
+         (Wall1.y - Wall2.y) / (Wall1.x - Wall2.x+Protect1) ==    // Redundant point diagonal
+         (Wall2.y - Wall3.y) / (Wall2.x - Wall3.x+Protect2) ) &&  // Redundant point diagonal pt 2
+          (Wall1.picnum == Wall2.picnum && Wall2.picnum == Wall3.picnum)
+          ) // Different art
+          
+     {
+         // Before any numbers are changed, count this as an eliminated wall
+         M_Wall[wall[j].point2] = 2;
+
+        // Nuke all references to the wall we're replacing
+         for (k = 0; k < numwalls; k++)
+            if (wall[k].nextwall == wall[j].point2)
+            {
+                wall[k].nextwall = wall[wall[j].point2].point2;
+                break;
+            }
+        
+            // This should clear up any crazy wandering points in the level
+        wall[wall[j].point2].x = wall[wall[wall[j].point2].point2].x;
+        wall[wall[j].point2].y = wall[wall[wall[j].point2].point2].y;
+       
+        
+            // Make Wall 1 point to wall 3 to save from drawing a redundant wall
+         wall[j].point2 = wall[wall[j].point2].point2;
+
+     }
+     else j = wall[j].point2; // Nothing can be tweaked, go to next wall
+ } while (j != wallpointer);
+ // End wall reduction code
+ } // for
+
 
 // Now to recenter everything that just got scaled 
   MaxX = MinX = wall[0].x;

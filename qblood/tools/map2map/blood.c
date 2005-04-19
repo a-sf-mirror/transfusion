@@ -148,14 +148,26 @@ void Blood_To_qBlood (const unsigned short i, FILE *f)
         
         else
         WriteSimpleItem(i, "info_player_deathmatch", f);
-
+        WriteSimpleItem(i, "info_player_team1", f);
     	return;
     
     // TWEAKME: It seem there's a flag for DM with the player starts
 	case PLAYERSTART2:	//2523  
 	case PLAYERSTART3:	//2524  
 	case PLAYERSTART4:	//2525  
-	case PLAYERSTART5:	//2526  
+	
+    if (sprite[i].pal == 0)
+        WriteSimpleItem(i, "info_player_coop", f); // It's a valid simple player start.
+        
+        else
+		
+        {
+            WriteSimpleItem(i, "info_player_deathmatch", f); // It's a BB start!
+            WriteSimpleItem(i, "info_player_team1", f);
+        }
+		return;
+    
+    case PLAYERSTART5:	//2526  
 	case PLAYERSTART6:	//2527  
 	case PLAYERSTART7:	//2528  
 	case PLAYERSTART8:	//2529
@@ -164,8 +176,11 @@ void Blood_To_qBlood (const unsigned short i, FILE *f)
         WriteSimpleItem(i, "info_player_coop", f); // It's a valid simple player start.
         
         else
-		WriteSimpleItem(i, "info_player_deathmatch", f); // It's a BB start!
-
+		
+        {
+            WriteSimpleItem(i, "info_player_deathmatch", f); // It's a BB start!
+            WriteSimpleItem(i, "info_player_team2", f);
+        }
 		return;
 
 /* Armor */
@@ -449,7 +464,7 @@ void Blood_To_qBlood (const unsigned short i, FILE *f)
     case 2112:
     case 2113:
     case 2114:
-        AddLight(f, i, 100, "light_flame_small_yellow");
+        WriteLight(f, i, 100, "light_flame_small_yellow");
         return;
 
     case BIGFLAME:			// 3566 - 3579 this should catch all the values
@@ -466,14 +481,14 @@ void Blood_To_qBlood (const unsigned short i, FILE *f)
     case 3577:
     case 3578:
     case 3579:
-        AddLight(f, i, 200, "light_flame_large_yellow");
+        WriteLight(f, i, 200, "light_flame_large_yellow");
         return;
 
     case WOODTORCH:         // 506 - 509
     case 507:
     case 508:
     case 509:
-        AddLight(f, i, 200, "obj_eflmtrch");
+        WriteLight(f, i, 200, "obj_eflmtrch");
         return;
 
     case BRASSTORCH:		// 570
@@ -491,6 +506,10 @@ void Blood_To_qBlood (const unsigned short i, FILE *f)
         WriteSimpleItem(i, "obj_tombstn2", f);
 		return;
 
+    case RIPTOMBSTONE:		//704
+        WriteSimpleItem(i, "obj_tombstn3", f);
+		return;
+
     case SHOVEL:		    //1712
         WriteSimpleItem(i, "obj_shovel", f);
 		return;
@@ -498,11 +517,11 @@ void Blood_To_qBlood (const unsigned short i, FILE *f)
     case STATUE1:			//536
         WriteSimpleItem(i, "obj_fountain", f);
 		return;
-
+/*
     case CRUCIFIEDINNOCENT:	//648
         WriteFlaggedItem(i, "monster_zombie", f, 1); // 1 = crucified
 		return;
-
+*/
     case LIGHTNING:		//2090 
         WriteSimpleItem(i, "event_lightning", f);
 		return;
@@ -554,7 +573,7 @@ void Blood_To_qBlood (const unsigned short i, FILE *f)
 		return;
     
     case LARGEVASE2:	//739
-        WriteSimpleItem(i, "obj_pot3l", f);
+        WriteSimpleItem(i, "obj_pot3", f);
 		return;
 
     case SEAWEED1:      //664
@@ -584,7 +603,7 @@ void Blood_To_qBlood (const unsigned short i, FILE *f)
     case OPENBOOK:      //349
         WriteSimpleItem(i, "obj_bookopen", f);
 		return;
-
+/*
     case WEB1:	    //1066
     case WEB2:      //1067
     case WEB3:      //1068
@@ -594,6 +613,7 @@ void Blood_To_qBlood (const unsigned short i, FILE *f)
     case WEB7:		//1089
         WriteSimpleItem(i, "obj_webs", f);
         return;
+*/
 
     case SCROLL:    //833
         WriteSimpleItem(i, "obj_h-book", f);

@@ -1,18 +1,21 @@
 #include "global.h"
 
 // This finds the extreme points of a sector, and writes the floor and ceiling as rectangles.
-void DivAndWrite(FILE *f, const unsigned short i, const long Up, const long Down)
+void DivAndWrite(FILE *f, const unsigned short SectorNumber, const short Up, const short Down)
 {
  long maxX = -5000000, maxY = -5000000, minX =  5000000, minY =  5000000, wallpointer, j, TimeOut = 1000;
+ unsigned short i = 0;
 
- DrawSectorWalls(f, i);
- 
+ DrawSectorWalls(f, SectorNumber, Down, NORMAL);
+// for (i = 0; i < sector[SectorNumber].wallnum; i++)
+// AlternateWriteWall(f, sector[SectorNumber].wallptr + i, SectorNumber, Down);
+  
  // Initialize the temporary sector
- sector[numsectors] = sector[i];        // numsectors is the value for temp sector
+ sector[numsectors] = sector[SectorNumber];        // numsectors is the value for temp sector
  sector[numsectors].wallnum = 4;
  sector[numsectors].wallptr = numwalls; // numwalls is the first value (of 4) for temp walls
  
- wallpointer = j = sector[i].wallptr;
+ wallpointer = j = sector[SectorNumber].wallptr;
 
  do // Gather the extreme points
  {
@@ -56,57 +59,51 @@ void DivAndWrite(FILE *f, const unsigned short i, const long Up, const long Down
  wall[numwalls+3].y = maxY;
  wall[numwalls+3].point2 = numwalls+2;
 
- // Write the temporary sector
+ // Write floor is the reason for the rectangles
  WriteFloor  (f, numsectors, Down);       // numsectors is the value for temp sector
  WriteCeiling(f, numsectors, Up);
 }
 
 // The main sector function. Essentially writes all the sectors
-void DrawSector(FILE *f, const unsigned short i)
+void DrawSector(FILE *f, const unsigned short SectorNumber)
 {
  int  j;
- long Dn = -15, Up = 1, wallpointer, SectorFloorZ, SectorCeilingZ; 
- short TimeOut = 1000;
- SectorFloorZ  = sector[i].floorz;
- SectorCeilingZ  = sector[i].ceilingz;
- j = wallpointer = sector[i].wallptr;
+ long SectorFloorZ, SectorCeilingZ; 
+ short Down = -15, Up = 1, wallpointer, i = 0;
+
+ SectorFloorZ  = sector[SectorNumber].floorz;
+ SectorCeilingZ  = sector[SectorNumber].ceilingz;
+ j = wallpointer = sector[SectorNumber].wallptr;
  
- do 
+ for (i = 0; i < sector[SectorNumber].wallnum; i++)
  {
   if (wall[j].nextsector != -1) // Attached to another sector
   {
-   if (sector[wall[j].nextsector].floorz - SectorFloorZ < Dn)
-	   Dn = sector[wall[j].nextsector].floorz   - SectorFloorZ; // For steps?
+   if (sector[wall[j].nextsector].floorz - SectorFloorZ < Down)
+	   Down = sector[wall[j].nextsector].floorz   - SectorFloorZ; // For steps, etc
 
    if ((sector[wall[j].nextsector].ceilingz - SectorCeilingZ > Up)
 	   && (sector[wall[j].nextsector].ceilingz != sector[wall[j].nextsector].floorz)) 
 	   Up = sector[wall[j].nextsector].ceilingz - SectorCeilingZ;
 
-   M_Wall[j] = 1;
-   M_Wall[wall[j].nextwall] = 1;
+   M_Wall[j] = M_Wall[wall[j].nextwall] = 1;
   }
-  TimeOut--;
   j = wall[j].point2;
- } while ( (j != wallpointer) && (TimeOut > 0) );
- 
- if (!(TimeOut > 0)) 
-	 printf("Sector %d Timed out in DrawSector(). Number of walls:%d\n", i, sector[i].wallnum);
+ }  
 
- if (!TestAngles(i))  // Checks if the sector is drawing fakey "curves"
+ if (!TestAngles(SectorNumber))  // Checks if the sector is semi-circular
  {
 	 // Validate the number of walls  
-	 if (FindWalls(i) != sector[i].wallnum) 
-		WriteSector(f, i, Up, Dn); // If walls are doing something freaky, use alternate method
+	 if (FindWalls(SectorNumber) != sector[SectorNumber].wallnum) 
+		WriteSector(f, SectorNumber, Up, Down); // If walls are doing something freaky, use alternate method
     
      else // It's all good- write the sector regularly
-    {
-    
-        WriteFloor  (f, i, Dn);
-        WriteCeiling(f, i, Up);
-        DrawSectorWalls(f, i);
+    {    
+        WriteFloor  (f, SectorNumber, Down);
+        WriteCeiling(f, SectorNumber, Up);
+        DrawSectorWalls(f, SectorNumber, Down, NORMAL);
     }
- // Otherwise it'll get turned into a rectangle (lame, but it works)
- } else DivAndWrite(f, i, Up, Dn);
- 
+ // Else, the ceiling & floor will have to be drawn rectangular.
+ } else DivAndWrite(f, SectorNumber, Up, Down);        
  
 }

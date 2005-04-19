@@ -1,7 +1,7 @@
 #include "global.h"
 
 // Write a sector's ceiling
-void WriteCeiling(FILE *f, const long SectorNumber, const long Plus)
+void WriteCeiling(FILE *f, const unsigned short SectorNumber, short Plus)
 {
  char Texture[256]="";
  
@@ -14,8 +14,16 @@ void WriteCeiling(FILE *f, const long SectorNumber, const long Plus)
  // To avoid compiler gripes, initializing vertex3
  vertex3.x = vertex3.y = vertex3.zb = vertex3.zt = 0;
 
+ if (Plus == 1)
+     Plus = THICK;
+
  CeilingBottom = sector[SectorNumber].ceilingz;
  CeilingTop = sector[SectorNumber].ceilingz +Plus;
+
+ // Just in case...
+ if (CeilingTop < CeilingBottom)
+     CeilingTop = CeilingBottom +THICK;
+
 
  j = wallpointer = sector[SectorNumber].wallptr;
  
@@ -41,7 +49,7 @@ sprintf(Texture, TEXTUREPREFIX "sky1 0 0 0 1.00 1.00 1 0 0");
         sprintf(Texture, "tile%.4d 0 0 0 1.00 1.00 1 0 0", sector[SectorNumber].ceilingpicnum); 
      
 
-    // This chunk starts the ceiling drawing, it draws ???
+    // This chunk starts the ceiling drawing
  if (sector[SectorNumber].ceilingheinum != 0) // Slope
  {
   vertex1.x  = wall[j].x;
@@ -51,13 +59,12 @@ sprintf(Texture, TEXTUREPREFIX "sky1 0 0 0 1.00 1.00 1 0 0");
   vertex1.zt = vertex1.zb = vertex2.zt = vertex2.zb = CeilingTop;
 
   ret = G_2va(vertex1.x, vertex1.y, vertex2.x, vertex2.y, &vertex3.x, &vertex3.y); // vertex3 is getting worked on
-  vertex3.zt = vertex3.zb = CeilingTop;
-  
+    
+  // This will probably have to be tweaked for a larger scale
   vertex3.zt = CeilingTop - (sector[SectorNumber].ceilingheinum / 41) + 1;
-     // GetZ(vertex1.x, vertex1.y, vertex3.x, vertex3.y, CeilingTop, (-1 * sector[SectorNumber].ceilingheinum) * PI/4/4096);
-      
   vertex3.zb = vertex3.zt-10;
 
+  // Make sure there's no crazy slopes
   if (vertex3.zt < CeilingTop) 
       vertex3.zt = CeilingTop;
 
@@ -89,7 +96,7 @@ sprintf(Texture, TEXTUREPREFIX "sky1 0 0 0 1.00 1.00 1 0 0");
 
  if (Stat % 2 == 1) // This indicates paralaxxing
   fprintf(f, "  ( %d %d %d ) ( %d %d %d ) ( %d %d %d ) sky1 0 0 0 1.00 1.00 0 133 1\n", 
-  point2.x, point2.y, 500, point1.x, point1.y, 500, point1.x, point1.y, 0); // Why 133?
+  point2.x, point2.y, 500, point1.x, point1.y, 500, point1.x, point1.y, 0);
  
  else
   fprintf(f, "( %d %d %d ) ( %d %d %d ) ( %d %d %d ) %s 0 0 0 1 1 1 0 0\n", 
@@ -120,9 +127,8 @@ sprintf(Texture, TEXTUREPREFIX "sky1 0 0 0 1.00 1.00 1 0 0");
   vertex3.zt = CeilingTop;
   vertex3.zb = CeilingBottom;
   
+  // This will probably have to be tweaked for a larger scale
   vertex3.zt = CeilingBottom - (sector[SectorNumber].ceilingheinum / 41);
-      //GetZ(vertex1.x, vertex1.y, vertex3.x, vertex3.y, CeilingTop, (-1 * sector[SectorNumber].ceilingheinum) * PI/4/4096);
-     
   vertex3.zb = vertex3.zt-10;
 
   if (ret == 0)

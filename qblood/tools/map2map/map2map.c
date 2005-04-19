@@ -106,8 +106,8 @@ int main (int argc, char *argv[])
  }
      printf("\n");
 
- WriteWalls(newmap);
- WriteFlatSprites(newmap); // disabled flatsprites for now, dependant on tile sizes
+ WriteTwoSidedWalls(newmap);
+ WriteFlatSprites(newmap); // dependant on tile sizes, everything is defaulting to 32 x 32 now.
  
  // Write the closing bracket for the geometry section
  fprintf(newmap, "}\n");

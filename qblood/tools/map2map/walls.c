@@ -1,105 +1,55 @@
 #include "global.h"
 
-void DrawSectorWalls(FILE *f, const unsigned short i)
+void DrawSectorWalls(FILE *f, const unsigned short i, const short Down, const char SectorType)
 {
- long   wallpointer, SectorCeiling, SectorFloor, j, k;
- short TimeOut = 1000;
+ long wallpointer, SectorCeiling, SectorFloor, k;
  TPoint vertex1, vertex2;
  TWall  pwall;
-
- j = wallpointer  = sector[i].wallptr;
  
- // Face reduction starts here
- if (sector[i].wallnum > 2)
- do 
- {
-     wall_t Wall1, Wall2, Wall3;
-     unsigned short Protect1 = 1, Protect2 = 1; // Protects from divison by zero
-
-     Wall1 = wall[j];
-     Wall2 = wall[wall[j].point2];
-     Wall3 = wall[wall[wall[j].point2].point2];
-
-     
-     if (Wall1.point2 == wallpointer || // No further optimizing to be done
-         Wall2.point2 == wallpointer)
-         break;
-
-     if (Wall1.x - Wall2.x == 0) // No dividing by zero
-         Protect1 = 1;
-     else Protect1 = 0;
-
-     if (Wall2.x - Wall3.x == 0) // No dividing by zero
-         Protect2 = 1;
-     else Protect2 = 0;
-         
-      /* This next chunk is some magic, so here's my explanation:
-        The first if segment checks the walls to see if they're connected to another sector
-        it would be bad to smooth a wall out that had a window or step nearby.
-        The second chunk is checking for a redundant point between wall 1 and 3
-        The third chunk is a rise/run check for redundant points in a diagonal wall
-        many thanks to Chad Smith (math teacher) for helping my memory on this one
-        The fourth chunk is to make sure if the extra wall is merely added for a special texture.
-      */
-  
-     if ( 
-         (Wall1.nextsector == -1 && Wall1.nextwall == -1  &&      // Connected
-          Wall2.nextsector == -1 && Wall2.nextwall == -1) &&      // Connected
-        (
-         (Wall1.x == Wall2.x  && Wall1.x == Wall3.x) ||           // Redundant point horizontal
-         (Wall1.y == Wall2.y  && Wall1.y == Wall3.y) ||           // Redundant point vertical
-         (Wall1.y - Wall2.y) / (Wall1.x - Wall2.x+Protect1) ==    // Redundant point diagonal
-         (Wall2.y - Wall3.y) / (Wall2.x - Wall3.x+Protect2) ) &&  // Redundant point diagonal pt 2
-          (Wall1.picnum == Wall2.picnum && Wall2.picnum == Wall3.picnum)
-          ) // Different art
-          
-     {
-         // Before any numbers are changed, count this as an eliminated wall
-         M_Wall[wall[j].point2] = 2;
-
-        // Nuke all references to the wall we're replacing
-         for (k = 0; k < numwalls; k++)
-            if (wall[k].nextwall == wall[j].point2)
-            {
-                wall[k].nextwall = wall[wall[j].point2].point2;
-                break;
-            }
-        
-            // This should clear up any crazy wandering points in the level
-        wall[wall[j].point2].x = wall[wall[wall[j].point2].point2].x;
-        wall[wall[j].point2].y = wall[wall[wall[j].point2].point2].y;
-       
-        
-            // Make Wall 1 point to wall 3 to save from drawing a redundant wall
-         wall[j].point2 = wall[wall[j].point2].point2;
-
-     }
-     else j = wall[j].point2; // Nothing can be tweaked, go to next wall
- } while (j != wallpointer);
- // End wall reduction code
-
- j = wallpointer = sector[i].wallptr;
- SectorCeiling = sector[i].ceilingz;
- SectorFloor = sector[i].floorz;
- TimeOut = 1000;
+ wallpointer = sector[i].wallptr;
  
- do 
+  if (SectorType == NORMAL)
+  {
+      SectorCeiling = sector[i].ceilingz;
+      
+      if (Down < 0)
+          SectorFloor = sector[i].floorz +Down; // Floor going down
+      else // Down >= 0
+          SectorFloor = sector[i].floorz;
+  }
+
+  else // SectorType == ALTERED
+  {
+      if (Down < 0)
+      {
+          SectorFloor = sector[i].floorz +Down; // Floor going down
+          SectorCeiling = sector[i].floorz;
+      }
+      else// Down >= 0
+      {
+          SectorCeiling = sector[i].floorz +Down; // Floor going up - steps, small objects, etc
+          SectorFloor = sector[i].floorz;
+      }
+
+  }
+
+ for (k = 0; k < sector[i].wallnum; k++)
  {
-  vertex1.x  = wall[j].x;
-  vertex1.y  = wall[j].y;
+  vertex1.x  = wall[wallpointer + k].x;
+  vertex1.y  = wall[wallpointer + k].y;
   vertex1.zt = vertex2.zt = SectorCeiling;
 
-//  if (sector[i].floorheinum == 0)
+  // Sets all walls in a sector bottom z to that of the lowest possible point in a sector
+  if (sector[i].floorheinum == 0) // No floor slope in this sector
       vertex1.zb = vertex2.zb = SectorFloor;
-  
-//  else
-//      vertex1.zb = vertex2.zb = SectorFloor + (sector[i].floorheinum / -41) -1;
 
+  else // Walls in a sloped sector
+      vertex1.zb = vertex2.zb = SectorFloor - (sector[i].floorheinum / -1024) -1;
   
-  vertex2.x  = wall[wall[j].point2].x;
-  vertex2.y  = wall[wall[j].point2].y;
+  vertex2.x  = wall[wall[wallpointer + k].point2].x;
+  vertex2.y  = wall[wall[wallpointer + k].point2].y;
   
-  if ((wall[j].nextwall == -1) && (M_Wall[j] == 0)) // Not connected & not written yet
+  if ((wall[wallpointer + k].nextwall == -1) && (M_Wall[wallpointer + k] == 0)) // Not connected & not written yet
   {
    pwall.x_off     = 0;
    pwall.y_off     = SectorCeiling;
@@ -107,16 +57,16 @@ void DrawSectorWalls(FILE *f, const unsigned short i)
    pwall.content_a = 0;                                                                                                                                 
    pwall.surface_a = 0;
    pwall.light_v   = 2000;
-   pwall.texture   = wall[j].picnum;
-   W_Wall(vertex1, vertex2, f, pwall);
-   M_Wall[j] = 1;
+   pwall.texture   = wall[wallpointer + k].picnum;
+   WriteWall(vertex1, vertex2, f, pwall);
+   M_Wall[wallpointer + k] = 1;
   }
-  j = wall[j].point2; TimeOut--; // Why would something time out?
- } while ( (j != wallpointer) && (TimeOut > 0) );
+  
+ }
 }
 
 // Draws two sided walls
-void WriteWalls(FILE *f)
+void WriteTwoSidedWalls(FILE *f)
 {
  TPoint vertex1, vertex2;
  short i, NextSector1 = -1, NextSector2;
@@ -135,7 +85,7 @@ void WriteWalls(FILE *f)
   if (wall[i].nextwall != -1) // Connected to another sector
       NextSector1 = wall[wall[i].nextwall].nextsector;
 
-  if ((NextSector1 != -1) && (NextSector2 != -1) && (M_Wall[i] == 0))
+  if ((NextSector1 > -1) && (NextSector2 > -1) && (M_Wall[i] == 0))
   {
 
    if (sector[NextSector1].floorz > sector[NextSector2].floorz)
@@ -170,7 +120,7 @@ void WriteWalls(FILE *f)
     vertex2.zb = sector[NextSector1].ceilingz;
    }
 
-   WriteWall(vertex1, vertex2, f, i);
+   WriteTwoSidedWall(vertex1, vertex2, f, i);
    M_Wall[i] = 1;
    M_Wall[wall[i].nextwall] = 1;
 
@@ -224,7 +174,7 @@ void WriteMaskedWalls(FILE *f)
     fprintf(f, " \"classname\"     \"exploding_wall\"\n");
     fprintf(f, " \"health\"        \"15\"\n");
     fprintf(f, " \"skin\"          \"6\"\n");
-    W_Wall(vertex1, vertex2, f, pwall);
+    WriteWall(vertex1, vertex2, f, pwall);
     fprintf(f, " }\n");
 #endif
 
@@ -234,7 +184,7 @@ void WriteMaskedWalls(FILE *f)
     fprintf(f, " \"health\"        \"15\"\n");
     fprintf(f, " \"skin\"          \"5\"\n");
     fprintf(f, " \"target\"        \"langas%d\"\n", i);
-    W_Wall(vertex1, vertex2, f, pwall);
+    WriteWall(vertex1, vertex2, f, pwall);
     fprintf(f, " }\n");
 
     fprintf(f, " {\n");

@@ -16,6 +16,8 @@
 #define SCALE 8 //Divider = 16 , was 11 when I started- TIM
 #define MAXTILES 9216 // Redneck Rampage uses the most textures. ARTFILES * 256?
 #define THICK 2 // Generic brush thickness, 1 causes bsp issues with quake 1
+#define NORMAL 0
+#define ALTERED 1
 #define ZADJUST 14.5 // Was 18 when I started
 #define BLOOD
 #define QUAKE1 // This is what qBlood needs 
@@ -40,6 +42,11 @@
 /***** Constants *****/
 #define ANGLESCALE 5.69 // 2048/360, but to 2 places past decimal only. 2048=build 360=quake
 #define PI 3.1415926535897932384626433832795  // Taken from the windows calculator
+
+
+/* Macro to swap two values */
+#define SWAP(x,y)   ((x)^=(y)^=(x)^=(y))
+
 
 typedef struct
 {
@@ -120,16 +127,13 @@ char* GetNewTextureName(const unsigned short i);
 /***** ceiling.c *****/
 
 // Write a sector's ceiling
-void WriteCeiling(FILE *NewMap, const long SectorNumber, const long Plus);
+void WriteCeiling(FILE *NewMap, const unsigned short SectorNumber, short Plus);
 
 
 /***** floor.c *****/
 
 // Not sure
 short G_2va(long x1, long y1, long x2, long y2, long *x, long *y);
-
-// ??? Gets a sectors slope Z ???
-long GetZ(double p1x, double p1y, double p3x, double p3y, double Z, double ang);
 
 // Tests how complicated a sector is (i.e. "fakey curves")
 short TestAngles(const unsigned short  SectorNumber);
@@ -138,7 +142,7 @@ short TestAngles(const unsigned short  SectorNumber);
 void WriteFloor  (FILE *NewMap, const unsigned short SectorNumber, const long Plus);
 
 // Validates the number of walls in a sector
-long FindWall(const long SectorNumber);
+short FindWall(const unsigned short SectorNumber);
 
 short FindSector(const unsigned short SectorNumber);
 
@@ -148,22 +152,22 @@ short FindSector(const unsigned short SectorNumber);
 void WriteFlatSprites(FILE *NewMap);
 
 // Writes a duke style sfx (will die soon)
-void W_MusicanDSFX(const unsigned short Sprite, char *Name, FILE *NewMap);
+void WriteMusicanDSFX(const unsigned short SpriteNumber, const char *Name, FILE *NewMap);
 
 // Writes a simple item
-void WriteSimpleItem(const unsigned short i, char *Name, FILE *NewMap);
+void WriteSimpleItem(const unsigned short i, const char *Name, FILE *NewMap);
 
 // Writes an item with a special spawn flag
-void WriteFlaggedItem(const unsigned short i, char *Name, FILE *NewMap, short SpawnFlag);
+void WriteFlaggedItem(const unsigned short i, const char *Name, FILE *NewMap, short SpawnFlag);
 
 // Goes through all the sprites and tries to find acceptable conversions
 void WriteItems(FILE *NewMap);
 
 // Places a light entity in a map
-void AddLight(FILE* newmap, const short i, const short brightness, const char* Lightname);
+void WriteLight(FILE* newmap, const short i, const short brightness, const char* Lightname);
 
 // Will get the tile sizes from a group or art file
-void GetSizes(char *FName, const long pos);
+void GetSizes(char *FName, const unsigned int offset);
 
 // This expects a group file (.grp) or a directory of art files specifed by "notgroup"
 void I_Sizes(char *FName);
@@ -187,19 +191,19 @@ void CalcAll();
 long FindWalls(const unsigned short SectorNumber);
 
 // Alternate ???
-short Draw_Sector_II(FILE *NewMap, const unsigned short i);
+short AltDrawSector(FILE *NewMap, const unsigned short i);
 
-// Alternate ??? Draws complex multisided shapes?
-void DrawBrush(FILE *NewMap, const unsigned short WallNumber, long SectorFloor, long SectorCeiling);
+// Draws counting from a starting wall until the wall comes full circle
+void DrawBrush(FILE *NewMap, const unsigned short WallNumber, const long SectorFloor, const long SectorCeiling);
 
 // Alternate ???
-void WriteSector(FILE *NewMap, const unsigned short SectorNumber, const long Up, const long Down);
+void WriteSector(FILE *NewMap, const unsigned short SectorNumber, const short Up, const short Down);
 
 
 /***** w_sector.c *****/
 
-// Finds the extreme points of a sector, and writes the floor and ceiling as squares.
-void DivAndWrite(FILE *NewMap, const unsigned short i, const long Up, const long Down);
+// Finds the extreme points of a sector, and writes the floor and ceiling as rectangles.
+void DivAndWrite(FILE *NewMap, const unsigned short i, const short Up, const short Down);
 
 // The main sector function. Essentially writes all the sectors
 void DrawSector(FILE *NewMap, const unsigned short i);
@@ -208,7 +212,7 @@ void DrawSector(FILE *NewMap, const unsigned short i);
 /***** w_win97.c *****/
 
 // Primary wall writing function
-void W_Wall(const TPoint point1, const TPoint point2, FILE *f, const TWall wall);
+void WriteWall(const TPoint point1, const TPoint point2, FILE *f, const TWall wall);
 
 // Writeline circumvents having to use fprintf and it's formating in the text repetatively
 void WriteLine(long x1, long y1, long z1, long x2, long y2, long z2, long x3, long y3, long z3, 
@@ -216,18 +220,24 @@ void WriteLine(long x1, long y1, long z1, long x2, long y2, long z2, long x3, lo
 
 // Writes a flat sprite
 void WriteFlatSprite(const unsigned short SpriteNumber, const long width, const long height, 
-                     const TWall wall, FILE *newmap);
+                     TWall wall, FILE *newmap);
 
 
 /***** wall.c *****/
 
 // Writes a two sided wall (connects two sectors)
-void WriteWall(TPoint point1, TPoint point2, FILE *NewMap, const unsigned short i);
+void WriteTwoSidedWall(TPoint point1, TPoint point2, FILE *NewMap, const unsigned short i);
+
+
+/***** wall2.c *****/
+
+// Writes a wall like in b2q
+void AlternateWriteWall(FILE *f, const unsigned short WallNumber, const unsigned short SectorNumber, const short Down);
 
 
 /***** walls.c *****/
-void DrawSectorWalls(FILE *NewMap, const unsigned short i);
-void WriteWalls(FILE *NewMap);
+void DrawSectorWalls(FILE *NewMap, const unsigned short i, const short Down, const char SectorType);
+void WriteTwoSidedWalls(FILE *NewMap);
 
 // Masked walls & windows
 void WriteMaskedWalls(FILE *NewMap); 

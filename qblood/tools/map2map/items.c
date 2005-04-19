@@ -8,8 +8,6 @@ void WriteFlatSprites(FILE *f)
 // double d1, d2, sizex, sizey;
 
 unsigned short i = 0, Stat = 0, width = 32, height = 32;
-FILE* log = NULL;
-log = fopen("test.txt", "w");
 
 printf("Adding Flat sprites...\t\t\t\t\t\t ");
 
@@ -20,7 +18,6 @@ printf("Adding Flat sprites...\t\t\t\t\t\t ");
          continue;
      
      Stat = sprite[i].cstat % 64;  // Nuke all bits higher than 4
-     fprintf (log, "Original stat:%d     Modified Stat:%d\n", sprite[i].cstat, Stat);
 
      if (Stat < 16) // Nothing to be done, since 16 or greater = wall sprite & floor sprites
          continue;
@@ -58,11 +55,11 @@ printf("Adding Flat sprites...\t\t\t\t\t\t ");
 
  }
  printf("[ Ok ]\n");
- fclose(log);
+
 }
 
 // Change to ambient sound - fix this for qBlood? Can I use noise to play a wave?
-void W_MusicanDSFX(const unsigned short i, char *Name, FILE *f)
+void WriteMusicanDSFX(const unsigned short i, const char *Name, FILE *f)
 {
  long sp = 1;
  if (sector[sprite[i].sectnum].lotag) sp = 0;
@@ -75,7 +72,7 @@ void W_MusicanDSFX(const unsigned short i, char *Name, FILE *f)
 }
 
 // Writes a simple item
-void WriteSimpleItem(const unsigned short i, char *Name, FILE *f)
+void WriteSimpleItem(const unsigned short i, const char *Name, FILE *f)
 {
  fprintf(f, "{\n");
  fprintf(f, "  \"classname\"     \"%s\"\n", Name);
@@ -85,7 +82,7 @@ void WriteSimpleItem(const unsigned short i, char *Name, FILE *f)
 }
 
 // Writes an item with a special spawn flag
-void WriteFlaggedItem(const unsigned short i, char *Name, FILE *f, short SpawnFlag)
+void WriteFlaggedItem(const unsigned short i, const char *Name, FILE *f, short SpawnFlag)
 {
  fprintf(f, " {\n"
 			"  \"classname\"     \"%s\"\n", Name);              
@@ -128,7 +125,7 @@ void WriteItems(FILE *f)
 }
 
 // Places a light entity in a map
-void AddLight(FILE* newmap, const short i, const short brightness, const char* Lightname)
+void WriteLight(FILE* newmap, const short i, const short brightness, const char* Lightname)
 {
  fprintf(newmap, " {\n"
 			     "  \"classname\"     \"%s\"\n"
@@ -140,7 +137,7 @@ void AddLight(FILE* newmap, const short i, const short brightness, const char* L
 }
 
 // Will get the tile sizes from a group or art file
-void GetSizes(char *FName, const long pos)
+void GetSizes(char *FName, const unsigned int offset)
 {
 
  FILE *f;
@@ -154,7 +151,7 @@ void GetSizes(char *FName, const long pos)
   exit(14);
  }
 
- fseek(f, pos, SEEK_SET);
+ fseek(f, offset, SEEK_SET);
  fread(&artversion,     4, 1, f); 
  if (artversion != 1) 
  { 
@@ -178,7 +175,7 @@ void GetSizes(char *FName, const long pos)
 void I_Sizes(char *FName)
 {
  long TotalFiles = 0;
- unsigned short i, pos, size;
+ unsigned short i, offset, size;
  char FileName[13];
  FILE *groupfile;
 
@@ -212,7 +209,7 @@ void I_Sizes(char *FName)
  fread(&FileName,  12, 1, groupfile);
  fread(&TotalFiles, 4, 1, groupfile);
  FileName[12] = '\0';
- pos = 16 + 16 * TotalFiles;
+ offset = 16 + 16 * TotalFiles;
  for (i = 0; i < TotalFiles; i++)
  {
   fread(&FileName, 12, 1, groupfile);
@@ -228,7 +225,7 @@ void I_Sizes(char *FName)
 	  (FileName[10] == 'R') && 
 	  (FileName[11] == 'T'))
   {
-   GetSizes(FName, pos);
+   GetSizes(FName, offset);
   }
   else 
   {
@@ -236,7 +233,7 @@ void I_Sizes(char *FName)
       return;
   }
 
-  pos += size;
+  offset += size;
  }
  fclose(groupfile);
  

@@ -47,15 +47,7 @@ short G_2va(long x1, long y1, long x2, long y2, long *x, long *y)
  else return 0;
 }
 
-// Gets the Z for a sloped floor. Use it to fix nearby walls
-long GetZ(double point1x, double point1y, double point3x, double point3y, double Z, double angle)
-{
- long h = tan(angle) * sqrt((point3x - point1x) * (point3x - point1x) + 
-                            (point3y - point1y) * (point3y - point1y));
- return Z + h; 
-}
-
-// This will test how complicated a sector is (i.e. "fakey curves")
+// This will test how complicated a sector is
 short TestAngles(const unsigned short SectorNumber)
 {
  double TotalAngle, TestAngle, radian;
@@ -74,6 +66,10 @@ short TestAngles(const unsigned short SectorNumber)
  if (walls < 3) // You're not going to have complicated angles with 2 walls.
      return 0;
 
+ if (walls > 18) // Anything above this is going to look crazy
+     return 1; // TESTME
+
+
  TotalAngle = 180 * (walls-2);
  TestAngle = 0;
  j = wallpointer = sector[SectorNumber].wallptr;
@@ -86,7 +82,6 @@ short TestAngles(const unsigned short SectorNumber)
   vertex2.x = wall[wall[wall[j].point2].point2].x - wall[wall[j].point2].x; // X Line 2 length 
   vertex2.y = wall[wall[wall[j].point2].point2].y - wall[wall[j].point2].y; // Y Line 2 length
 
-  // There has got to be a smarter way to do this
   radian = acos((vertex1.x * vertex2.x + vertex1.y * vertex2.y) / 
       ((sqrt(vertex1.x * vertex1.x + vertex1.y * vertex1.y) * // Hypotenuse
       sqrt(vertex2.x * vertex2.x + vertex2.y * vertex2.y)))); // Hypotenuse
@@ -100,50 +95,49 @@ short TestAngles(const unsigned short SectorNumber)
 
  if ((TotalAngle - TestAngle > -1) && (TotalAngle - TestAngle < 1)) 
      return 0;
- 
- 
  else 
- {
-#ifdef _DEBUG
-     FILE * log;
-     log = fopen("log.txt", "a");
-     fprintf(log, "magic number = %7g    number of walls = %d\n", 
-             TotalAngle - TestAngle, sector[SectorNumber].wallnum);
-     fclose(log);
-#endif
      return 1;
- }
-
 }
 
 // Writes a sectors floor
 void WriteFloor(FILE *f, const unsigned short SectorNumber, const long Plus)
 {
  char Texture[40];
- long SBot, STop, j, wallpointer; 
+ long SectorBottom, SectorTop, j, wallpointer; 
  TPoint point1, point2, vertex1, vertex2, vertex3;
  short ret, Stat;
- double Angle;
-
 
  Stat = sector[SectorNumber].floorstat;
 
  if (Plus < 0)
  {  
-  SBot = sector[SectorNumber].floorz +Plus; // Floor going down
-  STop = sector[SectorNumber].floorz;
+  SectorBottom = sector[SectorNumber].floorz +Plus; // Floor going down
+  SectorTop = sector[SectorNumber].floorz;
  }
  else// Plus >= 0
  {
-  STop = sector[SectorNumber].floorz +Plus; // Floor going up - step?
-  SBot = sector[SectorNumber].floorz;
+  SectorTop = sector[SectorNumber].floorz +Plus; // Floor going up - steps, small objects, etc
+  SectorBottom = sector[SectorNumber].floorz;
  }
+
+// SectorTop = SectorBottom;
+// SectorBottom -= THICK;
+
+ // Sanity checks...
+ if (SectorTop > sector[SectorNumber].ceilingz)
+     SectorTop = sector[SectorNumber].ceilingz - THICK;
+ 
+ if (SectorTop < SectorBottom)
+     SWAP (SectorTop, SectorBottom);
+
+ if (SectorTop == SectorBottom)
+     SectorBottom -= THICK;
 
  j = wallpointer = sector[SectorNumber].wallptr;
  
  point1.x = point2.x = wall[j].x;
  point1.y = point2.y = wall[j].y;
- point1.zt = STop;
+ point1.zt = SectorTop;
  
  sprintf(Texture, "tile%.4d 0 0 0 1.00 1.00 1 0 0", sector[SectorNumber].floorpicnum);
  
@@ -156,19 +150,16 @@ void WriteFloor(FILE *f, const unsigned short SectorNumber, const long Plus)
  vertex1.y  = wall[j].y;
  vertex2.x  = wall[wall[j].point2].x;
  vertex2.y  = wall[wall[j].point2].y;
- vertex1.zt = vertex1.zb = vertex2.zt = vertex2.zb = vertex3.zt = vertex3.zb = STop;
+ vertex1.zt = vertex1.zb = vertex2.zt = vertex2.zb = vertex3.zt = vertex3.zb = SectorTop;
    
  ret = G_2va(vertex1.x, vertex1.y, vertex2.x, vertex2.y, &vertex3.x, &vertex3.y);
-  
- if (sector[SectorNumber].floorheinum < 0) // Slope
-    Angle = (-1 * (sector[SectorNumber].floorheinum-512)) * PI/4/4096;
- 
- else Angle = (-1 * (sector[SectorNumber].floorheinum+512)) * PI/4/4096;
 
- vertex3.zt = STop + (sector[SectorNumber].floorheinum / -41) -1;
-      //GetZ(vertex1.x, vertex1.y, vertex3.x, vertex3.y, STop, Angle);
+     vertex3.zt = SectorTop + (sector[SectorNumber].floorheinum / -41) -1;
+     vertex3.zb = vertex3.zt-10;
+     
+     if (SectorBottom > vertex3.zb)
+         SectorBottom = vertex3.zb -10;
 
-  vertex3.zb = vertex3.zt-10;
 
  if (ret == 0)
  fprintf(f, "(%d %d %d) (%d %d %d) (%d %d %d) %s 0 0 0 1.00 1.00 1 0 0\n", 
@@ -178,13 +169,13 @@ void WriteFloor(FILE *f, const unsigned short SectorNumber, const long Plus)
  
  else // ret == 1
  fprintf(f, "( %d %d %d ) ( %d %d %d ) ( %d %d %d ) %s\n", 
-               0, 0, STop, 0, 500, STop, 500, 0, STop, Texture); // Why 0 and 500? Line 1
+               0, 0, SectorTop, 0, 500, SectorTop, 500, 0, SectorTop, Texture); // Why 0 and 500? Line 1
  
  } // if (sector[SectorNumber].floorheinum != 0) 
  
  else // No slope
  fprintf(f, "  ( %d %d %d ) ( %d %d %d ) ( %d %d %d ) %s\n", 
-                 0, 0, STop, 0, 500, STop, 500, 0, STop, Texture); // Why 0 and 500? Line 1
+                 0, 0, SectorTop, 0, 500, SectorTop, 500, 0, SectorTop, Texture); // Why 0 and 500? Line 1
  
  do // Write all the floors sides
  {
@@ -221,48 +212,46 @@ void WriteFloor(FILE *f, const unsigned short SectorNumber, const long Plus)
  // This chunk ends the floor drawing, it draws ???
  if (sector[SectorNumber].floorheinum != 0) 
  {
-  point2.zb = STop - 100 * tan( (-1 * sector[SectorNumber].floorheinum) * PI / 4 / 4096) + 5;  
+  point2.zb = SectorTop - 100 * tan( (-1 * sector[SectorNumber].floorheinum) * PI / 4 / 4096) + 5;  
   
  vertex1.x  = wall[j].x;
  vertex1.y  = wall[j].y;
  vertex2.x  = wall[wall[j].point2].x;
  vertex2.y  = wall[wall[j].point2].y;
- vertex1.zt = vertex2.zt = vertex3.zt = STop;
- vertex1.zb = vertex2.zb = vertex3.zb = SBot;
+ vertex1.zt = vertex2.zt = vertex3.zt = SectorTop;
+ vertex1.zb = vertex2.zb = vertex3.zb = SectorBottom;
 
  ret = G_2va(vertex1.x, vertex1.y, vertex2.x, vertex2.y, &vertex3.x, &vertex3.y);
-
- //vertex3.zt = STop;// - (sector[SectorNumber].floorheinum / -41);
-     //GetZ(vertex1.x, vertex1.y, vertex3.x, vertex3.y, STop, (-1 * sector[SectorNumber].floorheinum) * PI/4/4096);
+ 
  vertex3.zb = vertex3.zt-10;
 
- if (vertex3.zb > SBot) 
-     vertex3.zb = SBot;
+ if (vertex3.zb > SectorBottom) 
+     vertex3.zb = SectorBottom;
 
- if (point2.zb > SBot) 
-     point2.zb = SBot;
+ if (point2.zb > SectorBottom) 
+     point2.zb = SectorBottom;
 
  if (ret == 0)
  fprintf(f, "(%d %d %d) (%d %d %d) (%d %d %d) %s 0 0 0 1.00 1.00 1 0 0\n", 
  vertex1.x, vertex1.y, vertex1.zb, vertex3.x, vertex3.y, vertex3.zb, vertex2.x, vertex2.y, 
  vertex2.zb, Texture); // Last line
  
- else // Why 0 and 500?  Last line
+ else // Last line
  fprintf(f, "( %d %d %d ) ( %d %d %d ) ( %d %d %d ) %s 0 0 0 1.00 1.00 1 0 0\n", 
- 0, 0, SBot, 500, 0, SBot, 0, 500, SBot, Texture); 
+ 0, 0, SectorBottom, 500, 0, SectorBottom, 0, 500, SectorBottom, Texture); 
  
- } // if (sector[SectorNumber].floorheinum != 0)
+ } // if
  
  else // Last line, no slope
  fprintf(f, "( %d %d %d ) ( %d %d %d ) ( %d %d %d ) %s 0 0 0 1.00 1.00 1 0 0\n", 
- 0, 0, SBot, 500, 0, SBot, 0, 500, SBot, Texture); 
+ 0, 0, SectorBottom, 500, 0, SectorBottom, 0, 500, SectorBottom, Texture); 
 
  fprintf(f, "}\n");
 }
 
 
-// Finds a specific wall within a sector
-long FindWall(const long SectorNumber)
+// Finds a wall whose nextsector = SectorNumber
+short FindWall(const unsigned short SectorNumber)
 {
  short i, j, r, wallpointer;
  
@@ -271,7 +260,7 @@ long FindWall(const long SectorNumber)
 
  for (i = 0; i < numwalls; i++)
  {
-     // Searching for a wall in a neighboring sector?
+     // Searching for a wall in a neighboring sector
   if (wall[wall[i].nextwall].nextsector == SectorNumber) // The neighbor sector
   {
    r = 0;
@@ -286,27 +275,12 @@ long FindWall(const long SectorNumber)
 
     j = wall[j].point2;
 
-   } while (j != wallpointer);
+   } while (j != wallpointer && r != 1);
    
    if (r == 0)
-       return i;
-  }//if
- }//for
+       return i; // Return the index to the wall if the wall is not in the sector searched
+  
+  }// if
+ }// for
  return -1; // Not found
 }
-
-// Locates the sector before the current sector for proper sloping 
-short FindSector(const unsigned short SectorNumber)
-{
-    unsigned short i = 0, j = 0;
-
-    for (i = 0; i < numsectors; i++)
-    {
-        for (j = 0; j < sector[i].wallnum; j++)
-            if (wall[sector[i].wallptr + j].nextsector == SectorNumber)
-                return i; // Sector found!
-    }
-
-    return -1; // Sector not found
-}
-

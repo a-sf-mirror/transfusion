@@ -1,21 +1,24 @@
 #include "global.h"
 
 // Primary wall writing function 
-void W_Wall(const TPoint point1, const TPoint point2, FILE *f, const TWall wall)
+void WriteWall(const TPoint point1, const TPoint point2, FILE *f, const TWall wall)
 {
 
  double radian = 0;
  char Texture[10] = ""; 
 
- if ((point1.x == point2.x) && (point1.y == point2.y)) 
+ if ((point1.x == point2.x) && (point1.y == point2.y))
+ {
+     printf("No line to draw\n");
      return; // No line to draw
+ }
 
- if (point1.zt == point1.zb) 
+ if (point1.zt == point1.zb || point2.zt == point2.zb)
+ {
+     printf("The floor = the ceiling. That's bad\n");
      return; // The ceiling is the floor - very bad
+ }
  
- if (point2.zt == point2.zb) 
-     return; // The ceiling is the floor - very bad 
-
  sprintf(Texture, TEXTUREPREFIX "tile%.4d", wall.texture);
 
  if ((point2.x != point1.x) && (point2.y != point1.y))
@@ -29,7 +32,6 @@ void W_Wall(const TPoint point1, const TPoint point2, FILE *f, const TWall wall)
  else
  { 
   
-  // Fragile, but functional. Caused a big logic bug when I messed with it.
   if (point1.x == point2.x) 
       if (point1.y > point2.y) 
           radian = 270; 
@@ -41,7 +43,7 @@ void W_Wall(const TPoint point1, const TPoint point2, FILE *f, const TWall wall)
       else radian = 0;
  }
 
-// 0 and 500 again, why???
+
  if (((radian >= 0) && (radian < 45)) || (radian > 315))
  {
   fprintf(f, " {\n");                                                        
@@ -100,12 +102,12 @@ void WriteLine(long x1, long y1, long z1, long x2, long y2, long z2, long x3, lo
 
  fprintf(f, "  ( %d %d %d ) ( %d %d %d ) ( %d %d %d ) %s %d %d %d 1.0 1.0 %d %d %d\n", 
   x1, y1, z1, x2, y2, z2, x3, y3, z3, Texture,  wall.x_off, wall.y_off, 
-  wall.rot_angle, /* w.x_scale, w.y_scale,*/ wall.content_a, wall.surface_a, wall.light_v);
+  wall.rot_angle, /* wall.x_scale, wall.y_scale,*/ wall.content_a, wall.surface_a, wall.light_v);
 }
 
 // Writes a flat sprite (i.e. Painting, Switch, etc)
 void WriteFlatSprite(const unsigned short i, const long width, const long height, 
-                     const TWall wall, FILE *f)
+                     TWall wall, FILE *f)
 {
  
  long x1, x2, y1, y2, nx1, nx2, nx3, nx4, ny1, ny2, ny3, ny4, z;
@@ -114,21 +116,24 @@ void WriteFlatSprite(const unsigned short i, const long width, const long height
  z = sprite[i].z;
    
  sprintf(Texture, TEXTUREPREFIX "tile%.4d", wall.texture);
- x1 = -1 * (width / 2); // Divide height + width by 2 to spread the texture evenly
+ x1 = -1 * (width / 2); // Divide height + width by 2 to spread the shape evenly
  x2 = width / 2;
 
  y1 = height / 2;
  y2 = -1 * (height / 2);
  
  // ==> px fer lag <== //
- nx1 = sprite[i].x + x1 -y1;
- ny1 = sprite[i].y + x1 +y1;
- nx2 = sprite[i].x + x1 -y2;
- ny2 = sprite[i].y + x1 +y2;
- nx3 = sprite[i].x + x2 -y2;
- ny3 = sprite[i].y + x2 +y2;
- nx4 = sprite[i].x + x2 -y1;
- ny4 = sprite[i].y + x2 +y1;
+ nx1 = sprite[i].x + x1;
+ ny1 = sprite[i].y + y1;
+ nx2 = sprite[i].x + x1;
+ ny2 = sprite[i].y + y2;
+ nx3 = sprite[i].x + x2;
+ ny3 = sprite[i].y + y2;
+ nx4 = sprite[i].x + x2;
+ ny4 = sprite[i].y + y1;
+
+ wall.x_off = z + 10;
+
 
  // "sfx/blackness" in lines 2, 3, 4, 5 was replaced with Texture. Lotsa testing needed still
  fprintf(f, "{\n");                                                        
