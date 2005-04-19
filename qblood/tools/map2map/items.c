@@ -3,20 +3,28 @@
 void WriteFlatSprites(FILE *f)
 {
 
- TPoint vertex1, vertex2;
+// TPoint vertex1, vertex2;
  TWall  pwall;
- double d1, d2, sizex, sizey;
+// double d1, d2, sizex, sizey;
 
-unsigned short i = 0, Stat = 0, width = 0, height = 0;
+unsigned short i = 0, Stat = 0, width = 32, height = 32;
+FILE* log = NULL;
+log = fopen("test.txt", "w");
 
-printf("Adding Flat sprites...\t\t\t\t\t ");
+printf("Adding Flat sprites...\t\t\t\t\t\t ");
 
 // Scale tile sizes
  for (i = 0; i < numsprites; i++)
  {
-    if (Stat % 4 != 2) // A regular face sprite
+     if (sprite[i].cstat < 0) // I need to figure out why there are negative values
          continue;
+     
+     Stat = sprite[i].cstat % 64;  // Nuke all bits higher than 4
+     fprintf (log, "Original stat:%d     Modified Stat:%d\n", sprite[i].cstat, Stat);
 
+     if (Stat < 16) // Nothing to be done, since 16 or greater = wall sprite & floor sprites
+         continue;
+/*
   sizex = tilesizx[sprite[i].picnum] * sprite[i].xrepeat / 64;
   sizey = tilesizy[sprite[i].picnum] * sprite[i].yrepeat / 64;
 
@@ -29,30 +37,28 @@ printf("Adding Flat sprites...\t\t\t\t\t ");
   vertex2.y  = sprite[i].y - sizex * cos(sprite[i].ang * (PI*2) / 2048) / 2;
   vertex2.zt = sprite[i].z + sizey / 2 + (sizey/2);
   vertex2.zb = sprite[i].z - sizey / 2 + (sizey/2);
-
+  
+    d1 = sizex;
+    d2 = tilesizx[sprite[i].picnum];
+    
+    d1 = sizey;
+    d2 = tilesizy[sprite[i].picnum];
+*/    
+    pwall.x_scale   = 1; // d1 / d2;
     pwall.x_off     = 0;
     pwall.y_off     = 0;
     pwall.rot_angle = 0;
-
-    d1 = sizex;
-    d2 = tilesizx[sprite[i].picnum];
-    pwall.x_scale   = d1 / d2;
-    d1 = sizey;
-    d2 = tilesizy[sprite[i].picnum];
-    pwall.y_scale   = d1 / d2; 
+    pwall.y_scale   = 1; // d1 / d2; 
     pwall.content_a = 0; 
     pwall.surface_a = 0;
     pwall.light_v   = 2000;
     pwall.texture = sprite[i].picnum;
-  
-  Stat = sprite[i].cstat;
-  Stat = Stat >> 4;
-  
-  if (Stat % 4 == 2) // Not a face sprite /  This can probably be nuked because of above code
-  W_FlatSprite(sprite[i].x, sprite[i].y, sprite[i].z, sprite[i].ang, width, height, pwall, f);
+   
+  WriteFlatSprite(i,  width, height, pwall, f);
 
  }
  printf("[ Ok ]\n");
+ fclose(log);
 }
 
 // Change to ambient sound - fix this for qBlood? Can I use noise to play a wave?

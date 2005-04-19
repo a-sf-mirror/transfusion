@@ -33,7 +33,7 @@ void WriteCeiling(FILE *f, const long SectorNumber, const long Plus)
 #ifdef QUAKE2
  sprintf(Texture, "e1u1/skip 0 0 0 1.00 1.00 1 0 0");
 #elif defined QUAKE1
-sprintf(Texture, "sky1 0 0 0 1.00 1.00 1 0 0"); 
+sprintf(Texture, TEXTUREPREFIX "sky1 0 0 0 1.00 1.00 1 0 0"); 
 #endif
     }
 
@@ -91,9 +91,9 @@ sprintf(Texture, "sky1 0 0 0 1.00 1.00 1 0 0");
   point2.y = wall[wall[j].point2].y;
   
   if (wall[j].nextwall != -1) // If there's another wall connected
-      sprintf(Texture, "tile%.4d", wall[wall[j].nextwall].picnum);
+      sprintf(Texture, TEXTUREPREFIX "tile%.4d", wall[wall[j].nextwall].picnum);
   else // No conecting wall
-      sprintf(Texture, "tile%.4d", wall[j].picnum);
+      sprintf(Texture, TEXTUREPREFIX "tile%.4d", wall[j].picnum);
 
  if (Stat % 2 == 1) // This indicates paralaxxing
   fprintf(f, "  ( %d %d %d ) ( %d %d %d ) ( %d %d %d ) sky1 0 0 0 1.00 1.00 0 133 1\n", 
@@ -109,9 +109,9 @@ sprintf(Texture, "sky1 0 0 0 1.00 1.00 1 0 0");
  Texture[0] = '\0';
  
  if (Stat % 2 == 1) // This indicates paralaxxing
-	 sprintf(Texture, "sky1 0 0 0 1.00 1.00 0 133 1");
+	 sprintf(Texture, TEXTUREPREFIX "sky1 0 0 0 1.00 1.00 0 133 1");
 
- else sprintf(Texture, "tile%.4d 0 0 0 0.50 0.50 1 0 0", sector[SectorNumber].ceilingpicnum);
+ else sprintf(Texture, TEXTUREPREFIX "tile%.4d 0 0 0 0.50 0.50 1 0 0", sector[SectorNumber].ceilingpicnum);
 
  
  // This chunk ends the floor drawing, it draws ???

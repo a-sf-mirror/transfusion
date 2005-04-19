@@ -16,15 +16,21 @@
 #define SCALE 8 //Divider = 16 , was 11 when I started- TIM
 #define MAXTILES 9216 // Redneck Rampage uses the most textures. ARTFILES * 256?
 #define THICK 2 // Generic brush thickness, 1 causes bsp issues with quake 1
+#define ZADJUST 14.5 // Was 18 when I started
 #define BLOOD
 #define QUAKE1 // This is what qBlood needs 
 
 // TESTME: I should try this on more games.
 #ifdef QUAKE1
 #define MAPSCALE 2 // quake 1 
+#define TEXTUREPREFIX
 #else
 #define MAPSCALE 1 // 1 for quake 2, 3, HL
+#define TEXTUREPREFIX "blood\"" // This should be tweaked for each "to" game. 
 #endif
+
+#define ZSCALE (MAPSCALE * -128)
+
 
 // I should consider putting more games here.
 #ifdef BLOOD
@@ -202,15 +208,15 @@ void DrawSector(FILE *NewMap, const unsigned short i);
 /***** w_win97.c *****/
 
 // Primary wall writing function
-void W_Wall(TPoint point1, TPoint point2, FILE *NewMap, TWall Wall);
+void W_Wall(const TPoint point1, const TPoint point2, FILE *f, const TWall wall);
 
 // Writeline circumvents having to use fprintf and it's formating in the text repetatively
 void WriteLine(long x1, long y1, long z1, long x2, long y2, long z2, long x3, long y3, long z3, 
                char *Texture, TWall Wall, FILE *NewMap);
 
 // Writes a flat sprite
-void W_FlatSprite(long x, long y, long z, long angle, long width, long height, 
-                  TWall Wall, FILE *NewMap);
+void WriteFlatSprite(const unsigned short SpriteNumber, const long width, const long height, 
+                     const TWall wall, FILE *newmap);
 
 
 /***** wall.c *****/

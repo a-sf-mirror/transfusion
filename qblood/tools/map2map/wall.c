@@ -9,7 +9,7 @@ void WriteWall(TPoint point1, TPoint point2, FILE *f, const unsigned short i)
  printf("Write wall called\n");
 
  // This should be tweaked per "to" game
-sprintf(Texture, "tile%.4d", wall[i].picnum);
+sprintf(Texture, TEXTUREPREFIX "tile%.4d", wall[i].picnum);
 
 
  if ((point1.x == point2.x) && (point1.y == point2.y))

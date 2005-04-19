@@ -7,13 +7,15 @@ void CalcAll()
  short i, Xadjust, Yadjust; 
 
  printf("Scaling and recentering the coordinates\n");
+  
  for (i = 0; i < numsectors; i++)
  {
-  sector[i].ceilingz /= SCALE;
-  sector[i].floorz   /= SCALE;
-  
+  sector[i].ceilingz /= ZSCALE; //SCALE; - Build uses units of 128/256/512/1024
+  sector[i].floorz   /= ZSCALE; //SCALE;
+  /*
   if (sector[i].ceilingz > MaxH) 
 	  MaxH = sector[i].ceilingz;
+      */
  }
 
  for (i = 0; i < numwalls; i++)
@@ -24,11 +26,13 @@ void CalcAll()
   if (wall[i].y < MinY) MinY = wall[i].y;
  }
 
+ /*
  for (i = 0; i < numsectors; i++)
  {
-  sector[i].ceilingz = (MaxH - sector[i].ceilingz) / 14.5/MAPSCALE; // 14.5 was 18
-  sector[i].floorz   = (MaxH - sector[i].floorz  ) / 14.5/MAPSCALE; // 
+  sector[i].ceilingz = (MaxH - sector[i].ceilingz) / ZADJUST/MAPSCALE; // ZADJUST was 14.5 
+  sector[i].floorz   = (MaxH - sector[i].floorz  ) / ZADJUST/MAPSCALE; // while testing E6M8
  }
+*/
 
  for (i = 0; i < numwalls; i++)
  {
@@ -48,8 +52,8 @@ void CalcAll()
   sprite[i].x = -4000+(sprite[i].x)        / SCALE/MAPSCALE;
 
   sprite[i].y = -4000+(MaxY - sprite[i].y) / SCALE/MAPSCALE;
-  sprite[i].z = sprite[i].z / SCALE;
-  sprite[i].z = (MaxH - sprite[i].z) / 14.5/MAPSCALE;
+  sprite[i].z /= ZSCALE; // SCALE;
+  //sprite[i].z = (MaxH - sprite[i].z) / ZADJUST/MAPSCALE;
 
  
   sprite[i].ang /= ANGLESCALE;
@@ -64,7 +68,7 @@ void CalcAll()
   startx = -4000+(startx)        / SCALE/MAPSCALE;
 
   starty = -4000+(MaxY - starty) / SCALE/MAPSCALE;
-  startz = (MaxH - startz / SCALE) / SCALE/MAPSCALE;
+  startz /= ZSCALE; //(MaxH - startz / SCALE) / SCALE/MAPSCALE;
 
 // Now to recenter everything that just got scaled 
   MaxX = MinX = wall[0].x;

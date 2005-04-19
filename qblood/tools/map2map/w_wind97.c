@@ -1,7 +1,7 @@
 #include "global.h"
 
 // Primary wall writing function 
-void W_Wall(TPoint point1, TPoint point2, FILE *f, TWall wall)
+void W_Wall(const TPoint point1, const TPoint point2, FILE *f, const TWall wall)
 {
 
  double radian = 0;
@@ -16,7 +16,7 @@ void W_Wall(TPoint point1, TPoint point2, FILE *f, TWall wall)
  if (point2.zt == point2.zb) 
      return; // The ceiling is the floor - very bad 
 
- sprintf(Texture, "tile%.4d", wall.texture);
+ sprintf(Texture, TEXTUREPREFIX "tile%.4d", wall.texture);
 
  if ((point2.x != point1.x) && (point2.y != point1.y))
  {
@@ -69,24 +69,24 @@ void W_Wall(TPoint point1, TPoint point2, FILE *f, TWall wall)
  if ((radian > 135) && (radian <= 225))
  {
   fprintf(f, " {\n");
-  WriteLine( 0, 0, point1.zt, 0,    500, point1.zt, 500,  0,  point2.zt, Texture, wall, f);
+  WriteLine( 0, 0, point1.zt, 0, 500, point1.zt, 500, 0,  point2.zt, Texture, wall, f);
   WriteLine( point2.x, point2.y-THICK, point2.zt, point1.x, point1.y-THICK, point1.zt, point1.x, point1.y-THICK, point1.zb, Texture, wall, f);
   WriteLine( point1.x, point1.y-THICK, point1.zt, point1.x, point1.y, point1.zt, point1.x, point1.y,   point1.zb, Texture, wall, f);
   WriteLine( point1.x, point1.y, point1.zt, point2.x, point2.y,  point2.zt, point2.x, point2.y,   point2.zb, Texture, wall, f);
   WriteLine( point2.x, point2.y,  point2.zt, point2.x, point2.y-THICK, point2.zt, point2.x, point2.y-THICK, point2.zb, Texture, wall, f);
-  WriteLine( 0, 0,  point1.zb, 500,  0,  point1.zb, 0,    500,    point2.zb, Texture, wall, f);
+  WriteLine( 0, 0,  point1.zb, 500, 0,  point1.zb, 0, 500, point2.zb, Texture, wall, f);
   fprintf(f, " }\n");
  } 
 
  if ((radian > 225) && (radian <= 315))
  {
   fprintf(f, " {\n");
-  WriteLine( 0, 0, point1.zt, 0,    500, point1.zt, 500,  0,  point2.zt, Texture, wall, f);
+  WriteLine( 0, 0, point1.zt, 0, 500, point1.zt, 500, 0,  point2.zt, Texture, wall, f);
   WriteLine(  point2.x+THICK, point2.y, point2.zt, point1.x+THICK, point1.y, point1.zt,  point1.x+THICK, point1.y, point1.zb, Texture, wall, f);
   WriteLine(  point1.x+THICK, point1.y, point1.zt, point1.x, point1.y, point1.zt, point1.x, point1.y, point1.zb, Texture, wall, f);
   WriteLine(  point1.x, point1.y, point1.zt, point2.x, point2.y, point2.zt, point2.x, point2.y, point2.zb, Texture, wall, f);
   WriteLine(  point2.x, point2.y, point2.zt, point2.x+THICK, point2.y, point2.zt, point2.x+THICK, point2.y, point2.zb, Texture, wall, f);
-  WriteLine( 0, 0,  point1.zb, 500,  0,  point1.zb, 0,    500,    point2.zb, Texture, wall, f);
+  WriteLine( 0, 0,  point1.zb, 500, 0,  point1.zb, 0, 500, point2.zb, Texture, wall, f);
   fprintf(f, " }\n");
  }
 
@@ -103,37 +103,41 @@ void WriteLine(long x1, long y1, long z1, long x2, long y2, long z2, long x3, lo
   wall.rot_angle, /* w.x_scale, w.y_scale,*/ wall.content_a, wall.surface_a, wall.light_v);
 }
 
-// Called in item.c, to write a flat sprite
-void W_FlatSprite(long x, long y, long z, long angle, long width, long height, TWall wall, FILE *f)
+// Writes a flat sprite (i.e. Painting, Switch, etc)
+void WriteFlatSprite(const unsigned short i, const long width, const long height, 
+                     const TWall wall, FILE *f)
 {
  
- long x1, x2, x3, x4, y1, y2, y3, y4, nx1, nx2, nx3, nx4, ny1, ny2, ny3, ny4;
+ long x1, x2, y1, y2, nx1, nx2, nx3, nx4, ny1, ny2, ny3, ny4, z;
  char Texture[10] = "";
-  
- sprintf(Texture, "tile%.4d", wall.texture);
- x4 = width / 2;
- x3 = width / 2;
- x2 = -1 * (width / 2);
- x1 = -1 * (width / 2);
+ 
+ z = sprite[i].z;
+   
+ sprintf(Texture, TEXTUREPREFIX "tile%.4d", wall.texture);
+ x1 = -1 * (width / 2); // Divide height + width by 2 to spread the texture evenly
+ x2 = width / 2;
+
  y1 = height / 2;
- y4 = height / 2;
  y2 = -1 * (height / 2);
- y3 = -1 * (height / 2);
+ 
  // ==> px fer lag <== //
- nx1 = x + x1*cos(angle*(PI*2)/2048)-y1*sin(angle*(PI*2)/2048);
- ny1 = y + x1*sin(angle*(PI*2)/2048)+y1*cos(angle*(PI*2)/2048);
- nx2 = x + x2*cos(angle*(PI*2)/2048)-y2*sin(angle*(PI*2)/2048);
- ny2 = y + x2*sin(angle*(PI*2)/2048)+y2*cos(angle*(PI*2)/2048);
- nx3 = x + x3*cos(angle*(PI*2)/2048)-y3*sin(angle*(PI*2)/2048);
- ny3 = y + x3*sin(angle*(PI*2)/2048)+y3*cos(angle*(PI*2)/2048);
- nx4 = x + x4*cos(angle*(PI*2)/2048)-y4*sin(angle*(PI*2)/2048);
- ny4 = y + x4*sin(angle*(PI*2)/2048)+y4*cos(angle*(PI*2)/2048);
+ nx1 = sprite[i].x + x1 -y1;
+ ny1 = sprite[i].y + x1 +y1;
+ nx2 = sprite[i].x + x1 -y2;
+ ny2 = sprite[i].y + x1 +y2;
+ nx3 = sprite[i].x + x2 -y2;
+ ny3 = sprite[i].y + x2 +y2;
+ nx4 = sprite[i].x + x2 -y1;
+ ny4 = sprite[i].y + x2 +y1;
+
+ // "sfx/blackness" in lines 2, 3, 4, 5 was replaced with Texture. Lotsa testing needed still
  fprintf(f, "{\n");                                                        
- WriteLine(0, 0, z+1, 0, 500, z+1, 500, 0, z+1, Texture, wall, f); 
- WriteLine( nx1, ny1, z+1,  nx2, ny2, z+1,  nx2, ny2, z, "sfx/blackness", wall, f);
- WriteLine( nx2, ny2, z+1,  nx3, ny3, z+1,  nx3, ny3, z, "sfx/blackness", wall, f);
- WriteLine( nx3, ny3, z+1,  nx4, ny4, z+1,  nx4, ny4, z, "sfx/blackness", wall, f);
- WriteLine( nx4, ny4, z+1,  nx1, ny1, z+1,  nx1, ny1, z, "sfx/blackness", wall, f);
- WriteLine(0, 0, z, 500, 0, z, 0, 500, z, Texture, wall, f);
+ WriteLine(0, 0, z+10, 0, 500, z+10, 500, 0, z+10, Texture, wall, f); 
+ WriteLine( nx1, ny1, z+10,  nx2, ny2, z+10,  nx2, ny2, z-10, Texture, wall, f);
+ WriteLine( nx2, ny2, z+10,  nx3, ny3, z+10,  nx3, ny3, z-10, Texture, wall, f);
+ WriteLine( nx3, ny3, z+10,  nx4, ny4, z+10,  nx4, ny4, z-10, Texture, wall, f);
+ WriteLine( nx4, ny4, z+10,  nx1, ny1, z+10,  nx1, ny1, z-10, Texture, wall, f);
+ WriteLine(0, 0, z-10, 500, 0, z-10, 0, 500, z-10, Texture, wall, f);
  fprintf(f, "}\n");
+ 
 }

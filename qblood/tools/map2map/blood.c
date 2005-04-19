@@ -75,6 +75,14 @@ void Blood_To_qBlood (const unsigned short i, FILE *f)
 		WriteSimpleItem(i, "weapon_lifeleech", f);
 		return;
 
+    case RANDOMWEAPON: //527
+        WriteSimpleItem(i, "weapon_random", f);
+		return;
+
+    case ACTIVEPROXIMITY://3444
+        WriteSimpleItem(i, "weapon_activeproximity", f);
+		return;
+
 /* Ammo */
 	case FLARES:		//816
 		WriteSimpleItem(i, "item_flares", f);
@@ -412,6 +420,7 @@ void Blood_To_qBlood (const unsigned short i, FILE *f)
 		return;
 
     case TREE2:				//541
+    case TREE10:            //797
         WriteSimpleItem(i, "obj_tree2", f);
 		return;
 
@@ -460,8 +469,21 @@ void Blood_To_qBlood (const unsigned short i, FILE *f)
         AddLight(f, i, 200, "light_flame_large_yellow");
         return;
 
+    case WOODTORCH:         // 506 - 509
+    case 507:
+    case 508:
+    case 509:
+        AddLight(f, i, 200, "obj_eflmtrch");
+        return;
+
+    case BRASSTORCH:		// 570
+    case GOLDTORCH:			// 571
+        WriteSimpleItem(i, "obj_cflmtrch", f);
+		return;
+
 /* Atmospheric stuff (i.e. sets the blood "mood" */
     case CROSSTOMBSTONE:	//678
+    case WOODCROSSTOMBSTONE://700 
         WriteSimpleItem(i, "obj_tombstn1", f);
 		return;
 
@@ -511,13 +533,6 @@ void Blood_To_qBlood (const unsigned short i, FILE *f)
         WriteSimpleItem(i, "obj_cross", f);
 		return;
 
-    case FLAMINGTORCH1: //506
-    case FLAMINGTORCH2: //507
-    case FLAMINGTORCH3: //508
-    case FLAMINGTORCH4: //509
-        WriteSimpleItem(i, "obj_eflmtrch", f);
-		return;
-
     case SMALLPLANT:    //1010
         WriteSimpleItem(i, "obj_plantgen", f);
 		return;
@@ -561,6 +576,43 @@ void Blood_To_qBlood (const unsigned short i, FILE *f)
     case SKULLSIDE:		//807
         WriteSimpleItem(i, "obj_skull", f);
 		return;
+
+    case CLOSEDBOOK:    //348
+        WriteSimpleItem(i, "obj_bookclos", f);
+		return;
+
+    case OPENBOOK:      //349
+        WriteSimpleItem(i, "obj_bookopen", f);
+		return;
+
+    case WEB1:	    //1066
+    case WEB2:      //1067
+    case WEB3:      //1068
+    case WEB4:		//1069
+    case WEB5:		//1087
+    case WEB6:		//1088
+    case WEB7:		//1089
+        WriteSimpleItem(i, "obj_webs", f);
+        return;
+
+    case SCROLL:    //833
+        WriteSimpleItem(i, "obj_h-book", f);
+		return;
+
+    case FLAG:     //3558 - 3565
+    case 3559:
+    case 3560:
+    case 3561:
+    case 3562:
+    case 3563:
+    case 3564:
+    case 3565:
+        WriteSimpleItem(i, "obj_flag", f);
+        return;
+
+    case BONEPILE: //4075 - CP TEXTURE
+        WriteSimpleItem(i, "obj_bonepile", f);
+        return;
 
     case 0: // Off the wall stuff, no picture 
         switch(sprite[i].lotag) // Cycle through known lotags
@@ -712,7 +764,7 @@ char* GetNewTextureName(const unsigned short i)
             return "+water3";
 
         default:
-            sprintf(buffer,"tile%.4d", wall[i].picnum);
+            sprintf(buffer,TEXTUREPREFIX "tile%.4d", wall[i].picnum);
             return buffer;  // If it's not on the list, just give it the default name.
     }
 

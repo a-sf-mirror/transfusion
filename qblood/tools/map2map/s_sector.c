@@ -98,7 +98,7 @@ void DrawBrush(FILE *f, const unsigned short WallNumber, long SectorFloor, long 
   point2.x = wall[wall[j].point2].x;
   point2.y = wall[wall[j].point2].y;
   
-  sprintf(Texture, "tile%.4d", wall[j].picnum);
+  sprintf(Texture, TEXTUREPREFIX "tile%.4d", wall[j].picnum);
   fprintf(f, "  (%d %d %d) (%d %d %d) (%d %d %d) %s 0 0 0 1 1 1 0 0\n", 
       point1.x, point1.y, 500, point2.x, point2.y, 500, point2.x, point2.y, 0, Texture); // 500?
 

@@ -43,7 +43,6 @@ Foundation, Inc., 59 Temple Place - Suite 330, Boston, MA  02111-1307, USA.
 #define STOOL				284
 #define GREYPIC_HUMAN		316 
 #define LEVELEND			318 // FLAT, MUST
-#define OPENBOOK            349 // simular hexen model
 #define STONE1              355
 #define JOJOSIGN			356
 #define OPHELIA             370 // MASKED
@@ -163,10 +162,10 @@ Foundation, Inc., 59 Temple Place - Suite 330, Boston, MA  02111-1307, USA.
 #define ELECTRICALOUTLET	1050
 #define METALFENCE			1060
 #define WATERVASE			1063
-#define WEB_PARTIAL			1066
-#define HANGINGWEB_MEDIUM	1067 // MASKED
-#define HANGINGWEB_SMALL	1068 // MASKED
-#define WEB					1069 // MASKED, GIBBABLE
+#define WEB1			    1066
+#define WEB2	            1067 // MASKED
+#define WEB3	            1068 // MASKED
+#define WEB4				1069 // MASKED, GIBBABLE
 #define SWITCH1_ON			1070 // use a brush
 #define SWITCH1_OFF			1071 // use a brush
 #define SWITCH2_ON			1072 // use a brush
@@ -177,6 +176,9 @@ Foundation, Inc., 59 Temple Place - Suite 330, Boston, MA  02111-1307, USA.
 #define SWITCH4_OFF			1077 // use a brush
 #define LIGHTSWITCH_ON		1078 // use a brush
 #define LIGHTSWITCH_OFF		1079 // use a brush
+#define WEB5                1087
+#define WEB6                1088
+#define WEB7                1089
 #define WALLCRACK			1127
 #define BLOODSPLAT_TINY		1149
 #define CLOCK				1165 // use a brush
@@ -276,6 +278,7 @@ Foundation, Inc., 59 Temple Place - Suite 330, Boston, MA  02111-1307, USA.
 #define TESLACANNON		539 // 8
 #define VOODOODOLL		525 // 9
 #define LIFELEECH		800 // 0
+#define RANDOMWEAPON    527
 
 /* Ammo - done */
 #define FLARES			816
@@ -352,12 +355,6 @@ Foundation, Inc., 59 Temple Place - Suite 330, Boston, MA  02111-1307, USA.
 
 /* Lights */
 #define HANGINGLIGHT		468 // custom model
-#define FLAMINGTORCH1       506 // Done
-#define FLAMINGTORCH2       507
-#define FLAMINGTORCH3       508
-#define FLAMINGTORCH4       509
-#define BRASSTORCH			570
-#define GOLDTORCH			571
 #define GARGOYLETORCH		572 // custom model
 #define THREE_CANDLE_STAND	580 // 580-583
 #define CANDLEABRA			584 // 584-587
@@ -366,6 +363,11 @@ Foundation, Inc., 59 Temple Place - Suite 330, Boston, MA  02111-1307, USA.
 #define HANGINGOLDLIGHT     641 // HANGING 1800'S STYLE LIGHT
 #define CANDLE2             938
 #define HANGINGFLAMEPOT     1701 // 1701 - 1707
+
+/* Lights, done */
+#define WOODTORCH           506  // 506 - 509, Wooden 
+#define BRASSTORCH			570
+#define GOLDTORCH			571
 #define FLAME				2101 // 2101 - 2114
 #define BIGFLAME			3566 // 3566 - 3579
 
@@ -379,6 +381,8 @@ Foundation, Inc., 59 Temple Place - Suite 330, Boston, MA  02111-1307, USA.
 /* Atmospheric stuff (i.e. sets the blood "mood" - only stuff thats done goes here*/
 #define SKULLSTICK1         257
 #define SKULLSTICK2         259
+#define CLOSEDBOOK          348
+#define OPENBOOK            349 // simular hexen model
 #define SMALLVIAL           517
 #define LARGEVASE1			537
 #define TREE1				540 // Trees all done 
@@ -398,11 +402,14 @@ Foundation, Inc., 59 Temple Place - Suite 330, Boston, MA  02111-1307, USA.
 #define SEAWEED3            666
 #define SEAWEED4            667
 #define CROSSTOMBSTONE		678
-#define HALFSKULL           683 
+#define HALFSKULL           683
+#define WOODCROSSTOMBSTONE  700 
 #define OVALTOMBSTONE		701
 #define TILTEDCROSS 		703 // WOODEN CROSS
 #define LARGEVASE2			739
+#define TREE10              797
 #define SKULLSIDE			807
+#define SCROLL              833
 #define	BARREL1				907 // Which barrel is gibbable?
 #define	BARREL2				925
 #define POTTEDPLANT			1009
@@ -411,7 +418,7 @@ Foundation, Inc., 59 Temple Place - Suite 330, Boston, MA  02111-1307, USA.
 #define FROZENCOW           1351 
 #define SHOVEL				1712
 #define LIGHTNING			2090 // EVENT_LIGHTING
-
+#define BONEPILE            4075 // CP TEXTURE
 /* WTF ??? 
 784  BALL THING
 3997  DIDN'T CONVERT

@@ -174,7 +174,8 @@ void WriteFloor(FILE *f, const unsigned short SectorNumber, const long Plus)
   vertex3.zt = sector[NextSector].floorz + (sector[PreviousSector].floorz - sector[NextSector].floorz);
   
   else */
-  vertex3.zt = GetZ(vertex1.x, vertex1.y, vertex3.x, vertex3.y, STop, Angle);
+  vertex3.zt = STop + (sector[SectorNumber].floorheinum / -41);
+      //GetZ(vertex1.x, vertex1.y, vertex3.x, vertex3.y, STop, Angle);
 
   vertex3.zb = vertex3.zt-10;
 
@@ -202,12 +203,12 @@ void WriteFloor(FILE *f, const unsigned short SectorNumber, const long Plus)
   point2.y = wall[wall[j].point2].y;
 
   if (wall[j].nextwall != -1) 
-      sprintf(Texture, "tile%.4d", wall[wall[j].nextwall].picnum);
+      sprintf(Texture, TEXTUREPREFIX "tile%.4d", wall[wall[j].nextwall].picnum);
      
-  else sprintf(Texture, "tile%.4d", wall[j].picnum);
+  else sprintf(Texture, TEXTUREPREFIX "tile%.4d", wall[j].picnum);
 
   if (Stat % 2 == 1) // Parallaxxing, highly unlikely for a floor
-        fprintf(f, "  ( %d %d %d ) ( %d %d %d ) ( %d %d %d ) e1u2/sky1 0 0 0 1.00 1.00 0 133 1\n", 
+        fprintf(f, "( %d %d %d ) ( %d %d %d ) ( %d %d %d ) e1u2/sky1 0 0 0 1.00 1.00 0 133 1\n", 
           point2.x, point2.y, 500, point1.x, point1.y, 500, point1.x, point1.y, 0, Texture);   
   
   else // Why 0 and 500? 
@@ -223,7 +224,7 @@ void WriteFloor(FILE *f, const unsigned short SectorNumber, const long Plus)
 #ifdef QUAKE2
  sprintf(Texture, "e1u1/skip"); // Good for quake 2, but not 1
 #elif defined QUAKE1
- sprintf(Texture, "tile%.4d", sector[SectorNumber].floorpicnum);
+ sprintf(Texture, TEXTUREPREFIX "tile%.4d", sector[SectorNumber].floorpicnum);
 #endif
 
  // This chunk ends the floor drawing, it draws ???
