@@ -22,14 +22,14 @@ void WriteCeiling(FILE *f, const unsigned short SectorNumber, short Plus)
  CeilingTop = sector[SectorNumber].ceilingz +Plus;
 
  // Just in case...
- if (CeilingTop < CeilingBottom)
+ if (CeilingTop <= CeilingBottom)
      CeilingTop = CeilingBottom +THICK;
 
 
  j = wallpointer = sector[SectorNumber].wallptr;
  
- point1.x = point2.x = wall[j].x;
- point1.y = point2.y = wall[j].y;
+ //point1.x = point2.x = wall[j].x;
+ //point1.y = point2.y = wall[j].y;
  point1.zt = CeilingTop;
    
  fprintf(f, "{\n");
@@ -88,7 +88,7 @@ sprintf(Texture, TEXTUREPREFIX "sky1 0 0 0 1.00 1.00 1 0 0");
                    0, 0, CeilingTop, 0, 500, CeilingTop, 500, 0, CeilingTop, Texture); 
 
  
- //do // Write all the ceilings sides
+ // Write all the ceilings sides
  for (k = 0; k < sector[SectorNumber].wallnum; k++)
  {
   point1.x = wall[j].x;
@@ -110,7 +110,7 @@ sprintf(Texture, TEXTUREPREFIX "sky1 0 0 0 1.00 1.00 1 0 0");
   point2.x, point2.y, 500, point1.x, point1.y, 500, point1.x, point1.y, 0, Texture); 
 
   j = wall[j].point2;
- } //while (j != wallpointer);
+ }
 
  Texture[0] = '\0';
  

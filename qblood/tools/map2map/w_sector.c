@@ -6,10 +6,28 @@ void DivAndWrite(FILE *f, const unsigned short SectorNumber, const short Up, con
  long maxX = -5000000, maxY = -5000000, minX =  5000000, minY =  5000000, wallpointer, j, TimeOut = 1000;
  unsigned short i = 0;
 
- DrawSectorWalls(f, SectorNumber, Down, NORMAL);
-// for (i = 0; i < sector[SectorNumber].wallnum; i++)
-// AlternateWriteWall(f, sector[SectorNumber].wallptr + i, SectorNumber, Down);
+ if (Down < 0)
+     //sector[SectorNumber].ceilingz == sector[SectorNumber].floorz && Down != 0)
+ {
+     for (i = 0; i < sector[SectorNumber].wallnum; i++)
+         AlternateWriteWall(f, sector[SectorNumber].wallptr + i, SectorNumber, Down);
+     DrawBrush(f, sector[SectorNumber].wallptr, sector[SectorNumber].floorz, 
+         sector[SectorNumber].floorz + Down);
+     //DrawSectorWalls(f, SectorNumber, Down, ALTERED);
+ }
+
+ if (Up > 0)
+ {
+     for (i = 0; i < sector[SectorNumber].wallnum; i++)
+         AlternateWriteWall(f, sector[SectorNumber].wallptr + i, SectorNumber, Up);
+     DrawBrush(f, sector[SectorNumber].wallptr, sector[SectorNumber].ceilingz + Up, 
+         sector[SectorNumber].ceilingz);
+ }
+
   
+ //else 
+ DrawSectorWalls(f, SectorNumber, Down, NORMAL);
+
  // Initialize the temporary sector
  sector[numsectors] = sector[SectorNumber];        // numsectors is the value for temp sector
  sector[numsectors].wallnum = 4;
@@ -59,36 +77,37 @@ void DivAndWrite(FILE *f, const unsigned short SectorNumber, const short Up, con
  wall[numwalls+3].y = maxY;
  wall[numwalls+3].point2 = numwalls+2;
 
- // Write floor is the reason for the rectangles
- WriteFloor  (f, numsectors, Down);       // numsectors is the value for temp sector
- WriteCeiling(f, numsectors, Up);
+   //if (Down == 0)
+         WriteFloor  (f, numsectors, Down);
+     
+   //if (Up == 0)
+         WriteCeiling(f, numsectors, Up);
 }
 
 // The main sector function. Essentially writes all the sectors
 void DrawSector(FILE *f, const unsigned short SectorNumber)
 {
- int  j;
  long SectorFloorZ, SectorCeilingZ; 
- short Down = -15, Up = 1, wallpointer, i = 0;
+ short Down = 0, Up = 0, wallpointer, i = 0; // TESTME A LOT!
+ //short Down = -15, Up = 1, wallpointer, i = 0;
 
  SectorFloorZ  = sector[SectorNumber].floorz;
  SectorCeilingZ  = sector[SectorNumber].ceilingz;
- j = wallpointer = sector[SectorNumber].wallptr;
+ wallpointer = sector[SectorNumber].wallptr;
   
  for (i = 0; i < sector[SectorNumber].wallnum; i++)
  {
-  if (wall[j].nextsector != -1) // Attached to another sector
+  if (wall[wallpointer + i].nextsector  != -1) // Attached to another sector
   {
-   if (sector[wall[j].nextsector].floorz - SectorFloorZ < Down)
-	   Down = sector[wall[j].nextsector].floorz   - SectorFloorZ; // For steps, etc
+   if (sector[wall[wallpointer + i].nextsector ].floorz - SectorFloorZ < Down)
+	   Down = sector[wall[wallpointer + i].nextsector ].floorz   - SectorFloorZ; // For steps, etc
 
-   if ((sector[wall[j].nextsector].ceilingz - SectorCeilingZ > Up)
-	   && (sector[wall[j].nextsector].ceilingz != sector[wall[j].nextsector].floorz)) 
-	   Up = sector[wall[j].nextsector].ceilingz - SectorCeilingZ;
+   if ((sector[wall[wallpointer + i].nextsector ].ceilingz - SectorCeilingZ > Up)
+	   && (sector[wall[wallpointer + i].nextsector ].ceilingz != sector[wall[wallpointer + i].nextsector].floorz)) 
+	   Up = sector[wall[wallpointer + i].nextsector ].ceilingz - SectorCeilingZ;
 
-   M_Wall[j] = M_Wall[wall[j].nextwall] = 1;
+   M_Wall[wallpointer + i] = M_Wall[wall[wallpointer + i].nextwall] = 1;
   }
-  j = wall[j].point2;
  }  
 
   if (!TestAngles(SectorNumber))  // Checks if the sector is semi-circular

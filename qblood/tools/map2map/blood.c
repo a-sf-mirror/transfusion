@@ -80,7 +80,7 @@ void Blood_To_qBlood (const unsigned short i, FILE *f)
 		return;
 
     case ACTIVEPROXIMITY://3444
-        WriteSimpleItem(i, "weapon_activeproximity", f);
+        WriteSimpleItem(i, "proximity_mine", f);
 		return;
 
 /* Ammo */
@@ -431,22 +431,22 @@ void Blood_To_qBlood (const unsigned short i, FILE *f)
     case TREE3:             //542
     case TREE4:				//543
     case TREE6:				//545
-        WriteSimpleItem(i, "obj_tree", f);
+        WriteFlaggedItem(i, "obj_tree", f, 1);
 		return;
 
     case TREE2:				//541
     case TREE10:            //797
-        WriteSimpleItem(i, "obj_tree2", f);
+        WriteFlaggedItem(i, "obj_tree2", f, 1);
 		return;
 
     case TREE5:				//544
     case TREE8:				//547
-        WriteSimpleItem(i, "obj_hedge1", f);
+        WriteFlaggedItem(i, "obj_hedge1", f, 1);
 		return;
     	
     case TREE7:				//546 TREE9
     case TREE9:				//599 
-        WriteSimpleItem(i, "obj_bush", f);
+        WriteFlaggedItem(i, "obj_bush", f, 1);
 		return;
 
 /* Lights */
@@ -493,29 +493,29 @@ void Blood_To_qBlood (const unsigned short i, FILE *f)
 
     case BRASSTORCH:		// 570
     case GOLDTORCH:			// 571
-        WriteSimpleItem(i, "obj_cflmtrch", f);
+        WriteLight(f, i, 200, "obj_cflmtrch");
 		return;
 
 /* Atmospheric stuff (i.e. sets the blood "mood" */
     case CROSSTOMBSTONE:	//678
     case WOODCROSSTOMBSTONE://700 
-        WriteSimpleItem(i, "obj_tombstn1", f);
+        WriteFlaggedItem(i, "obj_tombstn1", f, 1);
 		return;
 
     case OVALTOMBSTONE:		//701
-        WriteSimpleItem(i, "obj_tombstn2", f);
+        WriteFlaggedItem(i, "obj_tombstn2", f, 1);
 		return;
 
     case RIPTOMBSTONE:		//704
-        WriteSimpleItem(i, "obj_tombstn3", f);
+        WriteFlaggedItem(i, "obj_tombstn3", f, 1);
 		return;
 
     case SHOVEL:		    //1712
-        WriteSimpleItem(i, "obj_shovel", f);
+        WriteFlaggedItem(i, "obj_shovel", f, 1);
 		return;
 
     case STATUE1:			//536
-        WriteSimpleItem(i, "obj_fountain", f);
+        WriteFlaggedItem(i, "obj_fountain", f, 1);
 		return;
 /*
     case CRUCIFIEDINNOCENT:	//648
@@ -527,7 +527,7 @@ void Blood_To_qBlood (const unsigned short i, FILE *f)
 		return;
     
     case SMALLVIAL:     //517
-        WriteSimpleItem(i, "obj_boost", f);
+        WriteFlaggedItem(i, "obj_boost", f, 1);
 		return;
 
     case BARREL1:		//907 - Which barrel is gibbable?
@@ -536,72 +536,72 @@ void Blood_To_qBlood (const unsigned short i, FILE *f)
 		return;
 
     case FROZENCOW:     //1351
-        WriteSimpleItem(i, "obj_beefslab", f);
+        WriteFlaggedItem(i, "obj_beefslab", f, 1);
 		return;
 
     case STOOL:			//284
-        WriteSimpleItem(i, "obj_stool", f);
+        WriteFlaggedItem(i, "obj_stool", f, 1);
 		return;
 
     case CAULDRON1:     //550
     case CAULDRON2:     //551
-        WriteSimpleItem(i, "obj_cauldren", f);
+        WriteFlaggedItem(i, "obj_cauldren", f, 1);
 		return;
 
     case TILTEDCROSS: 	//703
-        WriteSimpleItem(i, "obj_cross", f);
+        WriteFlaggedItem(i, "obj_cross", f, 1);
 		return;
 
     case SMALLPLANT:    //1010
-        WriteSimpleItem(i, "obj_plantgen", f);
+        WriteFlaggedItem(i, "obj_plantgen", f, 1);
 		return;
 
     case POTTEDPLANT:	//1009
-        WriteSimpleItem(i, "obj_planetmez", f);
+        WriteFlaggedItem(i, "obj_planetmez", f, 1);
 		return;
 
     case VASEPLANT:     //1013
-        WriteSimpleItem(i, "obj_planetrom", f);
+        WriteFlaggedItem(i, "obj_planetrom", f, 1);
 		return;
 
     case LARGE2HANDEDJUG://642
-        WriteSimpleItem(i, "obj_pot1", f);
+        WriteFlaggedItem(i, "obj_pot1", f, 1);
 		return;
     
     case LARGEVASE1:	//537
-        WriteSimpleItem(i, "obj_pot2", f);
+        WriteFlaggedItem(i, "obj_pot2", f, 1);
 		return;
     
     case LARGEVASE2:	//739
-        WriteSimpleItem(i, "obj_pot3", f);
+        WriteFlaggedItem(i, "obj_pot3", f, 1);
 		return;
 
     case SEAWEED1:      //664
     case SEAWEED2:      //665
     case SEAWEED3:      //666
     case SEAWEED4:      //667
-        WriteSimpleItem(i, "obj_seaweed", f);
+        WriteFlaggedItem(i, "obj_seaweed", f, 1);
 		return;
     
     case SKULLSTICK1:   //257
-        WriteSimpleItem(i, "obj_skllstk1", f);
+        WriteFlaggedItem(i, "obj_skllstk1", f, 1);
 		return;
 
     case SKULLSTICK2:   //259
-        WriteSimpleItem(i, "obj_skllstk2", f);
+        WriteFlaggedItem(i, "obj_skllstk2", f, 1);
 		return;
 
     case HALFSKULL:     //683 -- TWEAKME: There should be multiple skull types
     case SKULLSIDE:		//807
-        WriteSimpleItem(i, "obj_skull", f);
+        WriteFlaggedItem(i, "obj_skull", f, 1);
 		return;
 
     case CLOSEDBOOK:    //348
-        WriteSimpleItem(i, "obj_bookclos", f);
+        WriteFlaggedItem(i, "obj_bookclos", f, 1);
 		return;
 
     case OPENBOOK:      //349
-        WriteSimpleItem(i, "obj_bookopen", f);
+        WriteFlaggedItem(i, "obj_bookopen", f, 1);
 		return;
 /*
     case WEB1:	    //1066
@@ -611,12 +611,12 @@ void Blood_To_qBlood (const unsigned short i, FILE *f)
     case WEB5:		//1087
     case WEB6:		//1088
     case WEB7:		//1089
-        WriteSimpleItem(i, "obj_webs", f);
+        WriteFlaggedItem(i, "obj_webs", f);
         return;
 */
 
     case SCROLL:    //833
-        WriteSimpleItem(i, "obj_h-book", f);
+        WriteFlaggedItem(i, "obj_h-book", f, 1);
 		return;
 
     case FLAG:     //3558 - 3565
@@ -627,11 +627,11 @@ void Blood_To_qBlood (const unsigned short i, FILE *f)
     case 3563:
     case 3564:
     case 3565:
-        WriteSimpleItem(i, "obj_flag", f);
+        WriteFlaggedItem(i, "obj_flag", f, 1);
         return;
 
     case BONEPILE: //4075 - CP TEXTURE
-        WriteSimpleItem(i, "obj_bonepile", f);
+        WriteFlaggedItem(i, "obj_bonepile", f, 1);
         return;
 
     case 0: // Off the wall stuff, no picture 

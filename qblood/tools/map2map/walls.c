@@ -21,9 +21,10 @@ void DrawSectorWalls(FILE *f, const unsigned short i, const short Down, const ch
   else // SectorType == ALTERED
   {
       if (Down < 0)
-      {
+      {printf("Called\n");
           SectorFloor = sector[i].floorz +Down; // Floor going down
           SectorCeiling = sector[i].floorz;
+          assert(SectorFloor != SectorCeiling);
       }
       else// Down >= 0
       {
@@ -51,6 +52,21 @@ void DrawSectorWalls(FILE *f, const unsigned short i, const short Down, const ch
 
  for (k = 0; k < sector[i].wallnum; k++)
  {
+
+     FILE* log =NULL;
+
+ log = fopen ("log.txt","a");
+      fprintf(log, "Sector Number: %d    Ceiling z: %d    Floor z: %d\n", 
+      i, sector[i].ceilingz, sector[i].floorz); 
+      
+      if (wall[wallpointer + k].nextsector != -1)
+          fprintf(log, "Next Sector Number: %d    Ceiling z: %d    Floor z: %d\n",
+              wall[wallpointer + k].nextsector, sector[wall[wallpointer + k].nextsector].ceilingz,
+              sector[wall[wallpointer + k].nextsector].floorz);
+
+          fprintf(log, "Down = %d\n\n", Down); 
+          fclose(log);
+
   vertex1.x  = wall[wallpointer + k].x;
   vertex1.y  = wall[wallpointer + k].y;
   vertex1.zt = vertex2.zt = SectorCeiling;
@@ -61,6 +77,14 @@ void DrawSectorWalls(FILE *f, const unsigned short i, const short Down, const ch
 
   else // Walls in a sloped sector
       vertex1.zb = vertex2.zb = SectorFloor - (sector[i].floorheinum / -1024) -1;
+
+  if (vertex1.zt == vertex1.zb || vertex2.zt == vertex2.zb)
+      if (wall[wallpointer + k].nextsector != -1)
+     {
+      vertex1.zt = vertex2.zt = sector[wall[wallpointer + k].nextsector].ceilingz;
+      vertex1.zb = vertex2.zb = sector[wall[wallpointer + k].nextsector].floorz;
+     }
+     // else printf("Down = %d\n", Down);
   
   vertex2.x  = wall[wall[wallpointer + k].point2].x;
   vertex2.y  = wall[wall[wallpointer + k].point2].y;

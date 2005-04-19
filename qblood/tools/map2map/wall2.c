@@ -1,29 +1,41 @@
 #include "global.h"
 
 // Writes a wall like in b2q
-void AlternateWriteWall(FILE *f, const unsigned short WallNumber, const unsigned short SectorNumber, const short Down)
+void AlternateWriteWall(FILE *f, const unsigned short WallNumber, const unsigned short SectorNumber, const short Plus)
 {
  char Texture[10] = "";
  double radian = 0;
  wall_t Wall1, Wall2;
- int ceiling, floor, MinZ;
+ int ceiling = 0, floor = 0, MinZ;
  unsigned short i;
+ FILE* log =NULL;
 
  Wall1 = wall[WallNumber];
  Wall2 = wall[Wall1.point2];
- 
 
- // -15 will probably cause issues...     
- 
-/* if (Down < 0 && Down != -15 && wall[WallNumber].nextsector != 1 && wall[WallNumber].nextwall == -1) 
-      {
-          floor = sector[SectorNumber].floorz +Down; // Floor going down
-          ceiling = sector[SectorNumber].floorz;
-      }
-      else  
-         if (Down >= 0)
-      { */
+ assert(Plus != 0);
 
+ if (Plus < 0)
+ {
+     ceiling = sector[SectorNumber].floorz;
+     floor = sector[SectorNumber].floorz + Plus;
+ }
+ else if (Plus > 0)
+ {
+     ceiling = sector[SectorNumber].ceilingz + Plus;
+     floor = sector[SectorNumber].ceilingz;
+ }
+ else printf("Awwwwwww  FREAK OUT!\n");
+
+if (ceiling == floor && wall[WallNumber].nextsector != -1)
+{
+    ceiling = sector[wall[WallNumber].nextsector].ceilingz;
+    floor = sector[wall[WallNumber].nextsector].floorz;
+}
+
+
+
+ /*
 if (wall[WallNumber].nextsector != 1 && 
     (sector[SectorNumber].ceilingz - sector[wall[WallNumber].nextsector].ceilingz != 0 ||
     sector[SectorNumber].floorz - sector[wall[WallNumber].nextsector].floorz != 0 )
@@ -40,11 +52,7 @@ if (wall[WallNumber].nextsector != 1 &&
     floor = MinZ;
 }
 
-
-
-
-
-//          ceiling = sector[SectorNumber].floorz +Down; // Floor going up - steps, small objects, etc
+//          ceiling = sector[SectorNumber].floorz +Plus; // Floor going up - steps, small objects, etc
 //          floor = sector[wall[WallNumber].nextsector].floorz;
               //sector[SectorNumber].floorz;
       //}
@@ -53,23 +61,20 @@ if (wall[WallNumber].nextsector != 1 &&
           ceiling = sector[SectorNumber].ceilingz;
           floor = sector[SectorNumber].floorz;
       }
-//*/
-      if (SectorNumber == 111 || SectorNumber == 140 || SectorNumber == 141)
-      {
-          FILE* log =NULL;
-          log = fopen ("log.txt","a");
-          fprintf(log, "Sector Number: %d    Ceiling z: %d    Floor z: %d\n", 
-                   SectorNumber, sector[SectorNumber].ceilingz, sector[SectorNumber].floorz); 
-          if (wall[WallNumber].nextsector != 1)
-              fprintf(log, "Next Sector Number: %d    Ceiling z: %d    Floor z: %d\n",
+
+*/      
+      log = fopen ("log.txt","a");
+      fprintf(log, "Sector Number: %d    Ceiling z: %d    Floor z: %d\n", 
+      SectorNumber, sector[SectorNumber].ceilingz, sector[SectorNumber].floorz); 
+      
+      if (wall[WallNumber].nextsector != -1)
+          fprintf(log, "Next Sector Number: %d    Ceiling z: %d    Floor z: %d\n",
               wall[WallNumber].nextsector, sector[wall[WallNumber].nextsector].ceilingz,
               sector[wall[WallNumber].nextsector].floorz);
-          fprintf(log, "Down = %d\n\n", Down); 
 
-      }
+          fprintf(log, "Plus = %d\n\n", Plus); 
+          fclose(log);
 
-
- 
 
  // This should be tweaked per "to" game
 sprintf(Texture, TEXTUREPREFIX "tile%.4d", wall[WallNumber].picnum);
@@ -77,9 +82,9 @@ sprintf(Texture, TEXTUREPREFIX "tile%.4d", wall[WallNumber].picnum);
  if ((Wall1.x == Wall2.x) && (Wall1.y == Wall2.y))
  	 return; //No line to draw for wall
  
- if (ceiling <= floor)
+ if (ceiling == floor && wall[WallNumber].nextsector == -1)
  {
-	 printf("The ceiling <= the floor %d\n", WallNumber);
+	 printf("The ceiling == the floor %d and not conected to another sector\n", WallNumber, Plus);
 	 return;
  }
  

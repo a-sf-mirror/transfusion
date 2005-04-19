@@ -24,32 +24,33 @@ long FindWalls(const unsigned short SectorNumber)
 // Alternate sector drawing function - why?
 void AltDrawSector(FILE *f, const unsigned short SectorNumber)
 {
- short Down = -15, Up = 1, wallpointer, count = 0;
- int j, k, SectorFloor, SectorCeiling;
+// short Down = -15, Up = 1, wallpointer, count = 0;
+ short Down = 0, Up = 0, wallpointer, count = 0;
+ int k, SectorFloor, SectorCeiling;
  
  SectorFloor  = sector[SectorNumber].floorz;
  SectorCeiling  = sector[SectorNumber].ceilingz;
  wallpointer = sector[SectorNumber].wallptr;
- j   = sector[SectorNumber].wallptr;
+ //j   = wallpointer;
 
  
  for (k = 0; k < sector[SectorNumber].wallnum; k++) 
  // Check for steps and windows
  {
-     if (wall[j].nextsector != -1) // The wall touches another sector
+     if (wall[wallpointer + k].nextsector != -1) // The wall touches another sector
          {
-         if (sector[wall[j].nextsector].floorz - SectorFloor < Down)
+         if (sector[wall[wallpointer + k].nextsector].floorz - SectorFloor < Down)
              {
-                 Down = sector[wall[j].nextsector].floorz - SectorFloor;
+                 Down = sector[wall[wallpointer + k].nextsector].floorz - SectorFloor;
              } 
-         if (sector[wall[j].nextsector].ceilingz - SectorCeiling > Up)
+         if (sector[wall[wallpointer + k].nextsector].ceilingz - SectorCeiling > Up)
              {
-                 Up = sector[wall[j].nextsector].ceilingz - SectorCeiling;
+                 Up = sector[wall[wallpointer + k].nextsector].ceilingz - SectorCeiling;
              }
-         M_Wall[j] = M_Wall[wall[j].nextwall] = 1; // For two-sided wall
+         M_Wall[wallpointer + k] = M_Wall[wall[wallpointer + k].nextwall] = 1; // For two-sided wall
          }
     
-     j = wall[j].point2;
+     //j = wall[j].point2;
     count++;
 
  }
@@ -129,7 +130,7 @@ void WriteSector(FILE *f, const unsigned short SectorNumber)
 
  if (Sn != -1) 
  { 
-  sector[numsectors].wallptr = Sn; //wall[sector[SectorNumber].wallptr].nextwall;
+  sector[numsectors].wallptr = Sn; //wall[wallpointer].nextwall;
   AltDrawSector(f, numsectors);    // Writing to the temp sector
   DrawBrush(f, sector[SectorNumber].wallptr, sector[SectorNumber].ceilingz+16, sector[SectorNumber].floorz-16); 
  }

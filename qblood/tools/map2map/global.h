@@ -7,6 +7,7 @@
 #include <stdlib.h> // malloc, free, srand, rand
 #include <time.h>   // time
 #include <conio.h>  // getch
+#include <assert.h> // assert
 
 #ifdef _MSC_VER // Microsoft Visual C
 #pragma warning (disable:4244) // Possible loss of data

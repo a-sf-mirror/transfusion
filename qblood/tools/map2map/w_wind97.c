@@ -18,7 +18,7 @@ void WriteWall(const TPoint point1, const TPoint point2, FILE *f, const TWall wa
      printf("The floor = the ceiling. That's bad\n");
      return; // The ceiling is the floor - very bad
  }
- 
+
  sprintf(Texture, TEXTUREPREFIX "tile%.4d", wall.texture);
 
  if ((point2.x != point1.x) && (point2.y != point1.y))

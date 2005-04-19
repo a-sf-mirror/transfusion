@@ -143,7 +143,7 @@ void WriteFloor(FILE *f, const unsigned short SectorNumber, const long Plus)
  
  fprintf(f, "{\n");
 
- // This chunk starts the floor drawing, it draws the first side of the floor
+ // This chunk starts the floor drawing, it draws the top of the floor
  if (sector[SectorNumber].floorheinum != 0) // Sloped floor
  {
  vertex1.x  = wall[j].x;
@@ -168,15 +168,15 @@ void WriteFloor(FILE *f, const unsigned short SectorNumber, const long Plus)
  
  else // ret == 1
  fprintf(f, "( %d %d %d ) ( %d %d %d ) ( %d %d %d ) %s\n", 
-               0, 0, SectorTop, 0, 500, SectorTop, 500, 0, SectorTop, Texture); // Why 0 and 500? Line 1
+               0, 0, SectorTop, 0, 500, SectorTop, 500, 0, SectorTop, Texture); //Line 1
  
  } // if (sector[SectorNumber].floorheinum != 0) 
  
  else // No slope
  fprintf(f, "  ( %d %d %d ) ( %d %d %d ) ( %d %d %d ) %s\n", 
-                 0, 0, SectorTop, 0, 500, SectorTop, 500, 0, SectorTop, Texture); // Why 0 and 500? Line 1
+                 0, 0, SectorTop, 0, 500, SectorTop, 500, 0, SectorTop, Texture); //Line 1
  
- //do // Write all the floors sides
+ // Write all the floors sides
  for (k = 0; k < sector[SectorNumber].wallnum; k++)
  {
   point1.x = wall[j].x;
@@ -194,11 +194,11 @@ void WriteFloor(FILE *f, const unsigned short SectorNumber, const long Plus)
           point2.x, point2.y, 500, point1.x, point1.y, 500, point1.x, point1.y, 0, Texture);   
   
   else
-  fprintf(f, "  ( %d %d %d ) ( %d %d %d ) ( %d %d %d ) %s 0 0 0 1.00 1.00 1 0 0\n", 
+  fprintf(f, "( %d %d %d ) ( %d %d %d ) ( %d %d %d ) %s 0 0 0 1.00 1.00 1 0 0\n", 
           point2.x, point2.y, 500, point1.x, point1.y, 500, point1.x, point1.y, 0, Texture);
   
   j = wall[j].point2;
- } //while (j != wallpointer);
+ }
 
 /* TWEAKME: Put more dummy textures here and a switch*/
 // skip = not drawn because it's never seen by the player
@@ -208,7 +208,7 @@ void WriteFloor(FILE *f, const unsigned short SectorNumber, const long Plus)
  sprintf(Texture, TEXTUREPREFIX "tile%.4d", sector[SectorNumber].floorpicnum);
 #endif
 
- // This chunk ends the floor drawing, it draws ???
+ // This chunk ends the floor drawing, it draws the bottom of the floor
  if (sector[SectorNumber].floorheinum != 0) 
  {
   point2.zb = SectorTop - 100 * tan( (-1 * sector[SectorNumber].floorheinum) * PI / 4 / 4096) + 5;  

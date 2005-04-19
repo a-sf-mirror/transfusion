@@ -18,6 +18,7 @@ sprintf(Texture, TEXTUREPREFIX "tile%.4d", wall[i].picnum);
  if (point1.zt == point1.zb || point2.zt == point2.zb)
  {
 	 printf("Illegal slope to draw for wall %d\n", i);
+     getch(); // If I ever catch this, I'll add down to the function.
 	 return;
  }
  
