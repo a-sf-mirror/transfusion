@@ -7,11 +7,49 @@ void DrawSectorWalls(FILE *f, const unsigned short i)
  TPoint vertex1, vertex2;
  TWall  pwall;
 
- wallpointer  = sector[i].wallptr;
+ j = wallpointer  = sector[i].wallptr;
+ 
+ 
+ do 
+ {
+     wall_t Wall1, Wall2, Wall3;
+
+     Wall1 = wall[j];
+     Wall2 = wall[wall[j].point2];
+     Wall3 = wall[wall[wall[j].point2].point2];
+
+     if (Wall1.point2 == wallpointer || // No further optimizing to be done
+         Wall2.point2 == wallpointer ||
+         Wall3.point2 == wallpointer )
+         break;
+
+     /* This next chunk is some magic, so here's my explanation:
+        The first if segment checks the walls to see if they're connected to another sector
+        it would be bad to smooth a wall out that had a window or step nearby.
+        The second chunk is checking for a redundant point between wall 1 and 3
+        The third chunk is to make sure if the extra wall is merely added for a special texture.
+      */
+  
+     if ( ( (Wall1.nextsector == -1 && Wall1.nextwall == -1) &&         // Connected
+            (Wall2.nextsector == -1 && Wall2.nextwall == -1) &&         // Connected
+            (Wall3.nextsector == -1 && Wall3.nextwall == -1) ) &&       // Connected
+        ((Wall1.x == Wall2.x && Wall1.x == Wall3.x) ||                  // Redundant point
+         (Wall1.y == Wall2.y && Wall1.y == Wall3.y)) &&                 // Redundant point
+        (Wall1.picnum == Wall2.picnum && Wall2.picnum == Wall3.picnum)) // Different art
+          
+     { // Make Wall 1 point to wall 3 to save from drawing a redundant wall
+         wall[j].point2 = wall[wall[j].point2].point2;
+         M_Wall[wall[j].point2] = 2;
+     }
+     else j = wall[j].point2; // Nothing can be tweaked, go to next wall
+ } while ( (j != wallpointer) && (TimeOut > 0) );
+ 
+
+ j = wallpointer = sector[i].wallptr;
  SectorCeiling = sector[i].ceilingz;
  SectorFloor = sector[i].floorz;
- j = sector[i].wallptr;
-  
+ TimeOut = 1000;
+ 
  do 
  {
   vertex1.x  = wall[j].x;
@@ -23,7 +61,7 @@ void DrawSectorWalls(FILE *f, const unsigned short i)
   vertex2.zt = SectorCeiling;
   vertex2.zb = SectorFloor;
 
-  if ((wall[j].nextwall == -1) && (M_Wall[j] == 0))
+  if ((wall[j].nextwall == -1) && (M_Wall[j] == 0)) // Not connected & not written yet
   {
    pwall.x_off     = 0;
    pwall.y_off     = SectorCeiling;
@@ -106,18 +144,12 @@ void WriteWalls(FILE *f)
 
 
 // Masked walls & windows code
-void W_MWalls(FILE *f)
+void WriteMaskedWalls(FILE *f)
 {
  short  Stat;
  TWall  pwall;
  TPoint vertex1, vertex2;
  unsigned short i;
- char *ExplosionType = "exploding_wall";
-
-// TWEAKME: This should be set per game with a switch
-#ifdef QUAKE2 
- ExplosionType = "func_explosive";
-#endif
 
  printf("Writing masking walls/windows...\t\t\t\t ");
 
@@ -125,7 +157,7 @@ void W_MWalls(FILE *f)
  {
   long NextSector1 = -1;
   long NextSector2 = wall[i].nextsector;
-
+  
   if (wall[i].nextwall != -1) 
       NextSector1 = wall[wall[i].nextwall].nextsector;
 
@@ -151,17 +183,24 @@ void W_MWalls(FILE *f)
     vertex2.zt = sector[NextSector1].ceilingz;
     vertex2.zb = sector[NextSector1].floorz;
 
-//  make this a function DrawExplosion() or something, exploding_wall for qBlood
+#ifdef QUAKE1
     fprintf(f, " {\n");
-    fprintf(f, " \"classname\"     \"%s\"\n", ExplosionType);
+    fprintf(f, " \"classname\"     \"exploding_wall\"\n");
+    fprintf(f, " \"health\"        \"15\"\n");
+    fprintf(f, " \"skin\"          \"6\"\n");
+    W_Wall(vertex1, vertex2, f, pwall);
+    fprintf(f, " }\n");
+#endif
+
+#ifdef QUAKE2
+    fprintf(f, " {\n");
+    fprintf(f, " \"classname\"     \"func_explosive\"\n");
     fprintf(f, " \"health\"        \"15\"\n");
     fprintf(f, " \"skin\"          \"5\"\n");
     fprintf(f, " \"target\"        \"langas%d\"\n", i);
     W_Wall(vertex1, vertex2, f, pwall);
     fprintf(f, " }\n");
 
-//  make this a function too!
-#ifndef BLOOD
     fprintf(f, " {\n");
     fprintf(f, "  \"classname\"     \"target_speaker\"\n");
     fprintf(f, "  \"origin\"        \"%d %d %d\"\n", vertex1.x, vertex1.y, vertex1.zt);

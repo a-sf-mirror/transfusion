@@ -21,6 +21,7 @@ long FindWalls(const unsigned short SectorNumber)
 }
 
 
+// Potential logic bug here???
 short Draw_Sector_II(FILE *f, const unsigned short i)
 {
 
@@ -50,7 +51,7 @@ short Draw_Sector_II(FILE *f, const unsigned short i)
      j = wall[j].point2;
     count++;
 
- } while ((j != wallpointer) & (count < 1000));
+ } while ((j != wallpointer) && (count < 1000));
 
  if (count < 1000)
  {
@@ -62,14 +63,14 @@ short Draw_Sector_II(FILE *f, const unsigned short i)
  return count;
 }
 
-// FIXME: Change to WallNumber
-void DrawBrush_II(FILE *f, const unsigned short WallN, long SectorFloor, long SectorCeiling)
+
+void DrawBrush_II(FILE *f, const unsigned short WallNumber, long SectorFloor, long SectorCeiling)
 {
  TPoint p1, p2;
  char   Texture[256]="";
- long   j = WallN;
+ long   j = WallNumber;
  
- if (wall[WallN].nextwall != -1) // No connecting sector
+ if (wall[WallNumber].nextwall != -1) // No connecting sector
      return;
 
  p1.x   = wall[j].x;
@@ -81,15 +82,15 @@ void DrawBrush_II(FILE *f, const unsigned short WallN, long SectorFloor, long Se
  p2.zt = SectorFloor;
  p2.zb = SectorCeiling;
 
- fprintf(f, "{\n");
+/* TWEAKME: Put more dummy textures here and a switch*/
+// skip = not drawn because it's never seen by the player
 #ifdef QUAKE2
  sprintf(Texture, "e1u1/skip"); // Good for quake 2, but not 1
-#elif defined HALFLIFE
- sprintf(Texture, "sky");
 #elif defined QUAKE1
  sprintf(Texture, "tile0000"); // The good old blood dummy texture
 #endif
 
+ fprintf(f, "{\n");
  fprintf(f, "  (%d %d %d) (%d %d %d) (%d %d %d) %s 0 0 0 1 1 1 0 0\n", 
      p1.x, p1.y, SectorFloor, p1.x, p1.y+100, SectorFloor, p2.x+100, p2.y, SectorFloor, Texture); 
 
@@ -111,12 +112,13 @@ void DrawBrush_II(FILE *f, const unsigned short WallN, long SectorFloor, long Se
 
 
   j = wall[j].point2;
- } while (j != WallN);
+ } while (j != WallNumber);
 
+
+/* TWEAKME: Put more dummy textures here and a switch*/
+// skip = not drawn because it's never seen by the player
 #ifdef QUAKE2
  strcpy(Texture, "e1u1/skip"); // Good for quake 2, but not 1
-#elif defined HALFLIFE
- strcpy(Texture, "sky");
 #elif defined QUAKE1
  strcpy(Texture, "tile0000"); // The good old blood dummy texture
 #endif 

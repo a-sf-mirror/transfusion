@@ -83,7 +83,6 @@ Foundation, Inc., 59 Temple Place - Suite 330, Boston, MA  02111-1307, USA.
 #define NOTICESIGN			742
 #define NEWSSIGN			743
 #define WARNINGSIGN			744
-#define POLE			    753 // ??? 
 #define SMOKE1				754 // this should be done with some sort of particle effect
 #define SMOKE2				755
 #define SMOKE3				756
@@ -253,16 +252,17 @@ Foundation, Inc., 59 Temple Place - Suite 330, Boston, MA  02111-1307, USA.
 #define TRAPPEDSOUL		820
 
 /* Misc with an obvious acceptable conversion */
-#define AKIMBO			829
+#define TEAMPOLE		753 // For team play. lotag = 145 for blue team; 146 for red team
+#define AKIMBO			829 // Quad, etc
 #define DEATHMASK		825  // INVULNERABILITY
-#define PLAYERSTART1		2522 // "info_player_start"
-#define PLAYERSTART2		2523 // "info_player_coop"
-#define PLAYERSTART3		2524 // "info_player_coop"
-#define PLAYERSTART4		2525 // "info_player_coop"
-#define PLAYERSTART5		2526 // "info_player_coop"
-#define PLAYERSTART6		2527 // "info_player_coop"
-#define PLAYERSTART7		2528 // "info_player_coop"
-#define PLAYERSTART8		2529 // "info_player_coop"
+#define PLAYERSTART1	2522 // "info_player_start"
+#define PLAYERSTART2	2523 // "info_player_coop"
+#define PLAYERSTART3	2524 // "info_player_coop"
+#define PLAYERSTART4	2525 // "info_player_coop"
+#define PLAYERSTART5	2526 // "info_player_coop"
+#define PLAYERSTART6	2527 // "info_player_coop"
+#define PLAYERSTART7	2528 // "info_player_coop"
+#define PLAYERSTART8	2529 // "info_player_coop"
 
 /* Armor - done */
 #define FIREARMOR		2578 // REDISH
@@ -271,7 +271,7 @@ Foundation, Inc., 59 Temple Place - Suite 330, Boston, MA  02111-1307, USA.
 #define SPIRITARMOR		2602 // UGLY SMILY
 #define BASICARMOR		2628 // FLAT GREY
 
-/* Powerups */
+/* Powerups - done */
 #define CRYSTALBALL			760
 #define SHADOWCLOAK         768 // 768-771 - TESTME	
 #define BEASTVISON			839
@@ -284,7 +284,7 @@ Foundation, Inc., 59 Temple Place - Suite 330, Boston, MA  02111-1307, USA.
 #define JUMPINGBOOTS        827 
 #define DIVINGSUIT          830 // TESTME
 
-/* Enemies */ 
+/* Enemies - done */ 
 #define RAT					1745
 #define BAT					1948
 #define BONE_EEL            1870

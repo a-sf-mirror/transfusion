@@ -92,9 +92,21 @@ short TestAngles(const long SectorNumber)
  
  Test_A = Test_A * 180 / PI;
 
- if ((TotalA - Test_A > -1.2) && (TotalA - Test_A < 1.2)) 
-     return 0; 
- else return 1;
+ if ((TotalA - Test_A > -1) && (TotalA - Test_A < 1)) 
+     return 0;
+ 
+ 
+ else 
+ {
+#ifdef _DEBUG
+     FILE * log;
+     log = fopen("log.txt", "a");
+     fprintf(log, "magic number = %7g    number of walls = %d\n", 
+             TotalA - Test_A, sector[SectorNumber].wallnum);
+     fclose(log);
+#endif
+     return 1;
+ }
 
 }
 
@@ -198,10 +210,11 @@ void WriteFloor(FILE *f, const long SectorNumber, long Plus)
   j = wall[j].point2;
  } while (j != wallpointer);
 
-#ifdef QUAKE2 // This should be a switch
+
+/* TWEAKME: Put more dummy textures here and a switch*/
+// skip = not drawn because it's never seen by the player
+#ifdef QUAKE2
  sprintf(Texture, "e1u1/skip"); // Good for quake 2, but not 1
-#elif defined HALFLIFE
- sprintf(Texture, "sky"); // Should put a real dummy texture here
 #elif defined QUAKE1
  sprintf(Texture, "tile%.4d", sector[SectorNumber].floorpicnum);
 #endif

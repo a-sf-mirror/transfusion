@@ -1,16 +1,16 @@
 #include "global.h"
 
 // Write a sector's ceiling
-void WriteCeiling(FILE *f, const long SectorNumber, long Plus)
+void WriteCeiling(FILE *f, const long SectorNumber, const long Plus)
 {
  char Texture[256]="";
- //int  Ti;
+ 
  long SBot, STop, j, wallpointer; 
  TPoint point1, point2, vertex1, vertex2, vertex3;
  short ret;
 
  short Stat = sector[SectorNumber].ceilingstat;
-
+ 
  // To avoid compiler gripes, initializing vertex3
  vertex3.x = vertex3.y = vertex3.zb = vertex3.zt = 0;
 
@@ -32,10 +32,9 @@ void WriteCeiling(FILE *f, const long SectorNumber, long Plus)
     {
 
 /* TWEAKME: Put more dummy textures here and a switch*/
+// skip = not drawn because it's never seen by the player
 #ifdef QUAKE2
  sprintf(Texture, "e1u1/skip 0 0 0 1.00 1.00 1 0 0");
-#elif defined HALFLIFE
-sprintf(Texture, "sky 0 0 0 1.00 1.00 1 0 0");
 #elif defined QUAKE1
 sprintf(Texture, "sky1 0 0 0 1.00 1.00 1 0 0"); 
 #endif
@@ -88,8 +87,8 @@ sprintf(Texture, "sky1 0 0 0 1.00 1.00 1 0 0");
   
   if (wall[j].nextwall != -1) // If there's another wall connected
       sprintf(Texture, "tile%.4d", wall[wall[j].nextwall].picnum);
-
-     else sprintf(Texture, "tile%.4d", wall[j].picnum);
+  else // No conecting wall
+      sprintf(Texture, "tile%.4d", wall[j].picnum);
 
  if (Stat % 2 == 1) // This indicates paralaxxing
   fprintf(f, "  ( %d %d %d ) ( %d %d %d ) ( %d %d %d ) sky1 0 0 0 1.00 1.00 0 133 1\n", 
@@ -102,6 +101,8 @@ sprintf(Texture, "sky1 0 0 0 1.00 1.00 1 0 0");
   j = wall[j].point2;
  } while (j != wallpointer);
 
+ Texture[0] = '\0';
+ 
  if (Stat % 2 == 1) // This indicates paralaxxing
 	 sprintf(Texture, "sky1 0 0 0 1.00 1.00 0 133 1");
 

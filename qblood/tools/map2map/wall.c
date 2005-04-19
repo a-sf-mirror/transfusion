@@ -1,13 +1,14 @@
 #include "global.h"
-/* It is highly likely that this function will never be called? */
 
+// Secondary wall writing function, rarely called
 void WriteWall(TPoint point1, TPoint point2, FILE *f, const unsigned short i)
 {
  char Texture[10] = "";
  double rad = 0;
 
  // This should be tweaked per "to" game
- sprintf(Texture, "tile%.4d", wall[i].picnum);
+sprintf(Texture, "tile%.4d", wall[i].picnum);
+
 
  if ((point1.x == point2.x) && (point1.y == point2.y))
  {

@@ -1,6 +1,6 @@
 #include "global.h"
 
-void I_Sprites(FILE *f)
+void WriteFlatSprites(FILE *f)
 {
 
  TPoint vertex1, vertex2;
@@ -9,12 +9,14 @@ void I_Sprites(FILE *f)
 
 unsigned short i = 0, Stat = 0, width = 0, height = 0;
 
-printf("Adding sprites...\t\t\t\t\t\t ");
+printf("Adding Flat sprites...\t\t\t\t\t ");
 
 // Scale tile sizes
  for (i = 0; i < numsprites; i++)
  {
-    
+    if (Stat % 4 != 2) // A regular face sprite
+         continue;
+
   sizex = tilesizx[sprite[i].picnum] * sprite[i].xrepeat / 64;
   sizey = tilesizy[sprite[i].picnum] * sprite[i].yrepeat / 64;
 
@@ -46,7 +48,7 @@ printf("Adding sprites...\t\t\t\t\t\t ");
   Stat = sprite[i].cstat;
   Stat = Stat >> 4;
   
-  if (Stat % 4 == 2) // Not a face sprite
+  if (Stat % 4 == 2) // Not a face sprite /  This can probably be nuked because of above code
   W_FlatSprite(sprite[i].x, sprite[i].y, sprite[i].z, sprite[i].ang, width, height, pwall, f);
 
  }

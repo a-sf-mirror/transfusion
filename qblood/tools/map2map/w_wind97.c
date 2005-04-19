@@ -1,6 +1,6 @@
 #include "global.h"
 
-// Alternate
+// Primary wall writing function 
 void W_Wall(TPoint point1, TPoint point2, FILE *f, TWall wall)
 {
 
@@ -41,15 +41,15 @@ void W_Wall(TPoint point1, TPoint point2, FILE *f, TWall wall)
       else rad = 0;
  }
 
-// um, why -1+1 ??? 0 and 500 again, why???
+// um, why  ??? 0 and 500 again, why???
  if (((rad >= 0) && (rad < 45)) || (rad > 315))
  {
   fprintf(f, " {\n");                                                        
   WriteLine( 0, 0, point1.zt, 0, 500, point1.zt, 500, 0, point2.zt, Texture, wall, f); 
-  WriteLine( point1.x, point1.y-1+1, point1.zt, point2.x, point2.y-1+1, point2.zt, point2.x, point2.y-1+1, point2.zb, Texture, wall, f);
-  WriteLine( point2.x, point2.y-1+1, point2.zt, point2.x, point2.y+1, point2.zt, point2.x, point2.y+1, point2.zb, Texture, wall, f);
-  WriteLine( point2.x, point2.y+1, point2.zt, point1.x, point1.y+1, point1.zt, point1.x, point1.y+1, point1.zb, Texture, wall, f);
-  WriteLine( point1.x, point1.y+1, point1.zt, point1.x, point1.y-1+1, point1.zt,  point1.x, point1.y-1+1, point1.zb, Texture, wall, f);
+  WriteLine( point1.x, point1.y, point1.zt, point2.x, point2.y, point2.zt, point2.x, point2.y, point2.zb, Texture, wall, f);
+  WriteLine( point2.x, point2.y, point2.zt, point2.x, point2.y+THICK, point2.zt, point2.x, point2.y+THICK, point2.zb, Texture, wall, f);
+  WriteLine( point2.x, point2.y+THICK, point2.zt, point1.x, point1.y+THICK, point1.zt, point1.x, point1.y+THICK, point1.zb, Texture, wall, f);
+  WriteLine( point1.x, point1.y+THICK, point1.zt, point1.x, point1.y, point1.zt,  point1.x, point1.y, point1.zb, Texture, wall, f);
   WriteLine( 0, 0, point1.zb, 500, 0, point1.zb, 0, 500, point2.zb, Texture, wall, f);
   fprintf(f, " }\n");
  }
@@ -58,11 +58,11 @@ void W_Wall(TPoint point1, TPoint point2, FILE *f, TWall wall)
  {
   fprintf(f, " {\n");
   WriteLine( 0, 0, point1.zt, 0, 500, point1.zt, 500, 0, point2.zt, Texture, wall, f);
-  WriteLine( point1.x+1-1, point1.y, point1.zt, point2.x+1-1, point2.y, point2.zt, point2.x+1-1, point2.y, point2.zb, Texture, wall, f);
-  WriteLine( point2.x+1-1, point2.y, point2.zt, point2.x-1, point2.y, point2.zt, point2.x-1, point2.y, point2.zb, Texture, wall, f);  
-  WriteLine( point2.x-1, point2.y, point2.zt, point1.x-1,   point1.y, point1.zt, point1.x-1,   point1.y, point1.zb, Texture, wall, f);
-  WriteLine( point1.x-1,   point1.y, point1.zt, point1.x+1-1, point1.y, point1.zt, point1.x+1-1, point1.y, point1.zb, Texture, wall, f);
-  WriteLine( 0, 0,     point1.zb, 500, 0,     point1.zb, 0, 500,  point2.zb, Texture, wall, f);
+  WriteLine( point1.x, point1.y, point1.zt, point2.x, point2.y, point2.zt, point2.x, point2.y, point2.zb, Texture, wall, f);
+  WriteLine( point2.x, point2.y, point2.zt, point2.x-THICK, point2.y, point2.zt, point2.x-THICK, point2.y, point2.zb, Texture, wall, f);  
+  WriteLine( point2.x-THICK, point2.y, point2.zt, point1.x-THICK,   point1.y, point1.zt, point1.x-THICK,   point1.y, point1.zb, Texture, wall, f);
+  WriteLine( point1.x-THICK,   point1.y, point1.zt, point1.x, point1.y, point1.zt, point1.x, point1.y, point1.zb, Texture, wall, f);
+  WriteLine( 0, 0, point1.zb, 500, 0, point1.zb, 0, 500,  point2.zb, Texture, wall, f);
   fprintf(f, " }\n");
  }
 
@@ -70,11 +70,11 @@ void W_Wall(TPoint point1, TPoint point2, FILE *f, TWall wall)
  {
   fprintf(f, " {\n");
   WriteLine( 0, 0, point1.zt, 0,    500, point1.zt, 500,  0,  point2.zt, Texture, wall, f);
-  WriteLine( point2.x, point2.y-1, point2.zt, point1.x, point1.y-1, point1.zt, point1.x, point1.y-1, point1.zb, Texture, wall, f);
-  WriteLine( point1.x, point1.y-1, point1.zt, point1.x, point1.y, point1.zt, point1.x, point1.y,   point1.zb, Texture, wall, f);
+  WriteLine( point2.x, point2.y-THICK, point2.zt, point1.x, point1.y-THICK, point1.zt, point1.x, point1.y-THICK, point1.zb, Texture, wall, f);
+  WriteLine( point1.x, point1.y-THICK, point1.zt, point1.x, point1.y, point1.zt, point1.x, point1.y,   point1.zb, Texture, wall, f);
   WriteLine( point1.x, point1.y, point1.zt, point2.x, point2.y,  point2.zt, point2.x, point2.y,   point2.zb, Texture, wall, f);
-  WriteLine( point2.x, point2.y,  point2.zt, point2.x, point2.y-1, point2.zt, point2.x, point2.y-1, point2.zb, Texture, wall, f);
-  WriteLine( 0, 0,      point1.zb, 500,  0,      point1.zb, 0,    500,    point2.zb, Texture, wall, f);
+  WriteLine( point2.x, point2.y,  point2.zt, point2.x, point2.y-THICK, point2.zt, point2.x, point2.y-THICK, point2.zb, Texture, wall, f);
+  WriteLine( 0, 0,  point1.zb, 500,  0,  point1.zb, 0,    500,    point2.zb, Texture, wall, f);
   fprintf(f, " }\n");
  } 
 
@@ -82,11 +82,11 @@ void W_Wall(TPoint point1, TPoint point2, FILE *f, TWall wall)
  {
   fprintf(f, " {\n");
   WriteLine( 0, 0, point1.zt, 0,    500, point1.zt, 500,  0,  point2.zt, Texture, wall, f);
-  WriteLine(  point2.x+1, point2.y, point2.zt, point1.x+1, point1.y, point1.zt,  point1.x+1, point1.y, point1.zb, Texture, wall, f);
-  WriteLine(  point1.x+1, point1.y, point1.zt, point1.x, point1.y, point1.zt, point1.x, point1.y, point1.zb, Texture, wall, f);
+  WriteLine(  point2.x+THICK, point2.y, point2.zt, point1.x+THICK, point1.y, point1.zt,  point1.x+THICK, point1.y, point1.zb, Texture, wall, f);
+  WriteLine(  point1.x+THICK, point1.y, point1.zt, point1.x, point1.y, point1.zt, point1.x, point1.y, point1.zb, Texture, wall, f);
   WriteLine(  point1.x, point1.y, point1.zt, point2.x, point2.y, point2.zt, point2.x, point2.y, point2.zb, Texture, wall, f);
-  WriteLine(  point2.x, point2.y, point2.zt, point2.x+1, point2.y, point2.zt, point2.x+1, point2.y, point2.zb, Texture, wall, f);
-  WriteLine( 0, 0,      point1.zb, 500,  0,      point1.zb, 0,    500,    point2.zb, Texture, wall, f);
+  WriteLine(  point2.x, point2.y, point2.zt, point2.x+THICK, point2.y, point2.zt, point2.x+THICK, point2.y, point2.zb, Texture, wall, f);
+  WriteLine( 0, 0,  point1.zb, 500,  0,  point1.zb, 0,    500,    point2.zb, Texture, wall, f);
   fprintf(f, " }\n");
  }
 

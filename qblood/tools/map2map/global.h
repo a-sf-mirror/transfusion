@@ -15,6 +15,7 @@
 // Constants
 #define SCALE 8 //Divider = 16 , was 11 when I started- TIM
 #define MAXTILES 9216 // Redneck Rampage uses the most textures. ARTFILES * 256?
+#define THICK 2 // Generic brush thickness, 1 causes bsp issues with quake 1
 #define BLOOD
 #define QUAKE1 // This is what qBlood needs 
 
@@ -92,7 +93,8 @@ typedef struct
 
 // The starting position
 long startx, starty, startz;
-unsigned short ang, numsectors, numwalls, numsprites, tilesizx[MAXTILES], tilesizy[MAXTILES];
+unsigned short ang, numsectors, numwalls, numsprites, tilesizx[MAXTILES], tilesizy[MAXTILES],
+SectorsRounded;
 
 sector_t	*sector; // Points to the dynamically allocated sector array
 wall_t		*wall;   // Points to the dynamically allocated wall array
@@ -111,7 +113,7 @@ char* GetNewTextureName(const unsigned short i);
 /***** ceiling.c *****/
 
 // Write a sector's ceiling
-void WriteCeiling(FILE *NewMap, const long SectorNumber, long Plus);
+void WriteCeiling(FILE *NewMap, const long SectorNumber, const long Plus);
 
 
 /***** floor.c *****/
@@ -134,8 +136,8 @@ long FindWall(long SectorNumber);
 
 /***** items.c *****/
 
-// Gets texture scaling
-void I_Sprites(FILE *NewMap);
+// Gets texture scaling, then writes the flat sprites
+void WriteFlatSprites(FILE *NewMap);
 
 // Writes a duke style sfx (will die soon)
 void W_MusicanDSFX(const unsigned short i, char *Name, FILE *NewMap);
@@ -220,6 +222,6 @@ void DrawSectorWalls(FILE *NewMap, const unsigned short i);
 void WriteWalls(FILE *NewMap);
 
 // Masked walls & windows
-void W_MWalls(FILE *NewMap); 
+void WriteMaskedWalls(FILE *NewMap); 
 
 #endif

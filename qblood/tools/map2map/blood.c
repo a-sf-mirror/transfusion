@@ -48,7 +48,7 @@ void Blood_To_qBlood (const unsigned short i, FILE *f)
 		return;
 
 	case TNTBOX:		//809 Weapon # 6
-		WriteSimpleItem(i, "weapon_grenadelauncher", f);
+		WriteFlaggedItem(i, "weapon_grenadelauncher", f, 1);
 		return;
 
 	case TNTREMOTE:		//810 Weapon # 6
@@ -109,6 +109,22 @@ void Blood_To_qBlood (const unsigned short i, FILE *f)
 		return;
 
 /* Misc with an obvious acceptable conversion */
+            
+        
+    case TEAMPOLE:      // 753
+        switch (sprite[i].lotag)
+        {
+        case 145: // Blue team base
+            WriteSimpleItem(i, "info_player_team1", f);
+            WriteSimpleItem(i, "item_flag_team1", f);
+            return;
+
+        case 146: // Red team base
+            WriteSimpleItem(i, "info_player_team2", f);
+            WriteSimpleItem(i, "item_flag_team2", f);
+            return;
+        }
+        
 	case AKIMBO:		//829   
 		WriteSimpleItem(i, "item_artifact_super_damage", f);
 		return;
@@ -121,9 +137,10 @@ void Blood_To_qBlood (const unsigned short i, FILE *f)
         
         if (sprite[i].pal == 0)
         WriteSimpleItem(i, "info_player_start", f); // It's a valid simple player start.
-
-        // Otherwise, DM only. But in both cases DM is good.
+        
+        else
         WriteSimpleItem(i, "info_player_deathmatch", f);
+
     	return;
     
     // TWEAKME: It seem there's a flag for DM with the player starts
@@ -307,7 +324,7 @@ void Blood_To_qBlood (const unsigned short i, FILE *f)
         return;
     
     case ZOMBIE:	       //1170
-        WriteSimpleItem(i, "monster_zombie", f);
+        WriteSimpleItem(i, "monster_earthzombie", f);
         return;
     
     case ZOMBIESLEEPING:   //1209
@@ -522,18 +539,6 @@ void Blood_To_qBlood (const unsigned short i, FILE *f)
         case 20:  // Toggle switch
         case 21:  // 1-way switch
         case 22:  // Combination switch
-            return;
-        
-        case 145: // Blue team base
-            WriteSimpleItem(i, "info_player_team1", f);
-            WriteSimpleItem(i, "item_flag_team1", f);
-            return;
-
-        case 146: // Red team base
-            WriteSimpleItem(i, "info_player_team2", f);
-            WriteSimpleItem(i, "item_flag_team2", f);
-            return;
-        
         case 416: // Gib object
         case 417: // Explode object
         case 700: // Trigger gen - E1M5, what is this?
