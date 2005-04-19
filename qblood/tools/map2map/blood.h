@@ -2,21 +2,31 @@
 #define MASKEDHEDGESMEDIUM	17  // MASKED
 #define MASKEDHEDGESSMALL	18  // MASKED
 #define TESTSUBJECTS		19  // FLAT
+#define MASKEDBRICK_MEDIUM	51
+#define MASKEDBRICK_SMALL	52
+#define BARS				58
 #define NET					112 // MASKED
+#define TOMBCOVER			128
 #define CURTAINRAGS			147 // MASKED
 #define LIONSHIELD			165 // MASKED
+#define SEWERLID			219
 #define GOTHICMANTLE		227 // MASKED
 #define MONSTERPIC			269 // FACE
-#define STOOL				284 
+#define STOOL				284
+#define GREYPIC_HUMAN		316 
 #define LEVELEND			318 // FLAT, MUST
 #define JOJOSIGN			356
 #define TRAINSCHEDULE		431
 #define POSSUMSIGN			453
 #define HANGINGLIGHT		468 // LIGHT OF SOME SORT
 #define GRATEMASK			483 // MASKED, gibabble
+#define SINKTOP				485
+#define MASKEDGRILL			502
+#define BLOOD_WASTEBARREL	505
 #define SCATTEREDHAY		515 // MASKED
 #define WINEGLASS1			521 // GIB
-#define STATUE				536 // BETTER NAME?
+#define STATUE1				536 // BETTER NAME?
+#define VASE				537 // GIB
 #define TREE1				540
 #define TREE2				541
 #define TREE3				542
@@ -25,28 +35,36 @@
 #define TREE6				545
 #define TREE7				546
 #define TREE8				547
-#define GARGOYLETORCH		572 // LIGHT OF SOME SORT
 #define WINEGLASS2			574 // GIB
+#define WREATH_STAND_ILM	575
 #define SHIELDCREST			578 // MASKED
 #define MEATBARREL			563 // BARREL THAT PRODUCES MASS GIB JUICE
 #define GOTHICRAIL			588 // MASKED, BETTER NAME?
+#define BRAINJAR			604
 #define WINEBOTTLE_BROWN	605
 #define WINEBOTTLE_BLUE		606
+#define VOODOOWARD			607 // SKULL/CROSS THINGIE
+#define SWAMPWEED			608
 #define ARTPIC1				613
 #define OLDLADYPIC			617
 #define UGLYGUYPIC			621 // MY FAVE
+#define RIP_WREATH			633
 #define MISKATONICSIGN		646
 #define RAILROADSIGN		647 // MASKED
 #define CRUCIFIEDINNOCENT	648 // MASKED, REPLACE WITH THE QUAKE WALL ZOMBIE?
 #define TABLE				649
-#define CANDLE				650 // SMALL LIGHT
 #define BLOODYCURTAINRAGS	651 // MASKED
+#define FIRE_EXSTINGUISHER	658 // EXPLODABLE
 #define ROUNDLIGHT			676
+#define STATUE2				679
+#define LEG					682 // GIB
+#define STABBED_SKULL		685
 #define HANGINGHALFSKELETON	689
 #define HANGINGHALFCORPSE	690
 #define TRAINWHEELS			708
-#define BLOODSPLAT_LARGE	713
-#define BLOODSPLAT_TINY1	730	
+#define BLOODSPLAT1			713
+#define BLOODSPLAT2			730
+#define BLOODSPLAT3			732
 #define PICKMANSIGN			740
 #define AMONDTILLADOSIGN	741
 #define NOTICESIGN			742
@@ -58,35 +76,72 @@
 #define SMOKE4				757 
 #define CHAIR				758
 #define WINEBOTTLE			759
+#define BLOODSPRAY1			775
+#define BLOODSPRAY2			776
+#define BLOODSPRAY3			777
+#define INLOVINGMEMORY		789
+#define IDISMEMBEREDMOMMA	790
 #define SMALLROUNDLIGHT		795 
 #define LONGLIGHT			796
+#define FORMALDEHYDE		802 // Gibby
+#define BLOODYGOBLET		803
+#define ROCK1				804 // Gibby
+#define ROCK2				805 // Gibby
+#define ROCK3				806 // Gibby
+#define SKULLSIDE			807
+#define ROCK4				808 // GIBBY
 #define NOADMITSIGN			823
 #define BULLETHOLE			838
+#define UNDERCONSTRUCTION	844
 #define BLUEBANNER			845 // LION
 #define ORANGEBANNER		846
 #define REDBANNER			847 // DOABLE
 #define GREENBANNER			848
+#define UPSIDEDOWN_CORPSE	895
 #define BLOODHAND			904 
 #define	BARREL				907 // CHECK FOR FLAGS
 #define FLAME_MEDIUM		908	// MUST, TOO EASY
 #define BLOODSMEAR			929
 #define BLOODSPLAT_MEDIUM	915
+#define DANGER				933
+#define DANGER_BLOODY		942 // MASKED
 #define TICKETSIGN			943
 #define LAMP				944 // SHOULD HAVE A LIGHT FLAG
-#define POT					961
+#define POT1				961
+#define DRIPSTAND_BADWATER	962
+#define DRIPSTAND_BLOOD		963
+#define CRACKEDWALL_GREEN	964
+#define WELCOMETOHELL		974
+#define JOJO_CIRCUSSIGN		981
+#define PLANTVASE			1009
 #define STEELGATE			1044 // MASKED, BETTER NAME	
 #define BUTTON				1046 //MUST
 #define SKULLBUTTON			1048 // MUST
 #define ELECTRICALOUTLET	1050
-#define SWITCH				1070 // MUST
-#define SWITCH2				1074 // MUST
-#define MECHANICALSWITCH	1076 // MUST
-#define LIGHTSWITCH			1078 // MUST
+#define METALFENCE			1060
+#define WATERVASE			1063
+#define WEB_PARTIAL			1066
+#define HANGINGWEB_MEDIUM	1067 // MASKED
+#define HANGINGWEB_SMALL	1068 // MASKED
+#define WEB					1069 // MASKED, GIBBABLE
+#define SWITCH1_ON			1070 // MUST
+#define SWITCH1_OFF			1071 // MUST
+#define SWITCH2_ON			1072 // MUST
+#define SWITCH2_OFF			1073 // MUST
+#define SWITCH3_ON			1074 // MUST
+#define SWITCH3_OFF			1075 // MUST
+#define SWITCH4_ON			1076 // MUST
+#define SWITCH4_OFF			1077 // MUST
+#define LIGHTSWITCH_ON		1078 // MUST
+#define LIGHTSWITCH_OFF		1079 // MUST
 #define WALLCRACK			1127
 #define BLOODSPLAT_TINY		1149
 #define CLOCK				1165
+#define CREMATORIUM			1169
+#define ZOMBIECORPSE		1223 
 #define GIB1				1268
 #define GIB2				1269
+#define GAMEEND_SWITCH		1348
 #define TEXT_666			1407
 #define BLOODFLOW			1413 // 1413-1417 FLOWING BLOOD?
 #define PHANTOM_TEXT		1667
@@ -95,9 +150,26 @@
 #define BROOM				1710 // MASKED
 #define RAKE				1711 // MASKED
 #define SHOVEL				1712 // MASKED
+#define SHOVELBIG			1713 // MASKED
+#define SAW					1714
+#define PLIERS				1715
+#define COATHOOK			1716 // NOTSURE
 #define WASHHANDSSIGN		1719 //
-#define BLOODSPLAT_SMALL	1902
-#define CLEAVER				2139
+#define CEMETERYSIGN		1726
+#define FOOTSTEP_BLOOD		1902
+#define FOOTSTEP_WATER		1903
+#define FOOTSTEP_BROWN		1904
+#define FOOTSTEP_GREY		1905
+#define FOOTSTEP_GREEN		1906
+#define GUTS1				2053
+#define GUTS2				2054
+#define GUTS3				2055
+#define GUTS4				2056
+#define BLOODYPULP1			2073
+#define BLOODYPULP2			2074
+#define BLOODYPULP3			2075
+#define BLOODYPULP4			2076
+#define CLEAVER				2139 // 2138 -2145
 #define TEXTRED0			2190
 #define FLUORESCENTLIGHT1		2288		
 #define BROKEFLUORESCENTLIGHT1	2289
@@ -105,6 +177,8 @@
 #define BROKEFLUORESCENTLIGHT2	2291
 #define TEXTBLUE0			2240
 #define POT_SMALL			2295
+#define PAN					2304
+#define POT2				2305
 #define TRAINWHEEL			2320 //2320-2323
 #define HANGINGMALECORPSE	2324 //2324-2329
 #define DEADINNOCENT1		2330 // DEADBODY
@@ -114,14 +188,24 @@
 #define DEADINNOCENT3		2334
 #define SOUND				2519
 #define SSOUND				2520
+#define STAR_SKULL			2540
+#define STAR_EYE			2541
+#define STAR_FLAME			2542
+#define STAR_DAGGER			2543
+#define STAR_SPIDER			2544
+#define STAR_MOON			2545
+#define JUKEBOX				2546
 #define SKULLKEY			2552
 #define EYEKEY				2553
 #define FLAMEKEY			2554
 #define DAGGERKEY			2555
 #define SPIDERKEY			2556
 #define MOONKEY				2557
+#define CULTIST_CORPSE		2584
 #define ZOMBIEHEAD			3405 // 3405-3421 REPLACE WITH GIBS?
+#define BARREL_SIDE			3490
 #define PAIL				3540 // 3540-3548
+#define INNOCENT_CORPSE		3791
 #define TEXT_A				3808 // LATER
 #define	TEXT_Z				3833		
 
@@ -137,20 +221,23 @@
 #define SPRAYCAN		618 // 7
 #define TESLACANNON		539 // 8
 #define VOODOODOLL		525 // 9
+#define LIFELEECH		800 // 0
 
 /* Ammo */
 #define FLARES			816
 #define SHOTGUNSHELLS_MORE 812
+#define TOMMYSHELLS		813
 #define TOMMYCLIP		817
 #define GASOLINE		801
 #define TESLAAMMO		548
 #define SHOTGUNSHELLS	619
+#define TRAPPEDSOUL		820
 
 /* Misc with an obvious acceptable conversion */
 #define AKIMBO			829  // QUAD, DUH!
 #define DEATHMASK		825  // INVULNERABILITY
-#define DMSPAWN			753 // ??? Test it
-#define PLAYERSTART1		2522 // "info_player_coop"
+#define DMSPAWN			753 // ???
+#define PLAYERSTART1		2522 // "info_player_start"
 #define PLAYERSTART2		2523 // "info_player_coop"
 #define PLAYERSTART3		2524 // "info_player_coop"
 #define PLAYERSTART4		2525 // "info_player_coop"
@@ -158,6 +245,7 @@
 #define PLAYERSTART6		2527 // "info_player_coop"
 #define PLAYERSTART7		2528 // "info_player_coop"
 #define PLAYERSTART8		2529 // "info_player_coop"
+
 /* Armor */
 #define FIREARMOR		2578 // REDISH
 #define BODYARMOR		2586 // BLUE'ISH
@@ -180,9 +268,38 @@
 #define RUNNINGZOMBIE		1170
 #define INNOCENT			3798
 #define EMERGINGZOMBIE		3054
+#define GARGOYLE_ACTIVE		1470
+#define SHIAL				1930
+#define CERBERUS			2680
+#define TCHERNOBOG			3140 
+
+/* Lights */
+#define BRASSTORCH			570
+#define GOLDTORCH			571
+#define GARGOYLETORCH		572 // LIGHT OF SOME SORT
+#define THREE_CANDLE_STAND	580 // 580-583
+#define CANDLEABRA			584 // 584-587
+#define CANDLE				650 // SMALL LIGHT
+#define LIGHTPOST			640 // 1800'S STYLE LIGHT
+#define FLAME				2101 // 2101-2114
+#define BIGFLAME			3566 // 3566-3579
+
+/* Tombstones */
+#define CROSSTOMBSTONE		678 // obj_tombstn1
+#define OVALTOMBSTONE		701 // obj_tombstn2
+#define RIPSKULL			702 // TEXTURE ONLY??
+#define WOODTOMBSTONE		703 // WOODEN CROSS
+#define RIPTOMBSTONE		704 
+#define KLKTOMBSTONE		705
+#define SKULLTOMBSTONE		706
+#define DRAVENTOMBSTONE		1159
+
+/* Misc */
+#define CRYSTALBALL			760	
+#define BEASTVISON			839
+#define LIGHTNING			2090 // EVENT_LIGHTING
+#define CLOAK_INVISIBLE		896
 
 /* WTF ??? */
 //784 // BALL THING
-
-//753 // DM SPAWN POINT?
 //3997 // DIDN'T CONVERT

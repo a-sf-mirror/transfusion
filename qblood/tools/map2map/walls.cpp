@@ -27,24 +27,14 @@ void DrawSectorWalls(FILE *f, long i)
 
   if ((wall[j].nextwall == -1) & (M_Wall[j] == 0))
   {
-//   long lln = sqrt((v2.x-v1.x)*(v2.x-v1.x) + (v2.y-v1.y)*(v2.y-v1.y));
-//   long lh  = SectorCeiling - SectorFloor +1;
- 
    pwall.x_off     = 0;
    pwall.y_off     = SectorCeiling;
    pwall.rot_angle = 0;
-
-  // printf("%ld %ld\n", lln, tilesizx[wall[j].picnum]);
-   /* if ((wall[j].xrepeat != 0) & (tilesizx[wall[j].picnum] != 0)) pwall.x_scale   = (lln / (wall[j].xrepeat / 16.0)) / tilesizx[wall[j].picnum]; else */ pwall.x_scale = 1.00;
-   /* if ((wall[j].yrepeat != 0) & (tilesizy[wall[j].picnum] != 0)) pwall.y_scale   = (lh  / (wall[j].yrepeat /  8.0)) / tilesizy[wall[j].picnum]; else */ pwall.y_scale = 1.00;
    pwall.content_a = 0;                                                                                                                                 
    pwall.surface_a = 0;
    pwall.light_v   = 2000;
    pwall.texture   = wall[j].picnum;
-
    W_Wall(v1, v2, f, pwall);
-
-//   WriteWall(v1, v2, f, j);
    M_Wall[j] = 1;
   }
   j = wall[j].point2; TimeOut--; // Why would something time out?
@@ -53,12 +43,10 @@ void DrawSectorWalls(FILE *f, long i)
 
 void WriteWalls(FILE *f)
 {
- TPoint v1;
- TPoint v2;
-// short  Stat;
+ TPoint v1, v2;
  long i, Sn1 = -1, Sn2;
 
- printf("I_Wall : Writing 2 sided walls...\t\t\t\t\t ");
+ printf("Writing 2 sided walls...\t\t\t\t\t ");
 
  for (i = 0; i < numwalls; i++)
  {
@@ -90,10 +78,6 @@ void WriteWalls(FILE *f)
     WriteWall(v1, v2, f, i);
    }
 
-//   short Stat = sector[Sn1].ceilingstat;
-//   if ((sector[Sn1].ceilingstat % 2 != 1) ^ (sector[Sn2].ceilingstat % 2 != 1))
-//{
-
    if (sector[Sn1].ceilingz > sector[Sn2].ceilingz)
    {
     v1.zt = sector[Sn1].ceilingz;
@@ -112,8 +96,6 @@ void WriteWalls(FILE *f)
     WriteWall(v1, v2, f, i);
    }
 
-//}
-
    M_Wall[i] = 1;
    M_Wall[wall[i].nextwall] = 1;
 
@@ -123,42 +105,43 @@ void WriteWalls(FILE *f)
  printf("[ Ok ]\n");
 }
 
+
 // Masked walls & windows code
 void W_MWalls(FILE *f)
 {
  short  Stat;
  TWall  pwall;
  TPoint v1, v2;
- long i;
+ unsigned short i;
+ char *ExplosionType = "exploding_wall";
 
- printf("M_Wall : Writing masking walls/windows...\t\t\t\t ");
+// TWEAKME: This should be set per game with a switch
+#ifdef QUAKE2 
+ ExplosionType = "func_explosive";
+#endif
+
+ printf("Writing masking walls/windows...\t\t\t\t ");
 
  for (i = 0; i < numwalls; i++)
  {
   long Sn1 = -1;
   long Sn2 = wall[i].nextsector;
-  if (wall[i].nextwall != -1) Sn1 = wall[wall[i].nextwall].nextsector;
-  if ((Sn1 != -1) & (Sn2 != -1))
+
+  if (wall[i].nextwall != -1) 
+      Sn1 = wall[wall[i].nextwall].nextsector;
+
+  if ((Sn1 != -1) && (Sn2 != -1))
   {
    Stat = wall[i].cstat;
    Stat = Stat >> 4;
    if (Stat % 2 == 1)
    {
-    pwall.x_off     = 0;
-    pwall.y_off     = 0;
-    pwall.rot_angle = 0;
-    pwall.x_scale   = 1.0;
-    pwall.y_scale   = 1.0;
+    pwall.x_off = pwall.y_off = pwall.rot_angle = 0;
+    pwall.x_scale = pwall.y_scale = 1.0;
     pwall.content_a = 2; 
     pwall.surface_a = 33;
     pwall.light_v   = 2000;
     pwall.texture = wall[i].overpicnum;
-
-// Stat = wall[i].cstat;
-// Stat = Stat >> 7;
-// if (Stat % 2 == 1)
-// pwall.surface_a += 32;
-
     v1.x  = wall[i].x;
     v1.y  = wall[i].y;
     v1.zt = sector[Sn1].ceilingz;
@@ -170,7 +153,7 @@ void W_MWalls(FILE *f)
 
 //  make this a function DrawExplosion() or something, exploding_wall for qBlood
     fprintf(f, " {\n");
-    fprintf(f, " \"classname\"     \"func_explosive\"\n");
+    fprintf(f, " \"classname\"     \"%s\"\n", ExplosionType);
     fprintf(f, " \"health\"        \"16\"\n");
     fprintf(f, " \"mass\"          \"75\"\n");
     fprintf(f, " \"target\"        \"langas%ld\"\n", i); 

@@ -1,23 +1,23 @@
 #include "global.h"
 
-short G_2va(long x1, long y1, long x2, long y2, long *x, long *y);
-long GetZ(double p1x, double p1y, /*double p2x, double p2y,*/ double p3x, double p3y, double Z, double ang);
+short G_2va(long x1, long y1, long x2, long y2, long &x, long &y);
+long GetZ(double p1x, double p1y, double p3x, double p3y, double Z, double ang);
 
-void WriteCeiling(FILE *f, long SecN, long Plus)
+void WriteCeiling(FILE *f, long SectorNumber, long Plus)
 {
- char Texture[256]=""; // s[256]
+ char Texture[256]="";
  int  Ti;
- long SBot, STop, j, wallpointer; //i
+ long SBot, STop, j, wallpointer; 
  TPoint p1, p2;
  TPoint v1, v2, v3;
  short ret;
 
- short Stat = sector[SecN].ceilingstat;
+ short Stat = sector[SectorNumber].ceilingstat;
 
- SBot = sector[SecN].ceilingz      ;
- STop = sector[SecN].ceilingz +Plus;
+ SBot = sector[SectorNumber].ceilingz      ;
+ STop = sector[SectorNumber].ceilingz +Plus;
 
- wallpointer = sector[SecN].wallptr;
+ wallpointer = sector[SectorNumber].wallptr;
  j   = wallpointer; 
 
  p1.x  = wall[j].x;
@@ -37,7 +37,7 @@ sprintf(Texture, "sky 0 0 0 1.00 1.00 1 0 0");
 sprintf(Texture, "sky1 0 0 0 1.00 1.00 1 0 0");
 #endif
 
- if (sector[SecN].ceilingheinum != 0) 
+ if (sector[SectorNumber].ceilingheinum != 0) 
  {
   v1.x  = wall[j].x;
   v1.y  = wall[j].y;
@@ -47,10 +47,10 @@ sprintf(Texture, "sky1 0 0 0 1.00 1.00 1 0 0");
   v2.y  = wall[wall[j].point2].y;
   v2.zt = STop;
   v2.zb = STop;
-  ret = G_2va(v1.x, v1.y, v2.x, v2.y, &v3.x, &v3.y);
+  ret = G_2va(v1.x, v1.y, v2.x, v2.y, v3.x, v3.y);
   v3.zt = STop;
   v3.zb = STop;
-  v3.zt = GetZ(v1.x, v1.y, /*v2.x, v2.y,*/ v3.x, v3.y, STop, (-1 * sector[SecN].ceilingheinum) * PI/4/4096);
+  v3.zt = GetZ(v1.x, v1.y, v3.x, v3.y, STop, (-1 * sector[SectorNumber].ceilingheinum) * PI/4/4096);
   v3.zb = v3.zt-10;
 
   if (v3.zt < STop) v3.zt = STop;
@@ -87,9 +87,9 @@ sprintf(Texture, "sky1 0 0 0 1.00 1.00 1 0 0");
  if (Stat % 2 == 1) 
 	 sprintf(Texture, "sky1 0 0 0 1.00 1.00 0 133 1");
 
- else sprintf(Texture, "tile%.4d 0 0 0 0.50 0.50 1 0 0", sector[SecN].ceilingpicnum);
+ else sprintf(Texture, "tile%.4d 0 0 0 0.50 0.50 1 0 0", sector[SectorNumber].ceilingpicnum);
 
- if (sector[SecN].ceilingheinum != 0) 
+ if (sector[SectorNumber].ceilingheinum != 0) // Slope
  {
   v1.x  = wall[j].x;
   v1.y  = wall[j].y;
@@ -99,10 +99,10 @@ sprintf(Texture, "sky1 0 0 0 1.00 1.00 1 0 0");
   v2.y  = wall[wall[j].point2].y;
   v2.zt = STop;
   v2.zb = SBot;
-  ret = G_2va(v1.x, v1.y, v2.x, v2.y, &v3.x, &v3.y);
+  ret = G_2va(v1.x, v1.y, v2.x, v2.y, v3.x, v3.y);
   v3.zt = STop;
   v3.zb = SBot;
-  v3.zt = GetZ(v1.x, v1.y, /*v2.x, v2.y,*/ v3.x, v3.y, STop, (-1 * sector[SecN].ceilingheinum) * PI/4/4096);
+  v3.zt = GetZ(v1.x, v1.y, v3.x, v3.y, STop, (-1 * sector[SectorNumber].ceilingheinum) * PI/4/4096);
   v3.zb = v3.zt-10;
 
   if (ret == 0)

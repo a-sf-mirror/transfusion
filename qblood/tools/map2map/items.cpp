@@ -1,6 +1,6 @@
 #include "global.h"
 
-void I_Light(FILE* f, short x, short y, short z, short brightness);
+void W_AddLight(FILE* f, short x, short y, short z, short brightness);
 void W_Wall(TPoint p1, TPoint p2, FILE *f, TWall w);
 void I_Sizes(char *FName);
 short M_Sprites[4096];
@@ -15,7 +15,7 @@ void I_Sprites(FILE *f)
 
 unsigned short i = 0, Stat = 0, width = 0, height = 0;
 
-printf("I_Spr1 : Adding sprites...\t\t\t\t\t\t ");
+printf("Adding sprites...\t\t\t\t\t\t ");
  for (i = 0; i < numsprites; i++) M_Sprites[i] = 0;
  for (i = 0; i < numsprites; i++)
  {
@@ -79,15 +79,16 @@ void W_OtherItems(long i, char *Name, FILE *f)
  if (sprite[i].ang > 0 && sprite[i].ang < 360)
 	 angle = sprite[i].ang / ANGLESCALE;
  else angle = 0;
+
  // ??? This is Duke 3d specific, re-implement elsewhere ???
  if (sprite[i].lotag == 3) sp =  768;
  if (sprite[i].lotag == 2) sp =  256;
  if (sprite[i].lotag == 1) sp =    0;
  if (sprite[i].pal   == 1) sp = 1792;
 
- fprintf(f, " {\n");
+ fprintf(f, "{\n");
  fprintf(f, "  \"classname\"     \"%s\"\n", Name);
- fprintf(f, "  \"origin\"        \"%d %d %d\"\n", sprite[i].x, sprite[i].y, sprite[i].z+50);  
+ fprintf(f, "  \"origin\"        \"%d %d %d\"\n", sprite[i].x, sprite[i].y, sprite[i].z+35);  
  fprintf(f, "  \"angle\"         \"%d\"\n", angle); 
  fprintf(f, "  \"spawnflags\"    \"%d\"\n", sp);               
  fprintf(f, "}\n"); // close the entity
@@ -95,7 +96,12 @@ void W_OtherItems(long i, char *Name, FILE *f)
 
 void E_Item(long i, char *Name, FILE *f)
 {
- long sp = 0;
+ short sp = 0, angle = 0;
+
+ if (sprite[i].ang > 0 && sprite[i].ang < 360)
+	 angle = sprite[i].ang / ANGLESCALE;
+ else angle = 0;
+
  // ??? This is Duke 3d specific, re-implement elsewhere ???
  if (sprite[i].lotag == 3) sp =  768;
  if (sprite[i].lotag == 2) sp =  256;
@@ -105,7 +111,7 @@ void E_Item(long i, char *Name, FILE *f)
  fprintf(f, " {\n"
 			"  \"classname\"     \"%s\"\n", Name);              
  fprintf(f, "  \"origin\"        \"%d %d %d\"\n", sprite[i].x, sprite[i].y, sprite[i].z+50);  
- fprintf(f, "  \"angle\"         \"%d\"\n", sprite[i].ang / ANGLESCALE); 
+ fprintf(f, "  \"angle\"         \"%d\"\n", angle); 
  fprintf(f, "  \"spawnflags\"    \"%d\"\n", sp);               
  fprintf(f, "  \"mass\"          \"100\"\n"
 	        "  \"health\"        \"80\"\n"
@@ -113,7 +119,7 @@ void E_Item(long i, char *Name, FILE *f)
 			"}\n");
 }
 
-void I_Item(FILE *f)
+void WriteItems(FILE *f)
 {
  unsigned short i = 0, angle = 0;
 
@@ -122,8 +128,9 @@ void I_Item(FILE *f)
 	 angle = ang / ANGLESCALE;
  else angle = 0;
  
- printf("I_Item : Adding items...");
+ printf("Adding items...");
 
+/* Disabled for now because blood uses a player 1 start, which eliminates the need for this
  fprintf(f, " {\n"
 	        " \"classname\"     \"info_player_start\"\n");
  fprintf(f, "  \"origin\"        \"%d %d %d\"\n", posx, posy, posz);
@@ -135,6 +142,7 @@ void I_Item(FILE *f)
 			"  \"origin\"        \"%d %d %d\"\n", posx, posy, posz);
  fprintf(f, "  \"angle\"         \"%d\"\n", angle);
  fprintf(f, " }\n");
+*/
 
 // The heart of the sprite writing code
  for (i = 0; i < numsprites; i++)
@@ -148,7 +156,7 @@ void I_Item(FILE *f)
 }
 
 
-void I_Light(FILE* f, short x, short y, short z, short brightness)
+void W_AddLight(FILE* f, short i, short brightness)
 {
  fprintf(f, " {\n"
 			"  \"classname\"     \"light\"\n"
@@ -156,7 +164,7 @@ void I_Light(FILE* f, short x, short y, short z, short brightness)
 			"  \"target\"        \"t1\"\n"
 			"  \"light\"         \"%d\"\n"
 			" }\n",
-			x, y, z, brightness);
+			sprite[i].x, sprite[i].y, sprite[i].z+35, brightness);
 }
 
 

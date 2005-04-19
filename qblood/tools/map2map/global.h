@@ -1,13 +1,13 @@
 #ifndef _GLOBAL_H_
 #define _GLOBAL_H_
 
-#include <stdio.h>
-#include <string.h>
-#include <process.h>
-#include <math.h>
-#include <stdlib.h>
+#include <stdio.h>  // FILE, fread, fprintf, sprintf, printf, fopen, fclose
+#include <string.h> // strcmp, strcpy
+#include <math.h>   // sqrt, tan, acos, sin, cos, atan2
+#include <stdlib.h> // malloc, free, srand, rand
+#include <time.h>   // time
 
-#ifdef _MSC_VER
+#ifdef _MSC_VER // Microsoft Visual C
 #pragma warning (disable:4244) // Possible loss of data
 #pragma warning (disable:4514) // The optimizer removed an inline function that is not called
 #endif
@@ -90,10 +90,11 @@ typedef struct
 
 extern long posx, posy, posz, Divider, MaxV, UzS, UzW;
 extern int ang, numsectors, numwalls, numsprites, tilesizx[100000], tilesizy[100000];
-extern sector_t  sector[4025];
-extern wall_t    wall[8192];
-extern sprite_t  sprite[4096];
-extern short       M_Wall[8192];
+
+extern sector_t	*sector;	//[4025];
+extern wall_t	*wall;		//[8192];
+extern sprite_t	*sprite;	//[4096];
+extern short	*M_Wall;	//[8192];
 
 // w_win97
 void W_FlatSprite(long x, long y, long z, long angle, long width, long height, TWall w, FILE *f);

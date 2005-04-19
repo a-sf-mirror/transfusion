@@ -1,14 +1,11 @@
 #include "global.h"
 #include "blood.h"
-
-extern void W_OtherItems(long i, char *Name, FILE *f);
+#include "extern.h"
 
 void Blood_To_qBlood (unsigned short i, FILE *f)
 {
 	switch (sprite[i].picnum)
 	{
-/*
-weapon_lifeleech	the life leech weapon (g_leech.mdl)
 
 /* Weapons */
 	case FLAREPISTOL:	//524 Weapon # 2
@@ -54,7 +51,10 @@ weapon_lifeleech	the life leech weapon (g_leech.mdl)
 	case VOODOODOLL:	//525 Weapon # 9
 		W_OtherItems(i, "weapon_voodoodoll", f);
 		return;
-
+    
+    case LIFELEECH:	    //800 Weapon # 0
+		W_OtherItems(i, "weapon_lifeleech", f);
+		return;
 
 
 /*	
@@ -99,7 +99,12 @@ item_soul	Trapped Soul (soul.mdl) NOT DONE
 		W_OtherItems(i, "info_player_deathmatch", f);
 		return;
 	
-	case PLAYERSTART1:	//2522  
+	case PLAYERSTART1:	//2522
+        W_OtherItems(i, "info_player_start", f);
+        W_OtherItems(i, "info_player_deathmatch", f);
+    	return;
+    
+    // TODO: It seem there's a flag for DM with the player starts
 	case PLAYERSTART2:	//2523  
 	case PLAYERSTART3:	//2524  
 	case PLAYERSTART4:	//2525  
@@ -172,38 +177,39 @@ item_soul	Trapped Soul (soul.mdl) NOT DONE
 
 } // Blood_To_qBlood
 
-
-void Blood_To_Halflife (/*unsigned short i, FILE *f*/)
+/*
+void Blood_To_Halflife (/*unsigned short i, FILE *f/)
 {
 	printf("Not until qBlood is done!\n");
 }
 
 
-void Blood_To_Quake2 (/*unsigned short i, FILE *f*/)
+void Blood_To_Quake2 (/*unsigned short i, FILE *f/)
 {
 	printf("Not until qBlood is done!\n");
 }
 
 
-void Blood_To_Quake3 (/*unsigned short i, FILE *f*/)
+void Blood_To_Quake3 (/*unsigned short i, FILE *f/)
 {
 	printf("Not until until the Quake 2 source is GPL!\n");
 }
 
 
-void Blood_To_Hexen2 (/*unsigned short i, FILE *f*/)
+void Blood_To_Hexen2 (/*unsigned short i, FILE *f/)
 {
 	printf("Not until I get a wild hair!\n");
 }
 
 
-void Blood_To_Heretic2 (/*unsigned short i, FILE *f*/)
+void Blood_To_Heretic2 (/*unsigned short i, FILE *f/)
 {
 	printf("Not until I get a really wild hair!\n");
 }
 
 
-void Blood_To_Return_To_Castle_Wolfenstein (/*unsigned short i, FILE *f*/)
+void Blood_To_Return_To_Castle_Wolfenstein (/*unsigned short i, FILE *f/)
 {
 	printf("Not until the Quake 3 source is GPL!\n");
 }
+*/
