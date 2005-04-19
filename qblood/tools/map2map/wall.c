@@ -1,6 +1,6 @@
 #include "global.h"
+/* It is highly likely that this function will never be called? */
 
-// Secondary wall writing function, rarely called
 void WriteWall(TPoint point1, TPoint point2, FILE *f, const unsigned short i)
 {
  char Texture[10] = "";

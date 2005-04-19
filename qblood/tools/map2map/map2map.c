@@ -63,7 +63,7 @@ void ReadMap(const char *FName)
 int main (int argc, char *argv[])
 {
  FILE *newmap;
- unsigned short badwalls = 0, skippedwalls = 0, i = 0;
+ unsigned short badwalls = 0, i = 0;
  SectorsRounded = 0;
 
  printf("Build map version 7 to Quake map format Converter [Map Convert Utility]\n");
@@ -106,7 +106,7 @@ int main (int argc, char *argv[])
      printf("\n");
 
  WriteWalls(newmap);
- // WriteFlatSprites(newmap); // disabled flatsprites for now, dependant on tile sizes
+ // WriteFlatSprites(newmap); // disabled flatsprites for now
  
  // Write the closing bracket for the geometry section
  fprintf(newmap, "}\n");
@@ -119,16 +119,10 @@ int main (int argc, char *argv[])
  free(sprite);
  
  for (i = 0; i < numwalls; i++) 
- {
 	 if (M_Wall[i] == 0) 
 		 badwalls++;
-
-     if (M_Wall[i] == 2) 
-		 skippedwalls++;
- }
  
- printf("Walls not written: %d\n"
-        "Walls skipped due to smoothing algorithm: %d\n", badwalls, skippedwalls);
+ printf("Walls not written: %d\n", badwalls);
 
  return 0;
 }

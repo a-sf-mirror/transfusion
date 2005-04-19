@@ -9,7 +9,7 @@ void WriteFlatSprites(FILE *f)
 
 unsigned short i = 0, Stat = 0, width = 0, height = 0;
 
-printf("Adding Flat sprites...\t\t\t\t\t ");
+printf("Adding sprites...\t\t\t\t\t\t ");
 
 // Scale tile sizes
  for (i = 0; i < numsprites; i++)

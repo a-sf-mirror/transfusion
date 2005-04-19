@@ -210,11 +210,10 @@ void WriteFloor(FILE *f, const long SectorNumber, long Plus)
   j = wall[j].point2;
  } while (j != wallpointer);
 
-
-/* TWEAKME: Put more dummy textures here and a switch*/
-// skip = not drawn because it's never seen by the player
-#ifdef QUAKE2
+#ifdef QUAKE2 // This should be a switch
  sprintf(Texture, "e1u1/skip"); // Good for quake 2, but not 1
+#elif defined HALFLIFE
+ sprintf(Texture, "sky"); // Should put a real dummy texture here
 #elif defined QUAKE1
  sprintf(Texture, "tile%.4d", sector[SectorNumber].floorpicnum);
 #endif

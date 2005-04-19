@@ -39,7 +39,6 @@ void DrawSectorWalls(FILE *f, const unsigned short i)
           
      { // Make Wall 1 point to wall 3 to save from drawing a redundant wall
          wall[j].point2 = wall[wall[j].point2].point2;
-         M_Wall[wall[j].point2] = 2;
      }
      else j = wall[j].point2; // Nothing can be tweaked, go to next wall
  } while ( (j != wallpointer) && (TimeOut > 0) );
@@ -61,7 +60,7 @@ void DrawSectorWalls(FILE *f, const unsigned short i)
   vertex2.zt = SectorCeiling;
   vertex2.zb = SectorFloor;
 
-  if ((wall[j].nextwall == -1) && (M_Wall[j] == 0)) // Not connected & not written yet
+  if ((wall[j].nextwall == -1) && (M_Wall[j] == 0))
   {
    pwall.x_off     = 0;
    pwall.y_off     = SectorCeiling;

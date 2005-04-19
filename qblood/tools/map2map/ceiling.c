@@ -32,9 +32,10 @@ void WriteCeiling(FILE *f, const long SectorNumber, const long Plus)
     {
 
 /* TWEAKME: Put more dummy textures here and a switch*/
-// skip = not drawn because it's never seen by the player
 #ifdef QUAKE2
  sprintf(Texture, "e1u1/skip 0 0 0 1.00 1.00 1 0 0");
+#elif defined HALFLIFE
+sprintf(Texture, "sky 0 0 0 1.00 1.00 1 0 0");
 #elif defined QUAKE1
 sprintf(Texture, "sky1 0 0 0 1.00 1.00 1 0 0"); 
 #endif

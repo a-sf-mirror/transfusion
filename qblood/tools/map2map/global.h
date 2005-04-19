@@ -15,7 +15,6 @@
 // Constants
 #define SCALE 8 //Divider = 16 , was 11 when I started- TIM
 #define MAXTILES 9216 // Redneck Rampage uses the most textures. ARTFILES * 256?
-#define THICK 2 // Generic brush thickness, 1 causes bsp issues with quake 1
 #define BLOOD
 #define QUAKE1 // This is what qBlood needs 
 
