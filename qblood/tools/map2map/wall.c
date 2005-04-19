@@ -9,8 +9,6 @@ void WriteWall(TPoint point1, TPoint point2, FILE *f, const unsigned short i)
  // This should be tweaked per "to" game
  sprintf(Texture, "tile%.4d", wall[i].picnum);
 
- printf("XRepeat : %ld, YRepeat : %ld\n", wall[i].xrepeat, wall[i].yrepeat);
-
  if ((point1.x == point2.x) && (point1.y == point2.y))
  {
 	 printf("No line to draw for wall %d\n", i);

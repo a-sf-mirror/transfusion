@@ -203,7 +203,7 @@ void WriteFloor(FILE *f, const long SectorNumber, long Plus)
 #elif defined HALFLIFE
  sprintf(Texture, "sky"); // Should put a real dummy texture here
 #elif defined QUAKE1
- sprintf(Texture, "tile0000"); // This is the qBlood dummy texture
+ sprintf(Texture, "tile%.4d", sector[SectorNumber].floorpicnum);
 #endif
 
  if (sector[SectorNumber].floorheinum != 0) 

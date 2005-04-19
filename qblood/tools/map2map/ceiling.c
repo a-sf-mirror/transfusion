@@ -28,14 +28,22 @@ void WriteCeiling(FILE *f, const long SectorNumber, long Plus)
 
  fprintf(f, "{\n");
 
-/* TWEAKME: Put more dummy textures here */
+    if (Stat % 2 == 1) // This indicates paralaxxing
+    {
+
+/* TWEAKME: Put more dummy textures here and a switch*/
 #ifdef QUAKE2
  sprintf(Texture, "e1u1/skip 0 0 0 1.00 1.00 1 0 0");
 #elif defined HALFLIFE
 sprintf(Texture, "sky 0 0 0 1.00 1.00 1 0 0");
 #elif defined QUAKE1
-sprintf(Texture, "sky1 0 0 0 1.00 1.00 1 0 0");
+sprintf(Texture, "sky1 0 0 0 1.00 1.00 1 0 0"); 
 #endif
+    }
+
+    else
+        sprintf(Texture, "tile%.4d 0 0 0 1.00 1.00 1 0 0", sector[SectorNumber].ceilingpicnum); 
+     
 
  if (sector[SectorNumber].ceilingheinum != 0) // Slope
  {
@@ -78,9 +86,9 @@ sprintf(Texture, "sky1 0 0 0 1.00 1.00 1 0 0");
   point2.x = wall[wall[j].point2].x;
   point2.y = wall[wall[j].point2].y;
   
-  //for (i = 0; i < 256; i++) Texture[i] = '\0';
+  if (wall[j].nextwall != -1) // If there's another wall connected
+      sprintf(Texture, "tile%.4d", wall[wall[j].nextwall].picnum);
 
-  if (wall[j].nextwall != -1) sprintf(Texture, "tile%.4d", wall[wall[j].nextwall].picnum);
      else sprintf(Texture, "tile%.4d", wall[j].picnum);
 
  if (Stat % 2 == 1) // This indicates paralaxxing

@@ -148,10 +148,12 @@ void W_Sector_II(FILE *f, const unsigned short SectorNumber, long Up, long Dn)
    DrawBrush_II(f, sector[SectorNumber].wallptr, sector[SectorNumber].ceilingz+16, sector[SectorNumber].floorz-16); 
   }
  }
- else printf("Seeing this is probably bad\n");
-
- WriteFloor  (f, SectorNumber, Dn); // Write the temp sector
- WriteCeiling(f, SectorNumber, Up);
- DrawSectorWalls(f, SectorNumber);
+ 
+// else printf("Wall not found in W_Sector_II\n");
+ 
+     WriteFloor  (f, SectorNumber, Dn); // Write the temp sector
+     WriteCeiling(f, SectorNumber, Up);
+     DrawSectorWalls(f, SectorNumber);
+ 
 }
 
