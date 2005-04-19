@@ -14,7 +14,7 @@
 
 // Constants
 #define SCALE 8 //Divider = 16 , was 11 when I started- TIM
-#define MAXTILES 9216 // Redneck Rampage uses the most textures. I should make this dynamic
+#define MAXTILES 9216 // Redneck Rampage uses the most textures. ARTFILES * 256?
 #define BLOOD
 #define QUAKE1 // This is what qBlood needs 
 
@@ -30,7 +30,7 @@
 #define ARTFILES 17 //There are 18 blood art files (numbered from 0)
 #endif
 
-/* Constants */
+/***** Constants *****/
 #define ANGLESCALE 5.69 // 2048/360, but to 2 places past decimal only. 2048=build 360=quake
 #define PI 3.1415926535897932384626433832795  // Taken from the windows calculator
 
@@ -99,64 +99,125 @@ wall_t		*wall;   // Points to the dynamically allocated wall array
 sprite_t	*sprite; // Points to the dynamically allocated sprite array
 short		*M_Wall;
 
-//TODO: input function descriptions
-// Prototypes
 
-// blood.c
+/***** blood.c *****/
+
+// Converts blood type sprites to qBlood type entities
 void Blood_To_qBlood (unsigned short i, FILE *NewMap);
 
-// ceiling.c
+
+/***** ceiling.c *****/
+
+// Write a sector's ceiling
 void WriteCeiling(FILE *NewMap, long SectorNumber, long Plus);
 
-// floor.c
-short G_2va(long x1, long y1, long x2, long y2, long *x, long *y);
-long GetZ(double p1x, double p1y, double p3x, double p3y, double Z, double ang);
-short TestAngles(long SectorNumber);
-void WriteFloor  (FILE *NewMap, long SectorNumber, long Plus);
-long FindWall(long SectorNumber);   // Validates the number of walls in a sector
 
-// items.c
+/***** floor.c *****/
+
+// Not sure
+short G_2va(long x1, long y1, long x2, long y2, long *x, long *y);
+
+// ??? Gets a sectors slope Z ???
+long GetZ(double p1x, double p1y, double p3x, double p3y, double Z, double ang);
+
+// Tests how complicated a sector is (i.e. "fakey curves")
+short TestAngles(long SectorNumber);
+
+// Writes a sectors floor
+void WriteFloor  (FILE *NewMap, long SectorNumber, long Plus);
+
+// Validates the number of walls in a sector
+long FindWall(long SectorNumber);
+
+
+/***** items.c *****/
+
+// Gets texture scaling
 void I_Sprites(FILE *NewMap);
+
+// Writes a duke style sfx (will die soon)
 void W_MusicanDSFX(long i, char *Name, FILE *NewMap);
-void W_OtherItems(long i, char *Name, FILE *NewMap);
-void E_Item(long i, char *Name, FILE *NewMap, short SpawnFlag);
+
+// Writes a simple item
+void WriteSimpleItem(long i, char *Name, FILE *NewMap);
+
+// Writes an item with a special spawn flag
+void WriteFlaggedItem(long i, char *Name, FILE *NewMap, short SpawnFlag);
+
+// Goes through all the sprites and tries to find acceptable conversions
 void WriteItems(FILE *NewMap);
-void W_AddLight(FILE* f, short i, short brightness);
+
+// Places a light entity in a map
+void AddLight(FILE* f, short i, short brightness);
+
+// Will get the tile sizes from a group or art file
 void GetSizes(char *FName, long pos);
+
+// This expects a group file (.grp) or a directory of art files specifed by "notgroup"
 void I_Sizes(char *FName);
 
-// map2map.c
-void ReadMap(char *FName);  // Reads in sectors, walls, sprites from a build map
 
-// recalc.c
+/***** map2map.c *****/
+
+// Reads in sectors, walls, sprites from a build map
+void ReadMap(char *FName);  
+
+
+/***** recalc.c *****/
+
+// Scales a map, and Recenters it. Also fixes the angles format.
 void CalcAll();
 
-// s_sector.c
+
+/***** s_sector.c *****/
+
+// Manually counts the walls in a sector, assuming no crazy looping
 long FindWalls(long SectorNumber);
+
+// Alternate
 short Draw_Sector_II(FILE *NewMap, long i);
+
+// Alternate
 void DrawBrush_II(FILE *NewMap, long WallNumber, long SectorFloor, long SectorCeiling);
+
+// Alternate
 void W_Sector_II(FILE *NewMap, long SectorNumber, long Up, long Down);
 
-/* w_sector.c */
+
+/***** w_sector.c *****/
 
 // Finds the extreme points of a sector, and writes the floor and ceiling as squares.
 void DivAndWrite(FILE *NewMap, long i, long Up, long Down);
+
+// The main sector function. Essentially writes all the sectors
 void D_Sector(FILE *NewMap, long i);
 
-// w_win97.c
+
+/***** w_win97.c *****/
+
+// Alternate
 void W_Wall(TPoint point1, TPoint point2, FILE *NewMap, TWall Wall);
+
+// Writeline circumvents having to use fprintf and it's formating in the text repetatively
 void WriteLine(long x1, long y1, long z1, long x2, long y2, long z2, long x3, long y3, long z3, 
                char *Texture, TWall Wall, FILE *NewMap);
 
+// Writes a flat sprite
 void W_FlatSprite(long x, long y, long z, long angle, long width, long height, 
                   TWall Wall, FILE *NewMap);
 
-/* wall.c */
+
+/***** wall.c *****/
+
+// Writes a wall
 void WriteWall(TPoint point1, TPoint point2, FILE *NewMap, long i);
 
-// walls.c
+
+/***** walls.c *****/
 void DrawSectorWalls(FILE *NewMap, long i);
 void WriteWalls(FILE *NewMap);
-void W_MWalls(FILE *NewMap); // Masked walls & windows 
+
+// Masked walls & windows
+void W_MWalls(FILE *NewMap); 
 
 #endif

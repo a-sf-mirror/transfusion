@@ -54,7 +54,7 @@ void WriteWall(TPoint point1, TPoint point2, FILE *f, long i)
 
  if (((rad >= 0) && (rad < 45)) || (rad > 315))
  {
-  fprintf(f, " {\n");                                                           //  if (point1.y-1 ==)
+  fprintf(f, " {\n");
   fprintf(f, "  (%d %d %d) (%d %d %d) (%d %d %d) %s 0 0 0 1 1 1 0 0\n", 0, 0, point1.zt, 0, 500, point1.zt, 500,  0,      point2.zt, Texture);
   fprintf(f, "  (%d %d %d) (%d %d %d) (%d %d %d) %s 0 0 0 1 1 1 0 0\n", point1.x, point1.y-1, point1.zt,   point2.x,   point2.y-1, point2.zt,   point2.x, point2.y-1, point2.zb, Texture);
   fprintf(f, "  (%d %d %d) (%d %d %d) (%d %d %d) %s 0 0 0 1 1 1 0 0\n", point2.x, point2.y-1, point2.zt,   point2.x,   point2.y,   point2.zt,   point2.x, point2.y,   point2.zb, Texture);

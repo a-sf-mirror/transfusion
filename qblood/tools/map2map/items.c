@@ -1,13 +1,11 @@
 #include "global.h"
 
-short M_Sprites[4096]; // What for?
-
 void I_Sprites(FILE *f)
 {
 
- TPoint v1, v2;
+ TPoint vertex1, vertex2;
  TWall  pwall;
- double d1, d2, sx, sy;
+ double d1, d2, sizex, sizey;
 
 unsigned short i = 0, Stat = 0, width = 0, height = 0;
 
@@ -16,29 +14,28 @@ printf("Adding sprites...\t\t\t\t\t\t ");
 // Scale tile sizes
  for (i = 0; i < numsprites; i++)
  {
-    M_Sprites[i] = 0; // Why?
+    
+  sizex = tilesizx[sprite[i].picnum] * sprite[i].xrepeat / 64;
+  sizey = tilesizy[sprite[i].picnum] * sprite[i].yrepeat / 64;
 
-  sx = tilesizx[sprite[i].picnum] * sprite[i].xrepeat / 64;
-  sy = tilesizy[sprite[i].picnum] * sprite[i].yrepeat / 64;
+  vertex1.x  = sprite[i].x + sizex * sin(sprite[i].ang * (PI*2) / 2048) / 2 ;
+  vertex1.y  = sprite[i].y + sizex * cos(sprite[i].ang * (PI*2) / 2048) / 2 ;
+  vertex1.zt = sprite[i].z + sizey / 2 + (sizey/2);
+  vertex1.zb = sprite[i].z - sizey / 2 + (sizey/2);
 
-  v1.x  = sprite[i].x + sx * sin(sprite[i].ang * (PI*2) / 2048) / 2 ;
-  v1.y  = sprite[i].y + sx * cos(sprite[i].ang * (PI*2) / 2048) / 2 ;
-  v1.zt = sprite[i].z + sy / 2 + (sy/2);
-  v1.zb = sprite[i].z - sy / 2 + (sy/2);
-
-  v2.x  = sprite[i].x - sx * sin(sprite[i].ang * (PI*2) / 2048) / 2;
-  v2.y  = sprite[i].y - sx * cos(sprite[i].ang * (PI*2) / 2048) / 2;
-  v2.zt = sprite[i].z + sy / 2 + (sy/2);
-  v2.zb = sprite[i].z - sy / 2 + (sy/2);
+  vertex2.x  = sprite[i].x - sizex * sin(sprite[i].ang * (PI*2) / 2048) / 2;
+  vertex2.y  = sprite[i].y - sizex * cos(sprite[i].ang * (PI*2) / 2048) / 2;
+  vertex2.zt = sprite[i].z + sizey / 2 + (sizey/2);
+  vertex2.zb = sprite[i].z - sizey / 2 + (sizey/2);
 
     pwall.x_off     = 0;
     pwall.y_off     = 0;
     pwall.rot_angle = 0;
 
-    d1 = sx;
+    d1 = sizex;
     d2 = tilesizx[sprite[i].picnum];
     pwall.x_scale   = d1 / d2;
-    d1 = sy;
+    d1 = sizey;
     d2 = tilesizy[sprite[i].picnum];
     pwall.y_scale   = d1 / d2; 
     pwall.content_a = 0; 
@@ -49,14 +46,14 @@ printf("Adding sprites...\t\t\t\t\t\t ");
   Stat = sprite[i].cstat;
   Stat = Stat >> 4;
   
-  if (Stat % 4 == 2)
+  if (Stat % 4 == 2) // Not a face sprite
   W_FlatSprite(sprite[i].x, sprite[i].y, sprite[i].z, sprite[i].ang, width, height, pwall, f);
 
  }
  printf("[ Ok ]\n");
 }
 
-// Change to ambient sound
+// Change to ambient sound - fix this for qBlood? Can I use noise to play a wave?
 void W_MusicanDSFX(long i, char *Name, FILE *f)
 {
  long sp = 1;
@@ -69,55 +66,28 @@ void W_MusicanDSFX(long i, char *Name, FILE *f)
  fprintf(f, " }\n");
 }
 
-
-void W_OtherItems(long i, char *Name, FILE *f)
+// Writes a simple item
+void WriteSimpleItem(long i, char *Name, FILE *f)
 {
- short SpawnFlag = 0, angle = 0;
-
- // Angle fixing
- if (sprite[i].ang > 0 && sprite[i].ang < 360)
-	 angle = sprite[i].ang / ANGLESCALE;
- else angle = 0;
-
- // ??? This is Duke 3d specific, re-implement elsewhere ???
- if (sprite[i].lotag == 3) SpawnFlag =  768;
- if (sprite[i].lotag == 2) SpawnFlag =  256; // not in easy
- if (sprite[i].lotag == 1) SpawnFlag =    0;
- if (sprite[i].pal   == 1) SpawnFlag = 1792;
-
  fprintf(f, "{\n");
  fprintf(f, "  \"classname\"     \"%s\"\n", Name);
  fprintf(f, "  \"origin\"        \"%d %d %d\"\n", sprite[i].x, sprite[i].y, sprite[i].z+35);  
- fprintf(f, "  \"angle\"         \"%d\"\n", angle); 
- fprintf(f, "  \"spawnflags\"    \"%d\"\n", SpawnFlag);               
+ fprintf(f, "  \"angle\"         \"%d\"\n", sprite[i].ang); 
  fprintf(f, "}\n"); 
 }
 
-void E_Item(long i, char *Name, FILE *f, short SpawnFlag)
+// Writes an item with a special spawn flag
+void WriteFlaggedItem(long i, char *Name, FILE *f, short SpawnFlag)
 {
- short angle = 0;
-
- if (sprite[i].ang > 0 && sprite[i].ang < 360)
-	 angle = sprite[i].ang / ANGLESCALE;
- else angle = 0;
-
- // ??? This is Duke 3d specific, re-implement elsewhere ???
- if (sprite[i].lotag == 3) SpawnFlag =  768;
- if (sprite[i].lotag == 2) SpawnFlag =  256;
- if (sprite[i].lotag == 1) SpawnFlag =    0;
- if (sprite[i].pal   == 1) SpawnFlag = 1792;
-
  fprintf(f, " {\n"
 			"  \"classname\"     \"%s\"\n", Name);              
  fprintf(f, "  \"origin\"        \"%d %d %d\"\n", sprite[i].x, sprite[i].y, sprite[i].z+35);  
- fprintf(f, "  \"angle\"         \"%d\"\n", angle); 
+ fprintf(f, "  \"angle\"         \"%d\"\n", sprite[i].ang); 
  fprintf(f, "  \"spawnflags\"    \"%d\"\n", SpawnFlag);               
- fprintf(f, "  \"mass\"          \"100\"\n"
-	        "  \"health\"        \"80\"\n"
-			"  \"dmg\"           \"150\"\n"
-			"}\n");
+ fprintf(f, "}\n");
 }
 
+// Goes through all the sprites and tries to find acceptable conversions
 void WriteItems(FILE *f)
 {
  unsigned short i = 0, angle = 0;
@@ -154,19 +124,19 @@ void WriteItems(FILE *f)
  printf("Done\n");
 }
 
-
-void W_AddLight(FILE* f, short i, short brightness)
+// Places a light entity in a map
+void AddLight(FILE* newmap, short i, short brightness)
 {
- fprintf(f, " {\n"
-			"  \"classname\"     \"light\"\n"
-			"  \"origin\"        \"%d %d %d\"\n"
-			"  \"target\"        \"t1\"\n"
-			"  \"light\"         \"%d\"\n"
-			" }\n",
-			sprite[i].x, sprite[i].y, sprite[i].z+35, brightness);
+ fprintf(newmap, " {\n"
+			     "  \"classname\"     \"light\"\n"
+			     "  \"origin\"        \"%d %d %d\"\n"
+			     "  \"target\"        \"t1\"\n"
+			     "  \"light\"         \"%d\"\n"
+			     " }\n",
+			     sprite[i].x, sprite[i].y, sprite[i].z+35, brightness);
 }
 
-
+// Will get the tile sizes from a group or art file
 void GetSizes(char *FName, long pos)
 {
 
@@ -207,7 +177,7 @@ void I_Sizes(char *FName)
  long TotalFiles = 0;
  long i, pos, size;
  char FileName[13];
- FILE *f;
+ FILE *groupfile;
 
  printf("Getting tile sizes\n");
  // Set all the tile sizes to zero
@@ -229,20 +199,21 @@ void I_Sizes(char *FName)
 	 return;
  }
 
- else if ((f = fopen(FName, "rb")) == NULL)
+ // Scours a group file for art files
+ else if ((groupfile = fopen(FName, "rb")) == NULL)
  {
   printf("Error : Cannot open %s file\n", FName);
   perror(""); // perror will tell you exactly why
   exit(14);
  }
- fread(&FileName,  12, 1, f);
- fread(&TotalFiles, 4, 1, f);
+ fread(&FileName,  12, 1, groupfile);
+ fread(&TotalFiles, 4, 1, groupfile);
  FileName[12] = '\0';
  pos = 16 + 16 * TotalFiles;
  for (i = 0; i < TotalFiles; i++)
  {
-  fread(&FileName, 12, 1, f);
-  fread(&size,      4, 1, f);
+  fread(&FileName, 12, 1, groupfile);
+  fread(&size,      4, 1, groupfile);
   FileName[12] = '\0';
   if ((FileName[0] == 'T') &&
 	  (FileName[1] == 'I') && 
@@ -256,8 +227,14 @@ void I_Sizes(char *FName)
   {
    GetSizes(FName, pos);
   }
+  else 
+  {
+      printf("No art files found in %s\n", FName);
+      return;
+  }
+
   pos += size;
  }
- fclose(f);
+ fclose(groupfile);
  
 }

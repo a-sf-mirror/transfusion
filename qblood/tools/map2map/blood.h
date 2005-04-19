@@ -31,11 +31,14 @@ Foundation, Inc., 59 Temple Place - Suite 330, Boston, MA  02111-1307, USA.
 #define LIONSHIELD			165 // MASKED
 #define SEWERLID			219
 #define GOTHICMANTLE		227 // MASKED
+#define WOODENBRIDGE        256 // MASKED
+#define STAINEDGLASS        263 // GIBBABLE, TAGGED FUNNY
 #define MONSTERPIC			269 // FACE
 #define STOOL				284
 #define GREYPIC_HUMAN		316 
 #define LEVELEND			318 // FLAT, MUST
 #define JOJOSIGN			356
+#define OPHELIA             370 // MASKED
 #define TRAINSCHEDULE		431
 #define POSSUMSIGN			453
 #define GRATEMASK			483 // MASKED, gibabble
@@ -80,6 +83,7 @@ Foundation, Inc., 59 Temple Place - Suite 330, Boston, MA  02111-1307, USA.
 #define NOTICESIGN			742
 #define NEWSSIGN			743
 #define WARNINGSIGN			744
+#define POLE			    753 // ??? 
 #define SMOKE1				754 // this should be done with some sort of particle effect
 #define SMOKE2				755
 #define SMOKE3				756
@@ -251,7 +255,6 @@ Foundation, Inc., 59 Temple Place - Suite 330, Boston, MA  02111-1307, USA.
 /* Misc with an obvious acceptable conversion */
 #define AKIMBO			829
 #define DEATHMASK		825  // INVULNERABILITY
-#define DMSPAWN			753 // Test 
 #define PLAYERSTART1		2522 // "info_player_start"
 #define PLAYERSTART2		2523 // "info_player_coop"
 #define PLAYERSTART3		2524 // "info_player_coop"
@@ -278,7 +281,7 @@ Foundation, Inc., 59 Temple Place - Suite 330, Boston, MA  02111-1307, USA.
 #define REFLECTIVESHOT      2428 // TESTME
 #define LIFESEED		    2433
 #define MEDICINEPOUCH       822 // TESTME
-#define JUMPINGBOOTS        827 // TESTME
+#define JUMPINGBOOTS        827 
 #define DIVINGSUIT          830 // TESTME
 
 /* Enemies */ 

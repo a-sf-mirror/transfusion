@@ -70,9 +70,9 @@ int main (int argc, char *argv[])
 
  if (argc < 3) 
  {
-	printf("\nmap2map.exe in.map out.map\n");
-	printf("            in.map  Build map version 7 file\n");
-	printf("            out.map Quake map file\n");
+	printf("\nmap2map.exe input.map output.map\n");
+	printf("            input.map  Build map version 7 file\n");
+	printf("            output.map Quake map file\n");
 	return 1;
  }
 
@@ -82,7 +82,7 @@ int main (int argc, char *argv[])
  ReadMap(argv[1]);  
  CalcAll();
  // This should be part of a switch (i.e. rr.grp, sw.grp, rr2.grp) 
- I_Sizes("notgroup"); //"data/duke3d.grp"
+ //I_Sizes("notgroup"); //"data/duke3d.grp"
  newmap = fopen(argv[2], "wb");
  if (newmap == NULL)
  {
@@ -95,9 +95,14 @@ int main (int argc, char *argv[])
                  "\"classname\"\"worldspawn\"\n"
                  "\"sounds\"   \"%d\"\n", (rand()%10)+1); // random cd track
 
+ printf("Processing sector #     ");
  // Draw the sectors
  for (i = 0; i < numsectors; i++) 
-	 D_Sector(newmap, i);
+ {
+     printf("\b\b\b\b\b%5d", i+1);
+     D_Sector(newmap, i);
+ }
+     printf("\n");
 
  WriteWalls(newmap);
  I_Sprites(newmap);

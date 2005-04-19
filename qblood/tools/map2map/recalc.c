@@ -1,9 +1,10 @@
 #include "global.h"
 
+// Scales a map, and Recenters it. Also fixes the angles format.
 void CalcAll()
 {
- long i, MinX = 9999, MinY = 9999, MaxH = -9999, MaxX = -9999, MaxY = -9999;
- short Xadjust,Yadjust; 
+ long MinX = 9999, MinY = 9999, MaxH = -9999, MaxX = -9999, MaxY = -9999;
+ short i, Xadjust,Yadjust; 
 
  printf("Scaling and recentering the coordinates\n");
  for (i = 0; i < numsectors; i++)
@@ -49,6 +50,12 @@ void CalcAll()
   sprite[i].y = -4000+(MaxY - sprite[i].y) / SCALE/MAPSCALE;
   sprite[i].z = sprite[i].z / SCALE;
   sprite[i].z = (MaxH - sprite[i].z) / 14.5/MAPSCALE;
+
+ 
+  sprite[i].ang /= ANGLESCALE;
+ // Angle fixing
+ if (sprite[i].ang < 0 || sprite[i].ang > 360)
+	 sprite[i].ang = 0;
  }
 
   if (MinX < 0) 

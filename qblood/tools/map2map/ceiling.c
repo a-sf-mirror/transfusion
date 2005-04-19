@@ -1,9 +1,10 @@
 #include "global.h"
 
+// Write a sector's ceiling
 void WriteCeiling(FILE *f, long SectorNumber, long Plus)
 {
  char Texture[256]="";
- int  Ti;
+ //int  Ti;
  long SBot, STop, j, wallpointer; 
  TPoint point1, point2, vertex1, vertex2, vertex3;
  short ret;
@@ -52,17 +53,23 @@ sprintf(Texture, "sky1 0 0 0 1.00 1.00 1 0 0");
   vertex3.zt = GetZ(vertex1.x, vertex1.y, vertex3.x, vertex3.y, STop, (-1 * sector[SectorNumber].ceilingheinum) * PI/4/4096);
   vertex3.zb = vertex3.zt-10;
 
-  if (vertex3.zt < STop) vertex3.zt = STop;
+  if (vertex3.zt < STop) 
+      vertex3.zt = STop;
 
   //fputs("// lubos\n", f);
   if (ret == 0)
-   fprintf(f, "  (%d %d %d) (%d %d %d) (%d %d %d) %s\n", vertex1.x, vertex1.y, vertex1.zt, vertex2.x, vertex2.y, vertex2.zt, vertex3.x, vertex3.y, vertex3.zt, Texture); 
+   fprintf(f, "  (%d %d %d) (%d %d %d) (%d %d %d) %s\n", 
+                  vertex1.x, vertex1.y, vertex1.zt, 
+                  vertex2.x, vertex2.y, vertex2.zt, 
+                  vertex3.x, vertex3.y, vertex3.zt, Texture); 
  
   else
-   fprintf(f, "  ( %d %d %d ) ( %d %d %d ) ( %d %d %d ) %s\n", 0, 0, STop, 0, 500, STop, 500, 0, STop, Texture); 
+   fprintf(f, "  ( %d %d %d ) ( %d %d %d ) ( %d %d %d ) %s\n", // 0 and 500?
+                   0, 0, STop, 0, 500, STop, 500, 0, STop, Texture); 
 
  } else
-   fprintf(f, "  ( %d %d %d ) ( %d %d %d ) ( %d %d %d ) %s\n", 0, 0, STop, 0, 500, STop, 500, 0, STop, Texture); 
+   fprintf(f, "  ( %d %d %d ) ( %d %d %d ) ( %d %d %d ) %s\n", // 0 and 500?
+                   0, 0, STop, 0, 500, STop, 500, 0, STop, Texture); 
 
  do 
  {
@@ -70,15 +77,19 @@ sprintf(Texture, "sky1 0 0 0 1.00 1.00 1 0 0");
   point1.y = wall[j].y;
   point2.x = wall[wall[j].point2].x;
   point2.y = wall[wall[j].point2].y;
-  for (Ti = 0; Ti < 256; Ti++) Texture[Ti] = '\0';
+  
+  //for (i = 0; i < 256; i++) Texture[i] = '\0';
 
   if (wall[j].nextwall != -1) sprintf(Texture, "tile%.4d", wall[wall[j].nextwall].picnum);
      else sprintf(Texture, "tile%.4d", wall[j].picnum);
 
  if (Stat % 2 == 1) // This indicates paralaxxing
-  fprintf(f, "  ( %d %d %d ) ( %d %d %d ) ( %d %d %d ) sky1 0 0 0 1.00 1.00 0 133 1\n", point2.x, point2.y, 500, point1.x, point1.y, 500, point1.x, point1.y, 0); 
+  fprintf(f, "  ( %d %d %d ) ( %d %d %d ) ( %d %d %d ) sky1 0 0 0 1.00 1.00 0 133 1\n", 
+  point2.x, point2.y, 500, point1.x, point1.y, 500, point1.x, point1.y, 0); // Why 133?
+ 
  else
-  fprintf(f, "  ( %d %d %d ) ( %d %d %d ) ( %d %d %d ) %s 0 0 0 1 1 1 0 0\n", point2.x, point2.y, 500, point1.x, point1.y, 500, point1.x, point1.y, 0, Texture); 
+  fprintf(f, "( %d %d %d ) ( %d %d %d ) ( %d %d %d ) %s 0 0 0 1 1 1 0 0\n", 
+  point2.x, point2.y, 500, point1.x, point1.y, 500, point1.x, point1.y, 0, Texture); 
 
   j = wall[j].point2;
  } while (j != wallpointer);
@@ -105,14 +116,18 @@ sprintf(Texture, "sky1 0 0 0 1.00 1.00 1 0 0");
   vertex3.zb = vertex3.zt-10;
 
   if (ret == 0)
-  fprintf(f, "  (%d %d %d) (%d %d %d) (%d %d %d) %s\n", vertex1.x, vertex1.y, vertex1.zb, vertex3.x, vertex3.y, vertex3.zb, vertex2.x, vertex2.y, vertex2.zb, Texture); 
+  fprintf(f, "  (%d %d %d) (%d %d %d) (%d %d %d) %s\n", 
+  vertex1.x, vertex1.y, vertex1.zb, vertex3.x, vertex3.y, vertex3.zb, 
+  vertex2.x, vertex2.y, vertex2.zb, Texture); 
   
   else
-  fprintf(f, "  ( %d %d %d ) ( %d %d %d ) ( %d %d %d ) %s\n", 0, 0, SBot, 500, 0, SBot, 0, 500, SBot, Texture); 
+  fprintf(f, "  ( %d %d %d ) ( %d %d %d ) ( %d %d %d ) %s\n", 
+  0, 0, SBot, 500, 0, SBot, 0, 500, SBot, Texture); // Why 0 and 500?
    
   }
   else
-  fprintf(f, "  ( %d %d %d ) ( %d %d %d ) ( %d %d %d ) %s\n", 0, 0, SBot, 500, 0, SBot, 0, 500, SBot, Texture); 
+  fprintf(f, "  ( %d %d %d ) ( %d %d %d ) ( %d %d %d ) %s\n", 
+  0, 0, SBot, 500, 0, SBot, 0, 500, SBot, Texture); // Why 0 and 500?
 
   fprintf(f, "}\n"); 
 }
