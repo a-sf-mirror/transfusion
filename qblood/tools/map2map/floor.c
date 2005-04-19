@@ -55,7 +55,7 @@ long GetZ(double point1x, double point1y, double p3x, double p3y, double Z, doub
 }
 
 // This will test how complicated a sector is (i.e. "fakey curves")
-short TestAngles(long SectorNumber)
+short TestAngles(const long SectorNumber)
 {
  double TotalA, Test_A, rad;
  TPoint vertex1, vertex2;
@@ -99,7 +99,7 @@ short TestAngles(long SectorNumber)
 }
 
 // Writes a sectors floor
-void WriteFloor(FILE *f, long SectorNumber, long Plus)
+void WriteFloor(FILE *f, const long SectorNumber, long Plus)
 {
  char Texture[40];
  long SBot, STop, j, wallpointer; 
@@ -130,9 +130,11 @@ void WriteFloor(FILE *f, long SectorNumber, long Plus)
  point2.x  = wall[j].x;
  point2.y  = wall[j].y;
 
+ /* Disabled for testing. Why would a floor use a sky texture?
  if (Stat % 2 == 1) // this indicates paralaxxing 
  sprintf(Texture, "sky1 0 0 0 1.00 1.00 0 133 1"); // Why 133?
  else 
+ */
  sprintf(Texture, "tile%.4d 0 0 0 1.00 1.00 1 0 0", sector[SectorNumber].floorpicnum);
 
  if (sector[SectorNumber].floorheinum != 0) // Sloped floor

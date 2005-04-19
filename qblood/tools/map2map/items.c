@@ -54,7 +54,7 @@ printf("Adding sprites...\t\t\t\t\t\t ");
 }
 
 // Change to ambient sound - fix this for qBlood? Can I use noise to play a wave?
-void W_MusicanDSFX(long i, char *Name, FILE *f)
+void W_MusicanDSFX(const unsigned short i, char *Name, FILE *f)
 {
  long sp = 1;
  if (sector[sprite[i].sectnum].lotag) sp = 0;
@@ -67,7 +67,7 @@ void W_MusicanDSFX(long i, char *Name, FILE *f)
 }
 
 // Writes a simple item
-void WriteSimpleItem(long i, char *Name, FILE *f)
+void WriteSimpleItem(const unsigned short i, char *Name, FILE *f)
 {
  fprintf(f, "{\n");
  fprintf(f, "  \"classname\"     \"%s\"\n", Name);
@@ -77,7 +77,7 @@ void WriteSimpleItem(long i, char *Name, FILE *f)
 }
 
 // Writes an item with a special spawn flag
-void WriteFlaggedItem(long i, char *Name, FILE *f, short SpawnFlag)
+void WriteFlaggedItem(const unsigned short i, char *Name, FILE *f, short SpawnFlag)
 {
  fprintf(f, " {\n"
 			"  \"classname\"     \"%s\"\n", Name);              
@@ -125,7 +125,7 @@ void WriteItems(FILE *f)
 }
 
 // Places a light entity in a map
-void AddLight(FILE* newmap, short i, short brightness)
+void AddLight(FILE* newmap, const short i, const short brightness)
 {
  fprintf(newmap, " {\n"
 			     "  \"classname\"     \"light\"\n"
@@ -137,7 +137,7 @@ void AddLight(FILE* newmap, short i, short brightness)
 }
 
 // Will get the tile sizes from a group or art file
-void GetSizes(char *FName, long pos)
+void GetSizes(char *FName, const long pos)
 {
 
  FILE *f;
@@ -175,7 +175,7 @@ void GetSizes(char *FName, long pos)
 void I_Sizes(char *FName)
 {
  long TotalFiles = 0;
- long i, pos, size;
+ unsigned short i, pos, size;
  char FileName[13];
  FILE *groupfile;
 

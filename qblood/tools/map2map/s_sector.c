@@ -1,7 +1,7 @@
 #include "global.h"
 
 // Manually finds the number of walls in a sector
-long FindWalls(long SectorNumber)
+long FindWalls(const unsigned short SectorNumber)
 {
  int  j;
  long wallpointer, walls = 1;
@@ -21,7 +21,7 @@ long FindWalls(long SectorNumber)
 }
 
 
-short Draw_Sector_II(FILE *f, long i)
+short Draw_Sector_II(FILE *f, const unsigned short i)
 {
 
  int  j;
@@ -62,8 +62,8 @@ short Draw_Sector_II(FILE *f, long i)
  return count;
 }
 
-
-void DrawBrush_II(FILE *f, long WallN, long SectorFloor, long SectorCeiling)
+// FIXME: Change to WallNumber
+void DrawBrush_II(FILE *f, const unsigned short WallN, long SectorFloor, long SectorCeiling)
 {
  TPoint p1, p2;
  char   Texture[256]="";
@@ -87,7 +87,7 @@ void DrawBrush_II(FILE *f, long WallN, long SectorFloor, long SectorCeiling)
 #elif defined HALFLIFE
  sprintf(Texture, "sky");
 #elif defined QUAKE1
- sprintf(Texture, "sky1");
+ sprintf(Texture, "tile0000"); // The good old blood dummy texture
 #endif
 
  fprintf(f, "  (%d %d %d) (%d %d %d) (%d %d %d) %s 0 0 0 1 1 1 0 0\n", 
@@ -118,7 +118,7 @@ void DrawBrush_II(FILE *f, long WallN, long SectorFloor, long SectorCeiling)
 #elif defined HALFLIFE
  strcpy(Texture, "sky");
 #elif defined QUAKE1
- strcpy(Texture, "sky1");
+ strcpy(Texture, "tile0000"); // The good old blood dummy texture
 #endif 
 
  fprintf(f, "(%d %d %d) (%d %d %d) (%d %d %d) %s 0 0 0 1 1 1 0 0\n",
@@ -134,7 +134,7 @@ void DrawBrush_II(FILE *f, long WallN, long SectorFloor, long SectorCeiling)
 }
 
 // Writes sectors whose number of walls don't match the listed number of walls
-void W_Sector_II(FILE *f, long SectorNumber, long Up, long Dn)
+void W_Sector_II(FILE *f, const unsigned short SectorNumber, long Up, long Dn)
 {
  long Sn = FindWall(SectorNumber); // Finds a specific wall within a sector
  sector[numsectors] = sector[SectorNumber]; // Storing to the temp sector

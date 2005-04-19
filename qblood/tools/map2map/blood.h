@@ -285,20 +285,34 @@ Foundation, Inc., 59 Temple Place - Suite 330, Boston, MA  02111-1307, USA.
 #define DIVINGSUIT          830 // TESTME
 
 /* Enemies */ 
-// 1370 = BUTCHER? 1570= GILLBEAST? 1980= HAND? 3060= PHANTASM?
 #define RAT					1745
 #define BAT					1948
-#define CULTIST_ACTIVE		2820 // 2820 - 2909 CULTISTS
-#define CULTIST_INACTIVE	2825 // What flag makes it black/red/blue/brown???
-#define CHRYSALIDPOD		1792  
-#define CHRYSALIDTENTACLE	1797
-#define RUNNINGZOMBIE		1170
+#define BONE_EEL            1870
+#define BLACKSPIDER         1920 // The colors are taken from mapedit
+#define REDSPIDER           1925
+#define BROWNSPIDER         1935
+#define CULTIST_ACTIVE		2820 // 2820 - 2909 CULTISTS pal defines what type
+#define CULTIST_INACTIVE	2825 // brown = 0, black = 3, green = 11, red = 12, blue = 13   
+#define CUTLIST_PRONE       3385
+#define CHRYSALIDPOD		1792 // pal defines what type 
+#define CHRYSALIDTENTACLE	1797 // 0 for green, 2 for fire
+#define ZOMBIE		        1170
+#define ZOMBIESLEEPING      1209
 #define INNOCENT			3798
-#define EMERGINGZOMBIE		3054
-#define GARGOYLE_ACTIVE		1470
+#define MIME                2400
+#define HELLHOUND           1270
+#define GILBEAST            1570
+#define HAND                1980
+#define ZOMBIEEMERGING		3054
+#define GARGOYLE_STATUE     1530 // pal defines what type  
+#define GARGOYLE    		1470 // 0 for regular, 5 for stone
+#define LILCALEB            3870
+#define BUTCHER             1370
+#define PHANTASM            3060
 #define SHIAL				1930
 #define CERBERUS			2680
 #define TCHERNOBOG			3140 
+#define BEAST               2960
 
 /* Lights */
 #define HANGINGLIGHT		468 // custom model

@@ -1,6 +1,6 @@
 #include "global.h"
 
-void DrawSectorWalls(FILE *f, long i)
+void DrawSectorWalls(FILE *f, const unsigned short i)
 {
  long   wallpointer, SectorCeiling, SectorFloor, j;
  short TimeOut = 1000;
@@ -43,7 +43,7 @@ void DrawSectorWalls(FILE *f, long i)
 void WriteWalls(FILE *f)
 {
  TPoint vertex1, vertex2;
- long i, NextSector1 = -1, NextSector2;
+ short i, NextSector1 = -1, NextSector2;
 
  printf("Writing 2 sided walls...\t\t\t\t\t ");
 

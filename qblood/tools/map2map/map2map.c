@@ -1,6 +1,6 @@
 #include "global.h"
 
-void ReadMap(char *FName)
+void ReadMap(const char *FName)
 {
  long mapversion;
  int  cursectnum, i;
@@ -40,7 +40,7 @@ void ReadMap(char *FName)
  // Walls
  fread(&numwalls, 2, 1, buildmap);
  wall = (wall_t *) malloc((numwalls+4) * sizeof(wall_t)); // +4 for the temp sector
- M_Wall = (short *) malloc((numwalls+4) * sizeof(short)); // used in divandwrite
+ M_Wall = (char *) malloc((numwalls+4) * sizeof(char)); // used in divandwrite
  for (i = 0; i < numwalls; i++) 
         M_Wall[i] = 0;
  fread(wall, sizeof(wall_t), numwalls, buildmap);
@@ -63,7 +63,7 @@ void ReadMap(char *FName)
 int main (int argc, char *argv[])
 {
  FILE *newmap;
- long badwalls = 0, i = 0;
+ unsigned short badwalls = 0, i = 0;
 
  printf("Build map version 7 to Quake map format Converter [Map Convert Utility]\n");
  printf("=======================================================================\n");
@@ -100,7 +100,7 @@ int main (int argc, char *argv[])
  for (i = 0; i < numsectors; i++) 
  {
      printf("\b\b\b\b\b%5d", i+1);
-     D_Sector(newmap, i);
+     DrawSector(newmap, i);
  }
      printf("\n");
 

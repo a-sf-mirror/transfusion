@@ -1,7 +1,7 @@
 #include "global.h"
 /* It is highly likely that this function will never be called? */
 
-void WriteWall(TPoint point1, TPoint point2, FILE *f, long i)
+void WriteWall(TPoint point1, TPoint point2, FILE *f, const unsigned short i)
 {
  char Texture[10] = "";
  double rad = 0;

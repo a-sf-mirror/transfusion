@@ -1,7 +1,7 @@
 #include "global.h"
 
 // This finds the extreme points of a sector, and writes the floor and ceiling as rectangles.
-void DivAndWrite(FILE *f, long i, long Up, long Dn)
+void DivAndWrite(FILE *f, const unsigned short i, long Up, long Dn)
 {
  long maxX = -5000000, maxY = -5000000, minX =  5000000, minY =  5000000, wallpointer, j, TimeOut = 1000;
 
@@ -62,7 +62,7 @@ void DivAndWrite(FILE *f, long i, long Up, long Dn)
 }
 
 // The main sector function. Essentially writes all the sectors
-void D_Sector(FILE *f, long i)
+void DrawSector(FILE *f, const unsigned short i)
 {
  int  j;
  long Dn = -15, Up = 1, wallpointer, SectorFloorZ, SectorCeilingZ; 
@@ -91,7 +91,7 @@ void D_Sector(FILE *f, long i)
  } while ( (j != wallpointer) && (TimeOut > 0) );
  
  if (!(TimeOut > 0)) 
-	 printf("Sector %d Timed out in D_Sector. Number of walls:%d\n", i, sector[i].wallnum);
+	 printf("Sector %d Timed out in DrawSector(). Number of walls:%d\n", i, sector[i].wallnum);
 
  if (!TestAngles(i))  // Checks if the sector is drawing fakey "curves"
  {

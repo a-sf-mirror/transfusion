@@ -1,7 +1,7 @@
 #include "global.h"
 
 // Write a sector's ceiling
-void WriteCeiling(FILE *f, long SectorNumber, long Plus)
+void WriteCeiling(FILE *f, const long SectorNumber, long Plus)
 {
  char Texture[256]="";
  //int  Ti;

@@ -21,7 +21,7 @@ Foundation, Inc., 59 Temple Place - Suite 330, Boston, MA  02111-1307, USA.
 #include "global.h" // FILE
 #include "blood.h"  // for defines
 
-void Blood_To_qBlood (unsigned short i, FILE *f)
+void Blood_To_qBlood (const unsigned short i, FILE *f)
 {
 	switch (sprite[i].picnum)
 	{
@@ -234,32 +234,155 @@ void Blood_To_qBlood (unsigned short i, FILE *f)
         WriteSimpleItem(i, "item_key6", f);
         return;
 
-/* Enemies */
-	case RAT:				//1745 actor_rat
-        WriteSimpleItem(i, "actor_rat", f);
-		return;
+/* Enemies */ 
+    case RAT:			   //1745
+        WriteSimpleItem(i, "monster_rat", f);
+        return;
+    
+    case BAT:			   //1948
+        WriteSimpleItem(i, "monster_bat", f);
+        return;
+    
+    case BONE_EEL:         //1870
+        WriteSimpleItem(i, "monster_eel", f);
+        return;
+    
+    case BLACKSPIDER:      //1920  The colors are taken from mapedit
+        WriteSimpleItem(i, "monster_blackspider", f);
+        return;
+    
+    case REDSPIDER:        //1925
+        WriteSimpleItem(i, "monster_redspider", f);
+        return;
+    
+    case BROWNSPIDER:      //1935
+        WriteSimpleItem(i, "monster_brownspider", f);
+        return;
+    
+    case CULTIST_ACTIVE:   //2820  2820 - 2909 CULTISTS pal defines what type
+    case CULTIST_INACTIVE: //2825  brown = 0, black = 3, green = 11, red = 12, blue = 13   
+    case CUTLIST_PRONE:    //3385
+        switch (sprite[i].pal)
+        {
+        case 0:
+            WriteSimpleItem(i, "monster_browncultist", f); // Shotgun & TNT
+        return;
         
-	case BAT:				//1948
-	case CHRYSALIDPOD:		//1792  
-	case CHRYSALIDTENTACLE:	//1797
-		WriteSimpleItem(i, "monster_dog", f);
-		return;
-		
-	case CULTIST_ACTIVE:	//2820 // 2820 - 2909 CULTISTS
-	case CULTIST_INACTIVE:	//2825 // What flag makes it black/red/blue/brown???
-		WriteSimpleItem(i, "monster_enforcer", f);
-		return;
-	
-	case RUNNINGZOMBIE:		//1170
-	case EMERGINGZOMBIE:	//3054
-		WriteSimpleItem(i, "monster_zombie", f);
-		return;
+        case 3:
+            WriteSimpleItem(i, "monster_blackcultist", f); // Tommy 
+        return;
+        
+        case 11:
+            WriteSimpleItem(i, "monster_greencultist", f); // TNT
+        return;
+        
+        case 12:
+            WriteSimpleItem(i, "monster_redcultist", f); // Double barrel, then beast
+        return;
+        
+        case 13:
+            WriteSimpleItem(i, "monster_bluecultist", f); // Tesla
+        return;
+        default:
+            WriteSimpleItem(i, "monster_cultist_fixme", f); // I screwed up
+        return;
+        }
 
-	case INNOCENT:			//3798
-	case GARGOYLE_ACTIVE:	//1470
-    case SHIAL:				//1930
-    case CERBERUS:			//2680
-    case TCHERNOBOG:		//3140
+    
+    case CHRYSALIDPOD:	   //1792  pal defines what type; 0 for green, 2 for fire
+        if (sprite[i].pal == 0)
+        WriteSimpleItem(i, "monster_chrysalid", f);
+
+        else
+        WriteSimpleItem(i, "monster_firechrysalid", f);
+        return;
+    
+    case CHRYSALIDTENTACLE://1797
+        
+        if (sprite[i].pal == 0)
+        WriteSimpleItem(i, "monster_tentacle", f);
+
+        else
+        WriteSimpleItem(i, "monster_firetentacle", f);
+        return;
+    
+    case ZOMBIE:	       //1170
+        WriteSimpleItem(i, "monster_zombie", f);
+        return;
+    
+    case ZOMBIESLEEPING:   //1209
+        WriteSimpleItem(i, "monster_sleepingzombie", f);
+        return;
+
+    case ZOMBIEEMERGING:   //3054
+        WriteSimpleItem(i, "monster_emergingzombie", f);
+        return;
+    
+    case INNOCENT:		   //3798
+        WriteSimpleItem(i, "monster_innocent", f);
+        return;
+    
+    case MIME:             //2400
+        WriteSimpleItem(i, "monster_mime", f);
+        return;
+    
+    case HELLHOUND:        //1270
+        WriteSimpleItem(i, "monster_hellhound", f);
+        return;
+    
+    case GILBEAST:         //1570
+        WriteSimpleItem(i, "monster_gilbeast", f);
+        return;
+    
+    case HAND:             //1980
+        WriteSimpleItem(i, "monster_hand", f);
+        return;
+    
+    case GARGOYLE_STATUE:  //1530 pal defines what type 0 for regular, 5 for grey 
+        
+        if (sprite[i].pal == 0)
+        WriteSimpleItem(i, "monster_statuegargoyle", f);
+
+        else
+        WriteSimpleItem(i, "monster_statuegreygargoyle", f);
+
+        return;
+    
+    case GARGOYLE:         //1470  
+        if (sprite[i].pal == 0)
+        WriteSimpleItem(i, "monster_gargoyle", f);
+
+        else
+        WriteSimpleItem(i, "monster_greygargoyle", f);
+
+        return;
+    
+    case LILCALEB:         //3870
+        WriteSimpleItem(i, "monster_lilcaleb", f);
+        return;
+    
+    case BUTCHER:          //1370
+        WriteSimpleItem(i, "monster_butcher", f);
+        return;
+    
+    case PHANTASM:         //3060
+        WriteSimpleItem(i, "monster_phantasm", f);
+        return;
+    
+    case SHIAL:			   //1930
+        WriteSimpleItem(i, "monster_shial", f);
+        return;
+    
+    case CERBERUS:		   //2680
+        WriteSimpleItem(i, "monster_cerberus", f);
+        return;
+    
+    case TCHERNOBOG:	   //3140 
+        WriteSimpleItem(i, "monster_tchernobog", f);
+        return;
+    
+    case BEAST:            //2960
+        WriteSimpleItem(i, "monster_beast", f);
         return;
 
 /* Trees */
@@ -386,6 +509,51 @@ void Blood_To_qBlood (unsigned short i, FILE *f)
         WriteSimpleItem(i, "obj_skull", f);
 		return;
 
+    case 0: // Off the wall stuff, no picture 
+        switch(sprite[i].lotag) // Cycle through known lotags
+        {
+        case 0:   // NULL sprite?
+            return;
+
+        case 8:   // Teleport target
+            WriteSimpleItem(i, "info_teleport_destination", f); // Should change to targetitem
+            return;
+
+        case 20:  // Toggle switch
+        case 21:  // 1-way switch
+        case 22:  // Combination switch
+            return;
+        
+        case 145: // Blue team base
+            WriteSimpleItem(i, "info_player_team1", f);
+            WriteSimpleItem(i, "item_flag_team1", f);
+            return;
+
+        case 146: // Red team base
+            WriteSimpleItem(i, "info_player_team2", f);
+            WriteSimpleItem(i, "item_flag_team2", f);
+            return;
+        
+        case 416: // Gib object
+        case 417: // Explode object
+        case 700: // Trigger gen - E1M5, what is this?
+            return;
+
+        case 701: // Waterdrip Gen
+        case 702: // Blooddrip Gen - both of these should actually have a visible drip
+            WriteSimpleItem(i, "ambient_drip", f);
+		    return;
+
+        case 706: // Bubble Gen
+        case 707: // Multi-Bubble Gen
+            WriteSimpleItem(i, "air_bubbles", f);
+		    return;
+
+        default:
+            WriteSimpleItem(i, "tell_tim_to_learn_me", f); // This "shouldn't" ever happen
+            return;
+        }
+
 	default:
 	return; // The next was for testing
     WriteSimpleItem(i, "fix_me", f);
@@ -393,3 +561,118 @@ void Blood_To_qBlood (unsigned short i, FILE *f)
 	} // switch
 
 } // Blood_To_qBlood
+
+char* GetNewTextureName(const unsigned short i)
+{
+    char* buffer = NULL;
+
+    switch(wall[i].picnum)
+    {
+        case 77:
+            return "+lites";
+
+        case 161:
+            return "+0xray";
+
+        case 187:
+            return "+0skulfd";
+
+        case 243:
+            return "*bldbods";
+
+        case 528:
+            return "*lava_1";
+
+        case 530:
+            return "+lava2";
+
+        case 716:
+            return "+0nunskl";
+
+        case 720:
+            return "+0gclock";
+
+        case 854:
+            return "+0hrtmon";
+
+        case 997:
+            return "+water1";
+
+        case 1029:
+            return "+water2";
+
+        case 1046:
+            return "+0swch_1";
+
+        case 1048:
+            return "+0swch_2";
+
+        case 1070:
+            return "+0swch_3";
+
+        case 1072:
+            return "+0swch_4";
+
+        case 1074:
+            return "+0swch_5";
+
+        case 1076:
+            return "+0swch_6";
+
+        case 1078:
+            return "+0swch_7";
+
+        case 1100:
+            return "+0shittk";
+
+        case 1116:
+            return "+slime1";
+
+        case 1120:
+            return "+slime2";
+
+        case 1130:
+            return "*sht_bld";
+
+        case 1135:
+            return "+0fluobk";
+
+        case 1161:
+            return "+0swch4x";
+
+        case 2039:
+            return "+0telprt";
+
+        case 2178:
+            return "+0gunpto";
+
+        case 2183:
+            return "+0gunptf";
+
+        case 2288:
+            return "+0fluo_2";
+
+        case 2290:
+            return "+0fluo_3";
+
+        case 2307:
+            return "+0gunptx";
+
+        case 2546:
+            return "+0jukebx";
+
+        case 2012:
+            return "+0congrat";
+
+        case 2013:
+            return "+1congrat";
+
+        case 2915:
+            return "+water3";
+
+        default:
+            sprintf(buffer,"tile%.4d", wall[i].picnum);
+            return buffer;  // If it's not on the list, just give it the default name.
+    }
+
+}
