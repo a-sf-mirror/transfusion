@@ -15,6 +15,7 @@
 // Constants
 #define SCALE 8 //Divider = 16 , was 11 when I started- TIM
 #define MAXTILES 9216 // Redneck Rampage uses the most textures. ARTFILES * 256?
+#define THICK 2 // Generic brush thickness, 1 causes bsp issues with quake 1
 #define BLOOD
 #define QUAKE1 // This is what qBlood needs 
 
@@ -109,6 +110,7 @@ void Blood_To_qBlood (const unsigned short i, FILE *NewMap);
 // Gets the new qBlood texture name for animated tiles
 char* GetNewTextureName(const unsigned short i);
 
+
 /***** ceiling.c *****/
 
 // Write a sector's ceiling
@@ -127,10 +129,10 @@ long GetZ(double p1x, double p1y, double p3x, double p3y, double Z, double ang);
 short TestAngles(const long SectorNumber);
 
 // Writes a sectors floor
-void WriteFloor  (FILE *NewMap, const long SectorNumber, long Plus);
+void WriteFloor  (FILE *NewMap, const long SectorNumber, const long Plus);
 
 // Validates the number of walls in a sector
-long FindWall(long SectorNumber);
+long FindWall(const long SectorNumber);
 
 
 /***** items.c *****/
@@ -177,20 +179,20 @@ void CalcAll();
 // Manually counts the walls in a sector, assuming no crazy looping
 long FindWalls(const unsigned short SectorNumber);
 
-// Alternate
+// Alternate ???
 short Draw_Sector_II(FILE *NewMap, const unsigned short i);
 
-// Alternate
-void DrawBrush_II(FILE *NewMap, const unsigned short WallNumber, long SectorFloor, long SectorCeiling);
+// Alternate ??? Draws complex multisided shapes?
+void DrawBrush(FILE *NewMap, const unsigned short WallNumber, long SectorFloor, long SectorCeiling);
 
-// Alternate
-void W_Sector_II(FILE *NewMap, const unsigned short SectorNumber, long Up, long Down);
+// Alternate ???
+void WriteSector(FILE *NewMap, const unsigned short SectorNumber, const long Up, const long Down);
 
 
 /***** w_sector.c *****/
 
 // Finds the extreme points of a sector, and writes the floor and ceiling as squares.
-void DivAndWrite(FILE *NewMap, const unsigned short i, long Up, long Down);
+void DivAndWrite(FILE *NewMap, const unsigned short i, const long Up, const long Down);
 
 // The main sector function. Essentially writes all the sectors
 void DrawSector(FILE *NewMap, const unsigned short i);
@@ -198,7 +200,7 @@ void DrawSector(FILE *NewMap, const unsigned short i);
 
 /***** w_win97.c *****/
 
-// Alternate
+// Primary wall writing function
 void W_Wall(TPoint point1, TPoint point2, FILE *NewMap, TWall Wall);
 
 // Writeline circumvents having to use fprintf and it's formating in the text repetatively
@@ -212,7 +214,7 @@ void W_FlatSprite(long x, long y, long z, long angle, long width, long height,
 
 /***** wall.c *****/
 
-// Writes a wall
+// Alternate, Writes a wall
 void WriteWall(TPoint point1, TPoint point2, FILE *NewMap, const unsigned short i);
 
 

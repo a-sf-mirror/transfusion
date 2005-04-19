@@ -4,7 +4,7 @@
 void CalcAll()
 {
  long MinX = 9999, MinY = 9999, MaxH = -9999, MaxX = -9999, MaxY = -9999;
- short i, Xadjust,Yadjust; 
+ short i, Xadjust, Yadjust; 
 
  printf("Scaling and recentering the coordinates\n");
  for (i = 0; i < numsectors; i++)
@@ -94,6 +94,8 @@ void CalcAll()
 	
 	startx -= Xadjust;
 	starty -= Yadjust;
-
+    ang /= ANGLESCALE;
+    if (ang < 0 || ang > 360)
+	    ang = 0;
 }
  

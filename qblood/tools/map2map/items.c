@@ -9,7 +9,7 @@ void WriteFlatSprites(FILE *f)
 
 unsigned short i = 0, Stat = 0, width = 0, height = 0;
 
-printf("Adding sprites...\t\t\t\t\t\t ");
+printf("Adding Flat sprites...\t\t\t\t\t ");
 
 // Scale tile sizes
  for (i = 0; i < numsprites; i++)
@@ -92,12 +92,7 @@ void WriteFlaggedItem(const unsigned short i, char *Name, FILE *f, short SpawnFl
 // Goes through all the sprites and tries to find acceptable conversions
 void WriteItems(FILE *f)
 {
- unsigned short i = 0, angle = 0;
-
- // Convert the angle format
- if (ang > 0 && ang < 360)
-	 angle = ang / ANGLESCALE;
- else angle = 0;
+ unsigned short i = 0;
  
  printf("Adding items...");
 
@@ -105,13 +100,13 @@ void WriteItems(FILE *f)
  fprintf(f, " {\n"
 	        " \"classname\"     \"info_player_start\"\n");
  fprintf(f, "  \"origin\"        \"%d %d %d\"\n", startx, starty, startz);
- fprintf(f, "  \"angle\"         \"%d\"\n", angle);
+ fprintf(f, "  \"angle\"         \"%d\"\n", ang);
  
  fprintf(f, " }\n" 
 	        " {\n"
 			" \"classname\"     \"info_player_deathmatch\"\n"
 			"  \"origin\"        \"%d %d %d\"\n", startx, starty, startz);
- fprintf(f, "  \"angle\"         \"%d\"\n", angle);
+ fprintf(f, "  \"angle\"         \"%d\"\n", ang);
  fprintf(f, " }\n");
 #endif
 
@@ -132,7 +127,6 @@ void AddLight(FILE* newmap, const short i, const short brightness)
  fprintf(newmap, " {\n"
 			     "  \"classname\"     \"light\"\n"
 			     "  \"origin\"        \"%d %d %d\"\n"
-			     "  \"target\"        \"t1\"\n"
 			     "  \"light\"         \"%d\"\n"
 			     " }\n",
 			     sprite[i].x, sprite[i].y, sprite[i].z+35, brightness);

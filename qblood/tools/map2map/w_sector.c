@@ -1,7 +1,7 @@
 #include "global.h"
 
 // This finds the extreme points of a sector, and writes the floor and ceiling as rectangles.
-void DivAndWrite(FILE *f, const unsigned short i, long Up, long Dn)
+void DivAndWrite(FILE *f, const unsigned short i, const long Up, const long Down)
 {
  long maxX = -5000000, maxY = -5000000, minX =  5000000, minY =  5000000, wallpointer, j, TimeOut = 1000;
 
@@ -57,7 +57,7 @@ void DivAndWrite(FILE *f, const unsigned short i, long Up, long Dn)
  wall[numwalls+3].point2 = numwalls+2;
 
  // Write the temporary sector
- WriteFloor  (f, numsectors, Dn);       // numsectors is the value for temp sector
+ WriteFloor  (f, numsectors, Down);       // numsectors is the value for temp sector
  WriteCeiling(f, numsectors, Up);
 }
 
@@ -97,7 +97,7 @@ void DrawSector(FILE *f, const unsigned short i)
  {
 	 // Validate the number of walls  
 	 if (FindWalls(i) != sector[i].wallnum) 
-		W_Sector_II(f, i, Up, Dn); // If walls are doing something freaky, use alternate method
+		WriteSector(f, i, Up, Dn); // If walls are doing something freaky, use alternate method
     
      else // It's all good- write the sector regularly
     {

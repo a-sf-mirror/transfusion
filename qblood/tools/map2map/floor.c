@@ -11,25 +11,25 @@ short G_2va(long x1, long y1, long x2, long y2, long *x, long *y)
  if (vertex1x == 0) // Horizontal line
 	 vertex1x = 1;
 
- y_1 = 0.5/(vertex1y*vertex1y+vertex1x*vertex1x)*
-     (2.0*y1*vertex1x*vertex1x+2.0*vertex1y*vertex1y*y1+200.0*
-     sqrt(vertex1y*vertex1y*vertex1x*vertex1x+vertex1x*vertex1x*vertex1x*vertex1x));
+ y_1 = 0.5/(vertex1y * vertex1y + vertex1x * vertex1x) *
+     (2.0 * y1 * vertex1x * vertex1x + 2.0 * vertex1y * vertex1y * y1 + 200.0 *
+     sqrt(vertex1y * vertex1y * vertex1x * vertex1x + vertex1x * vertex1x * vertex1x * vertex1x));
 
- x_1 = (vertex1x*x1-vertex1y*y_1+vertex1y*y1) / vertex1x;
+ x_1 = (vertex1x * x1 - vertex1y * y_1 + vertex1y * y1) / vertex1x;
 
- y_2 = 0.5/(vertex1y*vertex1y+vertex1x*vertex1x)*
-     (2.0*y1*vertex1x*vertex1x+2.0*vertex1y*vertex1y*y1-200.0*
-     sqrt(vertex1y*vertex1y*vertex1x*vertex1x+vertex1x*vertex1x*vertex1x*vertex1x));
+ y_2 = 0.5/(vertex1y * vertex1y + vertex1x * vertex1x) *
+     (2.0 * y1 * vertex1x * vertex1x + 2.0 * vertex1y * vertex1y * y1-200.0 *
+     sqrt(vertex1y * vertex1y * vertex1x * vertex1x + vertex1x * vertex1x * vertex1x * vertex1x));
 
- x_2 = (vertex1x*x1-vertex1y*y_2+vertex1y*y1) / vertex1x;
+ x_2 = (vertex1x * x1 - vertex1y * y_2 + vertex1y * y1) / vertex1x;
 
  vertex2x  = x_1 - x1;
  vertex2y  = y_1 - y1;                    
- k = vertex1x*vertex2y - vertex1y*vertex2x;
+ k = vertex1x * vertex2y - vertex1y * vertex2x;
 
               // Pythagorean theorem 
- sinq = k / (sqrt(vertex1x*vertex1x + vertex1y*vertex1y) * 
-             sqrt(vertex2x*vertex2x + vertex2y*vertex2y));
+ sinq = k / (sqrt(vertex1x * vertex1x + vertex1y * vertex1y) * 
+             sqrt(vertex2x * vertex2x + vertex2y * vertex2y));
 
  if (sinq == -1)
  {
@@ -48,16 +48,17 @@ short G_2va(long x1, long y1, long x2, long y2, long *x, long *y)
 }
 
 // ?? Gets the Z for a sloped wall ?? If so, use it to fix nearby walls
-long GetZ(double point1x, double point1y, double p3x, double p3y, double Z, double angle)
+long GetZ(double point1x, double point1y, double point3x, double point3y, double Z, double angle)
 {
- long h = tan(angle) * sqrt((p3x-point1x)*(p3x-point1x) + (p3y-point1y)*(p3y-point1y));
+ long h = tan(angle) * sqrt((point3x - point1x) * (point3x - point1x) + 
+                            (point3y - point1y) * (point3y - point1y));
  return Z + h; 
 }
 
 // This will test how complicated a sector is (i.e. "fakey curves")
 short TestAngles(const long SectorNumber)
 {
- double TotalA, Test_A, rad;
+ double TotalAngle, TestAngle, radian;
  TPoint vertex1, vertex2;
  long walls = 0, j, wallpointer;
  short TimeOut = 1000;
@@ -70,10 +71,14 @@ short TestAngles(const long SectorNumber)
   walls++; TimeOut--; // Manually get the number of walls
  } while ( (j != wallpointer) && (TimeOut > 0) );
 
- TotalA = 180 * (walls-2);
- Test_A = 0;
- wallpointer = sector[SectorNumber].wallptr;
- j   = wallpointer; TimeOut = 1000;
+ if (walls < 3) // You're not going to have complicated angles with 2 walls.
+     return 0;
+
+ TotalAngle = 180 * (walls-2);
+ TestAngle = 0;
+ j = wallpointer = sector[SectorNumber].wallptr;
+ TimeOut = 1000;
+
  do 
  {
   vertex1.x = wall[j].x - wall[wall[j].point2].x; // X Line 1 length 
@@ -81,18 +86,19 @@ short TestAngles(const long SectorNumber)
   vertex2.x = wall[wall[wall[j].point2].point2].x - wall[wall[j].point2].x; // X Line 2 length 
   vertex2.y = wall[wall[wall[j].point2].point2].y - wall[wall[j].point2].y; // Y Line 2 length
 
-  rad = acos((vertex1.x*vertex2.x + vertex1.y*vertex2.y) / 
-      ((sqrt(vertex1.x*vertex1.x + vertex1.y*vertex1.y) * // Hypotenuse
-      sqrt(vertex2.x*vertex2.x + vertex2.y*vertex2.y)))); // Hypotenuse
+  // There has got to be a smarter way to do this
+  radian = acos((vertex1.x * vertex2.x + vertex1.y * vertex2.y) / 
+      ((sqrt(vertex1.x * vertex1.x + vertex1.y * vertex1.y) * // Hypotenuse
+      sqrt(vertex2.x * vertex2.x + vertex2.y * vertex2.y)))); // Hypotenuse
   
-  Test_A += rad;
+  TestAngle += radian;
   
   j = wall[j].point2; TimeOut--;
  } while ( (j != wallpointer) && (TimeOut > 0) );
  
- Test_A = Test_A * 180 / PI;
+ TestAngle = TestAngle * 180 / PI;
 
- if ((TotalA - Test_A > -1) && (TotalA - Test_A < 1)) 
+ if ((TotalAngle - TestAngle > -1) && (TotalAngle - TestAngle < 1)) 
      return 0;
  
  
@@ -102,7 +108,7 @@ short TestAngles(const long SectorNumber)
      FILE * log;
      log = fopen("log.txt", "a");
      fprintf(log, "magic number = %7g    number of walls = %d\n", 
-             TotalA - Test_A, sector[SectorNumber].wallnum);
+             TotalAngle - TestAngle, sector[SectorNumber].wallnum);
      fclose(log);
 #endif
      return 1;
@@ -111,7 +117,7 @@ short TestAngles(const long SectorNumber)
 }
 
 // Writes a sectors floor
-void WriteFloor(FILE *f, const long SectorNumber, long Plus)
+void WriteFloor(FILE *f, const long SectorNumber, const long Plus)
 {
  char Texture[40];
  long SBot, STop, j, wallpointer; 
@@ -127,22 +133,20 @@ void WriteFloor(FILE *f, const long SectorNumber, long Plus)
   SBot = sector[SectorNumber].floorz +Plus; // Floor going down
   STop = sector[SectorNumber].floorz;
  }
- else// (Plus > 0)
+ else// Plus >= 0
  {
-  STop = sector[SectorNumber].floorz +Plus; // Floor going up
+  STop = sector[SectorNumber].floorz +Plus; // Floor going up - step?
   SBot = sector[SectorNumber].floorz;
  }
 
  wallpointer = sector[SectorNumber].wallptr;
  j   = wallpointer; 
 
- point1.x  = wall[j].x;
- point1.y  = wall[j].y;
+ point1.x = point2.x = wall[j].x;
+ point1.y = point2.y = wall[j].y;
  point1.zt = STop;
- point2.x  = wall[j].x;
- point2.y  = wall[j].y;
 
- /* Disabled for testing. Why would a floor use a sky texture?
+ /* Disabled: floors aren't paralaxxed
  if (Stat % 2 == 1) // this indicates paralaxxing 
  sprintf(Texture, "sky1 0 0 0 1.00 1.00 0 133 1"); // Why 133?
  else 
@@ -186,7 +190,7 @@ void WriteFloor(FILE *f, const long SectorNumber, long Plus)
  fprintf(f, "  ( %d %d %d ) ( %d %d %d ) ( %d %d %d ) %s\n", 
                  0, 0, STop, 0, 500, STop, 500, 0, STop, Texture); // Why 0 and 500?
  
- do // Very likely this never get used?
+ do 
  {
   point1.x = wall[j].x;
   point1.y = wall[j].y;
@@ -198,7 +202,7 @@ void WriteFloor(FILE *f, const long SectorNumber, long Plus)
      
   else sprintf(Texture, "tile%.4d", wall[j].picnum);
 
-  if (Stat % 2 == 1) // Parallaxxing
+  if (Stat % 2 == 1) // Parallaxxing, highly unlikely for a floor
         fprintf(f, "  ( %d %d %d ) ( %d %d %d ) ( %d %d %d ) e1u2/sky1 0 0 0 1.00 1.00 0 133 1\n", 
           point2.x, point2.y, 500, point1.x, point1.y, 500, point1.x, point1.y, 0, Texture);  
   
@@ -210,10 +214,11 @@ void WriteFloor(FILE *f, const long SectorNumber, long Plus)
   j = wall[j].point2;
  } while (j != wallpointer);
 
-#ifdef QUAKE2 // This should be a switch
+
+/* TWEAKME: Put more dummy textures here and a switch*/
+// skip = not drawn because it's never seen by the player
+#ifdef QUAKE2
  sprintf(Texture, "e1u1/skip"); // Good for quake 2, but not 1
-#elif defined HALFLIFE
- sprintf(Texture, "sky"); // Should put a real dummy texture here
 #elif defined QUAKE1
  sprintf(Texture, "tile%.4d", sector[SectorNumber].floorpicnum);
 #endif
@@ -224,13 +229,10 @@ void WriteFloor(FILE *f, const long SectorNumber, long Plus)
   
  vertex1.x  = wall[j].x;
  vertex1.y  = wall[j].y;
- vertex1.zt = STop;
- vertex1.zb = SBot;
-
  vertex2.x  = wall[wall[j].point2].x;
  vertex2.y  = wall[wall[j].point2].y;
- vertex2.zt = STop;
- vertex2.zb = SBot;
+ vertex1.zt = vertex2.zt = STop;
+ vertex1.zb = vertex2.zb = SBot;
 
  ret = G_2va(vertex1.x, vertex1.y, vertex2.x, vertex2.y, &vertex3.x, &vertex3.y);
  vertex3.zt = STop;
@@ -264,20 +266,24 @@ void WriteFloor(FILE *f, const long SectorNumber, long Plus)
 
 
 // Finds a specific wall within a sector
-long FindWall(long SectorNumber)
+long FindWall(const long SectorNumber)
 {
  short i, j, r, wallpointer;
  
+ // The first wall in the sector to be searched
  wallpointer = sector[SectorNumber].wallptr;
 
  for (i = 0; i < numwalls; i++)
  {
-  if (wall[wall[i].nextwall].nextsector == SectorNumber)
+     // Searching for a wall in a neighboring sector?
+  if (wall[wall[i].nextwall].nextsector == SectorNumber) // The neighbor sector
   {
    r = 0;
    
    j = wallpointer; 
-   do 
+   
+   // Search "SectorNumber" for the wall "i"
+   do       
    {
 	 if (i == j) 
          r = 1;
@@ -288,7 +294,7 @@ long FindWall(long SectorNumber)
    
    if (r == 0)
        return i;
-  }
- }
+  }//if
+ }//for
  return -1; // Not found
 }

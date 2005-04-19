@@ -300,6 +300,7 @@ void Blood_To_qBlood (const unsigned short i, FILE *f)
         case 13:
             WriteSimpleItem(i, "monster_bluecultist", f); // Tesla
         return;
+
         default:
             WriteSimpleItem(i, "monster_cultist_fixme", f); // I screwed up
         return;

@@ -21,7 +21,7 @@ long FindWalls(const unsigned short SectorNumber)
 }
 
 
-// Potential logic bug here???
+// Alternate sector drawing function - why?
 short Draw_Sector_II(FILE *f, const unsigned short i)
 {
 
@@ -55,69 +55,67 @@ short Draw_Sector_II(FILE *f, const unsigned short i)
 
  if (count < 1000)
  {
-  WriteFloor  (f, numsectors, Dn); // Write the temp sector
-  WriteCeiling(f, numsectors, Up); // Write the temp sector
+  WriteFloor  (f, i, Dn);
+  WriteCeiling(f, i, Up);
  } 
  else printf("Error in Draw_Sector_II\n");
 
  return count;
 }
 
-// FIXME: Change to WallNumber
-void DrawBrush_II(FILE *f, const unsigned short WallN, long SectorFloor, long SectorCeiling)
+
+void DrawBrush(FILE *f, const unsigned short WallNumber, long SectorFloor, long SectorCeiling)
 {
- TPoint p1, p2;
+ TPoint point1, point2;
  char   Texture[256]="";
- long   j = WallN;
+ long   j = WallNumber;
  
- if (wall[WallN].nextwall != -1) // No connecting sector
+ // Sanity check? Why would this be bad if this was connected to another sector?
+ if (wall[WallNumber].nextwall != -1) // No connecting sector
      return;
 
- p1.x   = wall[j].x;
- p1.y   = wall[j].y;
- p1.zt  = SectorFloor;
- p2.x   = wall[j].x;
- p2.y   = wall[j].y;
- p2.zt  = SectorFloor;
- p2.zt = SectorFloor;
- p2.zb = SectorCeiling;
+ point1.x = point2.x = wall[j].x;
+ point1.y = point2.y = wall[j].y;
+ point1.zt = point2.zt = SectorFloor;
+ point2.zb = SectorCeiling;
 
- fprintf(f, "{\n");
+/* TWEAKME: Put more dummy textures here and a switch*/
+// skip = not drawn because it's never seen by the player
 #ifdef QUAKE2
  sprintf(Texture, "e1u1/skip"); // Good for quake 2, but not 1
-#elif defined HALFLIFE
- sprintf(Texture, "sky");
 #elif defined QUAKE1
  sprintf(Texture, "tile0000"); // The good old blood dummy texture
 #endif
 
+ fprintf(f, "{\n");
  fprintf(f, "  (%d %d %d) (%d %d %d) (%d %d %d) %s 0 0 0 1 1 1 0 0\n", 
-     p1.x, p1.y, SectorFloor, p1.x, p1.y+100, SectorFloor, p2.x+100, p2.y, SectorFloor, Texture); 
+     point1.x, point1.y, SectorFloor, point1.x, point1.y+100, SectorFloor, point2.x+100, point2.y, SectorFloor, Texture); 
 
  do 
  {
-  p1.x = wall[j].x;
-  p1.y = wall[j].y;
-  p2.x = wall[wall[j].point2].x;
-  p2.y = wall[wall[j].point2].y;
+  point1.x = wall[j].x;
+  point1.y = wall[j].y;
+  point2.x = wall[wall[j].point2].x;
+  point2.y = wall[wall[j].point2].y;
   
   sprintf(Texture, "tile%.4d", wall[j].picnum);
   fprintf(f, "  (%d %d %d) (%d %d %d) (%d %d %d) %s 0 0 0 1 1 1 0 0\n", 
-      p1.x, p1.y, 500, p2.x, p2.y, 500, p2.x, p2.y, 0, Texture); // 500?
+      point1.x, point1.y, 500, point2.x, point2.y, 500, point2.x, point2.y, 0, Texture); // 500?
 
 /* Alternate
   fprintf(f, "  (%d %d %d) (%d %d %d) (%d %d %d) %s 0 0 0 1 1 1 0 0\n", 
-      p2.x, p2.y, 500, p1.x, p1.y, 500, p1.x, p1.y, 0, Texture); 
+      point2.x, point2.y, 500, point1.x, point1.y, 500, point1.x, point1.y, 0, Texture); 
 */
 
 
   j = wall[j].point2;
- } while (j != WallN);
+ } while (j != WallNumber);
 
+
+/* TWEAKME: Put more dummy textures here and a switch*/
+// skip = not drawn because it's never seen by the player
 #ifdef QUAKE2
  strcpy(Texture, "e1u1/skip"); // Good for quake 2, but not 1
-#elif defined HALFLIFE
- strcpy(Texture, "sky");
 #elif defined QUAKE1
  strcpy(Texture, "tile0000"); // The good old blood dummy texture
 #endif 
@@ -127,7 +125,7 @@ void DrawBrush_II(FILE *f, const unsigned short WallN, long SectorFloor, long Se
 
 /* Alternate
   fprintf(f, "(%d %d %d) (%d %d %d) (%d %d %d) %s 0 0 0 1 1 1 0 0\n", // 0 and 500 again
-              0, 0, SectorCeiling, 500, 0, p2.zb, 0, 500, SectorCeiling, Texture); 
+              0, 0, SectorCeiling, 500, 0, point2.zb, 0, 500, SectorCeiling, Texture); 
 */
 
  fprintf(f, "}\n"); 
@@ -135,7 +133,7 @@ void DrawBrush_II(FILE *f, const unsigned short WallN, long SectorFloor, long Se
 }
 
 // Writes sectors whose number of walls don't match the listed number of walls
-void W_Sector_II(FILE *f, const unsigned short SectorNumber, long Up, long Dn)
+void WriteSector(FILE *f, const unsigned short SectorNumber, const long Up, const long Down)
 {
  long Sn = FindWall(SectorNumber); // Finds a specific wall within a sector
  sector[numsectors] = sector[SectorNumber]; // Storing to the temp sector
@@ -146,13 +144,13 @@ void W_Sector_II(FILE *f, const unsigned short SectorNumber, long Up, long Dn)
   if (Draw_Sector_II(f, numsectors) < 1000) // Storing to the temp sector
   {
    DrawSectorWalls(f, numsectors);
-   DrawBrush_II(f, sector[SectorNumber].wallptr, sector[SectorNumber].ceilingz+16, sector[SectorNumber].floorz-16); 
+   DrawBrush(f, sector[SectorNumber].wallptr, sector[SectorNumber].ceilingz+16, sector[SectorNumber].floorz-16); 
   }
  }
  
-// else printf("Wall not found in W_Sector_II\n");
+// else printf("Wall not found in WriteSector\n");
  
-     WriteFloor  (f, SectorNumber, Dn); // Write the temp sector
+     WriteFloor  (f, SectorNumber, Down); // Write the temp sector
      WriteCeiling(f, SectorNumber, Up);
      DrawSectorWalls(f, SectorNumber);
  
