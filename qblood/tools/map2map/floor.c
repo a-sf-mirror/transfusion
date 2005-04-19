@@ -120,9 +120,6 @@ void WriteFloor(FILE *f, const unsigned short SectorNumber, const long Plus)
   SectorBottom = sector[SectorNumber].floorz;
  }
 
-// SectorTop = SectorBottom;
-// SectorBottom -= THICK;
-
  // Sanity checks...
  if (SectorTop > sector[SectorNumber].ceilingz)
      SectorTop = sector[SectorNumber].ceilingz - THICK;
@@ -131,7 +128,7 @@ void WriteFloor(FILE *f, const unsigned short SectorNumber, const long Plus)
      SWAP (SectorTop, SectorBottom);
 
  if (SectorTop == SectorBottom)
-     SectorBottom -= THICK;
+     SectorBottom -= THICK;     
 
  j = wallpointer = sector[SectorNumber].wallptr;
  

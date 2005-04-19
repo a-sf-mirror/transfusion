@@ -95,29 +95,21 @@ void WriteFlaggedItem(const unsigned short i, const char *Name, FILE *f, short S
 // Goes through all the sprites and tries to find acceptable conversions
 void WriteItems(FILE *f)
 {
- unsigned short i = 0;
+ unsigned short i = 0, Stat;
  
  printf("Adding items...");
 
-#ifndef BLOOD // If a game has a player 1 start this is bad actually
- fprintf(f, " {\n"
-	        " \"classname\"     \"info_player_start\"\n");
- fprintf(f, "  \"origin\"        \"%d %d %d\"\n", startx, starty, startz);
- fprintf(f, "  \"angle\"         \"%d\"\n", ang);
- 
- fprintf(f, " }\n" 
-	        " {\n"
-			" \"classname\"     \"info_player_deathmatch\"\n"
-			"  \"origin\"        \"%d %d %d\"\n", startx, starty, startz);
- fprintf(f, "  \"angle\"         \"%d\"\n", ang);
- fprintf(f, " }\n");
-#endif
 
 // The heart of the sprite writing code
  for (i = 0; i < numsprites; i++)
  {
+     Stat = sprite[i].cstat % 64;  // Nuke all bits higher than 4
+
+     if (Stat >= 16) // Nothing to be done, since 16 or greater = wall sprite & floor sprites
+         continue;
   // There should be a switch here
 	 Blood_To_qBlood(i, f);
+     //ShadowWarrior_To_qBlood(i, f);
 	 //Duke3D_To_Quake2(i, f);
  }
  

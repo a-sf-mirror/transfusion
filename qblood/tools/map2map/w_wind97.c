@@ -14,10 +14,7 @@ void WriteWall(const TPoint point1, const TPoint point2, FILE *f, const TWall wa
  }
 
  if (point1.zt == point1.zb || point2.zt == point2.zb)
- {
-     printf("The floor = the ceiling. That's bad\n");
-     return; // The ceiling is the floor - very bad
- }
+     return; // The ceiling is the floor
 
  sprintf(Texture, TEXTUREPREFIX "tile%.4d", wall.texture);
 
@@ -114,8 +111,9 @@ void WriteFlatSprite(const unsigned short i, const long width, const long height
  char Texture[10] = "";
  
  z = sprite[i].z;
-   
+
  sprintf(Texture, TEXTUREPREFIX "tile%.4d", wall.texture);
+
  x1 = -1 * (width / 2); // Divide height + width by 2 to spread the shape evenly
  x2 = width / 2;
 

@@ -52,24 +52,9 @@ void DrawSectorWalls(FILE *f, const unsigned short i, const short Down, const ch
 
  for (k = 0; k < sector[i].wallnum; k++)
  {
-
-     FILE* log =NULL;
-
- log = fopen ("log.txt","a");
-      fprintf(log, "Sector Number: %d    Ceiling z: %d    Floor z: %d\n", 
-      i, sector[i].ceilingz, sector[i].floorz); 
-      
-      if (wall[wallpointer + k].nextsector != -1)
-          fprintf(log, "Next Sector Number: %d    Ceiling z: %d    Floor z: %d\n",
-              wall[wallpointer + k].nextsector, sector[wall[wallpointer + k].nextsector].ceilingz,
-              sector[wall[wallpointer + k].nextsector].floorz);
-
-          fprintf(log, "Down = %d\n\n", Down); 
-          fclose(log);
-
-  vertex1.x  = wall[wallpointer + k].x;
-  vertex1.y  = wall[wallpointer + k].y;
-  vertex1.zt = vertex2.zt = SectorCeiling;
+     vertex1.x  = wall[wallpointer + k].x;
+     vertex1.y  = wall[wallpointer + k].y;
+     vertex1.zt = vertex2.zt = SectorCeiling;
   
   // Sets all walls in a sector bottom z to that of the lowest possible point in a sector
   if (sector[i].floorheinum == 0) // No floor slope in this sector
@@ -84,10 +69,9 @@ void DrawSectorWalls(FILE *f, const unsigned short i, const short Down, const ch
       vertex1.zt = vertex2.zt = sector[wall[wallpointer + k].nextsector].ceilingz;
       vertex1.zb = vertex2.zb = sector[wall[wallpointer + k].nextsector].floorz;
      }
-     // else printf("Down = %d\n", Down);
-  
-  vertex2.x  = wall[wall[wallpointer + k].point2].x;
-  vertex2.y  = wall[wall[wallpointer + k].point2].y;
+      
+      vertex2.x  = wall[wall[wallpointer + k].point2].x;
+      vertex2.y  = wall[wall[wallpointer + k].point2].y;
   
   if ((wall[wallpointer + k].nextwall == -1) && (M_Wall[wallpointer + k] == 0)) // Not connected & not written yet
   {

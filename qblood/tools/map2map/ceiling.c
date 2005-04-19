@@ -17,19 +17,23 @@ void WriteCeiling(FILE *f, const unsigned short SectorNumber, short Plus)
  // To help avoid microbrushes, there's probably a smarter way to do this
  if (Plus == 1)
      Plus = THICK;
+ 
+ if (Plus == -1)
+     Plus = -THICK;
 
  CeilingBottom = sector[SectorNumber].ceilingz;
  CeilingTop = sector[SectorNumber].ceilingz +Plus;
+ 
+ if (CeilingTop == CeilingBottom)
+     CeilingBottom -=THICK;
+     //return; // Nothing to do
 
  // Just in case...
- if (CeilingTop <= CeilingBottom)
-     CeilingTop = CeilingBottom +THICK;
-
+ if (CeilingTop < CeilingBottom)
+     SWAP(CeilingTop, CeilingBottom);
 
  j = wallpointer = sector[SectorNumber].wallptr;
  
- //point1.x = point2.x = wall[j].x;
- //point1.y = point2.y = wall[j].y;
  point1.zt = CeilingTop;
    
  fprintf(f, "{\n");
@@ -124,15 +128,12 @@ sprintf(Texture, TEXTUREPREFIX "sky1 0 0 0 1.00 1.00 1 0 0");
  {
   vertex1.x  = wall[j].x;
   vertex1.y  = wall[j].y;
-  vertex1.zt = CeilingTop;
-  vertex1.zb = CeilingBottom;
+  vertex1.zt = vertex2.zt = vertex3.zt = CeilingTop;
+  vertex1.zb = vertex2.zb = vertex3.zb = CeilingBottom;
   vertex2.x  = wall[wall[j].point2].x;
   vertex2.y  = wall[wall[j].point2].y;
-  vertex2.zt = CeilingTop;
-  vertex2.zb = CeilingBottom;
+  
   ret = G_2va(vertex1.x, vertex1.y, vertex2.x, vertex2.y, &vertex3.x, &vertex3.y); // vertex3 is getting worked on
-  vertex3.zt = CeilingTop;
-  vertex3.zb = CeilingBottom;
   
   // This will probably have to be tweaked for a larger scale
   vertex3.zt = CeilingBottom - (sector[SectorNumber].ceilingheinum / 41);

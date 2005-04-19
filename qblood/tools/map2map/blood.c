@@ -23,6 +23,10 @@ Foundation, Inc., 59 Temple Place - Suite 330, Boston, MA  02111-1307, USA.
 
 void Blood_To_qBlood (const unsigned short i, FILE *f)
 {
+    // Don't waste cycles on BS
+    if (sprite[i].picnum == 0 && sprite[i].lotag == 0)
+        return;
+
 	switch (sprite[i].picnum)
 	{
 
@@ -89,11 +93,11 @@ void Blood_To_qBlood (const unsigned short i, FILE *f)
 		return;
 
 	case SHOTGUNSHELLS_MORE://812
-		WriteFlaggedItem(i, "item_shells", f, 1); //*BIG*, GOOD
+		WriteFlaggedItem(i, "item_shells", f, 1);
         return;
 
 	case TOMMYCLIP:		//817
-		WriteFlaggedItem(i, "item_spikes", f, 1); //*BIG*, GOOD
+		WriteFlaggedItem(i, "item_spikes", f, 1);
 		return;
 
     case TOMMYSHELLS:	//813
@@ -206,7 +210,7 @@ void Blood_To_qBlood (const unsigned short i, FILE *f)
 
 /* Powerups */
 	case LIFEESSENCE:	//2169
-		WriteFlaggedItem(i, "item_health", f, 1); // *ROTTEN*, GOOD
+		WriteFlaggedItem(i, "item_health", f, 1);
         return;
 		
 	case DOCTORSBAG:	//519
@@ -214,7 +218,7 @@ void Blood_To_qBlood (const unsigned short i, FILE *f)
 		return;
 
 	case LIFESEED:		//2433
-		WriteFlaggedItem(i, "item_health", f, 2); //TESTME: *MEGA*
+		WriteFlaggedItem(i, "item_health", f, 2);
         return;
 
     case MEDICINEPOUCH: //822
@@ -446,7 +450,7 @@ void Blood_To_qBlood (const unsigned short i, FILE *f)
     	
     case TREE7:				//546 TREE9
     case TREE9:				//599 
-        WriteFlaggedItem(i, "obj_bush", f, 1);
+        WriteFlaggedItem(i, "obj_bush1", f, 1);
 		return;
 
 /* Lights */
@@ -532,7 +536,7 @@ void Blood_To_qBlood (const unsigned short i, FILE *f)
 
     case BARREL1:		//907 - Which barrel is gibbable?
     case BARREL2:		//925
-        WriteSimpleItem(i, "barrel", f);
+        WriteSimpleItem(i, "misc_explobox2", f);
 		return;
 
     case FROZENCOW:     //1351
@@ -557,11 +561,11 @@ void Blood_To_qBlood (const unsigned short i, FILE *f)
 		return;
 
     case POTTEDPLANT:	//1009
-        WriteFlaggedItem(i, "obj_planetmez", f, 1);
+        WriteFlaggedItem(i, "obj_plantmez", f, 1);
 		return;
 
     case VASEPLANT:     //1013
-        WriteFlaggedItem(i, "obj_planetrom", f, 1);
+        WriteFlaggedItem(i, "obj_plantrom", f, 1);
 		return;
 
     case LARGE2HANDEDJUG://642
@@ -675,117 +679,149 @@ void Blood_To_qBlood (const unsigned short i, FILE *f)
 
 } // Blood_To_qBlood
 
-char* GetNewTextureName(const unsigned short i)
+void GetNewTextureName(char* buffer, const unsigned short i)
 {
-    char* buffer = NULL;
-
     switch(wall[i].picnum)
     {
         case 77:
-            return "+lites";
+            strcpy(buffer, "+lites");
+            return;
 
         case 161:
-            return "+0xray";
+            strcpy(buffer, "+0xray");
+            return;
 
         case 187:
-            return "+0skulfd";
+            strcpy(buffer, "+0skulfd");
+            return;
 
         case 243:
-            return "*bldbods";
+            strcpy(buffer, "*bldbods");
+            return;
 
         case 528:
-            return "*lava_1";
+            strcpy(buffer, "*lava_1");
+            return;
 
         case 530:
-            return "+lava2";
+            strcpy(buffer, "+lava2");
+            return;
 
         case 716:
-            return "+0nunskl";
+            strcpy(buffer, "+0nunskl");
+            return;
 
         case 720:
-            return "+0gclock";
+            strcpy(buffer, "+0gclock");
+            return;
 
         case 854:
-            return "+0hrtmon";
+            strcpy(buffer, "+0hrtmon");
+            return;
 
         case 997:
-            return "+water1";
+            strcpy(buffer, "+water1");
+            return;
 
         case 1029:
-            return "+water2";
+            strcpy(buffer, "+water2");
+            return;
 
         case 1046:
-            return "+0swch_1";
+            strcpy(buffer, "+0swch_1");
+            return;
 
         case 1048:
-            return "+0swch_2";
+            strcpy(buffer, "+0swch_2");
+            return;
 
         case 1070:
-            return "+0swch_3";
+            strcpy(buffer, "+0swch_3");
+            return;
 
         case 1072:
-            return "+0swch_4";
+            strcpy(buffer, "+0swch_4");
+            return;
 
         case 1074:
-            return "+0swch_5";
+            strcpy(buffer, "+0swch_5");
+            return;
 
         case 1076:
-            return "+0swch_6";
+            strcpy(buffer, "+0swch_6");
+            return;
 
         case 1078:
-            return "+0swch_7";
+            strcpy(buffer, "+0swch_7");
+            return;
 
         case 1100:
-            return "+0shittk";
+            strcpy(buffer, "+0shittk");
+            return;
 
         case 1116:
-            return "+slime1";
+            strcpy(buffer, "+slime1");
+            return;
 
         case 1120:
-            return "+slime2";
+            strcpy(buffer, "+slime2");
+            return;
 
         case 1130:
-            return "*sht_bld";
+            strcpy(buffer, "*sht_bld");
+            return;
 
         case 1135:
-            return "+0fluobk";
+            strcpy(buffer, "+0fluobk");
+            return;
 
         case 1161:
-            return "+0swch4x";
+            strcpy(buffer, "+0swch4x");
+            return;
 
         case 2039:
-            return "+0telprt";
+            strcpy(buffer, "+0telprt");
+            return;
 
         case 2178:
-            return "+0gunpto";
+            strcpy(buffer, "+0gunpto");
+            return;
 
         case 2183:
-            return "+0gunptf";
+            strcpy(buffer, "+0gunptf");
+            return;
 
         case 2288:
-            return "+0fluo_2";
+            strcpy(buffer, "+0fluo_2");
+            return;
 
         case 2290:
-            return "+0fluo_3";
+            strcpy(buffer, "+0fluo_3");
+            return;
 
         case 2307:
-            return "+0gunptx";
+            strcpy(buffer, "+0gunptx");
+            return;
 
         case 2546:
-            return "+0jukebx";
+            strcpy(buffer, "+0jukebx");
+            return;
 
         case 2012:
-            return "+0congrat";
+            strcpy(buffer, "+0congrat");
+            return;
 
         case 2013:
-            return "+1congrat";
+            strcpy(buffer, "+1congrat");
+            return;
 
         case 2915:
-            return "+water3";
+            strcpy(buffer, "+water3");
+            return;
 
         default:
             sprintf(buffer,TEXTUREPREFIX "tile%.4d", wall[i].picnum);
-            return buffer;  // If it's not on the list, just give it the default name.
+            return;  // If it's not on the list, just give it the default name.
     }
 
 }

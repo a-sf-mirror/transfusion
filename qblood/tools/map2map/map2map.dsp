@@ -114,6 +114,10 @@ SOURCE=.\s_sector.c
 # End Source File
 # Begin Source File
 
+SOURCE=.\shadow.c
+# End Source File
+# Begin Source File
+
 SOURCE=.\W_sector.c
 # End Source File
 # Begin Source File
@@ -143,6 +147,10 @@ SOURCE=.\blood.h
 # Begin Source File
 
 SOURCE=.\global.h
+# End Source File
+# Begin Source File
+
+SOURCE=.\shadow.h
 # End Source File
 # End Group
 # End Target

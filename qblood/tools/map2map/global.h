@@ -123,7 +123,7 @@ char		*M_Wall; // Char to save memory, I will change this to something else soon
 void Blood_To_qBlood (const unsigned short i, FILE *NewMap);
 
 // Gets the new qBlood texture name for animated tiles
-char* GetNewTextureName(const unsigned short i);
+void GetNewTextureName(char* buffer, const unsigned short i);
 
 
 /***** ceiling.c *****/
@@ -186,6 +186,9 @@ void ReadMap(const char *FName);
 // Scales a map, and Recenters it. Also fixes the angles format and reduces redundant points.
 void CalcAll();
 
+
+/**** shadow.c ****/
+void ShadowWarrior_To_qBlood (const unsigned short SpriteNumber, FILE *f);
 
 /***** s_sector.c *****/
 

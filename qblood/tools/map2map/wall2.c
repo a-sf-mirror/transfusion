@@ -6,9 +6,7 @@ void AlternateWriteWall(FILE *f, const unsigned short WallNumber, const unsigned
  char Texture[10] = "";
  double radian = 0;
  wall_t Wall1, Wall2;
- int ceiling = 0, floor = 0, MinZ;
- unsigned short i;
- FILE* log =NULL;
+ int ceiling = 0, floor = 0;
 
  Wall1 = wall[WallNumber];
  Wall2 = wall[Wall1.point2];
@@ -32,49 +30,6 @@ if (ceiling == floor && wall[WallNumber].nextsector != -1)
     ceiling = sector[wall[WallNumber].nextsector].ceilingz;
     floor = sector[wall[WallNumber].nextsector].floorz;
 }
-
-
-
- /*
-if (wall[WallNumber].nextsector != 1 && 
-    (sector[SectorNumber].ceilingz - sector[wall[WallNumber].nextsector].ceilingz != 0 ||
-    sector[SectorNumber].floorz - sector[wall[WallNumber].nextsector].floorz != 0 )
-    )
-{ // Only good for certain things (i.e.
-    MinZ = sector[wall[WallNumber].nextsector].floorz;
-    for (i = 0; i < sector[SectorNumber].wallnum; i++)
-    {
-        if (MinZ > sector[wall[i + sector[SectorNumber].wallptr].nextsector].floorz)
-            MinZ = sector[wall[i + sector[SectorNumber].wallptr].nextsector].floorz;
-    }
-
-    ceiling = sector[SectorNumber].floorz;
-    floor = MinZ;
-}
-
-//          ceiling = sector[SectorNumber].floorz +Plus; // Floor going up - steps, small objects, etc
-//          floor = sector[wall[WallNumber].nextsector].floorz;
-              //sector[SectorNumber].floorz;
-      //}
-      else
-      {
-          ceiling = sector[SectorNumber].ceilingz;
-          floor = sector[SectorNumber].floorz;
-      }
-
-*/      
-      log = fopen ("log.txt","a");
-      fprintf(log, "Sector Number: %d    Ceiling z: %d    Floor z: %d\n", 
-      SectorNumber, sector[SectorNumber].ceilingz, sector[SectorNumber].floorz); 
-      
-      if (wall[WallNumber].nextsector != -1)
-          fprintf(log, "Next Sector Number: %d    Ceiling z: %d    Floor z: %d\n",
-              wall[WallNumber].nextsector, sector[wall[WallNumber].nextsector].ceilingz,
-              sector[wall[WallNumber].nextsector].floorz);
-
-          fprintf(log, "Plus = %d\n\n", Plus); 
-          fclose(log);
-
 
  // This should be tweaked per "to" game
 sprintf(Texture, TEXTUREPREFIX "tile%.4d", wall[WallNumber].picnum);

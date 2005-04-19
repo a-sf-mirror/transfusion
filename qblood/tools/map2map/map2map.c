@@ -94,6 +94,7 @@ int main (int argc, char *argv[])
  // Write map header
  fprintf(newmap, "{\n"
                  "\"classname\"\"worldspawn\"\n"
+                 "\"light\"\"100\"\n"
                  "\"sky\"\"blood1\"\n",
                  "\"sounds\"   \"%d\"\n", (rand()%10)+1); // random cd track
 
