@@ -9,7 +9,7 @@ void WriteWall(const TPoint point1, const TPoint point2, FILE *f, const TWall wa
 
  if ((point1.x == point2.x) && (point1.y == point2.y))
  {
-     printf("No line to draw\n");
+//     printf("No line to draw\n");
      return; // No line to draw
  }
 

@@ -6,7 +6,7 @@ void AlternateWriteWall(FILE *f, const unsigned short WallNumber, const unsigned
  char Texture[10] = "";
  double radian = 0;
  wall_t Wall1, Wall2;
- int ceiling, floor, MaxZ, MinZ;
+ int ceiling, floor, MinZ;
  unsigned short i;
 
  Wall1 = wall[WallNumber];
@@ -24,19 +24,19 @@ void AlternateWriteWall(FILE *f, const unsigned short WallNumber, const unsigned
          if (Down >= 0)
       { */
 
-if (wall[WallNumber].nextsector != 1)
-{
-    MaxZ = MinZ = sector[wall[WallNumber].nextsector].floorz;
+if (wall[WallNumber].nextsector != 1 && 
+    (sector[SectorNumber].ceilingz - sector[wall[WallNumber].nextsector].ceilingz != 0 ||
+    sector[SectorNumber].floorz - sector[wall[WallNumber].nextsector].floorz != 0 )
+    )
+{ // Only good for certain things (i.e.
+    MinZ = sector[wall[WallNumber].nextsector].floorz;
     for (i = 0; i < sector[SectorNumber].wallnum; i++)
     {
-        if (MaxZ < sector[wall[i + sector[SectorNumber].wallptr].nextsector].floorz)
-            MaxZ = sector[wall[i + sector[SectorNumber].wallptr].nextsector].floorz;
-        
         if (MinZ > sector[wall[i + sector[SectorNumber].wallptr].nextsector].floorz)
             MinZ = sector[wall[i + sector[SectorNumber].wallptr].nextsector].floorz;
     }
 
-    ceiling = MaxZ;
+    ceiling = sector[SectorNumber].floorz;
     floor = MinZ;
 }
 

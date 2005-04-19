@@ -7,7 +7,7 @@ void WriteFlatSprites(FILE *f)
  TWall  pwall;
 // double d1, d2, sizex, sizey;
 
-unsigned short i = 0, Stat = 0, width = 32, height = 32;
+unsigned short i = 0, Stat = 0, width = 24, height = 24;
 
 printf("Adding Flat sprites...\t\t\t\t\t\t ");
 

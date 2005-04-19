@@ -105,7 +105,7 @@ void WriteFloor(FILE *f, const unsigned short SectorNumber, const long Plus)
  char Texture[40];
  long SectorBottom, SectorTop, j, wallpointer; 
  TPoint point1, point2, vertex1, vertex2, vertex3;
- short ret, Stat;
+ short ret, Stat, k;
 
  Stat = sector[SectorNumber].floorstat;
 
@@ -143,7 +143,7 @@ void WriteFloor(FILE *f, const unsigned short SectorNumber, const long Plus)
  
  fprintf(f, "{\n");
 
- // This chunk starts the floor drawing, it draws ???
+ // This chunk starts the floor drawing, it draws the first side of the floor
  if (sector[SectorNumber].floorheinum != 0) // Sloped floor
  {
  vertex1.x  = wall[j].x;
@@ -159,7 +159,6 @@ void WriteFloor(FILE *f, const unsigned short SectorNumber, const long Plus)
      
      if (SectorBottom > vertex3.zb)
          SectorBottom = vertex3.zb -10;
-
 
  if (ret == 0)
  fprintf(f, "(%d %d %d) (%d %d %d) (%d %d %d) %s 0 0 0 1.00 1.00 1 0 0\n", 
@@ -177,7 +176,8 @@ void WriteFloor(FILE *f, const unsigned short SectorNumber, const long Plus)
  fprintf(f, "  ( %d %d %d ) ( %d %d %d ) ( %d %d %d ) %s\n", 
                  0, 0, SectorTop, 0, 500, SectorTop, 500, 0, SectorTop, Texture); // Why 0 and 500? Line 1
  
- do // Write all the floors sides
+ //do // Write all the floors sides
+ for (k = 0; k < sector[SectorNumber].wallnum; k++)
  {
   point1.x = wall[j].x;
   point1.y = wall[j].y;
@@ -193,13 +193,12 @@ void WriteFloor(FILE *f, const unsigned short SectorNumber, const long Plus)
         fprintf(f, "( %d %d %d ) ( %d %d %d ) ( %d %d %d ) e1u2/sky1 0 0 0 1.00 1.00 0 133 1\n", 
           point2.x, point2.y, 500, point1.x, point1.y, 500, point1.x, point1.y, 0, Texture);   
   
-  else // Why 0 and 500? 
+  else
   fprintf(f, "  ( %d %d %d ) ( %d %d %d ) ( %d %d %d ) %s 0 0 0 1.00 1.00 1 0 0\n", 
           point2.x, point2.y, 500, point1.x, point1.y, 500, point1.x, point1.y, 0, Texture);
   
   j = wall[j].point2;
- } while (j != wallpointer);
-
+ } //while (j != wallpointer);
 
 /* TWEAKME: Put more dummy textures here and a switch*/
 // skip = not drawn because it's never seen by the player

@@ -6,6 +6,7 @@
 #include <math.h>   // sqrt, tan, acos, sin, cos, atan2
 #include <stdlib.h> // malloc, free, srand, rand
 #include <time.h>   // time
+#include <conio.h>  // getch
 
 #ifdef _MSC_VER // Microsoft Visual C
 #pragma warning (disable:4244) // Possible loss of data
@@ -181,7 +182,7 @@ void ReadMap(const char *FName);
 
 /***** recalc.c *****/
 
-// Scales a map, and Recenters it. Also fixes the angles format.
+// Scales a map, and Recenters it. Also fixes the angles format and reduces redundant points.
 void CalcAll();
 
 
@@ -191,13 +192,13 @@ void CalcAll();
 long FindWalls(const unsigned short SectorNumber);
 
 // Alternate ???
-short AltDrawSector(FILE *NewMap, const unsigned short i);
+void AltDrawSector(FILE *NewMap, const unsigned short i);
 
 // Draws counting from a starting wall until the wall comes full circle
 void DrawBrush(FILE *NewMap, const unsigned short WallNumber, const long SectorFloor, const long SectorCeiling);
 
 // Alternate ???
-void WriteSector(FILE *NewMap, const unsigned short SectorNumber, const short Up, const short Down);
+void WriteSector(FILE *NewMap, const unsigned short SectorNumber);
 
 
 /***** w_sector.c *****/

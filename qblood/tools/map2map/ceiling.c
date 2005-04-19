@@ -7,13 +7,14 @@ void WriteCeiling(FILE *f, const unsigned short SectorNumber, short Plus)
  
  long CeilingBottom, CeilingTop, j, wallpointer; 
  TPoint point1, point2, vertex1, vertex2, vertex3;
- short ret;
+ short ret, k;
 
  short Stat = sector[SectorNumber].ceilingstat;
- 
+  
  // To avoid compiler gripes, initializing vertex3
  vertex3.x = vertex3.y = vertex3.zb = vertex3.zt = 0;
 
+ // To help avoid microbrushes, there's probably a smarter way to do this
  if (Plus == 1)
      Plus = THICK;
 
@@ -65,8 +66,12 @@ sprintf(Texture, TEXTUREPREFIX "sky1 0 0 0 1.00 1.00 1 0 0");
   vertex3.zb = vertex3.zt-10;
 
   // Make sure there's no crazy slopes
-  if (vertex3.zt < CeilingTop) 
+  if (vertex3.zt < CeilingTop)
+  {
       vertex3.zt = CeilingTop;
+      vertex3.zb = vertex3.zt-10;
+  }
+
 
   if (ret == 0)
    fprintf(f, "(%d %d %d) (%d %d %d) (%d %d %d) %s\n", 
@@ -82,7 +87,9 @@ sprintf(Texture, TEXTUREPREFIX "sky1 0 0 0 1.00 1.00 1 0 0");
    fprintf(f, "  ( %d %d %d ) ( %d %d %d ) ( %d %d %d ) %s\n", 
                    0, 0, CeilingTop, 0, 500, CeilingTop, 500, 0, CeilingTop, Texture); 
 
- do // Write all the ceilings sides
+ 
+ //do // Write all the ceilings sides
+ for (k = 0; k < sector[SectorNumber].wallnum; k++)
  {
   point1.x = wall[j].x;
   point1.y = wall[j].y;
@@ -103,7 +110,7 @@ sprintf(Texture, TEXTUREPREFIX "sky1 0 0 0 1.00 1.00 1 0 0");
   point2.x, point2.y, 500, point1.x, point1.y, 500, point1.x, point1.y, 0, Texture); 
 
   j = wall[j].point2;
- } while (j != wallpointer);
+ } //while (j != wallpointer);
 
  Texture[0] = '\0';
  
@@ -112,7 +119,7 @@ sprintf(Texture, TEXTUREPREFIX "sky1 0 0 0 1.00 1.00 1 0 0");
 
  else sprintf(Texture, TEXTUREPREFIX "tile%.4d 0 0 0 0.50 0.50 1 0 0", sector[SectorNumber].ceilingpicnum);
  
- // This chunk ends the ceiling drawing, it draws ???
+ // This chunk ends the ceiling drawing, it draws the closing points
  if (sector[SectorNumber].ceilingheinum != 0) // Slope
  {
   vertex1.x  = wall[j].x;

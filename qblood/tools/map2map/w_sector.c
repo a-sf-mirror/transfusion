@@ -74,7 +74,7 @@ void DrawSector(FILE *f, const unsigned short SectorNumber)
  SectorFloorZ  = sector[SectorNumber].floorz;
  SectorCeilingZ  = sector[SectorNumber].ceilingz;
  j = wallpointer = sector[SectorNumber].wallptr;
- 
+  
  for (i = 0; i < sector[SectorNumber].wallnum; i++)
  {
   if (wall[j].nextsector != -1) // Attached to another sector
@@ -91,18 +91,16 @@ void DrawSector(FILE *f, const unsigned short SectorNumber)
   j = wall[j].point2;
  }  
 
- if (!TestAngles(SectorNumber))  // Checks if the sector is semi-circular
+  if (!TestAngles(SectorNumber))  // Checks if the sector is semi-circular
  {
 	 // Validate the number of walls  
 	 if (FindWalls(SectorNumber) != sector[SectorNumber].wallnum) 
-		WriteSector(f, SectorNumber, Up, Down); // If walls are doing something freaky, use alternate method
-    
-     else // It's all good- write the sector regularly
-    {    
+		WriteSector(f, SectorNumber); // If walls are doing something freaky, use alternate method
+
         WriteFloor  (f, SectorNumber, Down);
         WriteCeiling(f, SectorNumber, Up);
         DrawSectorWalls(f, SectorNumber, Down, NORMAL);
-    }
+
  // Else, the ceiling & floor will have to be drawn rectangular.
  } else DivAndWrite(f, SectorNumber, Up, Down);        
  

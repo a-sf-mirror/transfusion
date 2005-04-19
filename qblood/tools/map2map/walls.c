@@ -33,12 +33,28 @@ void DrawSectorWalls(FILE *f, const unsigned short i, const short Down, const ch
 
   }
 
+  if (sector[i].wallnum < 1)
+  {
+      printf("Invalid sector:%d\n",i);
+      exit(0);
+  }
+
+  if (sector[i].wallnum > 1000)
+  {
+      printf("Crazy sector:%d\n"
+             "Number of walls listed:%d\n", i, sector[i].wallnum);
+
+      sector[i].wallnum = FindWalls(i);
+      printf("New number of walls:%d\n", sector[i].wallnum);
+      getch();
+  }
+
  for (k = 0; k < sector[i].wallnum; k++)
  {
   vertex1.x  = wall[wallpointer + k].x;
   vertex1.y  = wall[wallpointer + k].y;
   vertex1.zt = vertex2.zt = SectorCeiling;
-
+  
   // Sets all walls in a sector bottom z to that of the lowest possible point in a sector
   if (sector[i].floorheinum == 0) // No floor slope in this sector
       vertex1.zb = vertex2.zb = SectorFloor;

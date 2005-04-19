@@ -22,7 +22,7 @@ long FindWalls(const unsigned short SectorNumber)
 
 
 // Alternate sector drawing function - why?
-short AltDrawSector(FILE *f, const unsigned short SectorNumber)
+void AltDrawSector(FILE *f, const unsigned short SectorNumber)
 {
  short Down = -15, Up = 1, wallpointer, count = 0;
  int j, k, SectorFloor, SectorCeiling;
@@ -31,9 +31,10 @@ short AltDrawSector(FILE *f, const unsigned short SectorNumber)
  SectorCeiling  = sector[SectorNumber].ceilingz;
  wallpointer = sector[SectorNumber].wallptr;
  j   = sector[SectorNumber].wallptr;
+
  
  for (k = 0; k < sector[SectorNumber].wallnum; k++) 
- // Check for steps and windows ?
+ // Check for steps and windows
  {
      if (wall[j].nextsector != -1) // The wall touches another sector
          {
@@ -52,16 +53,10 @@ short AltDrawSector(FILE *f, const unsigned short SectorNumber)
     count++;
 
  }
-
- if (count < 1000)
- {
-  WriteFloor  (f, SectorNumber, Down);
+  WriteFloor  (f, SectorNumber, Down); 
   WriteCeiling(f, SectorNumber, Up);
   DrawSectorWalls(f, SectorNumber, Down, NORMAL); // Write the temp sectors walls
- } 
- else printf("Error in AltDrawSector\n");
-
- return count;
+ 
 }
 
 // Draws counting from a starting wall until the wall comes full circle
@@ -126,24 +121,18 @@ void DrawBrush(FILE *f, const unsigned short WallNumber, const long SectorFloor,
 }
 
 // Writes sectors whose number of walls don't match the listed number of walls
-void WriteSector(FILE *f, const unsigned short SectorNumber, const short Up, const short Down)
+void WriteSector(FILE *f, const unsigned short SectorNumber)
 {
  short Sn = FindWall(SectorNumber); // Finds a specific wall within a sector
   
  sector[numsectors] = sector[SectorNumber]; // Storing to the temp sector
 
  if (Sn != -1) 
- {
+ { 
   sector[numsectors].wallptr = Sn; //wall[sector[SectorNumber].wallptr].nextwall;
-  if (AltDrawSector(f, numsectors) < 1000) // Storing to the temp sector
-  {
-   DrawBrush(f, sector[SectorNumber].wallptr, sector[SectorNumber].ceilingz+16, sector[SectorNumber].floorz-16); 
-  }
+  AltDrawSector(f, numsectors);    // Writing to the temp sector
+  DrawBrush(f, sector[SectorNumber].wallptr, sector[SectorNumber].ceilingz+16, sector[SectorNumber].floorz-16); 
  }
 
-     WriteFloor  (f, SectorNumber, Down);
-     WriteCeiling(f, SectorNumber, Up);
-     DrawSectorWalls(f, SectorNumber, Down, NORMAL); // Normal = no z recalculating
- 
 }
 
