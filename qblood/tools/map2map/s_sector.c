@@ -1,13 +1,5 @@
 #include "global.h"
 
-// Validates the number of walls in a sector
-long FindWall(long SectorNumber);
-void WriteFloor  (FILE *f, long SectorNumber, long Plus);
-void WriteCeiling(FILE *f, long SectorNumber, long Plus);
-void DrawSectorWalls(FILE *f, long i);
-long FindWalls(long SectorNumber);
-
-
 // Manually finds the number of walls in a sector
 long FindWalls(long SectorNumber)
 {
@@ -160,8 +152,10 @@ void DrawBrush_II(FILE *f, long WallN, long SectorFloor, long SectorCeiling)
  sprintf(Texture, "sky1");
 #endif
 
- fprintf(f, "  (%d %d %d) (%d %d %d) (%d %d %d) %s 0 0 0 1 1 1 0 0\n", 0, 0, SectorCeiling, 500, 0, p2.zb, 0, 500, SectorCeiling, Texture); 
- fprintf(f, " }\n"); 
+ // This looks bad
+ fprintf(f, "(%d %d %d) (%d %d %d) (%d %d %d) %s 0 0 0 1 1 1 0 0\n", 
+              0, 0, SectorCeiling, 500, 0, p2.zb, 0, 500, SectorCeiling, Texture); 
+ fprintf(f, "}\n"); 
 }
 
 void W_Sector_II(FILE *f, long SectorNumber, long Up, long Dn)
@@ -178,7 +172,7 @@ void W_Sector_II(FILE *f, long SectorNumber, long Up, long Dn)
    DrawBrush_II(f, sector[SectorNumber].wallptr, sector[SectorNumber].ceilingz+16, sector[SectorNumber].floorz-16); 
   }
  }
- WriteFloor  (f, SectorNumber, Dn);
+ WriteFloor  (f, SectorNumber, Dn); // Write the temp sector
  WriteCeiling(f, SectorNumber, Up);
  DrawSectorWalls(f, SectorNumber);
 }

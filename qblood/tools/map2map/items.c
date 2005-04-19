@@ -1,10 +1,6 @@
 #include "global.h"
 
-void W_AddLight(FILE* f, short x, short y, short z, short brightness);
-void W_Wall(TPoint p1, TPoint p2, FILE *f, TWall w);
-void I_Sizes(char *FName);
-short M_Sprites[4096];
-extern void Blood_To_qBlood (unsigned short i, FILE *f);
+short M_Sprites[4096]; // What for?
 
 void I_Sprites(FILE *f)
 {
@@ -16,9 +12,11 @@ void I_Sprites(FILE *f)
 unsigned short i = 0, Stat = 0, width = 0, height = 0;
 
 printf("Adding sprites...\t\t\t\t\t\t ");
- for (i = 0; i < numsprites; i++) M_Sprites[i] = 0;
+
+// Scale tile sizes
  for (i = 0; i < numsprites; i++)
  {
+    M_Sprites[i] = 0; // Why?
 
   sx = tilesizx[sprite[i].picnum] * sprite[i].xrepeat / 64;
   sy = tilesizy[sprite[i].picnum] * sprite[i].yrepeat / 64;
@@ -74,45 +72,46 @@ void W_MusicanDSFX(long i, char *Name, FILE *f)
 
 void W_OtherItems(long i, char *Name, FILE *f)
 {
- long sp = 0;
- short angle = 0;
+ short SpawnFlag = 0, angle = 0;
+
+ // Angle fixing
  if (sprite[i].ang > 0 && sprite[i].ang < 360)
 	 angle = sprite[i].ang / ANGLESCALE;
  else angle = 0;
 
  // ??? This is Duke 3d specific, re-implement elsewhere ???
- if (sprite[i].lotag == 3) sp =  768;
- if (sprite[i].lotag == 2) sp =  256;
- if (sprite[i].lotag == 1) sp =    0;
- if (sprite[i].pal   == 1) sp = 1792;
+ if (sprite[i].lotag == 3) SpawnFlag =  768;
+ if (sprite[i].lotag == 2) SpawnFlag =  256; // not in easy
+ if (sprite[i].lotag == 1) SpawnFlag =    0;
+ if (sprite[i].pal   == 1) SpawnFlag = 1792;
 
  fprintf(f, "{\n");
  fprintf(f, "  \"classname\"     \"%s\"\n", Name);
  fprintf(f, "  \"origin\"        \"%d %d %d\"\n", sprite[i].x, sprite[i].y, sprite[i].z+35);  
  fprintf(f, "  \"angle\"         \"%d\"\n", angle); 
- fprintf(f, "  \"spawnflags\"    \"%d\"\n", sp);               
- fprintf(f, "}\n"); // close the entity
+ fprintf(f, "  \"spawnflags\"    \"%d\"\n", SpawnFlag);               
+ fprintf(f, "}\n"); 
 }
 
-void E_Item(long i, char *Name, FILE *f)
+void E_Item(long i, char *Name, FILE *f, short SpawnFlag)
 {
- short sp = 0, angle = 0;
+ short angle = 0;
 
  if (sprite[i].ang > 0 && sprite[i].ang < 360)
 	 angle = sprite[i].ang / ANGLESCALE;
  else angle = 0;
 
  // ??? This is Duke 3d specific, re-implement elsewhere ???
- if (sprite[i].lotag == 3) sp =  768;
- if (sprite[i].lotag == 2) sp =  256;
- if (sprite[i].lotag == 1) sp =    0;
- if (sprite[i].pal   == 1) sp = 1792;
+ if (sprite[i].lotag == 3) SpawnFlag =  768;
+ if (sprite[i].lotag == 2) SpawnFlag =  256;
+ if (sprite[i].lotag == 1) SpawnFlag =    0;
+ if (sprite[i].pal   == 1) SpawnFlag = 1792;
 
  fprintf(f, " {\n"
 			"  \"classname\"     \"%s\"\n", Name);              
- fprintf(f, "  \"origin\"        \"%d %d %d\"\n", sprite[i].x, sprite[i].y, sprite[i].z+50);  
+ fprintf(f, "  \"origin\"        \"%d %d %d\"\n", sprite[i].x, sprite[i].y, sprite[i].z+35);  
  fprintf(f, "  \"angle\"         \"%d\"\n", angle); 
- fprintf(f, "  \"spawnflags\"    \"%d\"\n", sp);               
+ fprintf(f, "  \"spawnflags\"    \"%d\"\n", SpawnFlag);               
  fprintf(f, "  \"mass\"          \"100\"\n"
 	        "  \"health\"        \"80\"\n"
 			"  \"dmg\"           \"150\"\n"
@@ -130,7 +129,7 @@ void WriteItems(FILE *f)
  
  printf("Adding items...");
 
-/* Disabled for now because blood uses a player 1 start, which eliminates the need for this
+#ifndef BLOOD // If a game has a player 1 start this is bad actually
  fprintf(f, " {\n"
 	        " \"classname\"     \"info_player_start\"\n");
  fprintf(f, "  \"origin\"        \"%d %d %d\"\n", posx, posy, posz);
@@ -142,7 +141,7 @@ void WriteItems(FILE *f)
 			"  \"origin\"        \"%d %d %d\"\n", posx, posy, posz);
  fprintf(f, "  \"angle\"         \"%d\"\n", angle);
  fprintf(f, " }\n");
-*/
+#endif
 
 // The heart of the sprite writing code
  for (i = 0; i < numsprites; i++)
@@ -178,6 +177,7 @@ void GetSizes(char *FName, long pos)
  if ((f = fopen(FName, "rb")) == NULL)
  {
   printf("Error : Cannot open %s file\n", FName);
+  perror(""); // perror will tell you exactly why
   exit(14);
  }
 
@@ -201,17 +201,21 @@ void GetSizes(char *FName, long pos)
 }
 
 
-// This expects a group file, this should also be able to do plain directory entries
+// This expects a group file (.grp) or a directory of art files specifed by "notgroup"
 void I_Sizes(char *FName)
 {
- 
  long TotalFiles = 0;
  long i, pos, size;
  char FileName[13];
  FILE *f;
 
- for (i = 0; i < 100000; i++) tilesizx[i] = 0;
- for (i = 0; i < 100000; i++) tilesizy[i] = 0;
+ printf("Getting tile sizes\n");
+ // Set all the tile sizes to zero
+ for (i = 0; i < MAXTILES; i++)
+ {
+     tilesizx[i] = 0;
+     tilesizy[i] = 0;
+ }
 
  if (strcmp (FName, "notgroup") == 0)
  {
@@ -228,6 +232,7 @@ void I_Sizes(char *FName)
  else if ((f = fopen(FName, "rb")) == NULL)
  {
   printf("Error : Cannot open %s file\n", FName);
+  perror(""); // perror will tell you exactly why
   exit(14);
  }
  fread(&FileName,  12, 1, f);

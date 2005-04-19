@@ -1,18 +1,5 @@
 #include "global.h"
 
-/* Prototypes */
-void DrawFloor(FILE *f, long i);
-void WriteWall(TPoint p1, TPoint p2, FILE *f, long i);
-void WriteFloor(FILE *f, long SectorNumber, long Plus);
-void CalcAll();
-void DrawSectorWalls(FILE *f, long i);
-void WriteWalls(FILE *f);
-void W_MWalls(FILE *f);
-void I_Sprites(FILE *f);
-void WriteItems(FILE *f);
-void I_Sizes(char *FName);
-void D_Sector(FILE *f, long i);
-
 void ReadMap(char *FName)
 {
  long mapversion;
@@ -76,7 +63,8 @@ void ReadMap(char *FName)
 int main (int argc, char *argv[])
 {
  FILE *newmap;
- long badwalls = 0, i = 0; 
+ long badwalls = 0, i = 0;
+ UzS = 2000, UzW = 9000, MaxV = 1024;
 
  printf("Build map version 7 to Quake map format Converter [Map Convert Utility]\n");
  printf("=======================================================================\n");
@@ -97,6 +85,11 @@ int main (int argc, char *argv[])
  // This should be part of a switch (i.e. rr.grp, sw.grp, rr2.grp) 
  I_Sizes("notgroup"); //"data/duke3d.grp"
  newmap = fopen(argv[2], "wb");
+ if (newmap == NULL)
+ {
+     perror("Error creating new map");
+     return -1;
+ }
  
  // Write map header
  fprintf(newmap, "{\n"

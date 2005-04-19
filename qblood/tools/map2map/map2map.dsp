@@ -64,7 +64,7 @@ LINK32=link.exe
 # PROP Intermediate_Dir "Debug"
 # PROP Target_Dir ""
 # ADD BASE CPP /nologo /W3 /Gm /GX /ZI /Od /D "WIN32" /D "_DEBUG" /D "_CONSOLE" /D "_MBCS" /YX /FD /GZ /c
-# ADD CPP /nologo /W3 /Gm /GX /ZI /Od /D "WIN32" /D "_DEBUG" /D "_CONSOLE" /D "_MBCS" /FR /YX /FD /GZ /c
+# ADD CPP /nologo /W4 /Gm /GX /ZI /Od /D "WIN32" /D "_DEBUG" /D "_CONSOLE" /D "_MBCS" /FR /YX /FD /GZ /c
 # ADD BASE RSC /l 0x409 /d "_DEBUG"
 # ADD RSC /l 0x409 /d "_DEBUG"
 BSC32=bscmake.exe
@@ -80,69 +80,49 @@ LINK32=link.exe
 
 # Name "map2map - Win32 Release"
 # Name "map2map - Win32 Debug"
-# Begin Group "Source"
-
-# PROP Default_Filter ".cpp"
 # Begin Source File
 
-SOURCE=.\blood.cpp
+SOURCE=.\blood.c
 # End Source File
 # Begin Source File
 
-SOURCE=.\ceiling.cpp
+SOURCE=.\ceiling.c
 # End Source File
 # Begin Source File
 
-SOURCE=.\floor.cpp
+SOURCE=.\floor.c
 # End Source File
 # Begin Source File
 
-SOURCE=.\global.cpp
+SOURCE=.\items.c
 # End Source File
 # Begin Source File
 
-SOURCE=.\items.cpp
+SOURCE=.\map2map.c
 # End Source File
 # Begin Source File
 
-SOURCE=.\map2map.cpp
+SOURCE=.\recalc.c
 # End Source File
 # Begin Source File
 
-SOURCE=.\recalc.cpp
+SOURCE=.\s_sector.c
 # End Source File
 # Begin Source File
 
-SOURCE=.\s_sector.cpp
+SOURCE=.\W_sector.c
 # End Source File
 # Begin Source File
 
-SOURCE=.\W_sector.cpp
+SOURCE=.\w_wind97.c
 # End Source File
 # Begin Source File
 
-SOURCE=.\w_wind97.cpp
+SOURCE=.\wall.c
 # End Source File
 # Begin Source File
 
-SOURCE=.\wall.cpp
+SOURCE=.\walls.c
 # End Source File
-# Begin Source File
-
-SOURCE=.\walls.cpp
-# End Source File
-# End Group
-# Begin Group "Headers"
-
-# PROP Default_Filter ".h"
-# Begin Source File
-
-SOURCE=.\blood.h
-# End Source File
-# Begin Source File
-
-SOURCE=.\global.h
-# End Source File
-# End Group
 # End Target
 # End Project

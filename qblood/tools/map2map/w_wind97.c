@@ -3,9 +3,6 @@
 /* Writeline circumvents having to use fprintf and it's formating in the text repetatively 
    This is the file for the flat sprites	 
 */
-inline void WriteLine(long x1, long y1, long z1, long x2, long y2, long z2, long x3, long y3, 
-					  long z3, char *Texture, TWall w, FILE *f);
-
 
 void W_Wall(TPoint point1, TPoint point2, FILE *f, TWall w)
 {
@@ -24,7 +21,7 @@ void W_Wall(TPoint point1, TPoint point2, FILE *f, TWall w)
   rad = 180 * atan2(point2.y-point1.y, point2.x-point1.x) / PI;
   if (rad < 0) rad += 360;
  } else
- {
+ { // Fragile, but functional. Caused a big logic bug when I messed with it.
   if (point1.x == point2.x) if (point1.y > point2.y) rad = 270; else rad = 90;
   if (point1.y == point2.y) if (point1.x > point2.x) rad = 180; else rad = 0;
  }
@@ -82,13 +79,13 @@ void W_Wall(TPoint point1, TPoint point2, FILE *f, TWall w)
 }
 
 
-inline void WriteLine(long x1, long y1, long z1, long x2, long y2, long z2, long x3, long y3, long z3, char *Texture, TWall w, FILE *f)
+void WriteLine(long x1, long y1, long z1, long x2, long y2, long z2, long x3, long y3, long z3, char *Texture, TWall w, FILE *f)
 {
 // Testing- the w.x_scale and w.y_scale are borked, probably from me...
-  fprintf(f, "  ( %d %d %d ) ( %d %d %d ) ( %d %d %d ) %s %d %d %d %1.2f %1.2f %d %d %d\n",
+//  fprintf(f, "  ( %d %d %d ) ( %d %d %d ) ( %d %d %d ) %s %d %d %d %1.2f %1.2f %d %d %d\n",
 
- // fprintf(f, "  ( %d %d %d ) ( %d %d %d ) ( %d %d %d ) %s %d %d %d 1.0 1.0 %d %d %d\n", 
-  x1, y1, z1, x2, y2, z2, x3, y3, z3, Texture,  w.x_off, w.y_off, w.rot_angle,  w.x_scale, w.y_scale, w.content_a, w.surface_a, w.light_v);
+ fprintf(f, "  ( %d %d %d ) ( %d %d %d ) ( %d %d %d ) %s %d %d %d 1.0 1.0 %d %d %d\n", 
+  x1, y1, z1, x2, y2, z2, x3, y3, z3, Texture,  w.x_off, w.y_off, w.rot_angle, /* w.x_scale, w.y_scale,*/ w.content_a, w.surface_a, w.light_v);
 }
 
 

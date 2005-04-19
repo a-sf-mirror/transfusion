@@ -1,18 +1,17 @@
 #include "global.h"
 
-short G_2va(long x1, long y1, long x2, long y2, long &x, long &y);
-long GetZ(double p1x, double p1y, double p3x, double p3y, double Z, double ang);
-
 void WriteCeiling(FILE *f, long SectorNumber, long Plus)
 {
  char Texture[256]="";
  int  Ti;
  long SBot, STop, j, wallpointer; 
- TPoint p1, p2;
- TPoint v1, v2, v3;
+ TPoint p1, p2, v1, v2, v3;
  short ret;
 
  short Stat = sector[SectorNumber].ceilingstat;
+
+ // To avoid compiler gripes, initializing v3
+ v3.x = v3.y = v3.zb = v3.zt = 0;
 
  SBot = sector[SectorNumber].ceilingz      ;
  STop = sector[SectorNumber].ceilingz +Plus;
@@ -47,7 +46,7 @@ sprintf(Texture, "sky1 0 0 0 1.00 1.00 1 0 0");
   v2.y  = wall[wall[j].point2].y;
   v2.zt = STop;
   v2.zb = STop;
-  ret = G_2va(v1.x, v1.y, v2.x, v2.y, v3.x, v3.y);
+  ret = G_2va(v1.x, v1.y, v2.x, v2.y, &v3.x, &v3.y); // v3 is getting worked on
   v3.zt = STop;
   v3.zb = STop;
   v3.zt = GetZ(v1.x, v1.y, v3.x, v3.y, STop, (-1 * sector[SectorNumber].ceilingheinum) * PI/4/4096);
@@ -84,7 +83,7 @@ sprintf(Texture, "sky1 0 0 0 1.00 1.00 1 0 0");
   j = wall[j].point2;
  } while (j != wallpointer);
 
- if (Stat % 2 == 1) 
+ if (Stat % 2 == 1) // This indicates paralaxxing
 	 sprintf(Texture, "sky1 0 0 0 1.00 1.00 0 133 1");
 
  else sprintf(Texture, "tile%.4d 0 0 0 0.50 0.50 1 0 0", sector[SectorNumber].ceilingpicnum);
@@ -99,7 +98,7 @@ sprintf(Texture, "sky1 0 0 0 1.00 1.00 1 0 0");
   v2.y  = wall[wall[j].point2].y;
   v2.zt = STop;
   v2.zb = SBot;
-  ret = G_2va(v1.x, v1.y, v2.x, v2.y, v3.x, v3.y);
+  ret = G_2va(v1.x, v1.y, v2.x, v2.y, &v3.x, &v3.y); // v3 is getting worked on
   v3.zt = STop;
   v3.zb = SBot;
   v3.zt = GetZ(v1.x, v1.y, v3.x, v3.y, STop, (-1 * sector[SectorNumber].ceilingheinum) * PI/4/4096);

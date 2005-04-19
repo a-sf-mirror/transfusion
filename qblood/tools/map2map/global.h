@@ -12,7 +12,9 @@
 #pragma warning (disable:4514) // The optimizer removed an inline function that is not called
 #endif
 
-// Constants 
+// Constants
+#define SCALE 8 //Divider = 16 , was 11 when I started- TIM
+#define MAXTILES 9216 // Redneck Rampage uses the most textures. I should make this dynamic
 #define BLOOD
 #define QUAKE1 // This is what qBlood needs 
 
@@ -88,15 +90,73 @@ typedef struct
  short          lotag, hitag, extra;
 } sprite_t;
 
-extern long posx, posy, posz, Divider, MaxV, UzS, UzW;
-extern int ang, numsectors, numwalls, numsprites, tilesizx[100000], tilesizy[100000];
 
-extern sector_t	*sector;	//[4025];
-extern wall_t	*wall;		//[8192];
-extern sprite_t	*sprite;	//[4096];
-extern short	*M_Wall;	//[8192];
+long posx, posy, posz, UzS, UzW, MaxV;
+int ang, numsectors, numwalls, numsprites, tilesizx[MAXTILES], tilesizy[MAXTILES];
 
-// w_win97
-void W_FlatSprite(long x, long y, long z, long angle, long width, long height, TWall w, FILE *f);
+sector_t	*sector;
+wall_t		*wall;
+sprite_t	*sprite;
+short		*M_Wall;
+
+//TODO: input function descriptions
+// Prototypes
+
+// blood.c
+void Blood_To_qBlood (unsigned short i, FILE *NewMap);
+
+// ceiling.c
+void WriteCeiling(FILE *NewMap, long SectorNumber, long Plus);
+
+// floor.c
+short G_2va(long x1, long y1, long x2, long y2, long *x, long *y);
+long GetZ(double p1x, double p1y, double p3x, double p3y, double Z, double ang);
+short TestAngles(long SectorNumber);
+void WriteFloor  (FILE *NewMap, long SectorNumber, long Plus);
+long FindWall(long SectorNumber);   // Validates the number of walls in a sector
+
+// items.c
+void I_Sprites(FILE *NewMap);
+void W_MusicanDSFX(long i, char *Name, FILE *NewMap);
+void W_OtherItems(long i, char *Name, FILE *NewMap);
+void E_Item(long i, char *Name, FILE *NewMap, short SpawnFlag);
+void WriteItems(FILE *NewMap);
+void W_AddLight(FILE* f, short i, short brightness);
+void GetSizes(char *FName, long pos);
+void I_Sizes(char *FName);
+
+// map2map.c
+void ReadMap(char *FName);  // Reads in sectors, walls, sprites from a build map
+
+// recalc.c
+void CalcAll();
+
+// s_sector.c
+long FindWalls(long SectorNumber);
+short Draw_Sector_II(FILE *NewMap, long i);
+void DrawBrush_II(FILE *NewMap, long WallNumber, long SectorFloor, long SectorCeiling);
+void W_Sector_II(FILE *NewMap, long SectorNumber, long Up, long Down);
+
+/* w_sector.c */
+
+// Finds the extreme points of a sector, and writes the floor and ceiling as squares.
+void DivAndWrite(FILE *NewMap, long i, long Up, long Down);
+void D_Sector(FILE *NewMap, long i);
+
+// w_win97.c
+void W_Wall(TPoint point1, TPoint point2, FILE *NewMap, TWall Wall);
+void WriteLine(long x1, long y1, long z1, long x2, long y2, long z2, long x3, long y3, long z3, 
+               char *Texture, TWall Wall, FILE *NewMap);
+
+void W_FlatSprite(long x, long y, long z, long angle, long width, long height, 
+                  TWall Wall, FILE *NewMap);
+
+/* wall.c */
+void WriteWall(TPoint point1, TPoint point2, FILE *NewMap, long i);
+
+// walls.c
+void DrawSectorWalls(FILE *NewMap, long i);
+void WriteWalls(FILE *NewMap);
+void W_MWalls(FILE *NewMap); // Masked walls & windows 
 
 #endif

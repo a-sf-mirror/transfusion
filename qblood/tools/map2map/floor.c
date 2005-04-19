@@ -1,7 +1,7 @@
 #include "global.h"
 
 // What is this for? 
-short G_2va(long x1, long y1, long x2, long y2, long &x, long &y)
+short G_2va(long x1, long y1, long x2, long y2, long *x, long *y)
 {
  double x_1, y_1, x_2, y_2, v1x, v1y, v2x, v2y, k, sinq;
 
@@ -30,12 +30,12 @@ short G_2va(long x1, long y1, long x2, long y2, long &x, long &y)
 
  if (sinq == -1)
  {
-  x = x_1;
-  y = y_1; 
+  *x = x_1;
+  *y = y_1; 
  } else
  {
-  x = x_2;
-  y = y_2; 
+  *x = x_2;
+  *y = y_2; 
  }
 
  if (v1x == 0) 
@@ -141,7 +141,7 @@ void WriteFloor(FILE *f, long SectorNumber, long Plus)
  vertex2.zt = STop;
  vertex2.zb = STop;
 
- ret = G_2va(vertex1.x, vertex1.y, vertex2.x, vertex2.y, v3.x, v3.y);
+ ret = G_2va(vertex1.x, vertex1.y, vertex2.x, vertex2.y, &v3.x, &v3.y);
 
  v3.zt = STop;
  v3.zb = STop;
@@ -199,7 +199,7 @@ void WriteFloor(FILE *f, long SectorNumber, long Plus)
  vertex2.zt = STop;
  vertex2.zb = SBot;
 
- ret = G_2va(vertex1.x, vertex1.y, vertex2.x, vertex2.y, v3.x, v3.y);
+ ret = G_2va(vertex1.x, vertex1.y, vertex2.x, vertex2.y, &v3.x, &v3.y);
  v3.zt = STop;
  v3.zb = SBot;
 

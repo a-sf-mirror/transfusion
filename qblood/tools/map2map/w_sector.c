@@ -1,15 +1,5 @@
 #include "global.h"
 
-short TestAngles(long SectorNumber);
-void  WriteFloor  (FILE *f, long SectorNumber, long Plus);
-void  WriteCeiling(FILE *f, long SectorNumber, long Plus);
-void  W_Floor2(FILE *f, long i, long Plus);
-void  W_Ceil2(FILE *f, long i, long Plus);
-void  W_Sector_II(FILE *f, long SectorNumber, long Up, long Dn);
-void  DrawSectorWalls(FILE *f, long i);
-long FindWalls(long SectorNumber);
-
-
 // This finds the extreme points of a sector, and writes the floor and ceiling as squares.
 void DivAndWrite(FILE *f, long i, long Up, long Dn)
 {

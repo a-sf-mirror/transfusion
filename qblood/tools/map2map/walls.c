@@ -1,8 +1,5 @@
 #include "global.h"
 
-void WriteWall(TPoint p1, TPoint p2, FILE *f, long i);
-void W_Wall(TPoint p1, TPoint p2, FILE *f, TWall w);
-
 void DrawSectorWalls(FILE *f, long i)
 {
  long   wallpointer, SectorCeiling, SectorFloor, j, TimeOut = 1000;
@@ -130,6 +127,7 @@ void W_MWalls(FILE *f)
   if (wall[i].nextwall != -1) 
       Sn1 = wall[wall[i].nextwall].nextsector;
 
+
   if ((Sn1 != -1) && (Sn2 != -1))
   {
    Stat = wall[i].cstat;
@@ -156,17 +154,17 @@ void W_MWalls(FILE *f)
     fprintf(f, " \"classname\"     \"%s\"\n", ExplosionType);
     fprintf(f, " \"health\"        \"16\"\n");
     fprintf(f, " \"mass\"          \"75\"\n");
-    fprintf(f, " \"target\"        \"langas%ld\"\n", i); 
+    fprintf(f, " \"target\"        \"langas%d\"\n", i);
     W_Wall(v1, v2, f, pwall);
     fprintf(f, " }\n");
 
 //  make this a function too!
     fprintf(f, " {\n");
-    fprintf(f, "  \"classname\"     \"target_speaker\"\n", f);
-    fprintf(f, "  \"origin\"        \"%ld %ld %ld\"\n", v1.x, v1.y, v1.zt); 
-    fprintf(f, "  \"attenuation\"   \"0\"\n", f);
-    fprintf(f, "  \"noise\"         \"world/brkglas.wav\"\n", f);
-    fprintf(f, " \"targetname\"     \"langas%ld\"\n", i); 
+    fprintf(f, "  \"classname\"     \"target_speaker\"\n");
+    fprintf(f, "  \"origin\"        \"%d %d %d\"\n", v1.x, v1.y, v1.zt);
+    fprintf(f, "  \"attenuation\"   \"0\"\n");
+    fprintf(f, "  \"noise\"         \"world/brkglas.wav\"\n");
+    fprintf(f, " \"targetname\"     \"langas%d\"\n", i);
     fprintf(f, " }\n");
 
    }
