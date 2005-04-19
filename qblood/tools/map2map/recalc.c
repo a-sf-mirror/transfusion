@@ -3,7 +3,7 @@
 // Scales a map, and Recenters it. Also fixes the angles format.
 void CalcAll()
 {
- long MinX = 9999, MinY = 9999, MaxH = -9999, MaxX = -9999, MaxY = -9999;
+ long MinX = 9999, MinY = 9999, MaxX = -9999, MaxY = -9999; //MaxH = -9999, 
  short i, Xadjust, Yadjust; 
 
  printf("Scaling and recentering the coordinates\n");

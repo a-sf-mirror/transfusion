@@ -143,7 +143,7 @@ void WriteSector(FILE *f, const unsigned short SectorNumber, const long Up, cons
   sector[numsectors].wallptr = Sn; //wall[sector[i].wallptr].nextwall;
   if (Draw_Sector_II(f, numsectors) < 1000) // Storing to the temp sector
   {
-   DrawSectorWalls(f, numsectors);
+   DrawSectorWalls(f, numsectors); // Write the temp sectors walls
    DrawBrush(f, sector[SectorNumber].wallptr, sector[SectorNumber].ceilingz+16, sector[SectorNumber].floorz-16); 
   }
  }

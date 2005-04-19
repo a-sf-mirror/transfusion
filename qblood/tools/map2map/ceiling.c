@@ -7,7 +7,7 @@ void WriteCeiling(FILE *f, const long SectorNumber, const long Plus)
  
  long CeilingBottom, CeilingTop, j, wallpointer; 
  TPoint point1, point2, vertex1, vertex2, vertex3;
- short ret;//, SectorPointer;
+ short ret;
 
  short Stat = sector[SectorNumber].ceilingstat;
  
@@ -41,7 +41,7 @@ sprintf(Texture, TEXTUREPREFIX "sky1 0 0 0 1.00 1.00 1 0 0");
         sprintf(Texture, "tile%.4d 0 0 0 1.00 1.00 1 0 0", sector[SectorNumber].ceilingpicnum); 
      
 
-    // This chunk starts the floor drawing, it draws ???
+    // This chunk starts the ceiling drawing, it draws ???
  if (sector[SectorNumber].ceilingheinum != 0) // Slope
  {
   vertex1.x  = wall[j].x;
@@ -52,35 +52,27 @@ sprintf(Texture, TEXTUREPREFIX "sky1 0 0 0 1.00 1.00 1 0 0");
 
   ret = G_2va(vertex1.x, vertex1.y, vertex2.x, vertex2.y, &vertex3.x, &vertex3.y); // vertex3 is getting worked on
   vertex3.zt = vertex3.zb = CeilingTop;
-
-  /*
-  SectorPointer = wall[sector[SectorNumber].wallptr].nextsector;
   
-  // This should be tested...
-  if (SectorPointer != -1 && sector[SectorPointer].ceilingheinum == 0)
-  vertex3.zt = sector[SectorPointer].ceilingz;
-
-  else */
-  vertex3.zt = GetZ(vertex1.x, vertex1.y, vertex3.x, vertex3.y, CeilingTop, (-1 * sector[SectorNumber].ceilingheinum) * PI/4/4096);
-  
+  vertex3.zt = CeilingTop - (sector[SectorNumber].ceilingheinum / 41) + 1;
+     // GetZ(vertex1.x, vertex1.y, vertex3.x, vertex3.y, CeilingTop, (-1 * sector[SectorNumber].ceilingheinum) * PI/4/4096);
+      
   vertex3.zb = vertex3.zt-10;
 
   if (vertex3.zt < CeilingTop) 
       vertex3.zt = CeilingTop;
 
-  //fputs("// lubos\n", f);
   if (ret == 0)
-   fprintf(f, "  (%d %d %d) (%d %d %d) (%d %d %d) %s\n", 
-                  vertex1.x, vertex1.y, vertex1.zt, 
-                  vertex2.x, vertex2.y, vertex2.zt, 
-                  vertex3.x, vertex3.y, vertex3.zt, Texture); 
+   fprintf(f, "(%d %d %d) (%d %d %d) (%d %d %d) %s\n", 
+               vertex1.x, vertex1.y, vertex1.zt, 
+               vertex2.x, vertex2.y, vertex2.zt, 
+               vertex3.x, vertex3.y, vertex3.zt, Texture); 
  
-  else
-   fprintf(f, "  ( %d %d %d ) ( %d %d %d ) ( %d %d %d ) %s\n", // 0 and 500?
-                   0, 0, CeilingTop, 0, 500, CeilingTop, 500, 0, CeilingTop, Texture); 
+  else // ret == 1
+   fprintf(f, "( %d %d %d ) ( %d %d %d ) ( %d %d %d ) %s\n", 
+               0, 0, CeilingTop, 0, 500, CeilingTop, 500, 0, CeilingTop, Texture); 
 
  } else // No slope
-   fprintf(f, "  ( %d %d %d ) ( %d %d %d ) ( %d %d %d ) %s\n", // 0 and 500?
+   fprintf(f, "  ( %d %d %d ) ( %d %d %d ) ( %d %d %d ) %s\n", 
                    0, 0, CeilingTop, 0, 500, CeilingTop, 500, 0, CeilingTop, Texture); 
 
  do // Write all the ceilings sides
@@ -112,9 +104,8 @@ sprintf(Texture, TEXTUREPREFIX "sky1 0 0 0 1.00 1.00 1 0 0");
 	 sprintf(Texture, TEXTUREPREFIX "sky1 0 0 0 1.00 1.00 0 133 1");
 
  else sprintf(Texture, TEXTUREPREFIX "tile%.4d 0 0 0 0.50 0.50 1 0 0", sector[SectorNumber].ceilingpicnum);
-
  
- // This chunk ends the floor drawing, it draws ???
+ // This chunk ends the ceiling drawing, it draws ???
  if (sector[SectorNumber].ceilingheinum != 0) // Slope
  {
   vertex1.x  = wall[j].x;
@@ -128,7 +119,10 @@ sprintf(Texture, TEXTUREPREFIX "sky1 0 0 0 1.00 1.00 1 0 0");
   ret = G_2va(vertex1.x, vertex1.y, vertex2.x, vertex2.y, &vertex3.x, &vertex3.y); // vertex3 is getting worked on
   vertex3.zt = CeilingTop;
   vertex3.zb = CeilingBottom;
-  vertex3.zt = GetZ(vertex1.x, vertex1.y, vertex3.x, vertex3.y, CeilingTop, (-1 * sector[SectorNumber].ceilingheinum) * PI/4/4096);
+  
+  vertex3.zt = CeilingBottom - (sector[SectorNumber].ceilingheinum / 41);
+      //GetZ(vertex1.x, vertex1.y, vertex3.x, vertex3.y, CeilingTop, (-1 * sector[SectorNumber].ceilingheinum) * PI/4/4096);
+     
   vertex3.zb = vertex3.zt-10;
 
   if (ret == 0)
@@ -138,12 +132,12 @@ sprintf(Texture, TEXTUREPREFIX "sky1 0 0 0 1.00 1.00 1 0 0");
   
   else
   fprintf(f, "  ( %d %d %d ) ( %d %d %d ) ( %d %d %d ) %s\n", 
-  0, 0, CeilingBottom, 500, 0, CeilingBottom, 0, 500, CeilingBottom, Texture); // Why 0 and 500?
+  0, 0, CeilingBottom, 500, 0, CeilingBottom, 0, 500, CeilingBottom, Texture);
    
   }
   else // No slope
   fprintf(f, "  ( %d %d %d ) ( %d %d %d ) ( %d %d %d ) %s\n", 
-  0, 0, CeilingBottom, 500, 0, CeilingBottom, 0, 500, CeilingBottom, Texture); // Why 0 and 500?
+  0, 0, CeilingBottom, 500, 0, CeilingBottom, 0, 500, CeilingBottom, Texture);
 
   fprintf(f, "}\n"); 
 }

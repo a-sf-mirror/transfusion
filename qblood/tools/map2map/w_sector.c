@@ -69,9 +69,8 @@ void DrawSector(FILE *f, const unsigned short i)
  short TimeOut = 1000;
  SectorFloorZ  = sector[i].floorz;
  SectorCeilingZ  = sector[i].ceilingz;
- wallpointer = sector[i].wallptr;
- j   = sector[i].wallptr;
-
+ j = wallpointer = sector[i].wallptr;
+ 
  do 
  {
   if (wall[j].nextsector != -1) // Attached to another sector

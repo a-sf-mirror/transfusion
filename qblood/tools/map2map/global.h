@@ -221,7 +221,7 @@ void WriteFlatSprite(const unsigned short SpriteNumber, const long width, const 
 
 /***** wall.c *****/
 
-// Alternate, Writes a wall
+// Writes a two sided wall (connects two sectors)
 void WriteWall(TPoint point1, TPoint point2, FILE *NewMap, const unsigned short i);
 
 

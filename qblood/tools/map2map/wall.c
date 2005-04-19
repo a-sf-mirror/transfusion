@@ -1,6 +1,6 @@
 #include "global.h"
 
-// Secondary wall writing function, rarely called
+// Writes a two sided wall (connects two sectors)
 void WriteWall(TPoint point1, TPoint point2, FILE *f, const unsigned short i)
 {
  char Texture[10] = "";

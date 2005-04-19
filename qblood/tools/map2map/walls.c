@@ -76,7 +76,7 @@ void DrawSectorWalls(FILE *f, const unsigned short i)
      }
      else j = wall[j].point2; // Nothing can be tweaked, go to next wall
  } while (j != wallpointer);
-
+ // End wall reduction code
 
  j = wallpointer = sector[i].wallptr;
  SectorCeiling = sector[i].ceilingz;
@@ -87,13 +87,18 @@ void DrawSectorWalls(FILE *f, const unsigned short i)
  {
   vertex1.x  = wall[j].x;
   vertex1.y  = wall[j].y;
-  vertex1.zt = SectorCeiling;
-  vertex1.zb = SectorFloor;
+  vertex1.zt = vertex2.zt = SectorCeiling;
+
+//  if (sector[i].floorheinum == 0)
+      vertex1.zb = vertex2.zb = SectorFloor;
+  
+//  else
+//      vertex1.zb = vertex2.zb = SectorFloor + (sector[i].floorheinum / -41) -1;
+
+  
   vertex2.x  = wall[wall[j].point2].x;
   vertex2.y  = wall[wall[j].point2].y;
-  vertex2.zt = SectorCeiling;
-  vertex2.zb = SectorFloor;
-
+  
   if ((wall[j].nextwall == -1) && (M_Wall[j] == 0)) // Not connected & not written yet
   {
    pwall.x_off     = 0;

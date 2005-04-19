@@ -122,7 +122,7 @@ void WriteFloor(FILE *f, const unsigned short SectorNumber, const long Plus)
  char Texture[40];
  long SBot, STop, j, wallpointer; 
  TPoint point1, point2, vertex1, vertex2, vertex3;
- short ret, Stat, PreviousSector, NextSector;
+ short ret, Stat;
  double Angle;
 
 
@@ -165,16 +165,7 @@ void WriteFloor(FILE *f, const unsigned short SectorNumber, const long Plus)
  
  else Angle = (-1 * (sector[SectorNumber].floorheinum+512)) * PI/4/4096;
 
- /* This should be tested...
-  NextSector = wall[sector[SectorNumber].wallptr].nextsector;
-  PreviousSector = FindSector(SectorNumber);
-
-  if (NextSector != -1 && PreviousSector != -1 && sector[NextSector].floorheinum == 0
-      && sector[PreviousSector].floorheinum == 0)
-  vertex3.zt = sector[NextSector].floorz + (sector[PreviousSector].floorz - sector[NextSector].floorz);
-  
-  else */
-  vertex3.zt = STop + (sector[SectorNumber].floorheinum / -41);
+ vertex3.zt = STop + (sector[SectorNumber].floorheinum / -41) -1;
       //GetZ(vertex1.x, vertex1.y, vertex3.x, vertex3.y, STop, Angle);
 
   vertex3.zb = vertex3.zt-10;
@@ -240,17 +231,9 @@ void WriteFloor(FILE *f, const unsigned short SectorNumber, const long Plus)
  vertex1.zb = vertex2.zb = vertex3.zb = SBot;
 
  ret = G_2va(vertex1.x, vertex1.y, vertex2.x, vertex2.y, &vertex3.x, &vertex3.y);
- 
- /* This should be tested...
-  NextSector = wall[sector[SectorNumber].wallptr].nextsector;
-  PreviousSector = FindSector(SectorNumber);
 
- if (NextSector != -1 && PreviousSector != -1 && sector[NextSector].floorheinum == 0
-     && sector[PreviousSector].floorheinum == 0)
-  vertex3.zt = sector[NextSector].floorz; // sector[PreviousSector].floorz;
-  
-  else */
- vertex3.zt = GetZ(vertex1.x, vertex1.y, vertex3.x, vertex3.y, STop, (-1 * sector[SectorNumber].floorheinum) * PI/4/4096);
+ //vertex3.zt = STop;// - (sector[SectorNumber].floorheinum / -41);
+     //GetZ(vertex1.x, vertex1.y, vertex3.x, vertex3.y, STop, (-1 * sector[SectorNumber].floorheinum) * PI/4/4096);
  vertex3.zb = vertex3.zt-10;
 
  if (vertex3.zb > SBot) 
