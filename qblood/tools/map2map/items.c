@@ -132,13 +132,13 @@ void WriteItems(FILE *f)
 #ifndef BLOOD // If a game has a player 1 start this is bad actually
  fprintf(f, " {\n"
 	        " \"classname\"     \"info_player_start\"\n");
- fprintf(f, "  \"origin\"        \"%d %d %d\"\n", posx, posy, posz);
+ fprintf(f, "  \"origin\"        \"%d %d %d\"\n", startx, starty, startz);
  fprintf(f, "  \"angle\"         \"%d\"\n", angle);
  
  fprintf(f, " }\n" 
 	        " {\n"
 			" \"classname\"     \"info_player_deathmatch\"\n"
-			"  \"origin\"        \"%d %d %d\"\n", posx, posy, posz);
+			"  \"origin\"        \"%d %d %d\"\n", startx, starty, startz);
  fprintf(f, "  \"angle\"         \"%d\"\n", angle);
  fprintf(f, " }\n");
 #endif

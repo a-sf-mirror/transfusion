@@ -80,6 +80,9 @@ LINK32=link.exe
 
 # Name "map2map - Win32 Release"
 # Name "map2map - Win32 Debug"
+# Begin Group "Source"
+
+# PROP Default_Filter ".c"
 # Begin Source File
 
 SOURCE=.\blood.c
@@ -124,5 +127,18 @@ SOURCE=.\wall.c
 
 SOURCE=.\walls.c
 # End Source File
+# End Group
+# Begin Group "Headers"
+
+# PROP Default_Filter ".h"
+# Begin Source File
+
+SOURCE=.\blood.h
+# End Source File
+# Begin Source File
+
+SOURCE=.\global.h
+# End Source File
+# End Group
 # End Target
 # End Project

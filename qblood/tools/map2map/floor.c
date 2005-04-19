@@ -3,30 +3,33 @@
 // What is this for? 
 short G_2va(long x1, long y1, long x2, long y2, long *x, long *y)
 {
- double x_1, y_1, x_2, y_2, v1x, v1y, v2x, v2y, k, sinq;
+ double x_1, y_1, x_2, y_2, vertex1x, vertex1y, vertex2x, vertex2y, k, sinq;
 
- v1x = x2 - x1;
- v1y = y2 - y1;
+ vertex1x = x2 - x1;
+ vertex1y = y2 - y1;
 
- if (v1x == 0) 
-	 v1x = 1;
+ if (vertex1x == 0) 
+	 vertex1x = 1;
 
- y_1 = 0.5/(v1y*v1y+v1x*v1x)*
-     (2.0*y1*v1x*v1x+2.0*v1y*v1y*y1+200.0*
-     sqrt(v1y*v1y*v1x*v1x+v1x*v1x*v1x*v1x));
+ y_1 = 0.5/(vertex1y*vertex1y+vertex1x*vertex1x)*
+     (2.0*y1*vertex1x*vertex1x+2.0*vertex1y*vertex1y*y1+200.0*
+     sqrt(vertex1y*vertex1y*vertex1x*vertex1x+vertex1x*vertex1x*vertex1x*vertex1x));
 
- x_1 = (v1x*x1-v1y*y_1+v1y*y1) / v1x;
+ x_1 = (vertex1x*x1-vertex1y*y_1+vertex1y*y1) / vertex1x;
 
- y_2 = 0.5/(v1y*v1y+v1x*v1x)*
-     (2.0*y1*v1x*v1x+2.0*v1y*v1y*y1-200.0*
-     sqrt(v1y*v1y*v1x*v1x+v1x*v1x*v1x*v1x));
+ y_2 = 0.5/(vertex1y*vertex1y+vertex1x*vertex1x)*
+     (2.0*y1*vertex1x*vertex1x+2.0*vertex1y*vertex1y*y1-200.0*
+     sqrt(vertex1y*vertex1y*vertex1x*vertex1x+vertex1x*vertex1x*vertex1x*vertex1x));
 
- x_2 = (v1x*x1-v1y*y_2+v1y*y1) / v1x;
+ x_2 = (vertex1x*x1-vertex1y*y_2+vertex1y*y1) / vertex1x;
 
- v2x  = x_1 - x1;
- v2y  = y_1 - y1;                    
- k    = v1x*v2y - v1y*v2x;
- sinq = k / (sqrt(v1x*v1x + v1y*v1y) * sqrt(v2x*v2x + v2y*v2y));
+ vertex2x  = x_1 - x1;
+ vertex2y  = y_1 - y1;                    
+ k    = vertex1x*vertex2y - vertex1y*vertex2x;
+
+              // Pythagorean theorem 
+ sinq = k / (sqrt(vertex1x*vertex1x + vertex1y*vertex1y) * 
+             sqrt(vertex2x*vertex2x + vertex2y*vertex2y));
 
  if (sinq == -1)
  {
@@ -38,12 +41,13 @@ short G_2va(long x1, long y1, long x2, long y2, long *x, long *y)
   *y = y_2; 
  }
 
- if (v1x == 0) 
+ if (vertex1x == 0) 
 	 return 1; 
  
  else return 0;
 }
 
+// I should try to get rid of this completely, and use ZSCALE
 long GetZ(double p1x, double p1y, double p3x, double p3y, double Z, double angle)
 {
  long h = tan(angle) * sqrt((p3x-p1x)*(p3x-p1x) + (p3y-p1y)*(p3y-p1y));

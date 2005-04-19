@@ -90,13 +90,13 @@ typedef struct
  short          lotag, hitag, extra;
 } sprite_t;
 
-
-long posx, posy, posz, UzS, UzW, MaxV;
+// The starting position
+long startx, starty, startz;
 int ang, numsectors, numwalls, numsprites, tilesizx[MAXTILES], tilesizy[MAXTILES];
 
-sector_t	*sector;
-wall_t		*wall;
-sprite_t	*sprite;
+sector_t	*sector; // Points to the dynamically allocated sector array
+wall_t		*wall;   // Points to the dynamically allocated wall array
+sprite_t	*sprite; // Points to the dynamically allocated sprite array
 short		*M_Wall;
 
 //TODO: input function descriptions

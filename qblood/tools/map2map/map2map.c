@@ -26,9 +26,9 @@ void ReadMap(char *FName)
 	exit(0);
  }
 
- fread(&posx, 4, 1, buildmap);
- fread(&posy, 4, 1, buildmap);
- fread(&posz, 4, 1, buildmap);
+ fread(&startx, 4, 1, buildmap);
+ fread(&starty, 4, 1, buildmap);
+ fread(&startz, 4, 1, buildmap);
  fread(&ang,  2, 1, buildmap);
  fread(&cursectnum, 2, 1, buildmap);
  
@@ -52,7 +52,7 @@ void ReadMap(char *FName)
  
  fclose(buildmap);
 
-    printf("         Staring point : %d %d %d\n", posx, posy, posz);
+    printf("         Staring point : %d %d %d\n", startx, starty, startz);
     printf("         Total Sectors : %d\n", numsectors);
     printf("         Total Walls   : %d\n", numwalls);
     printf("         Total Sprites : %d\n", numsprites);
@@ -64,7 +64,6 @@ int main (int argc, char *argv[])
 {
  FILE *newmap;
  long badwalls = 0, i = 0;
- UzS = 2000, UzW = 9000, MaxV = 1024;
 
  printf("Build map version 7 to Quake map format Converter [Map Convert Utility]\n");
  printf("=======================================================================\n");

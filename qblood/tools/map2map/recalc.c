@@ -52,12 +52,12 @@ void CalcAll()
  }
 
   if (MinX < 0) 
-  posx = -4000+(posx - MinX) / SCALE/MAPSCALE; 
+  startx = -4000+(startx - MinX) / SCALE/MAPSCALE; 
   else
-  posx = -4000+(posx)        / SCALE/MAPSCALE;
+  startx = -4000+(startx)        / SCALE/MAPSCALE;
 
-  posy = -4000+(MaxY - posy) / SCALE/MAPSCALE;
-  posz = (MaxH - posz / SCALE) / SCALE/MAPSCALE;
+  starty = -4000+(MaxY - starty) / SCALE/MAPSCALE;
+  startz = (MaxH - startz / SCALE) / SCALE/MAPSCALE;
 
 // Now to recenter everything that just got scaled 
   MaxX = MinX = wall[0].x;
@@ -85,8 +85,8 @@ void CalcAll()
 		sprite[i].y -= Yadjust;
 	}
 	
-	posx -= Xadjust;
-	posy -= Yadjust;
+	startx -= Xadjust;
+	starty -= Yadjust;
 
 }
  
