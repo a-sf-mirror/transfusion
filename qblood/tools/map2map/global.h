@@ -8,24 +8,29 @@
 #include <stdlib.h>
 
 #ifdef _MSC_VER
-#pragma warning (disable:4244)
+#pragma warning (disable:4244) // Possible loss of data
+#pragma warning (disable:4514) // The optimizer removed an inline function that is not called
 #endif
 
-/* Constants */
-#define QUAKE1 /* This is what qBlood needs */
+// Constants 
+#define BLOOD
+#define QUAKE1 // This is what qBlood needs 
 
+// TESTME: I should try this on more games.
 #ifdef QUAKE1
-#define MAPSCALE 2 /* quake 1 */
+#define MAPSCALE 2 // quake 1 
 #else
-#define MAPSCALE 1 /* 1 for quake 2, 3, HL*/
+#define MAPSCALE 1 // 1 for quake 2, 3, HL
 #endif
 
-//#define XSCALE 16	/* Quake 1 likes 16 as the X scale, it was 8 in dukeconv (q3) */
-//#define YSCALE -16	/* Quake 1 likes -16 as the Y scale, it was -8 in dukeconv (q3) */
-//#define ZSCALE -256	/* Quake 1 likes -256 as the Z scale, it was -128 in dukeconv (q3) */
+// I should consider putting more games here.
+#ifdef BLOOD
+#define ARTFILES 17 //There are 18 blood art files (numbered from 0)
+#endif
+
 /* Constants */
-#define ANGLESCALE 5.69 /* 2048/360, but to 2 places past decimal only. 2048=build 360=quake */
-#define PI 3.1415926535897932384626433832795  /* Taken from the windows calculator */
+#define ANGLESCALE 5.69 // 2048/360, but to 2 places past decimal only. 2048=build 360=quake
+#define PI 3.1415926535897932384626433832795  // Taken from the windows calculator
 
 typedef struct
 {
@@ -85,16 +90,12 @@ typedef struct
 
 extern long posx, posy, posz, Divider, MaxV, UzS, UzW;
 extern int ang, numsectors, numwalls, numsprites, tilesizx[100000], tilesizy[100000];
-extern short       M_Wall[18192];
 extern sector_t  sector[4025];
-extern wall_t    wall[18192];
+extern wall_t    wall[8192];
 extern sprite_t  sprite[4096];
+extern short       M_Wall[8192];
 
-/* Mic Functions
-long DNAngle2Deg(long angle);
-*/
-
-/* w_win97 */
+// w_win97
 void W_FlatSprite(long x, long y, long z, long angle, long width, long height, TWall w, FILE *f);
 
 #endif

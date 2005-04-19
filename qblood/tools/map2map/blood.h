@@ -1,0 +1,188 @@
+/*TODO: Organize Flat sprites */
+#define MASKEDHEDGESMEDIUM	17  // MASKED
+#define MASKEDHEDGESSMALL	18  // MASKED
+#define TESTSUBJECTS		19  // FLAT
+#define NET					112 // MASKED
+#define CURTAINRAGS			147 // MASKED
+#define LIONSHIELD			165 // MASKED
+#define GOTHICMANTLE		227 // MASKED
+#define MONSTERPIC			269 // FACE
+#define STOOL				284 
+#define LEVELEND			318 // FLAT, MUST
+#define JOJOSIGN			356
+#define TRAINSCHEDULE		431
+#define POSSUMSIGN			453
+#define HANGINGLIGHT		468 // LIGHT OF SOME SORT
+#define GRATEMASK			483 // MASKED, gibabble
+#define SCATTEREDHAY		515 // MASKED
+#define WINEGLASS1			521 // GIB
+#define STATUE				536 // BETTER NAME?
+#define TREE1				540
+#define TREE2				541
+#define TREE3				542
+#define TREE4				543
+#define TREE5				544
+#define TREE6				545
+#define TREE7				546
+#define TREE8				547
+#define GARGOYLETORCH		572 // LIGHT OF SOME SORT
+#define WINEGLASS2			574 // GIB
+#define SHIELDCREST			578 // MASKED
+#define MEATBARREL			563 // BARREL THAT PRODUCES MASS GIB JUICE
+#define GOTHICRAIL			588 // MASKED, BETTER NAME?
+#define WINEBOTTLE_BROWN	605
+#define WINEBOTTLE_BLUE		606
+#define ARTPIC1				613
+#define OLDLADYPIC			617
+#define UGLYGUYPIC			621 // MY FAVE
+#define MISKATONICSIGN		646
+#define RAILROADSIGN		647 // MASKED
+#define CRUCIFIEDINNOCENT	648 // MASKED, REPLACE WITH THE QUAKE WALL ZOMBIE?
+#define TABLE				649
+#define CANDLE				650 // SMALL LIGHT
+#define BLOODYCURTAINRAGS	651 // MASKED
+#define ROUNDLIGHT			676
+#define HANGINGHALFSKELETON	689
+#define HANGINGHALFCORPSE	690
+#define TRAINWHEELS			708
+#define BLOODSPLAT_LARGE	713
+#define BLOODSPLAT_TINY1	730	
+#define PICKMANSIGN			740
+#define AMONDTILLADOSIGN	741
+#define NOTICESIGN			742
+#define NEWSSIGN			743
+#define WARNINGSIGN			744
+#define SMOKE1				754
+#define SMOKE2				755
+#define SMOKE3				756
+#define SMOKE4				757 
+#define CHAIR				758
+#define WINEBOTTLE			759
+#define SMALLROUNDLIGHT		795 
+#define LONGLIGHT			796
+#define NOADMITSIGN			823
+#define BULLETHOLE			838
+#define BLUEBANNER			845 // LION
+#define ORANGEBANNER		846
+#define REDBANNER			847 // DOABLE
+#define GREENBANNER			848
+#define BLOODHAND			904 
+#define	BARREL				907 // CHECK FOR FLAGS
+#define FLAME_MEDIUM		908	// MUST, TOO EASY
+#define BLOODSMEAR			929
+#define BLOODSPLAT_MEDIUM	915
+#define TICKETSIGN			943
+#define LAMP				944 // SHOULD HAVE A LIGHT FLAG
+#define POT					961
+#define STEELGATE			1044 // MASKED, BETTER NAME	
+#define BUTTON				1046 //MUST
+#define SKULLBUTTON			1048 // MUST
+#define ELECTRICALOUTLET	1050
+#define SWITCH				1070 // MUST
+#define SWITCH2				1074 // MUST
+#define MECHANICALSWITCH	1076 // MUST
+#define LIGHTSWITCH			1078 // MUST
+#define WALLCRACK			1127
+#define BLOODSPLAT_TINY		1149
+#define CLOCK				1165
+#define GIB1				1268
+#define GIB2				1269
+#define TEXT_666			1407
+#define BLOODFLOW			1413 // 1413-1417 FLOWING BLOOD?
+#define PHANTOM_TEXT		1667
+#define HEDGECLIPPERS		1708 // MASKED
+#define AXE					1709 // MASKED
+#define BROOM				1710 // MASKED
+#define RAKE				1711 // MASKED
+#define SHOVEL				1712 // MASKED
+#define WASHHANDSSIGN		1719 //
+#define BLOODSPLAT_SMALL	1902
+#define CLEAVER				2139
+#define TEXTRED0			2190
+#define FLUORESCENTLIGHT1		2288		
+#define BROKEFLUORESCENTLIGHT1	2289
+#define FLUORESCENTLIGHT2		2290		
+#define BROKEFLUORESCENTLIGHT2	2291
+#define TEXTBLUE0			2240
+#define POT_SMALL			2295
+#define TRAINWHEEL			2320 //2320-2323
+#define HANGINGMALECORPSE	2324 //2324-2329
+#define DEADINNOCENT1		2330 // DEADBODY
+#define UPARROW_SMALL		2331
+#define DOWNARROW_SMALL		2332
+#define DEADINNOCENT2		2333
+#define DEADINNOCENT3		2334
+#define SOUND				2519
+#define SSOUND				2520
+#define SKULLKEY			2552
+#define EYEKEY				2553
+#define FLAMEKEY			2554
+#define DAGGERKEY			2555
+#define SPIDERKEY			2556
+#define MOONKEY				2557
+#define ZOMBIEHEAD			3405 // 3405-3421 REPLACE WITH GIBS?
+#define PAIL				3540 // 3540-3548
+#define TEXT_A				3808 // LATER
+#define	TEXT_Z				3833		
+
+/* Weapons */
+#define FLAREPISTOL		524 // 2
+#define SHOTGUN			559 // 3
+#define TOMMYGUN		558 // 4
+#define NAPALMLAUNCHER  526 // 5
+#define TNTSTICK		589 // 6
+#define TNTBOX			809 // 6
+#define TNTREMOTE		810 // 6
+#define TNTPROXIMITY	811 // 6
+#define SPRAYCAN		618 // 7
+#define TESLACANNON		539 // 8
+#define VOODOODOLL		525 // 9
+
+/* Ammo */
+#define FLARES			816
+#define SHOTGUNSHELLS_MORE 812
+#define TOMMYCLIP		817
+#define GASOLINE		801
+#define TESLAAMMO		548
+#define SHOTGUNSHELLS	619
+
+/* Misc with an obvious acceptable conversion */
+#define AKIMBO			829  // QUAD, DUH!
+#define DEATHMASK		825  // INVULNERABILITY
+#define DMSPAWN			753 // ??? Test it
+#define PLAYERSTART1		2522 // "info_player_coop"
+#define PLAYERSTART2		2523 // "info_player_coop"
+#define PLAYERSTART3		2524 // "info_player_coop"
+#define PLAYERSTART4		2525 // "info_player_coop"
+#define PLAYERSTART5		2526 // "info_player_coop"
+#define PLAYERSTART6		2527 // "info_player_coop"
+#define PLAYERSTART7		2528 // "info_player_coop"
+#define PLAYERSTART8		2529 // "info_player_coop"
+/* Armor */
+#define FIREARMOR		2578 // REDISH
+#define BODYARMOR		2586 // BLUE'ISH
+#define SUPERARMOR		2594
+#define SPIRITARMOR		2602 // UGLY SMILY
+#define BASICARMOR		2628 // FLAT GREY
+
+/* Health */
+#define LIFEESSENCE		2169
+#define DOCTORSBAG		519
+#define LIFESEED		2433
+
+/* Enemies */
+#define RAT					1745
+#define BAT					1948
+#define CULTIST_ACTIVE		2820 // 2820 - 2909 CULTISTS
+#define CULTIST_INACTIVE	2825 // What flag makes it black/red/blue/brown???
+#define CHRYSALIDPOD		1792  
+#define CHRYSALIDTENTACLE	1797
+#define RUNNINGZOMBIE		1170
+#define INNOCENT			3798
+#define EMERGINGZOMBIE		3054
+
+/* WTF ??? */
+//784 // BALL THING
+
+//753 // DM SPAWN POINT?
+//3997 // DIDN'T CONVERT

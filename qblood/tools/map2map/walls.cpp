@@ -5,33 +5,33 @@ void W_Wall(TPoint p1, TPoint p2, FILE *f, TWall w);
 
 void DrawSectorWalls(FILE *f, long i)
 {
- long   StW, STop, SBot, j, c = 0, TimeOut = 1000;
+ long   wallpointer, SectorCeiling, SectorFloor, j, TimeOut = 1000;
  TPoint v1, v2;
  TWall  pwall;
 
- StW  = sector[i].wallptr;
- STop = sector[i].ceilingz;
- SBot = sector[i].floorz;
- j    = sector[i].wallptr;
+ wallpointer  = sector[i].wallptr;
+ SectorCeiling = sector[i].ceilingz;
+ SectorFloor = sector[i].floorz;
+ j = sector[i].wallptr;
   
  do 
  {
   v1.x  = wall[j].x;
   v1.y  = wall[j].y;
-  v1.zt = STop;
-  v1.zb = SBot;
+  v1.zt = SectorCeiling;
+  v1.zb = SectorFloor;
   v2.x  = wall[wall[j].point2].x;
   v2.y  = wall[wall[j].point2].y;
-  v2.zt = STop;
-  v2.zb = SBot;
+  v2.zt = SectorCeiling;
+  v2.zb = SectorFloor;
 
   if ((wall[j].nextwall == -1) & (M_Wall[j] == 0))
   {
-   long lln = sqrt((v2.x-v1.x)*(v2.x-v1.x) + (v2.y-v1.y)*(v2.y-v1.y));
-   long lh  = STop - SBot +1;
+//   long lln = sqrt((v2.x-v1.x)*(v2.x-v1.x) + (v2.y-v1.y)*(v2.y-v1.y));
+//   long lh  = SectorCeiling - SectorFloor +1;
  
    pwall.x_off     = 0;
-   pwall.y_off     = STop;
+   pwall.y_off     = SectorCeiling;
    pwall.rot_angle = 0;
 
   // printf("%ld %ld\n", lln, tilesizx[wall[j].picnum]);
@@ -47,8 +47,8 @@ void DrawSectorWalls(FILE *f, long i)
 //   WriteWall(v1, v2, f, j);
    M_Wall[j] = 1;
   }
-  j = wall[j].point2; TimeOut--;
- } while ( (j != StW) && (TimeOut > 0) );
+  j = wall[j].point2; TimeOut--; // Why would something time out?
+ } while ( (j != wallpointer) && (TimeOut > 0) );
 }
 
 void WriteWalls(FILE *f)
@@ -114,7 +114,7 @@ void WriteWalls(FILE *f)
 
 //}
 
-   M_Wall[               i] = 1;
+   M_Wall[i] = 1;
    M_Wall[wall[i].nextwall] = 1;
 
   }
@@ -123,6 +123,7 @@ void WriteWalls(FILE *f)
  printf("[ Ok ]\n");
 }
 
+// Masked walls & windows code
 void W_MWalls(FILE *f)
 {
  short  Stat;
@@ -166,7 +167,8 @@ void W_MWalls(FILE *f)
     v2.y  = wall[wall[i].point2].y;
     v2.zt = sector[Sn1].ceilingz;
     v2.zb = sector[Sn1].floorz;
-/*
+
+//  make this a function DrawExplosion() or something, exploding_wall for qBlood
     fprintf(f, " {\n");
     fprintf(f, " \"classname\"     \"func_explosive\"\n");
     fprintf(f, " \"health\"        \"16\"\n");
@@ -175,6 +177,7 @@ void W_MWalls(FILE *f)
     W_Wall(v1, v2, f, pwall);
     fprintf(f, " }\n");
 
+//  make this a function too!
     fprintf(f, " {\n");
     fprintf(f, "  \"classname\"     \"target_speaker\"\n", f);
     fprintf(f, "  \"origin\"        \"%ld %ld %ld\"\n", v1.x, v1.y, v1.zt); 
@@ -182,7 +185,7 @@ void W_MWalls(FILE *f)
     fprintf(f, "  \"noise\"         \"world/brkglas.wav\"\n", f);
     fprintf(f, " \"targetname\"     \"langas%ld\"\n", i); 
     fprintf(f, " }\n");
-*/
+
    }
   }
  }

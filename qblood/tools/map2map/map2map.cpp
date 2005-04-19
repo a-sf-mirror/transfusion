@@ -58,115 +58,6 @@ void ReadMap(char *FName)
  fread(&sprite[0], sizeof(sprite_t), numsprites, buildmap);
  fclose(buildmap);
 }
-               
-void WriteMap(FILE *f)
-{
-// TPoint r2;
- int  i, j;
-// long x1, y1, x2, y2;
- long Ox, Oy, wallpointer, STop, SBot;
- TPoint v1, v2;
-
-// WriteWalls(f);
-
- for (i = 0; i < numsectors; i++)
- {
-
-  wallpointer = sector[i].wallptr;
-  STop = sector[i].ceilingz;
-  SBot = sector[i].floorz;
-
-  j = wall[wallpointer].point2;
-  
-  Ox = wall[wallpointer].x;
-  Oy = wall[wallpointer].y;
-
-  do 
-  {
-
-   v1.x  = wall[j].x;
-   v1.y  = wall[j].y;
-   v2.x  = wall[wall[j].point2].x;
-   v2.y  = wall[wall[j].point2].y;
-   v1.zt = STop;
-   v1.zb = SBot;
-   v2.zt = STop;
-   v2.zb = SBot;
-
-   if (M_Wall[j] == 0)
-   {
-    WriteWall(v1, v2, f, j);
-    M_Wall[j] = 1;
-   }
-
-   /*   
-   x2 = wall[j].x;
-   y2 = wall[j].y;
-   x1 = Ox;
-   y1 = Oy;
-   
-   v1.x  = (x1 -posx) / Divider;
-   v1.y  = (y1 -posy) / Divider;
-   v1.zt = STop;
-   v1.zb = SBot;
-
-   v2.x  = (x2 -posx) / Divider;
-   v2.y  = (y2 -posy) / Divider;
-   v2.zt = STop;
-   v2.zb = SBot;
-
-
-
-   Ox = wall[j].x;
-   Oy = wall[j].y; 
-*/
-   j = wall[j].point2;
-
-  }   while (j != wallpointer);
-
-/*
-  x2 = wall[j].x;
-  y2 = wall[j].y;
-  x1 = Ox;
-  y1 = Oy;
-  
-  v1.x  = (x1 -posx) / Divider;
-  v1.y  = (y1 -posy) / Divider;
-  v1.zt = STop;
-  v1.zb = SBot;
-
-  v2.x  = (x2 -posx) / Divider;
-  v2.y  = (y2 -posy) / Divider;
-  v2.zt = STop;
-  v2.zb = SBot;
-
-
-  if (M_Wall[j] == 0)
-  {
-   WriteWall(v1, v2, f, j);
-   M_Wall[j] = 1;
-  }  
-*/
-
-   v1.x  = wall[j].x;
-   v1.y  = wall[j].y;
-   v2.x  = wall[wall[j].point2].x;
-   v2.y  = wall[wall[j].point2].y;
-   v1.zt = STop;
-   v1.zb = SBot;
-   v2.zt = STop;
-   v2.zb = SBot;
-
-   if (M_Wall[j] == 0)
-   {
-    WriteWall(v1, v2, f, j);
-    M_Wall[j] = 1;
-   }
-
- } 
-
-
-}
 
 void DrawMapBegin(FILE *f)
 {
@@ -196,28 +87,25 @@ int main (int argc, char *argv[])
  FILE *newmap;
  long badwalls = 0, i = 0; 
 
- printf("Duke Nukem 3D Converter to Q2 [Map Convert Utility]\n");
- printf("===================================================\n");
+ printf("Build map version 7 to Quake map format Converter [Map Convert Utility]\n");
+ printf("=======================================================================\n");
 
  if (argc < 3) 
  {
-	printf("\nmap2map.exe in.map q2out.map\n");
-	printf("            in.map    Duke Nukem 3D map file\n");
-	printf("            q2out.map Quake II map file\n");
+	printf("\nmap2map.exe in.map out.map\n");
+	printf("            in.map  Build map version 7 file\n");
+	printf("            out.map Quake map file\n");
 	return 1;
  }
 
  ReadMap(argv[1]);  
  CalcAll();
- //I_Sizes("data/duke3d.grp"); //Not yet tim
+ // This should be part of a switch (i.e. rr.grp, sw.grp, rr2.grp) 
+ I_Sizes("notgroup"); //"data/duke3d.grp"
  newmap = fopen(argv[2], "wb");
  DrawMapBegin(newmap);
-
-// DrawSky(newmap); // -> For Now;
  DrawSectors(newmap);
  WriteWalls(newmap);
-// -> Lyg Nereikia // DrawFloor(newmap);
-// -> Lyg Nereikia // WriteMap(newmap);
  I_Sprites(newmap); // ForNow
  DrawMapEnd (newmap);
  W_MWalls   (newmap);

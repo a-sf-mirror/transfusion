@@ -387,7 +387,7 @@
 #define DUKEGUN 1528
 #define DUKELEG 1536
 #define SHARK 1550
-#define BLOOD 1620
+//#define BLOOD 1620  // FIXME:Rename to something appropriate
 #define FIRELASER 1625
 #define TRANSPORTERSTAR 1630
 #define SPIT 1636

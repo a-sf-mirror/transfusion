@@ -1,91 +1,79 @@
-#include <stdio.h>
-#include <string.h>
 #include "global.h"
 
-long FindWall(long SecN);
-void WriteFloor  (FILE *f, long SecN, long Plus);
-void WriteCeiling(FILE *f, long SecN, long Plus);
+long FindWall(long SectorNumber);
+void WriteFloor  (FILE *f, long SectorNumber, long Plus);
+void WriteCeiling(FILE *f, long SectorNumber, long Plus);
 void DrawSectorWalls(FILE *f, long i);
+long FindWalls(long SecN);
 
-long FindWalls(long SecN)
+// Manually finds the number of walls in a sector
+long FindWalls(long SectorNumber)
 {
  int  j;
- long StW;
- long c;
+ long wallpointer, walls = 1;
 
- c = 1;
-
- StW = sector[SecN].wallptr;
- j   = wall[StW].point2;
+ wallpointer = sector[SectorNumber].wallptr;
+ j   = wall[wallpointer].point2;
  do 
  {
   j = wall[j].point2;
-  c++;
- } while (j != StW);
- return c;
+  walls++;
+ } while (j != wallpointer);
+ return walls;
 }
+
 
 short Draw_Sector_II(FILE *f, long i)
 {
-// printf("Writing Sector %ld\n", i);
 
  int  j;
- long Dn;
- long Up;
- long StW;
- long ST;
- long SB;
+ long Dn = -15, Up = 1, wallpointer, SectorFloor, SectorCeiling, count = 0;
 
- long count = 0;
-
- Dn = -15;
- Up = +1;
-
- ST  = sector[i].floorz;
- SB  = sector[i].ceilingz;
- StW = sector[i].wallptr;
+ SectorFloor  = sector[i].floorz;
+ SectorCeiling  = sector[i].ceilingz;
+ wallpointer = sector[i].wallptr;
  j   = sector[i].wallptr;
  
  do 
  {
-  if (wall[j].nextsector != -1)
+  if (wall[j].nextsector != -1) // Doesn't touch any other sectors
   {
-   if (sector[wall[j].nextsector].floorz - ST < Dn)
+   if (sector[wall[j].nextsector].floorz - SectorFloor < Dn)
    {
-    Dn = sector[wall[j].nextsector].floorz - ST;
+    Dn = sector[wall[j].nextsector].floorz - SectorFloor;
    } 
-   if (sector[wall[j].nextsector].ceilingz - SB > Up)
+   if (sector[wall[j].nextsector].ceilingz - SectorCeiling > Up)
    {
-    Up = sector[wall[j].nextsector].ceilingz - SB;
+    Up = sector[wall[j].nextsector].ceilingz - SectorCeiling;
    }
-   M_Wall[               j] = 1;
-   M_Wall[wall[j].nextwall] = 1;
+   M_Wall[j] = M_Wall[wall[j].nextwall] = 1;
   }
   j = wall[j].point2;
   count++;
- } while ((j != StW) & (count < 1000));
+ } while ((j != wallpointer) & (count < 1000));
  if (count < 1000)
  {
-  WriteFloor  (f, 1025, Dn);
-  WriteCeiling(f, 1025, Up);
+  WriteFloor  (f, 1025, Dn); // Why 1025?
+  WriteCeiling(f, 1025, Up); // Why 1025?
  } else printf("Uzpiso\n");
  return count;
 }
 
-void DrawBrush_II(FILE *f, long WallN, long STop, long SBot)
+
+void DrawBrush_II(FILE *f, long WallN, long SectorFloorop, long SectorCeilingot)
 {
  TPoint p1, p2;
- char   Texture[256];// s[256]
- long   Ti, j = WallN; 
+ char   Texture[256]="";
+ long   j = WallN; 
  if (wall[WallN].nextwall != -1) return;
  p1.x   = wall[j].x;
  p1.y   = wall[j].y;
- p1.zt  = STop;
+ p1.zt  = SectorFloorop;
  p2.x   = wall[j].x;
  p2.y   = wall[j].y;
- p2.zt  = STop;
- p2.zt = STop;
- p2.zb = SBot;
+ p2.zt  = SectorFloorop;
+ p2.zt = SectorFloorop;
+ p2.zb = SectorCeilingot;
 
  fprintf(f, " {\n");
 #ifdef QUAKE2
@@ -96,14 +84,14 @@ void DrawBrush_II(FILE *f, long WallN, long STop, long SBot)
  sprintf(Texture, "sky1");
 #endif
 
- fprintf(f, "  (%d %d %d) (%d %d %d) (%d %d %d) %s 0 0 0 1 1 1 0 0\n", p1.x, p1.y, STop, p1.x, p1.y+100, STop, p2.x+100, p2.y, STop, Texture); 
+ fprintf(f, "  (%d %d %d) (%d %d %d) (%d %d %d) %s 0 0 0 1 1 1 0 0\n", p1.x, p1.y, SectorFloorop, p1.x, p1.y+100, SectorFloorop, p2.x+100, p2.y, SectorFloorop, Texture); 
  do 
  {
   p1.x = wall[j].x;
   p1.y = wall[j].y;
   p2.x = wall[wall[j].point2].x;
   p2.y = wall[wall[j].point2].y;
-  for (Ti = 0; Ti < 256; Ti++) Texture[Ti] = '\0';
+  
   sprintf(Texture, "tile%.4d", wall[j].picnum);
   fprintf(f, "  (%d %d %d) (%d %d %d) (%d %d %d) %s 0 0 0 1 1 1 0 0\n", p1.x, p1.y, 500, p2.x, p2.y, 500, p2.x, p2.y, 0, Texture); 
   j = wall[j].point2;
@@ -117,7 +105,7 @@ void DrawBrush_II(FILE *f, long WallN, long STop, long SBot)
  strcpy(Texture, "sky1");
 #endif 
 
- fprintf(f, "  (%d %d %d) (%d %d %d) (%d %d %d) %s 0 0 0 1 1 1 0 0\n", 0, 0, SBot, 500, 0, SBot, 0, 500, SBot, Texture);  fprintf(f, " }\n"); 
+ fprintf(f, "  (%d %d %d) (%d %d %d) (%d %d %d) %s 0 0 0 1 1 1 0 0\n", 0, 0, SectorCeilingot, 500, 0, SectorCeilingot, 0, 500, SectorCeilingot, Texture);  fprintf(f, " }\n"); 
  
  // or
 
@@ -125,12 +113,12 @@ void DrawBrush_II(FILE *f, long WallN, long STop, long SBot)
 
  p1.x   = wall[j].x;
  p1.y   = wall[j].y;
- p1.zt  = STop;
+ p1.zt  = SectorFloorop;
  p2.x   = wall[j].x;
  p2.y   = wall[j].y;
- p2.zt  = STop;
- p2.zt = STop;
- p2.zb = SBot;
+ p2.zt  = SectorFloorop;
+ p2.zt = SectorFloorop;
+ p2.zb = SectorCeilingot;
 
  fprintf(f, " {\n");
 #ifdef QUAKE2
@@ -141,14 +129,14 @@ void DrawBrush_II(FILE *f, long WallN, long STop, long SBot)
  sprintf(Texture, "sky1");
 #endif
 
- fprintf(f, "  (%d %d %d) (%d %d %d) (%d %d %d) %s 0 0 0 1 1 1 0 0\n", p1.x, p1.y, STop, p1.x, p1.y+100, STop, p2.x+100, p2.y, STop, Texture); 
+ fprintf(f, "  (%d %d %d) (%d %d %d) (%d %d %d) %s 0 0 0 1 1 1 0 0\n", p1.x, p1.y, SectorFloorop, p1.x, p1.y+100, SectorFloorop, p2.x+100, p2.y, SectorFloorop, Texture); 
  do 
  {
   p1.x = wall[j].x;
   p1.y = wall[j].y;
   p2.x = wall[wall[j].point2].x;
   p2.y = wall[wall[j].point2].y;
-  for (Ti = 0; Ti < 256; Ti++) Texture[Ti] = '\0';
+  
   sprintf(Texture, "tile%.4d", wall[j].picnum);
   fprintf(f, "  (%d %d %d) (%d %d %d) (%d %d %d) %s 0 0 0 1 1 1 0 0\n", p2.x, p2.y, 500, p1.x, p1.y, 500, p1.x, p1.y, 0, Texture); 
   j = wall[j].point2;
@@ -162,28 +150,28 @@ void DrawBrush_II(FILE *f, long WallN, long STop, long SBot)
  sprintf(Texture, "sky1");
 #endif
 
- fprintf(f, "  (%d %d %d) (%d %d %d) (%d %d %d) %s 0 0 0 1 1 1 0 0\n", 0, 0, SBot, 500, 0, p2.zb, 0, 500, SBot, Texture); 
+ fprintf(f, "  (%d %d %d) (%d %d %d) (%d %d %d) %s 0 0 0 1 1 1 0 0\n", 0, 0, SectorCeilingot, 500, 0, p2.zb, 0, 500, SectorCeilingot, Texture); 
  fprintf(f, " }\n"); 
 }
 
-void W_Sector_II(FILE *f, long SecN, long Up, long Dn)
+void W_Sector_II(FILE *f, long SectorNumber, long Up, long Dn)
 {
- long Sn      = FindWall(SecN);
- sector[1025] = sector[SecN];
+ long Sn      = FindWall(SectorNumber);
+ sector[1025] = sector[SectorNumber]; // Why 1025 ???
 
  if (Sn != -1) 
  {
   sector[1025].wallptr = Sn; //wall[sector[i].wallptr].nextwall;
-  if (Draw_Sector_II(f, 1025) < 1000)
+  if (Draw_Sector_II(f, 1025) < 1000) // Why 1025?
   {
    DrawSectorWalls(f, 1025);
    //  WriteFloor(f, 1025, Plus);
    //  WriteCeiling(f, 1025, Plus);
-   DrawBrush_II(f, sector[SecN].wallptr, sector[SecN].ceilingz+16, sector[SecN].floorz-16); 
+   DrawBrush_II(f, sector[SectorNumber].wallptr, sector[SectorNumber].ceilingz+16, sector[SectorNumber].floorz-16); 
   }
  }
- WriteFloor  (f, SecN, Dn);
- WriteCeiling(f, SecN, Up);
- DrawSectorWalls(f, SecN);
+ WriteFloor  (f, SectorNumber, Dn);
+ WriteCeiling(f, SectorNumber, Up);
+ DrawSectorWalls(f, SectorNumber);
 }
 

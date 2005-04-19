@@ -33,7 +33,7 @@ short G_2va(long x1, long y1, long x2, long y2, long *x, long *y)
  if (v1x == 0) return 1; else return 0;
 }
 
-long GetZ(double p1x, double p1y, double p2x, double p2y, double p3x, double p3y, double Z, double angle)
+long GetZ(double p1x, double p1y, /*double p2x, double p2y,*/ double p3x, double p3y, double Z, double angle)
 {
  long h = tan(angle) * sqrt((p3x-p1x)*(p3x-p1x) + (p3y-p1y)*(p3y-p1y));
  return Z + h; // Could I tweak this by using ZSCALE?
@@ -43,21 +43,21 @@ short TestAngles(long SecN)
 {
  double TotalA, Test_A, rad;
  TPoint v1, v2;
- long   n, j, StW, TimeOut;
+ long   n, j, wallpointer, TimeOut;
 
  n   = 0;
- StW = sector[SecN].wallptr;
- j   = StW;   TimeOut = 1000;
+ wallpointer = sector[SecN].wallptr;
+ j   = wallpointer;   TimeOut = 1000;
  do 
  {
   j = wall[j].point2;
   n++; TimeOut--;
- } while ( (j != StW) && (TimeOut > 0) );
+ } while ( (j != wallpointer) && (TimeOut > 0) );
 
  TotalA = 180 * (n-2);
  Test_A = 0;
- StW = sector[SecN].wallptr;
- j   = StW; TimeOut = 1000;
+ wallpointer = sector[SecN].wallptr;
+ j   = wallpointer; TimeOut = 1000;
  do 
  {
   v1.x = wall[j].x - wall[wall[j].point2].x;
@@ -67,7 +67,7 @@ short TestAngles(long SecN)
   rad = acos((v1.x*v2.x + v1.y*v2.y) / ((sqrt(v1.x*v1.x + v1.y*v1.y) * sqrt(v2.x*v2.x + v2.y*v2.y))));
   Test_A += rad;
   j = wall[j].point2; TimeOut--;
- } while ( (j != StW) && (TimeOut > 0) );
+ } while ( (j != wallpointer) && (TimeOut > 0) );
  Test_A = Test_A * 180 / PI;
  if ((TotalA - Test_A > -1) & (TotalA - Test_A < 1)) return 0; else return 1;
 }
@@ -75,7 +75,7 @@ short TestAngles(long SecN)
 void WriteFloor(FILE *f, long SecN, long Plus)
 {
  char Texture[80]; // s[256]
- long SBot, STop, j, StW; // i
+ long SBot, STop, j, wallpointer; // i
  TPoint p1, p2, v1, v2, v3;
  short ret, Stat;
  double Angle;
@@ -94,8 +94,8 @@ void WriteFloor(FILE *f, long SecN, long Plus)
   SBot = sector[SecN].floorz;
  }
 
- StW = sector[SecN].wallptr;
- j   = StW; 
+ wallpointer = sector[SecN].wallptr;
+ j   = wallpointer; 
 
  p1.x  = wall[j].x;
  p1.y  = wall[j].y;
@@ -133,19 +133,19 @@ void WriteFloor(FILE *f, long SecN, long Plus)
 
  v3.zt = STop;
  v3.zb = STop;
-
  
+ if (sector[SecN].floorheinum < 0) 
+	 Angle = (-1 * (sector[SecN].floorheinum-512)) * PI/4/4096;
  
- if (sector[SecN].floorheinum < 0) Angle = (-1 * (sector[SecN].floorheinum-512)) * PI/4/4096;
-                              else Angle = (-1 * (sector[SecN].floorheinum+512)) * PI/4/4096;
+ else Angle = (-1 * (sector[SecN].floorheinum+512)) * PI/4/4096;
 
 //(-1 * sector[SecN].floorheinum) * PI/4/4096
 
- v3.zt = GetZ(v1.x, v1.y, v2.x, v2.y, v3.x, v3.y, STop, Angle);
+ v3.zt = GetZ(v1.x, v1.y, /*v2.x, v2.y,*/ v3.x, v3.y, STop, Angle);
  v3.zb = v3.zt-10;
 
 
- fputs("// grindys\n", f);
+ //fputs("// grindys\n", f);
 
  if (ret == 0)
  fprintf(f, "  (%d %d %d) (%d %d %d) (%d %d %d) %s 0 0 0 1.00 1.00 1 0 0\n", v1.x, v1.y, v1.zt, v2.x, v2.y, v2.zt, v3.x, v3.y, v3.zt, Texture); 
@@ -167,7 +167,7 @@ void WriteFloor(FILE *f, long SecN, long Plus)
   if (Stat % 2 == 1) { fprintf(f, "  ( %d %d %d ) ( %d %d %d ) ( %d %d %d ) e1u2/sky1 0 0 0 1.00 1.00 0 133 1\n", p2.x, p2.y, 500, p1.x, p1.y, 500, p1.x, p1.y, 0, Texture);  }
      else { fprintf(f, "  ( %d %d %d ) ( %d %d %d ) ( %d %d %d ) %s 0 0 0 1.00 1.00 1 0 0\n", p2.x, p2.y, 500, p1.x, p1.y, 500, p1.x, p1.y, 0, Texture);  }
   j = wall[j].point2;
- } while (j != StW);
+ } while (j != wallpointer);
 
 #ifdef QUAKE2
  sprintf(Texture, "e1u1/skip"); // Good for quake 2, but not 1
@@ -196,7 +196,7 @@ void WriteFloor(FILE *f, long SecN, long Plus)
  v3.zt = STop;
  v3.zb = SBot;
 
- v3.zt = GetZ(v1.x, v1.y, v2.x, v2.y, v3.x, v3.y, STop, (-1 * sector[SecN].floorheinum) * PI/4/4096);
+ v3.zt = GetZ(v1.x, v1.y, /*v2.x, v2.y,*/ v3.x, v3.y, STop, (-1 * sector[SecN].floorheinum) * PI/4/4096);
  v3.zb = v3.zt-10;
 
  if (v3.zb > SBot) v3.zb = SBot;
