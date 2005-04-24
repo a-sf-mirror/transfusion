@@ -111,9 +111,6 @@
 			Single file selection only with this release
 		</li>
 	</ul>
-	Finally, you may want to take a look at Timothy Hale's web page
-	<a href="http://www.planetduke.com/convertcentral/mapconverter.html">at Convert Central</a>.
-	You'll find several other conversion tools there.<br />
 </div>
 
 <!-- File formats -->
