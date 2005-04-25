@@ -990,7 +990,7 @@ void() exploding_wall =
     if (self.spawnflags & 4)
         self.solid = SOLID_BSP;
     else
-        self.solid = SOLID_BBOX;
+        self.solid = SOLID_BSP; //was _BBOX, defaulting to BSP
     self.movetype = MOVETYPE_PUSH;
 
     // Only destroyable by triggering
@@ -1061,7 +1061,7 @@ void() decal_custom =
     {
         if (!checkextension ("DP_MOVETYPEFOLLOW"))
             error ("The engine doesn't support the DP_MOVETYPEFOLLOW extension.\n"
-                   "You can't put decals on non-static walls.");
+                   "You can't put decals on non-static walls.\n");
 
         self.solid = SOLID_NOT;
         self.movetype = MOVETYPE_FOLLOW;
