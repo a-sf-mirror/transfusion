@@ -31,11 +31,17 @@
 
 // Game types
 // Some tests depend on the ordering of this list. Be very careful if you modify it.
-#define GT_BLOODBATH          0  // free for all
-#define GT_TEAM_BLOODBATH     1  // 1 team VS 1 team  (NOTE: should we add support for more than 2 teams ?)
-#define GT_CAPTURE_THE_FLAG   2  // 1 team VS 1 team
-#define GT_COOPERATIVE        3  // Play the game with buddies
-#define GT_SINGLE_PLAYER      4  // Play with your self
+
+//redefined with bit settings so that entites can share spawntypes
+//IE: a weapon can be set to be in SP and Coop only and verified with
+//a bit check -- if (gametype & self.spawntype) where self.spawntype
+//setting of 31 would show up in all modes and a setting of 3 would only
+//be in coop and SP
+#define GT_SINGLE_PLAYER      1  // Play with your self
+#define GT_COOPERATIVE        2  // Play the game with buddies
+#define GT_BLOODBATH          4  // free for all
+#define GT_TEAM_BLOODBATH     8  // 1 team VS 1 team  (NOTE: should we add support for more than 2 teams ?)
+#define GT_CAPTURE_THE_FLAG   16  // 1 team VS 1 team
 
 // edict.flags
 #define FL_FLY              1
@@ -180,6 +186,7 @@
 
 // Cheats (from 254, going down)
 // WARNING: all of them are CHEAT PROTECTED
+#define IMP_CHEAT_WEAPONS	 249  // All weapons and ammo
 #define IMP_CHEAT_BOD        250  // Brink Of Death
 #define IMP_CHEAT_ARMOR      251  // griswold - full armor
 #define IMP_CHEAT_IN_FIRE    252  // mcgee - you're on fire
@@ -387,12 +394,15 @@
 #define CULTIST_GREEN 1 // TNT
 #define CULTIST_RED   0 // Shotgun / beastmorph
 
+#define ZOMBIE_SPAWN_UNDERGROUND 0
+#define ZOMBIE_SPAWN_STAND 1
+
 // Blood's 5 difficulties
-#define DIFFICULTY_STILL_KICKING      1
-#define DIFFICULTY_PINK_ON_THE_INSIDE 2
-#define DIFFICULTY_LIGHTLY_BROILED    3
-#define DIFFICULTY_WELL_DONE          4
-#define DIFFICULTY_EXTRA_CRISPY       5
+#define DIFFICULTY_STILL_KICKING      128
+#define DIFFICULTY_PINK_ON_THE_INSIDE 256
+#define DIFFICULTY_LIGHTLY_BROILED    512
+#define DIFFICULTY_WELL_DONE          1024
+#define DIFFICULTY_EXTRA_CRISPY       2048
 
 /*
     Item related

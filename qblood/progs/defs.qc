@@ -267,6 +267,7 @@ float   starttime;          // when the game actually started
 float timelimit;
 float fraglimit;
 float skill;
+float skillbit;
 
 float friendlyfire;
 
@@ -387,6 +388,10 @@ float movedist;
 //
 // monster ai
 //
+.void()		th_arise;	//make the zombie arise out of the ground
+.void()		th_fall;	//zombie falls backwards
+.void()		th_standup;	//zombie stands back up from being knocked down
+.void()		th_hide;	//since a zombie is underground, it doesn't really stand
 .void()     th_stand;
 .void()     th_walk;
 .void()     th_run;
@@ -403,6 +408,13 @@ float movedist;
 
 .float      search_time;
 .float      attack_state;
+
+//new animation variables
+.string		last_action;	//transition to new anim_type, starts frame at 1
+.string		anim_type;		//animation type: stand,walk,run,pain,death,attack
+.float		anim_end;		//last animation $frame name
+.float		anim_end_num;	//number associated with the last $frame
+.float		anim_time;		//the length in seconds of one animation cycle
 
 
 //
@@ -422,7 +434,10 @@ float movedist;
 .float      observer;
 .float      do_observer;
 
-.float      items2;
+.float      items2;	//keys
+.float		spawnposition;
+.float		spawposition;	//spawn position
+.float		spawntype;	// for SP & BB & Coop spawn values
 
 .float      player_state;   // cf PS_*
 
