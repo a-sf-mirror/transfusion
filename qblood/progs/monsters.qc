@@ -86,13 +86,21 @@ void() walkmonster_start_go =
         if (self.movetarget.classname == "path_corner")
             self.th_walk ();
         else
+		{
             self.pausetime = 99999999;
-            self.th_stand ();
+			if (self.classname == "monster_zombie" && self.spawnposition == ZOMBIE_SPAWN_UNDERGROUND)
+				self.th_hide();
+			else
+				self.th_stand ();
+		}
     }
     else
     {
         self.pausetime = 99999999;
-        self.th_stand ();
+		if (self.classname == "monster_zombie" && self.spawnposition == ZOMBIE_SPAWN_UNDERGROUND)
+			self.th_hide ();
+		else
+			self.th_stand ();
     }
 
 	// spread think times so they don't all happen at same time
@@ -176,13 +184,15 @@ void() flymonster_start_go =
         if (self.movetarget.classname == "path_corner")
             self.th_walk ();
         else
+		{
             self.pausetime = 99999999;
-            self.th_stand ();
+			self.th_stand ();
+		}
     }
     else
     {
         self.pausetime = 99999999;
-        self.th_stand ();
+		self.th_stand ();
     }
 };
 
@@ -274,16 +284,26 @@ void () monster_drop_key =
 
 float () monster_check =
 {
+    skill     = cvar("skill");
+	if (skill == 1)			//skillbit variable gets the last 5 values
+		skillbit = DIFFICULTY_STILL_KICKING;		//in WC, this way we can compare with &bitwise
+	else if (skill == 2)	//for items that are in multple and odd skills
+		skillbit = DIFFICULTY_PINK_ON_THE_INSIDE;
+	else if (skill == 3)
+		skillbit = DIFFICULTY_LIGHTLY_BROILED;
+	else if (skill == 4)
+		skillbit = DIFFICULTY_WELL_DONE;
+	else
+		skillbit = DIFFICULTY_EXTRA_CRISPY;
     if (cvar("nomonsters")      && 
 	    self.items2 >= IT2_KEY1 && 
 		self.items2 <= IT2_KEY6 &&
-		(gametype == GT_COOPERATIVE || gametype == GT_SINGLE_PLAYER))
+		(self.spawntype && gametype & self.spawntype))
     {
 	    monster_drop_key();
 	}
-
-	if (cvar("nomonsters") || self.spawnflags > skill || 
-	   (gametype != GT_COOPERATIVE && gametype != GT_SINGLE_PLAYER))
+	if (cvar("nomonsters") || skillbit & self.spawnflags || 
+	   (self.spawntype && !(gametype & self.spawntype)) || gametype > 3) //gametype above 3 is Bloodbath
     {
 	    remove(self);
 		return 1;
@@ -406,7 +426,7 @@ void () monster_become_corpse =
 {
 	local vector minBbox, maxBbox;
 	
-	self.th_stand = self.th_walk = self.th_run = self.th_pain = self.th_missile = SUB_Null;
+	self.th_stand = self.th_walk = self.th_run = self.th_pain = self.th_missile = self.th_melee = SUB_Null;
 
 	self.health = self.max_health / 2;
 
@@ -421,10 +441,10 @@ void () monster_become_corpse =
     self.solid = SOLID_BBOX;
 	setsize (self, minBbox, maxBbox);
     self.touch = SUB_SolidTouch;
+	self.nextthink = time + 30;
 	self.think = FadeAway;
 	self.reset = SUB_Remove;
 	self.oldorigin = self.origin;
-	self.nextthink = time + 30;
 	self.th_die = GibPlayerCorpse;
 	self.classname = "corpse";
 	self.flags = 0;
@@ -440,9 +460,15 @@ void () mime_stand4 = [0, mime_stand1 ]{self.nextthink = time + 1;};
 void () mime_die = 
 {
     if (self.sounds == 1)
-        localcmd("play player/quips/1081.wav\n"); // I hate mimes!
+	{
+        //localcmd("play player/quips/1081.wav\n"); // I hate mimes!
+		sound (self, CHAN_VOICE, "player/quips/1081.wav", 1, ATTN_NORM); // I hate mines!
+	}
     else if (self.sounds == 2)
-        localcmd("play player/quips/1082.wav\n"); // Pathetic insects
+	{
+        //localcmd("play player/quips/1082.wav\n"); // Pathetic insects
+		sound (self, CHAN_VOICE, "player/quips/1082.wav", 1, ATTN_NORM); // Pathetic insects
+	}
 
     RandomHumanGibs();
     monster_death();

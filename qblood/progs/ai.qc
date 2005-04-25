@@ -121,7 +121,7 @@ local entity    temp;
     if (!self.movetarget)
     {
         self.pausetime = time + 999999;
-        self.th_stand ();
+		self.th_stand ();
         return;
     }
 };
@@ -149,10 +149,13 @@ local float     r;
     spot2 = targ.origin + targ.view_ofs;
 
     r = vlen (spot1 - spot2);
-    if (r < 120)
+    if (r < 60)  //was 90/500/1000
         return RANGE_MELEE;
     if (r < 500)
-        return RANGE_NEAR;
+		if (r > 300 && self.classname == "monster_zombie" && self.spawnposition == ZOMBIE_SPAWN_UNDERGROUND)
+			return RANGE_MID;
+		else
+			return RANGE_NEAR;
     if (r < 1000)
         return RANGE_MID;
     return RANGE_FAR;
@@ -274,13 +277,13 @@ void() SightSound =
 
 void() FoundTarget =
 {
-	//if (self.enemy.classname == "player")
-    //{   // let other monsters see this monster for a while
+	if (self.enemy.classname == "player")
+    {
         sight_entity = self.enemy;
         sight_entity_time = time + 1;
-    //}
+    }
 
-    self.show_hostile = time + 1;       // wake up other monsters
+    //self.show_hostile = time + 1;       // wake up other monsters
 
     if (self.pain_finished < time && self.voice_finished < time)// To avoid several sounds at once
 	    SightSound ();
@@ -372,7 +375,8 @@ float() FindTarget =
         if (!infront (client))
             return FALSE;
     }
-
+	if (range(client) > RANGE_NEAR)
+		return FALSE;
     // got one
 
     self.enemy = client;
@@ -468,7 +472,11 @@ The monster is staying in one place for a while, with slight angle turns
 void() ai_stand =
 {
     if (FindTarget ())
+	{
+		if (self.classname == "monster_zombie" && self.enemy.health >= 0 && self.spawnposition == ZOMBIE_SPAWN_UNDERGROUND)
+			self.th_arise();
         return;
+	}
 	else
 	{
 	    local entity ent;
@@ -666,8 +674,8 @@ void(float dist) ai_run =
         {
             if (self.movetarget)
                 self.th_walk ();
-            else
-                self.th_stand ();
+			else
+				self.th_stand ();
             return;
         }
     }
@@ -811,13 +819,10 @@ void (float dist) basic_ai =
     {
         if (self.style == 2)
             ai_walk (dist);
-        else
+        else if (self.style == 3)
         {
-            if (self.style == 3)
-            {
-                ai_run (dist * 2);
-                ai_face ();
-            }
+			ai_run (dist * 2);
+			ai_face ();
         }
     }
 };
