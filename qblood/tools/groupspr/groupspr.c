@@ -361,6 +361,7 @@ int GroupAll (FILE *InFile, FILE *OutFile, float AnimationTime)
 	}
 
 	NbFrames = SprHeader.nbframes;
+	SprHeader.nbframes = 1;  // we will only have 1 element (1 group)
 	ExportSprHeader (&SprHeader, Buffer);
 	fwrite (Buffer, 1, sizeof (spr_header_t), OutFile);
 
