@@ -127,7 +127,7 @@ set "message" to text string
 */
 void() trigger_multiple =
 {
-    if (self.sounds == 1)
+    /*if (self.sounds == 1)
     {
         precache_sound ("bludbath/powerup.wav");
         self.noise = "bludbath/powerup.wav";
@@ -138,7 +138,7 @@ void() trigger_multiple =
     {
         precache_sound ("locks/baseuse.wav");
         self.noise = "locks/baseuse.wav";
-    }
+    }*/
 
     if (!self.wait)
         self.wait = 0.2;
@@ -211,9 +211,9 @@ void() trigger_secret =
 {
     total_secrets = total_secrets + 1;
     self.wait = -1;
-    if (!self.message)
-        self.message = "You found a secret area!";
-    if (!self.sounds)
+    //if (!self.message)
+        self.message = "You found a secret!\n";
+    /*if (!self.sounds)
         self.sounds = 1;
 
     if (self.sounds == 1)
@@ -222,7 +222,7 @@ void() trigger_secret =
         self.noise = "bludbath/powerup.wav";
     }
     else if (self.sounds == 2)
-        self.noise = "bludbath/message.wav";
+        self.noise = "bludbath/message.wav";*/
 
     trigger_multiple ();
 };
@@ -588,8 +588,10 @@ void() trigger_changelevel =
 // So player has to be touching trigger AND hitting the use button
 void() trigger_use_touch =
 {
-    if (other.button4)
+    if (other.button4 && !other.oldbutton4)
 	    SUB_UseTargets();
+	other.oldbutton4 = other.button4;
+
 };
 
 /*

@@ -1537,9 +1537,10 @@ void() PlayerPostThink =
         ResetIdle (self);
         return;
     }
-
-    if (self.button4)
+//if (self.button4 && !self.oldbutton4){usesomething();}self.oldbutton4 = self.button4;
+    if (self.button4 && !self.oldbutton4)
         Cl_Use ();
+	self.oldbutton4 = self.button4;
 
     W_WeaponFrame ();
 

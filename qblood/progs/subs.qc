@@ -310,12 +310,14 @@ void() SUB_UseTargets =
     }
 
     // print the message
-    if (activator.classname == "player" && self.message != string_null)
+    /*if (activator.classname == "player" && self.message != string_null)
     {
         centerprint (activator, self.message);
         if (!self.noise)
             sound (activator, CHAN_VOICE, "bludbath/message.wav", 1, ATTN_NORM);
-    }
+    }*/
+	if (activator.classname == "player" && self.message != string_null)
+		sprint(activator, self.message);
 
     // kill the killtargets
     if (self.killtarget)

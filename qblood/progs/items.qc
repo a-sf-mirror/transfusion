@@ -186,20 +186,25 @@ Plants the item / object on the floor
 */
 void(float isAnObject) PlaceItemOrObject =
 {
-	if (!isAnObject)
+	// Make coordinates low precision to save net bandwidth
+	self.effects = self.effects | EF_LOWPRECISION;
+	//self.movetype = MOVETYPE_TOSS; //moved to object and item statements
+	self.velocity = '0 0 0';
+	//self.origin_z = self.origin_z + 2;
+
+	if (isAnObject)
+	{
+		self.solid = SOLID_CORPSE; //was _BBOX
+		self.movetype = MOVETYPE_PUSH;
+	}
+	else
 	{
 		self.mdl = self.model;		// so it can be restored on respawn
 		self.flags = FL_ITEM;		// make extra wide
 		self.solid = SOLID_TRIGGER;
+		self.movetype = MOVETYPE_TOSS;
 	}
-	else
-		self.solid = SOLID_BBOX;
 		
-	// Make coordinates low precision to save net bandwidth
-	self.effects = self.effects | EF_LOWPRECISION;
-	self.movetype = MOVETYPE_TOSS;
-	self.velocity = '0 0 0';
-	self.origin_z = self.origin_z + 2;
 	if (!droptofloor())
 	{
 		if (isAnObject)
@@ -210,8 +215,10 @@ void(float isAnObject) PlaceItemOrObject =
 		dprint ("\" fell out of level at ");
 		dprint (vtos (self.origin));
 		dprint ("\n");
-		remove(self);
-		return;
+		//remove(self);
+		//return;
+		self.origin_z = self.origin_z + 32;
+		droptofloor();
 	}
 
 	if (isAnObject)
@@ -257,6 +264,24 @@ Sets the clipping size and plants the items on the floor
 */
 void() StartItem =
 {
+
+	/*if (cvar("nomonsters") || skillbit & self.spawnflags || 
+	   (self.spawntype && !(gametype & self.spawntype)) || gametype > 3) //gametype above 3 is Bloodbath
+    {
+	    remove(self);
+		return 1;
+	}*/
+
+
+	if (self.weapon)
+	{
+		if (self.spawntype && !(gametype & self.spawntype))
+		{
+			remove(self);
+			return 1;
+		}
+	}
+
 	self.nextthink = time + 0.3;	// items start after other solids
 	self.think = PlaceItem;
 };
@@ -483,7 +508,7 @@ void() obj_world_draven =
 void() obj_world_extngsh =
 {
 	self.health = 1;
-	self.takedamage = DAMAGE_YES;
+	self.takedamage = DAMAGE_AIM;
 	self.dmg = DMG_TNT;
 	self.th_die = Bomb_Explode;
 	self.spawnflags = 1;
