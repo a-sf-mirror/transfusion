@@ -440,12 +440,20 @@
 @SolidClass base(Trigger) = trigger_hurt : "Trigger player hurt" [ dmg(integer) : "Damage" : 10 ]
 @SolidClass base(Trigger) = trigger_changelevel : "Event triggers the change to the next level" [ map(string) : "Next map"]
 
-
 //
 // Weapons
 //
 
-@baseclass size(-16 -16 0, 16 16 56) color(0 0 200) = Weapon []
+@baseclass size(-16 -16 0, 16 16 56) color(0 0 200) = Weapon
+[
+	spawntype(choices) : "Gametype" : 31 =
+	[
+		31 : "All Gameplay Modes"
+		1 : "Single Player only"
+		28 : "BloodBath only (includes Team & CTF)"
+		2 : "Coop only"
+	]
+]
 
 @PointClass base(Weapon) = weapon_flaregun : "Flare Gun" []
 @PointClass base(Weapon) = weapon_sawedoff : "Sawed-off Shotgun" []
@@ -472,7 +480,26 @@
 // Ammunitions
 //
 
-@baseclass color(80 0 200) size(0 0 0, 32 32 56) = Ammo [ ]
+@baseclass color(80 0 200) size(0 0 0, 32 32 56) = Ammo
+[
+	spawnflags(flags) =
+	[
+		128	:	"noSkill1"	: 0
+		256	:	"noSkill2"	: 0
+		512	:	"noSkill3"	: 0
+		1024	:	"noSkill4"	: 0
+		2048	:	"noSkill5"	: 0
+	]
+	spawntype(choices) : "Gametype" : 31 =
+	[
+		31 : "All Gameplay Modes"
+		1 : "Single Player only"
+		28 : "BloodBath only (includes Team & CTF)"
+		2 : "Coop only"
+		3 :	"Single Player and Coop only"
+	]
+]
+
 @PointClass base(Ammo) = ammo_flares : "Box of Flares" []
 @PointClass base(Ammo) size(-16 -16 0, 16 16 56) = ammo_shell : "Shotgun Shells"
 [
@@ -510,11 +537,23 @@
 // Armor
 //
 
-@PointClass size(-7 -18 0, 10 18 38) = item_armor_basic : "Basic Armor" []
-@PointClass size(-2 -17 0, 4 19 37) = item_armor_spirit : "Spirit Armor" []
-@PointClass size(-1 -18 0, 6 19 45) = item_armor_body : "Body Armor" []
-@PointClass size(-7 -12 0, 7 10 37) = item_armor_fire : "Fire armor" []
-@PointClass size(-16 -16 0, 16 16 56) = item_armor_super : "Super Armor" []
+@baseclass = Armor
+[
+	spawntype(choices) : "Gametype" : 31 =
+	[
+		31 : "All Gameplay Modes"
+		1 : "Single Player only"
+		28 : "BloodBath only (includes Team & CTF)"
+		2 : "Coop only"
+		3 :	"Single Player and Coop only"
+	]
+]
+
+@PointClass base(Armor) size(-7 -18 0, 10 18 38) = item_armor_basic : "Basic Armor" []
+@PointClass base(Armor) size(-2 -17 0, 4 19 37) = item_armor_spirit : "Spirit Armor" []
+@PointClass base(Armor) size(-1 -18 0, 6 19 45) = item_armor_body : "Body Armor" []
+@PointClass base(Armor) size(-7 -12 0, 7 10 37) = item_armor_fire : "Fire armor" []
+@PointClass base(Armor) size(-16 -16 0, 16 16 56) = item_armor_super : "Super Armor" []
 
 
 //
@@ -606,6 +645,20 @@
         16: "Spider key"
         32: "Moon key"
 	]
+	spawnflags(flags) =
+	[
+		128	:	"noSkill1"	: 0
+		256	:	"noSkill2"	: 0
+		512	:	"noSkill3"	: 0
+		1024	:	"noSkill4"	: 0
+		2048	:	"noSkill5"	: 0
+	]
+	spawntype(choices) : "Gametype" : 3 =
+	[
+		3 : "SP & Coop"
+		1 : "Single Player only"
+		2 : "Coop only"
+	]
 ]
 
 @PointClass base(Monster) size(-4 -4 -5, 5 3 7) = monster_bat : "Bat" []
@@ -631,7 +684,14 @@
 @PointClass base(Monster) size(-13 -3 0, 13 3 6) = monster_rat : "Rat" []
 @PointClass base(Monster) size(-6 -14 0, 34 14 62) = monster_redcultist : "Red Cultist" []
 @PointClass base(Monster) size(-50 -62 0, 36 62 90) = monster_stonegargoyle : "Stone Gargoyle" []
-@PointClass base(Monster) size(-5 -15 0, 11 15 62) = monster_zombie : "Zombie" []
+@PointClass base(Monster) size(-5 -15 0, 11 15 62) = monster_zombie : "Zombie"
+[
+	spawnposition(choices) : "Spawn Possition" : 0 =
+	[
+		0: "Spawn Underground"
+		1: "Spawn Standing"
+	]
+]
 
 
 //
@@ -670,6 +730,19 @@
 		0 : "Medicine pouch" : 0
 		1 : "Life Essence" : 1
 		2 : "Life Seed" : 0
+		128	:	"noSkill1"	: 0
+		256	:	"noSkill2"	: 0
+		512	:	"noSkill3"	: 0
+		1024	:	"noSkill4"	: 0
+		2048	:	"noSkill5"	: 0
+	]
+	spawntype(choices) : "Gametype" : 31 =
+	[
+		31 : "All Gameplay Modes"
+		1 : "Single Player only"
+		28 : "BloodBath only (includes Team & CTF)"
+		2 : "Coop only"
+		3 :	"Single Player and Coop only"
 	]
 ]
 
