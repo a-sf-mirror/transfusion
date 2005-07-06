@@ -98,8 +98,8 @@
 	updated. All mails are archived, and the "Mailing lists" link at the
 	beginning of this page allows you to browse them or to subscribe to the
 	blood-devel list.<br />
-	Finally, you can join <a href="irc://irc.gamesurge.net/qblood">our IRC
-	channel</a> (#qblood on "irc.gamesurge.net") for some interactive
+	Finally, you can join <a href="irc://irc.anynet.org/transfusion">our IRC
+	channel</a> (#transfusion on "irc.anynet.org") for some interactive
 	discussions.<br />
 </div>
 
