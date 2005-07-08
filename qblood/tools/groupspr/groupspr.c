@@ -1,8 +1,8 @@
 /*
  * Copyright (C) 2002-2005  Mathieu Olivier
  *
- * Group/ungroup all frames in a Quake SPR file so that they will be
- * automatically animated by the engine
+ * Group/ungroup all frames of a Quake sprite so that it will be automatically
+ * animated by the engine
  *
  * This program is free software; you can redistribute it and/or modify
  * it under the terms of the GNU General Public License as published by
@@ -30,10 +30,14 @@
 //                             CONSTANTS
 // ====================================================================
 
-#define VERSION "1.0cvs"
+#define VERSION "1.0 beta"
 
 // Default time interval for a frame (in sec)
 #define DEFAULT_TIME_INTERVAL 0.1f
+
+// Sprite versions
+#define SPRITE_VERSION		1	// palettized
+#define SPRITE32_VERSION	32	// 32-bit
 
 
 // ====================================================================
@@ -76,10 +80,17 @@ unsigned char Buffer [16384];
 
 boolean VerboseMode = false;
 
+unsigned int BytesPerPixel = 1;
+
 
 // ====================================================================
 //                             FUNCTIONS
 // ====================================================================
+
+#ifdef WIN32
+# define snprintf _snprintf
+#endif
+
 
 /*
 ====================
@@ -197,45 +208,77 @@ void ImportFrameHeader (const byte* Ptr, frame_header_t* Header)
 
 /*
 ====================
+LoadAndSaveFrame
+====================
+*/
+boolean LoadAndSaveFrame (FILE *InFile, FILE *OutFile, unsigned int GroupInd, int FrameInd)
+{
+	char FrameName [32];
+	frame_header_t FrameHeader;
+	size_t Size;
+
+	if (FrameInd >= 0)
+		snprintf (FrameName, sizeof (FrameName), "%u.%i", GroupInd, FrameInd);
+	else
+		snprintf (FrameName, sizeof (FrameName), "%u", GroupInd);
+
+	// Extract and save the frame header
+	if (fread (Buffer, 1, sizeof (frame_header_t), InFile) != sizeof (frame_header_t))
+	{
+		printf ("Error: file too small (frame header %s)\n", FrameName);
+		return false;
+	}
+	fwrite (Buffer, 1, sizeof (frame_header_t), OutFile);
+
+	ImportFrameHeader (Buffer, &FrameHeader);
+	if (VerboseMode)
+	{
+		printf ("  -> Properties of frame %s: dimensions = %u x %u, origin = (%i, %i)\n",
+				FrameName, FrameHeader.width, FrameHeader.height,
+				FrameHeader.offsetx, FrameHeader.offsety);
+	}
+
+	if (FrameHeader.width <= 0 || FrameHeader.height <= 0)
+	{
+		printf ("Error: invalid frame size (frame header %s)\n", FrameName);
+		return false;
+	}
+	Size = FrameHeader.width * FrameHeader.height * BytesPerPixel;
+
+	// Extract and save the picture itself
+	while (Size > 0)
+	{
+		size_t NbBytes = ((Size <= sizeof (Buffer)) ? Size : sizeof (Buffer));
+		if (fread (Buffer, 1, NbBytes, InFile) != NbBytes)
+		{
+			printf ("Error: file too small (frame picture %s)\n", FrameName);
+			return false;
+		}
+		fwrite (Buffer, 1, NbBytes, OutFile);
+		Size -= NbBytes;
+	}
+
+	return true;
+}
+
+
+/*
+====================
 UngroupAll
 ====================
 */
-int UngroupAll (FILE *InFile, FILE *OutFile)
+int UngroupAll (FILE *InFile, FILE *OutFile, spr_header_t* SprHeader)
 {
 	unsigned int NbGroups, NbFrames, Ind;
-	spr_header_t SprHeader;
 
-	// Copy the header
-	if (fread (Buffer, 1, sizeof (spr_header_t), InFile) != sizeof (spr_header_t))
-	{
-		printf ("Error: file too small (header)\n");
-		return EXIT_FAILURE;
-	}
-	ImportSprHeader (Buffer, &SprHeader);
-
-	// Check magic number and version
-	if (memcmp (SprHeader.name, "IDSP", 4) != 0)
-	{
-		printf ("Error: file is not a Quake sprite\n");
-		return EXIT_FAILURE;
-	}
-	if (SprHeader.version != 1)
-	{
-		printf ("Error: wrong sprite version (%d instead of 1)\n", SprHeader.version);
-		return EXIT_FAILURE;
-	}
-
-	NbGroups = SprHeader.nbframes;
+	NbGroups = SprHeader->nbframes;
 	fwrite (Buffer, 1, sizeof (spr_header_t), OutFile);
 
 	// Ungroup all the frames
-	printf ("Processing %i element(s)...\n", NbGroups);
 	NbFrames = 0;
 	for (Ind = 0; Ind < NbGroups; Ind++)
 	{
 		frame_group_t FrameType;
-		unsigned int Size;
-		frame_header_t FrameHeader;
 
 		// Read the single frame header
 		fread (Buffer, 1, 4, InFile);
@@ -247,24 +290,8 @@ int UngroupAll (FILE *InFile, FILE *OutFile)
 				printf ("* Parsing element %i (single frame)\n", Ind);
 
 			fwrite (Buffer, 1, 4, OutFile);
-			fread (Buffer, 1, sizeof (frame_header_t), InFile);
-			fwrite (Buffer, 1, sizeof (frame_header_t), OutFile);
-
-			// Extract the picture itself
-			ImportFrameHeader (Buffer, &FrameHeader);
-			Size = FrameHeader.width * FrameHeader.height;
-			assert (Size <= sizeof (Buffer));
-			if (VerboseMode)
-				printf ("  -> Properties: dimensions = %u x %u, origin = (%i, %i)\n",
-						FrameHeader.width, FrameHeader.height,
-						FrameHeader.offsetx, FrameHeader.offsety);
-			if (fread (Buffer, 1, Size, InFile) != Size)
-			{
-				printf ("Error: file too small (frame picture %i)\n", Ind);
+			if (!LoadAndSaveFrame(InFile, OutFile, Ind, -1))
 				return EXIT_FAILURE;
-			}
-			fwrite (Buffer, 1, Size, OutFile);
-
 			NbFrames++;
 		}
 		else
@@ -295,28 +322,15 @@ int UngroupAll (FILE *InFile, FILE *OutFile)
 			{
 				PutLittleEndianUint (SPR_SINGLE, Buffer);
 				fwrite (Buffer, 1, 4, OutFile);
-				fread (Buffer, 1, sizeof (frame_header_t), InFile);
-				fwrite (Buffer, 1, sizeof (frame_header_t), OutFile);
 
-				// Extract the picture itself
-				ImportFrameHeader (Buffer, &FrameHeader);
-				Size = FrameHeader.width * FrameHeader.height;
-				assert (Size <= sizeof (Buffer));
-				if (VerboseMode)
-					printf ("  -> Properties of frame %u: dimensions = %u x %u, origin = (%i, %i)\n",
-							FrameInd, FrameHeader.width, FrameHeader.height,
-							FrameHeader.offsetx, FrameHeader.offsety);
-				if (fread (Buffer, 1, Size, InFile) != Size)
-				{
-					printf ("Error: file too small (frame picture %i.%i)\n", Ind, FrameInd);
+				if (!LoadAndSaveFrame(InFile, OutFile, Ind, FrameInd))
 					return EXIT_FAILURE;
-				}
-				fwrite (Buffer, 1, Size, OutFile);
 			}
 
 			NbFrames += NbGroupFrames;
 		}
-		printf("\n");
+		if (VerboseMode)
+			printf("\n");
 	}
 
 	// Update the header with the real number of frames
@@ -333,36 +347,13 @@ int UngroupAll (FILE *InFile, FILE *OutFile)
 GroupAll
 ====================
 */
-int GroupAll (FILE *InFile, FILE *OutFile, float AnimationTime)
+int GroupAll (FILE *InFile, FILE *OutFile, spr_header_t* SprHeader, float AnimationTime)
 {
-	unsigned int NbFrames;
-	spr_header_t SprHeader;
-	frame_header_t FrameHeader;
-	unsigned int Ind, Size;
+	unsigned int NbFrames, Ind;
 
-	// Copy the header
-	if (fread (Buffer, 1, sizeof (spr_header_t), InFile) != sizeof (spr_header_t))
-	{
-		printf ("Error: file too small (header)\n");
-		return EXIT_FAILURE;
-	}
-	ImportSprHeader (Buffer, &SprHeader);
-
-	// Check magic number and version
-	if (memcmp (SprHeader.name, "IDSP", 4) != 0)
-	{
-		printf ("Error: file is not a Quake sprite\n");
-		return EXIT_FAILURE;
-	}
-	if (SprHeader.version != 1)
-	{
-		printf ("Error: wrong sprite version (%d instead of 1)\n", SprHeader.version);
-		return EXIT_FAILURE;
-	}
-
-	NbFrames = SprHeader.nbframes;
-	SprHeader.nbframes = 1;  // we will only have 1 element (1 group)
-	ExportSprHeader (&SprHeader, Buffer);
+	NbFrames = SprHeader->nbframes;
+	SprHeader->nbframes = 1;  // we will only have 1 element (1 group)
+	ExportSprHeader (SprHeader, Buffer);
 	fwrite (Buffer, 1, sizeof (spr_header_t), OutFile);
 
 	// Write the group header (SPR_GROUP + nb of frames + time intervals)
@@ -379,7 +370,6 @@ int GroupAll (FILE *InFile, FILE *OutFile, float AnimationTime)
 	}
 
 	// Group all the frames
-	printf ("Processing %i element(s)...\n", NbFrames);
 	for (Ind = 0; Ind < NbFrames; Ind++)
 	{
 		frame_group_t FrameType;
@@ -397,28 +387,11 @@ int GroupAll (FILE *InFile, FILE *OutFile, float AnimationTime)
 		if (VerboseMode)
 			printf ("* Parsing element %i (single frame)\n", Ind);
 
-		if (fread (Buffer, 1, sizeof (frame_header_t), InFile) != sizeof (frame_header_t))
-		{
-			printf ("Error: file too small (frame header %i)\n", Ind);
+		if (!LoadAndSaveFrame(InFile, OutFile, Ind, -1))
 			return EXIT_FAILURE;
-		}
-		fwrite (Buffer, 1, sizeof (frame_header_t), OutFile);
-		ImportFrameHeader (Buffer, &FrameHeader);
-		Size = FrameHeader.width * FrameHeader.height;
-		assert (Size <= sizeof (Buffer));
-		if (VerboseMode)
-			printf ("  -> Properties: dimensions = %u x %u, origin = (%i, %i)\n"
-					"\n",
-					FrameHeader.width, FrameHeader.height,
-					FrameHeader.offsetx, FrameHeader.offsety);
 
-		// Extract the picture itself
-		if (fread (Buffer, 1, Size, InFile) != Size)
-		{
-			printf ("Error: file too small (frame picture %i)\n", Ind);
-			return EXIT_FAILURE;
-		}
-		fwrite (Buffer, 1, Size, OutFile);
+		if (VerboseMode)
+			printf ("\n");
 	}
 
 	return EXIT_SUCCESS;
@@ -432,9 +405,10 @@ PrintHelp
 */
 void PrintHelp (void)
 {
-	printf ("This tool groups (or ungroups) all the frames in a Quake sprite\n"
+	printf ("This tool groups (or ungroups) all the frames in a Quake sprite "
+			"or a DarkPlaces sprite32.\n"
 			"\n"
-			"Syntax: groupspr [options] <SPR file> <new file>\n"
+			"Syntax: groupspr [options] <sprite file> <new file>\n"
 			"Available options are:\n"
 			"   -h        : this help\n"
 			"   -t <time> : set the total animation time in seconds.\n"
@@ -456,10 +430,11 @@ int main (int argc, char* argv [])
 	int Result, ArgInd;
 	float TimeInterval = 0.0f;
 	boolean Ungroup = false;
+	spr_header_t SprHeader;
 
 	printf ("\n"
 			"GroupSPR, version " VERSION ", by Mathieu Olivier\n"
-			"============================================\n"
+			"==============================================\n"
 			"\n");
 
 	// Check options
@@ -479,7 +454,7 @@ int main (int argc, char* argv [])
 				Ungroup = true;
 				break;
 
-				// Verbose mode
+			// Verbose mode
 			case 'v':
 				VerboseMode = true;
 				break;
@@ -509,13 +484,40 @@ int main (int argc, char* argv [])
 		return EXIT_FAILURE;
 	}
 
+	// Copy the header
+	if (fread (Buffer, 1, sizeof (spr_header_t), InFile) != sizeof (spr_header_t))
+	{
+		printf ("Error: file too small (header)\n");
+		return EXIT_FAILURE;
+	}
+	ImportSprHeader (Buffer, &SprHeader);
+
+	// Check magic number and version
+	if (memcmp (SprHeader.name, "IDSP", 4) != 0)
+	{
+		printf ("Error: file is not a Quake sprite\n");
+		return EXIT_FAILURE;
+	}
+	if (SprHeader.version != SPRITE_VERSION && SprHeader.version != SPRITE32_VERSION)
+	{
+		printf ("Error: wrong sprite version (%d instead of %d or %d)\n",
+				SprHeader.version, SPRITE_VERSION, SPRITE32_VERSION);
+		return EXIT_FAILURE;
+	}
+	BytesPerPixel = ((SprHeader.version == SPRITE32_VERSION) ? 4 : 1);
+
+	printf ("* %s a %s (%d elements(s), max size = %u x %u)...\n\n",
+		Ungroup ? "Ungrouping" : "Grouping",
+			(SprHeader.version == SPRITE32_VERSION) ? "DarkPlaces sprite32" : "Quake sprite",
+			SprHeader.nbframes, SprHeader.maxwidth, SprHeader.maxheight);
+
 	if (Ungroup)
-		Result = UngroupAll(InFile, OutFile);
+		Result = UngroupAll(InFile, OutFile, &SprHeader);
 	else
-		Result = GroupAll(InFile, OutFile, TimeInterval);
+		Result = GroupAll(InFile, OutFile, &SprHeader, TimeInterval);
 
 	if (Result == EXIT_SUCCESS)
-		printf ("Conversion successfully completed\n");
+		printf ("* Conversion successfully completed\n");
 
 	fclose (InFile);
 	fclose (OutFile);
