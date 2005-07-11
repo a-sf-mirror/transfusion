@@ -30,7 +30,7 @@
 //                             CONSTANTS
 // ====================================================================
 
-#define VERSION "1.0 beta"
+#define VERSION "1.0"
 
 // Default time interval for a frame (in sec)
 #define DEFAULT_TIME_INTERVAL 0.1f
@@ -381,7 +381,7 @@ int GroupAll (FILE *InFile, FILE *OutFile, spr_header_t* SprHeader, float Animat
 		// Make sure it's a single frame, not a group
 		if (FrameType != SPR_SINGLE)
 		{
-			printf ("Error: sprite already contains grouped frames (frame %i)\n", Ind);
+			printf ("Error: sprite already contains grouped frames (element %i)\n", Ind);
 			return EXIT_FAILURE;
 		}
 		if (VerboseMode)
@@ -434,7 +434,7 @@ int main (int argc, char* argv [])
 
 	printf ("\n"
 			"GroupSPR, version " VERSION ", by Mathieu Olivier\n"
-			"==============================================\n"
+			"=========================================\n"
 			"\n");
 
 	// Check options
