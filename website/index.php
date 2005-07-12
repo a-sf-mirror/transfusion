@@ -17,13 +17,17 @@
 	<h2 id="about-section" class="section">About this page</h2>
 	This website is the home of the Transfusion Project development. Please, go to
 	<a href="http://www.transfusion-game.com/">our main website</a> for
-	general informations about the project.<br />
+	general information about the project.<br />
 </div>
 
 <!-- News -->
 <div class="section">
 	<h2 id="news-section" class="section">News</h2>
 	<ul>
+		<li>
+			<span class="title">July 12, 2005:</span> (by Elric)<br />
+			GroupSPR has been updated to version 1.0, with support for DarkPlaces' SPR32 format.<p />
+		</li>
 		<li>
 			<span class="title">April 24, 2005:</span> (by Elric)<br />
 			The source code of Map2Map, our BUILD to Quake map converter has been added to the CVS repository, along
