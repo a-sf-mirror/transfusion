@@ -335,7 +335,7 @@ void PR_LexWhitespace (void)
 //============================================================================
 // frame macros
 
-#define MAX_FRAMES		256
+#define MAX_FRAMES		4096
 #define MAX_FRAME_LISTS	4
 
 int		pr_crtframelist;
