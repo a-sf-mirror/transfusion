@@ -411,6 +411,8 @@
 #define H_LIFE_SEED     2
 #define AMMO_BIG 1
 
+#define ITEM_ROTATION '0 80 0'	// rotation of items
+
 /*
     Door related
 */

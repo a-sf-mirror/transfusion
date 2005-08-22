@@ -29,6 +29,22 @@ void() Bomb_Explode;
 /* ALL LIGHTS SHOULD BE 0 1 0 IN COLOR ALL OTHER ITEMS SHOULD
 BE .8 .3 .4 IN COLOR */
 
+/*
+============
+RotateItem
+
+Rotates an item
+============
+*/
+void() RotateItem =
+{
+   local float t;
+   t = time - self.ltime;
+   self.ltime = time;
+   self.angles = self.angles + ( self.rotate * t );
+   self.angles = SUB_NormalizeAngles( self.angles );
+   self.nextthink = time + 0.02;
+};
 
 void() SUB_regen =
 {
@@ -61,6 +77,15 @@ void() SUB_regen =
 	{
 		self.nextthink = time + 0.1;
 		self.think = self.think1;
+	}
+	else 
+	{
+		// If there's no animation, check for rotation:
+		if (self.rotate == ITEM_ROTATION)
+		{
+				self.nextthink = time + 0.02;
+				self.think = RotateItem;
+		}	
 	}
 };
 
@@ -176,7 +201,6 @@ void(float timeleft) Invisibility_Drop =
 	item.reset = SUB_Remove;
 };
 
-
 /*
 ============
 PlaceItemOrObject
@@ -240,6 +264,15 @@ void(float isAnObject) PlaceItemOrObject =
 	{
 		self.nextthink = time + 0.1;
 		self.think = self.think1;
+	}
+	else 
+	{
+		// If there's no animation, check for rotation:
+		if (self.rotate == ITEM_ROTATION)
+		{
+				self.nextthink = time + 0.02;
+				self.think = RotateItem;
+		}	
 	}
 };
 
@@ -991,68 +1024,70 @@ void() armor_touch =
 	SUB_UseTargets();				// fire all targets / killtargets
 };
 
+// Intialize common armor attributes
+void() InitArmor = 
+{
+	self.touch = armor_touch;
+	self.rotate = ITEM_ROTATION;
+};
+
 // Basic Armor
 void() item_armor_basic =
 {
-	self.touch = armor_touch;
 	self.model = "models/items/armour/i_arm_basic.md3";
+	self.netname = "Basic Armor";
 	precache_model (self.model);
 	setmodel (self, self.model);
-	self.netname = "Basic Armor";
-
 	setsize (self, '-7 -18 0', '10 18 38');
+	InitArmor();
 	StartItem ();
 };
 
 // Spirit Armor
 void() item_armor_spirit =
 {
-	self.touch = armor_touch;
 	self.model = "models/items/armour/i_arm_spirit.md3";
+	self.netname = "Spirit Armor";
 	precache_model (self.model);
 	setmodel (self, self.model);
-	self.netname = "Spirit Armor";
-
 	setsize (self, '-2 -17 0', '4 19 37');
+	InitArmor();
 	StartItem ();
 };
 
 // Body Armor
 void() item_armor_body =
 {
-	self.touch = armor_touch;
 	self.model = "models/items/armour/i_arm_body.md3";
+	self.netname = "Body Armor";
 	precache_model (self.model);
 	setmodel (self, self.model);
-	self.netname = "Body Armor";
-
 	setsize (self, '-1 -18 0', '6 19 45');
+	InitArmor();
 	StartItem ();
 };
 
 // Fire Armor
 void() item_armor_fire =
 {
-	self.touch = armor_touch;
 	self.model = "models/items/armour/i_arm_fire.md3";
+	self.netname = "Fire Armor";
 	precache_model (self.model);
 	setmodel (self, self.model);
-	self.netname = "Fire Armor";
-
 	setsize (self, '-7 -12 0', '7 10 37');
+	InitArmor();
 	StartItem ();
 };
 
 // Super Armor
 void() item_armor_super =
 {
-	self.touch = armor_touch;
 	self.model = "models/items/armour/i_arm_super.md3";
+	self.netname = "Super Armor";
 	precache_model (self.model);
 	setmodel (self, self.model);
-	self.netname = "Super Armor";
-
 	setsize (self, '-16 -16 0', '16 16 56');
+	InitArmor();
 	StartItem ();
 };
 
@@ -1266,6 +1301,16 @@ void() weapon_touch =
 	SUB_UseTargets();				// fire all targets / killtargets
 };
 
+// Intialize common weapon attributes
+void() InitWeapon = 
+{
+	self.touch = weapon_touch;
+	// Exception for rotation: If it's not a TNT bundle but a TNT-box, don't rotate:
+	if (self.classname != "weapon_tnt" || !self.spawnflags)
+	{
+		self.rotate = ITEM_ROTATION;
+	}
+};
 
 // Flaregun
 void() weapon_flaregun =
@@ -1277,7 +1322,6 @@ void() weapon_flaregun =
 	setmodel (self, "models/weapons/g_flare.md3");
 	self.weapon = IT_FLAREGUN;
 	self.netname = "Flare Gun";
-	self.touch = weapon_touch;
 	setsize (self, '-16 -16 0', '16 16 56');
 
 	// precache the necessary sounds
@@ -1287,7 +1331,8 @@ void() weapon_flaregun =
 	precache_sound ("weapons/napalm/explodfs.wav");  // For alt-flares
 
 	available_weapons = available_weapons | IT_FLAREGUN;
-
+	
+	InitWeapon();
 	StartItem ();
 };
 
@@ -1319,12 +1364,12 @@ void() weapon_sawedoff =
 	self.weapon = IT_SAWED_OFF;
 	self.netname = "Sawed-off";
 	
-	self.touch = weapon_touch;
 	setsize (self, '-16 -16 0', '16 16 56');
 
 	
 	available_weapons = available_weapons | IT_SAWED_OFF;
 
+	InitWeapon();
 	StartItem ();
 };
 
@@ -1355,11 +1400,11 @@ void() weapon_tommygun =
 	setmodel (self, "models/weapons/g_tommy.md3");
 	self.weapon = IT_TOMMYGUN;
 	self.netname = "Tommy Gun";
-	self.touch = weapon_touch;
 	setsize (self, '-16 -16 0', '16 16 56');		
 
 	available_weapons = available_weapons | IT_TOMMYGUN;
 
+	InitWeapon();
 	StartItem ();
 };
 
@@ -1373,7 +1418,6 @@ void() weapon_spraycan =
 	setmodel (self, "models/ammo/g_aerosol.md3");
 	self.weapon = IT_SPRAY_CAN;
 	self.netname = "Spray Can";
-	self.touch = weapon_touch;
 	setsize (self, '-8 -8 0', '8 8 32');
 
 	// Precache the necessary sounds
@@ -1387,6 +1431,7 @@ void() weapon_spraycan =
 
 	available_weapons = available_weapons | IT_SPRAY_CAN;
 
+	InitWeapon();
 	StartItem ();
 };
 
@@ -1438,11 +1483,10 @@ void() weapon_tnt =
 	setsize (self, minSize, maxSize);
 
 	self.weapon = IT_TNT;
-	self.touch = weapon_touch;
-
 
 	available_weapons = available_weapons | IT_TNT;
 
+	InitWeapon();
 	StartItem ();
 };
 
@@ -1457,7 +1501,6 @@ void() weapon_proximity =
 	setmodel (self, "models/weapons/g_proxy.md3");
 	self.weapon = IT_PROXIMITY_BOMB;
 	self.netname = "Proximity Bomb";
-	self.touch = weapon_touch;
 	setsize (self, '-8 -8 0', '8 8 32');
 
 	// Precache the necessary sounds
@@ -1469,6 +1512,7 @@ void() weapon_proximity =
 
 	available_weapons = available_weapons | IT_PROXIMITY_BOMB;
 
+	InitWeapon();
 	StartItem ();
 };
 
@@ -1482,7 +1526,6 @@ void() weapon_remote =
 	setmodel (self, "models/weapons/g_remote.md3");
 	self.weapon = IT_REMOTE_DETONATOR;
 	self.netname = "Remote Detonator";
-	self.touch = weapon_touch;
 	setsize (self, '-8 -8 0', '8 8 32');
 
 	// Precache the necessary sounds
@@ -1493,6 +1536,7 @@ void() weapon_remote =
 	precache_sound ("weapons/napalm/explodcl.wav");  // detonation / impact
 	available_weapons = available_weapons | IT_REMOTE_DETONATOR;
 
+	InitWeapon();
 	StartItem ();
 };
 
@@ -1506,7 +1550,6 @@ void() weapon_napalmlauncher =
 	setmodel (self, "models/weapons/g_napalm.md3");
 	self.weapon = IT_NAPALM_LAUNCHER;
 	self.netname = "Napalm Launcher";
-	self.touch = weapon_touch;
 	setsize (self, '-16 -16 0', '16 16 56');
 
 	precache_model ("models/weapons/objects/napalm.md3");  // napalm regular fire
@@ -1519,6 +1562,7 @@ void() weapon_napalmlauncher =
 
 	available_weapons = available_weapons | IT_NAPALM_LAUNCHER;
 
+	InitWeapon();
 	StartItem ();
 };
 
@@ -1551,11 +1595,11 @@ void() weapon_teslacannon =
 	setmodel (self, "models/weapons/g_tesla.md3");
 	self.weapon = IT_TESLA_CANNON;
 	self.netname = "Tesla Cannon";
-	self.touch = weapon_touch;
 	setsize (self, '-16 -16 0', '16 16 56');	
 
 	available_weapons = available_weapons | IT_TESLA_CANNON;
 
+	InitWeapon();
 	StartItem ();
 };
 
@@ -1568,7 +1612,6 @@ void() weapon_voodoodoll =
 	setmodel (self, "models/weapons/g_voodoo.md3");
 	self.weapon = IT_VOODOO_DOLL;
 	self.netname = "Voodoo Doll";
-	self.touch = weapon_touch;
 	setsize (self, '-16 -16 0', '16 16 56');
 
 	// Precache the necessary sounds
@@ -1578,6 +1621,7 @@ void() weapon_voodoodoll =
 
 	available_weapons = available_weapons | IT_VOODOO_DOLL;
 
+	InitWeapon();
 	StartItem ();
 };
 
@@ -1591,7 +1635,6 @@ void() weapon_lifeleech =
 	setmodel (self, "models/weapons/g_leech.md3");
 	self.weapon = IT_LIFE_LEECH;
 	self.netname = "Life Leech";
-	self.touch = weapon_touch;
 	setsize (self, '-16 -16 0', '16 16 56');
 
 	// precache the necessary sounds
@@ -1601,6 +1644,7 @@ void() weapon_lifeleech =
 
 	available_weapons = available_weapons | IT_LIFE_LEECH;
 
+	InitWeapon();
 	StartItem ();
 };
 
@@ -1932,37 +1976,37 @@ void() item_key =
 		self.spawnflags = self.spawnflags | 1;
 	}
 
-	if (self.spawnflags & 1)
+	if (self.spawnflags & IT2_KEY1)
 	{
 		self.skin		= 0;
 		self.netname	= "Skull Key";
 		self.items2 	= IT2_KEY1;
 	}
-	else if (self.spawnflags & 2)
+	else if (self.spawnflags & IT2_KEY2)
 	{
 		self.skin		= 1;
 		self.netname	= "Eye Key";
 		self.items2 	= IT2_KEY2;
 	}
-	else if (self.spawnflags & 4)
+	else if (self.spawnflags & IT2_KEY3)
 	{
 		self.skin		= 2;
 		self.netname	= "Fire Key";
 		self.items2 	= IT2_KEY3;
 	}
-	else if (self.spawnflags & 8)
+	else if (self.spawnflags & IT2_KEY4)
 	{
 		self.skin		= 3;
 		self.netname	= "Dagger Key";
 		self.items2 	= IT2_KEY4;
 	}
-	else if (self.spawnflags & 16)
+	else if (self.spawnflags & IT2_KEY5)
 	{
 		self.skin		= 4;
 		self.netname	= "Spider Key";
 		self.items2 	= IT2_KEY5;
 	}
-	else if (self.spawnflags & 32)
+	else if (self.spawnflags & IT2_KEY6)
 	{
 		self.skin		= 5;
 		self.netname	= "Moon Key";
@@ -1979,6 +2023,7 @@ void() item_key =
 	precache_sound (self.noise);
 
 	self.touch	= key_touch;
+	self.rotate = ITEM_ROTATION;
 	StartItem ();
 };
 
@@ -2060,6 +2105,8 @@ void() item_artifact_deathmask =
 	self.noise	 = "bludbath/powerup.wav";
 	item_powerup ();
 	setsize (self, '-4 -12 0', '2 12 30');
+	// DeathMask rotates in Blood:
+	self.rotate = ITEM_ROTATION;
 };
 
 // Reflective Shots
@@ -2097,4 +2144,6 @@ void() item_artifact_vision =
 	self.model	 = "models/items/i_vision.md3";
 	item_powerup ();
 	setsize (self, '-10 -9 0', '11 9 9');
+	// Beast Vision rotates in Blood:
+	self.rotate = ITEM_ROTATION;
 };
