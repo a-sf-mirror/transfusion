@@ -222,7 +222,7 @@ void() hellhound_bite =
         return;
 
     ldmg = (random() + random() + random()) * 8;
-    T_Damage (self.enemy, self, self, ldmg, DF_BODY, string_null);
+    T_Damage (self.enemy, self, self, ldmg, DF_STAB, string_null);
 
     r = random ();
 

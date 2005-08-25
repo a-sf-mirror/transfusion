@@ -960,7 +960,7 @@ void() WaterMove =
             if (self.dmg > 15)
                 self.dmg = 10;
             // Armor does not protect against drowning.
-            T_Damage (self, world, world, self.dmg, 0, "drowning");
+            T_Damage (self, world, world, self.dmg, DF_DROWN, "drowning");
             self.pain_finished = time + 1;
         }
     }
@@ -1006,7 +1006,7 @@ void() WaterMove =
                 self.dmgtime = time + 0.2;
 
             // Fire-based damage
-            T_Damage (self, world, world, 10*self.waterlevel, DF_FIRE, "fire");
+            T_Damage (self, world, world, 10*self.waterlevel, DF_BURN, "fire");
         }
     }
     else if (self.watertype == CONTENT_SLIME)
@@ -1015,7 +1015,7 @@ void() WaterMove =
             if (!self.dive_on)
         {
             self.dmgtime = time + 1;
-            T_Damage (self, world, world, 4*self.waterlevel, DF_BODY, "acid");
+            T_Damage (self, world, world, 4*self.waterlevel, DF_ACID, "acid");
         }
     }
 
@@ -1398,7 +1398,7 @@ void(float isAlive) Impulses_Player =
             else if (self.impulse == IMP_CHEAT_IN_FIRE)
             {
                 sprint (self, "mcgee -- You're fired!\n");
-                Ignite (self, self, DF_FIRE, 10, 20);
+                Ignite (self, self, DF_BURN, 10, 20);
             }
             else if (self.impulse == IMP_CHEAT_INVENT)
                 Cheat_Inventory ();
@@ -1510,7 +1510,7 @@ void() PlayerPostThink =
         {
             // Armor does not protect against falling.
             aspeed = (-650 - self.jump_flag) * 0.3;
-            T_Damage (self, world, world, aspeed, 0, "falling");
+            T_Damage (self, world, world, aspeed, DF_FALL, "falling");
         }
         else
             sound (self, CHAN_VOICE, "foley/land.wav", 1, ATTN_NORM);		

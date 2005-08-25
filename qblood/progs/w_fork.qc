@@ -178,7 +178,7 @@ void() Fork_Fire =
         }
         loop = loop - 1;
     }
-    ApplyMultiDamage ();
+    ApplyMultiDamage (DF_STAB);
 };
 
 

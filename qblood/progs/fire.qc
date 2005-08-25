@@ -126,7 +126,7 @@ void(entity fire, float radius, float damage, float burn, entity ignore) BurnRad
                 org = head.origin + (head.mins + head.maxs)*0.5;
                 dist = vlen (fire.origin - org);
                 dist = 1 - (dist * fade / radius);
-                BurnDamage (head, fire, damage * dist, DF_FIRE, 10, burn * dist / 10);  // 10 points per sec
+                BurnDamage (head, fire, damage * dist, DF_BURN, 10, burn * dist / 10);  // 10 points per sec
             }
 
         head = head.chain;
@@ -348,7 +348,7 @@ void(entity victim, entity attacker, float dmgtype, float burn, float burntime) 
     fire.deathtype  = "fire";
     fire.dmg        = burn / 10;        // points of damage per 1/10th sec
     fire.dmgtime    = time + burntime;
-    fire.style      = dmgtype;          // DF_FIRE or DF_MIND
+    fire.style      = dmgtype;			// damage-flag (DF_BURN or DF_SPIRIT)
     fire.nextthink  = 0.1;
     fire.think      = Burn;
     fire.reset      = SUB_Remove;

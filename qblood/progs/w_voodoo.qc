@@ -157,7 +157,7 @@ void(float damage) Voodoo_ApplyDamage =
 		self.ammo_voodoo = self.ammo_voodoo - damage / 4;
 	self.currentammo = self.ammo_voodoo;
 
-	T_Damage (targ, self, self, damage, DF_MIND, death_type);
+	T_Damage (targ, self, self, damage, DF_VOODOO, death_type);
 };
 
 

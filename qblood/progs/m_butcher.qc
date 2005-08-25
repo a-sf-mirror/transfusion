@@ -270,7 +270,7 @@ void () butcher_CleaverTouch =
         SpawnBloodSpray (trace_ent, self.origin);
         sound (self, CHAN_WEAPON, "weapons/pitchfrk/pflesh.wav", 1, ATTN_NORM);
 
-        T_Damage (other,self,self.owner,damg, DF_BODY, string_null);
+        T_Damage (other,self,self.owner,damg, DF_STAB, string_null);
     }
 
     self.origin = (self.origin - (8* normalize (self.velocity)));
@@ -324,7 +324,7 @@ void () butcher_VomitTouch =
         else
             sound (self, CHAN_WEAPON, "butcher/acidhit2.wav", 1, ATTN_NORM);
 
-        T_Damage (other,self,self.owner,damg, DF_BODY, string_null);
+        T_Damage (other,self,self.owner,damg, DF_ACID, string_null);	// Correct damagetype?
     }
 
     self.origin = (self.origin - (8* normalize (self.velocity)));
@@ -345,7 +345,7 @@ void () butcher_CleaverChop =
         return;
 
     ldmg = (random() + random()) * 3;
-    T_Damage (self.enemy, self, self, ldmg, DF_BODY, string_null);
+    T_Damage (self.enemy, self, self, ldmg, DF_STAB, string_null);
 
     SpawnBlood (self.origin, '0 0 0', ldmg);
     SpawnBloodSpray (trace_ent, self.origin);
@@ -476,7 +476,19 @@ void () monster_butcher =
     self.movetype = MOVETYPE_TOSS;
     setmodel (self, "models/enemies/butcher.md3");
     setsize (self,'-8 -11 0', '11 11 50');
-    self.health = 300;
+    self.health = 90;
+	self.resist_acid = -1;	// immune probably
+	self.resist_shock = 2;
+	self.resist_pummel = 0;
+	self.resist_fall = 0;
+	self.resist_burn = 0;
+	self.resist_bullet = 7;
+	self.resist_stab = 16;
+	self.resist_explode = 0;
+	self.resist_gas = 0;
+	self.resist_drown = -1;	// cannot drown
+	self.resist_spirit = 0;
+	self.resist_voodoo = 0;
     self.max_health = self.health;
     self.th_stand = butcher_stand;
     self.th_walk = butcher_walk;

@@ -179,7 +179,7 @@ void() Tesla_JoltTouch =
 
     // If we can damage the entity we touch
     if (other.takedamage)
-        T_Damage (other, self, self.owner, self.dmg, DF_BODY, "tesla");
+        T_Damage (other, self, self.owner, self.dmg, DF_SHOCK, "tesla");
 
     // Alt-fire touch.
     if (self.style == TESLA_BIGJOLT)

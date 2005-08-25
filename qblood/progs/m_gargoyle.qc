@@ -127,7 +127,7 @@ void () gargoyle_BoneTouch =
         SpawnBloodSpray (trace_ent, self.origin);
         sound (self, CHAN_WEAPON, "weapons/pitchfrk/pflesh.wav", 1, ATTN_NORM);
 
-        T_Damage (other,self,self.owner,damg, DF_BODY, string_null);
+        T_Damage (other,self,self.owner,damg, DF_PUMMEL, string_null);
     }
 
     self.origin = (self.origin - (8* normalize (self.velocity)));
@@ -148,7 +148,7 @@ void () gargoyle_claw =
         return;
 
     ldmg = (random() + random()) * 3;
-    T_Damage (self.enemy, self, self, ldmg, DF_BODY, string_null);
+    T_Damage (self.enemy, self, self, ldmg, DF_STAB, string_null);
 
     SpawnBlood (self.origin, '0 0 0', ldmg);
     SpawnBloodSpray (trace_ent, self.origin);

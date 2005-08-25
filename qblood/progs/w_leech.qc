@@ -116,7 +116,7 @@ void() Leech_BallTouch =
     if (other.takedamage)
     {
         other.deathtype = "leech";
-        BurnDamage (other, self, self.dmg, DF_MIND, self.dmg * 0.1, 5);
+        BurnDamage (other, self, self.dmg, DF_SPIRIT, self.dmg * 0.1, 5);
     }
 
     PsychoCaleb (self.owner);
@@ -168,7 +168,7 @@ void() Leech_BallFire =
     // If we don't have enough ammo, use HP
     if (self.ammo_leech < 2)
     {
-        T_Damage (self, world, self, 2 - self.ammo_leech, DF_MIND, "leech");
+        T_Damage (self, world, self, 2 - self.ammo_leech, DF_SPIRIT, "leech");
         self.ammo_leech = 0;
     }
     else
@@ -214,7 +214,7 @@ void() Leech_AltBallTouch =
 
     // If we can damage the entity we touch
     if (other.takedamage)
-        T_Damage (other, self, self.owner, self.dmg, DF_MIND, "leech");
+        T_Damage (other, self, self.owner, self.dmg, DF_SPIRIT, "leech");
 
     sound (self, CHAN_AUTO, "weapons/napalm/explodfs.wav", 1, ATTN_NORM);
     remove (self);
@@ -424,7 +424,7 @@ void() Leech_Drop =
     // Dropping it requires 25 ammo/HP
     if (self.ammo_leech < 25)
     {
-        T_Damage (self, world, self, 25 - self.ammo_leech, DF_MIND, "leech");
+        T_Damage (self, world, self, 25 - self.ammo_leech, DF_SPIRIT, "leech");
         item.ammo_leech = 0;
     }
     else

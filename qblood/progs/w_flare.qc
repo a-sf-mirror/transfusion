@@ -138,7 +138,7 @@ void() FlareTouch =
     }
 
     if (other.takedamage && !(other.flags & FL_MONSTER))
-        BurnDamage (other, self, self.dmg, DF_FIRE, self.charge, self.dmgtime);
+        BurnDamage (other, self, self.dmg, DF_BURN, self.charge, self.dmgtime);
 
     FlareSpark ();   // Throw a few sparks.
 
@@ -169,8 +169,8 @@ void () FlareThink =
 
     if (!VecInWater(self.origin) && self.enemy.flags & FL_MONSTER)
     {
-        Ignite(self.enemy, self, DF_FIRE, 10, 1);
-        T_Damage (self.enemy, self, self.owner, 1, DF_FIRE, "fire");
+        Ignite(self.enemy, self, DF_BURN, 10, 1);
+        T_Damage (self.enemy, self, self.owner, 1, DF_BURN, "fire");
     }
 
     if ((self.enemy.origin - self.origin) != self.v_angle)
@@ -252,7 +252,7 @@ void() AltFlareTouch =
     BurnRadius (self, 120, self.dmg, self.cnt, other);
     self.origin = self.origin - 8*normalize(self.velocity);
     if (other.takedamage)
-        BurnDamage (other, self, self.dmg, DF_FIRE, self.cnt, self.dmgtime);
+        BurnDamage (other, self, self.dmg, DF_BURN, self.cnt, self.dmgtime);
 
     // Make some fire.
     self.solid = SOLID_NOT;     // So embers can't touch 'self'.

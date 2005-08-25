@@ -325,67 +325,78 @@ void () cultist_spawn =
     precache_sound ("cultist/cultatt2.wav"); // Shotgun boom
 	}
 	
-	// Setup all brown cultists unique attributes
+	// Common attributes for cultists:
+	self.resist_acid = 0;
+	self.resist_shock = 0;
+	self.resist_pummel = 0;
+	self.resist_fall = 0;
+	self.resist_burn = 0;
+	self.resist_bullet = 2;
+	self.resist_stab = 4;
+	self.resist_explode = 0;
+	self.resist_gas = 0;
+	self.resist_drown = -1;	// cannot drown
+	self.resist_spirit = 0;
+	self.resist_voodoo = 0;
 	
+	// Setup all brown cultists unique attributes
 	if (self.classname == "monster_browncultist")
 	{
-	self.skin = CULTIST_BROWN;
-	self.health = 175;
-	self.th_missile = browncultist_attack;
+		self.skin = CULTIST_BROWN;
+		self.health = 50;
+		self.th_missile = browncultist_attack;
 	}
 	
 	// Setup all red cultists unique attributes
-	
 	if (self.classname == "monster_redcultist")
 	{
-	self.skin = CULTIST_RED;
-    self.health = 200;
-	self.th_missile = redcultist_attack;
-	precache_sound ("cultist/cultmorp.wav");
+		self.skin = CULTIST_RED;
+	    self.health = 100;
+		self.th_missile = redcultist_attack;
+		precache_sound ("cultist/cultmorp.wav");
 	}
 
    	// Setup all green cultists unique attributes
 	
 	if (self.classname == "monster_greencultist")
 	{
-	self.skin = CULTIST_GREEN;
-    self.health = 200;
-    self.th_missile = greencultist_attack;
-	self.armor_fire = 100; 
+		self.skin = CULTIST_GREEN;
+	    self.health = 50;
+	    self.th_missile = greencultist_attack;
+		self.resist_burn = 4; 	// TODO: test in Blood and modify value!
 	}
 	
 	// Setup all blue cultists unique attributes
 	
 	if (self.classname == "monster_bluecultist")
 	{
-	self.skin = CULTIST_BLUE;
-	self.health = 300;
-	self.th_missile = bluecultist_attack;
-	self.armor_body = 100;
-	precache_model ("progs/teslaball.spr");
-    precache_sound ("weapons/tesla/tessngfr.wav");
+		self.skin = CULTIST_BLUE;
+		self.health = 50;
+		self.th_missile = bluecultist_attack;
+		precache_model ("progs/teslaball.spr");
+	    precache_sound ("weapons/tesla/tessngfr.wav");
 	}
 	
 	// Setup all black cultists unique attributes
 	
 	if (self.classname == "monster_blackcultist")
 	{
-	self.skin = CULTIST_BLACK;
-	self.health = 200;
-	self.th_missile = blackcultist_attack;	
-	precache_sound ("weapons/tommygun/_tom.wav");
-	precache_sound ("cultist/tcltdie1.wav"); // Unique Tommy gun cultist sounds
-    precache_sound ("cultist/tcltpan2.wav");
-    precache_sound ("cultist/tcltpan3.wav");
+		self.skin = CULTIST_BLACK;
+		self.health = 50;
+		self.th_missile = blackcultist_attack;	
+		precache_sound ("weapons/tommygun/_tom.wav");
+		precache_sound ("cultist/tcltdie1.wav"); // Unique Tommy gun cultist sounds
+	    precache_sound ("cultist/tcltpan2.wav");
+	    precache_sound ("cultist/tcltpan3.wav");
 	}
 		
 	// Don't precache sounds that won't be used by black cultist
 	
 	if (self.classname != "monster_blackcultist")
 	{
-	precache_sound ("cultist/cultdie1.wav"); // Death
-    precache_sound ("cultist/cultpan2.wav"); // Pain
-    precache_sound ("cultist/cultpan3.wav"); // Pain
+		precache_sound ("cultist/cultdie1.wav"); // Death
+	    precache_sound ("cultist/cultpan2.wav"); // Pain
+	    precache_sound ("cultist/cultpan3.wav"); // Pain
 	}
 	
 	precache_model ("models/enemies/cultist.md3");    

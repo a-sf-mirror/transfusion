@@ -217,7 +217,19 @@ void () monster_minicaleb =
     self.scale = 0.5;
     self.frame = $run1;
 	setsize (self,'-16 -16 -10', '16 16 20'); // FIXME: Need real values
-    self.health = 100;
+    self.health = 50;
+	self.resist_acid = 0;
+	self.resist_shock = 0;
+	self.resist_pummel = 0;
+	self.resist_fall = 0;
+	self.resist_burn = 0;
+	self.resist_bullet = 0;
+	self.resist_stab = 0;
+	self.resist_explode = 0;
+	self.resist_gas = 0;
+	self.resist_drown = -1;	// cannot drown
+	self.resist_spirit = 0;
+	self.resist_voodoo = 0;    
     self.max_health = self.health;
 
     self.th_stand = minicaleb_stand;

@@ -538,6 +538,21 @@ float movedist;
 //
 .float      distance;
 
+//
+// entity resistance properties
+//
+.float 		resist_acid;
+.float 		resist_shock;
+.float 		resist_pummel;
+.float 		resist_fall;
+.float 		resist_burn;
+.float 		resist_bullet;
+.float 		resist_stab;
+.float 		resist_explode;
+.float 		resist_gas; 	// is this used in Blood?
+.float 		resist_drown;
+.float 		resist_spirit;
+.float 		resist_voodoo;
 
 //===========================================================================
 

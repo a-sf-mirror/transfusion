@@ -148,7 +148,7 @@ void () stonegargoyle_claw =
         return;
 
     ldmg = (random() + random()) * 3;
-    T_Damage (self.enemy, self, self, ldmg, DF_BODY, string_null);
+    T_Damage (self.enemy, self, self, ldmg, DF_STAB, string_null);
 
     SpawnBlood (self.origin, '0 0 0', ldmg);
     SpawnBloodSpray (trace_ent, self.origin);
@@ -229,6 +229,19 @@ void () monster_stonegargoyle =
 	setsize (self, self.mins, self.maxs);
 	
 	self.health = 200;
+	self.resist_acid = 0;
+	self.resist_shock = 0;
+	self.resist_pummel = 0;
+	self.resist_fall = 0;
+	self.resist_burn = 0;
+	self.resist_bullet = 0;
+	self.resist_stab = 0;
+	self.resist_explode = 0;
+	self.resist_gas = 0;
+	self.resist_drown = -1;	// cannot drown
+	self.resist_spirit = 0;
+	self.resist_voodoo = 0;
+	
     self.max_health = self.health;
     self.th_stand = stonegargoyle_stand;
     self.th_walk = stonegargoyle_walk;

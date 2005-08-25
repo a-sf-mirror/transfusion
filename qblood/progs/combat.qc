@@ -189,7 +189,7 @@ void(entity targ, entity inflictor, entity attacker, float damage, float dflags,
     local   float   save;
     local   float   take;
     local   float   protected;  // PM:  Boolean for invulnerability.
-    
+        
 	if (!targ.takedamage)
         return;
     
@@ -206,7 +206,7 @@ void(entity targ, entity inflictor, entity attacker, float damage, float dflags,
 	
 	// Hellhound / Cerebrus can't be hurt by fire, but can be hurt by the napalm launcher and TNT
 	if ((targ.classname == "monster_hellhound" || targ.classname == "monster_cerebrus") && 
-	    (dflags & DF_FIRE) &&
+	    (dflags & DF_BURN) &&
 		inflictor.classname != "exploding_barrel" &&  // TNT barrels
         inflictor.classname != "grenade"          &&  // All bombs, lighted Spray Can, Napalm Launcher (altfire)
         inflictor.classname != "missile")             // Napalm Launcher (normal), Life Leech)
@@ -220,11 +220,149 @@ void(entity targ, entity inflictor, entity attacker, float damage, float dflags,
     damage_attacker = attacker;
     damage_inflictor = inflictor;
 
+    // NOTE: Players have armor, and no resist-values. -1 is invulnerable to that damage-type.
+    // If the entity has resistance agains this damage-type, decrease the damage:
+    if (!(dflags & DF_NO_PROTECT) && targ.classname != "player")
+    {    
+	    if (dflags & DF_ACID && targ.resist_acid != 0)
+	    {
+		    if (targ.resist_acid < 0)
+		    {
+			    damage = 0;
+		    }
+		    else
+		    {
+		    	damage = damage / targ.resist_acid;
+	    	}
+	    }	    
+	    if (dflags & DF_SHOCK && targ.resist_shock != 0)
+	    {
+		    if (targ.resist_shock < 0)
+		    {
+			    damage = 0;
+		    }
+		    else
+		    {
+			    damage = damage / targ.resist_shock;
+		    }
+	    }
+	    if (dflags & DF_PUMMEL && targ.resist_pummel != 0)
+	    {
+		    if (targ.resist_pummel < 0)
+		    {
+			    damage = 0;
+		    }
+		    else
+		    {
+		    	damage = damage / targ.resist_pummel;
+		    }
+	    }
+	    if (dflags & DF_FALL && targ.resist_fall != 0)
+	    {
+		    if (targ.resist_fall < 0)
+		    {
+			    damage = 0;
+		    }
+		    else
+		    {
+		    	damage = damage / targ.resist_fall;
+		    }
+	    }
+	    if (dflags & DF_BURN && targ.resist_burn != 0)
+	    {
+		    if (targ.resist_burn < 0)
+		    {
+			    damage = 0;
+		    }
+		    else
+		    {
+		    	damage = damage / targ.resist_burn;
+		    }
+	    }
+	    if (dflags & DF_BULLET && targ.resist_bullet != 0)
+	    {
+		    if (targ.resist_bullet < 0)
+		    {
+			    damage = 0;
+		    }
+		    else
+		    {
+		    	damage = damage / targ.resist_bullet;
+		    }
+	    }
+	    if (dflags & DF_STAB && targ.resist_stab != 0)
+	    {
+		    if (targ.resist_stab < 0)
+		    {
+			    damage = 0;
+		    }
+		    else
+		    {
+		    	damage = damage / targ.resist_stab;
+		    }
+	    }
+	    if (dflags & DF_EXPLODE && targ.resist_explode != 0)
+	    {
+		    if (targ.resist_explode < 0)
+		    {
+			    damage = 0;
+		    }
+		    else
+		    {
+		    	damage = damage / targ.resist_explode;
+		    }
+	    }
+	    if (dflags & DF_GAS && targ.resist_gas != 0)
+	    {
+		    if (targ.resist_gas < 0)
+		    {
+			    damage = 0;
+		    }
+		    else
+		    {
+		    	damage = damage / targ.resist_gas;
+		    }
+	    }
+	    if (dflags & DF_DROWN && targ.resist_drown != 0)
+	    {
+		    if (targ.resist_drown < 0)
+		    {
+			    damage = 0;
+		    }
+		    else
+		    {
+		    	damage = damage / targ.resist_drown;
+		    }
+	    }
+	    if (dflags & DF_SPIRIT && targ.resist_spirit != 0)
+	    {
+		    if (targ.resist_spirit < 0)
+		    {
+			    damage = 0;
+		    }
+		    else
+		    {
+		    	damage = damage / targ.resist_spirit;
+		    }
+	    }
+	    if (dflags & DF_VOODOO && targ.resist_voodoo != 0)
+	    {
+		    if (targ.resist_voodoo < 0)
+		    {
+			    damage = 0;
+		    }
+		    else
+		    {
+		    	damage = damage / targ.resist_voodoo;
+		    }
+	    }
+    }
+    
     // Save fractions for later use.
     take = damage + targ.remain_dmg;
     damage = floor (take);
     targ.remain_dmg = take - damage;
-
+	
     // Figure momentum add
     if (inflictor != world)
     {
@@ -245,16 +383,17 @@ void(entity targ, entity inflictor, entity attacker, float damage, float dflags,
     take = damage;
     save = 0;
 
-    if (!(dflags & DF_NO_PROTECT))
+    // Determine protection from armor (only applies to players):
+    if (!(dflags & DF_NO_PROTECT) && targ.classname == "player")
     {
         // Save damage based on the target's armor level, but do not apply
         // the savings to the armor yet... in case target is invulnerable.
-        if (dflags & DF_FIRE)
+        if (dflags & DF_BURN)
             save = ArmorSave (targ, targ.armor_fire, damage);
-        else if (dflags & DF_BODY)
-            save = ArmorSave (targ, targ.armor_body, damage);
-        else if (dflags & DF_MIND)
+        else if (dflags & DF_SPIRIT || dflags & DF_VOODOO)
             save = ArmorSave (targ, targ.armor_mind, damage);
+        else if (dflags & DF_BULLET || dflags & DF_STAB || dflags & DF_EXPLODE)
+            save = ArmorSave (targ, targ.armor_body, damage);
         take = ceil(damage-save);
 
         // Check for godmode or invincibility.
@@ -297,13 +436,29 @@ void(entity targ, entity inflictor, entity attacker, float damage, float dflags,
             }
     }
 
+// FOR DAMAGE-TESTING:
+// ================================================
+	if (cvar("show_damage"))
+	{
+		local string tempstring;
+		local entity player;
+		player = find(world,classname,"player");
+		tempstring = ftos(take);
+		sprint(player, "Damage to ");
+		sprint(player, targ.classname);
+		sprint(player, " = ");
+		sprint(player, tempstring);
+		sprint(player, "\n");
+	}
+// ================================================
+
     if (protected)
         return;     // Target is invulnerable to damage.
 
     // Now check for armor damage.
     if (save)
     {
-        if (dflags & DF_FIRE)
+        if (dflags & DF_BURN)
         {
             targ.armor_fire = targ.armor_fire - save;
             if (targ.armor_fire <= 0)
@@ -317,21 +472,7 @@ void(entity targ, entity inflictor, entity attacker, float damage, float dflags,
                 targ.items = targ.items - (targ.items & IT_ARMOR_ALL) + IT_ARMOR_FIRE;
             }
         }
-        else if (dflags & DF_BODY)
-        {
-            targ.armor_body = targ.armor_body - save;
-            if (targ.armor_body <= 0)
-            {
-                targ.armorvalue = targ.armor_body = 0;
-                targ.items = targ.items - (targ.items & IT_ARMOR_BODY);
-            }
-            else
-            {
-                targ.armorvalue = targ.armor_body;
-                targ.items = targ.items - (targ.items & IT_ARMOR_ALL) + IT_ARMOR_BODY;
-            }
-        }
-        else if (dflags & DF_MIND)
+        else if (dflags & DF_SPIRIT || dflags & DF_VOODOO)
         {
             targ.armor_mind = targ.armor_mind - save;
             if (targ.armor_mind <= 0)
@@ -343,6 +484,20 @@ void(entity targ, entity inflictor, entity attacker, float damage, float dflags,
             {
                 targ.armorvalue = targ.armor_mind;
                 targ.items = targ.items - (targ.items & IT_ARMOR_ALL) + IT_ARMOR_SPIRIT;
+            }
+        }
+        else if (dflags & DF_BULLET || dflags & DF_STAB || dflags & DF_EXPLODE)
+        {
+            targ.armor_body = targ.armor_body - save;
+            if (targ.armor_body <= 0)
+            {
+                targ.armorvalue = targ.armor_body = 0;
+                targ.items = targ.items - (targ.items & IT_ARMOR_BODY);
+            }
+            else
+            {
+                targ.armorvalue = targ.armor_body;
+                targ.items = targ.items - (targ.items & IT_ARMOR_ALL) + IT_ARMOR_BODY;
             }
         }
     }
@@ -414,9 +569,9 @@ void(entity inflictor, entity attacker, float damage, entity ignore, string dtyp
 {
     local   float   dflags;
     if (dtype == "tesla")
-        dflags = DF_RADIUS | DF_BODY;
+        dflags = DF_RADIUS | DF_SHOCK;
     else
-        dflags = DF_RADIUS | DF_FIRE;
+        dflags = DF_RADIUS | DF_BURN;
 
     local   float   points;
     local   entity  head;

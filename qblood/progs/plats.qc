@@ -153,7 +153,7 @@ void() plat_crush =
         return;
 
     other.deathtype = "squish";
-    T_Damage (other, self, self, 999/*self.dmg*/, DF_BODY, "squish");
+    T_Damage (other, self, self, 999/*self.dmg*/, DF_CRUSH, "squish");
 
     if (self.state == STATE_UP)
         plat_go_down ();
@@ -279,7 +279,7 @@ void() train_blocked =
     self.attack_finished = time + 0.5;
 // FIXME:  PM -- Are there trains in Blood?  If so, is it instant death?
     other.deathtype = "squish";
-    T_Damage (other, self, self, self.dmg, DF_BODY, "squish");
+    T_Damage (other, self, self, self.dmg, DF_CRUSH, "squish");
 };
 void() train_use =
 {

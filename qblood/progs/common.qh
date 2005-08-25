@@ -344,17 +344,24 @@
 #define AS_MELEE    3
 #define AS_MISSILE  4
 
-
 // Damage flags for 'T_Damage'.  Must be in powers of 2.
-// DF_NO_PROTECT, DF_FIRE, DF_BODY, and DF_MIND are mutually exclusive
-#define DF_NONE         0   // No flags -- just for readability.
-#define DF_RADIUS       1   // Splash damage.
-#define DF_MIN_PAIN     2   // Attack causes minimal pain.
-#define DF_NO_PROTECT   4   // Ignores all protection, including godmode.
-#define DF_FIRE         8   // Damage is absorbed by fire armor.
-#define DF_BODY         16  // Damage is absorbed by body armor.
-#define DF_MIND         32  // Damage is absorbed by spirit armor.
-
+#define DF_NONE         0   	// No flags -- just for readability.
+#define DF_RADIUS       1   	// Splash damage.
+#define DF_MIN_PAIN     2   	// Attack causes minimal pain.
+#define DF_NO_PROTECT   4   	// Ignores all protection, including godmode.
+#define DF_CRUSH		8		// Crushing doors, ceilings etc.
+#define DF_ACID			16		// Butcher-puke, acid goo etc.
+#define DF_SHOCK		32		// Electric attack (tesla)
+#define DF_PUMMEL		64		// Melee attack
+#define DF_FALL			128		// Fall-damage
+#define DF_BURN			256 	// Fire-damage
+#define DF_BULLET		512		// From tommy and sawed-off
+#define DF_STAB			1024	// Pitchfork, cleaver, spiders etc
+#define DF_EXPLODE		2048	// Explosion
+#define DF_GAS			4096	// not sure whether this is used
+#define DF_DROWN		8192	// Choking under water
+#define DF_SPIRIT		16384	// Life-leech
+#define DF_VOODOO		32768	// Voodoo doll
 
 // Maximum ammo.
 #define MAX_FLARES      100

@@ -75,7 +75,7 @@ void() eel_melee =
 
 //    sound (self, CHAN_VOICE, "eel/bite.wav", 1, ATTN_NORM); // FIXME: I need eel biting sound
     ldmg = (random() + random()) * 3;
-    T_Damage (self.enemy, self, self, ldmg, DF_BODY, string_null);
+    T_Damage (self.enemy, self, self, ldmg, DF_STAB, string_null);
 };
 
 void() eel_attack1 =[      $attack1,       eel_attack2 ] {ai_charge(10);};

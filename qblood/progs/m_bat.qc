@@ -156,7 +156,19 @@ void() monster_bat =
     setmodel (self, "models/enemies/bat.md3");
 
     setsize (self, '-4 -4 -5', '5 3 7');
-    self.health = 25;
+	self.resist_acid = 0;
+	self.resist_shock = 0;
+	self.resist_pummel = 0;
+	self.resist_fall = 0;
+	self.resist_burn = 0;
+	self.resist_bullet = 0;
+	self.resist_stab = 0;
+	self.resist_explode = 0;
+	self.resist_gas = 0;
+	self.resist_drown = -1;	// cannot drown
+	self.resist_spirit = 0;
+	self.resist_voodoo = 0;
+    self.health = 12;
     self.max_health = self.health;
     self.th_stand = bat_idle;
     self.th_walk = bat_walk1;

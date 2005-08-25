@@ -207,7 +207,19 @@ void() monster_innocent =
     self.movetype = MOVETYPE_TOSS;
     setmodel (self, "models/enemies/innocent.md3");
     setsize (self, '-6 -14 0', '15 10 55');
-    self.health = 50;
+    self.health = 40;
+	self.resist_acid = 0;
+	self.resist_shock = 0;
+	self.resist_pummel = 0;
+	self.resist_fall = 0;
+	self.resist_burn = 0;
+	self.resist_bullet = 0;
+	self.resist_stab = 4;
+	self.resist_explode = 0;
+	self.resist_gas = 0;
+	self.resist_drown = -1;	// cannot drown
+	self.resist_spirit = 0;
+	self.resist_voodoo = 0;    
     self.max_health = self.health;
     self.th_stand = innocent_stand1;    
 	self.th_run = innocent_think;

@@ -196,7 +196,7 @@ void() T_MissileTouch =
     if (other.health)
     {
         other.deathtype = "missile";
-        BurnDamage (other, self, self.dmg * 0.75, DF_FIRE, 10, (self.dmg * 0.25) / 10);
+        BurnDamage (other, self, self.dmg * 0.75, DF_BURN, 10, (self.dmg * 0.25) / 10);
     }
 
     // don't do radius damage to "other", because all the damage

@@ -224,7 +224,7 @@ void() changelevel_use =
 
     if ((cvar("noexit") == 1) || ((cvar("noexit") == 2) && (mapname != "start")))
     {
-        T_Damage (other, self, self, 50000, DF_BODY, "exitkill");
+        T_Damage (other, self, self, 50000, DF_PUMMEL, "exitkill");
         return;
     }
 

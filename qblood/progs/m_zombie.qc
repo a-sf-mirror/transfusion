@@ -139,7 +139,7 @@ void() zombie_axeAttack =
     SpawnBlood (self.origin, '0 0 0', ldmg);
 	SpawnBloodSpray (trace_ent, self.origin);
 	sound (self, CHAN_WEAPON, "weapons/pitchfrk/pflesh.wav", 1, ATTN_NORM);
-    T_Damage (self.enemy, self, self, ldmg, DF_BODY, string_null);
+    T_Damage (self.enemy, self, self, ldmg, DF_STAB, string_null);
 };
 
 //--- Moan and show pain
@@ -345,17 +345,29 @@ void () monster_zombie =
 	setmodel (self, "models/enemies/zombie.md3");
 	self.frame = 0;
 	setsize (self,'-7 -21 0', '15 14 59');
+	
+	/* NOT CONSIDERING SKILL (YET)
 	if (skill <= 1)
-		self.health = 60;
 	else if (skill == 2)
-		self.health = 120;
 	else if (skill == 3)
-		self.health = 300;
 	else if (skill == 4)
-		self.health = 300;
 	else if (skill > 4)
-		self.health = 500;
+	*/
+	self.health = 50;
 	self.max_health = self.health;
+	self.resist_acid = 0;
+	self.resist_shock = 0;
+	self.resist_pummel = 0;
+	self.resist_fall = 0;
+	self.resist_burn = 0;
+	self.resist_bullet = 3;
+	self.resist_stab = 8;
+	self.resist_explode = 0;
+	self.resist_gas = 0;
+	self.resist_drown = -1;	// cannot drown
+	self.resist_spirit = 0;
+	self.resist_voodoo = 0;
+
 	self.th_stand = zombie_stand;
 	self.th_walk = zombie_walk;
 	self.th_run = zombie_run;

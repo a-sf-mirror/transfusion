@@ -142,11 +142,11 @@ void() ClearMultiDamage =
     multi_damage = 0;
 };
 
-void() ApplyMultiDamage =
+void(float dflags) ApplyMultiDamage =
 {
     if (!multi_ent)
         return;
-    T_Damage (multi_ent, self, self, multi_damage, DF_BODY, string_null);
+    T_Damage (multi_ent, self, self, multi_damage, dflags, string_null);
 };
 
 void(entity hit, float damage) AddMultiDamage =
@@ -156,7 +156,7 @@ void(entity hit, float damage) AddMultiDamage =
 
     if (hit != multi_ent)
     {
-        ApplyMultiDamage ();
+        ApplyMultiDamage (DF_NONE);
         multi_damage = damage;
         multi_ent = hit;
     }
@@ -249,7 +249,7 @@ void(vector orig, vector dir, float shotcount, float damage, vector spread) Fire
 
         shotcount = shotcount - 1;
     }
-    ApplyMultiDamage ();
+    ApplyMultiDamage (DF_BULLET);
 };
 
 
@@ -459,10 +459,10 @@ void() flame_touch =
     // hit something that bleeds
     if (other.takedamage)
     {
-	    BurnDamage (other, self, 5, DF_FIRE, 10, 3);
+	    BurnDamage (other, self, 5, DF_BURN, 10, 3);
 		
 		if (other.flags & FL_MONSTER)
-		    T_Damage (other, self, self.owner, 4, DF_FIRE, "fire");
+		    T_Damage (other, self, self.owner, 4, DF_BURN, "fire");
 	}
 
     remove(self);

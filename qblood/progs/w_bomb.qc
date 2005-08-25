@@ -615,9 +615,9 @@ void() BombContents =
 
     pc = pointcontents (self.origin);
     if (pc == CONTENT_SLIME)
-        T_Damage (self, world, world, 4, DF_BODY, "acid");
+        T_Damage (self, world, world, 4, DF_ACID, "acid");
     else if (pc == CONTENT_LAVA)
-        T_Damage (self, world, world, 10, DF_FIRE, "fire");
+        T_Damage (self, world, world, 10, DF_BURN, "fire");
 };
 
 void() BombThink =

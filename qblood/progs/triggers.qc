@@ -502,7 +502,7 @@ void() hurt_touch =
     if (other.takedamage)
     {
         self.solid = SOLID_NOT;
-        T_Damage (other, self, self, self.dmg, DF_BODY, string_null);
+        T_Damage (other, self, self, self.dmg, DF_PUMMEL, string_null);
         self.think = hurt_on;
         self.nextthink = time + 1;
     }

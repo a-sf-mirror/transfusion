@@ -241,6 +241,9 @@ void() worldspawn =
     registercvar ("g_weaponStay", "0");
     registercvar ("sv_cheats", "0");
     registercvar ("sv_disable", "0");
+    
+    // For testing:
+    registercvar ("show_damage", "0");
 
     // Warmup initialization
     warmup_done = (! cvar ("g_warmup"));

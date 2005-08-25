@@ -226,7 +226,16 @@ void() Shot_Fire =
         sound (self ,CHAN_AUTO, "weapons/shotgun/shotfir2.wav", 1, ATTN_NORM);
 
     dir = aim (self, 100000);
-    FireBullets (self.origin + v_up * 20, dir, 8 * nbshots, 8, spread);  // 8 "shot pellets" per shell
+    
+    // Total damage from an alt-fire is about 3 times normal damage (1*8*8=64, 2*8*12=192)
+    if (nbshots == 1)
+    {
+    	FireBullets (self.origin + v_up * 20, dir, 8 * nbshots, 8, spread);  // 8 "shot pellets" per shell
+	}
+	else if (nbshots == 2)
+	{
+    	FireBullets (self.origin + v_up * 20, dir, 8 * nbshots, 12, spread);  // 8 "shot pellets" per shell
+	}
 };
 
 

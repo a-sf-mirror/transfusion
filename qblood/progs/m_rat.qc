@@ -114,7 +114,7 @@ void() rat_bite =
         return;
 
     ldmg = (random() + random() + random()) * 8;
-    T_Damage (self.enemy, self, self, ldmg, DF_BODY, string_null);
+    T_Damage (self.enemy, self, self, ldmg, DF_STAB, string_null);
 
     sound (self, CHAN_VOICE, "hellhound/houndbit.wav", 1, ATTN_NORM);  //FIXME: Verify this is correct biting sound
 
@@ -190,7 +190,19 @@ void () monster_rat =
     self.movetype = MOVETYPE_TOSS;
     setmodel (self, "models/enemies/rat.md3");
     setsize (self,'-13 -3 0', '13 3 6');     // FIXME: Need real coordinates
-    self.health = 100;
+    self.health = 40;
+	self.resist_acid = 0;
+	self.resist_shock = 0;
+	self.resist_pummel = 0;
+	self.resist_fall = 0;
+	self.resist_burn = 0;
+	self.resist_bullet = 0;
+	self.resist_stab = 0;
+	self.resist_explode = 0;
+	self.resist_gas = 0;
+	self.resist_drown = -1;	// cannot drown
+	self.resist_spirit = 0;
+	self.resist_voodoo = 0;    
     self.max_health = self.health;
     self.th_stand = rat_stand;
     self.th_walk = rat_walk;
