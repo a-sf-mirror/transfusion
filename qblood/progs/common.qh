@@ -272,9 +272,9 @@
 #define VEC_HULL_MIN    '-16 -16 -20'
 #define VEC_HULL_MAX    '16 16 32'
 #define VEC_HULL_VIEW_OFS	'0 0 25'
-#define VEC_HULL_CROUCH_MIN	'-16 -16 -20'
-#define VEC_HULL_CROUCH_MAX '16 16 17'
-#define VEC_HULL_CROUCH_VIEW_OFS '0 0 10'
+#define VEC_HULL_CROUCH_MIN	'-16 -16 -20'	// FIXME: dummy value
+#define VEC_HULL_CROUCH_MAX '16 16 17'		// FIXME: dummy value
+#define VEC_HULL_CROUCH_VIEW_OFS '0 0 10'	// FIXME: dummy value
 
 // protocol bytes
 #define SVC_TEMPENTITY      23
