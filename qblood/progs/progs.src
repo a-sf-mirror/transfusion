@@ -1,6 +1,7 @@
 progs.dat
 
 defs.qc
+dpextensions.qc
 
 frikbot/bot.qc
 frikbot/bot_way.qc

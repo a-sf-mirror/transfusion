@@ -366,6 +366,8 @@ float movedist;
 // QuakeC extensions
 .float      button3;        // altfire; DP_INPUTBUTTONS extension
 .float      button4;        // use; DP_INPUTBUTTONS extension
+.float		button5;		// crouch; DP_INPUTBUTTONS extnsion
+.float		crouch;		
 .float		oldbutton4;		// throttle control for use key
 .float      alpha;          // controls opacity of the entity (0.0 or 1.0 is solid, -1 is invisible); DP_ENT_ALPHA extension
 .float      glow_color;     // Glowing light effect, paletted color (note: 0 and 254 are white); DP_ENT_GLOW extension
@@ -666,6 +668,9 @@ void(vector pos, string samp, float vol, float atten) ambientsound  = #74;
 void(entity e) setspawnparms = #78;  // set parm1... to the values at level start for coop respawn
 #endif
 
+
+//commented out, declared in dpextensions.qc
+/*
 // QC extensions
 float(string name, string value) registercvar   = #93;
 float(string s) checkextension                  = #99;
@@ -673,9 +678,8 @@ float(string s) checkextension                  = #99;
 // concatenates two strings (for example "abc", "def" would return "abcdef") and returns as a tempstring
 string(string s1, string s2) strcat             = #115; 
 
-/*
-    Temporary entities were simplified.  Here's the simpler functions...
-*/
+Temporary entities were simplified.  Here's the simpler functions...
+
 
 //creates a blood effect
 void(vector org, vector velocity, float howmany) te_blood = #405;
@@ -696,4 +700,4 @@ void(vector mincorner, vector maxcorner, vector vel, float howmany, float color)
 void(vector mincorner, vector maxcorner, vector vel, float howmany, float color) te_particlesnow = #410;
 
 //creates a customized light flash.
-void(vector org, float radius, float lifetime, vector color) te_customflash = #417;
+void(vector org, float radius, float lifetime, vector color) te_customflash = #417;*/

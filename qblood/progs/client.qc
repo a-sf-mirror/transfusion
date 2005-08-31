@@ -678,7 +678,7 @@ void() PutClientInServer =
 
     setsize (self, VEC_HULL_MIN, VEC_HULL_MAX);
 
-    self.view_ofs = '0 0 25';
+    self.view_ofs = VEC_HULL_VIEW_OFS;
     self.velocity = '0 0 0';
     self.avelocity = '0 0 0';
 
@@ -1141,6 +1141,28 @@ void() PlayerPreThink =
     // teleporters can force a non-moving pause time
     if (time < self.pausetime)
         self.velocity = '0 0 0';
+	if (self.button5)
+	{
+		if (!self.crouch)
+		{
+			self.crouch = TRUE;
+			self.view_ofs = VEC_HULL_CROUCH_VIEW_OFS;
+			setsize (self, VEC_HULL_CROUCH_MIN, VEC_HULL_CROUCH_MAX);
+		}
+	}
+	else
+	{
+		if (self.crouch)
+		{
+			tracebox(self.origin, VEC_HULL_MIN, VEC_HULL_MAX, self.origin, FALSE, self);
+			if (!trace_startsolid)
+			{
+				self.crouch = FALSE;
+				self.view_ofs = VEC_HULL_VIEW_OFS;
+				setsize (self, VEC_HULL_MIN, VEC_HULL_MAX);
+			}
+		}
+	}
 };
 
 /*

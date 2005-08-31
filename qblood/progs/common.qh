@@ -271,6 +271,10 @@
 #define VEC_ORIGIN      '0 0 0'
 #define VEC_HULL_MIN    '-16 -16 -20'
 #define VEC_HULL_MAX    '16 16 32'
+#define VEC_HULL_VIEW_OFS	'0 0 25'
+#define VEC_HULL_CROUCH_MIN	'-16 -16 -20'
+#define VEC_HULL_CROUCH_MAX '16 16 17'
+#define VEC_HULL_CROUCH_VIEW_OFS '0 0 10'
 
 // protocol bytes
 #define SVC_TEMPENTITY      23
