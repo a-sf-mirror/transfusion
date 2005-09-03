@@ -354,10 +354,10 @@ void () butcher_CleaverChop =
 
 //--- Pain sequence
 
-void () butcher_pain1 = [$pain1, butcher_pain2] {if (self.deathtype != "fire") ai_pain(3);};
-void () butcher_pain2 = [$pain2, butcher_pain3] {if (self.deathtype != "fire") ai_pain(3);};
-void () butcher_pain3 = [$pain3, butcher_pain4] {if (self.deathtype != "fire") ai_pain(3);};
-void () butcher_pain4 = [$pain4, butcher_run] {if (self.deathtype != "fire") ai_pain(3);};
+void () butcher_pain1 = [$pain1, butcher_pain2] {};	//if (self.deathtype != "fire") ai_pain(3);};
+void () butcher_pain2 = [$pain2, butcher_pain3] {};	//if (self.deathtype != "fire") ai_pain(3);};
+void () butcher_pain3 = [$pain3, butcher_pain4] {};	//if (self.deathtype != "fire") ai_pain(3);};
+void () butcher_pain4 = [$pain4, butcher_run] {}; 	//if (self.deathtype != "fire") ai_pain(3);};
 
 
 void () butcher_pain =

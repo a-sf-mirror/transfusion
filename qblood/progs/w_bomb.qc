@@ -489,7 +489,7 @@ void() Bomb_Explode =
 
     PsychoCaleb (self.owner);
 
-    T_RadiusDamage (self, self.owner, self.dmg, world, "grenade");
+    T_RadiusDamage (self, self.owner, self.dmg, DF_EXPLODE, world, "grenade");
     KillBurner (self);
 
     WriteByte (MSG_BROADCAST, SVC_TEMPENTITY);

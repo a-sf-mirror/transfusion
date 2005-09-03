@@ -108,7 +108,7 @@ void() innocent_death =
 	innocent_death1();
 };
 
-void() innocent_pain1 =[ $pain, innocent_run1]{ai_pain(12);};
+void() innocent_pain1 =[ $pain, innocent_run1]{};	//ai_pain(12);};
 
 void(entity attacker, float damage)    innocent_pain =
 {

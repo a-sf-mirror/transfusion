@@ -72,21 +72,21 @@ void() bat_stand5  =[$fly5, bat_stand6 ] {ai_stand();};
 void() bat_stand6  =[$fly6, bat_stand7 ] {ai_stand();};
 void() bat_stand7  =[$fly7, bat_idle ] {ai_stand();};
 
-void() bat_walk1  =[$fly1, bat_walk2 ] {ai_walk(8);};
-void() bat_walk2  =[$fly2, bat_walk3 ] {ai_walk(8);};
-void() bat_walk3  =[$fly3, bat_walk4 ] {ai_walk(8);};
-void() bat_walk4  =[$fly4, bat_walk5 ] {ai_walk(8);};
-void() bat_walk5  =[$fly5, bat_walk6 ] {ai_walk(8);};
-void() bat_walk6  =[$fly6, bat_walk7 ] {ai_walk(8);};
-void() bat_walk7  =[$fly7, bat_walk1 ] {ai_walk(8);};
+void() bat_walk1  =[$fly1, bat_walk2 ] {ai_walk();};
+void() bat_walk2  =[$fly2, bat_walk3 ] {ai_walk();};
+void() bat_walk3  =[$fly3, bat_walk4 ] {ai_walk();};
+void() bat_walk4  =[$fly4, bat_walk5 ] {ai_walk();};
+void() bat_walk5  =[$fly5, bat_walk6 ] {ai_walk();};
+void() bat_walk6  =[$fly6, bat_walk7 ] {ai_walk();};
+void() bat_walk7  =[$fly7, bat_walk1 ] {ai_walk();};
 
-void() bat_run1  =[$fly1, bat_run2 ] {ai_run(12);ai_face();};
-void() bat_run2  =[$fly2, bat_run3 ] {ai_run(12);ai_face();};
-void() bat_run3  =[$fly3, bat_run4 ] {ai_run(12);ai_face();};
-void() bat_run4  =[$fly4, bat_run5 ] {ai_run(12);ai_face();};
-void() bat_run5  =[$fly5, bat_run6 ] {ai_run(12);ai_face();};
-void() bat_run6  =[$fly6, bat_run7 ] {ai_run(12);ai_face();};
-void() bat_run7  =[$fly7, bat_run1 ] {ai_run(12);ai_charge(10);ai_face();};
+void() bat_run1  =[$fly1, bat_run2 ] {ai_run();ai_face();};
+void() bat_run2  =[$fly2, bat_run3 ] {ai_run();ai_face();};
+void() bat_run3  =[$fly3, bat_run4 ] {ai_run();ai_face();};
+void() bat_run4  =[$fly4, bat_run5 ] {ai_run();ai_face();};
+void() bat_run5  =[$fly5, bat_run6 ] {ai_run();ai_face();};
+void() bat_run6  =[$fly6, bat_run7 ] {ai_run();ai_face();};
+void() bat_run7  =[$fly7, bat_run1 ] {ai_run();ai_charge(10);ai_face();};
 
 void() bat_death =[$fly1, bat_death]
 {
@@ -131,7 +131,7 @@ void(entity attacker, float damage)    bat_pain =
 
     sound (self, CHAN_VOICE, "bat/batpain.wav", 1, ATTN_NORM);
     self.pain_finished = time + 0.52;
-    ai_pain(6);
+//    ai_pain(6);	//deprecated
 };
 
 void() monster_bat =

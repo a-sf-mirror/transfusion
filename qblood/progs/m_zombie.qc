@@ -68,7 +68,7 @@ void () zombie_standup =
 	if (self.anim_type == "fallback")
 		self.nextthink = time + 1.5;
 	self.anim_type = "standup";
-	self.think = zombie_animate;
+	self.think_ai = zombie_animate;
 };
 
 void () zombie_arise =
@@ -310,7 +310,7 @@ void () zombie_animate =
 	if (!((self.anim_type == "death1" || self.anim_type == "death2") && self.frame == self.anim_end)) 
 	{
 		self.nextthink = time + (self.anim_time / self.anim_end_num);
-		self.think = zombie_animate;
+		self.think_ai = zombie_animate;
 	}
 
 	//insert sounds or attack damage here with if statements
@@ -341,7 +341,7 @@ void () monster_zombie =
 	precache_sound ("axezombie/azomstnd.wav");
 	precache_sound ("axezombie/azomswip.wav");
 	self.solid = SOLID_SLIDEBOX;
-	self.movetype = MOVETYPE_TOSS;
+	self.movetype = MOVETYPE_WALK;
 	setmodel (self, "models/enemies/zombie.md3");
 	self.frame = 0;
 	setsize (self,'-7 -21 0', '15 14 59');
@@ -367,7 +367,8 @@ void () monster_zombie =
 	self.resist_drown = -1;	// cannot drown
 	self.resist_spirit = 0;
 	self.resist_voodoo = 0;
-
+	
+	self.speed = 50;	// walkspeed
 	self.th_stand = zombie_stand;
 	self.th_walk = zombie_walk;
 	self.th_run = zombie_run;

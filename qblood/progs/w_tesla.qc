@@ -184,7 +184,7 @@ void() Tesla_JoltTouch =
     // Alt-fire touch.
     if (self.style == TESLA_BIGJOLT)
     {
-        T_RadiusDamage (self, self.owner, self.dmg / 2, other, "tesla");
+        T_RadiusDamage (self, self.owner, self.dmg / 2, DF_SHOCK, other, "tesla");
 
         self.origin = self.origin - 8 * normalize (self.velocity);
         sound (self, CHAN_AUTO, "weapons/tesla/tesaltht.wav", 1, ATTN_NORM);

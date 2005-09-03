@@ -43,8 +43,8 @@ void() monster_use =
 
 	// delay reaction so if the monster is teleported, its sound is still heard
     self.enemy = activator;
-    self.nextthink = time + 0.1;
-    self.think = FoundTarget;
+    //self.nextthink = time + 0.1;
+    self.think_ai = FoundTarget;
 };
 
 //============================================================================
@@ -115,7 +115,8 @@ void() walkmonster_start =
 	// delay drop to floor to make sure all doors have been spawned
 	// spread think times so they don't all happen at same time
     self.nextthink = self.nextthink + random()*0.5;
-    self.think = walkmonster_start_go;
+    self.think = ai_main;
+    self.think_ai = walkmonster_start_go;
     total_monsters = total_monsters + 1;
 
 	// Needed for random health drop
@@ -204,7 +205,8 @@ void() flymonster_start =
 {
 // spread think times so they don't all happen at same time
     self.nextthink = self.nextthink + random()*0.5;
-    self.think = flymonster_start_go;
+    self.think = ai_main;
+    self.think_ai = flymonster_start_go;
     total_monsters = total_monsters + 1;
 };
 
@@ -250,7 +252,8 @@ void() swimmonster_start =
 {
 // spread think times so they don't all happen at same time
     self.nextthink = self.nextthink + random()*0.5;
-    self.think = swimmonster_start_go;
+    self.think = ai_main;
+    self.think_ai = swimmonster_start_go;
     total_monsters = total_monsters + 1;
 };
 
@@ -494,5 +497,5 @@ void () monster_mime =
 	self.touch = monster_stepped_on;
     self.netname = "monster";
     self.nextthink = time + 1;
-    self.think = mime_stand1;
+    self.think = mime_stand1;	// no AI for the Mime (so not .think_ai used)
 };

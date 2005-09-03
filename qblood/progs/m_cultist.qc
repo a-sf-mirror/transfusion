@@ -207,9 +207,11 @@ void () cultist_pain =
 	}		
     else
         {sound (self,2,"cultist/cultpan4.wav",1,1);    self.pain_finished = (time + 1.29);}
-		
+
+    /* da_weezle: knockback handled via T_Damage, this is deprecated		
 	if (self.deathtype != "fire") // FIXME: This is here until I can spread it through pain frames
         ai_pain(15);
+    */
 		
 };
 

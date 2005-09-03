@@ -23,7 +23,7 @@
 
 void() T_MissileTouch;
 void(entity attacker) ClientObituary;
-void(entity inflictor, entity attacker, float damage, entity ignore, string dtype) T_RadiusDamage;
+void(entity inflictor, entity attacker, float damage, float dflags, entity ignore, string dtype) T_RadiusDamage;
 void(entity player, entity attacker) Player_BrinkOfDeath;
 
 //============================================================================
@@ -366,18 +366,27 @@ void(entity targ, entity inflictor, entity attacker, float damage, float dflags,
     // Figure momentum add
     if (inflictor != world)
     {
-        dir = targ.origin - (inflictor.absmin + inflictor.absmax) * 0.5;
-        if (dflags & DF_RADIUS)
-            dir = normalize(dir) * (damage * 8);    // Standard.
-        else
-            dir = normalize(dir) * (damage * 12);
-
-        if (targ.movetype == MOVETYPE_WALK)
+	  	// Only knockback on these attack-types:
+        if(dflags & (DF_PUMMEL | DF_BULLET | DF_EXPLODE | DF_STAB | DF_SPIRIT))
         {
-            // Target is most likely a player.
-            targ.velocity = targ.velocity + dir;
-        }
-     }
+	        dir = (targ.absmin + targ.absmax) * 0.5 - (inflictor.absmin + inflictor.absmax) * 0.5;
+	        if (dflags & DF_RADIUS)
+	            dir = normalize(dir) * (damage * 8);    // Standard.
+	        else
+	            dir = normalize(dir) * (damage * 12);
+
+	        if (targ.classname == "player")
+	        {
+	            // for players:
+	            targ.velocity = targ.velocity + dir;
+	        }
+	        else if (targ.flags & FL_MONSTER)
+	        {
+		        // for monsters:
+		        targ.knockback = targ.knockback + dir * 5;
+	        }
+    	}
+    }
 
     protected = FALSE;
     take = damage;
@@ -447,6 +456,9 @@ void(entity targ, entity inflictor, entity attacker, float damage, float dflags,
 		sprint(player, "Damage to ");
 		sprint(player, targ.classname);
 		sprint(player, " = ");
+		sprint(player, tempstring);
+		sprint(player, " dflags = ");
+		tempstring = ftos(dflags);
 		sprint(player, tempstring);
 		sprint(player, "\n");
 	}
@@ -565,13 +577,9 @@ void(entity targ, entity inflictor, entity attacker, float damage, float dflags,
 T_RadiusDamage
 ============
 */
-void(entity inflictor, entity attacker, float damage, entity ignore, string dtype) T_RadiusDamage =
+void(entity inflictor, entity attacker, float damage, float dflags, entity ignore, string dtype) T_RadiusDamage =
 {
-    local   float   dflags;
-    if (dtype == "tesla")
-        dflags = DF_RADIUS | DF_SHOCK;
-    else
-        dflags = DF_RADIUS | DF_BURN;
+    dflags = dflags | DF_RADIUS;
 
     local   float   points;
     local   entity  head;

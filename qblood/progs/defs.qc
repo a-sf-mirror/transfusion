@@ -302,7 +302,7 @@ float current_yaw;
 //
 entity sight_entity;
 float sight_entity_time;
-float movedist;
+//float movedist;
 
 //================================================
 
@@ -503,6 +503,9 @@ float movedist;
 //
 .float      pausetime;
 .entity     movetarget;
+.vector		movevector;		// current move-vector
+.vector		knockback;		// current knockback (usually from damage)
+.void()		think_ai;		// used for monster ai instead of .think
 
 //
 // doors

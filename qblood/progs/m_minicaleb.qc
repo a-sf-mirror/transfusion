@@ -154,7 +154,7 @@ void () minicaleb_pain1 = [$pain1, minicaleb_pain2]
 
     sound (self,2,"player/pain/play1106.wav",1,1);
     self.pain_finished = time + 0.49;
-    ai_pain(1);	
+//    ai_pain(1);	// deprecated
 };
 void () minicaleb_pain2 = [$pain2, minicaleb_pain3]{};
 void () minicaleb_pain3 = [$pain3, minicaleb_pain4]{};

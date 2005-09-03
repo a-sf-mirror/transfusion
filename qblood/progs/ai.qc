@@ -43,6 +43,100 @@ time > .pausetime.
 
 walkmove(angle, speed) primitive is all or nothing
 */
+
+/*
+=============
+Move
+
+Used for movement (walking/flying)
+movestyle: 0=stand still, 1=walk, 2=run
+==============
+*/
+void(vector v, float movestyle) Move =
+{
+	if (checkbottom(self) || !(self.movetype == MOVETYPE_WALK))
+	{
+		self.movevector = normalize(v) * self.speed * movestyle;
+		
+	    if (self.movetype == MOVETYPE_WALK)
+	    {
+		    // FIXME: what happens in water with walking monsters?
+		    self.movevector_z = 0;	// make sure walking monsters don't elevate
+		}
+		
+		self.velocity = self.velocity + self.movevector;
+	}
+};
+
+/*
+=============
+StopMoving
+
+Makes the entity stand still (entity is still affected by knockbacks)
+==============
+*/
+void() StopMoving =
+{
+	// Remove directional movement (keep gravity):
+	self.velocity_x = 0;
+	self.velocity_y = 0;
+	
+	// Reset vertical velocity in case of a flying monster:
+	if (self.movetype == MOVETYPE_FLY)
+	{
+		self.velocity_z = 0;
+	}
+};
+
+/*
+=============
+MoveToEnemy
+
+Applies the move-vector to self.enemy.
+movestyle: 0=stand still, 1=walk, 2=run
+==============
+*/
+void(float movestyle) MoveToEnemy =
+{
+	if (self.enemy)
+	{
+	    Move(self.enemy.origin - self.origin, movestyle); 
+	}
+};
+
+/*
+=============
+UpdateKnockback
+
+Updates the knockback-vector, called by ai_main();
+This decreases the value, so the entity doesn't keep flying about after one damage.
+==============
+*/void() UpdateKnockback =
+{
+	if (self.knockback)
+	{
+		// FIXME: these values obviously need tweaking
+		// FIXME: This is a bit hard-coded, might want to check the last time it was called
+		if (checkbottom(self))
+		{
+			// The decrease should be greater when the entity is on the floor (floor-friction):
+			self.knockback = self.knockback * 0.7;	// decrease by 50% 
+		}
+		else
+		{
+			self.knockback = self.knockback * 0.7;	// decrease by 10% 
+		}
+		
+		if(self.knockback_x < 1 && self.knockback_y < 1 && self.knockback_z < 1)
+		{
+			// Cancel the knockback:
+			self.knockback = '0 0 0';
+		}
+		
+		self.velocity = self.velocity + self.knockback;
+	}
+};
+
 entity () FindInnocent;
 
 float(float v) anglemod =
@@ -225,7 +319,7 @@ void() HuntTarget =
     vis = infront (self.enemy);
 
     self.goalentity = self.enemy;
-    self.think = self.th_run;
+    self.think_ai = self.th_run;
     if (!vis) // don't forget the melee guys
         self.ideal_yaw = vectoyaw(self.enemy.origin - self.origin);
 
@@ -395,9 +489,8 @@ float() FindTarget =
     return TRUE;
 };
 
-
-//=============================================================================
-
+// NOTE: these are not use for walking/flying, but for instant moves:
+// ----------
 void(float dist) ai_forward =
 {
     walkmove (self.angles_y, dist);
@@ -407,39 +500,12 @@ void(float dist) ai_back =
 {
     walkmove ( (self.angles_y+180), dist);
 };
+// ----------
 
+//=============================================================================
+// da_weezle: Removed ai_pain, ai_painforward
+//=============================================================================
 
-/*
-=============
-ai_pain
-
-stagger back a bit
-=============
-*/
-void(float dist) ai_pain =
-{
-    ai_back (dist);
-/*
-    local float away;
-
-    away = anglemod (vectoyaw (self.origin - self.enemy.origin)
-    + 180*(random()- 0.5) );
-
-    walkmove (away, dist);
-*/
-};
-
-/*
-=============
-ai_painforward
-
-stagger back a bit
-=============
-*/
-void(float dist) ai_painforward =
-{
-    walkmove (self.ideal_yaw, dist);
-};
 
 /*
 =============
@@ -448,17 +514,16 @@ ai_walk
 The monster is walking it's beat
 =============
 */
-void(float dist) ai_walk =
+void() ai_walk =
 {
     local vector        mtemp;
-
-    movedist = dist;
 
     // check for noticing a player
     if (FindTarget ())
         return;
 
-    movetogoal (dist);
+    MoveToEnemy(1);	// 1 means walk
+    //movetogoal (dist);
 };
 
 
@@ -497,7 +562,7 @@ void() ai_stand =
         self.th_walk ();
         return;
     }
-
+    
 // change angle slightly
 
 };
@@ -624,6 +689,9 @@ Strafe sideways, but stay at aproximately the same range
 */
 void() ai_run_slide =
 {
+	// da_weezle: Is this ever used by monsters in Blood?
+	//			  Removed it for now.
+	/*
     local float ofs;
 
     self.ideal_yaw = enemy_yaw;
@@ -639,6 +707,7 @@ void() ai_run_slide =
     self.lefty = 1 - self.lefty;
 
     walkmove (self.ideal_yaw - ofs, movedist);
+    */
 };
 
 
@@ -649,16 +718,12 @@ ai_run
 The monster has an enemy it is trying to kill
 =============
 */
-void(float dist) ai_run =
+void() ai_run =
 {
     local   vector  delta;
     local   float   axis;
     local   float   direct, ang_rint, ang_floor, ang_ceil;
 
-    movedist = dist;
-	
-	
-	
 	// see if the enemy is dead
     if (self.enemy.health <= 0)
     {
@@ -728,7 +793,7 @@ void(float dist) ai_run =
 	    setorigin(self, self.origin - '0 0 1');
 
 	// head straight in
-    movetogoal (dist);      // done in C code...
+	MoveToEnemy(2);	// 2 means run
 };
 
 // Search a specified radius for monsters/players
@@ -791,13 +856,19 @@ void(float dist) ai_run_away =
     // Change the way self is facing
 	ChangeYaw ();
     
+	Move(self.angles, 2);
+	// FIXME: this now uses Move(), like all monsters do, the old code was:
+	/*
+	//---------------------------------------------------------------------------
 	// Try to run straight
     if (!walkmove(self.ideal_yaw, dist))
     {
        // Self is stuck, so try turning around a little
        self.ideal_yaw = self.ideal_yaw - 22.5;   // Turn a little bit
        self.ideal_yaw = anglemod(self.ideal_yaw);// Get rid of crazy values
-    }	
+    }
+	//---------------------------------------------------------------------------    
+	*/
 };
 
 void (float dist) basic_ai =
@@ -809,7 +880,7 @@ void (float dist) basic_ai =
 	if (self.classname == "monster_hellhound")
 	    if (pointcontents(self.origin) == CONTENT_WATER)
 		    {
-			    self.think = self.th_die;
+			    self.think_ai = self.th_die;
 				self.nextthink = time + 0.1;
 			}
 	
@@ -818,11 +889,36 @@ void (float dist) basic_ai =
     else
     {
         if (self.style == 2)
-            ai_walk (dist);
+            ai_walk ();
         else if (self.style == 3)
         {
-			ai_run (dist * 2);
+			ai_run ();
 			ai_face ();
         }
     }
+};
+
+/*
+==================
+Main loop for AI.
+Monsters should always have their .think set to this function (unless they're dead).
+Use .think_ai for the monster's activities
+==================
+*/
+void() ai_main =
+{
+	local float oldnexttime;
+	
+	StopMoving();		// only move if specifically stated in think_ai
+
+	oldnexttime = self.nextthink;
+	self.think_ai();	// run the current ai-action
+	
+	// if nextthink wasn't specified in think_ai(), update it here:
+	if (oldnexttime == self.nextthink)
+	{
+		self.nextthink = time + 0.1;
+	}
+
+	UpdateKnockback();
 };

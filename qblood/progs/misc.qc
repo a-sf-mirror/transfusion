@@ -177,7 +177,7 @@ void() barrel_damage =
     setorigin (self, self.origin + '0 0 32');
 
     if (self.dmg > 0)    // If we only want the flashy effects don't do damahe
-        T_RadiusDamage (self, self, self.dmg, world, string_null);
+        T_RadiusDamage (self, self, self.dmg, DF_EXPLODE, world, string_null);
 
     sound (self, CHAN_VOICE, "weapons/napalm/explodfl.wav", 1, ATTN_NORM);
     particle (self.origin, '0 0 0', 75, 255);
@@ -230,7 +230,7 @@ void() exploding_barrel =
 void() hidden_explosion =
 {
     if (self.dmg > 0)
-        T_RadiusDamage (self, self.owner, self.dmg, world, "hidden");
+        T_RadiusDamage (self, self.owner, self.dmg, DF_EXPLODE, world, "hidden");
 
     sound (self, CHAN_WEAPON, self.noise, 1, ATTN_NORM);
 

@@ -42,23 +42,23 @@ void() eel_stand1  =[      $idle1, eel_stand1 ]
     ai_stand();
 };
 
-void() eel_walk1  =[      $swim1, eel_walk2 ] {ai_walk(8);};
-void() eel_walk2  =[      $swim2, eel_walk3 ] {ai_walk(8);};
-void() eel_walk3  =[      $swim3, eel_walk4 ] {ai_walk(8);};
-void() eel_walk4  =[      $swim4, eel_walk5 ] {ai_walk(8);};
-void() eel_walk5  =[      $swim5, eel_walk6 ] {ai_walk(8);};
-void() eel_walk6  =[      $swim6, eel_walk7 ] {ai_walk(8);};
-void() eel_walk7  =[      $swim7, eel_walk8 ] {ai_walk(8);};
-void() eel_walk8  =[      $swim8, eel_walk1 ] {ai_walk(8);};
+void() eel_walk1  =[      $swim1, eel_walk2 ] {ai_walk();};
+void() eel_walk2  =[      $swim2, eel_walk3 ] {ai_walk();};
+void() eel_walk3  =[      $swim3, eel_walk4 ] {ai_walk();};
+void() eel_walk4  =[      $swim4, eel_walk5 ] {ai_walk();};
+void() eel_walk5  =[      $swim5, eel_walk6 ] {ai_walk();};
+void() eel_walk6  =[      $swim6, eel_walk7 ] {ai_walk();};
+void() eel_walk7  =[      $swim7, eel_walk8 ] {ai_walk();};
+void() eel_walk8  =[      $swim8, eel_walk1 ] {ai_walk();};
 
-void() eel_run1  =[      $swim1, eel_run2 ] {ai_run(12);};
-void() eel_run2  =[      $swim2, eel_run3 ] {ai_run(12);};
-void() eel_run3  =[      $swim3, eel_run4 ] {ai_run(12);};
-void() eel_run4  =[      $swim4, eel_run5 ] {ai_run(12);};
-void() eel_run5  =[      $swim5, eel_run6 ] {ai_run(12);};
-void() eel_run6  =[      $swim6, eel_run7 ] {ai_run(12);};
-void() eel_run7  =[      $swim7, eel_run8 ] {ai_run(12);};
-void() eel_run8  =[      $swim8, eel_run1 ] {ai_run(12);};
+void() eel_run1  =[      $swim1, eel_run2 ] {ai_run();};
+void() eel_run2  =[      $swim2, eel_run3 ] {ai_run();};
+void() eel_run3  =[      $swim3, eel_run4 ] {ai_run();};
+void() eel_run4  =[      $swim4, eel_run5 ] {ai_run();};
+void() eel_run5  =[      $swim5, eel_run6 ] {ai_run();};
+void() eel_run6  =[      $swim6, eel_run7 ] {ai_run();};
+void() eel_run7  =[      $swim7, eel_run8 ] {ai_run();};
+void() eel_run8  =[      $swim8, eel_run1 ] {ai_run();};
 
 void() eel_melee =
 {
@@ -135,7 +135,7 @@ void(entity attacker, float damage)    eel_pain =
     sound (self, CHAN_VOICE, "eel/eelpain.wav", 1, ATTN_NORM);
 
     self.pain_finished = time + 1;
-    ai_pain(12);
+//    ai_pain(12);	// deprecated
 };
 
 void() monster_eel =
