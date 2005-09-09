@@ -319,7 +319,7 @@ void() HuntTarget =
     vis = infront (self.enemy);
 
     self.goalentity = self.enemy;
-    self.think_ai = self.th_run;
+    self.think = self.th_run;
     if (!vis) // don't forget the melee guys
         self.ideal_yaw = vectoyaw(self.enemy.origin - self.origin);
 
@@ -880,7 +880,7 @@ void (float dist) basic_ai =
 	if (self.classname == "monster_hellhound")
 	    if (pointcontents(self.origin) == CONTENT_WATER)
 		    {
-			    self.think_ai = self.th_die;
+			    self.think = self.th_die;
 				self.nextthink = time + 0.1;
 			}
 	
@@ -902,23 +902,12 @@ void (float dist) basic_ai =
 ==================
 Main loop for AI.
 Monsters should always have their .think set to this function (unless they're dead).
-Use .think_ai for the monster's activities
+Use .think for the monster's activities
 ==================
 */
 void() ai_main =
 {
-	local float oldnexttime;
-	
-	StopMoving();		// only move if specifically stated in think_ai
-
-	oldnexttime = self.nextthink;
-	self.think_ai();	// run the current ai-action
-	
-	// if nextthink wasn't specified in think_ai(), update it here:
-	if (oldnexttime == self.nextthink)
-	{
-		self.nextthink = time + 0.1;
-	}
+	StopMoving();		// only move if specifically stated in think
 
 	UpdateKnockback();
 };

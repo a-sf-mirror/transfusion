@@ -19,7 +19,8 @@
 
 #include "common.qh"
 
-//#define	REFERENCE				0			//reference frame
+//Frame definitions
+#define	ZOMBIE_REFERENCE		0		//reference frame, not needed
 #define	ZOMBIE_STAND_START		1		//Stand = frames 1-60
 #define	ZOMBIE_STAND_END		60
 #define	ZOMBIE_RUN_START		61		//Run (and walk) = frames 61-90
@@ -28,7 +29,7 @@
 #define	ZOMBIE_PAIN_END			115
 #define	ZOMBIE_DEATH1_START		116		//Death1 = frames 116-145
 #define	ZOMBIE_DEATH1_END		145		//Death1 has a head, Death2 does not
-#define	ZOMBIE_ATTACK_START		146	//Attack = frames 146-175
+#define	ZOMBIE_ATTACK_START		146		//Attack = frames 146-175
 #define	ZOMBIE_ATTACK_END		175
 #define	ZOMBIE_ARISE_START		176		//Arise = frames 176-220
 #define	ZOMBIE_ARISE_END		220
@@ -41,8 +42,8 @@
 #define ZOMBIE_DEATH2_START		0		//Death animation is a seperate model
 #define ZOMBIE_DEATH2_END		29
 
-
-#define	ZOMBIE_STAND_TIME		2.5		//time in seconds the animation set should take
+//Animation Timing Configuration in seconds
+#define	ZOMBIE_STAND_TIME		2.5
 #define	ZOMBIE_RUN_TIME			1.2
 #define	ZOMBIE_WALK_TIME		1.2
 #define	ZOMBIE_PAIN_TIME		0.75
@@ -68,7 +69,7 @@ void () zombie_standup =
 	if (self.anim_type == "fallback")
 		self.nextthink = time + 1.5;
 	self.anim_type = "standup";
-	self.think_ai = zombie_animate;
+	zombie_animate();
 };
 
 void () zombie_arise =
@@ -198,17 +199,20 @@ void () zombie_animate =
 {
 	if (self.frame <= self.anim_end)
 	{
-		if (!(((self.anim_type == "death1" || (self.anim_type == "death2")) && self.frame == self.anim_end) || self.anim_type == "hide")) //death does not go above the last frame since it doesn't reset
+		/*
+		Death does not go above the last frame since it doesn't reset
+		Otherwise, increase the frame number, if it goes past the end, it will reset
+		*/
+		if (!(((self.anim_type == "death1") || (self.anim_type == "death2")) && (self.frame == self.anim_end)))
 			self.frame = self.frame + 1; //if its a new animation type, it will be set to the proper frame next
 	}
-	if (self.anim_type != self.last_action || (self.frame > self.anim_end))
+	if ((self.anim_type != self.last_action) || (self.frame > self.anim_end))
 	{
 		if (self.anim_type == "stand")
 		{
 			self.anim_end = ZOMBIE_STAND_END;
 			self.anim_end_num = ZOMBIE_STAND_END - ZOMBIE_STAND_START + 1; //add one to compensate for the first frame not being counted
 			self.anim_time = ZOMBIE_STAND_TIME; // one idle animation lasts 2.5 seconds
-			self.last_action = "stand";
 			self.frame = ZOMBIE_STAND_START;
 		}
 		else if (self.anim_type == "walk")
@@ -216,7 +220,6 @@ void () zombie_animate =
 			self.anim_end = ZOMBIE_RUN_END;
 			self.anim_end_num = ZOMBIE_RUN_END - ZOMBIE_RUN_START + 1;
 			self.anim_time = ZOMBIE_WALK_TIME;
-			self.last_action = "walk";
 			self.frame = ZOMBIE_RUN_START;
 		}
 		else if (self.anim_type == "run")
@@ -224,7 +227,6 @@ void () zombie_animate =
 			self.anim_end = ZOMBIE_RUN_END;
 			self.anim_end_num = ZOMBIE_RUN_END - ZOMBIE_RUN_START + 1;
 			self.anim_time = ZOMBIE_RUN_TIME;
-			self.last_action = "run";
 			self.frame = ZOMBIE_RUN_START;
 		}
 		else if (self.anim_type == "attack")
@@ -232,7 +234,6 @@ void () zombie_animate =
 			self.anim_end = ZOMBIE_ATTACK_END;
 			self.anim_end_num = ZOMBIE_ATTACK_END - ZOMBIE_ATTACK_START + 1;
 			self.anim_time = ZOMBIE_ATTACK_TIME;
-			self.last_action = "attack";
 			if (self.frame > self.anim_end)
 				zombie_run();
 			else
@@ -243,7 +244,6 @@ void () zombie_animate =
 			self.anim_end = ZOMBIE_PAIN_END;
 			self.anim_end_num = ZOMBIE_PAIN_END - ZOMBIE_PAIN_START + 1;
 			self.anim_time = ZOMBIE_PAIN_TIME;
-			self.last_action = "pain";
 			if (self.frame > self.anim_end)
 				zombie_run();
 			else
@@ -254,7 +254,6 @@ void () zombie_animate =
 			self.anim_end = ZOMBIE_ARISE_END;
 			self.anim_end_num = ZOMBIE_ARISE_END - ZOMBIE_ARISE_START + 1;
 			self.anim_time = ZOMBIE_ARISE_TIME;
-			self.last_action = "arise";
 			if (self.frame > self.anim_end)
 				zombie_run();
 			else
@@ -265,7 +264,6 @@ void () zombie_animate =
 			self.anim_end = ZOMBIE_STANDUP_END;
 			self.anim_end_num = ZOMBIE_STANDUP_END - ZOMBIE_STANDUP_START + 1;
 			self.anim_time = ZOMBIE_STANDUP_TIME;
-			self.last_action = "standup";
 			if (self.frame > self.anim_end)
 				zombie_run();
 			else
@@ -276,7 +274,6 @@ void () zombie_animate =
 			self.anim_end = ZOMBIE_FALLBACK_END;
 			self.anim_end_num = ZOMBIE_FALLBACK_END - ZOMBIE_FALLBACK_START + 1;
 			self.anim_time = ZOMBIE_FALLBACK_TIME;
-			self.last_action = "fallback";
 			if (self.frame > self.anim_end)
 				zombie_standup();
 			else
@@ -287,7 +284,6 @@ void () zombie_animate =
 			self.anim_end = ZOMBIE_DEATH1_END;
 			self.anim_end_num = ZOMBIE_DEATH1_END - ZOMBIE_DEATH1_START + 1;
 			self.anim_time = ZOMBIE_DEATH1_TIME;
-			self.last_action = "death1";
 			self.frame = ZOMBIE_DEATH1_START;
 		}
 		else if (self.anim_type == "death2")
@@ -295,7 +291,6 @@ void () zombie_animate =
 			self.anim_end = ZOMBIE_DEATH2_END;
 			self.anim_end_num = ZOMBIE_DEATH2_END - ZOMBIE_DEATH2_START + 1;
 			self.anim_time = ZOMBIE_DEATH2_TIME;
-			self.last_action = "death2";
 			self.frame = ZOMBIE_DEATH2_START;
 		}
 		else if (self.anim_type == "hide")
@@ -303,26 +298,30 @@ void () zombie_animate =
 			self.anim_end = ZOMBIE_HIDE_END; // just one frame
 			self.anim_end_num = ZOMBIE_HIDE_END - ZOMBIE_HIDE_START + 1;
 			self.anim_time = ZOMBIE_HIDE_TIME;
-			self.last_action = "hide";
 			self.frame = ZOMBIE_HIDE_START;
 		}
+		self.last_action = self.anim_type;
 	}
-	if (!((self.anim_type == "death1" || self.anim_type == "death2") && self.frame == self.anim_end)) 
+	if ( !(((self.anim_type == "death1") || (self.anim_type == "death2")) && (self.frame == self.anim_end)) )
 	{
 		self.nextthink = time + (self.anim_time / self.anim_end_num);
-		self.think_ai = zombie_animate;
+		self.think = zombie_animate;
 	}
 
+	ai_main();
 	//insert sounds or attack damage here with if statements
 	if (self.frame == ZOMBIE_ATTACK_START + 7) sound (self, CHAN_VOICE, "axezombie/azomswip.wav", 1, ATTN_NORM);
 	if (self.frame == ZOMBIE_ATTACK_START + 12) zombie_axeAttack();
-	if (self.anim_type == "stand" || self.anim_type == "hide") ai_stand();
-	else if (self.anim_type == "walk" || self.anim_type == "run") basic_ai (2);
+	if ((self.anim_type == "stand") || (self.anim_type == "hide")) ai_stand();
+	else if ((self.anim_type == "walk") || (self.anim_type == "run")) basic_ai (2);
 	else if (self.anim_type == "attack") ai_face();
-	else if ((self.anim_type == "death1" || self.anim_type == "death2") && self.frame == self.anim_end) monster_become_corpse();
+	else if (((self.anim_type == "death1") || (self.anim_type == "death2")) && (self.frame == self.anim_end)) monster_become_corpse();
 };
 
-//--- The spawn
+/*	Initilization of a new zombie
+	Config values here
+*/
+
 void () monster_zombie =
 {
 	//  Disable for testing
