@@ -18,7 +18,6 @@
 */
 
 #include "common.qh"
-#include "m_cultist.qh"
 
 // Prototypes
 
