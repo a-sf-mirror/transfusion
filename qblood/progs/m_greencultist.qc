@@ -21,8 +21,10 @@
 
 //--- Throwing TNT
 
+/*
 void () greencultist_attack1 = [$idle1, greencultist_attack2] {cultist_throw_TNT (); ai_face ();};
 void () greencultist_attack2 = [$idle1, cultist_run] {ai_face ();};
+*/
 
 
 void () greencultist_attack =
@@ -39,7 +41,11 @@ void () greencultist_attack =
     if (vlen (delta) <= 300)
         ai_back(100);
     else
-        greencultist_attack1 ();    // Throw TNT at enemy
+	{
+        //greencultist_attack1 ();    // Throw TNT at enemy
+		self.anim_type = "attack1";
+		cultist_animate();
+	}
 
 };
 

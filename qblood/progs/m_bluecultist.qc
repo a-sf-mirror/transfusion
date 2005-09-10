@@ -25,6 +25,7 @@ void () bluecultist_fireTesla;
 
 //--- Shooting gun
 
+/*
 void () bluecultist_attack1 = [$attack1, bluecultist_attack2] {ai_face ();};
 void () bluecultist_attack2 = [$attack2, bluecultist_attack3] {bluecultist_fireTesla (); ai_face ();};
 void () bluecultist_attack3 = [$idle1, cultist_run] 
@@ -37,6 +38,7 @@ void () bluecultist_attack3 = [$idle1, cultist_run]
 	else
 	    self.cnt = 0;
 };
+*/
 
 void () bluecultist_attack =
 {
@@ -51,7 +53,11 @@ void () bluecultist_attack =
     delta = (self.enemy.origin - self.origin);
 
     if (vlen (delta) <= 1200)
-        bluecultist_attack1 ();    // If the player is near shoot them    
+	{
+        //bluecultist_attack1 ();    // If the player is near shoot them    
+		self.anim_type = "attack1";
+		cultist_animate();
+	}
 };
 
 //--- Shoot the player

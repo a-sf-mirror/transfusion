@@ -25,9 +25,11 @@ void () blackcultist_fireTommygun;
 
 //--- Shooting gun
 
+/*
 void () blackcultist_attack1 = [$attack1, blackcultist_attack2] {ai_face ();};
 void () blackcultist_attack2 = [$attack2, blackcultist_attack3] {blackcultist_fireTommygun (); ai_face ();};
 void () blackcultist_attack3 = [$idle1, cultist_run] {ai_face ();};
+*/
 
 void () blackcultist_attack =
 {
@@ -38,7 +40,12 @@ void () blackcultist_attack =
     delta = (self.enemy.origin - self.origin);
 
     if (vlen (delta) <= 1200)
-        blackcultist_attack1 ();    // If the player is near shoot them
+	{
+		//blackcultist_attack1 ();    // If the player is near shoot them
+		self.anim_type = "attack1";
+		cultist_animate();
+	}
+        
 };
 
 //--- Shoot the player

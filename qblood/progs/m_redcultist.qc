@@ -26,9 +26,11 @@ void () redcultist_attackDecide;
 
 //--- Shooting gun
 
+/*
 void () redcultist_attack1 = [$attack1, redcultist_attack2] {ai_face ();};
 void () redcultist_attack2 = [$attack2, redcultist_attack3] {redcultist_fireShotgun (); ai_face ();};
 void () redcultist_attack3 = [$idle1, cultist_run] {ai_face ();};
+*/
 
 void () redcultist_attack =
 {
@@ -50,7 +52,9 @@ void () redcultist_attackDecide =
     if (self.attack_finished < time && vis)
     {
         ai_face();                        // Face player
-        redcultist_attack1 ();
+        //redcultist_attack1 ();
+		self.anim_type = "attack1";
+		cultist_animate();
     }
     else
     {

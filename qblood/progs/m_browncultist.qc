@@ -25,7 +25,7 @@ void () browncultist_attackDecide;
 void () browncultist_fireShotgun;
 
 //--- Shooting shotgun
-
+/*
 void () browncultist_attacka1 = [$attack1, browncultist_attacka2] {ai_face ();};
 void () browncultist_attacka2 = [$attack2, browncultist_attacka3] {browncultist_fireShotgun (); ai_face ();};
 void () browncultist_attacka3 = [$idle1, cultist_run] {ai_face ();};
@@ -34,7 +34,7 @@ void () browncultist_attacka3 = [$idle1, cultist_run] {ai_face ();};
 
 void () browncultist_attackb1 = [$idle1, browncultist_attackb2] {cultist_throw_TNT (); ai_face ();};
 void () browncultist_attackb2 = [$idle1, cultist_run] {ai_face ();};
-
+*/
 
 void () browncultist_attack =
 {
@@ -60,9 +60,17 @@ void () browncultist_attackDecide =
 		dist = range(self.enemy);
 
         if (dist == RANGE_NEAR || dist == RANGE_MELEE)// If the player is near shoot them		      
-            browncultist_attacka1 ();
+		{
+            //browncultist_attacka1 ();
+			self.anim_type = "attack1";
+			cultist_animate();
+		}
         else
-            browncultist_attackb1 ();        // Otherwise TNT them
+		{
+            //browncultist_attackb1 ();        // Otherwise TNT them
+			self.anim_type = "attack2";
+			cultist_animate();
+		}
     }
     else
     {
