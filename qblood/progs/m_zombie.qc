@@ -20,25 +20,24 @@
 #include "common.qh"
 
 //Frame definitions
-#define	ZOMBIE_REFERENCE		0		//reference frame, not needed
-#define	ZOMBIE_STAND_START		1		//Stand = frames 1-60
-#define	ZOMBIE_STAND_END		60
-#define	ZOMBIE_RUN_START		61		//Run (and walk) = frames 61-90
-#define	ZOMBIE_RUN_END			90
-#define	ZOMBIE_PAIN_START		91		//Pain = frames 91-115
-#define	ZOMBIE_PAIN_END			115
-#define	ZOMBIE_DEATH1_START		116		//Death1 = frames 116-145
-#define	ZOMBIE_DEATH1_END		145		//Death1 has a head, Death2 does not
-#define	ZOMBIE_ATTACK_START		146		//Attack = frames 146-175
-#define	ZOMBIE_ATTACK_END		175
-#define	ZOMBIE_ARISE_START		176		//Arise = frames 176-220
-#define	ZOMBIE_ARISE_END		220
-#define ZOMBIE_FALLBACK_START	221		//FallBack = frames 221 - 245
-#define	ZOMBIE_FALLBACK_END		240
-#define ZOMBIE_STANDUP_START	241		//StandUp = frames 246 - 275
-#define ZOMBIE_STANDUP_END		275
-#define	ZOMBIE_HIDE_START		176		//really just the first arise frame
-#define	ZOMBIE_HIDE_END			176		//single frame only
+#define	ZOMBIE_STAND_START		0		//Stand = frames 0-59
+#define	ZOMBIE_STAND_END		59
+#define	ZOMBIE_RUN_START		60		//Run (and walk) = frames 60-89
+#define	ZOMBIE_RUN_END			89
+#define	ZOMBIE_PAIN_START		90		//Pain = frames 90-114
+#define	ZOMBIE_PAIN_END			114
+#define	ZOMBIE_DEATH1_START		115		//Death1 = frames 115-144
+#define	ZOMBIE_DEATH1_END		144		//Death1 has a head, Death2 does not
+#define	ZOMBIE_ATTACK_START		145		//Attack = frames 145-174
+#define	ZOMBIE_ATTACK_END		174
+#define	ZOMBIE_ARISE_START		175		//Arise = frames 175-219
+#define	ZOMBIE_ARISE_END		219
+#define ZOMBIE_FALLBACK_START	220		//FallBack = frames 220 - 239
+#define	ZOMBIE_FALLBACK_END		239
+#define ZOMBIE_STANDUP_START	240		//StandUp = frames 240 - 274
+#define ZOMBIE_STANDUP_END		274
+#define	ZOMBIE_HIDE_START		175		//really just the first arise frame
+#define	ZOMBIE_HIDE_END			175		//single frame only
 #define ZOMBIE_DEATH2_START		0		//Death animation is a seperate model
 #define ZOMBIE_DEATH2_END		29
 
@@ -153,7 +152,7 @@ void () zombie_pain =
 	{sound (self, CHAN_VOICE, "axezombie/azompain.wav", 1, ATTN_NORM); self.pain_finished = (time + 1.17);}
     else
 	{sound (self, CHAN_VOICE, "axezombie/azommoan.wav", 1, ATTN_NORM); self.pain_finished = (time + 1.48);}
-	if (self.health < 50 && r < 0.4)
+	if (self.health < 50 && r < 0.3)
 	{
 		zombie_fallback();
 	}
@@ -176,18 +175,19 @@ void () zombie_die =
         remove (self);
         return;
     }
-    if (random () < 0.5)
+    if (random () < 0.75)
 	{
 		self.anim_type = "death1";
 	}
     else
 	{
-		setmodel (self, "models/enemies/zombie_die.md3");
+		setmodel (self, "models/enemies/zombie/zombie_headless.psk");
 		setsize (self,'-7 -21 0', '15 14 59');
-		self.frame = 0;
+		// FIXME: need to add dropped head spawn here as well
+		self.frame = ZOMBIE_DEATH2_START;
 		self.anim_type = "death2";
 	}
-	if (random() < 0.5)
+	if (random() < 0.75)
 		sound (self, CHAN_VOICE, "axezombie/azomdie1.wav", 1, ATTN_NORM);
 	else
 		sound (self, CHAN_VOICE, "axezombie/azomdie2.wav", 1, ATTN_NORM);
@@ -197,7 +197,7 @@ void () zombie_die =
 
 void () zombie_animate =
 {
-	if (self.frame <= self.anim_end)
+	if ((self.anim_type == self.last_action) && (self.frame <= self.anim_end))
 	{
 		/*
 		Death does not go above the last frame since it doesn't reset
@@ -307,6 +307,11 @@ void () zombie_animate =
 		self.nextthink = time + (self.anim_time / self.anim_end_num);
 		self.think = zombie_animate;
 	}
+	else
+	{
+		self.nextthink = 0;
+		monster_become_corpse();
+	}
 
 	ai_main();
 	//insert sounds or attack damage here with if statements
@@ -315,10 +320,10 @@ void () zombie_animate =
 	if ((self.anim_type == "stand") || (self.anim_type == "hide")) ai_stand();
 	else if ((self.anim_type == "walk") || (self.anim_type == "run")) basic_ai (2);
 	else if (self.anim_type == "attack") ai_face();
-	else if (((self.anim_type == "death1") || (self.anim_type == "death2")) && (self.frame == self.anim_end)) monster_become_corpse();
 };
 
-/*	Initilization of a new zombie
+/*
+	Initilization of a new zombie
 	Config values here
 */
 
@@ -327,8 +332,9 @@ void () monster_zombie =
 	//  Disable for testing
 	if(monster_check())
 		return;
-	precache_model ("models/enemies/zombie.md3");
-	precache_model ("models/enemies/zombie_die.md3");
+	precache_model ("models/enemies/zombie/zombie.psk");
+	precache_model ("models/enemies/zombie/zombie_headless.psk");
+	precache_model ("models/enemies/zombie/zombie_head.psk");
 	precache_sound ("axezombie/azomdie1.wav");
 	precache_sound ("axezombie/azomdie2.wav");
 	precache_sound ("axezombie/azomdie3.wav");
@@ -341,17 +347,10 @@ void () monster_zombie =
 	precache_sound ("axezombie/azomswip.wav");
 	self.solid = SOLID_SLIDEBOX;
 	self.movetype = MOVETYPE_WALK;
-	setmodel (self, "models/enemies/zombie.md3");
+	setmodel (self, "models/enemies/zombie/zombie.psk");
 	self.frame = 0;
 	setsize (self,'-7 -21 0', '15 14 59');
-	
-	/* NOT CONSIDERING SKILL (YET)
-	if (skill <= 1)
-	else if (skill == 2)
-	else if (skill == 3)
-	else if (skill == 4)
-	else if (skill > 4)
-	*/
+
 	self.health = 50;
 	self.max_health = self.health;
 	self.resist_acid = 0;
@@ -366,7 +365,14 @@ void () monster_zombie =
 	self.resist_drown = -1;	// cannot drown
 	self.resist_spirit = 0;
 	self.resist_voodoo = 0;
-	
+
+	/*if (skill <= 1)
+	else if (skill == 2)
+	else if (skill == 3)
+	else if (skill == 4)
+	else if (skill > 4)
+	//not considering skill yet */
+
 	self.speed = 50;	// walkspeed
 	self.th_stand = zombie_stand;
 	self.th_walk = zombie_walk;

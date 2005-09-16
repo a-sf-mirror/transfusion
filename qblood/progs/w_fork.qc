@@ -243,6 +243,6 @@ Choose the right pitchfork model to display
 */
 void() Fork_UpdateView =
 {
-    self.weaponmodel = "models/weapons/v_pitch.md3";
+    self.weaponmodel = "models/weapons/v_pitch.psk";
     self.items = self.items - (self.items & IT_GUNS_AKIMBO);
 };
