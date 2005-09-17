@@ -62,7 +62,7 @@ void () browncultist_attackDecide =
         if (dist == RANGE_NEAR || dist == RANGE_MELEE)// If the player is near shoot them		      
 		{
             //browncultist_attacka1 ();
-			self.anim_type = "attack1";
+			self.anim_type = "attack";
 			cultist_animate();
 		}
         else

@@ -28,6 +28,8 @@ $skin skin
 #define	CULTIST_WALK_END		19
 #define	CULTIST_ATTACK_START	20
 #define	CULTIST_ATTACK_END		21
+#define	CULTIST_ATTACK2_START	20	// throwing TNT for brown cultist
+#define	CULTIST_ATTACK2_END		21	// values need to be changed
 #define	CULTIST_PAIN_START		0	//dummy values
 #define	CULTIST_PAIN_END		0
 #define	CULTIST_DEATH_START		0
@@ -40,6 +42,7 @@ $skin skin
 #define	CULTIST_WALK_TIME		1.2
 #define	CULTIST_PAIN_TIME		0.75
 #define	CULTIST_ATTACK_TIME		0.85
+#define	CULTIST_ATTACK2_TIME		0.85
 #define	CULTIST_DEATH_TIME		1.2
 
 void () cultist_animate;
@@ -301,6 +304,26 @@ void () cultist_run =
 	cultist_animate();
 };
 
+// primary attack
+void () cultist_attack = 
+{
+	// TODO: add attacks for other cultists
+	if (self.classname == "monster_browncultist")
+	{
+		cultist_fireShotgun();
+	}
+};
+
+// secondary attack
+void () cultist_attack2 =
+{
+	// TODO: add attacks for other cultists
+	if (self.classname == "monster_browncultist")
+	{
+		cultist_throw_TNT();
+	}
+};
+
 void () cultist_animate =
 {
 	if (self.frame <= self.anim_end)
@@ -350,6 +373,17 @@ void () cultist_animate =
 			else
 				self.frame = CULTIST_ATTACK_START;
 		}
+		else if (self.anim_type == "attack2")
+		{
+			self.anim_end = CULTIST_ATTACK2_END;
+			self.anim_end_num = CULTIST_ATTACK2_END - CULTIST_ATTACK2_START + 1;
+			self.anim_time = CULTIST_ATTACK2_TIME;
+			self.last_action = "attack2";
+			if (self.frame > self.anim_end)
+				cultist_run();
+			else
+				self.frame = CULTIST_ATTACK2_START;
+		}
 		else if (self.anim_type == "pain")
 		{
 			self.anim_end = CULTIST_PAIN_END;
@@ -378,10 +412,21 @@ void () cultist_animate =
 	
 	//AI control
 	ai_main();
+	
+	if (self.frame == CULTIST_ATTACK_START && self.anim_type == "attack")
+	{
+		cultist_attack();
+	}
+	else if (self.frame == CULTIST_ATTACK2_START && self.anim_type == "attack2")
+	{
+		cultist_attack2();
+	}
+	
 	if (self.anim_type == "stand") basic_ai(3);
 	else if (self.anim_type == "walk") basic_ai(3);
 	else if (self.anim_type == "run") basic_ai(6);
 	else if (self.anim_type == "attack") ai_face();
+	else if (self.anim_type == "attack2") ai_face();
 	else if ((self.anim_type == "death") && (self.frame == self.anim_end)) monster_become_corpse();
 
 	//insert sounds or attack damage here with if statements

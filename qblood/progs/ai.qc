@@ -900,9 +900,9 @@ void (float dist) basic_ai =
 
 /*
 ==================
-Main loop for AI.
-Monsters should always have their .think set to this function (unless they're dead).
-Use .think for the monster's activities
+ai_main
+
+Needs to be executed every frame for monsters
 ==================
 */
 void() ai_main =
