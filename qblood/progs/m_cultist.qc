@@ -571,6 +571,7 @@ void () cultist_spawn =
 	self.movetype = MOVETYPE_WALK;
 	setmodel (self, "models/enemies/cultist.md3");
 	setsize (self,'-6 -14 0', '34 14 62');    
+	self.speed = 50;	// walkspeed
 	self.max_health = self.health;
 	self.th_stand = cultist_stand;
 	self.th_walk = cultist_walk;
