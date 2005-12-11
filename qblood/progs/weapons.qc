@@ -1033,17 +1033,17 @@ void() ArmorTest =
             self.armorvalue = self.armor_body;
             self.items = self.items - (self.items & IT_ARMOR_ALL) + IT_ARMOR_BODY;
         }
-        else if (self.armor_mind)
+        else if (self.armor_spirit)
         {
-            self.armorvalue = self.armor_mind;
+            self.armorvalue = self.armor_spirit;
             self.items = self.items - (self.items & IT_ARMOR_ALL) + IT_ARMOR_SPIRIT;
         }
     }
     else if (self.items & IT_ARMOR_BODY)
     {
-        if (self.armor_mind)
+        if (self.armor_spirit)
         {
-            self.armorvalue = self.armor_mind;
+            self.armorvalue = self.armor_spirit;
             self.items = self.items - (self.items & IT_ARMOR_ALL) + IT_ARMOR_SPIRIT;
         }
         else if (self.armor_fire)

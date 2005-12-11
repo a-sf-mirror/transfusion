@@ -302,8 +302,8 @@ float () monster_check =
 	else
 		skillbit = DIFFICULTY_EXTRA_CRISPY;
     if (cvar("nomonsters")      && 
-	    self.items2 >= IT2_KEY1 && 
-		self.items2 <= IT2_KEY6 &&
+	    self.items2 >= IT2_KEY_SKULL && 
+		self.items2 <= IT2_KEY_MOON &&
 		(self.spawntype && gametype & self.spawntype))
     {
 	    monster_drop_key();
@@ -337,7 +337,7 @@ void () monster_death =
 	self.deadflag = DEAD_DEAD;
 	SUB_UseTargets();
 	
-	if (self.items2 >= IT2_KEY1 && self.items2 <= IT2_KEY6)
+	if (self.items2 >= IT2_KEY_SKULL && self.items2 <= IT2_KEY_MOON)
     {
 	    monster_drop_key();
 		return;

@@ -231,12 +231,12 @@
 #define IT_ENEMY_FLAG       8388608  // 24 - CTF enemy flag
 
 // In ".items2"
-#define IT2_KEY1            1        // 1 - skull
-#define IT2_KEY2            2        // 2 - eye
-#define IT2_KEY3            4        // 3 - fire
-#define IT2_KEY4            8        // 4 - dagger
-#define IT2_KEY5            16       // 5 - spider
-#define IT2_KEY6            32       // 6 - moon
+#define IT2_KEY_SKULL		1	// 1 - skull
+#define IT2_KEY_EYE			2	// 2 - eye
+#define IT2_KEY_FIRE		4	// 3 - fire
+#define IT2_KEY_DAGGER		8	// 4 - dagger
+#define IT2_KEY_SPIDER		16	// 5 - spider
+#define IT2_KEY_MOON		32	// 6 - moon
 
 
 // Inventory items

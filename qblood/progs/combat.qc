@@ -136,11 +136,11 @@ void(entity targ, entity attacker) Killed =
 
 
 // PM:  Blood's armor damage protection algorithm, or close to it.
-float(entity targ, float armour, float damage) ArmorSave =
+float(entity targ, float armor, float damage) ArmorSave =
 {
     local   float   hi, lo, save, add;
 
-    hi = armour;
+    hi = armor;
     if (hi > 200)
         hi = 200;
     lo = hi - damage;
@@ -162,10 +162,10 @@ float(entity targ, float armour, float damage) ArmorSave =
         save = save + add;
         targ.remain_arm = targ.remain_arm - add;
     }
-    if (save >= armour)
+    if (save >= armor)
     {
         // Lost all armor.
-        save = armour;
+        save = armor;
         targ.remain_arm = 0;
     }
 
@@ -400,7 +400,7 @@ void(entity targ, entity inflictor, entity attacker, float damage, float dflags,
         if (dflags & DF_BURN)
             save = ArmorSave (targ, targ.armor_fire, damage);
         else if (dflags & DF_SPIRIT || dflags & DF_VOODOO)
-            save = ArmorSave (targ, targ.armor_mind, damage);
+            save = ArmorSave (targ, targ.armor_spirit, damage);
         else if (dflags & DF_BULLET || dflags & DF_STAB || dflags & DF_EXPLODE)
             save = ArmorSave (targ, targ.armor_body, damage);
         take = ceil(damage-save);
@@ -486,15 +486,15 @@ void(entity targ, entity inflictor, entity attacker, float damage, float dflags,
         }
         else if (dflags & DF_SPIRIT || dflags & DF_VOODOO)
         {
-            targ.armor_mind = targ.armor_mind - save;
-            if (targ.armor_mind <= 0)
+            targ.armor_spirit = targ.armor_spirit - save;
+            if (targ.armor_spirit <= 0)
             {
-                targ.armorvalue = targ.armor_mind = 0;
+                targ.armorvalue = targ.armor_spirit = 0;
                 targ.items = targ.items - (targ.items & IT_ARMOR_SPIRIT);
             }
             else
             {
-                targ.armorvalue = targ.armor_mind;
+                targ.armorvalue = targ.armor_spirit;
                 targ.items = targ.items - (targ.items & IT_ARMOR_ALL) + IT_ARMOR_SPIRIT;
             }
         }

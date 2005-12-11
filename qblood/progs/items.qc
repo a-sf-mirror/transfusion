@@ -950,10 +950,10 @@ void() armor_touch =
 		// Super armor (200 of all three armors).
 		if (other.armor_body >= 200)
 			if (other.armor_fire >= 200)
-				if (other.armor_mind >= 200)
+				if (other.armor_spirit >= 200)
 					return;
 
-		other.armor_body = other.armor_fire = other.armor_mind = 200;
+		other.armor_body = other.armor_fire = other.armor_spirit = 200;
 
 		bit = other.items & IT_ARMOR_ALL;
 		if (bit == IT_ARMOR_BODY)
@@ -963,7 +963,7 @@ void() armor_touch =
 		else
 		{
 			bit = IT_ARMOR_SPIRIT;
-			value = other.armor_mind;
+			value = other.armor_spirit;
 		}
 	}
 	else if (self.classname == "item_armor_basic")
@@ -971,7 +971,7 @@ void() armor_touch =
 		// Basic armor
 		if (other.armor_body >= 100)
 			if (other.armor_fire >= 100)
-				if (other.armor_mind >= 100)
+				if (other.armor_spirit >= 100)
 					return;
 
 		other.armor_body = other.armor_body + 50;
@@ -980,13 +980,13 @@ void() armor_touch =
 		other.armor_fire = other.armor_fire + 50;
 		if (other.armor_fire > 100)
 			other.armor_fire = 100;
-		other.armor_mind = other.armor_mind + 50;
-		if (other.armor_mind > 100)
-			other.armor_mind = 100;
+		other.armor_spirit = other.armor_spirit + 50;
+		if (other.armor_spirit > 100)
+			other.armor_spirit = 100;
 
 		bit = other.items & IT_ARMOR_ALL;
 		if (bit == IT_ARMOR_SPIRIT)
-			value = other.armor_mind;
+			value = other.armor_spirit;
 		else if (bit == IT_ARMOR_FIRE)
 			value = other.armor_fire;
 		else
@@ -998,9 +998,9 @@ void() armor_touch =
 	else if (self.classname == "item_armor_spirit")
 	{
 		// Spirit armor
-		if (other.armor_mind >= 100)
+		if (other.armor_spirit >= 100)
 			return;
-		value = other.armor_mind = 100;
+		value = other.armor_spirit = 100;
 		bit = IT_ARMOR_SPIRIT;
 	}
 	else
@@ -1034,7 +1034,7 @@ void() InitArmor =
 // Basic Armor
 void() item_armor_basic =
 {
-	self.model = "models/items/armour/i_arm_basic.md3";
+	self.model = "models/items/armor/i_arm_basic.md3";
 	self.netname = "Basic Armor";
 	precache_model (self.model);
 	setmodel (self, self.model);
@@ -1046,7 +1046,7 @@ void() item_armor_basic =
 // Spirit Armor
 void() item_armor_spirit =
 {
-	self.model = "models/items/armour/i_arm_spirit.md3";
+	self.model = "models/items/armor/i_arm_spirit.md3";
 	self.netname = "Spirit Armor";
 	precache_model (self.model);
 	setmodel (self, self.model);
@@ -1058,7 +1058,7 @@ void() item_armor_spirit =
 // Body Armor
 void() item_armor_body =
 {
-	self.model = "models/items/armour/i_arm_body.md3";
+	self.model = "models/items/armor/i_arm_body.md3";
 	self.netname = "Body Armor";
 	precache_model (self.model);
 	setmodel (self, self.model);
@@ -1070,7 +1070,7 @@ void() item_armor_body =
 // Fire Armor
 void() item_armor_fire =
 {
-	self.model = "models/items/armour/i_arm_fire.md3";
+	self.model = "models/items/armor/i_arm_fire.md3";
 	self.netname = "Fire Armor";
 	precache_model (self.model);
 	setmodel (self, self.model);
@@ -1082,7 +1082,7 @@ void() item_armor_fire =
 // Super Armor
 void() item_armor_super =
 {
-	self.model = "models/items/armour/i_arm_super.md3";
+	self.model = "models/items/armor/i_arm_super.md3";
 	self.netname = "Super Armor";
 	precache_model (self.model);
 	setmodel (self, self.model);
@@ -1976,41 +1976,41 @@ void() item_key =
 		self.spawnflags = self.spawnflags | 1;
 	}
 
-	if (self.spawnflags & IT2_KEY1)
+	if (self.spawnflags & IT2_KEY_SKULL)
 	{
 		self.skin		= 0;
 		self.netname	= "Skull Key";
-		self.items2 	= IT2_KEY1;
+		self.items2 	= IT2_KEY_SKULL;
 	}
-	else if (self.spawnflags & IT2_KEY2)
+	else if (self.spawnflags & IT2_KEY_EYE)
 	{
 		self.skin		= 1;
 		self.netname	= "Eye Key";
-		self.items2 	= IT2_KEY2;
+		self.items2 	= IT2_KEY_EYE;
 	}
-	else if (self.spawnflags & IT2_KEY3)
+	else if (self.spawnflags & IT2_KEY_FIRE)
 	{
 		self.skin		= 2;
 		self.netname	= "Fire Key";
-		self.items2 	= IT2_KEY3;
+		self.items2 	= IT2_KEY_FIRE;
 	}
-	else if (self.spawnflags & IT2_KEY4)
+	else if (self.spawnflags & IT2_KEY_DAGGER)
 	{
 		self.skin		= 3;
 		self.netname	= "Dagger Key";
-		self.items2 	= IT2_KEY4;
+		self.items2 	= IT2_KEY_DAGGER;
 	}
-	else if (self.spawnflags & IT2_KEY5)
+	else if (self.spawnflags & IT2_KEY_SPIDER)
 	{
 		self.skin		= 4;
 		self.netname	= "Spider Key";
-		self.items2 	= IT2_KEY5;
+		self.items2 	= IT2_KEY_SPIDER;
 	}
-	else if (self.spawnflags & IT2_KEY6)
+	else if (self.spawnflags & IT2_KEY_MOON)
 	{
 		self.skin		= 5;
 		self.netname	= "Moon Key";
-		self.items2 	= IT2_KEY6;
+		self.items2 	= IT2_KEY_MOON;
 	}
 
 	precache_model ("models/items/i_key.md3");

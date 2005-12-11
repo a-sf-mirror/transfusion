@@ -79,7 +79,7 @@ void() InitPlayerCharacteristics =
     self.weapon          = IT_PITCHFORK;
     self.armor_fire      = 0;
     self.armor_body      = 0;
-    self.armor_mind      = 0;
+    self.armor_spirit      = 0;
     self.inven1          = 0;
     self.inven2          = 0;
     self.it_select       = 0;
@@ -90,7 +90,7 @@ void() InitPlayerCharacteristics =
         self.items = self.items | available_weapons | IT_ARMOR_BODY;
         self.armor_body = 50;
         self.armor_fire = 50;
-        self.armor_mind = 50;
+        self.armor_spirit = 50;
         if (available_weapons & IT_FLAREGUN)
             self.ammo_flare = self.ammo_flare + 10;
         if (available_weapons & IT_SAWED_OFF)
@@ -1414,7 +1414,7 @@ void(float isAlive) Impulses_Player =
             if (self.impulse == IMP_CHEAT_ARMOR)
             {
                 sprint (self, "griswold -- You have full armor.\n");
-                self.armor_fire = self.armor_body = self.armor_mind = self.armorvalue = 200;
+                self.armor_fire = self.armor_body = self.armor_spirit = self.armorvalue = 200;
                 self.items = self.items - (self.items & IT_ARMOR_ALL) + IT_ARMOR_FIRE;
             }
             else if (self.impulse == IMP_CHEAT_IN_FIRE)

@@ -178,7 +178,34 @@ void() door_use =
 
     oself = self;
     self = self.owner;
-	
+
+    // FIXME: blink key on player's status bar
+	//was (self.items2 & other.items2)
+    if ((self.items2 & other.items2) != self.items2 &&
+	     (gametype == GT_COOPERATIVE || gametype == GT_SINGLE_PLAYER))
+		 // So all doors are unlocked in deathmatch/ctf
+    {
+        if (self.owner.items2 == IT2_KEY_SKULL)
+            centerprint (other, "You need the skull key");
+        else if (self.owner.items2 == IT2_KEY_EYE)
+            centerprint (other, "You need the eye key");
+        else if (self.owner.items2 == IT2_KEY_FIRE)
+            centerprint (other, "You need the fire key");
+        else if (self.owner.items2 == IT2_KEY_DAGGER)
+            centerprint (other, "You need the dagger key");
+        else if (self.owner.items2 == IT2_KEY_SPIDER)
+            centerprint (other, "You need the spider key");
+        else if (self.owner.items2 == IT2_KEY_MOON)
+            centerprint (other, "You need the moon key");
+        else
+            centerprint (other, "It's locked but the key doesn't exist!");
+
+        // Play on two channels so the player can hear himself clearly.
+        sound (other, CHAN_VOICE, self.noise3, 1, ATTN_NORM);
+        sound (other, CHAN_BODY, self.noise3, 1, ATTN_NORM);
+        return;
+    }    
+
 	if (!self.cnt && self.classname == "func_door_secret")
 	{
 	    found_secrets = found_secrets + 1;
@@ -241,27 +268,28 @@ void() door_touch =
         centerprint (other, self.owner.message);
         sound (other, CHAN_VOICE, "bludbath/message.wav", 1, ATTN_NORM);
     }
-
+	/*
     // key door stuff
     if (!self.items2)
         return;
 
     // FIXME: blink key on player's status bar
+	//was (self.items2 & other.items2)
     if ((self.items2 & other.items2) != self.items2 &&
 	     (gametype == GT_COOPERATIVE || gametype == GT_SINGLE_PLAYER))
 		 // So all doors are unlocked in deathmatch/ctf
     {
-        if (self.owner.items2 == IT2_KEY1)
+        if (self.owner.items2 == IT2_KEY_SKULL)
             centerprint (other, "You need the skull key");
-        else if (self.owner.items2 == IT2_KEY2)
+        else if (self.owner.items2 == IT2_KEY_EYE)
             centerprint (other, "You need the eye key");
-        else if (self.owner.items2 == IT2_KEY3)
+        else if (self.owner.items2 == IT2_KEY_DAGGER)
             centerprint (other, "You need the fire key");
-        else if (self.owner.items2 == IT2_KEY4)
+        else if (self.owner.items2 == IT2_KEY_SPIDER)
             centerprint (other, "You need the dagger key");
-        else if (self.owner.items2 == IT2_KEY5)
+        else if (self.owner.items2 == IT2_KEY_MOON)
             centerprint (other, "You need the spider key");
-        else if (self.owner.items2 == IT2_KEY6)
+        else if (self.owner.items2 == IT2_KEY_MOON)
             centerprint (other, "You need the moon key");
         else
             centerprint (other, "It's locked but the key doesn't exist!");
@@ -270,7 +298,7 @@ void() door_touch =
         sound (other, CHAN_VOICE, self.noise3, 1, ATTN_NORM);
         sound (other, CHAN_BODY, self.noise3, 1, ATTN_NORM);
         return;
-    }    
+    }    */
     self.touch = SUB_Null;
     if (self.enemy)
         self.enemy.touch = SUB_Null;    // get paired door
@@ -513,17 +541,17 @@ void() func_door =
     self.use = door_use;
 
     if (self.spawnflags & DOOR_SKULL_KEY)
-        self.items2 = IT2_KEY1;
+        self.items2 = IT2_KEY_SKULL;
     if (self.spawnflags & DOOR_EYE_KEY)
-        self.items2 = IT2_KEY2;
+        self.items2 = IT2_KEY_EYE;
     if (self.spawnflags & DOOR_FIRE_KEY)
-        self.items2 = IT2_KEY3;
+        self.items2 = IT2_KEY_FIRE;
     if (self.spawnflags & DOOR_DAGGER_KEY)
-        self.items2 = IT2_KEY4;
+        self.items2 = IT2_KEY_DAGGER;
     if (self.spawnflags & DOOR_SPIDER_KEY)
-        self.items2 = IT2_KEY5;
+        self.items2 = IT2_KEY_SPIDER;
     if (self.spawnflags & DOOR_MOON_KEY)
-        self.items2 = IT2_KEY6;
+        self.items2 = IT2_KEY_MOON;
 
     if (!self.speed)
         self.speed = 100;
