@@ -341,7 +341,7 @@
 	converter that works. In other words, we don't know the Blood MAP format well,
 	we just know enough of it.<br />
 	Our converter, BLUD2B, is more a series of hacks than a real tool. It's full
-	of arbitrary constants and little tricks to do the job. For example, it do not
+	of arbitrary constants and little tricks to do the job. For example, it does not
 	know how to compute the encryption / decryption keys a map uses, but we found
 	a way to guess them! (it's easily doable thanks to the simplicity of the
 	encryption method and the fact that BUILD map data are mostly zeros).<br />

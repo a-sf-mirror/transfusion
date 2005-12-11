@@ -35,7 +35,7 @@
 	in August 2000, which in turn gave birth to the Transfusion Project in March 2001
 	(known as qBlood at the beginning).<br />
 	<br />
-	Greg stopped his work for the BloodSource campaign in February 2001 and passed the reigns
+	Greg stopped his work for the BloodSource campaign in February 2001 and passed the reins
 	to Timothy Hale. Timothy announced the official end of the campaign in November 2001.<br />
 </div>
 
