@@ -25,6 +25,7 @@ void(float newWeapon) W_SwitchToWeapon;
 void() FireAmbient;
 void() ambient_water1;
 void() Bomb_Explode;
+void() wall_killed;
 
 /* ALL LIGHTS SHOULD BE 0 1 0 IN COLOR ALL OTHER ITEMS SHOULD
 BE .8 .3 .4 IN COLOR */
@@ -212,37 +213,36 @@ void(float isAnObject) PlaceItemOrObject =
 {
 	// Make coordinates low precision to save net bandwidth
 	self.effects = self.effects | EF_LOWPRECISION;
-	//self.movetype = MOVETYPE_TOSS; //moved to object and item statements
 	self.velocity = '0 0 0';
-	//self.origin_z = self.origin_z + 2;
 
-	if (isAnObject)
-	{
-		self.solid = SOLID_CORPSE; //was _BBOX
-		self.movetype = MOVETYPE_PUSH;
-	}
-	else
+	if (!isAnObject)
 	{
 		self.mdl = self.model;		// so it can be restored on respawn
 		self.flags = FL_ITEM;		// make extra wide
 		self.solid = SOLID_TRIGGER;
 		self.movetype = MOVETYPE_TOSS;
 	}
-		
-	if (!droptofloor())
+
+	if (self.movetype) //MOVETYPE_NONE does not fall
 	{
-		if (isAnObject)
-			dprint ("Object \"");
-		else
-			dprint ("Bonus item \"");
-		dprint (self.classname);
-		dprint ("\" fell out of level at ");
-		dprint (vtos (self.origin));
-		dprint ("\n");
-		//remove(self);
-		//return;
-		self.origin_z = self.origin_z + 32;
-		droptofloor();
+		if (!droptofloor())
+		{
+			if (isAnObject)
+				dprint ("Object ");
+			else
+				dprint ("Bonus item ");
+			dprint (self.classname);
+			dprint (" fell out of level at ");
+			dprint (vtos(self.origin));
+			dprint ("\n");
+			local entity	dummy;
+
+			dummy = spawn();
+			dummy.origin = self.origin;
+			setmodel(dummy, "null");
+			//remove(self);
+			//return;
+		}
 	}
 
 	if (isAnObject)
@@ -353,6 +353,13 @@ void(string objmodel, vector bbox_min, vector bbox_max) StartObject =
 	setmodel (self, objmodel);
 	setsize (self, bbox_min, bbox_max);
 
+	self.solid = SOLID_BBOX;
+	self.movetype = MOVETYPE_PUSH;
+	self.health = 1;
+	self.takedamage = DAMAGE_AIM;
+	self.dmg = 2;
+	self.th_die = wall_killed;
+
 	self.nextthink = time + 0.2;	// objects start after other solids, but before items
 	self.think = PlaceObject;
 };
@@ -375,6 +382,7 @@ void() obj_body_spread =
 void() obj_goal =
 {
 	StartObject ("models/world/goalposts.md3", '-40 -52 0', '44 52 90');
+	self.takedamage = DAMAGE_NO;
 };
 
 // Large Vase (tile0537)
@@ -490,6 +498,7 @@ void() obj_world_bottle2 =
 void() obj_world_boulder =
 {
 	StartObject ("models/world/boulder.md3", '-18 -13 0', '18 13 10');
+	self.takedamage = DAMAGE_NO;
 };
 
 // Waste bucket (tile0505)
@@ -528,6 +537,7 @@ void() obj_world_candlbr2 =
 void() obj_world_clock =
 {
 	StartObject ("models/world/clock.md3", '0 -10 -10', '2 10 10');
+	self.movetype = MOVETYPE_NONE;
 };
 
 // Draven Tombstone (tile1159)
@@ -540,12 +550,13 @@ void() obj_world_draven =
 // Fire Extinguisher (tile0658)
 void() obj_world_extngsh =
 {
+	StartObject ("models/world/extngsh.md3", '-4 -12 16', '4 13 61');
 	self.health = 1;
 	self.takedamage = DAMAGE_AIM;
 	self.dmg = DMG_TNT;
 	self.th_die = Bomb_Explode;
 	self.spawnflags = 1;
-	StartObject ("models/world/extngsh.md3", '-4 -12 16', '4 13 61');
+	self.movetype = MOVETYPE_NONE;
 };
 
 // IV Drip (tile0962)
@@ -582,6 +593,7 @@ void() obj_world_leg1 =
 void() obj_world_light1 =
 {
 	StartObject ("models/world/light1.md3", '-5 -6 -13', '5 6 13');
+	self.movetype = MOVETYPE_NONE;
 };
 
 // Metal Barrel (tile0201)
@@ -606,6 +618,7 @@ void() obj_world_plant1 =
 void() obj_world_poker =
 {
 	StartObject ("models/world/poker.md3", '-1 -1 8', '1 3 36');
+	self.movetype = MOVETYPE_NONE;
 };
 
 // Pram (tile0183)
@@ -618,6 +631,7 @@ void() obj_world_pram =
 void() obj_world_saw =
 {
 	StartObject ("models/world/saw.md3", '-1 -4 -9', '1 6 15');
+	self.movetype = MOVETYPE_NONE;
 };
 
 // Sink taps (tile0485)
@@ -642,6 +656,7 @@ void() obj_world_skullrag =
 void() obj_world_spade =
 {
 	StartObject ("models/world/spade.md3", '-1 -5 -18', '1 5 18');
+	self.movetype = MOVETYPE_NONE;
 };
 
 // Stone Statue (tile0679)
@@ -653,7 +668,8 @@ void() obj_world_statue4 =
 // Wall torch (tile0570)
 void() obj_world_torch =
 {
-	StartObject ("models/world/torch.md3", '-5 -5 -6', '5 5 6');
+	StartObject ("models/world/torch1.md3", '-5 -5 -6', '5 5 6');
+	self.movetype = MOVETYPE_NONE;
 };
 
 // Wreath (tile0575)
@@ -666,6 +682,7 @@ void() obj_world_wreath1 =
 void() obj_world_wreath2 =
 {
 	StartObject ("models/world/wreath2.md3", '0 -49 -42', '11 50 47');
+	self.movetype = MOVETYPE_NONE;
 };
 
 /*
@@ -2015,13 +2032,13 @@ void() item_key =
 
 	precache_model ("models/items/i_key.md3");
 	setmodel (self, "models/items/i_key.md3");
-	setsize (self, '-16 -16 -24', '16 16 32');
+	//setsize (self, '-16 -16 -24', '16 16 32');
+	setsize (self, '-16 -16 0', '16 16 56');
 
 	if (!self.noise)
 		self.noise	= "items/pickkey.wav";
 
 	precache_sound (self.noise);
-
 	self.touch	= key_touch;
 	self.rotate = ITEM_ROTATION;
 	StartItem ();
@@ -2042,7 +2059,7 @@ void() item_artifact_bag =
 	self.netname = "Doctor's Bag";
 	self.model	 = "models/items/i_docbag.md3";
 	item_powerup ();
-	setsize (self, '-7 -11 -1', '7 11 19');
+	setsize (self, '-7 -11 0', '7 11 20');
 };
 
 // Boots of Jumping
@@ -2053,7 +2070,7 @@ void() item_artifact_boots =
 	self.netname = "Boots of Jumping";
 	self.model	 = "models/items/i_boots.md3";
 	item_powerup ();
-	setsize (self, '-11 -10 -1', '4 10 19');
+	setsize (self, '-11 -10 0', '4 10 20');
 };
 
 // Crystal Ball
@@ -2064,7 +2081,7 @@ void() item_artifact_crystal =
 	self.netname = "Crystal Ball";
 	self.model	 = "models/items/i_crystal.md3";
 	item_powerup ();
-	setsize (self, '-7 -7 -1', '7 7 14');
+	setsize (self, '-7 -7 0', '7 7 15');
 };
 
 // Diving Suit
@@ -2075,7 +2092,7 @@ void() item_artifact_divingsuit =
 	self.netname = "Diving Suit";
 	self.model	 = "models/items/i_diving.md3";
 	item_powerup ();
-	setsize (self, '-9 -13 -3', '8 13 74');
+	setsize (self, '-9 -13 0', '8 13 77');
 };
 
 // Cloak of Invisibility
@@ -2087,7 +2104,7 @@ void() item_artifact_invisibility =
 	self.model	 = "models/items/i_invisible.md3";
 	self.noise	 = "bludbath/powerup.wav";
 	item_powerup ();
-	setsize (self, '-16 -16 -2', '16 16 54');
+	setsize (self, '-16 -16 0', '16 16 56');
 
 	// Set animation loop
 	self.anim_len = 11;  // 11 frames in the animation
@@ -2132,7 +2149,7 @@ void() item_artifact_akimbo =
 	self.model	 = "models/items/i_akimbo.md3";
 	self.noise	 = "bludbath/powerup.wav";
 	item_powerup ();
-	setsize (self, '-16 -16 -2', '16 16 54');
+	setsize (self, '-16 -16 0', '16 16 56');
 };
 
 // Beast Vision

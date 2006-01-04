@@ -1294,6 +1294,7 @@ Impulse list for living players
 */
 void(float isAlive) Impulses_Player =
 {
+	local float tauntnum;
     // Nothing to do
     if (self.impulse == IMP_NONE)
         return;
@@ -1367,10 +1368,14 @@ void(float isAlive) Impulses_Player =
         else if (self.impulse == IMP_ARMOR_NEXT)
             ArmorTest ();
 
-        else if (self.impulse == IMP_TAUNT_0)
-            Taunt(0);
+        else if (self.impulse <= IMP_TAUNT_0)
+		{
+			tauntnum = floor(random() * 10);
+			Taunt(tauntnum);
+            //Taunt(0);
+		}
 
-        else if (self.impulse == IMP_TAUNT_1)
+        /*else if (self.impulse == IMP_TAUNT_1)
             Taunt(1);
 
         else if (self.impulse == IMP_TAUNT_2)
@@ -1395,7 +1400,7 @@ void(float isAlive) Impulses_Player =
             Taunt(8);
 
         else if (self.impulse == IMP_TAUNT_9)
-            Taunt(9);
+            Taunt(9);*/
 
 		else if (self.impulse == 80)
 		    shake_start();
