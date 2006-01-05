@@ -17,9 +17,7 @@
     See file, 'COPYING', for details.
 */
 
-
 #include "common.qh"
-
 
 /*
 ==============================================================================
@@ -39,21 +37,21 @@ float   time;
 float   frametime;
 
 float   force_retouch;  // force all entities to touch triggers
-                        // next frame.  this is needed because
-                        // non-moving things don't normally scan
-                        // for triggers, and when a trigger is
-                        // created (like a teleport trigger), it
-                        // needs to catch everything.
-                        // decremented each frame, so set to 2
-                        // to guarantee everything is touched
+						// next frame.  this is needed because
+						// non-moving things don't normally scan
+						// for triggers, and when a trigger is
+						// created (like a teleport trigger), it
+						// needs to catch everything.
+						// decremented each frame, so set to 2
+						// to guarantee everything is touched
 string  mapname;
 
 float   deathmatch;
 float   coop;
 float   teamplay;
 
-float   serverflags;    // propagated from level to level, used to
-                        // keep track of completed episodes
+float   serverflags;	// propagated from level to level, used to
+						// keep track of completed episodes
 
 float   total_secrets;
 float   total_monsters;
@@ -105,7 +103,6 @@ void()  SetNewParms;        // called when a client first connects to
 
 void()  SetChangeParms;     // call to set parms for self so they can
                             // be saved for a level transition
-
 
 //================================================
 void    end_sys_globals;    // flag for structure dumping
@@ -380,13 +377,11 @@ float sight_entity_time;
 //
 .entity     burner;         // The flame generator linked on an entity
 
-
 //
 // quakeed fields
 //
 .float      light_lev;  // not used by game, but parsed by light util
 .float      style;      // mainly used for the light styles
-
 
 //
 // monster ai
@@ -418,7 +413,6 @@ float sight_entity_time;
 .float		anim_end;		//last animation $frame name
 .float		anim_end_num;	//number associated with the last $frame
 .float		anim_time;		//the length in seconds of one animation cycle
-
 
 //
 // player only fields
@@ -478,7 +472,6 @@ float sight_entity_time;
 .float      t_length, t_width;
 .float      anim_len;       // animation length
 
-
 //
 // doors, etc
 //
@@ -528,7 +521,6 @@ float sight_entity_time;
 //
 .float      count;          // for counting triggers
 
-
 //
 // plats / doors / buttons
 //
@@ -559,8 +551,6 @@ float sight_entity_time;
 .float 		resist_voodoo;
 
 //===========================================================================
-
-
 //
 // builtin functions
 //
@@ -670,7 +660,6 @@ void(vector pos, string samp, float vol, float atten) ambientsound  = #74;
 void(entity e) setspawnparms = #78;  // set parm1... to the values at level start for coop respawn
 #endif
 
-
 //commented out, declared in dpextensions.qc
 /*
 // QC extensions
@@ -681,7 +670,6 @@ float(string s) checkextension                  = #99;
 string(string s1, string s2) strcat             = #115; 
 
 Temporary entities were simplified.  Here's the simpler functions...
-
 
 //creates a blood effect
 void(vector org, vector velocity, float howmany) te_blood = #405;

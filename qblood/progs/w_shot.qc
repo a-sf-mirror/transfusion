@@ -20,15 +20,11 @@
 #include "common.qh"
 #include "player.qh"
 
-
 void() Shot_Fire;
 void() Shot_SpawnShell;
 
-
 //============================================================================
-
 // ----- Sawed-off models ----- //
-
 // Normal model
 $modelname v_shot
 
@@ -50,7 +46,6 @@ $frame shot_reload1 shot_reload2 shot_reload3 shot_reload4 shot_reload5
 // holster
 $frame shot_holster1 shot_holster2 shot_holster3
 
-
 // Akimbo model
 $modelname ga_shot
 
@@ -69,9 +64,7 @@ $frame ashot_alt1 ashot_alt2 ashot_alt3 ashot_alt4
 // holster
 $frame ashot_holster1 ashot_holster2 ashot_holster3
 
-
 // ----- Player related code ----- //
-
 // Reload
 void() player_reloadshot1  = [$attack2, player_reloadshot2 ] { self.weaponframe = $shot_reload1; };
 void() player_reloadshot2  = [$attack2, player_reloadshot3 ] { self.weaponframe = $shot_reload2; };
@@ -83,12 +76,12 @@ void() player_reloadshot5  = [$attack2, player_run         ] { self.weaponframe 
 void() player_shot1 = [$attack1, player_shot2] { self.weaponframe = $shot_fire1; muzzleflash (); };
 void() player_shot2 = [$attack2, player_run  ]
 {
-    self.weaponframe = $shot_fire1;
-    if ((self.currentammo & 1) == 0)
-    {
-        self.think = player_reloadshot1;
-        self.attack_finished = time + 0.6;
-    }
+	self.weaponframe = $shot_fire1;
+	if ((self.currentammo & 1) == 0)
+	{
+		self.think = player_reloadshot1;
+		self.attack_finished = time + 0.6;
+	}
 };
 
 // Akimbo normal shot
@@ -97,33 +90,33 @@ void() player_akshot2 = [$attack1, player_akshot3] { self.weaponframe = $ashot_f
 void() player_akshot3 = [$attack2, player_akshot4] { self.weaponframe = $ashot_fire3; };
 void() player_akshot4 = [$attack2, player_run    ]
 {
-    // If we don't have enough ammo anymore, drop the akimbo mode for now
-    if (self.ammo_shells < 2)
-    {
-        Shot_UpdateView ();
-        self.weaponframe = $shot_idle1;
-    }
+	// If we don't have enough ammo anymore, drop the akimbo mode for now
+	if (self.ammo_shells < 2)
+	{
+		Shot_UpdateView ();
+		self.weaponframe = $shot_idle1;
+	}
 };
 
 // Akimbo altfire shot
 void() player_altshot1 = [$attack1, player_altshot2]
 {
-    self.weaponframe = $ashot_alt1;
-    muzzleflash ();
-    Shot_Fire ();
-    Shot_Fire ();
+	self.weaponframe = $ashot_alt1;
+	muzzleflash ();
+	Shot_Fire ();
+	Shot_Fire ();
 };
 void() player_altshot2 = [$attack1, player_altshot3] { self.weaponframe = $ashot_alt2; };
 void() player_altshot3 = [$attack2, player_altshot4] { self.weaponframe = $ashot_alt3; };
 void() player_altshot4 = [$attack2, player_altshot5] { self.weaponframe = $ashot_alt4; };
 void() player_altshot5 = [$attack2, player_run    ]
 {
-    // If we don't have enough ammo anymore, drop the akimbo mode for now
-    if (self.ammo_shells < 2)
-    {
-        Shot_UpdateView ();
-        self.weaponframe = $shot_idle1;
-    }
+	// If we don't have enough ammo anymore, drop the akimbo mode for now
+	if (self.ammo_shells < 2)
+	{
+		Shot_UpdateView ();
+		self.weaponframe = $shot_idle1;
+	}
 };
 
 // Normal draw
@@ -148,7 +141,6 @@ void() player_akshotholster2 = [$attack2, player_akshotholster3] { self.weaponfr
 void() player_akshotholster3 = [$attack2, player_akshotholster4] { self.weaponframe = $ashot_holster3; };
 void() player_akshotholster4 = [$attack2, player_run           ] { W_DrawWeapon (self.newweapon); };
 
-
 //============================================================================
 
 /*
@@ -160,32 +152,31 @@ Spawns the shotgun shells if necessary
 */
 void() Shot_SpawnShell =
 {
-    local entity shell;
-    local entity shell2;
+	local entity shell;
+	local entity shell2;
 
-    // 1st shell
-    shell = spawn ();
-    shell.owner = self;
-    shell.mdl   = "models/weapons/objects/shotshell.md3";
-    shell.noise = "weapons/shtshl2.wav";
+	// 1st shell
+	shell = spawn ();
+	shell.owner = self;
+	shell.mdl   = "models/weapons/objects/shotshell.md3";
+	shell.noise = "weapons/shtshl2.wav";
 
-    setorigin (shell, self.origin + v_forward * 15);
-    shell.velocity = (crandom () + 1) * v_forward * 30 + v_up * (220 + crandom () * 10) - v_right * crandom () * 30;
-    DropShell (shell);
+	setorigin (shell, self.origin + v_forward * 15);
+	shell.velocity = (crandom () + 1) * v_forward * 30 + v_up * (220 + crandom () * 10) - v_right * crandom () * 30;
+	DropShell (shell);
 
-    // 2nd shell
-    shell2 = spawn ();
-    shell2.owner = self;
-    shell2.mdl   = shell.mdl;
-    shell2.noise = shell.noise;
+	// 2nd shell
+	shell2 = spawn ();
+	shell2.owner = self;
+	shell2.mdl   = shell.mdl;
+	shell2.noise = shell.noise;
 
-    setorigin (shell2, shell.origin);
-    shell2.velocity = (crandom () + 1) * v_forward * 30 + v_up * (220 + crandom () * 10) - v_right * crandom () * 30;
-    DropShell (shell2);
+	setorigin (shell2, shell.origin);
+	shell2.velocity = (crandom () + 1) * v_forward * 30 + v_up * (220 + crandom () * 10) - v_right * crandom () * 30;
+	DropShell (shell2);
 
-    sound (shell, CHAN_WEAPON, "weapons/shotgun/shotcock.wav", 1, ATTN_NORM);
+	sound (shell, CHAN_WEAPON, "weapons/shotgun/shotcock.wav", 1, ATTN_NORM);
 };
-
 
 /*
 ================
@@ -196,48 +187,47 @@ Shot with the sawed-off
 */
 void() Shot_Fire =
 {
-    local float nbshots;
-    local vector dir;
-    local vector spread;
+	local float nbshots;
+	local vector dir;
+	local vector spread;
 
-    if (! self.ammo_shells)
-        return;
+	if (! self.ammo_shells)
+		return;
 
-    if (self.player_state == PS_ALTFIRE && (self.currentammo & 1) != 1)
-    {
-        nbshots = 2;
-        spread = '0.14 0.08 0';
-    }
-    else
-    {
-        nbshots = 1;
-        spread = '0.1 0.03 0';
-    }
+	if (self.player_state == PS_ALTFIRE && (self.currentammo & 1) != 1)
+	{
+		nbshots = 2;
+		spread = '0.14 0.08 0';
+	}
+	else
+	{
+		nbshots = 1;
+		spread = '0.1 0.03 0';
+	}
 
-    makevectors (self.v_angle);
+	makevectors (self.v_angle);
 
-    self.punchangle_x = -2 * nbshots;
+	self.punchangle_x = -2 * nbshots;
 
-    self.currentammo = self.ammo_shells = self.ammo_shells - nbshots;
+	self.currentammo = self.ammo_shells = self.ammo_shells - nbshots;
 
-    if (nbshots == 1)
-        sound (self, CHAN_AUTO, "weapons/shotgun/shotfire.wav", 1, ATTN_NORM);
-    else
-        sound (self ,CHAN_AUTO, "weapons/shotgun/shotfir2.wav", 1, ATTN_NORM);
+	if (nbshots == 1)
+		sound (self, CHAN_AUTO, "weapons/shotgun/shotfire.wav", 1, ATTN_NORM);
+	else
+		sound (self ,CHAN_AUTO, "weapons/shotgun/shotfir2.wav", 1, ATTN_NORM);
 
-    dir = aim (self, 100000);
-    
-    // Total damage from an alt-fire is about 3 times normal damage (1*8*8=64, 2*8*12=192)
-    if (nbshots == 1)
-    {
-    	FireBullets (self.origin + v_up * 20, dir, 8 * nbshots, 8, spread);  // 8 "shot pellets" per shell
+	dir = aim (self, 100000);
+
+	// Total damage from an alt-fire is about 3 times normal damage (1*8*8=64, 2*8*12=192)
+	if (nbshots == 1)
+	{
+		FireBullets (self.origin + v_up * 20, dir, 8 * nbshots, 8, spread);  // 8 "shot pellets" per shell
 	}
 	else if (nbshots == 2)
 	{
-    	FireBullets (self.origin + v_up * 20, dir, 8 * nbshots, 12, spread);  // 8 "shot pellets" per shell
+		FireBullets (self.origin + v_up * 20, dir, 8 * nbshots, 12, spread);  // 8 "shot pellets" per shell
 	}
 };
-
 
 /*
 ============
@@ -248,29 +238,28 @@ Attack code for the sawed-off
 */
 void() Shot_Attack =
 {
-    self.attack_finished = time + 0.4;
+	self.attack_finished = time + 0.4;
 
-    // If it's an altfire shot
-    if (self.button3)
-        self.player_state = PS_ALTFIRE;
-    else
-        self.player_state = PS_FIRE;
+	// If it's an altfire shot
+	if (self.button3)
+		self.player_state = PS_ALTFIRE;
+	else
+		self.player_state = PS_FIRE;
 
-    // If we have guns akimbo
-    if (self.items & IT_GUNS_AKIMBO)
-    {
-        if (self.player_state == PS_ALTFIRE)
-            player_altshot1 ();
-        else
-            player_akshot1 ();
-    }
-    else
-    {
-        Shot_Fire ();
-        player_shot1 ();
-    }
+	// If we have guns akimbo
+	if (self.items & IT_GUNS_AKIMBO)
+	{
+		if (self.player_state == PS_ALTFIRE)
+			player_altshot1 ();
+		else
+			player_akshot1 ();
+	}
+	else
+	{
+		Shot_Fire ();
+		player_shot1 ();
+	}
 };
-
 
 /*
 ============
@@ -281,19 +270,18 @@ Draw code for the sawed-off
 */
 void() Shot_Draw =
 {
-    self.weapon = IT_SAWED_OFF;
-    self.currentammo = self.ammo_shells;
-    self.items = (self.items - (self.items & (IT_NAILS | IT_CELLS | IT_ROCKETS))) | IT_SHELLS;
+	self.weapon = IT_SAWED_OFF;
+	self.currentammo = self.ammo_shells;
+	self.items = (self.items - (self.items & (IT_NAILS | IT_CELLS | IT_ROCKETS))) | IT_SHELLS;
 
-    Shot_UpdateView ();
+	Shot_UpdateView ();
 
-    self.attack_finished = time + 0.3;
-    if (self.items & IT_GUNS_AKIMBO)
-        player_akshotdraw1 ();
-    else
-        player_shotdraw1 ();
+	self.attack_finished = time + 0.3;
+	if (self.items & IT_GUNS_AKIMBO)
+		player_akshotdraw1 ();
+	else
+		player_shotdraw1 ();
 };
-
 
 /*
 ============
@@ -304,13 +292,12 @@ Holster code for the sawed-off
 */
 void() Shot_Holster =
 {
-    self.attack_finished = time + 0.3;
-    if (self.items & IT_GUNS_AKIMBO)
-        player_akshotholster1 ();
-    else
-        player_shotholster1 ();
+	self.attack_finished = time + 0.3;
+	if (self.items & IT_GUNS_AKIMBO)
+		player_akshotholster1 ();
+	else
+		player_shotholster1 ();
 };
-
 
 /*
 ============
@@ -321,14 +308,14 @@ Choose the right sawed-off model to display
 */
 void() Shot_UpdateView =
 {
-    if (self.akimbo_finished > time && self.currentammo >= 2)
-    {
-        self.weaponmodel = "models/weapons/ga_shot.md3";
-        self.items = self.items | IT_GUNS_AKIMBO;
-    }
-    else
-    {
-        self.weaponmodel = "models/weapons/v_shot.md3";
-        self.items = self.items - (self.items & IT_GUNS_AKIMBO);
-    }
+	if (self.akimbo_finished > time && self.currentammo >= 2)
+	{
+		self.weaponmodel = "models/weapons/ga_shot.md3";
+		self.items = self.items | IT_GUNS_AKIMBO;
+	}
+	else
+	{
+		self.weaponmodel = "models/weapons/v_shot.md3";
+		self.items = self.items - (self.items & IT_GUNS_AKIMBO);
+	}
 };

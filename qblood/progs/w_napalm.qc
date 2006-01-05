@@ -20,12 +20,9 @@
 #include "common.qh"
 #include "player.qh"
 
-
 void() Napalm_Fire;
 
-
 //============================================================================
-
 // ----- Napalm launcher models ----- //
 
 // Normal model
@@ -44,7 +41,6 @@ $frame napalm_fire6
 // holster
 $frame napalm_holster1 napalm_holster2 napalm_holster3
 
-
 // Akimbo model
 $modelname ga_napalm
 
@@ -61,9 +57,7 @@ $frame anapalm_fire6
 // holster
 $frame anapalm_holstr1 anapalm_holstr2 anapalm_holstr3
 
-
 // ----- Player related code ----- //
-
 // Normal fire
 void() player_napalm1 = [$attack1, player_napalm2] { self.weaponframe = $napalm_fire1; muzzleflash (); };
 void() player_napalm2 = [$attack1, player_napalm3] { self.weaponframe = $napalm_fire2; };
@@ -81,11 +75,11 @@ void() player_aknapalm5 = [$attack2, player_aknapalm6] { self.weaponframe = $ana
 void() player_aknapalm6 = [$attack2, player_aknapalm7] { self.weaponframe = $anapalm_fire6; };
 void() player_aknapalm7 =
 {
-    // If we don't have enough ammo anymore, drop the guns akimbo
-    if ((self.items & IT_GUNS_AKIMBO) && self.currentammo < 2)
-        Napalm_UpdateView ();
+	// If we don't have enough ammo anymore, drop the guns akimbo
+	if ((self.items & IT_GUNS_AKIMBO) && self.currentammo < 2)
+		Napalm_UpdateView ();
 
-    player_run ();
+	player_run ();
 };
 
 // Normal draw
@@ -110,9 +104,7 @@ void() player_aknapalmholst2 = [$attack2, player_aknapalmholst3] { self.weaponfr
 void() player_aknapalmholst3 = [$attack2, player_aknapalmholst4] { self.weaponframe = $anapalm_holstr3; };
 void() player_aknapalmholst4 = [$attack2, player_run           ] { W_DrawWeapon (self.newweapon); };
 
-
 //============================================================================
-
 void() Napalm_BallTouch;
 
 /*
@@ -127,13 +119,12 @@ NOTE: we must do that because the balls are spawned at the same position
 */
 void() Napalm_ActivateBall =
 {
-    // We "save" the velocity in the "angles" field
-    // right after the bounce
-    self.angles = vectoangles (self.velocity);
+	// We "save" the velocity in the "angles" field
+	// right after the bounce
+	self.angles = vectoangles (self.velocity);
 
-    self.touch = Napalm_BallTouch;
+	self.touch = Napalm_BallTouch;
 };
-
 
 /*
 ================
@@ -146,31 +137,30 @@ NOTE: a few fields ("velocity", "origin" and "cnt") must be set by the caller
 */
 void(entity newball) Napalm_ThrowBouncingBall =
 {
-    // Remember who really owns the ball.
-    if (self.owner)
-        newball.owner = newball.enemy = self.owner;
-    else
-        newball.owner = newball.enemy = self;
+	// Remember who really owns the ball.
+	if (self.owner)
+		newball.owner = newball.enemy = self.owner;
+	else
+		newball.owner = newball.enemy = self;
 
-    
-		
+
+
 	newball.effects = newball.effects | EF_FLAME;
-    newball.movetype = MOVETYPE_BOUNCE;
-    newball.solid = SOLID_BBOX;
-    newball.classname = "grenade";
+	newball.movetype = MOVETYPE_BOUNCE;
+	newball.solid = SOLID_BBOX;
+	newball.classname = "grenade";
 
-    newball.netname = "Napalm Ball";
-    newball.dmg = 100;
+	newball.netname = "Napalm Ball";
+	newball.dmg = 100;
 
-    newball.nextthink = time + 0.1;
-    newball.think = Napalm_ActivateBall;
+	newball.nextthink = time + 0.1;
+	newball.think = Napalm_ActivateBall;
 
-    newball.reset = SUB_Remove;
+	newball.reset = SUB_Remove;
 
-    setmodel (newball, "models/weapons/objects/naltball.md3");
-    setsize (newball, '0 0 0', '0 0 0');
+	setmodel (newball, "models/weapons/objects/naltball.md3");
+	setsize (newball, '0 0 0', '0 0 0');
 };
-
 
 /*
 ================
@@ -181,44 +171,43 @@ Touch function for the rockets
 */
 void() T_MissileTouch =
 {
-    if (other == self.owner)
-        return;     // don't explode on owner
+	if (other == self.owner)
+	return;     // don't explode on owner
 
-    if (pointcontents(self.origin) == CONTENT_SKY)
-    {
-        remove(self);
-        return;
-    }
+	if (pointcontents(self.origin) == CONTENT_SKY)
+	{
+		remove(self);
+		return;
+	}
 
-    self.deathtype = "missile";  // Done for the fire code.
-    self.effects = 0;
+	self.deathtype = "missile";  // Done for the fire code.
+	self.effects = 0;
 
-    if (other.health)
-    {
-        other.deathtype = "missile";
-        BurnDamage (other, self, self.dmg * 0.75, DF_BURN, 10, (self.dmg * 0.25) / 10);
-    }
+	if (other.health)
+	{
+		other.deathtype = "missile";
+		BurnDamage (other, self, self.dmg * 0.75, DF_BURN, 10, (self.dmg * 0.25) / 10);
+	}
 
-    // don't do radius damage to "other", because all the damage
-    // was done in the impact
-    BurnRadius (self, 160, self.dmg * 0.75, self.dmg * 0.5, other);
+	// don't do radius damage to "other", because all the damage
+	// was done in the impact
+	BurnRadius (self, 160, self.dmg * 0.75, self.dmg * 0.5, other);
 
-    // Make detonation sound
-    sound (self, CHAN_AUTO, "weapons/napalm/explodcl.wav", 1, ATTN_NORM);
+	// Make detonation sound
+	sound (self, CHAN_AUTO, "weapons/napalm/explodcl.wav", 1, ATTN_NORM);
 
-    PsychoCaleb (self.owner);
+	PsychoCaleb (self.owner);
 
-    self.origin = self.origin - 8 * normalize (self.velocity);
+	self.origin = self.origin - 8 * normalize (self.velocity);
 
-    WriteByte (MSG_BROADCAST, SVC_TEMPENTITY);
-    WriteByte (MSG_BROADCAST, TE_EXPLOSION);
-    WriteCoord (MSG_BROADCAST, self.origin_x);
-    WriteCoord (MSG_BROADCAST, self.origin_y);
-    WriteCoord (MSG_BROADCAST, self.origin_z);
+	WriteByte (MSG_BROADCAST, SVC_TEMPENTITY);
+	WriteByte (MSG_BROADCAST, TE_EXPLOSION);
+	WriteCoord (MSG_BROADCAST, self.origin_x);
+	WriteCoord (MSG_BROADCAST, self.origin_y);
+	WriteCoord (MSG_BROADCAST, self.origin_z);
 
-    BecomeExplosion ();
+	BecomeExplosion ();
 };
-
 
 /*
 ================
@@ -229,35 +218,34 @@ Touch function for the bouncing ball
 */
 void() Napalm_BallTouch =
 {
-    if (self.cnt > 1)
-    {
-        local entity newball;
-        local vector neworig;
+	if (self.cnt > 1)
+	{
+		local entity newball;
+		local vector neworig;
 
-        // "self.angles" allows us to recover the original direction
-        makevectors (self.angles);
+		// "self.angles" allows us to recover the original direction
+		makevectors (self.angles);
 
-        neworig = self.origin - 8 * normalize (self.velocity);
+		neworig = self.origin - 8 * normalize (self.velocity);
 
-        newmis = spawn ();
-        newmis.cnt = floor (self.cnt / 2);
-        self.cnt = self.cnt - newmis.cnt;
-        newmis.velocity = v_forward * 300 + v_right * 100;
-        newmis.velocity_z = random() * 150 + 350;
-        Napalm_ThrowBouncingBall (newmis);
-        setorigin (newmis, neworig);
+		newmis = spawn ();
+		newmis.cnt = floor (self.cnt / 2);
+		self.cnt = self.cnt - newmis.cnt;
+		newmis.velocity = v_forward * 300 + v_right * 100;
+		newmis.velocity_z = random() * 150 + 350;
+		Napalm_ThrowBouncingBall (newmis);
+		setorigin (newmis, neworig);
 
-        newball = spawn ();
-        newball.cnt = self.cnt;
-        newball.velocity = v_forward * 300 - v_right * 100;
-        newball.velocity_z = random() * 150 + 350;
-        Napalm_ThrowBouncingBall (newball);
-        setorigin (newball, neworig);
-    }
+		newball = spawn ();
+		newball.cnt = self.cnt;
+		newball.velocity = v_forward * 300 - v_right * 100;
+		newball.velocity_z = random() * 150 + 350;
+		Napalm_ThrowBouncingBall (newball);
+		setorigin (newball, neworig);
+	}
 
-    T_MissileTouch ();
+	T_MissileTouch ();
 };
-
 
 /*
 ================
@@ -268,54 +256,53 @@ Shot a napalm ball
 */
 void() Napalm_Fire =
 {
-    sound (self, CHAN_WEAPON, "weapons/napalm/blaster.wav", 1, ATTN_NORM);
+	sound (self, CHAN_WEAPON, "weapons/napalm/blaster.wav", 1, ATTN_NORM);
 
-    self.punchangle_x = -2;
+	self.punchangle_x = -2;
 
-    newmis = spawn ();
+	newmis = spawn ();
 
-    makevectors (self.v_angle);
-    newmis.velocity = aim (self, 1000);  // base velocity
+	makevectors (self.v_angle);
+	newmis.velocity = aim (self, 1000);  // base velocity
 
-    if (self.player_state == PS_ALTFIRE)
-    {
-        // set the number of bouncing balls
-        if (self.ammo_rockets > 12)
-            newmis.cnt = 12;
-        else
-            newmis.cnt = self.ammo_rockets;
-        self.ammo_rockets = self.ammo_rockets - newmis.cnt;
-        newmis.velocity = newmis.velocity * 400 + '0 0 200';
+	if (self.player_state == PS_ALTFIRE)
+	{
+		// set the number of bouncing balls
+		if (self.ammo_rockets > 12)
+			newmis.cnt = 12;
+		else
+			newmis.cnt = self.ammo_rockets;
+		self.ammo_rockets = self.ammo_rockets - newmis.cnt;
+		newmis.velocity = newmis.velocity * 400 + '0 0 200';
 
-        Napalm_ThrowBouncingBall (newmis);
-    }
-    else
-    {        
+		Napalm_ThrowBouncingBall (newmis);
+	}
+	else
+	{        
 		newmis.effects = newmis.effects | EF_FLAME;
 		newmis.owner = self;
-        newmis.solid = SOLID_BBOX;
-        newmis.classname = "missile";
-        newmis.angles = vectoangles(newmis.velocity);
+		newmis.solid = SOLID_BBOX;
+		newmis.classname = "missile";
+		newmis.angles = vectoangles(newmis.velocity);
 
-        newmis.movetype = MOVETYPE_FLYMISSILE;
-        newmis.velocity = newmis.velocity * 1500;
-        self.ammo_rockets = self.ammo_rockets - 1;
+		newmis.movetype = MOVETYPE_FLYMISSILE;
+		newmis.velocity = newmis.velocity * 1500;
+		self.ammo_rockets = self.ammo_rockets - 1;
 
-        newmis.touch = T_MissileTouch;
-        setmodel (newmis, "models/weapons/objects/napalm.md3");
-        setsize (newmis, '0 0 0', '0 0 0');
+		newmis.touch = T_MissileTouch;
+		setmodel (newmis, "models/weapons/objects/napalm.md3");
+		setsize (newmis, '0 0 0', '0 0 0');
 
-        newmis.dmg = 100 + rint (random () * 40);
+		newmis.dmg = 100 + rint (random () * 40);
 
-        // set newmis duration
-        newmis.nextthink = time + 5;
-        newmis.think = SUB_Remove;
-        newmis.reset = SUB_Remove;
-    }
-    self.currentammo = self.ammo_rockets;
-    setorigin (newmis, self.origin + v_forward * 8 + '0 0 16');
+		// set newmis duration
+		newmis.nextthink = time + 5;
+		newmis.think = SUB_Remove;
+		newmis.reset = SUB_Remove;
+	}
+	self.currentammo = self.ammo_rockets;
+	setorigin (newmis, self.origin + v_forward * 8 + '0 0 16');
 };
-
 
 /*
 ============
@@ -326,27 +313,26 @@ Attack code for the napalm launcher
 */
 void() Napalm_Attack =
 {
-    // Normal fire or altfire?
-    if (self.button3)
-        self.player_state = PS_ALTFIRE;
-    else
-        self.player_state = PS_FIRE;
+	// Normal fire or altfire?
+	if (self.button3)
+		self.player_state = PS_ALTFIRE;
+	else
+		self.player_state = PS_FIRE;
 
-    // If we have guns akimbo
-    if (self.items & IT_GUNS_AKIMBO)
-    {
-        player_aknapalm1 ();
-        self.attack_finished = time + 0.6;
-    }
-    else
-    {
-        player_napalm1 ();
-        self.attack_finished = time + 0.6;
-    }
+	// If we have guns akimbo
+	if (self.items & IT_GUNS_AKIMBO)
+	{
+		player_aknapalm1 ();
+		self.attack_finished = time + 0.6;
+	}
+	else
+	{
+		player_napalm1 ();
+		self.attack_finished = time + 0.6;
+	}
 
-    Napalm_Fire ();
+	Napalm_Fire ();
 };
-
 
 /*
 ============
@@ -357,24 +343,23 @@ Draw code for the napalm launcher
 */
 void() Napalm_Draw =
 {
-    self.weapon = IT_NAPALM_LAUNCHER;
-    self.currentammo = self.ammo_rockets;
-    self.items = (self.items - (self.items & (IT_SHELLS | IT_NAILS | IT_CELLS))) | IT_ROCKETS;
+	self.weapon = IT_NAPALM_LAUNCHER;
+	self.currentammo = self.ammo_rockets;
+	self.items = (self.items - (self.items & (IT_SHELLS | IT_NAILS | IT_CELLS))) | IT_ROCKETS;
 
-    Napalm_UpdateView ();
+	Napalm_UpdateView ();
 
-    if (self.items & IT_GUNS_AKIMBO)
-    {
-        self.attack_finished = time + 0.4;
-        player_aknapalmdraw1 ();
-    }
-    else
-    {
-        self.attack_finished = time + 0.4;
-        player_napalmdraw1 ();
-    }
+	if (self.items & IT_GUNS_AKIMBO)
+	{
+		self.attack_finished = time + 0.4;
+		player_aknapalmdraw1 ();
+	}
+	else
+	{
+		self.attack_finished = time + 0.4;
+		player_napalmdraw1 ();
+	}
 };
-
 
 /*
 ============
@@ -385,18 +370,17 @@ Holster code for the napalm launcher
 */
 void() Napalm_Holster =
 {
-    if (self.items & IT_GUNS_AKIMBO)
-    {
-        self.attack_finished = time + 0.4;
-        player_aknapalmholst1 ();
-    }
-    else
-    {
-        self.attack_finished = time + 0.4;
-        player_napalmholst1 ();
-    }
+	if (self.items & IT_GUNS_AKIMBO)
+	{
+		self.attack_finished = time + 0.4;
+		player_aknapalmholst1 ();
+	}
+	else
+	{
+		self.attack_finished = time + 0.4;
+		player_napalmholst1 ();
+	}
 };
-
 
 /*
 ============
@@ -407,14 +391,14 @@ Choose the right napalm launcher model to display
 */
 void() Napalm_UpdateView =
 {
-    if (self.akimbo_finished > time && self.currentammo >= 2)
-    {
-        self.weaponmodel = "models/weapons/ga_napalm.md3";
-        self.items = self.items | IT_GUNS_AKIMBO;
-    }
-    else
-    {
-        self.weaponmodel = "models/weapons/v_napalm.md3";
-        self.items = self.items - (self.items & IT_GUNS_AKIMBO);
-    }
+	if (self.akimbo_finished > time && self.currentammo >= 2)
+	{
+		self.weaponmodel = "models/weapons/ga_napalm.md3";
+		self.items = self.items | IT_GUNS_AKIMBO;
+	}
+	else
+	{
+		self.weaponmodel = "models/weapons/v_napalm.md3";
+		self.items = self.items - (self.items & IT_GUNS_AKIMBO);
+	}
 };

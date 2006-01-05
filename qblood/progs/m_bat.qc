@@ -19,13 +19,11 @@
 
 #include "common.qh"
 
-
 $frame sleep
 
 $frame wake1 wake2 wake3
 
 $frame fly1 fly2 fly3 fly4 fly5 fly6 fly7
-
 
 void() flymonster_start;
 void() bat_wake1;
@@ -36,21 +34,21 @@ void() bat_run1;
 
 void() bat_idle =
 {
-    if (self.frame == $sleep && !self.enemy)    // If he's sleeping and nothing is nearby
-       {
-          ai_stand();             // Sleep lightly
-          self.think = bat_idle;
-          self.nextthink = time + 0.1;
-       }
-    else if (self.frame == $sleep)    // If he's sleeping
-          bat_wake1();                   // Wake his ass up
-    else
-          bat_stand1();
+	if (self.frame == $sleep && !self.enemy)    // If he's sleeping and nothing is nearby
+	{
+		ai_stand();             // Sleep lightly
+		self.think = bat_idle;
+		self.nextthink = time + 0.1;
+	}
+	else if (self.frame == $sleep)    // If he's sleeping
+		bat_wake1();                   // Wake his ass up
+	else
+		bat_stand1();
 };
 
 void() bat_run =
 {
-    bat_run1();
+	bat_run1();
 };
 
 void() bat_wake1  =[$wake1, bat_wake2 ] {};
@@ -59,10 +57,10 @@ void() bat_wake3  =[$wake3, bat_run1 ] {ai_face();};
 
 void() bat_stand1  =[$fly1, bat_stand2 ]
 {
-    if (random() < 0.05)
-        sound (self, CHAN_VOICE, "bat/batroam.wav", 1, ATTN_NORM);
+	if (random() < 0.05)
+		sound (self, CHAN_VOICE, "bat/batroam.wav", 1, ATTN_NORM);
 
-    ai_stand();
+	ai_stand();
 };
 
 void() bat_stand2  =[$fly2, bat_stand3 ] {ai_stand();};
@@ -90,72 +88,69 @@ void() bat_run7  =[$fly7, bat_run1 ] {ai_run();ai_charge(10);ai_face();};
 
 void() bat_death =[$fly1, bat_death]
 {
-    monster_death();	
+	monster_death();	
 
-    local float     r;
+	local float     r;
 
-    r = random();
+	r = random();
 
-    if (r <= 0.25)
-        sound (self, CHAN_VOICE, "bat/batdie1.wav", 1, ATTN_NORM);
-    else if (r <= 0.50)
-        sound (self, CHAN_VOICE, "bat/batdie2.wav", 1, ATTN_NORM);
-    else if (r <= 0.75)
-        sound (self, CHAN_VOICE, "bat/batdie3.wav", 1, ATTN_NORM);
-    else
-        sound (self, CHAN_VOICE, "bat/bat.wav", 1, ATTN_NORM);
+	if (r <= 0.25)
+		sound (self, CHAN_VOICE, "bat/batdie1.wav", 1, ATTN_NORM);
+	else if (r <= 0.50)
+		sound (self, CHAN_VOICE, "bat/batdie2.wav", 1, ATTN_NORM);
+	else if (r <= 0.75)
+		sound (self, CHAN_VOICE, "bat/batdie3.wav", 1, ATTN_NORM);
+	else
+		sound (self, CHAN_VOICE, "bat/bat.wav", 1, ATTN_NORM);
 
-    if (self.health <= -20)
+	if (self.health <= -20)
 	{
-        // blood splat!
-	    te_bloodshower (self.origin, self.origin + self.size, 100, 25);
+		// blood splat!
+		te_bloodshower (self.origin, self.origin + self.size, 100, 25);
 		ThrowGib ("models/objects/gib4.md3", self.health);
 		remove (self);
 		return;
 	}
 	else
-	    droptofloor();
+		droptofloor();
 
 	// In the last frame, remove self 15 seconds after death
-    self.nextthink = time + 15;
-    self.think = SUB_Remove;
+	self.nextthink = time + 15;
+	self.think = SUB_Remove;
 };
-
 
 void(entity attacker, float damage)    bat_pain =
 {
-
-// don't make multiple pain sounds right after each other
-    if (self.pain_finished > time)
-        return;
-
-    sound (self, CHAN_VOICE, "bat/batpain.wav", 1, ATTN_NORM);
-    self.pain_finished = time + 0.52;
-//    ai_pain(6);	//deprecated
+	// don't make multiple pain sounds right after each other
+	if (self.pain_finished > time)
+		return;
+	sound (self, CHAN_VOICE, "bat/batpain.wav", 1, ATTN_NORM);
+	self.pain_finished = time + 0.52;
+	//    ai_pain(6);	//deprecated
 };
 
 void() monster_bat =
 {
-    //  Disable for testing
-    if(monster_check())
-	    return;
- 
-    precache_model ("models/enemies/bat.md3");
+	//  Disable for testing
+	if(monster_check())
+		return;
 
-    precache_sound ("bat/batdie1.wav");
-    precache_sound ("bat/batdie2.wav");
-    precache_sound ("bat/batdie3.wav");
-    precache_sound ("bat/batpain.wav");
-    precache_sound ("bat/batroam.wav");
-    precache_sound ("bat/batspot.wav");
-    precache_sound ("bat/bat.wav");
+	precache_model ("models/enemies/bat.md3");
 
-    self.solid = SOLID_SLIDEBOX;
-    self.movetype = MOVETYPE_FLY;
+	precache_sound ("bat/batdie1.wav");
+	precache_sound ("bat/batdie2.wav");
+	precache_sound ("bat/batdie3.wav");
+	precache_sound ("bat/batpain.wav");
+	precache_sound ("bat/batroam.wav");
+	precache_sound ("bat/batspot.wav");
+	precache_sound ("bat/bat.wav");
 
-    setmodel (self, "models/enemies/bat.md3");
+	self.solid = SOLID_SLIDEBOX;
+	self.movetype = MOVETYPE_FLY;
 
-    setsize (self, '-4 -4 -5', '5 3 7');
+	setmodel (self, "models/enemies/bat.md3");
+
+	setsize (self, '-4 -4 -5', '5 3 7');
 	self.resist_acid = 0;
 	self.resist_shock = 0;
 	self.resist_pummel = 0;
@@ -168,13 +163,13 @@ void() monster_bat =
 	self.resist_drown = -1;	// cannot drown
 	self.resist_spirit = 0;
 	self.resist_voodoo = 0;
-    self.health = 12;
-    self.max_health = self.health;
-    self.th_stand = bat_idle;
-    self.th_walk = bat_walk1;
-    self.th_run = bat_run;
-    self.th_die = bat_death;
-    self.th_pain = bat_pain;
+	self.health = 12;
+	self.max_health = self.health;
+	self.th_stand = bat_idle;
+	self.th_walk = bat_walk1;
+	self.th_run = bat_run;
+	self.th_die = bat_death;
+	self.th_pain = bat_pain;
 
-    flymonster_start ();
+	flymonster_start ();
 };

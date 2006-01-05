@@ -17,9 +17,7 @@ Foundation, Inc., 59 Temple Place, Suite 330, Boston, MA 02111-1307 USA
 See file, 'COPYING', for details.
 */
 
-
 #include "common.qh"
-
 
 /*
 ================
@@ -48,7 +46,6 @@ void() monster_use =
 };
 
 //============================================================================
-
 void() walkmonster_start_go =
 {
 	self.origin_z = self.origin_z + 1;  // raise off floor a bit
@@ -109,7 +106,6 @@ void() walkmonster_start_go =
 	self.nextthink = self.nextthink + random()*0.5;
 };
 
-
 void() walkmonster_start =
 {
 	// delay drop to floor to make sure all doors have been spawned
@@ -150,8 +146,6 @@ void() walkmonster_start =
 		precache_model ("models/items/i_seed.md3");
 	}	
 };
-
-
 
 void() flymonster_start_go =
 {
@@ -209,7 +203,6 @@ void() flymonster_start =
 	total_monsters = total_monsters + 1;
 };
 
-
 void() swimmonster_start_go =
 {
 	self.takedamage = DAMAGE_AIM;
@@ -259,9 +252,7 @@ void() swimmonster_start =
 /*
 monster_stepped_on
 For everything that can be stepped on and damaged (i.e. rats, spiders, minicaleb)
-
 */
-
 void () monster_stepped_on =
 {
 	SUB_SolidTouch();
@@ -280,7 +271,7 @@ void () monster_stepped_on =
 void () monster_drop_key =
 {
 	local entity key;
-    
+
 	key = spawn();
 	key.spawnflags = self.items2;		
 	key.origin = self.origin;

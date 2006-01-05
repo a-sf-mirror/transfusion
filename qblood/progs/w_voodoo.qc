@@ -20,14 +20,10 @@
 #include "common.qh"
 #include "player.qh"
 
-
 void(float damage) Voodoo_ApplyDamage;
 
-
 //============================================================================
-
 // ----- Voodoo Doll model ----- //
-
 $modelname v_voodoo
 
 // idle
@@ -62,20 +58,18 @@ $frame voodoo_alt6 voodoo_alt7 voodoo_alt8 voodoo_alt9 voodoo_alt10
 // holster
 $frame voodoo_holster1 voodoo_holster2 voodoo_holster3
 
-
 // ----- Player related code ----- //
-
 void() player_voodoo =
 {
-    self.weaponframe = self.weaponframe + 1;
-    if (self.weaponframe == $voodoo_thumb1 ||
-        self.weaponframe == $voodoo_groin1 ||
-        self.weaponframe == $voodoo_eye1   ||
-        self.weaponframe == $voodoo_shlder1 )
-    {
-        player_run ();
-        self.weaponframe = $voodoo_idle1;
-    }
+	self.weaponframe = self.weaponframe + 1;
+	if (self.weaponframe == $voodoo_thumb1 ||
+		self.weaponframe == $voodoo_groin1 ||
+		self.weaponframe == $voodoo_eye1   ||
+		self.weaponframe == $voodoo_shlder1 )
+	{
+		player_run ();
+		self.weaponframe = $voodoo_idle1;
+	}
 };
 
 void() player_voodoo1 = [$attack1, player_voodoo2] { player_voodoo (); };
@@ -89,11 +83,11 @@ void() player_altvoodoo5  = [$attack1, player_altvoodoo6 ] { self.weaponframe = 
 void() player_altvoodoo6  = [$attack1, player_altvoodoo7 ] { self.weaponframe = $voodoo_alt6;  };
 void() player_altvoodoo7  = [$attack2, player_altvoodoo8 ]
 {
-    local float damage;
+	local float damage;
 
-    self.weaponframe = $voodoo_alt7;
-    damage = self.ammo_voodoo;
-    Voodoo_ApplyDamage (damage);
+	self.weaponframe = $voodoo_alt7;
+	damage = self.ammo_voodoo;
+	Voodoo_ApplyDamage (damage);
 };
 void() player_altvoodoo8  = [$attack2, player_altvoodoo9 ] { self.weaponframe = $voodoo_alt8;  };
 void() player_altvoodoo9  = [$attack2, player_altvoodoo10] { self.weaponframe = $voodoo_alt9;  };
@@ -110,7 +104,6 @@ void() player_voodooholster1 = [$attack2, player_voodooholster2] { self.weaponfr
 void() player_voodooholster2 = [$attack2, player_voodooholster3] { self.weaponframe = $voodoo_holster2; };
 void() player_voodooholster3 = [$attack2, player_voodooholster4] { self.weaponframe = $voodoo_holster3; };
 void() player_voodooholster4 = [$attack2, player_run           ] { W_DrawWeapon (self.newweapon); };
-
 
 //============================================================================
 
@@ -160,7 +153,6 @@ void(float damage) Voodoo_ApplyDamage =
 	T_Damage (targ, self, self, damage, DF_VOODOO, death_type);
 };
 
-
 /*
 ================
 Voodoo_Stab
@@ -170,43 +162,42 @@ Do a normal attack with the voodoo doll
 */
 float() Voodoo_Stab =
 {
-    local float damage;
-    local float stab_type;
+	local float damage;
+	local float stab_type;
 
-    stab_type = random()*4;
-    damage = random();
-    if (stab_type >= 3) // Stab Groin
-    {
-        self.weaponframe = $voodoo_groin1;
-        damage = damage*49 + 4;
-    }
-    else if (stab_type >= 2) // Stab Shoulder (supposed to make player lower weapon in MP mode)
-    {
-        self.weaponframe = $voodoo_shlder1;
-        damage = damage*9 + 4;
-    }
-    else if (stab_type >= 1) // Stab Chest
-    {
-        self.weaponframe = $voodoo_stomach1;
-        damage = damage*17 + 4;
-    }
-    else if (stab_type < 1) // Stab Eye (supposed to blind player in MP mode)
-    {
-        self.weaponframe = $voodoo_eye1;
-        damage = damage*11 + 4;
-    }
-    else
-        sprint (self, "There's a problem with the voodoo doll code\n");
+	stab_type = random()*4;
+	damage = random();
+	if (stab_type >= 3) // Stab Groin
+	{
+		self.weaponframe = $voodoo_groin1;
+		damage = damage*49 + 4;
+	}
+	else if (stab_type >= 2) // Stab Shoulder (supposed to make player lower weapon in MP mode)
+	{
+		self.weaponframe = $voodoo_shlder1;
+		damage = damage*9 + 4;
+	}
+	else if (stab_type >= 1) // Stab Chest
+	{
+		self.weaponframe = $voodoo_stomach1;
+		damage = damage*17 + 4;
+	}
+	else if (stab_type < 1) // Stab Eye (supposed to blind player in MP mode)
+	{
+		self.weaponframe = $voodoo_eye1;
+		damage = damage*11 + 4;
+	}
+	else
+		sprint (self, "There's a problem with the voodoo doll code\n");
 
-    // Play the appropriate sound
-    if (stab_type >= 3)  // Stab Groin
-        sound (self, CHAN_WEAPON, "weapons/voodoodl/voolaugh.wav", 1, ATTN_NORM);
-    else
-        sound (self, CHAN_WEAPON, "weapons/voodoodl/voostab.wav", 1, ATTN_NORM);
+	// Play the appropriate sound
+	if (stab_type >= 3)  // Stab Groin
+		sound (self, CHAN_WEAPON, "weapons/voodoodl/voolaugh.wav", 1, ATTN_NORM);
+	else
+		sound (self, CHAN_WEAPON, "weapons/voodoodl/voostab.wav", 1, ATTN_NORM);
 
-    return damage;
+	return damage;
 };
-
 
 /*
 ============
@@ -217,35 +208,34 @@ Attack code for the voodoo doll
 */
 void() Voodoo_Attack =
 {
-    local float damage;
+	local float damage;
 
-    muzzleflash ();
+	muzzleflash ();
 
-    // Alt-fire mode
-    if (self.button3 && self.ammo_voodoo >= 1)
-    {
-        self.player_state = PS_ALTFIRE;
+	// Alt-fire mode
+	if (self.button3 && self.ammo_voodoo >= 1)
+	{
+		self.player_state = PS_ALTFIRE;
 
-        sound (self, CHAN_WEAPON, "weapons/voodoodl/voochant.wav", 1, ATTN_NORM);
-        player_altvoodoo1 ();
+		sound (self, CHAN_WEAPON, "weapons/voodoodl/voochant.wav", 1, ATTN_NORM);
+		player_altvoodoo1 ();
 
-        self.attack_finished = time + 1.5;
-    }
+		self.attack_finished = time + 1.5;
+	}
 
-    // Normal fire mode
-    else
-    {
-        self.player_state = PS_FIRE;
+	// Normal fire mode
+	else
+	{
+		self.player_state = PS_FIRE;
 
-        damage = Voodoo_Stab ();
-        self.nextthink = time + 0.1;
-        self.think = player_voodoo1;
-        Voodoo_ApplyDamage (damage);
+		damage = Voodoo_Stab ();
+		self.nextthink = time + 0.1;
+		self.think = player_voodoo1;
+		Voodoo_ApplyDamage (damage);
 
-        self.attack_finished = time + 0.5;
-    }
+		self.attack_finished = time + 0.5;
+	}
 };
-
 
 /*
 ============
@@ -256,16 +246,15 @@ Draw code for the voodoo doll
 */
 void() Voodoo_Draw =
 {
-    self.weapon = IT_VOODOO_DOLL;
-    self.currentammo = self.ammo_voodoo;
-    self.items = self.items - (self.items & (IT_SHELLS | IT_NAILS | IT_CELLS | IT_ROCKETS));
+	self.weapon = IT_VOODOO_DOLL;
+	self.currentammo = self.ammo_voodoo;
+	self.items = self.items - (self.items & (IT_SHELLS | IT_NAILS | IT_CELLS | IT_ROCKETS));
 
-    Voodoo_UpdateView ();
+	Voodoo_UpdateView ();
 
-    self.attack_finished = time + 0.3;
-    player_voodoodraw1 ();
+	self.attack_finished = time + 0.3;
+	player_voodoodraw1 ();
 };
-
 
 /*
 ============
@@ -276,10 +265,9 @@ Holster code for the voodoo doll
 */
 void() Voodoo_Holster =
 {
-    self.attack_finished = time + 0.3;
-    player_voodooholster1 ();
+	self.attack_finished = time + 0.3;
+	player_voodooholster1 ();
 };
-
 
 /*
 ============
@@ -290,6 +278,6 @@ Choose the right voodoo doll model to display
 */
 void() Voodoo_UpdateView =
 {
-    self.weaponmodel = "models/weapons/v_voodoo.md3";
-    self.items = self.items - (self.items & IT_GUNS_AKIMBO);
+	self.weaponmodel = "models/weapons/v_voodoo.md3";
+	self.items = self.items - (self.items & IT_GUNS_AKIMBO);
 };

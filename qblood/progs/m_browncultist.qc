@@ -38,64 +38,62 @@ void () browncultist_attackb2 = [$idle1, cultist_run] {ai_face ();};
 
 void () browncultist_attack =
 {
-    if (!visible(self.enemy)) // If there's something blocking the shot
-        return;
+	if (!visible(self.enemy)) // If there's something blocking the shot
+		return;
 
-    cultist_taunt(); // Talk some smack!
+	cultist_taunt(); // Talk some smack!
 
-    browncultist_attackDecide();
+	browncultist_attackDecide();
 };
 
 void () browncultist_attackDecide =
 {
-    local float vis;
-	
+	local float vis;
+
 	vis = visible(self.enemy);
-	
+
 	if (self.attack_finished < time && vis)
-    {
-        local float dist;		
+	{
+		local float dist;		
 		ai_face();                           // Face player
-		
+
 		dist = range(self.enemy);
 
-        if (dist == RANGE_NEAR || dist == RANGE_MELEE)// If the player is near shoot them		      
+		if (dist == RANGE_NEAR || dist == RANGE_MELEE)// If the player is near shoot them		      
 		{
-            //browncultist_attacka1 ();
+			//browncultist_attacka1 ();
 			self.anim_type = "attack";
 			cultist_animate();
 		}
-        else
+		else
 		{
-            //browncultist_attackb1 ();        // Otherwise TNT them
+			//browncultist_attackb1 ();        // Otherwise TNT them
 			self.anim_type = "attack2";
 			cultist_animate();
 		}
-    }
-    else
-    {
-        self.think = cultist_run;            // Turn basic "I have an enemy" AI back on
-        self.nextthink = time + 0.1;         // Turn that AI back on in 1/10 of a second
-    }
-
+	}
+	else
+	{
+		self.think = cultist_run;            // Turn basic "I have an enemy" AI back on
+		self.nextthink = time + 0.1;         // Turn that AI back on in 1/10 of a second
+	}
 };
 
 //--- Shoot the player
 
 void () browncultist_fireShotgun =
 {
-    ai_face();
-    cultist_fireShotgun();
-    self.think = browncultist_attackDecide;
-    self.nextthink = time + 0.5;
+	ai_face();
+	cultist_fireShotgun();
+	self.think = browncultist_attackDecide;
+	self.nextthink = time + 0.5;
 };
-
 
 void () monster_browncultist =
 {
-    //  Disable for testing
-    if(monster_check())
-	    return;
+	//  Disable for testing
+	if(monster_check())
+		return;
 
-    cultist_spawn();
+	cultist_spawn();
 };

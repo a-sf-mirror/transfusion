@@ -26,23 +26,22 @@ void () greencultist_attack1 = [$idle1, greencultist_attack2] {cultist_throw_TNT
 void () greencultist_attack2 = [$idle1, cultist_run] {ai_face ();};
 */
 
-
 void () greencultist_attack =
 {
-    local vector delta;
+	local vector delta;
 
-    if (!infront(self.enemy)) // If there's something blocking the shot
-        return;
+	if (!infront(self.enemy)) // If there's something blocking the shot
+		return;
 
-    cultist_taunt();
+	cultist_taunt();
 
-    delta = (self.enemy.origin - self.origin);
+	delta = (self.enemy.origin - self.origin);
 
-    if (vlen (delta) <= 300)
-        ai_back(100);
-    else
+	if (vlen (delta) <= 300)
+		ai_back(100);
+	else
 	{
-        //greencultist_attack1 ();    // Throw TNT at enemy
+		//greencultist_attack1 ();    // Throw TNT at enemy
 		self.anim_type = "attack1";
 		cultist_animate();
 	}
@@ -51,9 +50,9 @@ void () greencultist_attack =
 
 void () monster_greencultist =
 {
-    //  Disable for testing
-    if(monster_check())
-	    return;
+	//  Disable for testing
+	if(monster_check())
+		return;
 
-    cultist_spawn();
+	cultist_spawn();
 };

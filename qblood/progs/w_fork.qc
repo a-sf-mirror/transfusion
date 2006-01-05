@@ -20,14 +20,10 @@
 #include "common.qh"
 #include "player.qh"
 
-
 void() Fork_Fire;
 
-
 //============================================================================
-
 // ----- Pitchfork model ----- //
-
 $modelname v_pitch
 
 // idle
@@ -42,43 +38,44 @@ $frame fork_fire1 fork_fire2 fork_fire3 fork_fire4
 // holster
 $frame fork_holster1 fork_holster2 fork_holster3
 
-
 // ----- Player related code ----- //
-
 void() player_fork4 =
 {
-    self.frame = self.frame + 1;
-    self.nextthink = time + 0.1;
-    self.think = player_run;
+	self.frame = self.frame + 1;
+	self.nextthink = time + 0.1;
+	self.think = player_run;
 
-    self.weaponframe = $fork_fire4;
+	self.weaponframe = $fork_fire4;
 };
+
 void() player_fork3 =
 {
-    self.frame = self.frame + 1;
-    self.nextthink = time + 0.1;
-    self.think = player_fork4;
+	self.frame = self.frame + 1;
+	self.nextthink = time + 0.1;
+	self.think = player_fork4;
 
-    self.weaponframe = $fork_fire3;
-    Fork_Fire ();
+	self.weaponframe = $fork_fire3;
+	Fork_Fire ();
 };
+
 void() player_fork2 =
 {
-    self.frame = self.frame + 1;
-    self.nextthink = time + 0.1;
-    self.think = player_fork3;
+	self.frame = self.frame + 1;
+	self.nextthink = time + 0.1;
+	self.think = player_fork3;
 
-    self.weaponframe = $fork_fire2;
+	self.weaponframe = $fork_fire2;
 };
+
 void() player_fork1 =
 {
-    // self.frame has been initialized by Fork_Attack
-    self.nextthink = time + 0.1;
-    self.think = player_fork2;
+	// self.frame has been initialized by Fork_Attack
+	self.nextthink = time + 0.1;
+	self.think = player_fork2;
 
-    self.weaponframe = $fork_fire1;
+	self.weaponframe = $fork_fire1;
 
-    self.player_state = PS_FIRE;
+	self.player_state = PS_FIRE;
 };
 
 // Normal draw
@@ -92,7 +89,6 @@ void() player_forkholster2 = [$pitchstand1, player_forkholster3] { self.weaponfr
 void() player_forkholster3 = [$pitchstand1, player_forkholster4] { self.weaponframe = $fork_holster3; };
 void() player_forkholster4 = [$pitchstand1, player_run         ] { W_DrawWeapon (self.newweapon); };
 
-
 //============================================================================
 
 /*
@@ -104,42 +100,41 @@ Handle one tine hit with the pitchfork
 */
 void(entity targ, vector org, float damage) TineHit =
 {
-    if (targ.takedamage)
-    {
-        if (Reflected (targ))
-        {
-            if (Reflected (self))
-                return;     // Both have reflection, so negate attack.
+	if (targ.takedamage)
+	{
+		if (Reflected (targ))
+		{
+			if (Reflected (self))
+				return;     // Both have reflection, so negate attack.
 
-            // Hit attacker instead.
-            targ = self;
-            org = self.origin;
-        }
-        // If the target can bleed, spawn some blood
-        if (targ.classname == "player" || (targ.flags & FL_MONSTER) ||
-            targ.classname == "corpse" || targ.classname == "head")
-        {
-            SpawnBlood (org, '0 0 0', damage);
-            SpawnBloodSpray (trace_ent, org);
-            sound (self, CHAN_WEAPON, "weapons/pitchfrk/pflesh.wav", 1, ATTN_NORM);
-        }
-        else
-            sound (self, CHAN_WEAPON, "weapons/pitchfrk/pstone.wav", 1, ATTN_NORM);
-        AddMultiDamage (targ, damage);
-    }
-    else
-    {
-        // hit wall
-        sound (self, CHAN_WEAPON, "weapons/pitchfrk/pstone.wav", 1, ATTN_NORM);
+			// Hit attacker instead.
+			targ = self;
+			org = self.origin;
+		}
+		// If the target can bleed, spawn some blood
+		if (targ.classname == "player" || (targ.flags & FL_MONSTER) ||
+			targ.classname == "corpse" || targ.classname == "head")
+		{
+			SpawnBlood (org, '0 0 0', damage);
+			SpawnBloodSpray (trace_ent, org);
+			sound (self, CHAN_WEAPON, "weapons/pitchfrk/pflesh.wav", 1, ATTN_NORM);
+		}
+		else
+			sound (self, CHAN_WEAPON, "weapons/pitchfrk/pstone.wav", 1, ATTN_NORM);
+		AddMultiDamage (targ, damage);
+	}
+	else
+	{
+		// hit wall
+		sound (self, CHAN_WEAPON, "weapons/pitchfrk/pstone.wav", 1, ATTN_NORM);
 
-        WriteByte (MSG_BROADCAST, SVC_TEMPENTITY);
-        WriteByte (MSG_BROADCAST, TE_GUNSHOT);
-        WriteCoord (MSG_BROADCAST, org_x);
-        WriteCoord (MSG_BROADCAST, org_y);
-        WriteCoord (MSG_BROADCAST, org_z);
-    }
+		WriteByte (MSG_BROADCAST, SVC_TEMPENTITY);
+		WriteByte (MSG_BROADCAST, TE_GUNSHOT);
+		WriteCoord (MSG_BROADCAST, org_x);
+		WriteCoord (MSG_BROADCAST, org_y);
+		WriteCoord (MSG_BROADCAST, org_z);
+	}
 };
-
 
 /*
 ============
@@ -150,37 +145,36 @@ Try to hit something with the pitchfork
 */
 void() Fork_Fire =
 {
-    local   vector  source;
-    local   vector  start, end;     // Endpoints per tine.
-    local   vector  vx, vy, vz;     // forward, right, up unit vectors.
-    local   float   damage;         // Damage per tine.
-    local   float   loop;           // Number of tines.
+	local   vector  source;
+	local   vector  start, end;     // Endpoints per tine.
+	local   vector  vx, vy, vz;     // forward, right, up unit vectors.
+	local   float   damage;         // Damage per tine.
+	local   float   loop;           // Number of tines.
 
-    makevectors (self.v_angle);
-    vx = v_forward;
-    vy = v_right;
-    vz = v_up;
-    source = self.origin + '0 0 16';
-    damage = 17;
-    loop = 4;
+	makevectors (self.v_angle);
+	vx = v_forward;
+	vy = v_right;
+	vz = v_up;
+	source = self.origin + '0 0 16';
+	damage = 17;
+	loop = 4;
 
-    // Tines attacks start at the right, and end at the left.
-    ClearMultiDamage ();
-    while (loop > 0)
-    {
-        start = source + vy * ((loop - 2) * 4 - 2);
-        end = start + vx * 64;
-        traceline (start, end, FALSE, self);
-        if (trace_fraction < 1)
-        {
-            end = trace_endpos - vx * 4;
-            TineHit (trace_ent, end, damage);
-        }
-        loop = loop - 1;
-    }
-    ApplyMultiDamage (DF_STAB);
+	// Tines attacks start at the right, and end at the left.
+	ClearMultiDamage ();
+	while (loop > 0)
+	{
+		start = source + vy * ((loop - 2) * 4 - 2);
+		end = start + vx * 64;
+		traceline (start, end, FALSE, self);
+		if (trace_fraction < 1)
+		{
+			end = trace_endpos - vx * 4;
+			TineHit (trace_ent, end, damage);
+		}
+		loop = loop - 1;
+	}
+	ApplyMultiDamage (DF_STAB);
 };
-
 
 /*
 ============
@@ -191,14 +185,13 @@ Attack code for the pitchfork
 */
 void() Fork_Attack =
 {
-    local float r;
+	local float r;
 
-    self.frame = $pitchattack1;
+	self.frame = $pitchattack1;
 
-    player_fork1 ();
-    self.attack_finished = time + 0.5;
+	player_fork1 ();
+	self.attack_finished = time + 0.5;
 };
-
 
 /*
 ============
@@ -209,16 +202,15 @@ Draw code for the pitchfork
 */
 void() Fork_Draw =
 {
-    self.weapon = IT_PITCHFORK;
-    self.currentammo = 0;
-    self.items = self.items - (self.items & (IT_SHELLS | IT_NAILS | IT_CELLS | IT_ROCKETS));
+	self.weapon = IT_PITCHFORK;
+	self.currentammo = 0;
+	self.items = self.items - (self.items & (IT_SHELLS | IT_NAILS | IT_CELLS | IT_ROCKETS));
 
-    Fork_UpdateView ();
+	Fork_UpdateView ();
 
-    self.attack_finished = time + 0.3;
-    player_forkdraw1 ();
+	self.attack_finished = time + 0.3;
+	player_forkdraw1 ();
 };
-
 
 /*
 ============
@@ -229,10 +221,9 @@ Holster code for the pitchfork
 */
 void() Fork_Holster =
 {
-    self.attack_finished = time + 0.3;
-    player_forkholster1 ();
+	self.attack_finished = time + 0.3;
+	player_forkholster1 ();
 };
-
 
 /*
 ============
@@ -243,6 +234,6 @@ Choose the right pitchfork model to display
 */
 void() Fork_UpdateView =
 {
-    self.weaponmodel = "models/weapons/v_pitch.psk";
-    self.items = self.items - (self.items & IT_GUNS_AKIMBO);
+	self.weaponmodel = "models/weapons/v_pitch.psk";
+	self.items = self.items - (self.items & IT_GUNS_AKIMBO);
 };

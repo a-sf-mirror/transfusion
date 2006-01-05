@@ -20,12 +20,10 @@
 #include "common.qh"
 
 // Prototypes
-
 void () redcultist_fireShotgun;
 void () redcultist_attackDecide;
 
 //--- Shooting gun
-
 /*
 void () redcultist_attack1 = [$attack1, redcultist_attack2] {ai_face ();};
 void () redcultist_attack2 = [$attack2, redcultist_attack3] {redcultist_fireShotgun (); ai_face ();};
@@ -34,52 +32,50 @@ void () redcultist_attack3 = [$idle1, cultist_run] {ai_face ();};
 
 void () redcultist_attack =
 {
-    if (!visible(self.enemy)) // If there's something blocking the shot
-        return;
+	if (!visible(self.enemy)) // If there's something blocking the shot
+		return;
 
-    cultist_taunt(); // Talk some smack!
+	cultist_taunt(); // Talk some smack!
 
-    redcultist_attackDecide();
+	redcultist_attackDecide();
 
 };
 
 void () redcultist_attackDecide =
 {
-    local float vis;
-	
+	local float vis;
+
 	vis = visible(self.enemy);
-	
-    if (self.attack_finished < time && vis)
-    {
-        ai_face();                        // Face player
-        //redcultist_attack1 ();
+
+	if (self.attack_finished < time && vis)
+	{
+		ai_face();                        // Face player
+		//redcultist_attack1 ();
 		self.anim_type = "attack1";
 		cultist_animate();
-    }
-    else
-    {
-        self.think = cultist_run;     // Turn basic "I have an enemy" AI back on
-        self.nextthink = time + 0.1;    // Turn that AI back on in 1/10 of a second
-    }
-
+	}
+	else
+	{
+		self.think = cultist_run;     // Turn basic "I have an enemy" AI back on
+		self.nextthink = time + 0.1;    // Turn that AI back on in 1/10 of a second
+	}
 };
 
 //--- Shoot the player
-
 void () redcultist_fireShotgun =
 {
-    ai_face();
-    cultist_fireShotgun();
+	ai_face();
+	cultist_fireShotgun();
 
-    self.think = redcultist_attackDecide;
-    self.nextthink = time + 0.5;
+	self.think = redcultist_attackDecide;
+	self.nextthink = time + 0.5;
 };
 
 void () monster_redcultist =
 {
-    //  Disable for testing
-    if(monster_check())
-	    return;
+	//  Disable for testing
+	if(monster_check())
+		return;
 
-    cultist_spawn();
+	cultist_spawn();
 };

@@ -20,14 +20,11 @@
 #include "common.qh"
 #include "player.qh"
 
-
 void() Leech_BallFire;
-
 
 //=======================================================================
 
 // ------------ Life Leech models ---------- //
-
 // Normal model
 $modelname v_leech
 
@@ -48,12 +45,11 @@ $frame leech_fire21 leech_fire22 leech_fire23 leech_fire24 leech_fire25
 $frame leech_holster1 leech_holster2 leech_holster3
 
 // ------------ Player related code ---------- //
-
 // Normal fire
 void() player_leech1  = [$attack1, player_leech2 ]
 {
-    sound (self, CHAN_WEAPON, "weapons/lifelech/laltfr1.wav", 1, ATTN_NORM);
-    self.weaponframe = $leech_fire1;
+	sound (self, CHAN_WEAPON, "weapons/lifelech/laltfr1.wav", 1, ATTN_NORM);
+	self.weaponframe = $leech_fire1;
 };
 void() player_leech2  = [$attack1, player_leech3 ] { self.weaponframe = $leech_fire2;  };
 void() player_leech3  = [$attack1, player_leech4 ] { self.weaponframe = $leech_fire3;  };
@@ -91,7 +87,6 @@ void() player_leechholster2 = [$attack2, player_leechholster3] { self.weaponfram
 void() player_leechholster3 = [$attack2, player_leechholster4] { self.weaponframe = $leech_holster3; };
 void() player_leechholster4 = [$attack2, player_run          ] { W_DrawWeapon (self.newweapon); };
 
-
 //=================================================================
 
 /*
@@ -103,34 +98,33 @@ Touch function for the leech missile
 */
 void() Leech_BallTouch =
 {
-    if (other == self.owner)
-        return;     // don't explode on owner
+	if (other == self.owner)
+		return;     // don't explode on owner
 
-    if (pointcontents(self.origin) == CONTENT_SKY)
-    {
-        remove(self);
-        return;
-    }
+	if (pointcontents(self.origin) == CONTENT_SKY)
+	{
+		remove(self);
+		return;
+	}
 
-    self.deathtype = "leech";  // Done for the fire code.
-    if (other.takedamage)
-    {
-        other.deathtype = "leech";
-        BurnDamage (other, self, self.dmg, DF_SPIRIT, self.dmg * 0.1, 5);
-    }
+	self.deathtype = "leech";  // Done for the fire code.
+	if (other.takedamage)
+	{
+		other.deathtype = "leech";
+		BurnDamage (other, self, self.dmg, DF_SPIRIT, self.dmg * 0.1, 5);
+	}
 
-    PsychoCaleb (self.owner);
+	PsychoCaleb (self.owner);
 
-    self.origin = self.origin - 8 * normalize (self.velocity);
+	self.origin = self.origin - 8 * normalize (self.velocity);
 
-    WriteByte (MSG_BROADCAST, SVC_TEMPENTITY);
-    WriteByte (MSG_BROADCAST, TE_EXPLOSION);
-    WriteCoord (MSG_BROADCAST, self.origin_x);
-    WriteCoord (MSG_BROADCAST, self.origin_y);
-    WriteCoord (MSG_BROADCAST, self.origin_z);
-    BecomeExplosion ();
+	WriteByte (MSG_BROADCAST, SVC_TEMPENTITY);
+	WriteByte (MSG_BROADCAST, TE_EXPLOSION);
+	WriteCoord (MSG_BROADCAST, self.origin_x);
+	WriteCoord (MSG_BROADCAST, self.origin_y);
+	WriteCoord (MSG_BROADCAST, self.origin_z);
+	BecomeExplosion ();
 };
-
 
 /*
 =========================
@@ -141,54 +135,53 @@ Fire a Life Leech ball
 */
 void() Leech_BallFire =
 {
-    local vector spread;
+	local vector spread;
 
-    self.punchangle_x = -2;
-    muzzleflash ();
+	self.punchangle_x = -2;
+	muzzleflash ();
 
-    newmis = spawn ();
+	newmis = spawn ();
 
-    makevectors (self.v_angle);
-    newmis.velocity = aim (self, 1000);  // base velocity
+	makevectors (self.v_angle);
+	newmis.velocity = aim (self, 1000);  // base velocity
 
-    // If aim() hasn't found any interesting target, add some spread
-    traceline (self.origin, self.origin + newmis.velocity*2048, FALSE, self);
-    if (trace_ent == world)
-        spread = crandom () * 0.18 * v_right + crandom () * 0.08 * v_up;
-    else
-        spread = '0 0 0';
-    newmis.velocity = 1500 * (newmis.velocity + spread);
+	// If aim() hasn't found any interesting target, add some spread
+	traceline (self.origin, self.origin + newmis.velocity*2048, FALSE, self);
+	if (trace_ent == world)
+		spread = crandom () * 0.18 * v_right + crandom () * 0.08 * v_up;
+	else
+		spread = '0 0 0';
+	newmis.velocity = 1500 * (newmis.velocity + spread);
 
-    newmis.owner = self;
-    newmis.solid = SOLID_BBOX;
-    newmis.classname = "missile";
-    newmis.angles = vectoangles(newmis.velocity);
-    newmis.movetype = MOVETYPE_FLYMISSILE;
+	newmis.owner = self;
+	newmis.solid = SOLID_BBOX;
+	newmis.classname = "missile";
+	newmis.angles = vectoangles(newmis.velocity);
+	newmis.movetype = MOVETYPE_FLYMISSILE;
 
-    // If we don't have enough ammo, use HP
-    if (self.ammo_leech < 2)
-    {
-        T_Damage (self, world, self, 2 - self.ammo_leech, DF_SPIRIT, "leech");
-        self.ammo_leech = 0;
-    }
-    else
-        self.ammo_leech = self.ammo_leech - 2;
-    self.currentammo = self.ammo_leech;
+	// If we don't have enough ammo, use HP
+	if (self.ammo_leech < 2)
+	{
+		T_Damage (self, world, self, 2 - self.ammo_leech, DF_SPIRIT, "leech");
+		self.ammo_leech = 0;
+	}
+	else
+		self.ammo_leech = self.ammo_leech - 2;
+	self.currentammo = self.ammo_leech;
 
-    newmis.touch = Leech_BallTouch;
-    setmodel (newmis, "progs/leechball.spr");
-    newmis.skin = 1;
-    setsize (newmis, '0 0 0', '0 0 0');
-    setorigin (newmis, self.origin + v_forward * 8 + '0 0 24');
+	newmis.touch = Leech_BallTouch;
+	setmodel (newmis, "progs/leechball.spr");
+	newmis.skin = 1;
+	setsize (newmis, '0 0 0', '0 0 0');
+	setorigin (newmis, self.origin + v_forward * 8 + '0 0 24');
 
-    newmis.dmg = 40;
+	newmis.dmg = 40;
 
-    // set newmis duration
-    newmis.nextthink = time + 5;
-    newmis.think = SUB_Remove;
-    newmis.reset = SUB_Remove;
+	// set newmis duration
+	newmis.nextthink = time + 5;
+	newmis.think = SUB_Remove;
+	newmis.reset = SUB_Remove;
 };
-
 
 /*
 ================
@@ -199,27 +192,26 @@ Touch function for the leech altfire missile
 */
 void() Leech_AltBallTouch =
 {
-    // Don't explode on owner (the Life Leech)
-    if (other == self.owner)
-        return;
+	// Don't explode on owner (the Life Leech)
+	if (other == self.owner)
+		return;
 
-    // Switch ownership from the Life Leech itself to the LL owner
-    self.owner = self.owner.leech_sentry;
+	// Switch ownership from the Life Leech itself to the LL owner
+	self.owner = self.owner.leech_sentry;
 
-    if (pointcontents(self.origin) == CONTENT_SKY)
-    {
-        remove (self);
-        return;
-    }
+	if (pointcontents(self.origin) == CONTENT_SKY)
+	{
+		remove (self);
+		return;
+	}
 
-    // If we can damage the entity we touch
-    if (other.takedamage)
-        T_Damage (other, self, self.owner, self.dmg, DF_SPIRIT, "leech");
+	// If we can damage the entity we touch
+	if (other.takedamage)
+		T_Damage (other, self, self.owner, self.dmg, DF_SPIRIT, "leech");
 
-    sound (self, CHAN_AUTO, "weapons/napalm/explodfs.wav", 1, ATTN_NORM);
-    remove (self);
+	sound (self, CHAN_AUTO, "weapons/napalm/explodfs.wav", 1, ATTN_NORM);
+	remove (self);
 };
-
 
 /*
 ==================
@@ -230,65 +222,64 @@ Dropped LL think function
 */
 void() Leech_Think =
 {
-    local float diff, bestdiff;
-    local entity ent, bestent;
-    local vector ballorigin;
+	local float diff, bestdiff;
+	local entity ent, bestent;
+	local vector ballorigin;
 
-    self.owner = world;  // the LL must be able to touch its owner
-    self.nextthink = time + 0.75;
-    ballorigin = self.origin + '0 0 45';
+	self.owner = world;  // the LL must be able to touch its owner
+	self.nextthink = time + 0.75;
+	ballorigin = self.origin + '0 0 45';
 
-    // Look for a target (the closer, the better)
-    bestdiff = 10000;
-    bestent = world;
-    ent = findradius (self.origin, 500);
-    while (ent != world)
-    {
+	// Look for a target (the closer, the better)
+	bestdiff = 10000;
+	bestent = world;
+	ent = findradius (self.origin, 500);
+	while (ent != world)
+	{
 		if (ent.takedamage)
-            // If it's a player
-            if (ent.classname == "player" || (ent.flags & FL_MONSTER))
-                // If he's a valid target (not the owner or a player from the same team)
-                if (ent != self.leech_sentry && 
-				   (gametype == GT_BLOODBATH || gametype == GT_COOPERATIVE || gametype == GT_SINGLE_PLAYER || ent.team != self.team))
-                {
-                    // If he's closer than our current choice
-                    diff = vlen (ent.origin - ballorigin);
-                    if (diff < bestdiff)
-                    {
-                        // If he's visible
-                        traceline (ballorigin, ent.origin, FALSE, self);
-                        if (trace_ent == ent)
-                        {
-                            bestent = ent;
-                            bestdiff = diff;
-                        }
-                    }
-                }
+			// If it's a player
+			if (ent.classname == "player" || (ent.flags & FL_MONSTER))
+				// If he's a valid target (not the owner or a player from the same team)
+				if (ent != self.leech_sentry && 
+					(gametype == GT_BLOODBATH || gametype == GT_COOPERATIVE || gametype == GT_SINGLE_PLAYER || ent.team != self.team))
+				{
+					// If he's closer than our current choice
+					diff = vlen (ent.origin - ballorigin);
+					if (diff < bestdiff)
+					{
+						// If he's visible
+						traceline (ballorigin, ent.origin, FALSE, self);
+						if (trace_ent == ent)
+						{
+							bestent = ent;
+							bestdiff = diff;
+						}
+					}
+				}
 
-        ent = ent.chain;
-    }
+				ent = ent.chain;
+	}
 
-    // If we haven't find a target, there's nothing to do
-    if (bestent == world)
-        return;
+	// If we haven't find a target, there's nothing to do
+	if (bestent == world)
+		return;
 
-    // Fire a ball of energy on the target
-    newmis = spawn ();
-    newmis.owner = self;
-    newmis.solid = SOLID_BBOX;
-    newmis.classname = "missile";
-    newmis.velocity = 1500 * normalize (bestent.origin - ballorigin);
-    newmis.angles = vectoangles (newmis.velocity);
-    newmis.movetype = MOVETYPE_FLYMISSILE;
-    newmis.touch = Leech_AltBallTouch;
-    setmodel (newmis, "progs/teslaball.spr");  // the tesla ball is closer to the original look
-    setsize (newmis, '0 0 0', '0 0 0');
-    setorigin (newmis, ballorigin);
-    newmis.dmg = 15;
-    newmis.alpha  = 0.5;
-    newmis.reset = SUB_Remove;
+	// Fire a ball of energy on the target
+	newmis = spawn ();
+	newmis.owner = self;
+	newmis.solid = SOLID_BBOX;
+	newmis.classname = "missile";
+	newmis.velocity = 1500 * normalize (bestent.origin - ballorigin);
+	newmis.angles = vectoangles (newmis.velocity);
+	newmis.movetype = MOVETYPE_FLYMISSILE;
+	newmis.touch = Leech_AltBallTouch;
+	setmodel (newmis, "progs/teslaball.spr");  // the tesla ball is closer to the original look
+	setsize (newmis, '0 0 0', '0 0 0');
+	setorigin (newmis, ballorigin);
+	newmis.dmg = 15;
+	newmis.alpha  = 0.5;
+	newmis.reset = SUB_Remove;
 };
-
 
 /*
 ==================
@@ -299,15 +290,14 @@ Used when a LL sentry fades out (when dying)
 */
 void() Leech_FadeOut =
 {
-    if (self.alpha > 0.1)  // Warning: alpha = 0.0 means opaque
-    {
-        self.alpha = self.alpha - 0.1;
-        self.nextthink = time + 0.1;
-    }
-    else
-        remove (self);
+	if (self.alpha > 0.1)  // Warning: alpha = 0.0 means opaque
+	{
+		self.alpha = self.alpha - 0.1;
+		self.nextthink = time + 0.1;
+	}
+	else
+		remove (self);
 };
-
 
 /*
 ==================
@@ -318,10 +308,9 @@ Reset function for a LL sentry
 */
 void() Leech_Reset =
 {
-    self.leech_sentry.leech_sentry = world;
-    remove (self);
+	self.leech_sentry.leech_sentry = world;
+	remove (self);
 };
-
 
 /*
 ==================
@@ -332,27 +321,27 @@ Die function for a LL sentry
 */
 void() Leech_Die =
 {
-    self.leech_sentry.leech_sentry = world;
-    sound (self, CHAN_VOICE, "weapons/lifelech/llaltht.wav", 1, ATTN_NORM);
+	self.leech_sentry.leech_sentry = world;
+	sound (self, CHAN_VOICE, "weapons/lifelech/llaltht.wav", 1, ATTN_NORM);
 
-    KillBurner (self);
+	KillBurner (self);
 
-    // If the engine supports the QC extension DP_ENT_ALPHA, make it fade out
-    if (checkextension ("DP_ENT_ALPHA"))
-    {
-        self.solid = SOLID_NOT;
-        self.takedamage = DAMAGE_NO;
-        self.movetype = MOVETYPE_NONE;
-        self.effects = 0;
-        self.alpha = 1;
+	// If the engine supports the QC extension DP_ENT_ALPHA, make it fade out
+	if (checkextension ("DP_ENT_ALPHA"))
+	{
+		self.solid = SOLID_NOT;
+		self.takedamage = DAMAGE_NO;
+		self.movetype = MOVETYPE_NONE;
+		self.effects = 0;
+		self.alpha = 1;
 
-        self.touch = SUB_Null;
-        self.th_die = SUB_Remove;
-        self.think = Leech_FadeOut;
-        self.nextthink = time + 0.1;
-    }
-    else
-        remove (self);
+		self.touch = SUB_Null;
+		self.th_die = SUB_Remove;
+		self.think = Leech_FadeOut;
+		self.nextthink = time + 0.1;
+	}
+	else
+		remove (self);
 };
 
 /*
@@ -364,17 +353,17 @@ Use function for a LL sentry
 */
 void() Leech_Use =
 {
-    // If it's the owner, he takes back his Life Leech
-    if (self.leech_sentry == other)
-    {
+	// If it's the owner, he takes back his Life Leech
+	if (self.leech_sentry == other)
+	{
 		other.items = other.items + IT_LIFE_LEECH;
-        other.leech_sentry = world;
-        other.ammo_leech = other.ammo_leech + self.ammo_leech;
-        sound (other, CHAN_ITEM, "items/weaponup.wav", 1, ATTN_NORM);
-        remove (self);
-    }
+		other.leech_sentry = world;
+		other.ammo_leech = other.ammo_leech + self.ammo_leech;
+		sound (other, CHAN_ITEM, "items/weaponup.wav", 1, ATTN_NORM);
+		remove (self);
+	}
 
-    SUB_SolidTouch ();
+	SUB_SolidTouch ();
 };
 
 /*
@@ -386,62 +375,61 @@ Drop the Life Leech as a solid staff (altfire)
 */
 void() Leech_Drop =
 {
-    local entity item;
+	local entity item;
 
-    makevectors (self.v_angle);
+	makevectors (self.v_angle);
 
-    // Drop the Life Leech
-    item = spawn();
-    setmodel (item, "models/weapons/g_leech.md3");
-    setsize (item, '-6 -6 0', '6 8 60');
+	// Drop the Life Leech
+	item = spawn();
+	setmodel (item, "models/weapons/g_leech.md3");
+	setsize (item, '-6 -6 0', '6 8 60');
 
-    item.classname = "sentry";
-    item.owner = self;             // we don't want to trigger the touch function yet
-    item.leech_sentry = self;      // we can't use "owner" because the owner of an entity is never clipped against it
-    item.team = self.team;
-    item.solid = SOLID_SLIDEBOX;
-    item.takedamage = DAMAGE_AIM;
-    item.health = 300;
+	item.classname = "sentry";
+	item.owner = self;             // we don't want to trigger the touch function yet
+	item.leech_sentry = self;      // we can't use "owner" because the owner of an entity is never clipped against it
+	item.team = self.team;
+	item.solid = SOLID_SLIDEBOX;
+	item.takedamage = DAMAGE_AIM;
+	item.health = 300;
 
-    item.origin = self.origin + '0 0 12' + v_forward * 8;
-    item.velocity = aim (self, 1000) * 50;
-    item.velocity_z = 150;
-    item.movetype = MOVETYPE_TOSS;
+	item.origin = self.origin + '0 0 12' + v_forward * 8;
+	item.velocity = aim (self, 1000) * 50;
+	item.velocity_z = 150;
+	item.movetype = MOVETYPE_TOSS;
 
-    if (cvar ("g_flashyEffects"))
-        item.effects = item.effects | EF_FLAME;
+	if (cvar ("g_flashyEffects"))
+		item.effects = item.effects | EF_FLAME;
 
-    // Sentry mode
+	// Sentry mode
 	item.spawnflags = item.spawnflags | SF_USABLE;
-    item.nextthink = time + 1.5;
-    item.think = Leech_Think;
+	item.nextthink = time + 1.5;
+	item.think = Leech_Think;
 	item.use = Leech_Use;
-    item.th_die = Leech_Die;
-    item.reset = Leech_Reset;
+	item.th_die = Leech_Die;
+	item.reset = Leech_Reset;
 
-/* TIM- Tested this against SP blood, and this wasn't how SP blood handled LL sentry.
+	/* TIM- Tested this against SP blood, and this wasn't how SP blood handled LL sentry.
 
-    // Dropping it requires 25 ammo/HP
-    if (self.ammo_leech < 25)
-    {
-        T_Damage (self, world, self, 25 - self.ammo_leech, DF_SPIRIT, "leech");
-        item.ammo_leech = 0;
-    }
-    else
-        item.ammo_leech = self.ammo_leech - 25;
-*/
-    self.currentammo = self.ammo_leech = 0;
-    self.items = self.items - self.weapon;
-    self.leech_sentry = item;
+	// Dropping it requires 25 ammo/HP
+	if (self.ammo_leech < 25)
+	{
+		T_Damage (self, world, self, 25 - self.ammo_leech, DF_SPIRIT, "leech");
+		item.ammo_leech = 0;
+	}
+	else
+		item.ammo_leech = self.ammo_leech - 25;
+	*/
+	self.currentammo = self.ammo_leech = 0;
+	self.items = self.items - self.weapon;
+	self.leech_sentry = item;
 
-    // If we're still alive
-    if (!self.deadflag)
-    {
-        self.newweapon = W_BestWeapon();
-        W_DrawWeapon (self.newweapon);
-    }
+	// If we're still alive
+	if (!self.deadflag)
+	{
+		self.newweapon = W_BestWeapon();
+		W_DrawWeapon (self.newweapon);
+	}
 };
-
 
 /*
 ======================
@@ -452,23 +440,22 @@ Life Leech Attack Code
 */
 void() Leech_Attack =
 {
-    // Normal fire or altfire?
-    if (self.button3)
-    {
-        self.player_state = PS_ALTFIRE;
+	// Normal fire or altfire?
+	if (self.button3)
+	{
+		self.player_state = PS_ALTFIRE;
 
-        Leech_Drop ();
-        self.attack_finished = time + 0.1;
-    }
-    else
-    {
-        self.player_state = PS_FIRE;
+		Leech_Drop ();
+		self.attack_finished = time + 0.1;
+	}
+	else
+	{
+		self.player_state = PS_FIRE;
 
-        player_leech1 ();
-        self.attack_finished = time + 2.6;
-    }
+		player_leech1 ();
+		self.attack_finished = time + 2.6;
+	}
 };
-
 
 /*
 ============
@@ -479,16 +466,15 @@ Draw code for the life leech
 */
 void() Leech_Draw =
 {
-    self.weapon = IT_LIFE_LEECH;
-    self.currentammo = self.ammo_leech;
-    self.items = (self.items - (self.items & (IT_SHELLS | IT_NAILS | IT_CELLS | IT_ROCKETS)));
+	self.weapon = IT_LIFE_LEECH;
+	self.currentammo = self.ammo_leech;
+	self.items = (self.items - (self.items & (IT_SHELLS | IT_NAILS | IT_CELLS | IT_ROCKETS)));
 
-    Leech_UpdateView ();
+	Leech_UpdateView ();
 
-    self.attack_finished = time + 0.1;
-    player_leechdraw1 ();
+	self.attack_finished = time + 0.1;
+	player_leechdraw1 ();
 };
-
 
 /*
 ============
@@ -499,10 +485,9 @@ Holster code for the life leech
 */
 void() Leech_Holster =
 {
-    self.attack_finished = time + 0.1;
-    player_leechholster1 ();
+	self.attack_finished = time + 0.1;
+	player_leechholster1 ();
 };
-
 
 /*
 ============
@@ -513,6 +498,6 @@ Choose the right life leech model to display
 */
 void() Leech_UpdateView =
 {
-    self.weaponmodel = "models/weapons/v_leech.md3";
-    self.items = self.items - (self.items & IT_GUNS_AKIMBO);
+	self.weaponmodel = "models/weapons/v_leech.md3";
+	self.items = self.items - (self.items & IT_GUNS_AKIMBO);
 };

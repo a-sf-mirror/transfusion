@@ -38,7 +38,7 @@
 #define ZOMBIE_STANDUP_END		274
 #define	ZOMBIE_HIDE_START		175		//really just the first arise frame
 #define	ZOMBIE_HIDE_END			175		//single frame only
-#define ZOMBIE_DEATH2_START		0		//Death animation is a seperate model
+#define ZOMBIE_DEATH2_START		0		//Death2 animation is a seperate model
 #define ZOMBIE_DEATH2_END		29
 
 //Animation Timing Configuration in seconds
@@ -235,7 +235,7 @@ void () zombie_animate =
 			self.anim_end_num = ZOMBIE_ATTACK_END - ZOMBIE_ATTACK_START + 1;
 			self.anim_time = ZOMBIE_ATTACK_TIME;
 			if (self.frame > self.anim_end)
-				zombie_run();
+				self.th_run();
 			else
 				self.frame = ZOMBIE_ATTACK_START;
 		}
@@ -245,7 +245,7 @@ void () zombie_animate =
 			self.anim_end_num = ZOMBIE_PAIN_END - ZOMBIE_PAIN_START + 1;
 			self.anim_time = ZOMBIE_PAIN_TIME;
 			if (self.frame > self.anim_end)
-				zombie_run();
+				self.th_run();
 			else
 				self.frame = ZOMBIE_PAIN_START;
 		}
@@ -255,7 +255,7 @@ void () zombie_animate =
 			self.anim_end_num = ZOMBIE_ARISE_END - ZOMBIE_ARISE_START + 1;
 			self.anim_time = ZOMBIE_ARISE_TIME;
 			if (self.frame > self.anim_end)
-				zombie_run();
+				self.th_run();
 			else
 				self.frame = ZOMBIE_ARISE_START;
 		}
@@ -265,7 +265,7 @@ void () zombie_animate =
 			self.anim_end_num = ZOMBIE_STANDUP_END - ZOMBIE_STANDUP_START + 1;
 			self.anim_time = ZOMBIE_STANDUP_TIME;
 			if (self.frame > self.anim_end)
-				zombie_run();
+				self.th_run();
 			else
 				self.frame = ZOMBIE_STANDUP_START;
 		}
@@ -275,7 +275,7 @@ void () zombie_animate =
 			self.anim_end_num = ZOMBIE_FALLBACK_END - ZOMBIE_FALLBACK_START + 1;
 			self.anim_time = ZOMBIE_FALLBACK_TIME;
 			if (self.frame > self.anim_end)
-				zombie_standup();
+				self.th_standup();
 			else
 				self.frame = ZOMBIE_FALLBACK_START;
 		}

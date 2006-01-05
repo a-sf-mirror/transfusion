@@ -19,7 +19,6 @@
 
 #include "common.qh"
 
-
 void() W_SetCurrentAmmo;
 void(float newWeapon) W_SwitchToWeapon;
 void() FireAmbient;
@@ -39,23 +38,23 @@ Rotates an item
 */
 void() RotateItem =
 {
-   local float t;
-   t = time - self.ltime;
-   self.ltime = time;
-   self.angles = self.angles + ( self.rotate * t );
-   self.angles = SUB_NormalizeAngles( self.angles );
-   self.nextthink = time + 0.02;
+	local float t;
+	t = time - self.ltime;
+	self.ltime = time;
+	self.angles = self.angles + ( self.rotate * t );
+	self.angles = SUB_NormalizeAngles( self.angles );
+	self.nextthink = time + 0.02;
 };
 
 void() SUB_regen =
 {
-	 // Items only respawn in deathmatch/ctf/team deathmatch
-	 if (gametype == GT_COOPERATIVE || gametype == GT_SINGLE_PLAYER)
-	 {
-		 remove(self);
-		 return;
-	 }		 
-	
+	// Items only respawn in deathmatch/ctf/team deathmatch
+	if (gametype == GT_COOPERATIVE || gametype == GT_SINGLE_PLAYER)
+	{
+		remove(self);
+		return;
+	}		 
+
 	self.model = self.mdl;		// restore original model
 	self.solid = SOLID_TRIGGER; // allow it to be touched again
 	sound (self, CHAN_VOICE, "bludbath/reappear.wav", 1, ATTN_NORM);	// item respawn sound
@@ -66,7 +65,7 @@ void() SUB_regen =
 		self.effects = self.effects | EF_RED;
 	else if (self.classname == "item_artifact_reflect")
 		self.effects = self.effects | EF_BLUE;
-	
+
 
 	// Don't call it back later
 	if (self.think == SUB_regen)
@@ -84,12 +83,11 @@ void() SUB_regen =
 		// If there's no animation, check for rotation:
 		if (self.rotate == ITEM_ROTATION)
 		{
-				self.nextthink = time + 0.02;
-				self.think = RotateItem;
+			self.nextthink = time + 0.02;
+			self.think = RotateItem;
 		}	
 	}
 };
-
 
 void() Akimbo_Touch =
 {
@@ -270,8 +268,8 @@ void(float isAnObject) PlaceItemOrObject =
 		// If there's no animation, check for rotation:
 		if (self.rotate == ITEM_ROTATION)
 		{
-				self.nextthink = time + 0.02;
-				self.think = RotateItem;
+			self.nextthink = time + 0.02;
+			self.think = RotateItem;
 		}	
 	}
 };
@@ -1926,15 +1924,11 @@ void() ammo_soul =
 	StartItem ();
 };
 
-
 /*
 ===============================================================================
-
 KEYS
-
 ===============================================================================
 */
-
 void() key_touch =
 {
 	local entity	stemp;
@@ -1967,7 +1961,6 @@ void() key_touch =
 	activator = other;
 	SUB_UseTargets();				// fire all targets / killtargets
 };
-
 
 /*QUAKED item_key (0 .5 .8) (-16 -16 -24) (16 16 32)
 one of six keys in Blood
@@ -2044,15 +2037,11 @@ void() item_key =
 	StartItem ();
 };
 
-
 /*
 ===============================================================================
-
 POWERUPS
-
 ===============================================================================
 */
-
 // Doctor's Bag
 void() item_artifact_bag =
 {

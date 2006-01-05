@@ -17,16 +17,11 @@
     See file, 'COPYING', for details.
 */
 
-
 #include "common.qh"
-
 
 // This function is both needed (by the compiler and
 // maybe by the game), and unused (because never called)
-void() main =
-{
-};
-
+void() main;
 
 /*
 ================
@@ -196,7 +191,6 @@ void() PrecacheSounds =
 	precache_sound ("player/taunts/taunt9.wav");
 };
 
-
 /*
 ================
 MandatoryExtension
@@ -209,7 +203,6 @@ void(string ext) MandatoryExtension =
 	if (!checkextension (ext))
 	error2 ("A mandatory QuakeC extension is missing: ", ext);
 };
-
 
 //=======================
 /*QUAKED worldspawn (0 0 0) ?
@@ -328,7 +321,6 @@ void() worldspawn =
 
 	precache_model ("models/weapons/v_pitch.psk");
 
-
 	//
 	// Setup light animation tables. 'a' is total darkness, 'z' is maxbright.
 	//
@@ -389,12 +381,9 @@ void() StartFrame =
 #endif
 };
 
-
 /*
 ==============================================================================
-
 WARMUP
-
 ==============================================================================
 */
 
@@ -454,7 +443,6 @@ void() World_EndWarmup =
 		bprint ("×ÁÒÎÉÎÇº Cheats are enabled on this server!!\n");
 };
 
-
 /*
 ====================
 World_WarmupCountdown
@@ -510,7 +498,6 @@ void() World_WarmupCountdown =
 	}
 };
 
-
 /*
 ====================
 World_StartWarmup
@@ -539,7 +526,6 @@ void() World_StartWarmup =
 	bprint3 ("¾¾ Warmup started (", str, " sec) ¼¼\n");
 };
 
-
 /*
 ====================
 World_StopWarmup
@@ -557,7 +543,6 @@ void() World_StopWarmup =
 	warmup_counttime = time + 5;  // "waiting for opponents" in 5 sec
 	bprint ("¾¾ Warmup canceled ¼¼\n");
 };
-
 
 /*
 ====================
@@ -599,19 +584,15 @@ void() World_CheckWarmup =
 		World_StopWarmup ();
 };
 
-
 /*
 ==============================================================================
-
 CORPSE MANAGEMENT
-
 ==============================================================================
 */
 
 // In player.qc
 void() HeadDie;
 void(string gibname, float dm) ThrowGib;
-
 
 // "Fades" a corpse into the ground, like blood
 void() FadeDown =
@@ -664,7 +645,6 @@ void(float corpseHealth, void() corpseToGib) BecomeCorpse =
 	self.oldorigin = self.origin;
 };
 
-
 /*
 ====================
 GibPlayerCorpse
@@ -681,7 +661,6 @@ void() GibPlayerCorpse =
 
 	remove (self);
 };
-
 
 /*
 ====================

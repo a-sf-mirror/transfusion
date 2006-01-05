@@ -17,10 +17,8 @@
     See file, 'COPYING', for details.
 */
 
-
 #ifndef _COMMON_QH_
 #define _COMMON_QH_
-
 
 /* ----------------- */
 /* --- Constants --- */
@@ -72,7 +70,6 @@
 #define SF_PRIVATE10        512
 #define SF_USABLE           1024    // Can be triggered manually by a client
 
-
 // edict.movetype values
 #define MOVETYPE_NONE           0    // never moves
 //#define MOVETYPE_ANGLENOCLIP    1
@@ -123,7 +120,6 @@
 #define DAMAGE_NO   0
 #define DAMAGE_YES  1
 #define DAMAGE_AIM  2
-
 
 // ------ Impulses ------
 
@@ -196,7 +192,6 @@
 // Coredump; for debugging (CHEAT PROTECTED)
 #define IMP_COREDUMP         255
 
-
 // --- Items (24 max in each field; each value must be a power of 2) ---
 
 // In ".items"
@@ -237,7 +232,6 @@
 #define IT2_KEY_DAGGER		8	// 4 - dagger
 #define IT2_KEY_SPIDER		16	// 5 - spider
 #define IT2_KEY_MOON		32	// 6 - moon
-
 
 // Inventory items
 #define INV_FIRST_AID       0
@@ -341,7 +335,6 @@
 #define MSG_ALL         2  // reliable to all
 #define MSG_INIT        3  // write to the init string
 
-
 // attack state
 #define AS_STRAIGHT 1
 #define AS_SLIDING  2
@@ -379,7 +372,6 @@
 #define MAX_CELLS       250
 #define MAX_VOODOO      100
 #define MAX_LEECH       100
-
 
 /* ----------------- */
 /* --- CTF stuff --- */
@@ -555,6 +547,5 @@
 #define NONBLOCKING  4
 
 #define STAYOPEN  1
-
 
 #endif  // #ifndef _COMMON_QH_

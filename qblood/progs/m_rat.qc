@@ -19,22 +19,17 @@
 
 #include "common.qh"
 
-
 $base base
 $skin skin
 
 // idle
-
 $frame idle1
 
 // run
-
 $frame run1 run2 run3 run4
 
 //attack1
-
 $frame attack1 attack2
-
 
 // Prototypes
 void () rat_stand1;
@@ -45,15 +40,14 @@ void () rat_walk2 = [$run2, rat_walk3] {basic_ai (3);};
 void () rat_walk3 = [$run3, rat_walk4] {basic_ai (3);};
 void () rat_walk4 = [$run4, rat_walk1] {basic_ai (3);};
 
-
 // FIXME: Unless more frames get added to the rat, we don't need two stand functions
 void () rat_stand =
 {
-    if (random () < 0.05)
-        sound (self, CHAN_VOICE, "rat/ratroam.wav", 1, ATTN_IDLE);
+	if (random () < 0.05)
+		sound (self, CHAN_VOICE, "rat/ratroam.wav", 1, ATTN_IDLE);
 
-    self.style = 1;
-    rat_stand1();
+	self.style = 1;
+	rat_stand1();
 };
 
 // idle
@@ -61,136 +55,129 @@ void () rat_stand1 = [$idle1, rat_stand1] {ai_stand();};
 
 void () rat_walk =
 {
-    self.style = 2;
-    rat_walk1 ();
+	self.style = 2;
+	rat_walk1 ();
 };
 
 void () rat_run =
 {
-    self.style = 3;
-    rat_walk1 ();
+	self.style = 3;
+	rat_walk1 ();
 };
 
 // --- Bite sequence
-
 void () rat_attack1 = [$attack1, rat_attack2] {rat_bite();ai_face ();};
 void () rat_attack2 = [$attack2, rat_run] {ai_face ();};
 
 //--- Decide when to bite an enemy
-
 void () rat_attack =
 {
-    local vector delta;
+	local vector delta;
 
-    if (self.attack_finished > time)    // To avoid constant player chomping
-        return;
+	if (self.attack_finished > time)    // To avoid constant player chomping
+		return;
 
-    delta = (self.enemy.origin - self.origin);
+	delta = (self.enemy.origin - self.origin);
 
-    if (vlen (delta) <= 90)
-        rat_attack1 ();    // If the player is near bite them
+	if (vlen (delta) <= 90)
+		rat_attack1 ();    // If the player is near bite them
 
 };
 
-
 //--- Munch attack
-
 void() rat_bite =
 {
-    local vector    delta;
-    local float     ldmg;
+	local vector    delta;
+	local float     ldmg;
 
-    if (self.enemy.classname != "player") // To avoid hurting monster buddies on purpose
-        return;
+	if (self.enemy.classname != "player") // To avoid hurting monster buddies on purpose
+		return;
 
-    ai_charge(10);
+	ai_charge(10);
 
-    if (!CanDamage (self.enemy, self))
-        return;
+	if (!CanDamage (self.enemy, self))
+		return;
 
-    delta = self.enemy.origin - self.origin;
+	delta = self.enemy.origin - self.origin;
 
-    if (vlen(delta) > 100)
-        return;
+	if (vlen(delta) > 100)
+		return;
 
-    ldmg = (random() + random() + random()) * 8;
-    T_Damage (self.enemy, self, self, ldmg, DF_STAB, string_null);
+	ldmg = (random() + random() + random()) * 8;
+	T_Damage (self.enemy, self, self, ldmg, DF_STAB, string_null);
 
-    sound (self, CHAN_VOICE, "hellhound/houndbit.wav", 1, ATTN_NORM);  //FIXME: Verify this is correct biting sound
+	sound (self, CHAN_VOICE, "hellhound/houndbit.wav", 1, ATTN_NORM);  //FIXME: Verify this is correct biting sound
 
-    self.attack_finished = time + 1;
+	self.attack_finished = time + 1;
 
 };
 
 //--- Show pain
-
 void () rat_pain =
 {
-    // don't make multiple pain sounds right after each other
-    if (self.pain_finished > time)
-        return;
+	// don't make multiple pain sounds right after each other
+	if (self.pain_finished > time)
+		return;
 
-        sound (self, CHAN_VOICE, "rat/ratpain.wav", 1, ATTN_NORM);
+	sound (self, CHAN_VOICE, "rat/ratpain.wav", 1, ATTN_NORM);
 
-//    rat_pain1 (); // FIXME: No pain sequence for now
-    self.pain_finished = (time + 1); // is really 0.33 seconds long, but that really sounds crappy
+	//rat_pain1 (); // FIXME: No pain sequence for now
+	self.pain_finished = (time + 1); // is really 0.33 seconds long, but that really sounds crappy
 };
 
 // --- Death sequence
-
 void () rat_death1 = [$idle1, rat_death1]
 {
-    // In the last frame, remove self 15 seconds after death
-    self.nextthink = time + 15;
+	// In the last frame, remove self 15 seconds after death
+	self.nextthink = time + 15;
 	self.think = SUB_Remove;
 };
 
 void () rat_die =
 {
-    monster_death();
-	
-    if (self.health < -20)
-    {
-        // Very large blood splat!
-        te_bloodshower (self.origin, self.origin + self.size, 100, 25);
-		
+	monster_death();
+
+	if (self.health < -20)
+	{
+		// Very large blood splat!
+		te_bloodshower (self.origin, self.origin + self.size, 100, 25);
+
 		sound (self, CHAN_VOICE, "rat/ratdie3.wav", 1, ATTN_NORM);
-        ThrowGib ("models/objects/gib4.md3", self.health);
-        remove (self);
-        return;
-    }
+		ThrowGib ("models/objects/gib4.md3", self.health);
+		remove (self);
+		return;
+	}
 
-    if (random () < 0.5)
-        sound (self, CHAN_VOICE, "rat/ratdie1.wav", 1, ATTN_NORM);
-    else
-        sound (self, CHAN_VOICE, "rat/ratdie2.wav", 1, ATTN_NORM);
+	if (random () < 0.5)
+		sound (self, CHAN_VOICE, "rat/ratdie1.wav", 1, ATTN_NORM);
+	else
+		sound (self, CHAN_VOICE, "rat/ratdie2.wav", 1, ATTN_NORM);
 
-    rat_death1 ();    
+	rat_death1 ();    
 };
 
 //--- The spawn
-
 void () monster_rat =
 {
-    //  Disable for testing
-    if(monster_check())
-	    return;
+	//  Disable for testing
+	if (monster_check())
+		return;
 
-    precache_model ("models/enemies/rat.md3");
+	precache_model ("models/enemies/rat.md3");
 
-    precache_sound ("rat/ratdie1.wav");
-    precache_sound ("rat/ratdie2.wav");
-    precache_sound ("rat/ratdie3.wav");
-    precache_sound ("rat/ratpain.wav");
-    precache_sound ("rat/ratroam.wav");
-    precache_sound ("rat/ratspot.wav");
-    precache_sound ("hellhound/houndbit.wav");
+	precache_sound ("rat/ratdie1.wav");
+	precache_sound ("rat/ratdie2.wav");
+	precache_sound ("rat/ratdie3.wav");
+	precache_sound ("rat/ratpain.wav");
+	precache_sound ("rat/ratroam.wav");
+	precache_sound ("rat/ratspot.wav");
+	precache_sound ("hellhound/houndbit.wav");
 
-    self.solid = SOLID_SLIDEBOX;
-    self.movetype = MOVETYPE_TOSS;
-    setmodel (self, "models/enemies/rat.md3");
-    setsize (self,'-13 -3 0', '13 3 6');     // FIXME: Need real coordinates
-    self.health = 40;
+	self.solid = SOLID_SLIDEBOX;
+	self.movetype = MOVETYPE_TOSS;
+	setmodel (self, "models/enemies/rat.md3");
+	setsize (self,'-13 -3 0', '13 3 6');     // FIXME: Need real coordinates
+	self.health = 40;
 	self.resist_acid = 0;
 	self.resist_shock = 0;
 	self.resist_pummel = 0;
@@ -203,14 +190,14 @@ void () monster_rat =
 	self.resist_drown = -1;	// cannot drown
 	self.resist_spirit = 0;
 	self.resist_voodoo = 0;    
-    self.max_health = self.health;
-    self.th_stand = rat_stand;
-    self.th_walk = rat_walk;
-    self.th_run = rat_run;
-    self.th_die = rat_die;
-    self.th_pain = rat_pain;
-    self.th_missile = rat_attack;
-    self.touch = monster_stepped_on;
-    self.attack_finished = 0;
-    walkmonster_start ();
+	self.max_health = self.health;
+	self.th_stand = rat_stand;
+	self.th_walk = rat_walk;
+	self.th_run = rat_run;
+	self.th_die = rat_die;
+	self.th_pain = rat_pain;
+	self.th_missile = rat_attack;
+	self.touch = monster_stepped_on;
+	self.attack_finished = 0;
+	walkmonster_start ();
 };

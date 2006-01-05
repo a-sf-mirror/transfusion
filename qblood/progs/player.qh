@@ -17,16 +17,12 @@
     See file, 'COPYING', for details.
 */
 
-
 #ifndef _PLAYER_QH_
 #define _PLAYER_QH_
 
-
 /*
 ==============================================================================
-
 PLAYER MODEL
-
 ==============================================================================
 */
 
@@ -88,6 +84,5 @@ $frame switchpitch1 switchpitch2 switchpitch3 switchpitch4
 
 // Changing from pitchfork to pistol (weapons 2-10)
 $frame switchpistol1 switchpistol2 switchpistol3 switchpistol4
-
 
 #endif  // #ifndef _PLAYER_QH_

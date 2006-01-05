@@ -30,58 +30,57 @@ void () bluecultist_attack1 = [$attack1, bluecultist_attack2] {ai_face ();};
 void () bluecultist_attack2 = [$attack2, bluecultist_attack3] {bluecultist_fireTesla (); ai_face ();};
 void () bluecultist_attack3 = [$idle1, cultist_run] 
 {
-    ai_face ();
+	ai_face ();
 	self.cnt = self.cnt + 1;
 
 	if (random() <= 0.5 && self.cnt < 3)
-	    bluecultist_attack1();
+		bluecultist_attack1();
 	else
-	    self.cnt = 0;
+		self.cnt = 0;
 };
 */
 
 void () bluecultist_attack =
 {
-    local vector delta;
+	local vector delta;
 
-    if (!infront(self.enemy)) // If there's something blocking the shot
-        return;
+	if (!infront(self.enemy)) // If there's something blocking the shot
+		return;
 
-     // Talk some smack!
+	// Talk some smack!
 	cultist_taunt();
 
-    delta = (self.enemy.origin - self.origin);
+	delta = (self.enemy.origin - self.origin);
 
-    if (vlen (delta) <= 1200)
+	if (vlen (delta) <= 1200)
 	{
-        //bluecultist_attack1 ();    // If the player is near shoot them    
+		//bluecultist_attack1 ();    // If the player is near shoot them    
 		self.anim_type = "attack1";
 		cultist_animate();
 	}
 };
 
 //--- Shoot the player
-
 void () bluecultist_fireTesla =
 {
-    local   vector  org;
-    local   vector  dir;
+	local   vector  org;
+	local   vector  dir;
 
-    muzzleflash ();
+	muzzleflash ();
 
-    sound (self, CHAN_WEAPON, "weapons/tesla/tessngfr.wav", 1, ATTN_NORM);
+	sound (self, CHAN_WEAPON, "weapons/tesla/tessngfr.wav", 1, ATTN_NORM);
 
-    dir = (self.enemy.origin - self.origin);
-    org = self.origin + '0 0 16';
+	dir = (self.enemy.origin - self.origin);
+	org = self.origin + '0 0 16';
 
-    Tesla_LaunchJolt (org, dir, 1500);
+	Tesla_LaunchJolt (org, dir, 1500);
 };
 
 void () monster_bluecultist =
 {
-    //  Disable for testing
-    if(monster_check())
-	    return;
+	//  Disable for testing
+	if(monster_check())
+		return;
 
 	cultist_spawn();
 };

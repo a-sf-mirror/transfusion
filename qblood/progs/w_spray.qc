@@ -20,14 +20,10 @@
 #include "common.qh"
 #include "player.qh"
 
-
 void() Spray_Fire;
 
-
 //============================================================================
-
 // ----- Spray Can model ----- //
-
 $modelname v_aerosol
 
 // idle
@@ -57,36 +53,34 @@ $frame spray_holsthlf1 spray_holsthlf2 spray_holsthlf3
 // fire
 $frame spray_fire1 spray_fire2 spray_fire3
 
-
 // ----- Player related code ----- //
-
 void() player_spray =
 {
-    if (!self.button0 || intermission_running || self.ammo_spray < 1)
-    {
-        // Stop the fire sound
-        sound (self, CHAN_WEAPON, "misc/null.wav", 0, ATTN_NORM);
-        self.t_width = 0;
+	if (!self.button0 || intermission_running || self.ammo_spray < 1)
+	{
+		// Stop the fire sound
+		sound (self, CHAN_WEAPON, "misc/null.wav", 0, ATTN_NORM);
+		self.t_width = 0;
 
-        player_run ();
-        return;
-    }
+		player_run ();
+		return;
+	}
 
-    // Start the fire sound if necessary
-    if (self.t_width <= time)
-    {
-        sound (self, CHAN_WEAPON, "weapons/spraycan/sprayfir.wav", 0.5, ATTN_NORM);
-        self.t_width = time + 2.5;
-    }
+	// Start the fire sound if necessary
+	if (self.t_width <= time)
+	{
+		sound (self, CHAN_WEAPON, "weapons/spraycan/sprayfir.wav", 0.5, ATTN_NORM);
+		self.t_width = time + 2.5;
+	}
 
-    muzzleflash ();
+	muzzleflash ();
 
-    self.weaponframe = self.weaponframe + 1;
-    if (self.weaponframe > $spray_fire3)
-        self.weaponframe = $spray_fire1;
+	self.weaponframe = self.weaponframe + 1;
+	if (self.weaponframe > $spray_fire3)
+		self.weaponframe = $spray_fire1;
 
-    Spray_Fire ();
-    self.attack_finished = time + 0.2;
+	Spray_Fire ();
+	self.attack_finished = time + 0.2;
 };
 
 void() player_spray1 = [$attack1, player_spray2] { player_spray (); };
@@ -109,10 +103,10 @@ void() player_altspray4 = [$attack2, player_altspray5] { self.weaponframe = $spr
 void() player_altspray5 = [$attack2, player_altspray6] { self.weaponframe = $spray_throw5; };
 void() player_altspray6 = [$attack2, player_altspray7]
 {
-    self.weaponframe = $spray_throw6;
-    Bomb_Fire ();
-    Bomb_Uncharge ();
-    ShowThrowMeter ();
+	self.weaponframe = $spray_throw6;
+	Bomb_Fire ();
+	Bomb_Uncharge ();
+	ShowThrowMeter ();
 };
 void() player_altspray7 = [$attack2, player_run] { self.weaponframe = $spray_throw7; };
 
@@ -138,7 +132,6 @@ void() player_sprayholster2 = [$attack2, player_sprayholster3] { self.weaponfram
 void() player_sprayholster3 = [$attack2, player_sprayholster4] { self.weaponframe = $spray_holster3; };
 void() player_sprayholster4 = [$attack2, player_run          ] { W_DrawWeapon (self.newweapon); };
 
-
 //============================================================================
 
 /*
@@ -150,41 +143,40 @@ Send a fire cloud
 */
 void() Spray_Fire =
 {
-    local vector    dir;
-    local entity    old;
+	local vector    dir;
+	local entity    old;
 
-    if (self.ammo_spray < 1)
-        return;
+	if (self.ammo_spray < 1)
+		return;
 
-    makevectors (self.v_angle);
+	makevectors (self.v_angle);
 
-    self.attack_finished = time + 0.2;
-    self.currentammo = self.ammo_spray = self.ammo_spray - 1;
-    dir = aim (self, 1000);
+	self.attack_finished = time + 0.2;
+	self.currentammo = self.ammo_spray = self.ammo_spray - 1;
+	dir = aim (self, 1000);
 
-    newmis = spawn ();
-    newmis.owner = self;
-    newmis.movetype = MOVETYPE_FLYMISSILE;
-    newmis.solid = SOLID_BBOX;
-    newmis.alpha = 0.6;
-    newmis.effects = EF_ADDITIVE;
+	newmis = spawn ();
+	newmis.owner = self;
+	newmis.movetype = MOVETYPE_FLYMISSILE;
+	newmis.solid = SOLID_BBOX;
+	newmis.alpha = 0.6;
+	newmis.effects = EF_ADDITIVE;
 
-    newmis.angles = vectoangles(dir);
+	newmis.angles = vectoangles(dir);
 
-    newmis.touch = flame_touch;
-    newmis.classname = "spike";
-    newmis.reset = SUB_Remove;
-    newmis.think = SUB_Remove;
-    newmis.nextthink = time + 0.6;
-    setmodel (newmis, "progs/sprayfir.spr");
-    setsize (newmis, '-1 -1 -1', '1 1 1');
-    setorigin (newmis, self.origin + '0 0 10' + v_forward * 50 + v_right * 8);
+	newmis.touch = flame_touch;
+	newmis.classname = "spike";
+	newmis.reset = SUB_Remove;
+	newmis.think = SUB_Remove;
+	newmis.nextthink = time + 0.6;
+	setmodel (newmis, "progs/sprayfir.spr");
+	setsize (newmis, '-1 -1 -1', '1 1 1');
+	setorigin (newmis, self.origin + '0 0 10' + v_forward * 50 + v_right * 8);
 
-    newmis.velocity = dir * 550;
-    newmis.owner = self;
-    newmis.frame = floor (random () * 3);
+	newmis.velocity = dir * 550;
+	newmis.owner = self;
+	newmis.frame = floor (random () * 3);
 };
-
 
 /*
 ============
@@ -195,21 +187,20 @@ Attack code for the spray can
 */
 void() Spray_Attack =
 {
-    self.player_state = PS_FIRE;
+	self.player_state = PS_FIRE;
 
-    // Altfire
-    if (self.tnt_time)
-    {
-        self.attack_finished = time + 1.0;
-        player_altspray1 ();
-    }
-    else
-    {
-        self.weaponframe = $spray_fire1 - 1;
-        player_spray1 ();
-    }
+	// Altfire
+	if (self.tnt_time)
+	{
+		self.attack_finished = time + 1.0;
+		player_altspray1 ();
+	}
+	else
+	{
+		self.weaponframe = $spray_fire1 - 1;
+		player_spray1 ();
+	}
 };
-
 
 /*
 ============
@@ -220,25 +211,24 @@ Draw code for the spray can
 */
 void() Spray_Draw =
 {
-    self.currentammo = self.ammo_spray;
-    self.items = (self.items - (self.items & (IT_NAILS | IT_SHELLS | IT_CELLS | IT_ROCKETS)));
+	self.currentammo = self.ammo_spray;
+	self.items = (self.items - (self.items & (IT_NAILS | IT_SHELLS | IT_CELLS | IT_ROCKETS)));
 
-    Spray_UpdateView ();
+	Spray_UpdateView ();
 
-    self.attack_finished = time + 0.9;
+	self.attack_finished = time + 0.9;
 
-    // If we need to pop up the lighter
-    if (self.weapon != IT_TNT)
-    {
-        sound (self, CHAN_WEAPON, "weapons/tnt/lighter.wav", 1, ATTN_NORM);
-        player_spraydraw1 ();
-    }
-    else
-        player_sprayhalfdraw1 ();
+	// If we need to pop up the lighter
+	if (self.weapon != IT_TNT)
+	{
+		sound (self, CHAN_WEAPON, "weapons/tnt/lighter.wav", 1, ATTN_NORM);
+		player_spraydraw1 ();
+	}
+	else
+		player_sprayhalfdraw1 ();
 
-    self.weapon = IT_SPRAY_CAN;
+	self.weapon = IT_SPRAY_CAN;
 };
-
 
 /*
 ============
@@ -249,18 +239,17 @@ Holster code for the spray can
 */
 void() Spray_Holster =
 {
-    self.attack_finished = time + 0.4;
+	self.attack_finished = time + 0.4;
 
-    // If we need to close the lighter
-    if (self.newweapon != IT_TNT)
-    {
-        sound (self, CHAN_WEAPON, "weapons/tnt/zipclose.wav", 1, ATTN_NORM);
-        player_sprayholster1 ();
-    }
-    else
-        player_sprayhalfholster1 ();
+	// If we need to close the lighter
+	if (self.newweapon != IT_TNT)
+	{
+		sound (self, CHAN_WEAPON, "weapons/tnt/zipclose.wav", 1, ATTN_NORM);
+		player_sprayholster1 ();
+	}
+	else
+		player_sprayhalfholster1 ();
 };
-
 
 /*
 ============
@@ -271,6 +260,6 @@ Choose the right spray can model to display
 */
 void() Spray_UpdateView =
 {
-    self.weaponmodel = "models/weapons/v_aerosol.md3";
-    self.items = self.items - (self.items & IT_GUNS_AKIMBO);
+	self.weaponmodel = "models/weapons/v_aerosol.md3";
+	self.items = self.items - (self.items & IT_GUNS_AKIMBO);
 };

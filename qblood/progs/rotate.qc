@@ -174,7 +174,6 @@ void( float amount ) SetDamageOnTargets =
 // Simple continual rotatation
 //
 //================================================
-
 void() rotate_entity_think =
 {
 	local float t;
@@ -295,7 +294,6 @@ If "deathtype" is set with a string, this is the message that will appear when a
 "target" is the center of rotation.
 "speed"  is how long the entity takes to go from standing still to full speed and vice-versa.
 */
-
 void() func_rotate_entity =
 {
 	self.solid    = SOLID_NOT;
@@ -341,7 +339,6 @@ SET_DAMAGE tells the train to set all targets damage to "dmg"
 "noise1" contains the name of the sound to play when train moves.
 "event" is a target to trigger when train arrives at path_rotate.
 */
-
 void() path_rotate =
 {
 	if ( self.noise )
@@ -691,7 +688,6 @@ dmg      default  0
 sounds
 1) ratchet metal
 */
-
 void() rotate_train =
 {
 	objerror ("rotate_train entities should be changed to rotate_object with\nfunc_rotate_train controllers\n");
@@ -763,7 +759,6 @@ void() func_rotate_train =
 // Moving clip walls
 //
 //================================================
-
 void() rotate_door_reversedirection;
 void() rotate_door_group_reversedirection;
 
@@ -879,7 +874,6 @@ void() rotate_object =
 // Rotating doors
 //
 //================================================
-
 void() rotate_door_think2 =
 {
 	local float t;
@@ -1023,7 +1017,6 @@ void() rotate_door_use =
 	self.ltime = time;
 };
 
-
 /*QUAKED func_rotate_door (0 .5 .8) (-8 -8 -8) (8 8 8) STAYOPEN
 Creates a door that rotates between two positions around a point of
 rotation each time it's triggered.
@@ -1039,13 +1032,10 @@ once door from closing again when it's blocked.
 2) metal
 3) base
 */
-
 void() func_rotate_door =
 {
 	if (!self.target)
-	{
 		objerror( "rotate_door without target." );
-	}
 
 	self.dest1 = '0 0 0';
 	self.dest2 = self.angles;
@@ -1053,9 +1043,7 @@ void() func_rotate_door =
 
 	// default to 2 seconds
 	if ( !self.speed )
-	{
 		self.speed = 2;
-	}
 
 	self.cnt = 0;
 

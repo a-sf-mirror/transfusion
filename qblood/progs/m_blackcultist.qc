@@ -33,96 +33,94 @@ void () blackcultist_attack3 = [$idle1, cultist_run] {ai_face ();};
 
 void () blackcultist_attack =
 {
-    local vector delta;
+	local vector delta;
 
-    cultist_taunt();
+	cultist_taunt();
 
-    delta = (self.enemy.origin - self.origin);
+	delta = (self.enemy.origin - self.origin);
 
-    if (vlen (delta) <= 1200)
+	if (vlen (delta) <= 1200)
 	{
 		//blackcultist_attack1 ();    // If the player is near shoot them
 		self.anim_type = "attack1";
 		cultist_animate();
 	}
-        
 };
 
 //--- Shoot the player
 
 void () blackcultist_fireTommygun =
 {
-    local vector    dir;
-    local entity    old;
-    local vector    orig;
-    local vector    spread;
+	local vector    dir;
+	local entity    old;
+	local vector    orig;
+	local vector    spread;
 	local vector    org;
-    local float     damage;
+	local float     damage;
 
-    makevectors (self.v_angle);
+	makevectors (self.v_angle);
 
-    self.effects = self.effects | EF_MUZZLEFLASH;
+	self.effects = self.effects | EF_MUZZLEFLASH;
 
-    sound (self, CHAN_WEAPON, "weapons/tommygun/_tom.wav", 1, ATTN_NORM);
-    self.attack_finished = time + 0.1;
+	sound (self, CHAN_WEAPON, "weapons/tommygun/_tom.wav", 1, ATTN_NORM);
+	self.attack_finished = time + 0.1;
 
-    // set the bullet direction according to the weapon real direction
-    dir = (self.enemy.origin - self.origin);
-    dir = normalize (dir);
+	// set the bullet direction according to the weapon real direction
+	dir = (self.enemy.origin - self.origin);
+	dir = normalize (dir);
 
-    orig = self.origin + v_forward * 15 + v_up * 12 + v_right * 4;
+	orig = self.origin + v_forward * 15 + v_up * 12 + v_right * 4;
 
-    // Spawn 1 shell every 2 shots
-    Tommy_SpawnShell (orig);
+	// Spawn 1 shell every 2 shots
+	Tommy_SpawnShell (orig);
 
-    org = self.origin;
-	
+	org = self.origin;
+
 	/* 
-	   There has to be a smarter way to do this...
-	   This adjust the angle that the shotgun pellets come from
-	   I.E. So you can't walk right into a cultist "blind spot" 
+	There has to be a smarter way to do this...
+	This adjust the angle that the shotgun pellets come from
+	I.E. So you can't walk right into a cultist "blind spot" 
 	*/	
 	if (self.angles_y >= 315 || self.angles_y <= 45)
 	{
-	    org_x = org_x + 10;
+		org_x = org_x + 10;
 		org_y = org_y + 0;
 	}
 	else if (self.angles_y >= 225)
 	{
-	    org_x = org_x + 0;
+		org_x = org_x + 0;
 		org_y = org_y - 10;
 	}
 	else if (self.angles_y >= 135)
 	{
-	    org_x = org_x - 10;
+		org_x = org_x - 10;
 		org_y = org_y + 0;
 	}
 	else // self.angles_y > 45)
 	{
-	    org_x = org_x + 0;
+		org_x = org_x + 0;
 		org_y = org_y + 10;
 	}
-	
+
 	org_z = org_z + 35;
-	
+
 	FireBullets (org, dir, 1, 10, '0.1 0.1 0');
 
 	// Keep attacking until enemy is out of range or dead
 	if(visible(self.enemy) && self.enemy.health > 1)
-	    self.think = blackcultist_attack;
-	
+		self.think = blackcultist_attack;
 	else
-	    self.think = self.th_run;
-		
+		self.think = self.th_run;
+
 	self.nextthink = time + 0.1;
-	
+
 };
 
 void () monster_blackcultist =
 {
-    //  Disable for testing
-    if(monster_check())
-	    return;
+	//  Disable for testing
+	if(monster_check())
+		return;
 
 	cultist_spawn();
 };

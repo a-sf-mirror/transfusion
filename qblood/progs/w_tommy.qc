@@ -20,14 +20,10 @@
 #include "common.qh"
 #include "player.qh"
 
-
 void() Tommy_Fire;
 
-
 //============================================================================
-
 // ----- Tommy Gun models ----- //
-
 // Normal model
 $modelname v_tommy
 
@@ -50,7 +46,6 @@ $frame tommy_alt6 tommy_alt7 tommy_alt8
 // holster
 $frame tommy_holster1 tommy_holster2 tommy_holster3
 
-
 // Akimbo model
 $modelname ga_tommy
 
@@ -70,25 +65,22 @@ $frame atommy_alt6 atommy_alt7 atommy_alt8
 // holster
 $frame atommy_holster1 atommy_holster2 atommy_holster3
 
-
 // ----- Player related code ----- //
-
 // WARNING: The code below assumes that both models have the exact same frame types
-
 void() player_tommy =
 {
-    if (!self.button0 || intermission_running || self.ammo_nails < 1)
-    {
-        player_run ();
-        return;
-    }
+	if (!self.button0 || intermission_running || self.ammo_nails < 1)
+	{
+		player_run ();
+		return;
+	}
 
-    muzzleflash ();
+	muzzleflash ();
 
-    Tommy_Fire ();
-    self.attack_finished = time + 0.1;
+	Tommy_Fire ();
+	self.attack_finished = time + 0.1;
 
-    self.impulse = IMP_NONE;
+	self.impulse = IMP_NONE;
 };
 
 void() player_tommy1 = [$attack1, player_tommy2] { player_tommy (); self.weaponframe = $tommy_fire1; };
@@ -96,22 +88,22 @@ void() player_tommy2 = [$attack2, player_tommy1] { player_tommy (); self.weaponf
 
 void() player_alttommy =
 {
-    if ((!self.button3 && self.weaponframe == $atommy_alt8) || intermission_running ||
-        self.ammo_nails < 1 || (self.ammo_nails < 2 && (self.items & IT_GUNS_AKIMBO)))
-    {
-        player_run ();
-        return;
-    }
+	if ((!self.button3 && self.weaponframe == $atommy_alt8) || intermission_running ||
+	self.ammo_nails < 1 || (self.ammo_nails < 2 && (self.items & IT_GUNS_AKIMBO)))
+	{
+		player_run ();
+		return;
+	}
 
-    muzzleflash ();
+	muzzleflash ();
 
-    self.weaponframe = self.weaponframe + 1;
-    if (self.weaponframe > $tommy_alt8 || self.weaponframe < $tommy_alt1)
-        self.weaponframe = $tommy_alt1;
-    Tommy_Fire ();
-    self.attack_finished = time + 0.1;
+	self.weaponframe = self.weaponframe + 1;
+	if (self.weaponframe > $tommy_alt8 || self.weaponframe < $tommy_alt1)
+		self.weaponframe = $tommy_alt1;
+	Tommy_Fire ();
+	self.attack_finished = time + 0.1;
 
-    self.impulse = IMP_NONE;
+	self.impulse = IMP_NONE;
 };
 void() player_alttommy1 = [$attack1, player_alttommy2] { player_alttommy (); };
 void() player_alttommy2 = [$attack2, player_alttommy1] { player_alttommy (); };
@@ -127,7 +119,6 @@ void() player_tommyholster2 = [$attack2, player_tommyholster3] { self.weaponfram
 void() player_tommyholster3 = [$attack2, player_tommyholster4] { self.weaponframe = $tommy_holster3; };
 void() player_tommyholster4 = [$attack2, player_run          ] { W_DrawWeapon (self.newweapon); };
 
-
 //============================================================================
 
 /*
@@ -139,23 +130,22 @@ Spawns new shell entity but doesn't display it until reloadtime
 */
 void(vector orig) Tommy_SpawnShell =
 {
-    local entity shell;
+	local entity shell;
 
-    shell = spawn ();
-    shell.owner = self;
+	shell = spawn ();
+	shell.owner = self;
 
-    shell.mdl = "models/weapons/objects/bulletshell.md3";
-    if (random() < 0.5)
-        shell.noise = "weapons/shtshl.wav";
-    else
-        shell.noise = "weapons/shtshl3.wav";
+	shell.mdl = "models/weapons/objects/bulletshell.md3";
+	if (random() < 0.5)
+		shell.noise = "weapons/shtshl.wav";
+	else
+		shell.noise = "weapons/shtshl3.wav";
 
-    setorigin (shell, orig);
-    shell.velocity = (crandom() + 1)*v_forward*30 - v_right*(100 + crandom()*10) + v_up*(100 + crandom()*10);
+	setorigin (shell, orig);
+	shell.velocity = (crandom() + 1)*v_forward*30 - v_right*(100 + crandom()*10) + v_up*(100 + crandom()*10);
 
-    DropShell (shell);
+	DropShell (shell);
 };
-
 
 /*
 ============
@@ -166,76 +156,75 @@ Fire with the tommygun
 */
 void() Tommy_Fire =
 {
-    local vector    dir;
-    local entity    old;
-    local vector    orig;
-    local float     akimboFactor;  // 2 if guns akimbo, else 1
-    local vector    spread;
-    local float     damage;
+	local vector    dir;
+	local entity    old;
+	local vector    orig;
+	local float     akimboFactor;  // 2 if guns akimbo, else 1
+	local vector    spread;
+	local float     damage;
 
-    if (self.items & IT_GUNS_AKIMBO)
-        akimboFactor = 2;
-    else
-        akimboFactor = 1;
+	if (self.items & IT_GUNS_AKIMBO)
+		akimboFactor = 2;
+	else
+		akimboFactor = 1;
 
-    makevectors (self.v_angle);
+	makevectors (self.v_angle);
 
-    sound (self, CHAN_WEAPON, "weapons/tommygun/_tom.wav", 1, ATTN_NORM);
-    self.attack_finished = time + 0.1;
-    self.currentammo = self.ammo_nails = self.ammo_nails - akimboFactor;
+	sound (self, CHAN_WEAPON, "weapons/tommygun/_tom.wav", 1, ATTN_NORM);
+	self.attack_finished = time + 0.1;
+	self.currentammo = self.ammo_nails = self.ammo_nails - akimboFactor;
 
-    // set the bullet direction according to the weapon real direction
-    dir = aim (self, 1000);
-    if (self.weaponframe == $tommy_alt2 || self.weaponframe == $tommy_alt4)
-        dir = dir - v_right * (1 / 6);
-    else if (self.weaponframe == $tommy_alt3)
-        dir = dir - v_right * (1 / 3);
-    else if (self.weaponframe == $tommy_alt6 || self.weaponframe == $tommy_alt8)
-        dir = dir + v_right * (1 / 6);
-    else if (self.weaponframe == $tommy_alt7)
-        dir = dir + v_right * (1 / 3);
+	// set the bullet direction according to the weapon real direction
+	dir = aim (self, 1000);
+	if (self.weaponframe == $tommy_alt2 || self.weaponframe == $tommy_alt4)
+		dir = dir - v_right * (1 / 6);
+	else if (self.weaponframe == $tommy_alt3)
+		dir = dir - v_right * (1 / 3);
+	else if (self.weaponframe == $tommy_alt6 || self.weaponframe == $tommy_alt8)
+		dir = dir + v_right * (1 / 6);
+	else if (self.weaponframe == $tommy_alt7)
+		dir = dir + v_right * (1 / 3);
 
-    // If we are in altfire mode
-    if (self.weaponframe >= $tommy_alt1)
-        damage = 20;
-    else
-        damage = 12;
+	// If we are in altfire mode
+	if (self.weaponframe >= $tommy_alt1)
+		damage = 20;
+	else
+		damage = 12;
 
-    orig = self.origin + v_forward * 15 + v_up * 12 + v_right * 4;
-    spread = '0.05 0.02 0';
+	orig = self.origin + v_forward * 15 + v_up * 12 + v_right * 4;
+	spread = '0.05 0.02 0';
 
-    // If we're in akimbo mode
-    if (akimboFactor == 2)
-    {
-        // Spawn 1 shell alternatively for each gun
-        if ((self.weaponframe - $atommy_fire1) & 1)
-            orig = orig + v_right * 4;
-        else
-            orig = orig - v_right * 4;
-        Tommy_SpawnShell (orig);
+	// If we're in akimbo mode
+	if (akimboFactor == 2)
+	{
+		// Spawn 1 shell alternatively for each gun
+		if ((self.weaponframe - $atommy_fire1) & 1)
+			orig = orig + v_right * 4;
+		else
+			orig = orig - v_right * 4;
+		Tommy_SpawnShell (orig);
 
-        orig = self.origin + v_right * 4 + v_up * 20;
+		orig = self.origin + v_right * 4 + v_up * 20;
 
-        FireBullets (orig, dir, 1, damage, spread);
-        orig = orig - v_right * 8;
-        FireBullets (orig, dir, 1, damage, spread);
+		FireBullets (orig, dir, 1, damage, spread);
+		orig = orig - v_right * 8;
+		FireBullets (orig, dir, 1, damage, spread);
 
-        // If we don't have enough ammo anymore, drop the akimbo mode for now
-        if (self.currentammo < 2)
-            W_SetCurrentAmmo ();
-    }
-    else
-    {
-        // Spawn 1 shell every 2 shots
-        if ((self.weaponframe - $tommy_fire1) & 1)
-            Tommy_SpawnShell (orig);
+		// If we don't have enough ammo anymore, drop the akimbo mode for now
+		if (self.currentammo < 2)
+			W_SetCurrentAmmo ();
+	}
+	else
+	{
+		// Spawn 1 shell every 2 shots
+		if ((self.weaponframe - $tommy_fire1) & 1)
+			Tommy_SpawnShell (orig);
 
-        FireBullets (self.origin + v_up * 20, dir, 1, damage, spread);
-    }
+		FireBullets (self.origin + v_up * 20, dir, 1, damage, spread);
+	}
 
-    self.punchangle_x = -2 * akimboFactor;
+	self.punchangle_x = -2 * akimboFactor;
 };
-
 
 /*
 ============
@@ -246,19 +235,18 @@ Attack code for the tommygun
 */
 void() Tommy_Attack =
 {
-    // If it's a tommy gun altfire start and if we have enough ammo
-    if (self.button3 && (! (self.items & IT_GUNS_AKIMBO) || self.ammo_nails >= 2))
-    {
-        self.player_state = PS_ALTFIRE;
-        player_alttommy1 ();
-    }
-    else
-    {
-        self.player_state = PS_FIRE;
-        player_tommy1 ();
-    }
+	// If it's a tommy gun altfire start and if we have enough ammo
+	if (self.button3 && (! (self.items & IT_GUNS_AKIMBO) || self.ammo_nails >= 2))
+	{
+		self.player_state = PS_ALTFIRE;
+		player_alttommy1 ();
+	}
+	else
+	{
+		self.player_state = PS_FIRE;
+		player_tommy1 ();
+	}
 };
-
 
 /*
 ============
@@ -269,16 +257,15 @@ Draw code for the tommygun
 */
 void() Tommy_Draw =
 {
-    self.weapon = IT_TOMMYGUN;
-    self.currentammo = self.ammo_nails;
-    self.items = (self.items - (self.items & (IT_SHELLS | IT_CELLS | IT_ROCKETS))) | IT_NAILS;
+	self.weapon = IT_TOMMYGUN;
+	self.currentammo = self.ammo_nails;
+	self.items = (self.items - (self.items & (IT_SHELLS | IT_CELLS | IT_ROCKETS))) | IT_NAILS;
 
-    Tommy_UpdateView ();
+	Tommy_UpdateView ();
 
-    self.attack_finished = time + 0.4;
-    player_tommydraw1 ();
+	self.attack_finished = time + 0.4;
+	player_tommydraw1 ();
 };
-
 
 /*
 ============
@@ -289,10 +276,9 @@ Holster code for the tommygun
 */
 void() Tommy_Holster =
 {
-    self.attack_finished = time + 0.4;
-    player_tommyholster1 ();
+	self.attack_finished = time + 0.4;
+	player_tommyholster1 ();
 };
-
 
 /*
 ============
@@ -303,14 +289,14 @@ Choose the right tommygun model to display
 */
 void() Tommy_UpdateView =
 {
-    if (self.akimbo_finished > time && self.currentammo >= 2)
-    {
-        self.weaponmodel = "models/weapons/ga_tommy.md3";
-        self.items = self.items | IT_GUNS_AKIMBO;
-    }
-    else
-    {
-        self.weaponmodel = "models/weapons/v_tommy.md3";
-        self.items = self.items - (self.items & IT_GUNS_AKIMBO);
-    }
+	if (self.akimbo_finished > time && self.currentammo >= 2)
+	{
+		self.weaponmodel = "models/weapons/ga_tommy.md3";
+		self.items = self.items | IT_GUNS_AKIMBO;
+	}
+	else
+	{
+		self.weaponmodel = "models/weapons/v_tommy.md3";
+		self.items = self.items - (self.items & IT_GUNS_AKIMBO);
+	}
 };

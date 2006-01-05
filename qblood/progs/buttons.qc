@@ -18,52 +18,50 @@
 */
 // button and multiple button
 
-
 #include "common.qh"
-
 
 void() button_wait;
 void() button_return;
 
 void() button_wait =
 {    
-    self.state = STATE_TOP;
+	self.state = STATE_TOP;
 
-    if (self.wait)
-    {
-        self.nextthink = self.ltime + self.wait;
-        self.think = button_return;
-    }
+	if (self.wait)
+	{
+		self.nextthink = self.ltime + self.wait;
+		self.think = button_return;
+	}
 
-    activator = self.enemy;
-    SUB_UseTargets();
-    self.frame = 1;         // use alternate textures
+	activator = self.enemy;
+	SUB_UseTargets();
+	self.frame = 1;         // use alternate textures
 };
 
 void() button_done =
 {
-    self.state = STATE_BOTTOM;
+	self.state = STATE_BOTTOM;
 };
 
 void() button_return =
 {
-    if (self.state == STATE_TOP && !self.style)
-    {
-        activator = self.enemy;
-        sound (self, CHAN_VOICE, self.noise, 1, ATTN_NORM);
-        SUB_UseTargets();
-    }
+	if (self.state == STATE_TOP && !self.style)
+	{
+		activator = self.enemy;
+		sound (self, CHAN_VOICE, self.noise, 1, ATTN_NORM);
+		SUB_UseTargets();
+	}
 
-    self.state = STATE_DOWN;
+	self.state = STATE_DOWN;
 
-    if (self.style)
-        SUB_CalcMove (self.pos1, self.speed, button_done);
-    else
-        button_done();
+	if (self.style)
+		SUB_CalcMove (self.pos1, self.speed, button_done);
+	else
+		button_done();
 
-    self.frame = 0;         // use normal textures
-    if (self.health)
-        self.takedamage = DAMAGE_YES;   // can be shot again
+	self.frame = 0;         // use normal textures
+	if (self.health)
+		self.takedamage = DAMAGE_YES;   // can be shot again
 };
 
 
@@ -74,56 +72,55 @@ void() button_blocked =
 
 void() button_fire =
 {
-    if (self.state == STATE_UP || self.state == STATE_TOP)
-        return;
+	if (self.state == STATE_UP || self.state == STATE_TOP)
+	return;
 
-    sound (self, CHAN_VOICE, self.noise, 1, ATTN_NORM);
+	sound (self, CHAN_VOICE, self.noise, 1, ATTN_NORM);
 
-    self.state = STATE_UP;
+	self.state = STATE_UP;
 
-    if (self.style)
-        SUB_CalcMove (self.pos2, self.speed, button_wait);
-    else
-        button_wait();
+	if (self.style)
+		SUB_CalcMove (self.pos2, self.speed, button_wait);
+	else
+		button_wait();
 };
 
 
 void() button_use =
 {
-    self.enemy = activator;
-    button_fire ();
+	self.enemy = activator;
+	button_fire ();
 };
 
 void() button_touch =
 {
-    if (other.classname != "player")
-        return;
+	if (other.classname != "player")
+	return;
 
-    if (self.state == STATE_TOP && self.wait < 0)
-	    return;
+	if (self.state == STATE_TOP && self.wait < 0)
+		return;
 
-    // to avoid switching button 100 times a second  
+	// to avoid switching button 100 times a second  
 	if (self.attack_finished > time)
-        return;
-    else
-        self.attack_finished = time + 1;
+		return;
+	else
+		self.attack_finished = time + 1;
 
-    self.enemy = other;
+	self.enemy = other;
 
-    if (self.state == STATE_TOP && !self.style)
-        button_return();
-    else
-        button_fire ();
+	if (self.state == STATE_TOP && !self.style)
+		button_return();
+	else
+		button_fire ();
 };
 
 void() button_killed =
 {
-    self.enemy = damage_attacker;
-    self.health = self.max_health;
-    self.takedamage = DAMAGE_NO;    // wil be reset upon return
-    button_fire ();
+	self.enemy = damage_attacker;
+	self.health = self.max_health;
+	self.takedamage = DAMAGE_NO;    // wil be reset upon return
+	button_fire ();
 };
-
 
 /*QUAKED func_button (0 .5 .8) ?
 When a button is touched, it moves some distance in the direction of it's angle, triggers all of it's targets, waits some time, then returns to it's original position where it can be triggered again.
@@ -147,108 +144,108 @@ and see what the engine chooses to use from current, then make adjustments.
 */
 void() func_button =
 {
-local float     gtemp, ftemp;
+	local float     gtemp, ftemp;
 
-    if (self.noise)
+	if (self.noise)
 	{
-	    precache_sound (self.noise);
+		precache_sound (self.noise);
 	}	
 	else if (self.sounds == 0)
-    {
-        precache_sound ("locks/switch1.wav");
-        self.noise = "locks/switch1.wav";
-    }
-    else if (self.sounds == 1)
-    {
-        precache_sound ("locks/runeuse.wav");
-        self.noise = "locks/runeuse.wav";
-    }
-    else if (self.sounds == 2)
-    {
-        precache_sound ("locks/qlatch2.wav");
-        self.noise = "locks/qlatch2.wav";
-    }
-    else if (self.sounds == 3)
-    {
-        precache_sound ("locks/qlatch2.wav");
-        self.noise = "locks/qlatch2.wav";
-    }
+	{
+		precache_sound ("locks/switch1.wav");
+		self.noise = "locks/switch1.wav";
+	}
+	else if (self.sounds == 1)
+	{
+		precache_sound ("locks/runeuse.wav");
+		self.noise = "locks/runeuse.wav";
+	}
+	else if (self.sounds == 2)
+	{
+		precache_sound ("locks/qlatch2.wav");
+		self.noise = "locks/qlatch2.wav";
+	}
+	else if (self.sounds == 3)
+	{
+		precache_sound ("locks/qlatch2.wav");
+		self.noise = "locks/qlatch2.wav";
+	}
 	else if (self.sounds == 4)
 	{
-	    precache_sound ("misc/null.wav");
-        self.noise = "misc/null.wav";
+		precache_sound ("misc/null.wav");
+		self.noise = "misc/null.wav";
 	}
-	
-    SetMovedir ();
 
-    self.movetype = MOVETYPE_PUSH;
-    self.solid = SOLID_BSP;
-    setmodel (self, self.model);
+	SetMovedir ();
 
-    self.blocked = button_blocked;
-    self.use = button_use;
+	self.movetype = MOVETYPE_PUSH;
+	self.solid = SOLID_BSP;
+	setmodel (self, self.model);
 
-    if (self.health)
-    {
-        self.max_health = self.health;
-        self.th_die = button_killed;
-        self.takedamage = DAMAGE_YES;
-    }
-    else if (!self.style)
-    {
-        self.spawnflags = self.spawnflags | SF_USABLE;
-        self.use = button_touch;
-    }
-    else
-        self.touch = button_touch;
+	self.blocked = button_blocked;
+	self.use = button_use;
 
-    if (!self.speed)
-        self.speed = 40;
-    if (!self.wait)
-        self.wait = 1;
-    if (!self.lip)
-        self.lip = 4;
+	if (self.health)
+	{
+		self.max_health = self.health;
+		self.th_die = button_killed;
+		self.takedamage = DAMAGE_YES;
+	}
+	else if (!self.style)
+	{
+		self.spawnflags = self.spawnflags | SF_USABLE;
+		self.use = button_touch;
+	}
+	else
+		self.touch = button_touch;
 
-    self.state = STATE_BOTTOM;
+	if (!self.speed)
+		self.speed = 40;
+	if (!self.wait)
+		self.wait = 1;
+	if (!self.lip)
+		self.lip = 4;
 
-    self.pos1 = self.origin;
-    self.pos2 = self.pos1 + self.movedir*(fabs(self.movedir*self.size) - self.lip);
+	self.state = STATE_BOTTOM;
+
+	self.pos1 = self.origin;
+	self.pos2 = self.pos1 + self.movedir*(fabs(self.movedir*self.size) - self.lip);
 };
 
 void() changelevel_use =
 {
-    local entity    pos;
+	local entity    pos;
 
-    if (other.classname != "player")
-        return;
+	if (other.classname != "player")
+		return;
 
-    if ((cvar("noexit") == 1) || ((cvar("noexit") == 2) && (mapname != "start")))
-    {
-        T_Damage (other, self, self, 50000, DF_PUMMEL, "exitkill");
-        return;
-    }
+	if ((cvar("noexit") == 1) || ((cvar("noexit") == 2) && (mapname != "start")))
+	{
+		T_Damage (other, self, self, 50000, DF_PUMMEL, "exitkill");
+		return;
+	}
 
-    if (gametype != GT_SINGLE_PLAYER)
-    {
-        bprint (other.netname);
-        bprint (" exited the level\n");
-    }
+	if (gametype != GT_SINGLE_PLAYER)
+	{
+		bprint (other.netname);
+		bprint (" exited the level\n");
+	}
 
-    nextmap = self.map;
+	nextmap = self.map;
 
-    SUB_UseTargets ();
+	SUB_UseTargets ();
 
-    self.frame = 1 - self.frame;
+	self.frame = 1 - self.frame;
 
-    if ( (self.spawnflags & 1) && gametype != GT_SINGLE_PLAYER)
-    {    // NO_INTERMISSION
-        GotoNextMap();
-        return;
-    }
+	if ( (self.spawnflags & 1) && gametype != GT_SINGLE_PLAYER)
+	{    // NO_INTERMISSION
+		GotoNextMap();
+		return;
+	}
 
-    self.use = SUB_Null;
+	self.use = SUB_Null;
 
-    execute_changelevel();
+	execute_changelevel();
 };
 
 /*QUAKED func_changelevel (0.5 0.5 0.5) ? NO_INTERMISSION
@@ -256,18 +253,18 @@ When the player uses this, he gets sent to the map listed in the "map" variable.
 */
 void() func_changelevel =
 {
-    if (!self.map)
-        objerror ("changelevel func doesn't have map");
+	if (!self.map)
+	objerror ("changelevel func doesn't have map");
 
-    if (gametype != GT_SINGLE_PLAYER && gametype != GT_COOPERATIVE)
-    {
-        remove(self);
-        return;
-    }
+	if (gametype != GT_SINGLE_PLAYER && gametype != GT_COOPERATIVE)
+	{
+		remove(self);
+		return;
+	}
 
-    self.spawnflags = self.spawnflags | SF_USABLE;
-    self.solid = SOLID_BSP;
-    self.movetype = MOVETYPE_PUSH;
-    setmodel (self, self.model);
-    self.use = changelevel_use;
+	self.spawnflags = self.spawnflags | SF_USABLE;
+	self.solid = SOLID_BSP;
+	self.movetype = MOVETYPE_PUSH;
+	setmodel (self, self.model);
+	self.use = changelevel_use;
 };
