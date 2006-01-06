@@ -21,7 +21,9 @@
 
 // This function is both needed (by the compiler and
 // maybe by the game), and unused (because never called)
-void() main;
+void() main =
+{
+};
 
 /*
 ================
