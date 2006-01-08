@@ -22,14 +22,15 @@
 $base base
 $skin skin
 //Frame Definiations
-#define	CULTIST_STAND_START		0	//stand = idle
-#define	CULTIST_STAND_END		7
-#define	CULTIST_WALK_START		8
-#define	CULTIST_WALK_END		19
-#define	CULTIST_ATTACK_START	20
-#define	CULTIST_ATTACK_END		21
-#define	CULTIST_ATTACK2_START	20	// throwing TNT for brown cultist
-#define	CULTIST_ATTACK2_END		21	// values need to be changed
+#define CULTIST_REFERENCE       0
+#define	CULTIST_STAND_START		1	//stand = idle
+#define	CULTIST_STAND_END		30
+#define	CULTIST_WALK_START		31
+#define	CULTIST_WALK_END		60
+#define	CULTIST_ATTACK_START	61
+#define	CULTIST_ATTACK_END		65
+#define	CULTIST_ATTACK2_START	61	// throwing TNT for brown cultist
+#define	CULTIST_ATTACK2_END		65	// values need to be changed
 #define	CULTIST_PAIN_START		0	//dummy values
 #define	CULTIST_PAIN_END		0
 #define	CULTIST_DEATH_START		0
@@ -549,7 +550,7 @@ void () cultist_spawn =
 		precache_sound ("cultist/cultpan3.wav"); // Pain
 	}
 	
-	precache_model ("models/enemies/cultist.md3");    
+	precache_model ("models/enemies/cultist/cultist.psk");    
 	precache_sound ("cultist/cultdie2.wav"); // Death
 	precache_sound ("cultist/cultdie3.wav"); // Death
 	precache_sound ("cultist/cultfir1.wav"); // On fire
@@ -569,7 +570,7 @@ void () cultist_spawn =
 
 	self.solid = SOLID_SLIDEBOX;
 	self.movetype = MOVETYPE_WALK;
-	setmodel (self, "models/enemies/cultist.md3");
+	setmodel (self, "models/enemies/cultist/cultist.psk");
 	setsize (self,'-6 -14 0', '34 14 62');    
 	self.speed = 50;	// walkspeed
 	self.max_health = self.health;

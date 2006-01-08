@@ -270,7 +270,7 @@ void () butcher_launch_vomit =
 
 	newmis.solid = SOLID_BBOX;
 	newmis.movetype = MOVETYPE_FLY;
-	setmodel (newmis, "models/weapons/objects/naltball.md3"); // FIXME: Switch to vomit once model is made
+	setmodel (newmis, "models/enemies/vomit.md3"); // FIXME: Switch to vomit once model is made
 	setsize (newmis, '0 0 0', '0 0 0');
 	newmis.origin = self.origin + '0 0 28';
 	newmis.velocity = vec * 600;
@@ -431,7 +431,7 @@ void () monster_butcher =
 	precache_model ("models/enemies/butcher_cleaver.md3");
 	precache_model ("models/enemies/butcher_head.md3");
 	precache_model ("models/enemies/butcher_explode.md3");
-	precache_model ("models/weapons/objects/naltball.md3");
+	precache_model ("models/enemies/vomit.md3");
 
 	precache_sound ("butcher/acidhit1.wav");
 	precache_sound ("butcher/acidhit2.wav");
