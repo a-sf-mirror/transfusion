@@ -84,6 +84,10 @@ void() InitPlayerCharacteristics =
 	self.inven2          = 0;
 	self.it_select       = 0;
 
+	// In BloodBath, all players are given all keys
+	if (gametype == GT_BLOODBATH)
+		self.items2 = self.items2 | IT2_KEY_SKULL | IT2_KEY_EYE | IT2_KEY_FIRE | IT2_KEY_DAGGER | IT2_KEY_SPIDER | IT2_KEY_MOON;
+
 	// If the warmup is not over, let's give him some extra stuff  :)
 	if (! warmup_done)
 	{

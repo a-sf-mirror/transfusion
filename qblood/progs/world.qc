@@ -203,7 +203,7 @@ Check the availability of a QuakeC extension we absolutely need
 void(string ext) MandatoryExtension =
 {
 	if (!checkextension (ext))
-	error2 ("A mandatory QuakeC extension is missing: ", ext);
+		error2 ("A mandatory QuakeC extension is missing: ", ext);
 };
 
 //=======================
@@ -222,7 +222,7 @@ void() worldspawn =
 {
 	// Check for QC extensions
 	if (!cvar ("pr_checkextension"))
-	error ("QuakeC extensions are not supported by this engine");
+		error ("QuakeC extensions are not supported by this engine");
 	MandatoryExtension ("DP_EF_BLUE");
 	MandatoryExtension ("DP_EF_RED");
 	MandatoryExtension ("DP_INPUTBUTTONS");

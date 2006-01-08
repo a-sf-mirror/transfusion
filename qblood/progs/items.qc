@@ -223,6 +223,8 @@ void(float isAnObject) PlaceItemOrObject =
 
 	if (self.movetype) //MOVETYPE_NONE does not fall
 	{
+		//we're going to drop it anyway, lets make sure its not stuck in the floor
+		self.origin_z = self.origin_z + 8;
 		if (!droptofloor())
 		{
 			if (isAnObject)
@@ -446,7 +448,11 @@ void() obj_tombstn3 =
 // Old Tombstone (tile0704)
 void() obj_tombstn4 =
 {
-	StartObject ("models/world/tombstn4.md3", '-14 -21 -6', '7 18 45');
+	StartObject ("models/world/tombstn4.md3", '-14 -21 0', '7 18 51');
+	//StartObject ("models/world/tombstn4.md3", '-14 -21 -6', '7 18 45');
+	//changed to not have a gap between the tombstone and the ground
+	//might need to lower the top to 45 if the player appears to hover
+	//over it when on top of it
 };
 
 // Large Cross Tombstone (tile0678)
