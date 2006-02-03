@@ -29,12 +29,27 @@ $skin skin
 #define	CULTIST_WALK_END		60
 #define	CULTIST_ATTACK_START	61
 #define	CULTIST_ATTACK_END		65
-#define	CULTIST_ATTACK2_START	61	// throwing TNT for brown cultist
-#define	CULTIST_ATTACK2_END		65	// values need to be changed
-#define	CULTIST_PAIN_START		0	//dummy values
-#define	CULTIST_PAIN_END		0
-#define	CULTIST_DEATH_START		0
-#define	CULTIST_DEATH_END		0
+#define	CULTIST_ATTACK2_START	66	// throwing TNT for brown cultist
+#define	CULTIST_ATTACK2_END		90
+#define	CULTIST_PAIN_START		91
+#define	CULTIST_PAIN_END		100
+#define	CULTIST_DEATH_START		101
+#define	CULTIST_DEATH_END		140
+
+//Frames to be added in future
+/*
+#define CULTIST_CRAWL_START         0
+#define CULTIST_CRAWL_END           0
+#define CULTIST_CRAWL_FIRE_START    0
+#define CULTIST_CRAWL_FIRE_END      0
+#define CULTIST_SWIM_START          0
+#define CULTIST_SWIM_END            0
+#define CULTIST_SWIM_FIRE_START     0
+#define CULTIST_SWIM_FIRE_END       0
+#define CULTIST_BURN_START          0
+#define CULTIST_BURN_END            0
+#define CULTIST_VARIOUS_DEATHS      *
+*/
 
 //Animation Timing Configuration in seconds
 //FIXME: all values need to be changed here
@@ -43,7 +58,7 @@ $skin skin
 #define	CULTIST_WALK_TIME		1.2
 #define	CULTIST_PAIN_TIME		0.75
 #define	CULTIST_ATTACK_TIME		0.85
-#define	CULTIST_ATTACK2_TIME		0.85
+#define	CULTIST_ATTACK2_TIME	0.85
 #define	CULTIST_DEATH_TIME		1.2
 
 void () cultist_animate;
@@ -263,6 +278,7 @@ void () cultist_throw_TNT =
 	missile.think = BombThink;
 	missile.nextthink = time + 0.1;
 	missile.touch = Bomb_Trigger;
+// todo: make cultist release TNT at ~frame 20 of CULTIST_ATTACK2
 
 	setmodel (missile, "models/weapons/grenades/gr_tnt.md3");
 	setsize (missile, '0 0 0', '0 0 0');
@@ -571,7 +587,7 @@ void () cultist_spawn =
 	self.solid = SOLID_SLIDEBOX;
 	self.movetype = MOVETYPE_WALK;
 	setmodel (self, "models/enemies/cultist/cultist.psk");
-	setsize (self,'-6 -14 0', '34 14 62');    
+	setsize (self,'-9.9 -18.6 -0.2', '21.6 18.6 63.7');    
 	self.speed = 50;	// walkspeed
 	self.max_health = self.health;
 	self.th_stand = cultist_stand;
