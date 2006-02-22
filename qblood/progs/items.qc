@@ -364,113 +364,112 @@ void(string objmodel, vector bbox_min, vector bbox_max) StartObject =
 	self.think = PlaceObject;
 };
 
-// Dead innocent sitting FIXME: BBox is from frame 0
+// Dead innocent sitting
 void() obj_body_sitting =
 {
-	self.frame = 21;
-	StartObject ("models/enemies/innocent.md3", '-6 -14 0', '15 10 55');
+	StartObject ("models/world/innocent_sitting.md3", '-9.8 -12.8 0.2', '30.4 9.8 29.8');
 };
 
-// Dead innocent spread out FIXME: BBox is from frame 0
+// Dead innocent spread out
 void() obj_body_spread =
 {
-	self.frame = 22;
-	StartObject ("models/enemies/innocent.md3", '-6 -14 0', '15 10 55');
+
+	StartObject ("models/world/innocent_hanging.md3", '-2.6 -30.7 -4.3', '6.9 30.9 55.9');
 };
 
 // Soccer Goal
 void() obj_goal =
 {
-	StartObject ("models/world/goalposts.md3", '-40 -52 0', '44 52 90');
+	StartObject ("models/world/goalposts.md3", '-40.1 -51.8 -0.4', '44 51.8 90');
 	self.takedamage = DAMAGE_NO;
 };
 
 // Large Vase (tile0537)
 void() obj_pot1 =
 {
-	StartObject ("models/world/pot1.md3", '-8 -9 0', '8 9 38');
+	StartObject ("models/world/pot1.md3", '-9 -9 0', '9 9 38.5');
 };
 
 // Large Urn (tile1063)
 void() obj_pot2 =
 {
-	StartObject ("models/world/pot2.md3", '-17 -18 0', '18 18 41');
+	StartObject ("models/world/pot2.md3", '-17.4 -17.7 0', '18 17.7 41.2');
 };
-
+// Stone Pot (tile0550)
+void() obj_pot4 =
+{
+	StartObject ("models/world/pot4.md3", '-7.8 -7.8 0', '7.8 7.8 13');
+};
 // Small Pot (tile0604)
 void() obj_pot5 =
 {
-	StartObject ("models/world/pot5.md3", '-7 -7 0', '7 7 15');
+	StartObject ("models/world/pot5.md3", '-7.1 -7 0', '6.9 7 15.3');
 };
 
 // Shovel (tile1713)
 void() obj_shovel =
 {
-	StartObject ("models/world/shovel.md3", '-0 -7 -27', '3 7 26');
+	StartObject ("models/world/shovel.md3", '-0.2 -6.6 -27.2', '3.4 6.6 26.2');
 };
 
 // Stake w/ 1 skull (tile0257)
 void() obj_skllstk1 =
 {
-	StartObject ("models/world/skllstk1.md3", '-6 -5 0', '5 5 52');
+	StartObject ("models/world/skllstk1.md3", '-6.2 -4.5 -0.2', '4.5 4.6 51.7');
 };
 
 // Stake w/ 3 skulls (tile0258)
 void() obj_skllstk2 =
 {
-	StartObject ("models/world/skllstk2.md3", '-6 -4 0', '5 6 55');
+	StartObject ("models/world/skllstk2.md3", '-6.4 -4.4 -0.2', '4.6 5.7 54.9');
 };
 
 // Impaled Skull (tile0685)
 void() obj_skllstk3 =
 {
-	StartObject ("models/world/skllstk3.md3", '-6 -5 0', '5 5 19');
+	StartObject ("models/world/skllstk3.md3", '-5.7 -4.6 -0.2', '5.5 4.9 18.8');
 };
 
 // Tombstone w/cross (tile0706)
 void() obj_tombstn1 =
 {
-	StartObject ("models/world/tombstn1.md3", '-7 -22 0', '7 22 72');
+	StartObject ("models/world/tombstn1.md3", '-7.5 -22 -0.5', '7.5 22 71.9');
 };
 
 // Broken Tombstone (tile0705)
 void() obj_tombstn2 =
 {
-	StartObject ("models/world/tombstn2.md3", '-7 -22 0', '7 22 57');
+	StartObject ("models/world/tombstn2.md3", '-7.5 -22 -0.5', '7.5 22 57.5');
 };
 
 // RIP Tombstone (tile0701)
 void() obj_tombstn3 =
 {
-	StartObject ("models/world/tombstn3.md3", '-18 -6 0', '18 6 47');
+	StartObject ("models/world/tombstn3.md3", '-17.7 -6.1 0', '18.1 6 47.5');
 };
 
 // Old Tombstone (tile0704)
 void() obj_tombstn4 =
 {
-	StartObject ("models/world/tombstn4.md3", '-14 -21 0', '7 18 51');
-	//StartObject ("models/world/tombstn4.md3", '-14 -21 -6', '7 18 45');
-	//changed to not have a gap between the tombstone and the ground
-	//might need to lower the top to 45 if the player appears to hover
-	//over it when on top of it
+	StartObject ("models/world/tombstn4.md3", '-10.2 -19.5 0', '10.2 19.5 44.9');
 };
 
 // Large Cross Tombstone (tile0678)
 void() obj_tombstn5 =
 {
-	StartObject ("models/world/tombstn5.md3", '-10 -24 0', '10 24 62');
+	StartObject ("models/world/tombstn5.md3", '-10.4 -23.6 -0.3', '10.3 23.8 62.4');
 };
 
 // Wooden Cross Tombstone (tile0703)
 void() obj_tombstn6 =
 {
-	StartObject ("models/world/tombstn6.md3", '-8 -16 0', '8 14 47');
+	StartObject ("models/world/tombstn6.md3", '-8.1 -16.3 0', '8.3 13.6 47');
 };
 
 // Dead Tree (tile0540)
 void() obj_tree =
 {
-	StartObject ("models/world/tree.md3", '-32 -41 0', '52 45 174');
+	StartObject ("models/world/tree.md3", '-37.4 -56.6 0', '29.4 58 179.1');
 };
 
 // Live Tree (tile0541)
@@ -479,42 +478,55 @@ void() obj_tree2 =
 	StartObject ("models/world/tree2.md3", '-32 -41 0', '52 45 174');
 };
 
+// Axe (tile1709)
+void() obj_world_axe = 
+{
+    StartObject ("models/world/axe.md3", '-1.3 -5.6 -10.7', '1.3 2 16.8');
+};
+
 // Wooden Barrel (tile0907)
 // NOTE: the model has 2 static frames (0- standing on end, 1- lying on side)
 void() obj_world_barrel =
 {
-	StartObject ("models/world/barrel.md3", '-15 -15 0', '15 15 43');
+	StartObject ("models/world/barrel.md3", '-15 -15 0', '15 15 43.5');
 };
 
 // Dead body (tile2333)
 void() obj_world_body1 =
 {
-	StartObject ("models/world/body1.md3", '-21 -12 -1', '27 23 19');
+	StartObject ("models/world/body1.md3", '-22.5 -10.1 -0.1', '26.4 27.6 21.9');
 };
+
+// Dead body (tile0895)
+void() obj_world_body2 =
+{
+	StartObject ("models/world/body2.md3", '-0.3 -24.8 -26.7', '9.2 24.1 26.7');
+};
+
 
 // Bottle (tile0759)
 void() obj_world_bottle2 =
 {
-	StartObject ("models/world/bottle2.md3", '-2 -2 0', '2 2 16');
+	StartObject ("models/world/bottle2.md3", '-2.2 -2.5 -0.1', '2.2 2.5 15.9');
 };
 
 // Boulder (tile804)
 void() obj_world_boulder =
 {
-	StartObject ("models/world/boulder.md3", '-18 -13 0', '18 13 10');
+	StartObject ("models/world/boulder.md3", '-18.3 -13 0', '18.3 13 10.5');
 	self.takedamage = DAMAGE_NO;
 };
 
 // Waste bucket (tile0505)
 void() obj_world_bucket1 =
 {
-	StartObject ("models/world/bucket1.md3", '-6 -6 0', '6 6 24');
+	StartObject ("models/world/bucket1.md3", '-5.8 -5.8 0', '5.8 6.1 24.5');
 };
 
 // Calipers (tile1715)
 void() obj_world_calipers =
 {
-	StartObject ("models/world/calipers.md3", '-0 -5 -9', '2 5 10');
+	StartObject ("models/world/calipers.md3", '0 -5.4 -9.3', '2.2 5.4 9.5');
 };
 
 // Short Candelabra (tile0584)
@@ -524,7 +536,7 @@ void() obj_world_candlbr1 =
 	self.anim_len = 4;
 	self.think1 = SUB_AutoAnimation;
 
-	StartObject ("models/world/candlbr1.md3", '-3 -10 0', '3 10 38');
+	StartObject ("models/world/candlbr1.md3", '-3.3 -10.4 0', '3.3 10.4 38.6');
 };
 
 // Tall Candelabra (tile0580)
@@ -534,27 +546,51 @@ void() obj_world_candlbr2 =
 	self.anim_len = 4;
 	self.think1 = SUB_AutoAnimation;
 
-	StartObject ("models/world/candlbr2.md3", '-5 -7 0', '5 7 54');
+	StartObject ("models/world/candlbr2.md3", '-4.9 -7.4 0', '4.8 7.4 53.8');
+};
+
+// Candle in Skull (tile0601)
+void() obj_world_candleskull =
+{
+	StartObject ("models/world/candleskull.md3", '-7.6 -5.2 0', '7.6 5.2 14.6');
+};
+
+// Chair (tile0758)
+void() obj_world_chair1 =
+{
+	StartObject ("models/world/chair.md3", '-9 -9.3 0', '9 9.3 42.6');
+};
+
+// Clippers (tile****)
+void() obj_world_clippers =
+{
+	StartObject ("models/world/clippers.md3", '-0.9 -4.7 -12.1', '0.9 4.7 12.1');
 };
 
 // Clock (tile1165)
 void() obj_world_clock =
 {
-	StartObject ("models/world/clock.md3", '0 -10 -10', '2 10 10');
+	StartObject ("models/world/clock.md3", '0 -18.1 -18.1', '3.2 18.1 18.1');
 	self.movetype = MOVETYPE_NONE;
+};
+
+// Cup (tile0803)
+void() obj_world_cup3 =
+{
+	StartObject ("models/world/cup3.md3", '-1.4 -1.6 0', '1.4 1.6 5.1');
 };
 
 // Draven Tombstone (tile1159)
 void() obj_world_draven =
 {
 	// FIXME: Needs self.spawnflags = SF_USABLE; self.use = play sound
-	StartObject ("models/world/draven.md3", '-6 -18 0', '6 18 47');
+	StartObject ("models/world/draven.md3", '-5.8 -18.1 0', '5.9 18.1 46.8');
 };
 
 // Fire Extinguisher (tile0658)
 void() obj_world_extngsh =
 {
-	StartObject ("models/world/extngsh.md3", '-4 -12 16', '4 13 61');
+	StartObject ("models/world/extngsh.md3", '0 -12.2 0', '7.8 12.8 44.8');
 	self.health = 1;
 	self.takedamage = DAMAGE_AIM;
 	self.dmg = DMG_TNT;
@@ -563,129 +599,167 @@ void() obj_world_extngsh =
 	self.movetype = MOVETYPE_NONE;
 };
 
+// Fence (tile0330)
+void() obj_world_fence =
+{
+	StartObject ("models/world/fence.md3", '-2.6 -10.5 0', '2.6 10.5 84.2');
+};
+
+// Fence (tile1044)
+void() obj_world_fence2 =
+{
+	StartObject ("models/world/fence2.md3", '-2.5 -39.9 -0.1', '2.5 39.9 80.2');
+};
+
+// Clump of Grass (tile0608)
+void() obj_world_grass2 =
+{
+	StartObject ("models/world/grass2.md3", '-4.8 -6.3 -0.1', '4.8 6.3 16.4');
+};
+
+// Hanging Body (tile0906) NOTE: model needs changing
+void() obj_world_hanging8 =
+{
+	StartObject ("models/world/hanging8.md3", '-5.6 -11.7 -20.5', '7.8 11.4 53');
+};
+
 // IV Drip (tile0962)
 void() obj_world_ivdrip =
 {
-	StartObject ("models/world/ivdrip.md3", '-11 -11 0', '11 11 55');
+	StartObject ("models/world/ivdrip.md3", '-10.6 -10.6 0', '10.6 10.6 55.4');
 };
 
 // Glass Jar w/brain (tile0075)
 void() obj_world_jar1 =
 {
-	StartObject ("models/world/jar1.md3", '-8 -8 0', '9 9 18');
+	StartObject ("models/world/jar1.md3", '-8.4 -8.4 0', '8.5 8.4 18.4');
 };
 
 // Stone Jar (tile0802)
 void() obj_world_jar2 =
 {
-	StartObject ("models/world/jar2.md3", '-3 -3 0', '3 3 9');
+	StartObject ("models/world/jar2.md3", '-2.6 -3 0', '2.6 3 9');
 };
 
 // Garden Lantern (tile0640)
 void() obj_world_lantern1 =
 {
-	StartObject ("models/world/lantern1.md3", '-6 -8 0', '8 8 63');
+	StartObject ("models/world/lantern1.md3", '-6.8 -7.7 0', '6.8 7.7 62.9');
 };
 
 // Severed Leg (tile0682)
 void() obj_world_leg1 =
 {
-	StartObject ("models/world/leg1.md3", '-8 -3 0', '9 4 7');
+	StartObject ("models/world/leg1.md3", '-8.1 -2.8 0', '8.6 4 7.4');
 };
 
 // Ceiling Light (tile0468)
 void() obj_world_light1 =
 {
-	StartObject ("models/world/light1.md3", '-5 -6 -13', '5 6 13');
+	StartObject ("models/world/light1.md3", '-5.4 -5.6 -13.2', '5.4 5.6 13.2');
 	self.movetype = MOVETYPE_NONE;
 };
 
 // Metal Barrel (tile0201)
 void() obj_world_metbarrel =
 {
-	StartObject ("models/world/metbarrel.md3", '-14 -14 0', '14 14 36');
+	StartObject ("models/world/metbarrel.md3", '-13.6 -13.6 0', '13.6 13.6 36');
 };
 
 // Metal Body Barrel (tile0563)
 void() obj_world_metbarrel2 =
 {
-	StartObject ("models/world/metbarrel2.md3", '-14 -14 0', '14 14 36');
+	StartObject ("models/world/metbarrel2.md3", '-13.6 -13.6 0', '13.6 13.6 36');
 };
 
 // Potted Plant (tile1009)
 void() obj_world_plant1 =
 {
-	StartObject ("models/world/plant1.md3", '-4 -4 0', '4 4 8');
+	StartObject ("models/world/plant1.md3", '-17.1 -17.1 0', '17.1 17.1 30.6');
 };
 
 // Poker (tile1716)
 void() obj_world_poker =
 {
-	StartObject ("models/world/poker.md3", '-1 -1 8', '1 3 36');
+	StartObject ("models/world/poker.md3", '-0.8 -0.8 7.6', '0.8 2.9 35.6');
 	self.movetype = MOVETYPE_NONE;
 };
 
 // Pram (tile0183)
 void() obj_world_pram =
 {
-	StartObject ("models/world/pram.md3", '-17 -32 0', '17 35 43');
+	StartObject ("models/world/pram.md3", '-17.1 -32.5 -0.3', '17.1 35.2 43');
+};
+
+// Rake (tile1711)
+void() obj_world_rake =
+{
+	StartObject ("models/world/rake.md3", '0 -8.8 -29', '4.9 8.8 29');
 };
 
 // Saw (tile1714)
 void() obj_world_saw =
 {
-	StartObject ("models/world/saw.md3", '-1 -4 -9', '1 6 15');
+	StartObject ("models/world/saw.md3", '-1.1 -4.9 -15.6', '1.1 5 15.6');
 	self.movetype = MOVETYPE_NONE;
 };
 
 // Sink taps (tile0485)
 void() obj_world_sinktaps =
 {
-	StartObject ("models/world/sinktaps.md3", '-3 -11 0', '12 11 9');
+	StartObject ("models/world/sinktaps.md3", '-1.9 -9.2 0', '10.8 9.2 7.6');
 };
 
 // Skull (tile807)
 void() obj_world_skull1 =
 {
-	StartObject ("models/world/skull1.md3", '-5 -5 0', '5 5 8');
+	StartObject ("models/world/skull1.md3", '-5.5 -4.5 -0.1', '5.5 4.5 8.1');
 };
 
 // Skull on stake w/rags (tile0607)
 void() obj_world_skullrag =
 {
-	StartObject ("models/world/skullrag.md3", '-6 -19 0', '5 20 71');
+	StartObject ("models/world/skullrag.md3", '-4.9 -19.5 0', '3.3 19.5 63.6');
 };
 
 // Spade (tile1712)
 void() obj_world_spade =
 {
-	StartObject ("models/world/spade.md3", '-1 -5 -18', '1 5 18');
+	StartObject ("models/world/spade.md3", '-1.3 -4.9 -18.3', '1.3 4.9 18.3');
 	self.movetype = MOVETYPE_NONE;
 };
 
 // Stone Statue (tile0679)
 void() obj_world_statue4 =
 {
-	StartObject ("models/world/statue4.md3", '-15 -17 0', '15 17 112');
+	StartObject ("models/world/statue4.md3", '-15 -17.1 0', '15 17.1 111.8');
 };
 
 // Wall torch (tile0570)
 void() obj_world_torch =
 {
-	StartObject ("models/world/torch1.md3", '-5 -5 -6', '5 5 6');
+	StartObject ("models/world/torch1.md3", '-6.4 -6.4 -16', '6.4 6.4 0');
 	self.movetype = MOVETYPE_NONE;
 };
+
+// Wall torch (tile0506)
+void() obj_world_torch2 =
+{
+	StartObject ("models/world/torch2.md3", '-6 -5 -29.3', '6 5 2.5');
+	self.movetype = MOVETYPE_NONE;
+};
+
 
 // Wreath (tile0575)
 void() obj_world_wreath1 =
 {
-	StartObject ("models/world/wreath1.md3", '-11 -16 0', '11 16 58');
+	StartObject ("models/world/wreath1.md3", '-10.9 -16 0', '10.9 16 58.5');
 };
 
 // Big Wreath (tile0633)
 void() obj_world_wreath2 =
 {
-	StartObject ("models/world/wreath2.md3", '0 -49 -42', '11 50 47');
+	StartObject ("models/world/wreath2.md3", '0.1 -49.4 -41.7', '11.1 50.2 47.1');
 	self.movetype = MOVETYPE_NONE;
 };
 
@@ -1336,7 +1410,7 @@ void() InitWeapon =
 // Flaregun
 void() weapon_flaregun =
 {
-	precache_model ("models/weapons/v_flare.md3");
+	precache_model ("models/weapons/v_flare.psk");
 	precache_model ("models/weapons/g_flare.md3");
 	precache_model ("models/weapons/ga_flare.md3");  // akimbo model
 
