@@ -89,7 +89,7 @@ void () gargoyle_launch_Bone =
 
 	newmis.solid = SOLID_BBOX;
 	newmis.movetype = MOVETYPE_FLYMISSILE;
-	setmodel (newmis, "models/world/leg1.md3");
+	setmodel (newmis, "models/enemies/gargoyle/bone.md3");
 	setsize (newmis, '0 0 0', '0 0 0');        // FIXME
 	newmis.origin = self.origin + '0 -8 20';
 	newmis.velocity = vec * 600;
@@ -192,8 +192,8 @@ void () monster_gargoyle =
 	if(monster_check())
 		return;
 
-	precache_model ("models/enemies/gargoyle.md3");
-	precache_model ("models/world/leg1.md3");
+	precache_model ("models/enemies/gargoyle/gargoyle.psk");
+	precache_model ("models/enemies/gargoyle/bone.md3");
 
 	precache_sound ("gargoyle/gargclaw.wav");
 	precache_sound ("gargoyle/gargdie1.wav");
@@ -206,8 +206,9 @@ void () monster_gargoyle =
 
 	self.solid = SOLID_SLIDEBOX;
 	self.movetype = MOVETYPE_FLY;
-	setmodel (self, "models/enemies/gargoyle.md3");
+	setmodel (self, "models/enemies/gargoyle/gargoyle.psk");
 	setsize (self,'-25 -31 0', '18 31 45');
+    self.skin = GARGOYLE_BROWN;
 	self.health = 200;
 	self.max_health = self.health;
 	self.th_stand = gargoyle_stand;

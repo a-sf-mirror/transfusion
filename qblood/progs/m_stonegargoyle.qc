@@ -193,7 +193,7 @@ void () monster_stonegargoyle =
 	if(monster_check())
 		return;
 
-	precache_model ("models/enemies/gargoyle.md3");
+	precache_model ("models/enemies/gargoyle/gargoyle.psk");
 	precache_model ("progs/teslaball.spr");
 
 	precache_sound ("stonegargoyle/sargblst.wav");
@@ -207,8 +207,9 @@ void () monster_stonegargoyle =
 
 	self.solid = SOLID_SLIDEBOX;
 	self.movetype = MOVETYPE_FLY;
-	setmodel (self, "models/enemies/gargoyle.md3");
+	setmodel (self, "models/enemies/gargoyle/gargoyle.psk");
 	self.scale = 2;
+    self.skin = GARGOYLE_STONE;
 
 	// Original "flesh" gargoyle model size
 	setsize (self,'-25 -31 0', '18 31 45');

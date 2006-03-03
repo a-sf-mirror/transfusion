@@ -397,6 +397,9 @@
 #define CULTIST_GREEN 1 // TNT
 #define CULTIST_RED   0 // Shotgun / beastmorph
 
+#define GARGOYLE_BROWN 0
+#define GARGOYLE_STONE 1
+
 #define ZOMBIE_SPAWN_UNDERGROUND 0
 #define ZOMBIE_SPAWN_STAND 1
 
