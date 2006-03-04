@@ -19,47 +19,49 @@
 
 #include "common.qh"
 
-$base base
-$skin skin
-//Frame Definiations
-#define CULTIST_REFERENCE       0
-#define	CULTIST_STAND_START		1	//stand = idle
-#define	CULTIST_STAND_END		30
-#define	CULTIST_WALK_START		31
-#define	CULTIST_WALK_END		60
-#define	CULTIST_ATTACK_START	61
-#define	CULTIST_ATTACK_END		65
-#define	CULTIST_ATTACK2_START	66	// throwing TNT for brown cultist
-#define	CULTIST_ATTACK2_END		90
-#define	CULTIST_PAIN_START		91
-#define	CULTIST_PAIN_END		100
-#define	CULTIST_DEATH_START		101
-#define	CULTIST_DEATH_END		140
-
+//Frame Definitions
+#define CULTIST_REFERENCE			0
+#define	CULTIST_STAND_START			1	//stand = idle
+#define	CULTIST_STAND_END			30
+#define	CULTIST_WALK_START			31
+#define	CULTIST_WALK_END			60
+#define	CULTIST_ATTACK_START		61
+#define	CULTIST_ATTACK_END			65
+#define	CULTIST_ATTACK2_START		66	// throwing TNT for brown cultist
+#define	CULTIST_ATTACK2_END			115
+#define	CULTIST_PAIN_START			116
+#define	CULTIST_PAIN_END			125
+#define	CULTIST_DEATH_START			126
+#define	CULTIST_DEATH_END			170
+#define CULTIST_SWIM_START          171
+#define CULTIST_SWIM_END            190
 //Frames to be added in future
-/*
 #define CULTIST_CRAWL_START         0
 #define CULTIST_CRAWL_END           0
 #define CULTIST_CRAWL_FIRE_START    0
 #define CULTIST_CRAWL_FIRE_END      0
-#define CULTIST_SWIM_START          0
-#define CULTIST_SWIM_END            0
 #define CULTIST_SWIM_FIRE_START     0
 #define CULTIST_SWIM_FIRE_END       0
 #define CULTIST_BURN_START          0
 #define CULTIST_BURN_END            0
-#define CULTIST_VARIOUS_DEATHS      *
-*/
+#define CULTIST_VARIOUS_DEATHS      0
 
 //Animation Timing Configuration in seconds
 //FIXME: all values need to be changed here
-#define CULTIST_STAND_TIME		1.0
-#define	CULTIST_RUN_TIME		0.6
-#define	CULTIST_WALK_TIME		1.2
-#define	CULTIST_PAIN_TIME		0.75
-#define	CULTIST_ATTACK_TIME		0.85
-#define	CULTIST_ATTACK2_TIME	0.85
-#define	CULTIST_DEATH_TIME		1.2
+#define CULTIST_STAND_TIME			1.0
+#define	CULTIST_RUN_TIME			0.6
+#define	CULTIST_WALK_TIME			1.2
+#define	CULTIST_PAIN_TIME			0.75
+#define	CULTIST_ATTACK_TIME			0.85
+#define	CULTIST_ATTACK2_TIME		0.85
+#define	CULTIST_DEATH_TIME			1.2
+#define CULTIST_SWIM_TIME			1.0
+//Times to be added in the future
+#define CULTIST_CRAWL_TIME			0
+#define CULTIST_CRAWL_FIRE_TIME		0
+#define CULTIST_SWIM_FIRE_TIME		0
+#define CULTIST_BURN_TIME			0
+#define CULTIST_VARIOUS_DEATHS_TIME	0
 
 void () cultist_animate;
 
@@ -341,6 +343,38 @@ void () cultist_attack2 =
 	}
 };
 
+// crawl
+void () cultist_crawl =
+{
+	//self.style = 1; //FIXME style for crawling?
+	self.anim_type = "crawl";
+	cultist_animate();
+};
+
+// fire while crawling
+void () cultist_crawl_fire =
+{
+	//self.style = 1; //FIXME style for crawling?
+	self.anim_type = "crawl_fire";
+	cultist_animate();
+};
+
+// swim
+void () cultist_swim =
+{
+	//self.style = 1; //FIXME style for swimming?
+	self.anim_type = "swim";
+	cultist_animate();
+};
+
+// fire while swimming
+void () cultist_swim_fire =
+{
+	//self.style = 1; //FIXME style for swimming?
+	self.anim_type = "crawl_fire";
+	cultist_animate();
+};
+
 void () cultist_animate =
 {
 	if (self.frame <= self.anim_end)
@@ -411,6 +445,50 @@ void () cultist_animate =
 				cultist_run();
 			else
 				self.frame = CULTIST_PAIN_START;
+		}
+		else if (self.anim_type == "crawl")
+		{
+			self.anim_end = CULTIST_CRAWL_END;
+			self.anim_end_num = CULTIST_CRAWL_END - CULTIST_CRAWL_START + 1;
+			self.anim_time = CULTIST_CRAWL_TIME;
+			self.last_action = "crawl";
+			if (self.frame > self.anim_end)
+				cultist_crawl(); // TODO: should probably switch run, crawl, and swim to an AI call to allow looping in proper situations
+			else
+				self.frame = CULTIST_CRAWL_START;
+		}
+		else if (self.anim_type == "crawl_fire")
+		{
+			self.anim_end = CULTIST_CRAWL_FIRE_END;
+			self.anim_end_num = CULTIST_CRAWL_FIRE_END - CULTIST_CRAWL_FIRE_START + 1;
+			self.anim_time = CULTIST_CRAWL_FIRE_TIME;
+			self.last_action = "crawl_fire";
+			if (self.frame > self.anim_end)
+				cultist_crawl();
+			else
+				self.frame = CULTIST_CRAWL_FIRE_START;
+		}
+		else if (self.anim_type == "swim")
+		{
+			self.anim_end = CULTIST_SWIM_END;
+			self.anim_end_num = CULTIST_SWIM_END - CULTIST_SWIM_START + 1;
+			self.anim_time = CULTIST_SWIM_TIME;
+			self.last_action = "swim";
+			if (self.frame > self.anim_end)
+				cultist_swim(); // TODO: should probably switch run, crawl, and swim to an AI call to allow looping in proper situations
+			else
+				self.frame = CULTIST_SWIM_START;
+		}
+		else if (self.anim_type == "swim_fire")
+		{
+			self.anim_end = CULTIST_SWIM_FIRE_END;
+			self.anim_end_num = CULTIST_SWIM_FIRE_END - CULTIST_SWIM_FIRE_START + 1;
+			self.anim_time = CULTIST_SWIM_FIRE_TIME;
+			self.last_action = "swim_fire";
+			if (self.frame > self.anim_end)
+				cultist_swim();
+			else
+				self.frame = CULTIST_SWIM_FIRE_START;
 		}
 		else if (self.anim_type == "death")
 		{

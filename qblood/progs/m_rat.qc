@@ -19,55 +19,42 @@
 
 #include "common.qh"
 
-$base base
-$skin skin
+//Frame Definitions
+#define RAT_REFERENCE			0
+#define	RAT_IDLE_START			1
+#define	RAT_IDLE_END			1
+#define	RAT_RUN_START			2
+#define	RAT_RUN_END				9
+#define	RAT_ATTACK_START		10
+#define	RAT_ATTACK_END			13
+#define RAT_DEATH1				0//no animation, just spawn blood spat
+#define RAT_DEATH2_START		0//new model, probably single frame
+#define RAT_DEATH2_END			0
 
-// idle
-$frame idle1
+//Time Definitions
+#define RAT_IDLE_TIME			1.0
+#define RAT_RUN_TIME			1.0
+#define RAT_ATTACK_TIME			1.0
+#define RAT_DEATH2_TIME			1.0
 
-// run
-$frame run1 run2 run3 run4
+void () rat_animate;
 
-//attack1
-$frame attack1 attack2
-
-// Prototypes
-void () rat_stand1;
-void () rat_bite;
-
-void () rat_walk1 = [$run1, rat_walk2] {basic_ai (3);};
-void () rat_walk2 = [$run2, rat_walk3] {basic_ai (3);};
-void () rat_walk3 = [$run3, rat_walk4] {basic_ai (3);};
-void () rat_walk4 = [$run4, rat_walk1] {basic_ai (3);};
-
-// FIXME: Unless more frames get added to the rat, we don't need two stand functions
-void () rat_stand =
+void () rat_idle =
 {
 	if (random () < 0.05)
 		sound (self, CHAN_VOICE, "rat/ratroam.wav", 1, ATTN_IDLE);
 
 	self.style = 1;
-	rat_stand1();
-};
-
-// idle
-void () rat_stand1 = [$idle1, rat_stand1] {ai_stand();};
-
-void () rat_walk =
-{
-	self.style = 2;
-	rat_walk1 ();
+	self.anim_type = "idle";
+	rat_animate();
 };
 
 void () rat_run =
 {
 	self.style = 3;
-	rat_walk1 ();
+	self.anim_type = "run";
+	rat_animate();
 };
-
-// --- Bite sequence
-void () rat_attack1 = [$attack1, rat_attack2] {rat_bite();ai_face ();};
-void () rat_attack2 = [$attack2, rat_run] {ai_face ();};
 
 //--- Decide when to bite an enemy
 void () rat_attack =
@@ -80,7 +67,10 @@ void () rat_attack =
 	delta = (self.enemy.origin - self.origin);
 
 	if (vlen (delta) <= 90)
-		rat_attack1 ();    // If the player is near bite them
+	{
+		self.anim_type = "attack";    // If the player is near bite them
+		rat_animate();
+	}
 
 };
 
@@ -121,39 +111,116 @@ void () rat_pain =
 
 	sound (self, CHAN_VOICE, "rat/ratpain.wav", 1, ATTN_NORM);
 
-	//rat_pain1 (); // FIXME: No pain sequence for now
+	// FIXME?: No pain sequence for now, just requires sound?
 	self.pain_finished = (time + 1); // is really 0.33 seconds long, but that really sounds crappy
 };
 
-// --- Death sequence
-void () rat_death1 = [$idle1, rat_death1]
+void () rat_death1 =
 {
-	// In the last frame, remove self 15 seconds after death
-	self.nextthink = time + 15;
-	self.think = SUB_Remove;
+	self.anim_type = "death1";
+	rat_animate();
 };
 
-void () rat_die =
+void () rat_death2 =
 {
-	monster_death();
+	//setmodel (self, "models/enemies/rat/rat_death2.psk");
+	self.anim_type = "death2";
+	rat_animate();
+};
 
-	if (self.health < -20)
+void () rat_death =
+{
+	//FIXME: add check for weapon that causes death2
+	rat_death1();
+};
+
+void () rat_animate =
+{
+	if ((self.anim_type == self.last_action) && (self.frame <= self.anim_end))
 	{
-		// Very large blood splat!
-		te_bloodshower (self.origin, self.origin + self.size, 100, 25);
+		/*
+		Death does not go above the last frame since it doesn't reset
+		Otherwise, increase the frame number, if it goes past the end, it will reset
+		*/
+		if (!((self.anim_type == "death") && (self.frame == self.anim_end)))
+			self.frame = self.frame + 1; //if its a new animation type, it will be set to the proper frame next
+	}
+	if ((self.anim_type != self.last_action) || (self.frame > self.anim_end))
+	{
+		if (self.anim_type == "idle")
+		{
+			self.anim_end = RAT_IDLE_END;
+			self.anim_end_num = RAT_IDLE_END - RAT_IDLE_START + 1;
+			self.anim_time = RAT_IDLE_TIME;
+			self.frame = RAT_IDLE_START;
+		}
+		else if (self.anim_type == "run")
+		{
+			self.anim_end = RAT_RUN_END;
+			self.anim_end_num = RAT_RUN_END - RAT_RUN_START + 1;
+			self.anim_time = RAT_RUN_TIME;
+			self.frame = RAT_RUN_START;
+		}
+		else if (self.anim_type == "attack")
+		{
+			self.anim_end = RAT_ATTACK_END;
+			self.anim_end_num = RAT_ATTACK_END - RAT_ATTACK_START + 1;
+			self.anim_time = RAT_ATTACK_TIME;
+			if (self.frame > self.anim_end)
+				self.th_run();
+			else
+				self.frame = RAT_ATTACK_START;
+		}
+		else if (self.anim_type == "death2")
+		{
+			self.anim_end = RAT_DEATH2_END;
+			self.anim_end_num = RAT_DEATH2_END - RAT_DEATH2_START + 1;
+			self.anim_time = RAT_DEATH2_TIME;
+			self.frame = RAT_DEATH2_START;
+		}
+		self.last_action = self.anim_type;
+	}
+	if ( !(((self.anim_type == "death1") || (self.anim_type == "death2")) && (self.frame == self.anim_end)) )
+	{
+		self.nextthink = time + (self.anim_time / self.anim_end_num);
+		self.think = rat_animate;
+	}
+	else
+	{
+		//FIXME: add blood shower for rat death and final squeak?
+		self.nextthink = 0;
+		if (self.anim_type == "death1") {
+			monster_death();
 
-		sound (self, CHAN_VOICE, "rat/ratdie3.wav", 1, ATTN_NORM);
-		ThrowGib ("models/objects/gib4.md3", self.health);
-		remove (self);
-		return;
+			if (self.health < -20)
+			{
+				// Very large blood splat!
+				te_bloodshower (self.origin, self.origin + self.size, 100, 25);
+
+				sound (self, CHAN_VOICE, "rat/ratdie3.wav", 1, ATTN_NORM);
+				ThrowGib ("models/objects/gib4.md3", self.health);
+				remove (self);
+				return;
+			}
+
+			if (random () < 0.5)
+				sound (self, CHAN_VOICE, "rat/ratdie1.wav", 1, ATTN_NORM);
+			else
+				sound (self, CHAN_VOICE, "rat/ratdie2.wav", 1, ATTN_NORM);
+		}
+		else
+			rat_death2();
 	}
 
-	if (random () < 0.5)
-		sound (self, CHAN_VOICE, "rat/ratdie1.wav", 1, ATTN_NORM);
-	else
-		sound (self, CHAN_VOICE, "rat/ratdie2.wav", 1, ATTN_NORM);
-
-	rat_death1 ();    
+	ai_main();
+	//insert sounds or attack damage here with if statements
+	if (self.anim_type == "idle") ai_stand();
+	else if (self.anim_type == "run") basic_ai (3);
+	else if (self.anim_type == "attack")
+	{
+		if (self.frame == RAT_ATTACK_START + 1) rat_bite();
+		ai_face();
+	}
 };
 
 //--- The spawn
@@ -163,7 +230,8 @@ void () monster_rat =
 	if (monster_check())
 		return;
 
-	precache_model ("models/enemies/rat.md3");
+	precache_model ("models/enemies/rat/rat.psk");
+	//precache_model ("models/enemies/rat/rat_death2.psk");
 
 	precache_sound ("rat/ratdie1.wav");
 	precache_sound ("rat/ratdie2.wav");
@@ -175,7 +243,7 @@ void () monster_rat =
 
 	self.solid = SOLID_SLIDEBOX;
 	self.movetype = MOVETYPE_TOSS;
-	setmodel (self, "models/enemies/rat.md3");
+	setmodel (self, "models/enemies/rat/rat.psk");
 	setsize (self,'-13 -3 0', '13 3 6');     // FIXME: Need real coordinates
 	self.health = 40;
 	self.resist_acid = 0;
@@ -191,10 +259,10 @@ void () monster_rat =
 	self.resist_spirit = 0;
 	self.resist_voodoo = 0;    
 	self.max_health = self.health;
-	self.th_stand = rat_stand;
-	self.th_walk = rat_walk;
+	self.th_stand = rat_idle;
+	self.th_walk = rat_run;
 	self.th_run = rat_run;
-	self.th_die = rat_die;
+	self.th_die = rat_death;
 	self.th_pain = rat_pain;
 	self.th_missile = rat_attack;
 	self.touch = monster_stepped_on;
