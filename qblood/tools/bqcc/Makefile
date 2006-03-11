@@ -1,4 +1,4 @@
-CFLAGS = -g -O6 -Wall -Werror
+CFLAGS = -g -O2 -Wall -Werror
 CC = gcc
 EXE = bqcc
 OBJECTS = cmdlib.o \
