@@ -51,42 +51,6 @@ $modelname ga_tesla
 // the code assumes that the normal and akimbo models have the same frame layout
 
 /*
-// Altfire
-void()  player_alttesla1  = [$attack1, player_alttesla2 ]
-{
-	self.player_state = PS_ALTFIRE;
-
-	// Select the right sound
-	if (self.items & IT_GUNS_AKIMBO)
-		sound (self, CHAN_WEAPON, "weapons/tesla/tesakima.wav", 1, ATTN_NORM);
-	else
-		sound (self, CHAN_WEAPON, "weapons/tesla/tessuper.wav", 1, ATTN_NORM);
-
-	self.weaponframe = $tesla_alt1;
-};
-void()  player_alttesla2  = [$attack2, player_alttesla3 ] { self.weaponframe = $tesla_alt2; };
-void()  player_alttesla3  = [$attack2, player_alttesla4 ] { self.weaponframe = $tesla_alt3; };
-void()  player_alttesla4  = [$attack2, player_alttesla5 ] { self.weaponframe = $tesla_alt4; };
-void()  player_alttesla5  = [$attack2, player_alttesla6 ] { self.weaponframe = $tesla_alt5; };
-void()  player_alttesla6  = [$attack2, player_alttesla7 ] { self.weaponframe = $tesla_alt6; };
-void()  player_alttesla7  = [$attack2, player_alttesla8 ] { self.weaponframe = $tesla_alt7; };
-void()  player_alttesla8  = [$attack2, player_alttesla9 ] { self.weaponframe = $tesla_alt8; };
-void()  player_alttesla9  = [$attack2, player_alttesla10] { self.weaponframe = $tesla_alt9; };
-void()  player_alttesla10 = [$attack2, player_alttesla11] { self.weaponframe = $tesla_alt10; };
-void()  player_alttesla11 = [$attack2, player_alttesla12] { self.weaponframe = $tesla_alt11; };
-void()  player_alttesla12 = [$attack2, player_alttesla13] { self.weaponframe = $tesla_alt12; };
-void()  player_alttesla13 = [$attack2, player_alttesla14] { self.weaponframe = $tesla_alt13; };
-void()  player_alttesla14 = [$attack2, player_alttesla15] { self.weaponframe = $tesla_alt14; };
-void()  player_alttesla15 = [$attack1, player_alttesla16] { self.weaponframe = $tesla_alt15; Tesla_Fire (); };
-void()  player_alttesla16 = [$attack1, player_alttesla17] { self.weaponframe = $tesla_alt16; };
-void()  player_alttesla17 = [$attack1, player_alttesla18] { self.weaponframe = $tesla_alt17; };
-void()  player_alttesla18 = [$attack1, player_alttesla19] { self.weaponframe = $tesla_alt18; };
-void()  player_alttesla19 = [$attack1, player_alttesla20] { self.weaponframe = $tesla_alt19; };
-void()  player_alttesla20 = [$attack2, player_alttesla21] { self.weaponframe = $tesla_alt20; };
-void()  player_alttesla21 = [$attack2, player_run       ] {};*/
-
-
-/*
 ============
 Tesla_JoltTouch
 
