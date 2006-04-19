@@ -78,8 +78,8 @@ void(entity targ, entity attacker) Killed =
 	oself = self;
 	self = targ;
 
-	if (self.health < -99)
-		self.health = -99;      // don't let sbar look bad if a player
+	if (self.health < 0)
+		self.health = 0;      // Blood had no negative sign, so nothing below 0
 
 #ifndef NO_FRIKBOT
 

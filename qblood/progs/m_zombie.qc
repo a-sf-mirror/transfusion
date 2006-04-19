@@ -135,7 +135,8 @@ void() zombie_axeAttack =
     delta = self.enemy.origin - self.origin;
     if (vlen(delta) > 100)
         return;
-    ldmg = (random() + random() + random()) * 8;
+    //ldmg = (random() + random() + random()) * 8;
+	ldmg = 18;
     SpawnBlood (self.origin, '0 0 0', ldmg);
 	SpawnBloodSpray (trace_ent, self.origin);
 	sound (self, CHAN_WEAPON, "weapons/pitchfrk/pflesh.wav", 1, ATTN_NORM);

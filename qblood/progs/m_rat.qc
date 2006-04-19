@@ -188,20 +188,17 @@ void () rat_animate =
 	else
 	{
 		//FIXME: add blood shower for rat death and final squeak?
-		self.nextthink = 0;
+		self.nextthink = 0.1;
 		if (self.anim_type == "death1") {
 			monster_death();
 
-			if (self.health < -20)
-			{
-				// Very large blood splat!
-				te_bloodshower (self.origin, self.origin + self.size, 100, 25);
+			// Very large blood splat!
+			te_bloodshower (self.origin, self.origin + self.size, 100, 25);
 
-				sound (self, CHAN_VOICE, "rat/ratdie3.wav", 1, ATTN_NORM);
-				ThrowGib ("models/objects/gib4.md3", self.health);
-				remove (self);
-				return;
-			}
+			sound (self, CHAN_VOICE, "rat/ratdie3.wav", 1, ATTN_NORM);
+			remove (self);
+			ThrowGib ("models/objects/gib4.md3", self.health);
+			return;
 
 			if (random () < 0.5)
 				sound (self, CHAN_VOICE, "rat/ratdie1.wav", 1, ATTN_NORM);

@@ -21,87 +21,36 @@
 #include "player.qh"
 
 void() Tesla_Fire;
+void() tesla_animate;
 
 //============================================================================
 // ----- Tesla Cannon models ----- //
 // Normal model
 $modelname v_tesla
 
-// idle
-$frame tesla_idle1
+#define TESLA_IDLE				0
+#define TESLA_DRAW_START		1
+#define TESLA_DRAW_END			3
+#define TESLA_FIRE_START		4
+#define TESLA_FIRE_END			7
+#define TESLA_ALTFIRE_START		8
+#define TESLA_ALTFIRE_END		24
+#define TESLA_HOLSTER_START		25
+#define TESLA_HOLSTER_END		27
 
-// draw
-$frame tesla_draw1 tesla_draw2 tesla_draw3
+#define TESLA_IDLE_TIME			0.1
+#define TESLA_DRAW_TIME			0.4
+#define	TESLA_FIRE_TIME			0.4
+#define TESLA_ALTFIRE_TIME		2.1
+#define TESLA_HOLSTER_TIME		0.4
 
-// fire
-$frame tesla_fire1 tesla_fire2 tesla_fire3 tesla_fire4
-
-// altfire
-$frame tesla_alt1  tesla_alt2  tesla_alt3  tesla_alt4  tesla_alt5
-$frame tesla_alt6  tesla_alt7  tesla_alt8  tesla_alt9  tesla_alt10
-$frame tesla_alt11 tesla_alt12 tesla_alt13 tesla_alt14 tesla_alt15
-$frame tesla_alt16 tesla_alt17 tesla_alt18 tesla_alt19 tesla_alt20
-
-// holster
-$frame tesla_holster1 tesla_holster2 tesla_holster3
-
-// Akimbo model
 $modelname ga_tesla
-
-// idle
-$frame atesla_idle1
-
-// draw
-$frame atesla_draw1 atesla_draw2 atesla_draw3
-
-// fire
-$frame atesla_fire1 atesla_fire2 atesla_fire3 atesla_fire4
-
-// altfire
-$frame atesla_alt1  atesla_alt2  atesla_alt3  atesla_alt4  atesla_alt5
-$frame atesla_alt6  atesla_alt7  atesla_alt8  atesla_alt9  atesla_alt10
-$frame atesla_alt11 atesla_alt12 atesla_alt13 atesla_alt14 atesla_alt15
-$frame atesla_alt16 atesla_alt17 atesla_alt18 atesla_alt19 atesla_alt20
-
-// holster
-$frame atesla_holster1 atesla_holster2 atesla_holster3
 
 // ----- Player related code ----- //
 // WARNING:
 // the code assumes that the normal and akimbo models have the same frame layout
 
-// Normal fire
-void() player_tesla =
-{
-	// If we must stop
-	if ((!self.button0 && !self.button3) || intermission_running || self.ammo_cells < 1)
-	{
-		player_run ();
-		return;
-	}
-
-	// Fire
-	self.weaponframe = self.weaponframe + 1;
-	if (self.weaponframe > $tesla_fire4)
-		self.weaponframe = $tesla_fire1;
-
-	Tesla_Fire ();
-};
-
-void() player_tesla1 = [$attack1, player_tesla2]
-{
-	self.player_state = PS_FIRE;
-
-	self.weaponframe = $tesla_fire1;
-	Tesla_Fire ();
-};
-void() player_tesla2 = [$attack2, player_tesla3] { self.weaponframe = $tesla_fire2; Tesla_Fire (); };
-void() player_tesla3 = [$attack1, player_tesla4] { self.weaponframe = $tesla_fire3; Tesla_Fire (); };
-void() player_tesla4 = [$attack2, player_tesla5] { self.weaponframe = $tesla_fire4; Tesla_Fire (); };
-void() player_tesla5 = [$attack1, player_tesla6] { self.weaponframe = $tesla_fire1; Tesla_Fire (); };
-void() player_tesla6 = [$attack2, player_tesla7] { player_tesla (); };
-void() player_tesla7 = [$attack1, player_tesla6] { player_tesla (); };
-
+/*
 // Altfire
 void()  player_alttesla1  = [$attack1, player_alttesla2 ]
 {
@@ -134,20 +83,8 @@ void()  player_alttesla17 = [$attack1, player_alttesla18] { self.weaponframe = $
 void()  player_alttesla18 = [$attack1, player_alttesla19] { self.weaponframe = $tesla_alt18; };
 void()  player_alttesla19 = [$attack1, player_alttesla20] { self.weaponframe = $tesla_alt19; };
 void()  player_alttesla20 = [$attack2, player_alttesla21] { self.weaponframe = $tesla_alt20; };
-void()  player_alttesla21 = [$attack2, player_run       ] {};
+void()  player_alttesla21 = [$attack2, player_run       ] {};*/
 
-// Draw
-void() player_tesladraw1 = [$attack2, player_tesladraw2] { self.weaponframe = $tesla_draw1; };
-void() player_tesladraw2 = [$attack2, player_tesladraw3] { self.weaponframe = $tesla_draw2; };
-void() player_tesladraw3 = [$attack2, player_run       ] { self.weaponframe = $tesla_draw3; };
-
-// Holster
-void() player_teslaholster1 = [$attack2, player_teslaholster2] { self.weaponframe = $tesla_holster1; };
-void() player_teslaholster2 = [$attack2, player_teslaholster3] { self.weaponframe = $tesla_holster2; };
-void() player_teslaholster3 = [$attack2, player_teslaholster4] { self.weaponframe = $tesla_holster3; };
-void() player_teslaholster4 = [$attack2, player_run          ] { W_DrawWeapon (self.newweapon); };
-
-//============================================================================
 
 /*
 ============
@@ -316,13 +253,23 @@ void() Tesla_Attack =
 {
 	if (self.button0 || self.ammo_cells < 35 || ((self.items & IT_GUNS_AKIMBO) && self.ammo_cells < 70))
 	{
-		player_tesla1();
-		self.attack_finished = time + 0.1;
+		self.player_state = PS_FIRE;
+		self.attack_finished = time + TESLA_FIRE_TIME - 0.01; // always take at least 5 shots.
+									/* This is kind of a hack, otherwise it likes to take 6 shots or only
+										shoot in bursts of 5 */
+		self.weapon_anim_type = "fire";
+		tesla_animate();
 	}
 	else
 	{
-		player_alttesla1();
-		self.attack_finished = time + 2.1;
+		self.player_state = PS_ALTFIRE;
+		self.attack_finished = time + TESLA_ALTFIRE_TIME;
+		self.weapon_anim_type = "altfire";
+		if (self.items & IT_GUNS_AKIMBO)
+			sound (self, CHAN_WEAPON, "weapons/tesla/tesakima.wav", 1, ATTN_NORM);
+		else
+			sound (self, CHAN_WEAPON, "weapons/tesla/tessuper.wav", 1, ATTN_NORM);
+		tesla_animate();
 	}
 };
 
@@ -341,8 +288,9 @@ void() Tesla_Draw =
 
 	Tesla_UpdateView ();
 
-	self.attack_finished = time + 0.4;
-	player_tesladraw1 ();
+	self.attack_finished = time + TESLA_DRAW_TIME;
+	self.weapon_anim_type = "draw";
+	tesla_animate ();
 };
 
 /*
@@ -354,8 +302,9 @@ Holster code for the tesla cannon
 */
 void() Tesla_Holster =
 {
-	self.attack_finished = time + 0.4;
-	player_teslaholster1 ();
+	self.attack_finished = time + TESLA_HOLSTER_TIME;
+	self.weapon_anim_type = "holster";
+	tesla_animate ();
 };
 
 /*
@@ -374,7 +323,125 @@ void() Tesla_UpdateView =
 	}
 	else
 	{
-		self.weaponmodel = "models/weapons/v_tesla.md3";
+		self.weaponmodel = "models/weapons/v_tesla.psk";
 		self.items = self.items - (self.items & IT_GUNS_AKIMBO);
 	}
+};
+
+void () tesla_animate =
+{
+	if ((self.weapon_anim_type == self.weapon_last_action) && (self.weaponframe <= self.weapon_anim_end))
+	{
+		if (self.weaponframe != self.weapon_anim_end)
+			self.weaponframe = self.weaponframe + 1; //if its a new animation type, it will be set to the proper frame next
+		else if (self.weapon_anim_type != "idle")
+			self.weaponframe = self.weapon_anim_end - self.weapon_anim_end_num + 1;
+	}
+	if ((self.weapon_anim_type != self.weapon_last_action) || (self.weaponframe > self.weapon_anim_end))
+	{
+		if (self.weapon_anim_type == "idle")
+		{
+			self.weapon_anim_end = TESLA_IDLE;
+			self.weapon_anim_end_num = 1;
+			self.weapon_anim_time = TESLA_IDLE_TIME;
+			self.weaponframe = TESLA_IDLE;
+		}
+		else if (self.weapon_anim_type == "draw")
+		{
+			self.weapon_anim_end = TESLA_DRAW_END;
+			self.weapon_anim_end_num = TESLA_DRAW_END - TESLA_DRAW_START + 1;
+			self.weapon_anim_time = TESLA_DRAW_TIME;
+			self.weaponframe = TESLA_DRAW_START;
+		}
+		else if (self.weapon_anim_type == "fire")
+		{
+			self.weapon_anim_end = TESLA_FIRE_END;
+			self.weapon_anim_end_num = TESLA_FIRE_END - TESLA_FIRE_START + 1;
+			self.weapon_anim_time = TESLA_FIRE_TIME;
+			self.weaponframe = TESLA_FIRE_START;
+		}
+		else if (self.weapon_anim_type == "altfire")
+		{
+			self.weapon_anim_end = TESLA_ALTFIRE_END;
+			self.weapon_anim_end_num = TESLA_ALTFIRE_END - TESLA_ALTFIRE_START + 1;
+			self.weapon_anim_time = TESLA_ALTFIRE_TIME;
+			self.weaponframe = TESLA_ALTFIRE_START;
+		}
+		else if (self.weapon_anim_type == "holster")
+		{
+			self.weapon_anim_end = TESLA_HOLSTER_END;
+			self.weapon_anim_end_num = TESLA_HOLSTER_END - TESLA_HOLSTER_START + 1;
+			self.weapon_anim_time = TESLA_HOLSTER_TIME;
+			self.weaponframe = TESLA_HOLSTER_START;
+		}
+		self.weapon_last_action = self.weapon_anim_type;
+	}
+
+	self.nextthink = time + (self.weapon_anim_time / self.weapon_anim_end_num);
+	self.think = tesla_animate;
+	local   string  text;
+	text = ftos(self.nextthink);
+	sprint3 (self, "nextthink = ", text , "\n");
+
+	if (self.weapon_anim_type == "fire")
+	{
+		if (self.frame == $attack1) //update player's 2 frame fire animation.
+			self.frame = $attack2;
+		else
+			self.frame = $attack1;
+
+		if (time >= self.attack_finished)
+		{
+			// Check to see if we are supposed to stop shooting.
+			if ((!self.button0 && !self.button3) || intermission_running || self.ammo_cells < 1)
+			{
+				self.weapon_anim_type = "idle";
+				self.weaponframe = TESLA_IDLE;
+				self.player_state = PS_IDLE;
+				self.nextthink = time + 0.01;
+				self.think = tesla_animate;
+				player_run();
+			}
+		}
+
+		// Keep on firing...
+		Tesla_Fire();
+	}
+
+	if (self.weapon_anim_type == "altfire")
+	{
+		if ((self.weaponframe == 8) || ((self.weaponframe > 20) && (self.weaponframe <= 23))) //update player's 2 frame fire animation.
+			self.frame = $attack1;
+		else
+			self.frame = $attack2;
+
+		if (self.weaponframe == 20)
+			Tesla_Fire();
+		else if (self.weaponframe == 24)
+		{
+			self.weapon_anim_type = "idle";
+			self.player_state = PS_IDLE;
+			self.weaponframe = TESLA_IDLE;
+			self.nextthink = time + 0.01;
+			self.think = tesla_animate;
+			player_run();
+		}
+	}
+
+	if ((self.weaponframe == self.weapon_anim_end) && (self.weapon_anim_type == "draw"))
+	{
+		self.nextthink = time + 0.01;
+		self.think = player_run;
+		return;
+	}
+	if ((self.weaponframe == self.weapon_anim_end) && (self.weapon_anim_type == "holster"))
+	{
+		self.nextthink = time + 0.01;
+		W_DrawWeapon (self.newweapon);
+		self.think = player_run;
+		return;
+	}
+	if (self.weapon_anim_type == "idle")
+		self.nextthink = 0.01;
+		self.think = tesla_animate;
 };
