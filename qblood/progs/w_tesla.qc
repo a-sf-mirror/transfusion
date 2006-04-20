@@ -30,13 +30,13 @@ $modelname v_tesla
 
 #define TESLA_IDLE				0
 #define TESLA_DRAW_START		1
-#define TESLA_DRAW_END			3
-#define TESLA_FIRE_START		4
-#define TESLA_FIRE_END			7
-#define TESLA_ALTFIRE_START		8
-#define TESLA_ALTFIRE_END		24
-#define TESLA_HOLSTER_START		25
-#define TESLA_HOLSTER_END		27
+#define TESLA_DRAW_END			5
+#define TESLA_FIRE_START		6
+#define TESLA_FIRE_END			10
+#define TESLA_ALTFIRE_START		11
+#define TESLA_ALTFIRE_END		50
+#define TESLA_HOLSTER_START		51
+#define TESLA_HOLSTER_END		55
 
 #define TESLA_IDLE_TIME			0.1
 #define TESLA_DRAW_TIME			0.4
