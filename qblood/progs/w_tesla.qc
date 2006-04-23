@@ -364,7 +364,10 @@ void () tesla_animate =
 		{
 			// Check to see if we are supposed to stop shooting.
 			if ((!self.button0 && !self.button3) || (intermission_running) || (self.ammo_cells < 1))
-				Tesla_Idle();
+			{
+				self.nextthink = time + 0.01;
+				self.think = Tesla_Idle;
+			}
 			else
 				Tesla_Fire();
 		}
