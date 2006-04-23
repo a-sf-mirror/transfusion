@@ -220,7 +220,7 @@ void() Tesla_Attack =
 	if (self.button0 || self.ammo_cells < 35 || ((self.items & IT_GUNS_AKIMBO) && self.ammo_cells < 70))
 	{
 		self.player_state = PS_FIRE;
-		self.attack_finished = time + TESLA_FIRE_TIME - 0.05;
+		self.attack_finished = time + TESLA_FIRE_TIME - 0.01;
 		self.weapon_anim_type = "fire";
 		tesla_animate();
 	}
