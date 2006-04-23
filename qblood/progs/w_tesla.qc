@@ -40,7 +40,7 @@ $modelname v_tesla
 
 #define TESLA_IDLE_TIME			0.1
 #define TESLA_DRAW_TIME			0.4
-#define	TESLA_FIRE_TIME			0.4
+#define	TESLA_FIRE_TIME			0.5
 #define TESLA_ALTFIRE_TIME		2.1
 #define TESLA_HOLSTER_TIME		0.4
 
@@ -202,6 +202,8 @@ void() Tesla_Fire =
 		if (self.ammo_cells < 2)
 			W_SetCurrentAmmo ();
 	}
+	else if (self.player_state == PS_ALTFIRE)
+		Tesla_LaunchJolt (org + v_right * 6.25 + v_forward * 24, dir, mspeed);
 	else
 		Tesla_LaunchJolt (org, dir, mspeed);
 };
@@ -218,9 +220,7 @@ void() Tesla_Attack =
 	if (self.button0 || self.ammo_cells < 35 || ((self.items & IT_GUNS_AKIMBO) && self.ammo_cells < 70))
 	{
 		self.player_state = PS_FIRE;
-		self.attack_finished = time + TESLA_FIRE_TIME - 0.01; // always take at least 5 shots.
-									/* This is kind of a hack, otherwise it likes to take 6 shots or only
-										shoot in bursts of 5 */
+		self.attack_finished = time + TESLA_FIRE_TIME;
 		self.weapon_anim_type = "fire";
 		tesla_animate();
 	}
@@ -292,13 +292,22 @@ void() Tesla_UpdateView =
 	}
 };
 
+void() Tesla_Idle =
+{
+	self.weapon_anim_type = "idle";
+	self.player_state = PS_IDLE;
+	self.weaponframe = TESLA_IDLE;
+	tesla_animate();
+	//player_run();
+};
+
 void () tesla_animate =
 {
 	if ((self.weapon_anim_type == self.weapon_last_action) && (self.weaponframe <= self.weapon_anim_end))
 	{
 		if (self.weaponframe != self.weapon_anim_end)
 			self.weaponframe = self.weaponframe + 1; //if its a new animation type, it will be set to the proper frame next
-		else if (self.weapon_anim_type != "idle")
+		else
 			self.weaponframe = self.weapon_anim_end - self.weapon_anim_end_num + 1;
 	}
 	if ((self.weapon_anim_type != self.weapon_last_action) || (self.weaponframe > self.weapon_anim_end))
@@ -306,7 +315,7 @@ void () tesla_animate =
 		if (self.weapon_anim_type == "idle")
 		{
 			self.weapon_anim_end = TESLA_IDLE;
-			self.weapon_anim_end_num = 1;
+			self.weapon_anim_end_num = TESLA_IDLE + 1;
 			self.weapon_anim_time = TESLA_IDLE_TIME;
 			self.weaponframe = TESLA_IDLE;
 		}
@@ -343,9 +352,6 @@ void () tesla_animate =
 
 	self.nextthink = time + (self.weapon_anim_time / self.weapon_anim_end_num);
 	self.think = tesla_animate;
-	local   string  text;
-	text = ftos(self.nextthink);
-	sprint3 (self, "nextthink = ", text , "\n");
 
 	if (self.weapon_anim_type == "fire")
 	{
@@ -354,49 +360,38 @@ void () tesla_animate =
 		else
 			self.frame = $attack1;
 
-		if (time >= self.attack_finished)
+		if (time > self.attack_finished)
 		{
 			// Check to see if we are supposed to stop shooting.
-			if ((!self.button0 && !self.button3) || intermission_running || self.ammo_cells < 1)
-			{
-				self.weapon_anim_type = "idle";
-				self.weaponframe = TESLA_IDLE;
-				self.player_state = PS_IDLE;
-				self.nextthink = time + 0.01;
-				self.think = tesla_animate;
-				player_run();
-			}
+			if ((!self.button0 && !self.button3) || (intermission_running) || (self.ammo_cells < 1))
+				Tesla_Idle();
+			else
+				Tesla_Fire();
 		}
-
+		else
 		// Keep on firing...
 		Tesla_Fire();
 	}
 
 	if (self.weapon_anim_type == "altfire")
 	{
-		if ((self.weaponframe == 8) || ((self.weaponframe > 20) && (self.weaponframe <= 23))) //update player's 2 frame fire animation.
+		if ((self.weaponframe == 11) || ((self.weaponframe > 42) && (self.weaponframe <= 48))) //update player's 2 frame fire animation.
 			self.frame = $attack1;
 		else
 			self.frame = $attack2;
 
-		if (self.weaponframe == 20)
+		if (self.weaponframe == 42)
 			Tesla_Fire();
-		else if (self.weaponframe == 24)
+		else if (self.weaponframe == 50)
 		{
-			self.weapon_anim_type = "idle";
-			self.player_state = PS_IDLE;
-			self.weaponframe = TESLA_IDLE;
-			self.nextthink = time + 0.01;
-			self.think = tesla_animate;
-			player_run();
+			self.nextthink = time + TESLA_IDLE_TIME;
+			self.think = Tesla_Idle;
 		}
 	}
 
 	if ((self.weaponframe == self.weapon_anim_end) && (self.weapon_anim_type == "draw"))
 	{
-		self.nextthink = time + 0.01;
-		self.think = player_run;
-		return;
+		Tesla_Idle();
 	}
 	if ((self.weaponframe == self.weapon_anim_end) && (self.weapon_anim_type == "holster"))
 	{
@@ -406,6 +401,8 @@ void () tesla_animate =
 		return;
 	}
 	if (self.weapon_anim_type == "idle")
-		self.nextthink = 0.01;
-		self.think = tesla_animate;
+	{
+		self.nextthink = time + TESLA_IDLE_TIME;
+		self.think = Tesla_Idle;
+	}
 };

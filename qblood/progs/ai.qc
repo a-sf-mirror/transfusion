@@ -869,24 +869,26 @@ void (float dist) basic_ai =
 
 	// Hellhounds are extinguished if they're in water
 	if (self.classname == "monster_hellhound")
+	{
 		if (pointcontents(self.origin) == CONTENT_WATER)
 		{
 			self.think = self.th_die;
 			self.nextthink = time + 0.1;
 		}
+	}
 
-		if (self.style == 1)
-			ai_stand ();
-		else
+	if (self.style == 1)
+		ai_stand ();
+	else
+	{
+		if (self.style == 2)
+			ai_walk ();
+		else if (self.style == 3)
 		{
-			if (self.style == 2)
-				ai_walk ();
-			else if (self.style == 3)
-			{
-				ai_run ();
-				ai_face ();
-			}
+			ai_run ();
+			ai_face ();
 		}
+	}
 };
 
 /*

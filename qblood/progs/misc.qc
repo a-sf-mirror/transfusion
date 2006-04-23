@@ -39,8 +39,8 @@ void() info_notnull =
 // Emit a fire ambient sound
 void() FireAmbient =
 {
-	precache_sound ("ambience/sizzle.wav");
-	ambientsound (self.origin, "ambience/sizzle.wav", 0.4, ATTN_STATIC);
+	precache_sound ("ambience/sizzle.ogg");
+	ambientsound (self.origin, "ambience/sizzle.ogg", 0.4, ATTN_STATIC);
 };
 
 //============================================================================
@@ -1079,9 +1079,9 @@ void(string soundname, float volume) ambient_generic_vol =
 };
 
 void() ambient_drip     = { ambient_generic_vol ("ambience/drip3.wav", 0.5);    };
-void() ambient_sizzle   = { ambient_generic_vol ("ambience/sizzle.wav", 0.4);   };
-void() ambient_sizzle1  = { ambient_generic_vol ("ambience/sizzle1.wav", 0.4);  };
-void() ambient_sizzle2  = { ambient_generic_vol ("ambience/sizzle2.wav", 0.4);  };
+void() ambient_sizzle   = { ambient_generic_vol ("ambience/sizzle.ogg", 0.4);   };
+void() ambient_sizzle1  = { ambient_generic_vol ("ambience/sizzle1.ogg", 0.4);  };
+void() ambient_sizzle2  = { ambient_generic_vol ("ambience/sizzle2.ogg", 0.4);  };
 void() ambient_water1   = { ambient_generic_vol ("ambience/water1.wav", 0.5);   };
 
 // Ambient sounds with generic parameters
@@ -1090,7 +1090,11 @@ void(string soundname) ambient_generic =
 	ambient_generic_vol_attn (soundname, 1, ATTN_STATIC);
 };
 
-void() ambient_custom       = { ambient_generic (self.noise);               };  // Custom entity for mappers
+void() ambient_custom       = {
+	precache_sound (self.noise);
+	ambientsound (self.origin, self.noise, 1, ATTN_STATIC);
+	makestatic (self);
+};//ambient_generic (self.noise);               };  // Custom entity for mappers
 
 void() ambient_1wind        = { ambient_generic ("ambience/1wind.wav");     };
 void() ambient_altair2      = { ambient_generic ("ambience/altair2.wav");   };
