@@ -424,10 +424,6 @@ void () cultist_animate =
 	self.nextthink = time + (self.anim_time / self.anim_end_num);
 	self.think = cultist_animate;
 
-	local string text;
-	text = ftos(self.frame);
-	sprint3 (self.enemy, "frame # = ", text, "\n");
-
 	if (self.anim_type == "death")
 	{
 		if (self.netname != "monster_redcultist")
