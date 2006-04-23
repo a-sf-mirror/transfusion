@@ -62,27 +62,27 @@ void() SetNewParms =
 
 void() InitPlayerCharacteristics =
 {
-	self.items           = IT_PITCHFORK;
-	self.items2          = 0;
-	self.health          = 100;
-	self.ammo_flare      = 0;
-	self.ammo_shells     = 0;
-	self.ammo_nails      = 0;
-	self.ammo_rockets    = 0;
-	self.ammo_tnt_bundle = 0;
-	self.ammo_tnt_proxy  = 0;
-	self.ammo_tnt_remote = 0;
-	self.ammo_spray      = 0;
-	self.ammo_cells      = 0;
-	self.ammo_voodoo     = 0;
-	self.ammo_leech      = 0;
-	self.weapon          = IT_PITCHFORK;
-	self.armor_fire      = 0;
-	self.armor_body      = 0;
-	self.armor_spirit      = 0;
-	self.inven1          = 0;
-	self.inven2          = 0;
-	self.it_select       = 0;
+	self.items				= IT_PITCHFORK;
+	self.items2				= 0;
+	self.health				= 100;
+	self.ammo_flare			= 0;
+	self.ammo_shells		= 0;
+	self.ammo_nails			= 0;
+	self.ammo_rockets		= 0;
+	self.ammo_tnt_bundle	= 0;
+	self.ammo_tnt_proxy		= 0;
+	self.ammo_tnt_remote	= 0;
+	self.ammo_spray			= 0;
+	self.ammo_cells			= 0;
+	self.ammo_voodoo		= 0;
+	self.ammo_leech			= 0;
+	self.weapon				= IT_PITCHFORK;
+	self.armor_fire			= 0;
+	self.armor_body			= 0;
+	self.armor_spirit		= 0;
+	self.inven1				= 0;
+	self.inven2				= 0;
+	self.it_select			= 0;
 
 	// In BloodBath, all players are given all keys
 	if (gametype == GT_BLOODBATH)
@@ -1020,7 +1020,7 @@ void() WaterMove =
 		if (self.watertype == CONTENT_WATER)
 			sound (self, CHAN_BODY, "foley/submerge.wav", 1, ATTN_NORM);
 		if (self.watertype == CONTENT_SLIME)
-			sound (self, CHAN_BODY, "ambience/sizzle.wav", 1, ATTN_NORM);
+			sound (self, CHAN_BODY, "ambience/sizzle.ogg", 1, ATTN_NORM);
 
 		self.flags = self.flags + FL_INWATER;
 		self.dmgtime = 0;
@@ -1425,6 +1425,23 @@ void(float isAlive) Impulses_Player =
 					Cheat_Akimbo ();
 				else if (self.impulse == IMP_COREDUMP)
 					coredump ();
+				else if (self.impulse == IMP_CHEAT_WEAPONS)
+				{
+					self.items = self.items | IT_FLAREGUN | IT_SAWED_OFF | IT_TOMMYGUN | IT_NAPALM_LAUNCHER | IT_TNT
+											| IT_PROXIMITY_BOMB | IT_REMOTE_DETONATOR | IT_SPRAY_CAN
+											| IT_TESLA_CANNON | IT_VOODOO_DOLL | IT_LIFE_LEECH;
+					self.ammo_flare = 999;
+					self.ammo_shells = 999;
+					self.ammo_nails = 999;
+					self.ammo_rockets = 999;
+					self.ammo_tnt_bundle = 999;
+					self.ammo_tnt_proxy = 999;
+					self.ammo_tnt_remote = 999;
+					self.ammo_spray = 999;
+					self.ammo_cells = 999;
+					self.ammo_voodoo = 999;
+					self.ammo_leech = 999;
+				}
 		}
 	}
 
@@ -2085,31 +2102,31 @@ void(entity attacker) ClientObituary =
 		// FIXME: Do you really lose a frag if you die in co-op?
 		Cl_UpdatePlayerFrags (self, -1);
 
-		if (attacker.classname == "monster_rat")
+		if (attacker.netname == "monster_rat")
 			m_name = "a rat";
-		else if (attacker.classname == "monster_eel")
+		else if (attacker.netname == "monster_eel")
 			m_name = "an eel";
-		else if (attacker.classname == "monster_zombie")
+		else if (attacker.netname == "monster_zombie")
 			m_name = "an axe zombie";
-		else if (attacker.classname == "monster_hellhound")
+		else if (attacker.netname == "monster_hellhound")
 			m_name = "a hellhound";
-		else if (attacker.classname == "monster_butcher")
+		else if (attacker.netname == "monster_butcher")
 			m_name = "a bloated zombie";
-		else if (attacker.classname == "monster_browncultist")
+		else if (attacker.netname == "monster_browncultist")
 			m_name = "a Cultist";
-		else if (attacker.classname == "monster_blackcultist")
+		else if (attacker.netname == "monster_blackcultist")
 			m_name = "a Fanatic";
-		else if (attacker.classname == "monster_greencultist")
+		else if (attacker.netname == "monster_greencultist")
 			m_name = "an Acolyte";
-		else if (attacker.classname == "monster_bluecultist")
+		else if (attacker.netname == "monster_bluecultist")
 			m_name = "a Zealot";
-		else if (attacker.classname == "monster_redcultist")
+		else if (attacker.netname == "monster_redcultist")
 			m_name = "a Priest";
-		else if (attacker.classname == "monster_gargoyle")
+		else if (attacker.netname == "monster_gargoyle")
 			m_name = "a gargoyle";
-		else if (attacker.classname == "monster_stonegargoyle")
+		else if (attacker.netname == "monster_stonegargoyle")
 			m_name = "a stone gargoyle";
-		else if (attacker.classname == "monster_minicaleb")
+		else if (attacker.netname == "monster_minicaleb")
 			m_name = "a mini-caleb";
 		else
 			m_name = "an unknown monster";

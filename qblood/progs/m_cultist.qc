@@ -428,7 +428,6 @@ void () cultist_animate =
 	{
 		if (self.netname != "monster_redcultist")
 		{
-			monster_death();
 			if (self.health < -40)
 			{
 				sound (self, CHAN_VOICE, "cultist/cultdie3.wav", 1, ATTN_NORM);
@@ -461,6 +460,7 @@ void () cultist_animate =
 		if (self.frame == self.anim_end)
 		{
 			self.nextthink = 0;
+			monster_death();
 			monster_become_corpse();
 			return;
 		}
@@ -475,7 +475,12 @@ void () cultist_animate =
 	if (self.anim_type == "attack")
 	{
 		if (self.netname == "monster_browncultist")
-			cultist_fireShotgun();
+		{
+			if (range(self.enemy) == RANGE_NEAR)
+				cultist_fireShotgun();
+			else if (range(self.enemy) == RANGE_MID)
+				cultist_throw_TNT();
+		}
 		
 	}
 	else if (self.anim_type == "attack2")
@@ -554,7 +559,7 @@ void () cultist_spawn =
 	self.th_die = cultist_die;
 	self.th_pain = cultist_pain;
 	self.touch = monster_stepped_on;
-	//self.attack_state = AS_MISSILE;
+	self.attack_state = AS_MISSILE;
 	self.classname = "monster";
 	walkmonster_start ();    
 };
