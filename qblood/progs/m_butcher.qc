@@ -470,5 +470,7 @@ void () monster_butcher =
 	self.th_pain = butcher_pain;
 	self.th_missile = butcher_attack;
 	self.touch = monster_stepped_on;
+	self.classname = "monster";
+	self.classname = "monster_butcher";
 	walkmonster_start ();
 };

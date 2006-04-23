@@ -73,9 +73,16 @@ void () redcultist_fireShotgun =
 
 void () monster_redcultist =
 {
-	//  Disable for testing
-	if(monster_check())
-		return;
+	// Precache files needed for shooting shotgun
+	precache_sound ("cultist/cultatt1.wav"); // Shotgun boom
+	precache_sound ("cultist/cultatt2.wav"); // Shotgun boom
+
+	// Setup all red cultists unique attributes
+	self.skin = CULTIST_RED;
+	self.health = 100;
+	self.th_missile = redcultist_attack;
+	precache_sound ("cultist/cultmorp.wav");
+	self.netname = "monster_redcultist";
 
 	cultist_spawn();
 };

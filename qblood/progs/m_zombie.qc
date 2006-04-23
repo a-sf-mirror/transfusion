@@ -40,6 +40,8 @@
 #define	ZOMBIE_HIDE_END			175		//single frame only
 #define ZOMBIE_DEATH2_START		0		//Death2 animation is a seperate model
 #define ZOMBIE_DEATH2_END		29
+#define ZOMBIE_EXPLODE_START	0		//Explode animation is also a seperate model
+#define ZOMBIE_EXPLODE_END		15
 
 //Animation Timing Configuration in seconds
 #define	ZOMBIE_STAND_TIME		2.5
@@ -53,6 +55,7 @@
 #define ZOMBIE_HIDE_TIME		0.1
 #define	ZOMBIE_DEATH1_TIME		1.2
 #define ZOMBIE_DEATH2_TIME		1.2
+#define ZOMBIE_EXPLODE_TIME		1.2
 
 void () zombie_animate;
 
@@ -176,7 +179,15 @@ void () zombie_die =
         remove (self);
         return;
     }
-    if (random () < 0.75)
+	if ((self.enemy.weapon == IT_VOODOO_DOLL) && (self.enemy.player_state == PS_ALTFIRE))
+	{
+		setmodel (self, "models/enemies/zombie/zombie_explode.psk");
+		setsize (self,'-7 -21 0', '15 14 59');
+		// FIXME: need to add dropped head spawn here as well
+		self.frame = ZOMBIE_EXPLODE_START;
+		self.anim_type = "explode";
+	}
+    else if (random () < 0.75)
 	{
 		self.anim_type = "death1";
 	}
@@ -269,6 +280,13 @@ void () zombie_animate =
 			self.anim_time = ZOMBIE_DEATH2_TIME;
 			self.frame = ZOMBIE_DEATH2_START;
 		}
+		else if (self.anim_type == "explode")
+		{
+			self.anim_end = ZOMBIE_EXPLODE_END;
+			self.anim_end_num = ZOMBIE_EXPLODE_END - ZOMBIE_EXPLODE_START + 1;
+			self.anim_time = ZOMBIE_EXPLODE_TIME;
+			self.frame = ZOMBIE_EXPLODE_START;
+		}
 		else if (self.anim_type == "hide")
 		{
 			self.anim_end = ZOMBIE_HIDE_END;
@@ -281,7 +299,7 @@ void () zombie_animate =
 	self.nextthink = time + (self.anim_time / self.anim_end_num);
 	self.think = zombie_animate;
 
-	if ((self.anim_type == "death1") || (self.anim_type == "death2"))
+	if ((self.anim_type == "death1") || (self.anim_type == "death2") || (self.anim_type == "explode"))
 	{
 		if (self.frame == self.anim_end)
 		{
@@ -323,6 +341,7 @@ void () monster_zombie =
 	precache_model ("models/enemies/zombie/zombie.psk");
 	precache_model ("models/enemies/zombie/zombie_headless.psk");
 	precache_model ("models/enemies/zombie/zombie_head.psk");
+	precache_model ("models/enemies/zombie/zombie_explode.psk");
 	precache_sound ("axezombie/azomdie1.wav");
 	precache_sound ("axezombie/azomdie2.wav");
 	precache_sound ("axezombie/azomdie3.wav");
@@ -374,5 +393,7 @@ void () monster_zombie =
 	self.th_melee = zombie_attack;
 	self.touch = monster_stepped_on;
 	self.anim_type = "null";
+	self.classname = "monster";
+	self.netname = "monster_zombie";
 	walkmonster_start ();
 };

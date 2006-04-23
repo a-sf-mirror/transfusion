@@ -241,7 +241,7 @@ float(entity targ) range =
 	if (r < 60)  //was 90/500/1000
 		return RANGE_MELEE;
 	if (r < 500)
-		if (r > 300 && self.classname == "monster_zombie" && self.spawnposition == ZOMBIE_SPAWN_UNDERGROUND)
+		if (r > 300 && self.netname == "monster_zombie" && self.spawnposition == ZOMBIE_SPAWN_UNDERGROUND)
 			return RANGE_MID;
 		else
 			return RANGE_NEAR;
@@ -325,27 +325,27 @@ void() SightSound =
 {
 	local float rsnd;
 
-	if (self.classname == "monster_butcher")
+	if (self.netname == "monster_butcher")
 		sound (self, CHAN_VOICE, "butcher/fzomspot.wav", 1, ATTN_NORM);
-	else if (self.classname == "monster_hellhound")
+	else if (self.netname == "monster_hellhound")
 		sound (self, CHAN_VOICE, "hellhound/cerbspot.wav", 1, ATTN_NORM);
-	else if (self.classname == "monster_rat")
+	else if (self.netname == "monster_rat")
 		sound (self, CHAN_VOICE, "rat/ratspot.wav", 1, ATTN_NORM);
-	else if (self.classname == "monster_bat")
+	else if (self.netname == "monster_bat")
 		sound (self, CHAN_VOICE, "bat/batspot.wav", 1, ATTN_NORM);
-	else if (self.classname == "monster_zombie")
+	else if (self.netname == "monster_zombie")
 		sound (self, CHAN_VOICE, "axezombie/azomspot.wav", 1, ATTN_NORM);
-	else if (self.classname == "monster_eel")
+	else if (self.netname == "monster_eel")
 		sound (self, CHAN_VOICE, "eel/eelspot.wav", 1, ATTN_NORM);
-	else if (self.classname == "monster_gargoyle")
+	else if (self.netname == "monster_gargoyle")
 		sound (self, CHAN_VOICE, "gargoyle/gargspot.wav", 1, ATTN_NORM);
-	else if (self.classname == "monster_stonegargoyle")
+	else if (self.netname == "monster_stonegargoyle")
 		sound (self, CHAN_VOICE, "stonegargoyle/sargspot.wav", 1, ATTN_NORM);
-	else if (self.classname == "monster_browncultist" ||
-		self.classname == "monster_blackcultist" ||
-		self.classname == "monster_redcultist"   ||
-		self.classname == "monster_greencultist" ||
-		self.classname == "monster_bluecultist")
+	else if (self.netname == "monster_browncultist" ||
+		self.netname == "monster_blackcultist" ||
+		self.netname == "monster_redcultist"   ||
+		self.netname == "monster_greencultist" ||
+		self.netname == "monster_bluecultist")
 	{
 		rsnd = random();
 
@@ -389,7 +389,7 @@ entity () FindInnocent =
 
 	while (ent != world)
 	{
-		if (ent.classname == "monster_innocent")
+		if (ent.netname == "monster_innocent")
 		{
 			if (visible(ent))
 				return ent;
@@ -469,10 +469,10 @@ float() FindTarget =
 	// got one
 
 	self.enemy = client;
-	if (self.enemy.classname != "player" && self.enemy.classname != "monster_innocent")
+	if (self.enemy.classname != "player" && self.enemy.netname != "monster_innocent")
 	{
 		self.enemy = self.enemy.enemy;
-		if (self.enemy.classname != "player" && self.enemy.classname != "monster_innocent")
+		if (self.enemy.classname != "player" && self.enemy.netname != "monster_innocent")
 		{
 			self.enemy = world;
 			return FALSE;
@@ -533,7 +533,7 @@ void() ai_stand =
 {
 	if (FindTarget ())
 	{
-		if (self.classname == "monster_zombie" && self.enemy.health >= 0 && self.spawnposition == ZOMBIE_SPAWN_UNDERGROUND)
+		if (self.netname == "monster_zombie" && self.enemy.health >= 0 && self.spawnposition == ZOMBIE_SPAWN_UNDERGROUND)
 			self.th_arise();
 		return;
 	}
@@ -804,7 +804,7 @@ float (float dist) ai_search_area =
 	{
 		// If it's a player or a monster
 		if (thing.classname == "player" || (thing.flags & FL_MONSTER))
-			if (thing.classname != "monster_innocent" && thing != self) 
+			if (thing.netname != "monster_innocent" && thing != self) 
 				return TRUE;
 
 		if (thing.show_hostile > time && thing != self)
@@ -868,7 +868,7 @@ void (float dist) basic_ai =
 	self.style = 3;
 
 	// Hellhounds are extinguished if they're in water
-	if (self.classname == "monster_hellhound")
+	if (self.netname == "monster_hellhound")
 	{
 		if (pointcontents(self.origin) == CONTENT_WATER)
 		{

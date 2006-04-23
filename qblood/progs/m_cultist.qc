@@ -115,41 +115,6 @@ void () cultist_taunt =
 //--- Death sequence
 void () cultist_die =
 {
-    monster_death();
-	
-	if (self.classname != "monster_redcultist")
-	{
-		if (self.health < -40)
-        {
-			sound (self, CHAN_VOICE, "cultist/cultdie3.wav", 1, ATTN_NORM);
-			// Very large blood splat!
-			te_bloodshower (self.origin, self.origin + self.size, 100, 100);
-			RandomHumanGibs ();
-			remove (self);
-			return;
-		}
-		else if (random () < 0.5)
-		{
-			// Unique tommygun cultist sound
-			if (self.classname == "monster_blackcultist")
-				sound (self, CHAN_VOICE, "cultist/tcltdie1.wav", 1, ATTN_NORM);
-			else
-				sound (self, CHAN_VOICE, "cultist/cultdie1.wav", 1, ATTN_NORM);
-		}
-		else
-			sound (self, CHAN_VOICE, "cultist/cultdie2.wav", 1, ATTN_NORM);
-	}
-	else // It is a red cultist (priest)
-	{
-		sound (self,2,"cultist/cultmorp.wav",1,1);
-	/*
-		do morph (from cultist to beast) animation sequence
-		remove self here
-		spawn a beast at same facing / coordinates
-	*/
-	}
-
-	// This will have to move this into the if != "monster_redcultist" when we get some morph frames
 	self.anim_type = "death";
 	cultist_animate();
 };
@@ -229,7 +194,7 @@ void () cultist_pain =
 	else if (r < 0.5)
 	{
 		// Unique tommygun cultist sound
-		if (self.classname == "monster_blackcultist")
+		if (self.netname == "monster_blackcultist")
 			{sound (self,2,"cultist/tcltpan2.wav",1,1);    self.pain_finished = (time + 1.28);}
 		else
 			{sound (self,2,"cultist/cultpan2.wav",1,1);    self.pain_finished = (time + 1.35);}
@@ -237,7 +202,7 @@ void () cultist_pain =
 	else if (r < 0.75)
 	{
 		// Unique tommygun cultist sound
-		if (self.classname == "monster_blackcultist")
+		if (self.netname == "monster_blackcultist")
 			{sound (self,2,"cultist/tcltpan3.wav",1,1);    self.pain_finished = (time + 1.21);}
 		else
 			{sound (self,2,"cultist/cultpan3.wav",1,1);    self.pain_finished = (time + 1.4);}		
@@ -326,21 +291,15 @@ void () cultist_run =
 // primary attack
 void () cultist_attack = 
 {
-	// TODO: add attacks for other cultists
-	if (self.classname == "monster_browncultist")
-	{
-		cultist_fireShotgun();
-	}
+	self.anim_type = "attack";
+	cultist_animate();
 };
 
 // secondary attack
 void () cultist_attack2 =
 {
-	// TODO: add attacks for other cultists
-	if (self.classname == "monster_browncultist")
-	{
-		cultist_throw_TNT();
-	}
+	self.anim_type = "attack2";
+	cultist_animate();
 };
 
 // crawl
@@ -377,23 +336,16 @@ void () cultist_swim_fire =
 
 void () cultist_animate =
 {
-	if (self.frame <= self.anim_end)
-	{
-		/*
-		Death does not go above the last frame since it doesn't reset
-		Otherwise, increase the frame number, if it goes past the end, it will reset
-		*/
-		if (!(((self.anim_type == "death1") || (self.anim_type == "death2")) && (self.frame == self.anim_end)))
-			self.frame = self.frame + 1; //if its a new animation type, it will be set to the proper frame next
-	}
-	if ((self.anim_type != self.last_action) || (self.frame > self.anim_end))
+	if (self.anim_type == self.last_action)
+		if (self.frame < self.anim_end)
+			self.frame = self.frame + 1;
+	if (self.anim_type != self.last_action)
 	{
 		if (self.anim_type == "stand")
 		{
 			self.anim_end = CULTIST_STAND_END;
-			self.anim_end_num = CULTIST_STAND_END - CULTIST_STAND_START + 1; //add one to compensate for the first frame not being counted
-			self.anim_time = CULTIST_STAND_TIME; // one idle animation lasts 2.5 seconds
-			self.last_action = "stand";
+			self.anim_end_num = CULTIST_STAND_END - CULTIST_STAND_START + 1;
+			self.anim_time = CULTIST_STAND_TIME;
 			self.frame = CULTIST_STAND_START;
 		}
 		else if (self.anim_type == "walk")
@@ -401,7 +353,6 @@ void () cultist_animate =
 			self.anim_end = CULTIST_WALK_END;
 			self.anim_end_num = CULTIST_WALK_END - CULTIST_WALK_START + 1;
 			self.anim_time = CULTIST_WALK_TIME;
-			self.last_action = "walk";
 			self.frame = CULTIST_WALK_START;
 		}
 		else if (self.anim_type == "run")
@@ -410,7 +361,6 @@ void () cultist_animate =
 			self.anim_end = CULTIST_WALK_END;
 			self.anim_end_num = CULTIST_WALK_END - CULTIST_WALK_START + 1;
 			self.anim_time = CULTIST_RUN_TIME;
-			self.last_action = "run";
 			self.frame = CULTIST_WALK_START;
 		}
 		else if (self.anim_type == "attack")
@@ -418,197 +368,143 @@ void () cultist_animate =
 			self.anim_end = CULTIST_ATTACK_END;
 			self.anim_end_num = CULTIST_ATTACK_END - CULTIST_ATTACK_START + 1;
 			self.anim_time = CULTIST_ATTACK_TIME;
-			self.last_action = "attack";
-			if (self.frame > self.anim_end)
-				cultist_run();
-			else
-				self.frame = CULTIST_ATTACK_START;
+			self.frame = CULTIST_ATTACK_START;
 		}
 		else if (self.anim_type == "attack2")
 		{
 			self.anim_end = CULTIST_ATTACK2_END;
 			self.anim_end_num = CULTIST_ATTACK2_END - CULTIST_ATTACK2_START + 1;
 			self.anim_time = CULTIST_ATTACK2_TIME;
-			self.last_action = "attack2";
-			if (self.frame > self.anim_end)
-				cultist_run();
-			else
-				self.frame = CULTIST_ATTACK2_START;
+			self.frame = CULTIST_ATTACK2_START;
 		}
 		else if (self.anim_type == "pain")
 		{
 			self.anim_end = CULTIST_PAIN_END;
 			self.anim_end_num = CULTIST_PAIN_END - CULTIST_PAIN_START + 1;
 			self.anim_time = CULTIST_PAIN_TIME;
-			self.last_action = "pain";
-			if (self.frame > self.anim_end)
-				cultist_run();
-			else
-				self.frame = CULTIST_PAIN_START;
+			self.frame = CULTIST_PAIN_START;
 		}
 		else if (self.anim_type == "crawl")
 		{
 			self.anim_end = CULTIST_CRAWL_END;
 			self.anim_end_num = CULTIST_CRAWL_END - CULTIST_CRAWL_START + 1;
 			self.anim_time = CULTIST_CRAWL_TIME;
-			self.last_action = "crawl";
-			if (self.frame > self.anim_end)
-				cultist_crawl(); // TODO: should probably switch run, crawl, and swim to an AI call to allow looping in proper situations
-			else
-				self.frame = CULTIST_CRAWL_START;
+			self.frame = CULTIST_CRAWL_START;
 		}
 		else if (self.anim_type == "crawl_fire")
 		{
 			self.anim_end = CULTIST_CRAWL_FIRE_END;
 			self.anim_end_num = CULTIST_CRAWL_FIRE_END - CULTIST_CRAWL_FIRE_START + 1;
 			self.anim_time = CULTIST_CRAWL_FIRE_TIME;
-			self.last_action = "crawl_fire";
-			if (self.frame > self.anim_end)
-				cultist_crawl();
-			else
-				self.frame = CULTIST_CRAWL_FIRE_START;
+			self.frame = CULTIST_CRAWL_FIRE_START;
 		}
 		else if (self.anim_type == "swim")
 		{
 			self.anim_end = CULTIST_SWIM_END;
 			self.anim_end_num = CULTIST_SWIM_END - CULTIST_SWIM_START + 1;
 			self.anim_time = CULTIST_SWIM_TIME;
-			self.last_action = "swim";
-			if (self.frame > self.anim_end)
-				cultist_swim(); // TODO: should probably switch run, crawl, and swim to an AI call to allow looping in proper situations
-			else
-				self.frame = CULTIST_SWIM_START;
+			self.frame = CULTIST_SWIM_START;
 		}
 		else if (self.anim_type == "swim_fire")
 		{
 			self.anim_end = CULTIST_SWIM_FIRE_END;
 			self.anim_end_num = CULTIST_SWIM_FIRE_END - CULTIST_SWIM_FIRE_START + 1;
 			self.anim_time = CULTIST_SWIM_FIRE_TIME;
-			self.last_action = "swim_fire";
-			if (self.frame > self.anim_end)
-				cultist_swim();
-			else
-				self.frame = CULTIST_SWIM_FIRE_START;
+			self.frame = CULTIST_SWIM_FIRE_START;
 		}
 		else if (self.anim_type == "death")
 		{
 			self.anim_end = CULTIST_DEATH_END;
 			self.anim_end_num = CULTIST_DEATH_END - CULTIST_DEATH_START + 1;
 			self.anim_time = CULTIST_DEATH_TIME;
-			self.last_action = "death";
 			self.frame = CULTIST_DEATH_START;
 		}
+		self.last_action = self.anim_type;
 	}
-	if (!((self.anim_type == "death") && (self.frame == self.anim_end))) 
+	self.nextthink = time + (self.anim_time / self.anim_end_num);
+	self.think = cultist_animate;
+
+	local string text;
+	text = ftos(self.frame);
+	sprint3 (self.enemy, "frame # = ", text, "\n");
+
+	if (self.anim_type == "death")
 	{
-		self.nextthink = time + (self.anim_time / self.anim_end_num);
-		self.think = cultist_animate;
+		if (self.netname != "monster_redcultist")
+		{
+			monster_death();
+			if (self.health < -40)
+			{
+				sound (self, CHAN_VOICE, "cultist/cultdie3.wav", 1, ATTN_NORM);
+				// Very large blood splat!
+				te_bloodshower (self.origin, self.origin + self.size, 100, 100);
+				RandomHumanGibs ();
+				remove (self);
+				return;
+			}
+			else if (random () < 0.5)
+			{
+				// Unique tommygun cultist sound
+				if (self.netname == "monster_blackcultist")
+					sound (self, CHAN_VOICE, "cultist/tcltdie1.wav", 1, ATTN_NORM);
+				else
+					sound (self, CHAN_VOICE, "cultist/cultdie1.wav", 1, ATTN_NORM);
+			}
+			else
+				sound (self, CHAN_VOICE, "cultist/cultdie2.wav", 1, ATTN_NORM);
+		}
+		else // It is a red cultist (priest)
+		{
+			sound (self,2,"cultist/cultmorp.wav",1,1);
+			/*
+			do morph (from cultist to beast) animation sequence
+			remove self here
+			spawn a beast at same facing / coordinates
+			*/
+		}
+		if (self.frame == self.anim_end)
+		{
+			self.nextthink = 0;
+			monster_become_corpse();
+			return;
+		}
 	}
+
+	if (self.frame == self.anim_end)
+		self.frame = self.anim_end - self.anim_end_num + 1;
 	
 	//AI control
 	ai_main();
 	
-	if (self.frame == CULTIST_ATTACK_START && self.anim_type == "attack")
+	if (self.anim_type == "attack")
 	{
-		cultist_attack();
+		if (self.netname == "monster_browncultist")
+			cultist_fireShotgun();
+		
 	}
-	else if (self.frame == CULTIST_ATTACK2_START && self.anim_type == "attack2")
+	else if (self.anim_type == "attack2")
 	{
-		cultist_attack2();
+		if (self.frame == CULTIST_ATTACK2_START + 30)
+			cultist_throw_TNT();
 	}
-	
+
 	if (self.anim_type == "stand") basic_ai(3);
 	else if (self.anim_type == "walk") basic_ai(3);
 	else if (self.anim_type == "run") basic_ai(6);
 	else if (self.anim_type == "attack") ai_face();
 	else if (self.anim_type == "attack2") ai_face();
-	else if ((self.anim_type == "death") && (self.frame == self.anim_end)) monster_become_corpse();
 
 	//insert sounds or attack damage here with if statements
 };
 
-/*
-========================================
-
-	Individual Cultist Configurations	
-
-========================================
-*/
-
-//	Brown Cultist Configuration
-void () brown_cultist_config =
-{
-	// Precache files needed for TNT tossing
-	precache_model ("models/weapons/grenades/gr_tnt.md3");// TNT Projectile
-	precache_sound ("cultist/culttoss.wav");              // TNT toss sound
-	precache_sound ("weapons/r_exp3.wav");                // TNT explosion sound
-	
-	// Precache files needed for shooting shotgun
-	precache_sound ("cultist/cultatt1.wav"); // Shotgun boom
-	precache_sound ("cultist/cultatt2.wav"); // Shotgun boom
-
-	// Setup all brown cultists unique attributes
-	self.skin = CULTIST_BROWN;
-	self.health = 50;
-	self.th_missile = browncultist_attack;
-};
-
-//	Red Cultist Configuration
-void () red_cultist_config =
-{
-	// Precache files needed for shooting shotgun
-	precache_sound ("cultist/cultatt1.wav"); // Shotgun boom
-	precache_sound ("cultist/cultatt2.wav"); // Shotgun boom
-
-	// Setup all red cultists unique attributes
-	self.skin = CULTIST_RED;
-	self.health = 100;
-	self.th_missile = redcultist_attack;
-	precache_sound ("cultist/cultmorp.wav");
-};
-
-//	Green Cultist Configuration
-void () green_cultist_config =
-{
-	// Precache files needed for TNT tossing
-	precache_model ("models/weapons/grenades/gr_tnt.md3");// TNT Projectile
-	precache_sound ("cultist/culttoss.wav");              // TNT toss sound
-	precache_sound ("weapons/r_exp3.wav");                // TNT explosion sound
-
-	// Setup all green cultists unique attributes
-	self.skin = CULTIST_GREEN;
-	self.health = 50;
-	self.th_missile = greencultist_attack;
-	self.resist_burn = 4; 	// TODO: test in Blood and modify value!
-};
-
-//	Blue Cultist Configuration
-void () blue_cultist_config =
-{
-	// Setup all blue cultists unique attributes
-	self.skin = CULTIST_BLUE;
-	self.health = 50;
-	self.th_missile = bluecultist_attack;
-	precache_model ("progs/teslaball.spr");
-	precache_sound ("weapons/tesla/tessngfr.wav");
-};
-
-//	Black Cultist Configuration
-void () black_cultist_config =
-{
-	// Setup all black cultists unique attributes
-	self.skin = CULTIST_BLACK;
-	self.health = 50;
-	self.th_missile = blackcultist_attack;	
-	precache_sound ("weapons/tommygun/_tom.wav");
-	precache_sound ("cultist/tcltdie1.wav"); // Unique Tommy gun cultist sounds
-	precache_sound ("cultist/tcltpan2.wav");
-	precache_sound ("cultist/tcltpan3.wav");
-};
 
 //	Generic Cultist settings that apply to all go in here
 void () cultist_spawn =
-{    
+{   
+	//  Disable for testing
+	if(monster_check())
+		return;
+
 	// Common attributes for cultists:
 		// may have to go into individual config
 	self.resist_acid = 0;
@@ -623,21 +519,9 @@ void () cultist_spawn =
 	self.resist_drown = -1;	// cannot drown
 	self.resist_spirit = 0;
 	self.resist_voodoo = 0;
-	
-	//Call color specific config settings
-	if (self.classname == "monster_browncultist")
-		brown_cultist_config();
-	else if (self.classname == "monster_redcultist")
-		red_cultist_config();
-	else if (self.classname == "monster_greencultist")
-		green_cultist_config();
-	else if (self.classname == "monster_bluecultist")
-		blue_cultist_config();
-	else if (self.classname == "monster_blackcultist")
-		black_cultist_config();
-	
+
 	// Don't precache sounds that won't be used by black cultist
-	if (self.classname != "monster_blackcultist")
+	if (self.netname != "monster_blackcultist")
 	{
 		precache_sound ("cultist/cultdie1.wav"); // Death
 		precache_sound ("cultist/cultpan2.wav"); // Pain
@@ -674,6 +558,7 @@ void () cultist_spawn =
 	self.th_die = cultist_die;
 	self.th_pain = cultist_pain;
 	self.touch = monster_stepped_on;
-	self.attack_state = AS_MISSILE;
+	//self.attack_state = AS_MISSILE;
+	self.classname = "monster";
 	walkmonster_start ();    
 };

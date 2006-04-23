@@ -118,9 +118,15 @@ void () blackcultist_fireTommygun =
 
 void () monster_blackcultist =
 {
-	//  Disable for testing
-	if(monster_check())
-		return;
+	// Setup all black cultists unique attributes
+	self.skin = CULTIST_BLACK;
+	self.health = 50;
+	self.th_missile = blackcultist_attack;	
+	precache_sound ("weapons/tommygun/_tom.wav");
+	precache_sound ("cultist/tcltdie1.wav"); // Unique Tommy gun cultist sounds
+	precache_sound ("cultist/tcltpan2.wav");
+	precache_sound ("cultist/tcltpan3.wav");
+	self.netname = "monster_blackcultist";
 
 	cultist_spawn();
 };

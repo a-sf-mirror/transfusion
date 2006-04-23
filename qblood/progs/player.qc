@@ -448,7 +448,7 @@ void(string headmodel, float dm) ThrowHead =
 	if (self.classname == "player")
 		setsize (self, '-10 -13 -3', '12 6 18');
 
-	else if (self.classname == "monster_butcher")
+	else if (self.netname == "monster_butcher")
 		setsize (self, '-5 12 0', '5 20 9');
 
 	else

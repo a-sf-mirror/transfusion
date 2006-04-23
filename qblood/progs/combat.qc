@@ -201,7 +201,7 @@ void(entity targ, entity inflictor, entity attacker, float damage, float dflags,
 	}
 
 	// Hellhound / Cerebrus can't be hurt by fire, but can be hurt by the napalm launcher and TNT
-	if ((targ.classname == "monster_hellhound" || targ.classname == "monster_cerebrus") && 
+	if ((targ.netname == "monster_hellhound" || targ.netname == "monster_cerebrus") && 
 		(dflags & DF_BURN) &&
 		inflictor.classname != "exploding_barrel" &&  // TNT barrels
 		inflictor.classname != "grenade"          &&  // All bombs, lighted Spray Can, Napalm Launcher (altfire)

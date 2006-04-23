@@ -87,7 +87,7 @@ void() walkmonster_start_go =
 		else
 		{
 			self.pausetime = 99999999;
-			if (self.classname == "monster_zombie" && self.spawnposition == ZOMBIE_SPAWN_UNDERGROUND)
+			if (self.netname == "monster_zombie" && self.spawnposition == ZOMBIE_SPAWN_UNDERGROUND)
 				self.th_hide();
 			else
 				self.th_stand ();
@@ -96,7 +96,7 @@ void() walkmonster_start_go =
 	else
 	{
 		self.pausetime = 99999999;
-		if (self.classname == "monster_zombie" && self.spawnposition == ZOMBIE_SPAWN_UNDERGROUND)
+		if (self.netname == "monster_zombie" && self.spawnposition == ZOMBIE_SPAWN_UNDERGROUND)
 			self.th_hide ();
 		else
 			self.th_stand ();
@@ -119,29 +119,29 @@ void() walkmonster_start =
 	precache_sound ("items/pickheal.wav");
 
 	// Needed for random weapon / ammo drops	
-	if (self.classname == "monster_browncultist")
+	if (self.netname == "monster_browncultist")
 	{
 		precache_model ("models/ammo/a_fewshell.md3");		
 		precache_sawedoff();	 
 	}
-	else if (self.classname == "monster_blackcultist")
+	else if (self.netname == "monster_blackcultist")
 	{
 		precache_model ("models/ammo/a_fewbullet.md3");		
 		precache_tommygun();
 	}
-	else if (self.classname == "monster_greencultist")
+	else if (self.netname == "monster_greencultist")
 	{
 		precache_model ("models/ammo/a_tnt.md3");
 		precache_tnt();
 	}
-	else if (self.classname == "monster_bluecultist")
+	else if (self.netname == "monster_bluecultist")
 	{
 		precache_model ("models/ammo/a_battery.md3");
 		precache_teslacannon();
 	}
-	else if (self.classname == "monster_gargoyle" ||
-		self.classname == "monster_hellhound"||
-		self.classname == "monster_phantasm")
+	else if (self.netname == "monster_gargoyle" ||
+		self.netname == "monster_hellhound"||
+		self.netname == "monster_phantasm")
 	{
 		precache_model ("models/items/i_seed.md3");
 	}	
@@ -337,22 +337,22 @@ void () monster_death =
 	}
 
 	// These monsters never drop anything
-	if (self.classname == "monster_bat"           ||
-		self.classname == "monster_rat"           ||
-		self.classname == "monster_eel"           ||
-		self.classname == "monster_hand"          ||
-		self.classname == "monster_redspider"     ||
-		self.classname == "monster_greenspider"   ||
-		self.classname == "monster_minicaleb"	  ||
-		self.classname == "monster_chrysalid_pod" ||
-		self.classname == "monster_fire_pod"      ||
-		self.classname == "monster_mime"          ||
-		self.classname == "monster_stonegargoyle" ||
-		self.classname == "monster_shial"         ||
-		self.classname == "monster_cerebrus"      ||
-		self.classname == "monster_tchernobog"    ||
-		self.classname == "monster_redcultist"    ||
-		self.classname == "monster_beast")
+	if (self.netname == "monster_bat"           ||
+		self.netname == "monster_rat"           ||
+		self.netname == "monster_eel"           ||
+		self.netname == "monster_hand"          ||
+		self.netname == "monster_redspider"     ||
+		self.netname == "monster_greenspider"   ||
+		self.netname == "monster_minicaleb"	  ||
+		self.netname == "monster_chrysalid_pod" ||
+		self.netname == "monster_fire_pod"      ||
+		self.netname == "monster_mime"          ||
+		self.netname == "monster_stonegargoyle" ||
+		self.netname == "monster_shial"         ||
+		self.netname == "monster_cerebrus"      ||
+		self.netname == "monster_tchernobog"    ||
+		self.netname == "monster_redcultist"    ||
+		self.netname == "monster_beast")
 		return;
 
 	r = random();
@@ -368,34 +368,34 @@ void () monster_death =
 		if (r <= 0.05)
 		{
 			// Cultist weapons
-			if (self.classname == "monster_browncultist")
+			if (self.netname == "monster_browncultist")
 				drop_item.think = weapon_sawedoff;
 
-			else if (self.classname == "monster_blackcultist")
+			else if (self.netname == "monster_blackcultist")
 				drop_item.think = weapon_tommygun;
 
-			else if (self.classname == "monster_greencultist")
+			else if (self.netname == "monster_greencultist")
 				drop_item.think = weapon_tnt;
 
-			else if (self.classname == "monster_bluecultist")
+			else if (self.netname == "monster_bluecultist")
 				drop_item.think = weapon_teslacannon;	
 		}	
 		else if (r <= 0.1)
 		{
 			// Cultist ammos
-			if (self.classname == "monster_browncultist")
+			if (self.netname == "monster_browncultist")
 				drop_item.think = ammo_shell;
 
-			else if (self.classname == "monster_blackcultist")
+			else if (self.netname == "monster_blackcultist")
 				drop_item.think = ammo_bullets;			
 
-			else if (self.classname == "monster_bluecultist")
+			else if (self.netname == "monster_bluecultist")
 				drop_item.think = ammo_batteries;
 
 			// Gargoyles, Hell hounds, Phantasms drop life seeds
-			else if (self.classname == "monster_gargoyle" ||
-				self.classname == "monster_hellhound"||
-				self.classname == "monster_phantasm")
+			else if (self.netname == "monster_gargoyle" ||
+				self.netname == "monster_hellhound"||
+				self.netname == "monster_phantasm")
 			{
 				drop_item.spawnflags = 2;         // flag for life seed
 				drop_item.think = item_health;
@@ -404,14 +404,14 @@ void () monster_death =
 		else if (r <= 0.2)
 		{
 			// Cultists, zombies, butchers, innocents, gill beasts, drop regular hearts
-			if (self.classname == "monster_browncultist" ||
-				self.classname == "monster_blackcultist" ||
-				self.classname == "monster_greencultist" ||
-				self.classname == "monster_bluecultist"  ||
-				self.classname == "monster_butcher"      ||
-				self.classname == "monster_zombie"       ||
-				self.classname == "monster_innocent"     ||
-				self.classname == "monster_gillbeast")
+			if (self.netname == "monster_browncultist" ||
+				self.netname == "monster_blackcultist" ||
+				self.netname == "monster_greencultist" ||
+				self.netname == "monster_bluecultist"  ||
+				self.netname == "monster_butcher"      ||
+				self.netname == "monster_zombie"       ||
+				self.netname == "monster_innocent"     ||
+				self.netname == "monster_gillbeast")
 			{
 				drop_item.spawnflags = 1;         // flag for basic heart
 				drop_item.think = item_health;

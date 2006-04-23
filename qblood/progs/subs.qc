@@ -410,7 +410,8 @@ void() identify_player =
 	local entity guy;
 
 	guy = SUB_GetPointedClass ("player", -1);
-
+	if (guy == world)
+		guy = SUB_GetPointedClass ("monster", -1);
 	if (guy == world)
 		centerprint (self, "You're not looking at anyone!");
 	else

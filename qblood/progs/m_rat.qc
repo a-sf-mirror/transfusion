@@ -130,22 +130,19 @@ void () rat_death2 =
 
 void () rat_death =
 {
-	//FIXME: add check for weapon that causes death2
-	rat_death1();
+	//FIXME: add detection of weapon that causes death
+	if (random() > 0.5)
+		rat_death1();
+	else
+		rat_death2();
 };
 
 void () rat_animate =
 {
-	if ((self.anim_type == self.last_action) && (self.frame <= self.anim_end))
-	{
-		/*
-		Death does not go above the last frame since it doesn't reset
-		Otherwise, increase the frame number, if it goes past the end, it will reset
-		*/
-		if (!((self.anim_type == "death") && (self.frame == self.anim_end)))
-			self.frame = self.frame + 1; //if its a new animation type, it will be set to the proper frame next
-	}
-	if ((self.anim_type != self.last_action) || (self.frame > self.anim_end))
+	if (self.anim_type == self.last_action)
+		if (self.frame < self.anim_end)
+			self.frame = self.frame + 1;
+	if (self.anim_type != self.last_action)
 	{
 		if (self.anim_type == "idle")
 		{
@@ -180,34 +177,34 @@ void () rat_animate =
 		}
 		self.last_action = self.anim_type;
 	}
-	if ( !(((self.anim_type == "death1") || (self.anim_type == "death2")) && (self.frame == self.anim_end)) )
-	{
-		self.nextthink = time + (self.anim_time / self.anim_end_num);
-		self.think = rat_animate;
-	}
-	else
+	self.nextthink = time + (self.anim_time / self.anim_end_num);
+	self.think = rat_animate;
+
+	if (((self.anim_type == "death1") || (self.anim_type == "death2")) && (self.frame == self.anim_end))
 	{
 		//FIXME: add blood shower for rat death and final squeak?
-		self.nextthink = 0.1;
-		if (self.anim_type == "death1") {
-			monster_death();
+		self.nextthink = 0;
+		monster_death();
 
+		if (self.health < -20)
+		{
 			// Very large blood splat!
 			te_bloodshower (self.origin, self.origin + self.size, 100, 25);
 
 			sound (self, CHAN_VOICE, "rat/ratdie3.wav", 1, ATTN_NORM);
-			remove (self);
 			ThrowGib ("models/objects/gib4.md3", self.health);
+			remove (self);
 			return;
-
-			if (random () < 0.5)
-				sound (self, CHAN_VOICE, "rat/ratdie1.wav", 1, ATTN_NORM);
-			else
-				sound (self, CHAN_VOICE, "rat/ratdie2.wav", 1, ATTN_NORM);
 		}
+
+		if (random () < 0.5)
+			sound (self, CHAN_VOICE, "rat/ratdie1.wav", 1, ATTN_NORM);
 		else
-			rat_death2();
+			sound (self, CHAN_VOICE, "rat/ratdie2.wav", 1, ATTN_NORM);
 	}
+
+	if (self.frame == self.anim_end)
+		self.frame = self.anim_end - self.anim_end_num + 1;
 
 	ai_main();
 	//insert sounds or attack damage here with if statements
@@ -264,5 +261,7 @@ void () monster_rat =
 	self.th_missile = rat_attack;
 	self.touch = monster_stepped_on;
 	self.attack_finished = 0;
+	self.classname = "monster";
+	self.netname = "monster_rat";
 	walkmonster_start ();
 };

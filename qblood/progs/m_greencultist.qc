@@ -50,9 +50,17 @@ void () greencultist_attack =
 
 void () monster_greencultist =
 {
-	//  Disable for testing
-	if(monster_check())
-		return;
+	// Precache files needed for TNT tossing
+	precache_model ("models/weapons/grenades/gr_tnt.md3");// TNT Projectile
+	precache_sound ("cultist/culttoss.wav");              // TNT toss sound
+	precache_sound ("weapons/r_exp3.wav");                // TNT explosion sound
+
+	// Setup all green cultists unique attributes
+	self.skin = CULTIST_GREEN;
+	self.health = 50;
+	self.th_missile = greencultist_attack;
+	self.resist_burn = 4; 	// TODO: test in Blood and modify value!
+	self.netname = "monster_greencultist";
 
 	cultist_spawn();
 };

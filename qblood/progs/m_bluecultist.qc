@@ -78,9 +78,13 @@ void () bluecultist_fireTesla =
 
 void () monster_bluecultist =
 {
-	//  Disable for testing
-	if(monster_check())
-		return;
+	// Setup all blue cultists unique attributes
+	self.skin = CULTIST_BLUE;
+	self.health = 50;
+	self.th_missile = bluecultist_attack;
+	precache_model ("progs/teslaball.spr");
+	precache_sound ("weapons/tesla/tessngfr.wav");
+	self.netname = "monster_bluecultist";
 
 	cultist_spawn();
 };

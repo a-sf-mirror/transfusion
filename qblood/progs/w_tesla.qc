@@ -33,14 +33,17 @@ $modelname v_tesla
 #define TESLA_DRAW_END			5
 #define TESLA_FIRE_START		6
 #define TESLA_FIRE_END			10
-#define TESLA_ALTFIRE_START		11
-#define TESLA_ALTFIRE_END		50
-#define TESLA_HOLSTER_START		51
-#define TESLA_HOLSTER_END		55
+#define TESLA_REBOUND_START		11
+#define TESLA_REBOUND_END		15
+#define TESLA_ALTFIRE_START		16
+#define TESLA_ALTFIRE_END		55
+#define TESLA_HOLSTER_START		56
+#define TESLA_HOLSTER_END		61
 
 #define TESLA_IDLE_TIME			0.1
 #define TESLA_DRAW_TIME			0.4
 #define	TESLA_FIRE_TIME			0.5
+#define TESLA_REBOUND_TIME		0.2
 #define TESLA_ALTFIRE_TIME		2.1
 #define TESLA_HOLSTER_TIME		0.4
 
@@ -298,7 +301,14 @@ void() Tesla_Idle =
 	self.player_state = PS_IDLE;
 	self.weaponframe = TESLA_IDLE;
 	tesla_animate();
-	//player_run();
+};
+
+void () Tesla_Rebound =
+{
+	self.weapon_anim_type = "rebound";
+	self.player_state = PS_IDLE;
+	self.weaponframe = TESLA_REBOUND_START;
+	tesla_animate();
 };
 
 void () tesla_animate =
@@ -340,6 +350,13 @@ void () tesla_animate =
 			self.weapon_anim_time = TESLA_ALTFIRE_TIME;
 			self.weaponframe = TESLA_ALTFIRE_START;
 		}
+		else if (self.weapon_anim_type == "rebound")
+		{
+			self.weapon_anim_end = TESLA_REBOUND_END;
+			self.weapon_anim_end_num = TESLA_REBOUND_END - TESLA_REBOUND_START + 1;
+			self.weapon_anim_time = TESLA_REBOUND_TIME;
+			self.weaponframe = TESLA_REBOUND_START;
+		}
 		else if (self.weapon_anim_type == "holster")
 		{
 			self.weapon_anim_end = TESLA_HOLSTER_END;
@@ -366,7 +383,7 @@ void () tesla_animate =
 			if ((!self.button0 && !self.button3) || (intermission_running) || (self.ammo_cells < 1))
 			{
 				self.nextthink = time + 0.01;
-				self.think = Tesla_Idle;
+				self.think = Tesla_Rebound;
 			}
 			else
 				Tesla_Fire();
@@ -378,14 +395,15 @@ void () tesla_animate =
 
 	if (self.weapon_anim_type == "altfire")
 	{
-		if ((self.weaponframe == 11) || ((self.weaponframe > 42) && (self.weaponframe <= 48))) //update player's 2 frame fire animation.
+		if ((self.weaponframe == TESLA_ALTFIRE_START) || ((self.weaponframe == TESLA_ALTFIRE_START + 31) &&
+			(self.weaponframe == TESLA_ALTFIRE_START+ 37))) //update player's 2 frame fire animation.
 			self.frame = $attack1;
 		else
 			self.frame = $attack2;
 
-		if (self.weaponframe == 42)
+		if (self.weaponframe == TESLA_ALTFIRE_START + 31)
 			Tesla_Fire();
-		else if (self.weaponframe == 50)
+		else if (self.weaponframe == TESLA_ALTFIRE_END)
 		{
 			self.nextthink = time + TESLA_IDLE_TIME;
 			self.think = Tesla_Idle;
@@ -394,14 +412,20 @@ void () tesla_animate =
 
 	if ((self.weaponframe == self.weapon_anim_end) && (self.weapon_anim_type == "draw"))
 	{
-		Tesla_Idle();
+		self.nextthink = time + 0.01;
+		self.think = Tesla_Idle;
 	}
-	if ((self.weaponframe == self.weapon_anim_end) && (self.weapon_anim_type == "holster"))
+	else if ((self.weaponframe == self.weapon_anim_end) && (self.weapon_anim_type == "holster"))
 	{
 		self.nextthink = time + 0.01;
 		W_DrawWeapon (self.newweapon);
 		self.think = player_run;
 		return;
+	}
+	else if ((self.weaponframe == self.weapon_anim_end) && (self.weapon_anim_type == "rebound"))
+	{
+		self.nextthink = time + 0.01;
+		self.think = Tesla_Idle;
 	}
 	if (self.weapon_anim_type == "idle")
 	{

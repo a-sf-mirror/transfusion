@@ -91,9 +91,20 @@ void () browncultist_fireShotgun =
 
 void () monster_browncultist =
 {
-	//  Disable for testing
-	if(monster_check())
-		return;
+	// Precache files needed for TNT tossing
+	precache_model ("models/weapons/grenades/gr_tnt.md3");// TNT Projectile
+	precache_sound ("cultist/culttoss.wav");              // TNT toss sound
+	precache_sound ("weapons/r_exp3.wav");                // TNT explosion sound
+	
+	// Precache files needed for shooting shotgun
+	precache_sound ("cultist/cultatt1.wav"); // Shotgun boom
+	precache_sound ("cultist/cultatt2.wav"); // Shotgun boom
+
+	// Setup all brown cultists unique attributes
+	self.skin = CULTIST_BROWN;
+	self.health = 50;
+	self.th_missile = browncultist_attack;
+	self.netname = "monster_browncultist";
 
 	cultist_spawn();
 };
