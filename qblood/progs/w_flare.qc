@@ -28,6 +28,22 @@ void () FlareThink;
 // Normal model
 $modelname v_flare
 
+/*
+#define FLARE_IDLE              0
+#define FLARE_DRAW_START        1
+#define FLARE_DRAW_END          4
+#define FLARE_FIRE_START        5
+#define FLARE_FIRE_END          10
+#define FLARE_HOLSTER_START     11
+#define FLARE_HOLSTER_END       14
+
+#define FLARE_IDLE_TIME         0.1
+#define FLARE_DRAW_TIME         0.4
+#define FLARE_FIRE_TIME         1.0
+#define FLARE_HOLSTER_TIME      0.4
+*/
+
+
 // idle
 $frame flare_idle1
 
@@ -493,7 +509,7 @@ void() Flare_UpdateView =
 	}
 	else
 	{
-		self.weaponmodel = "models/weapons/v_flare.md3";
+		self.weaponmodel = "models/weapons/v_flare.psk";
 		self.items = self.items - (self.items & IT_GUNS_AKIMBO);
 	}
 };
