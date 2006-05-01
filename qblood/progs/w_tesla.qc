@@ -412,19 +412,19 @@ void () tesla_animate =
 
 	if ((self.weaponframe == self.weapon_anim_end) && (self.weapon_anim_type == "draw"))
 	{
-		self.nextthink = time + 0.01;
+		self.nextthink = time + TESLA_IDLE_TIME;
 		self.think = Tesla_Idle;
 	}
 	else if ((self.weaponframe == self.weapon_anim_end) && (self.weapon_anim_type == "holster"))
 	{
-		self.nextthink = time + 0.01;
+		self.nextthink = time + TESLA_IDLE_TIME;
 		W_DrawWeapon (self.newweapon);
 		self.think = player_run;
 		return;
 	}
 	else if ((self.weaponframe == self.weapon_anim_end) && (self.weapon_anim_type == "rebound"))
 	{
-		self.nextthink = time + 0.01;
+		self.nextthink = time + TESLA_IDLE_TIME;
 		self.think = Tesla_Idle;
 	}
 	if (self.weapon_anim_type == "idle")
