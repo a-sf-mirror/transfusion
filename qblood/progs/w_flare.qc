@@ -33,9 +33,9 @@ $modelname v_flare
 #define FLARE_DRAW_START			1
 #define FLARE_DRAW_END				4
 #define FLARE_FIRE_START			5
-#define FLARE_FIRE_END				10
-#define FLARE_HOLSTER_START			11
-#define FLARE_HOLSTER_END			14
+#define FLARE_FIRE_END				16
+#define FLARE_HOLSTER_START			17
+#define FLARE_HOLSTER_END			20
 #define FLARE_AKIMBO_IDLE			0
 #define FLARE_AKIMBO_DRAW_START		1
 #define FLARE_AKIMBO_DRAW_END		3
@@ -522,7 +522,7 @@ void () flare_animate =
 
 	if (self.weapon_anim_type == "fire")
 	{
-		if (self.weaponframe <= FLARE_FIRE_START + 2)
+		if (self.weaponframe <= FLARE_FIRE_START + 4)
 			self.frame = $attack1;
 		else
 			self.frame = $attack2;
