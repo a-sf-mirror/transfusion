@@ -11,7 +11,7 @@
 	// ----- ViewCvsURL ----- //
 
 	function ViewCvsURL ($url, $link) {
-		echo ("<a href=\"http://cvs.sourceforge.net/viewcvs.py/blood/$url/\">$link</a>");
+		echo ("<a href=\"http://blood.cvs.sourceforge.net/blood/$url/\">$link</a>");
 	}
 
 
