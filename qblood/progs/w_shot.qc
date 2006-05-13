@@ -28,6 +28,32 @@ void() Shot_SpawnShell;
 // Normal model
 $modelname v_shot
 
+/*
+#define SHOT_IDLE           0
+#define SHOT_DRAW_START     1
+#define SHOT_DRAW_END       4
+#define SHOT_SHOOTL_START   5
+#define SHOT_SHOOTL_END     6
+#define SHOT_SHOOTR_START   7
+#define SHOT_SHOOTR_END     8
+#define SHOT_ALTFIRE_START  9
+#define SHOT_ALTFIRE_END    12
+#define SHOT_RELOAD_START   13
+#define SHOT_RELOAD_END     52
+#define SHOT_HOLSTER_START  53
+#define SHOT_HOLSTER_END    56
+
+// times may need adjusting
+#define SHOT_IDLE_TIME      0.1
+#define SHOT_DRAW_TIME      0.4
+#define SHOT_SHOOTL_TIME    0.1
+#define SHOT_SHOOTR_TIME    0.1
+#define SHOT_ALT_TIME       0.3
+#define SHOT_RELOAD_TIME    2.0
+#define SHOT_HOLSTER_TIME   0.4
+
+*/
+
 // idle
 $frame shot_idle1
 
