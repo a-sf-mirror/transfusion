@@ -1352,7 +1352,10 @@ void(float isAlive) Impulses_Player =
 		else if (self.impulse == IMP_INV_USE)
 			InvenUse ();
 		else if (self.impulse >= IMP_FIRST_AID && self.impulse <= IMP_JUMP_BOOTS)
+		{
 			InventChange ();
+			InvenUse ();
+		}
 
 		// Armor cycle.
 		else if (self.impulse == IMP_ARMOR_NEXT)
