@@ -19,6 +19,19 @@
 
 #include "common.qh"
 
+/*
+#define EEL_REFERENCE		0
+#define EEL_IDLE				1
+#define EEL_SWIM_START		2
+#define EEL_SWIM_END		9
+#define EEL_BITE_START		10
+#define EEL_BITE_END			14
+#define EEL_DEATH_START		15
+#define EEL_DEATH_END		19
+
+*/
+
+
 $base base
 $skin skin
 
@@ -142,7 +155,7 @@ void() monster_eel =
 	if(monster_check())
 		return;
 
-	precache_model ("models/enemies/bone_eel.md3");
+	precache_model ("models/enemies/eel/bone_eel.psk");
 
 	precache_sound ("eel/eeldie1.wav");
 	precache_sound ("eel/eeldie2.wav");
@@ -154,7 +167,7 @@ void() monster_eel =
 	self.solid = SOLID_SLIDEBOX;
 	self.movetype = MOVETYPE_STEP;
 
-	setmodel (self, "models/enemies/bone_eel.md3");
+	setmodel (self, "models/enemies/eel/bone_eel.psk");
 
 	setsize (self, '-9 -1 -2', '6 1 2');
 	self.health = 25;
