@@ -322,7 +322,7 @@ void () shotgun_animate =
 		}
 		if ((self.weaponframe == SHOTGUN_FIRER_END) || (self.weaponframe == SHOTGUN_FIREL_END))
 		{
-			if (self.shotgun_loaded_ammo == 0)
+			if (self.shotgun_loaded_ammo <= 0)
 			{
 				self.weapon_anim_type = "reload";
 				self.attack_finished = time + SHOTGUN_RELOAD_TIME;
@@ -352,6 +352,8 @@ void () shotgun_animate =
 				self.attack_finished = time + SHOTGUN_RELOAD_TIME;
 				shotgun_animate();
 			}
+			else
+				Shotgun_Idle();
 		}
 	}
 	else if (self.weapon_anim_type == "reload")
@@ -361,10 +363,9 @@ void () shotgun_animate =
 		if (self.weaponframe == SHOTGUN_RELOAD_END)
 		{
 			self.shotgun_loaded_ammo = 2;
-			player_run();
-			if (self.player_state == PS_FIRE)
-				Shotgun_Idle();
+			Shotgun_Idle();
 		}
+		
 
 	}
 	else if ((self.weaponframe == self.weapon_anim_end) && (self.weapon_anim_type == "draw"))
