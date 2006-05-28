@@ -352,8 +352,6 @@ void () shotgun_animate =
 				self.attack_finished = time + SHOTGUN_RELOAD_TIME;
 				shotgun_animate();
 			}
-			else
-				Shotgun_Idle();
 		}
 	}
 	else if (self.weapon_anim_type == "reload")
@@ -364,7 +362,6 @@ void () shotgun_animate =
 		{
 			self.shotgun_loaded_ammo = 2;
 			player_run();
-			Shotgun_Idle();
 		}
 	}
 	else if ((self.weaponframe == self.weapon_anim_end) && (self.weapon_anim_type == "draw"))
