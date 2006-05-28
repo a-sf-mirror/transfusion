@@ -310,13 +310,15 @@ void () shotgun_animate =
 		self.nextthink = time + SHOTGUN_IDLE_TIME;
 		self.think = Shotgun_Idle;
 	}
-	else if (self.weapon_anim_type == "fire") // FIXME: add akimbo
+	else if (self.weapon_anim_type == "fire")
 	{
 		if ((self.weaponframe == SHOTGUN_FIRER_START) || (self.weaponframe == SHOTGUN_FIREL_START))
 		{
 			muzzleflash();
 			Shotgun_Fire ();
 			self.shotgun_loaded_ammo = self.shotgun_loaded_ammo - 1;
+			if (self.items & IT_GUNS_AKIMBO)
+				Shotgun_Fire ();
 		}
 		if ((self.weaponframe == SHOTGUN_FIRER_END) || (self.weaponframe == SHOTGUN_FIREL_END))
 		{
@@ -330,7 +332,7 @@ void () shotgun_animate =
 				Shotgun_Idle();
 		}
 	}
-	else if (self.weapon_anim_type == "altfire") // FIXME: add akimbo
+	else if (self.weapon_anim_type == "altfire")
 	{
 		if (self.weaponframe == SHOTGUN_ALTFIRE_START)
 		{
@@ -339,6 +341,8 @@ void () shotgun_animate =
 			muzzleflash ();
 			Shotgun_Fire ();
 			self.shotgun_loaded_ammo = self.shotgun_loaded_ammo - 2;
+			if (self.items & IT_GUNS_AKIMBO)
+				Shotgun_Fire ();
 		}
 		else if (self.weaponframe == SHOTGUN_ALTFIRE_END)
 		{
