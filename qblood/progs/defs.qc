@@ -420,6 +420,7 @@ float sight_entity_time;
 .float		weapon_anim_end;		//last animation $weaponframe name
 .float		weapon_anim_end_num;	//number associated with the last $weaponframe
 .float		weapon_anim_time;		//the length in seconds of one animation cycle
+.float		shotgun_loaded_ammo;	//the number of shells the shotgun has in its chamber.
 
 //
 // player only fields

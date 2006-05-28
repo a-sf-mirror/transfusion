@@ -1435,7 +1435,7 @@ void() weapon_flaregun =
 
 void() precache_sawedoff =
 {
-	precache_model ("models/weapons/v_shot.md3");
+	precache_model ("models/weapons/v_shot.psk");
 	precache_model ("models/weapons/ga_shot.md3");				// akimbo model
 	precache_model ("models/weapons/g_shot.md3");
 	precache_model ("models/weapons/objects/shotshell.md3");	// shotgun shell

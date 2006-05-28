@@ -459,7 +459,7 @@ PLAYER WEAPON USE
 // Functions defined later in weapon files (w_*.qc)
 void() Fork_Attack;     void() Fork_Draw;   void() Fork_Holster;    void() Fork_UpdateView;
 void() Flare_Attack;    void() Flare_Draw;  void() Flare_Holster;   void() Flare_UpdateView;
-void() Shot_Attack;     void() Shot_Draw;   void() Shot_Holster;    void() Shot_UpdateView;
+void() Shotgun_Attack;  void() Shotgun_Draw;void() Shotgun_Holster; void() Shotgun_UpdateView;
 void() Tommy_Attack;    void() Tommy_Draw;  void() Tommy_Holster;   void() Tommy_UpdateView;
 void() Spray_Attack;    void() Spray_Draw;  void() Spray_Holster;   void() Spray_UpdateView;
 void() TNT_Attack;      void() TNT_Draw;    void() TNT_Holster;     void() TNT_UpdateView;
@@ -496,7 +496,7 @@ void(float weap) W_DrawWeapon =
 	else if (weap == IT_FLAREGUN)
 		Flare_Draw ();
 	else if (weap == IT_SAWED_OFF)
-		Shot_Draw ();
+		Shotgun_Draw ();
 	else if (weap == IT_TOMMYGUN)
 		Tommy_Draw ();
 	else if (weap == IT_SPRAY_CAN)
@@ -546,7 +546,7 @@ void(float newWeapon) W_SwitchToWeapon =
 	else if (self.weapon == IT_FLAREGUN)
 		Flare_Holster ();
 	else if (self.weapon == IT_SAWED_OFF)
-		Shot_Holster ();
+		Shotgun_Holster ();
 	else if (self.weapon == IT_TOMMYGUN)
 		Tommy_Holster ();
 	else if (self.weapon == IT_SPRAY_CAN)
@@ -583,7 +583,7 @@ void() W_SetCurrentAmmo =
 	else if (self.weapon == IT_SAWED_OFF)
 	{
 		self.currentammo = self.ammo_shells;
-		Shot_UpdateView ();
+		Shotgun_UpdateView ();
 		self.items = self.items | IT_SHELLS;
 	}
 	else if (self.weapon == IT_TOMMYGUN)
@@ -722,7 +722,7 @@ void() W_Attack =
 	else if (self.weapon == IT_FLAREGUN)
 		Flare_Attack ();
 	else if (self.weapon == IT_SAWED_OFF)
-		Shot_Attack ();
+		Shotgun_Attack ();
 	else if (self.weapon == IT_TOMMYGUN)
 		Tommy_Attack ();
 	else if (self.weapon == IT_SPRAY_CAN)

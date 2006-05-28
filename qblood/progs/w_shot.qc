@@ -20,152 +20,37 @@
 #include "common.qh"
 #include "player.qh"
 
-void() Shot_Fire;
-void() Shot_SpawnShell;
+void() Shotgun_Fire;
+void() Shotgun_SpawnShell;
+void() shotgun_animate;
 
-//============================================================================
-// ----- Sawed-off models ----- //
-// Normal model
-$modelname v_shot
+#define SHOTGUN_IDLE					0
+#define SHOTGUN_DRAW_START				1
+#define SHOTGUN_DRAW_END				4
+#define SHOTGUN_FIREL_START				5
+#define SHOTGUN_FIREL_END				6
+#define SHOTGUN_FIRER_START				7
+#define SHOTGUN_FIRER_END				8
+#define SHOTGUN_ALTFIRE_START			9
+#define SHOTGUN_ALTFIRE_END				12
+#define SHOTGUN_RELOAD_START			13
+#define SHOTGUN_RELOAD_END				52
+#define SHOTGUN_HOLSTER_START			53
+#define SHOTGUN_HOLSTER_END				56
 
-/*
-#define SHOT_IDLE           0
-#define SHOT_DRAW_START     1
-#define SHOT_DRAW_END       4
-#define SHOT_SHOOTL_START   5
-#define SHOT_SHOOTL_END     6
-#define SHOT_SHOOTR_START   7
-#define SHOT_SHOOTR_END     8
-#define SHOT_ALTFIRE_START  9
-#define SHOT_ALTFIRE_END    12
-#define SHOT_RELOAD_START   13
-#define SHOT_RELOAD_END     52
-#define SHOT_HOLSTER_START  53
-#define SHOT_HOLSTER_END    56
+#define	SHOTGUN_AKIMBO_FIRE_START		4
+#define	SHOTGUN_AKIMBO_FIRE_END			6
+#define	SHOTGUN_AKIMBO_ALTFIRE_START	7
+#define	SHOTGUN_AKIMBO_ALTFIRE_END		10
 
 // times may need adjusting
-#define SHOT_IDLE_TIME      0.1
-#define SHOT_DRAW_TIME      0.4
-#define SHOT_SHOOTL_TIME    0.1
-#define SHOT_SHOOTR_TIME    0.1
-#define SHOT_ALT_TIME       0.3
-#define SHOT_RELOAD_TIME    2.0
-#define SHOT_HOLSTER_TIME   0.4
-
-*/
-
-// idle
-$frame shot_idle1
-
-// draw
-$frame shot_draw1 shot_draw2 shot_draw3
-
-// fire
-$frame shot_fire1
-
-// alt
-$frame shot_alt1 shot_alt2 shot_alt3
-
-// reload
-$frame shot_reload1 shot_reload2 shot_reload3 shot_reload4 shot_reload5
-
-// holster
-$frame shot_holster1 shot_holster2 shot_holster3
-
-// Akimbo model
-$modelname ga_shot
-
-// idle
-$frame ashot_idle1
-
-// draw
-$frame ashot_draw1 ashot_draw2 ashot_draw3
-
-// fire
-$frame ashot_fire1 ashot_fire2 ashot_fire3
-
-// altfire
-$frame ashot_alt1 ashot_alt2 ashot_alt3 ashot_alt4
-
-// holster
-$frame ashot_holster1 ashot_holster2 ashot_holster3
-
-// ----- Player related code ----- //
-// Reload
-void() player_reloadshot1  = [$attack2, player_reloadshot2 ] { self.weaponframe = $shot_reload1; };
-void() player_reloadshot2  = [$attack2, player_reloadshot3 ] { self.weaponframe = $shot_reload2; };
-void() player_reloadshot3  = [$attack2, player_reloadshot4 ] { self.weaponframe = $shot_reload3; Shot_SpawnShell (); };
-void() player_reloadshot4  = [$attack2, player_reloadshot5 ] { self.weaponframe = $shot_reload4; };
-void() player_reloadshot5  = [$attack2, player_run         ] { self.weaponframe = $shot_reload5; };
-
-// Normal shot
-void() player_shot1 = [$attack1, player_shot2] { self.weaponframe = $shot_fire1; muzzleflash (); };
-void() player_shot2 = [$attack2, player_run  ]
-{
-	self.weaponframe = $shot_fire1;
-	if ((self.currentammo & 1) == 0)
-	{
-		self.think = player_reloadshot1;
-		self.attack_finished = time + 0.6;
-	}
-};
-
-// Akimbo normal shot
-void() player_akshot1 = [$attack1, player_akshot2] { self.weaponframe = $ashot_fire1; muzzleflash (); Shot_Fire (); };
-void() player_akshot2 = [$attack1, player_akshot3] { self.weaponframe = $ashot_fire2; muzzleflash (); Shot_Fire (); };
-void() player_akshot3 = [$attack2, player_akshot4] { self.weaponframe = $ashot_fire3; };
-void() player_akshot4 = [$attack2, player_run    ]
-{
-	// If we don't have enough ammo anymore, drop the akimbo mode for now
-	if (self.ammo_shells < 2)
-	{
-		Shot_UpdateView ();
-		self.weaponframe = $shot_idle1;
-	}
-};
-
-// Akimbo altfire shot
-void() player_altshot1 = [$attack1, player_altshot2]
-{
-	self.weaponframe = $ashot_alt1;
-	muzzleflash ();
-	Shot_Fire ();
-	Shot_Fire ();
-};
-void() player_altshot2 = [$attack1, player_altshot3] { self.weaponframe = $ashot_alt2; };
-void() player_altshot3 = [$attack2, player_altshot4] { self.weaponframe = $ashot_alt3; };
-void() player_altshot4 = [$attack2, player_altshot5] { self.weaponframe = $ashot_alt4; };
-void() player_altshot5 = [$attack2, player_run    ]
-{
-	// If we don't have enough ammo anymore, drop the akimbo mode for now
-	if (self.ammo_shells < 2)
-	{
-		Shot_UpdateView ();
-		self.weaponframe = $shot_idle1;
-	}
-};
-
-// Normal draw
-void() player_shotdraw1 = [$attack2, player_shotdraw2] { self.weaponframe = $shot_draw1; };
-void() player_shotdraw2 = [$attack2, player_shotdraw3] { self.weaponframe = $shot_draw2; };
-void() player_shotdraw3 = [$attack2, player_run      ] { self.weaponframe = $shot_draw3; };
-
-// Normal holster
-void() player_shotholster1 = [$attack2, player_shotholster2] { self.weaponframe = $shot_holster1; };
-void() player_shotholster2 = [$attack2, player_shotholster3] { self.weaponframe = $shot_holster2; };
-void() player_shotholster3 = [$attack2, player_shotholster4] { self.weaponframe = $shot_holster3; };
-void() player_shotholster4 = [$attack2, player_run         ] { W_DrawWeapon (self.newweapon); };
-
-// Akimbo draw
-void() player_akshotdraw1 = [$attack2, player_akshotdraw2] { self.weaponframe = $ashot_draw1; };
-void() player_akshotdraw2 = [$attack2, player_akshotdraw3] { self.weaponframe = $ashot_draw2; };
-void() player_akshotdraw3 = [$attack2, player_run        ] { self.weaponframe = $ashot_draw3; };
-
-// Akimbo holster
-void() player_akshotholster1 = [$attack2, player_akshotholster2] { self.weaponframe = $ashot_holster1; };
-void() player_akshotholster2 = [$attack2, player_akshotholster3] { self.weaponframe = $ashot_holster2; };
-void() player_akshotholster3 = [$attack2, player_akshotholster4] { self.weaponframe = $ashot_holster3; };
-void() player_akshotholster4 = [$attack2, player_run           ] { W_DrawWeapon (self.newweapon); };
+#define SHOTGUN_IDLE_TIME				0.1
+#define SHOTGUN_DRAW_TIME				0.4
+#define SHOTGUN_FIREL_TIME				0.1
+#define SHOTGUN_FIRER_TIME				0.1
+#define SHOTGUN_ALTFIRE_TIME			0.3
+#define SHOTGUN_RELOAD_TIME				0.6
+#define SHOTGUN_HOLSTER_TIME			0.4
 
 //============================================================================
 
@@ -176,7 +61,7 @@ Shot_SpawnShell
 Spawns the shotgun shells if necessary
 ================
 */
-void() Shot_SpawnShell =
+void() Shotgun_SpawnShell =
 {
 	local entity shell;
 	local entity shell2;
@@ -206,12 +91,12 @@ void() Shot_SpawnShell =
 
 /*
 ================
-Shot_Fire
+Shotgun_Fire
 
 Shot with the sawed-off
 ================
 */
-void() Shot_Fire =
+void() Shotgun_Fire =
 {
 	local float nbshots;
 	local vector dir;
@@ -220,7 +105,7 @@ void() Shot_Fire =
 	if (! self.ammo_shells)
 		return;
 
-	if (self.player_state == PS_ALTFIRE && (self.currentammo & 1) != 1)
+	if (self.player_state == PS_ALTFIRE)
 	{
 		nbshots = 2;
 		spread = '0.14 0.08 0';
@@ -257,34 +142,28 @@ void() Shot_Fire =
 
 /*
 ============
-Shot_Attack
+Shotgun_Attack
 
 Attack code for the sawed-off
 ============
 */
-void() Shot_Attack =
+void() Shotgun_Attack =
 {
 	self.attack_finished = time + 0.4;
 
 	// If it's an altfire shot
 	if (self.button3)
+	{
 		self.player_state = PS_ALTFIRE;
+		self.weapon_anim_type = "altfire";
+	}
 	else
+	{
 		self.player_state = PS_FIRE;
+		self.weapon_anim_type = "fire";
+	}
 
-	// If we have guns akimbo
-	if (self.items & IT_GUNS_AKIMBO)
-	{
-		if (self.player_state == PS_ALTFIRE)
-			player_altshot1 ();
-		else
-			player_akshot1 ();
-	}
-	else
-	{
-		Shot_Fire ();
-		player_shot1 ();
-	}
+	shotgun_animate();
 };
 
 /*
@@ -294,19 +173,24 @@ Shot_Draw
 Draw code for the sawed-off
 ============
 */
-void() Shot_Draw =
+void() Shotgun_Draw =
 {
 	self.weapon = IT_SAWED_OFF;
 	self.currentammo = self.ammo_shells;
 	self.items = (self.items - (self.items & (IT_NAILS | IT_CELLS | IT_ROCKETS))) | IT_SHELLS;
 
-	Shot_UpdateView ();
+	if (self.currentammo > 1)
+		self.shotgun_loaded_ammo = 2;
+	else
+		self.shotgun_loaded_ammo = 1;
+
+	Shotgun_UpdateView ();
 
 	self.attack_finished = time + 0.3;
-	if (self.items & IT_GUNS_AKIMBO)
-		player_akshotdraw1 ();
-	else
-		player_shotdraw1 ();
+
+	self.weapon_anim_type = "draw";
+	self.weaponframe == SHOTGUN_DRAW_START;
+	shotgun_animate();
 };
 
 /*
@@ -316,13 +200,11 @@ Shot_Holster
 Holster code for the sawed-off
 ============
 */
-void() Shot_Holster =
+void() Shotgun_Holster =
 {
 	self.attack_finished = time + 0.3;
-	if (self.items & IT_GUNS_AKIMBO)
-		player_akshotholster1 ();
-	else
-		player_shotholster1 ();
+	self.weapon_anim_type = "holster";
+	shotgun_animate();
 };
 
 /*
@@ -332,7 +214,7 @@ Shot_UpdateView
 Choose the right sawed-off model to display
 ============
 */
-void() Shot_UpdateView =
+void() Shotgun_UpdateView =
 {
 	if (self.akimbo_finished > time && self.currentammo >= 2)
 	{
@@ -341,7 +223,157 @@ void() Shot_UpdateView =
 	}
 	else
 	{
-		self.weaponmodel = "models/weapons/v_shot.md3";
+		self.weaponmodel = "models/weapons/v_shot.psk";
 		self.items = self.items - (self.items & IT_GUNS_AKIMBO);
 	}
+};
+
+void() Shotgun_Idle =
+{
+	self.weapon_anim_type = "idle";
+	self.player_state = PS_IDLE;
+	self.weaponframe = SHOTGUN_IDLE;
+	shotgun_animate();
+};
+
+void () shotgun_animate =
+{
+	if ((self.weapon_anim_type == self.weapon_last_action) && (self.weaponframe <= self.weapon_anim_end))
+	{
+		if (self.weaponframe != self.weapon_anim_end)
+			self.weaponframe = self.weaponframe + 1; //if its a new animation type, it will be set to the proper frame next
+		else
+			self.weaponframe = self.weapon_anim_end - self.weapon_anim_end_num + 1;
+	}
+	if ((self.weapon_anim_type != self.weapon_last_action) || (self.weaponframe > self.weapon_anim_end))
+	{
+		if (self.weapon_anim_type == "idle")
+		{
+			self.weapon_anim_end = SHOTGUN_IDLE;
+			self.weapon_anim_end_num = SHOTGUN_IDLE + 1;
+			self.weapon_anim_time = SHOTGUN_IDLE_TIME;
+			self.weaponframe = SHOTGUN_IDLE;
+		}
+		else if (self.weapon_anim_type == "draw")
+		{
+			self.weapon_anim_end = SHOTGUN_DRAW_END;
+			self.weapon_anim_end_num = SHOTGUN_DRAW_END - SHOTGUN_DRAW_START + 1;
+			self.weapon_anim_time = SHOTGUN_DRAW_TIME;
+			self.weaponframe = SHOTGUN_DRAW_START;
+		}
+		else if (self.weapon_anim_type == "fire")
+		{
+			if (self.shotgun_loaded_ammo == 2)
+			{
+				self.weapon_anim_end = SHOTGUN_FIREL_END;
+				self.weapon_anim_end_num = SHOTGUN_FIREL_END - SHOTGUN_FIREL_START + 1;
+				self.weapon_anim_time = SHOTGUN_FIREL_TIME;
+				self.weaponframe = SHOTGUN_FIREL_START;
+			}
+			else if (self.shotgun_loaded_ammo == 1)
+			{
+				self.weapon_anim_end = SHOTGUN_FIRER_END;
+				self.weapon_anim_end_num = SHOTGUN_FIRER_END - SHOTGUN_FIRER_START + 1;
+				self.weapon_anim_time = SHOTGUN_FIRER_TIME;
+				self.weaponframe = SHOTGUN_FIRER_START;
+			}
+		}
+		else if (self.weapon_anim_type == "altfire")
+		{
+			self.weapon_anim_end = SHOTGUN_ALTFIRE_END;
+			self.weapon_anim_end_num = SHOTGUN_ALTFIRE_END - SHOTGUN_ALTFIRE_START + 1;
+			self.weapon_anim_time = SHOTGUN_ALTFIRE_TIME;
+			self.weaponframe = SHOTGUN_ALTFIRE_START;
+		}
+		else if (self.weapon_anim_type == "reload")
+		{
+			self.weapon_anim_end = SHOTGUN_RELOAD_END;
+			self.weapon_anim_end_num = SHOTGUN_RELOAD_END - SHOTGUN_RELOAD_START + 1;
+			self.weapon_anim_time = SHOTGUN_RELOAD_TIME;
+			self.weaponframe = SHOTGUN_RELOAD_START;
+		}
+		else if (self.weapon_anim_type == "holster")
+		{
+			self.weapon_anim_end = SHOTGUN_HOLSTER_END;
+			self.weapon_anim_end_num = SHOTGUN_HOLSTER_END - SHOTGUN_HOLSTER_START + 1;
+			self.weapon_anim_time = SHOTGUN_HOLSTER_TIME;
+			self.weaponframe = SHOTGUN_HOLSTER_START;
+		}
+		self.weapon_last_action = self.weapon_anim_type;
+	}
+
+	self.nextthink = time + (self.weapon_anim_time / self.weapon_anim_end_num);
+	self.think = shotgun_animate;
+
+	if (self.weapon_anim_type == "idle")
+	{
+		self.nextthink = time + SHOTGUN_IDLE_TIME;
+		self.think = Shotgun_Idle;
+	}
+	else if (self.weapon_anim_type == "fire") // FIXME: add akimbo
+	{
+		if ((self.weaponframe == SHOTGUN_FIRER_START) || (self.weaponframe == SHOTGUN_FIREL_START))
+		{
+			muzzleflash();
+			Shotgun_Fire ();
+			self.shotgun_loaded_ammo = self.shotgun_loaded_ammo - 1;
+		}
+		if ((self.weaponframe == SHOTGUN_FIRER_END) || (self.weaponframe == SHOTGUN_FIREL_END))
+		{
+			if (self.shotgun_loaded_ammo == 0)
+			{
+				self.weapon_anim_type = "reload";
+				self.attack_finished = time + SHOTGUN_RELOAD_TIME;
+				shotgun_animate();
+			}
+			else
+				Shotgun_Idle();
+		}
+	}
+	else if (self.weapon_anim_type == "altfire") // FIXME: add akimbo
+	{
+		if (self.weaponframe == SHOTGUN_ALTFIRE_START)
+		{
+			if (self.shotgun_loaded_ammo < 2)
+				self.player_state = PS_FIRE;
+			muzzleflash ();
+			Shotgun_Fire ();
+			self.shotgun_loaded_ammo = self.shotgun_loaded_ammo - 2;
+		}
+		else if (self.weaponframe == SHOTGUN_ALTFIRE_END)
+		{
+			if (self.shotgun_loaded_ammo <= 0)
+			{
+				self.weapon_anim_type = "reload";
+				self.attack_finished = time + SHOTGUN_RELOAD_TIME;
+				shotgun_animate();
+			}
+			else
+				Shotgun_Idle();
+		}
+	}
+	else if (self.weapon_anim_type == "reload")
+	{
+		if (self.weaponframe == SHOTGUN_RELOAD_START + 23)
+			Shotgun_SpawnShell ();
+		if (self.weaponframe == SHOTGUN_RELOAD_END)
+		{
+			self.shotgun_loaded_ammo = 2;
+			player_run();
+			Shotgun_Idle();
+		}
+	}
+	else if ((self.weaponframe == self.weapon_anim_end) && (self.weapon_anim_type == "draw"))
+	{
+		self.nextthink = time + SHOTGUN_IDLE_TIME;
+		self.think = Shotgun_Idle;
+	}
+	else if ((self.weaponframe == self.weapon_anim_end) && (self.weapon_anim_type == "holster"))
+	{
+		self.nextthink = time + SHOTGUN_IDLE_TIME;
+		W_DrawWeapon (self.newweapon);
+		self.think = player_run;
+		return;
+	}
+
 };
