@@ -362,7 +362,10 @@ void () shotgun_animate =
 		{
 			self.shotgun_loaded_ammo = 2;
 			player_run();
+			if (self.player_state == PS_FIRE)
+				Shotgun_Idle();
 		}
+
 	}
 	else if ((self.weaponframe == self.weapon_anim_end) && (self.weapon_anim_type == "draw"))
 	{
