@@ -180,16 +180,14 @@ void () innocent_death =
 
 void () innocent_animate =
 {
-	if ((self.anim_type == self.last_action) && (self.frame <= self.anim_end))
+	if (self.anim_type == self.last_action)
 	{
-		/*
-		Death does not go above the last frame since it doesn't reset
-		Otherwise, increase the frame number, if it goes past the end, it will reset
-		*/
-		if (!((self.anim_type == "death") && (self.frame == self.anim_end)))
-			self.frame = self.frame + 1; //if its a new animation type, it will be set to the proper frame next
+		if (self.frame < self.anim_end)
+			self.frame = self.frame + 1;
+		else
+			self.frame = self.anim_end -  self.anim_end_num + 1;
 	}
-	if ((self.anim_type != self.last_action) || (self.frame > self.anim_end))
+	else
 	{
 		if (self.anim_type == "stand")
 		{
@@ -225,13 +223,10 @@ void () innocent_animate =
 
 		self.last_action = self.anim_type;
 	}
+	self.nextthink = time + (self.anim_time / self.anim_end_num);
+	self.think = innocent_animate;
 
-	if ( !((self.anim_type == "death") && (self.frame == self.anim_end)) )
-	{
-		self.nextthink = time + (self.anim_time / self.anim_end_num);
-		self.think = innocent_animate;
-	}
-	else
+	if ((self.anim_type == "death") && (self.frame == self.anim_end))
 	{
 		self.nextthink = 0;
 		monster_become_corpse();

@@ -44,11 +44,10 @@ void() shotgun_animate;
 #define	SHOTGUN_AKIMBO_ALTFIRE_END		10
 
 // times may need adjusting
-#define SHOTGUN_IDLE_TIME				0.1
+#define SHOTGUN_IDLE_TIME				0.01
 #define SHOTGUN_DRAW_TIME				0.4
-#define SHOTGUN_FIREL_TIME				0.1
-#define SHOTGUN_FIRER_TIME				0.1
-#define SHOTGUN_ALTFIRE_TIME			0.3
+#define SHOTGUN_FIRE_TIME				0.2
+#define SHOTGUN_ALTFIRE_TIME			0.34
 #define SHOTGUN_RELOAD_TIME				0.6
 #define SHOTGUN_HOLSTER_TIME			0.4
 
@@ -149,21 +148,24 @@ Attack code for the sawed-off
 */
 void() Shotgun_Attack =
 {
-	self.attack_finished = time + 0.4;
-
+	if (self.attack_finished < time)
+	{
 	// If it's an altfire shot
 	if (self.button3)
 	{
+		self.attack_finished = time + SHOTGUN_ALTFIRE_TIME;
 		self.player_state = PS_ALTFIRE;
 		self.weapon_anim_type = "altfire";
 	}
 	else
 	{
+		self.attack_finished = time + SHOTGUN_FIRE_TIME;
 		self.player_state = PS_FIRE;
 		self.weapon_anim_type = "fire";
 	}
 
 	shotgun_animate();
+	}
 };
 
 /*
@@ -238,14 +240,14 @@ void() Shotgun_Idle =
 
 void () shotgun_animate =
 {
-	if ((self.weapon_anim_type == self.weapon_last_action) && (self.weaponframe <= self.weapon_anim_end))
+	if (self.weapon_anim_type == self.weapon_last_action)
 	{
-		if (self.weaponframe != self.weapon_anim_end)
+		if (self.weaponframe < self.weapon_anim_end)
 			self.weaponframe = self.weaponframe + 1; //if its a new animation type, it will be set to the proper frame next
-		else
+		else if (self.weapon_anim_type != "reload")
 			self.weaponframe = self.weapon_anim_end - self.weapon_anim_end_num + 1;
 	}
-	if ((self.weapon_anim_type != self.weapon_last_action) || (self.weaponframe > self.weapon_anim_end))
+	else
 	{
 		if (self.weapon_anim_type == "idle")
 		{
@@ -267,14 +269,14 @@ void () shotgun_animate =
 			{
 				self.weapon_anim_end = SHOTGUN_FIREL_END;
 				self.weapon_anim_end_num = SHOTGUN_FIREL_END - SHOTGUN_FIREL_START + 1;
-				self.weapon_anim_time = SHOTGUN_FIREL_TIME;
+				self.weapon_anim_time = SHOTGUN_FIRE_TIME;
 				self.weaponframe = SHOTGUN_FIREL_START;
 			}
 			else if (self.shotgun_loaded_ammo == 1)
 			{
 				self.weapon_anim_end = SHOTGUN_FIRER_END;
 				self.weapon_anim_end_num = SHOTGUN_FIRER_END - SHOTGUN_FIRER_START + 1;
-				self.weapon_anim_time = SHOTGUN_FIRER_TIME;
+				self.weapon_anim_time = SHOTGUN_FIRE_TIME;
 				self.weaponframe = SHOTGUN_FIRER_START;
 			}
 		}
@@ -328,7 +330,7 @@ void () shotgun_animate =
 				self.attack_finished = time + SHOTGUN_RELOAD_TIME;
 				shotgun_animate();
 			}
-			else
+			else if (!self.button0)
 				Shotgun_Idle();
 		}
 	}
@@ -352,7 +354,7 @@ void () shotgun_animate =
 				self.attack_finished = time + SHOTGUN_RELOAD_TIME;
 				shotgun_animate();
 			}
-			else
+			else if (!self.button3)
 				Shotgun_Idle();
 		}
 	}
@@ -360,7 +362,7 @@ void () shotgun_animate =
 	{
 		if (self.weaponframe == SHOTGUN_RELOAD_START + 23)
 			Shotgun_SpawnShell ();
-		if (self.weaponframe == SHOTGUN_RELOAD_END)
+		if ((self.weaponframe == SHOTGUN_RELOAD_END) && ((!self.button0) || (!self.button3)))
 		{
 			self.shotgun_loaded_ammo = 2;
 			Shotgun_Idle();

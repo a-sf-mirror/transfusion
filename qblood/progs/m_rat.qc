@@ -140,9 +140,13 @@ void () rat_death =
 void () rat_animate =
 {
 	if (self.anim_type == self.last_action)
+	{
 		if (self.frame < self.anim_end)
 			self.frame = self.frame + 1;
-	if (self.anim_type != self.last_action)
+		else
+			self.frame = self.anim_end -  self.anim_end_num + 1;
+	}
+	else
 	{
 		if (self.anim_type == "idle")
 		{

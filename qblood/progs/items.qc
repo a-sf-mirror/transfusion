@@ -1666,7 +1666,7 @@ void() weapon_napalmlauncher =
 void() precache_teslacannon =
 {
 	precache_model ("models/weapons/v_tesla.psk");
-	precache_model ("models/weapons/ga_tesla.md3");  // Akimbo model
+	precache_model ("models/weapons/ga_tesla.psk");  // Akimbo model
 	precache_model ("models/weapons/g_tesla.md3");
 	precache_model ("progs/teslaball.spr");
 	precache_model ("models/weapons/objects/alttesla.md3");

@@ -285,7 +285,7 @@ void() Tesla_UpdateView =
 {
 	if (self.akimbo_finished > time && self.currentammo >= 2)
 	{
-		self.weaponmodel = "models/weapons/ga_tesla.md3";
+		self.weaponmodel = "models/weapons/ga_tesla.psk";
 		self.items = self.items | IT_GUNS_AKIMBO;
 	}
 	else
@@ -313,14 +313,14 @@ void () Tesla_Rebound =
 
 void () tesla_animate =
 {
-	if ((self.weapon_anim_type == self.weapon_last_action) && (self.weaponframe <= self.weapon_anim_end))
+	if (self.weapon_anim_type == self.weapon_last_action)
 	{
 		if (self.weaponframe != self.weapon_anim_end)
 			self.weaponframe = self.weaponframe + 1; //if its a new animation type, it will be set to the proper frame next
 		else
 			self.weaponframe = self.weapon_anim_end - self.weapon_anim_end_num + 1;
 	}
-	if ((self.weapon_anim_type != self.weapon_last_action) || (self.weaponframe > self.weapon_anim_end))
+	else
 	{
 		if (self.weapon_anim_type == "idle")
 		{
@@ -380,7 +380,7 @@ void () tesla_animate =
 		if (time > self.attack_finished)
 		{
 			// Check to see if we are supposed to stop shooting.
-			if ((!self.button0 && !self.button3) || (intermission_running) || (self.ammo_cells < 1))
+			if ((!self.button0) || (intermission_running) || (self.ammo_cells < 1))
 			{
 				self.nextthink = time + 0.01;
 				self.think = Tesla_Rebound;
@@ -405,8 +405,11 @@ void () tesla_animate =
 			Tesla_Fire();
 		else if (self.weaponframe == TESLA_ALTFIRE_END)
 		{
-			self.nextthink = time + TESLA_IDLE_TIME;
-			self.think = Tesla_Idle;
+			if (!self.button3)
+			{
+				self.nextthink = time + TESLA_IDLE_TIME;
+				self.think = Tesla_Idle;
+			}
 		}
 	}
 
