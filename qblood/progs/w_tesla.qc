@@ -389,8 +389,8 @@ void () tesla_animate =
 				Tesla_Fire();
 		}
 		else
-		// Keep on firing...
-		Tesla_Fire();
+			Tesla_Fire(); // Keep on firing...
+		Tesla_UpdateView();
 	}
 
 	if (self.weapon_anim_type == "altfire")
@@ -411,6 +411,7 @@ void () tesla_animate =
 				self.think = Tesla_Idle;
 			}
 		}
+		Tesla_UpdateView();
 	}
 
 	if ((self.weaponframe == self.weapon_anim_end) && (self.weapon_anim_type == "draw"))

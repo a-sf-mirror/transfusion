@@ -324,6 +324,7 @@ void () shotgun_animate =
 		}
 		if ((self.weaponframe == SHOTGUN_FIRER_END) || (self.weaponframe == SHOTGUN_FIREL_END))
 		{
+			Shotgun_UpdateView();
 			if (self.shotgun_loaded_ammo <= 0)
 			{
 				self.weapon_anim_type = "reload";
@@ -348,6 +349,7 @@ void () shotgun_animate =
 		}
 		else if (self.weaponframe == SHOTGUN_ALTFIRE_END)
 		{
+			Shotgun_UpdateView();
 			if (self.shotgun_loaded_ammo <= 0)
 			{
 				self.weapon_anim_type = "reload";

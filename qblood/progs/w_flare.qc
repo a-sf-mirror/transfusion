@@ -516,6 +516,7 @@ void () flare_animate =
 				self.think = Flare_Idle;
 			}
 		}
+		Flare_UpdateView();
 	}
 
 	if (self.weapon_anim_type == "akimbofire")
@@ -549,6 +550,7 @@ void () flare_animate =
 				self.think = Flare_Idle;
 			}
 		}
+		Flare_UpdateView();
 	}
 
 	if ((self.weaponframe == self.weapon_anim_end) && (self.weapon_anim_type == "draw"))
