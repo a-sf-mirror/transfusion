@@ -362,7 +362,7 @@ void () shotgun_animate =
 	}
 	else if (self.weapon_anim_type == "reload")
 	{
-		if (self.weaponframe == SHOTGUN_RELOAD_START + 23)
+		if (self.weaponframe == SHOTGUN_RELOAD_START + 11)
 			Shotgun_SpawnShell ();
 		if ((self.weaponframe == SHOTGUN_RELOAD_END) && ((!self.button0) || (!self.button3)))
 		{
