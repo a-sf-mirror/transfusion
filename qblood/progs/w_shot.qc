@@ -46,9 +46,9 @@ void() shotgun_animate;
 // times may need adjusting
 #define SHOTGUN_IDLE_TIME				0.01
 #define SHOTGUN_DRAW_TIME				0.4
-#define SHOTGUN_FIRE_TIME				0.2
-#define SHOTGUN_ALTFIRE_TIME			0.34
-#define SHOTGUN_RELOAD_TIME				0.6
+#define SHOTGUN_FIRE_TIME				0.35
+#define SHOTGUN_ALTFIRE_TIME			0.3
+#define SHOTGUN_RELOAD_TIME				0.7
 #define SHOTGUN_HOLSTER_TIME			0.4
 
 //============================================================================
@@ -331,7 +331,7 @@ void () shotgun_animate =
 				self.attack_finished = time + SHOTGUN_RELOAD_TIME;
 				shotgun_animate();
 			}
-			else if (!self.button0)
+			else
 				Shotgun_Idle();
 		}
 	}
