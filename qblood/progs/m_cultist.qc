@@ -35,13 +35,13 @@
 #define	CULTIST_DEATH_END			170
 #define CULTIST_SWIM_START          171
 #define CULTIST_SWIM_END            190
+#define CULTIST_CRAWL_START         191
+#define CULTIST_CRAWL_END           215
+#define CULTIST_CRAWL_FIRE_START    216
+#define CULTIST_CRAWL_FIRE_END      219
+#define CULTIST_SWIM_FIRE_START     220
+#define CULTIST_SWIM_FIRE_END       223
 //Frames to be added in future
-#define CULTIST_CRAWL_START         0
-#define CULTIST_CRAWL_END           0
-#define CULTIST_CRAWL_FIRE_START    0
-#define CULTIST_CRAWL_FIRE_END      0
-#define CULTIST_SWIM_FIRE_START     0
-#define CULTIST_SWIM_FIRE_END       0
 #define CULTIST_BURN_START          0
 #define CULTIST_BURN_END            0
 #define CULTIST_VARIOUS_DEATHS      0
@@ -56,10 +56,10 @@
 #define	CULTIST_ATTACK2_TIME		0.85
 #define	CULTIST_DEATH_TIME			1.2
 #define CULTIST_SWIM_TIME			1.0
+#define CULTIST_CRAWL_TIME			1.0
+#define CULTIST_CRAWL_FIRE_TIME		0.85
+#define CULTIST_SWIM_FIRE_TIME		0.85
 //Times to be added in the future
-#define CULTIST_CRAWL_TIME			0
-#define CULTIST_CRAWL_FIRE_TIME		0
-#define CULTIST_SWIM_FIRE_TIME		0
 #define CULTIST_BURN_TIME			0
 #define CULTIST_VARIOUS_DEATHS_TIME	0
 
