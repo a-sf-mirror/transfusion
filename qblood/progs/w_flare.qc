@@ -36,13 +36,14 @@ $modelname v_flare
 #define FLARE_FIRE_END				16
 #define FLARE_HOLSTER_START			17
 #define FLARE_HOLSTER_END			20
-#define FLARE_AKIMBO_IDLE			0
-#define FLARE_AKIMBO_DRAW_START		1
-#define FLARE_AKIMBO_DRAW_END		3
-#define FLARE_AKIMBO_FIRE_START		4
-#define FLARE_AKIMBO_FIRE_END		9
-#define FLARE_AKIMBO_HOLSTER_START	10
-#define FLARE_AKIMBO_HOLSTER_END	12
+#define FLARE_AKIMBO_REFERENCE		0
+#define FLARE_AKIMBO_IDLE			1
+#define FLARE_AKIMBO_DRAW_START		2
+#define FLARE_AKIMBO_DRAW_END		5
+#define FLARE_AKIMBO_FIRE_START		6
+#define FLARE_AKIMBO_FIRE_END		20
+#define FLARE_AKIMBO_HOLSTER_START	21
+#define FLARE_AKIMBO_HOLSTER_END	24
 
 #define FLARE_IDLE_TIME				0.1
 #define FLARE_DRAW_TIME				0.4
@@ -427,7 +428,7 @@ void() Flare_UpdateView =
 {
 	if (self.akimbo_finished > time && self.currentammo >= 2)
 	{
-		self.weaponmodel = "models/weapons/ga_flare.md3";
+		self.weaponmodel = "models/weapons/ga_flare.psk";
 		self.items = self.items | IT_GUNS_AKIMBO;
 	}
 	else

@@ -1414,7 +1414,7 @@ void() weapon_flaregun =
 {
 	precache_model ("models/weapons/v_flare.psk");
 	precache_model ("models/weapons/g_flare.md3");
-	precache_model ("models/weapons/ga_flare.md3");  // akimbo model
+	precache_model ("models/weapons/ga_flare.psk");  // akimbo model
 
 	setmodel (self, "models/weapons/g_flare.md3");
 	self.weapon = IT_FLAREGUN;
