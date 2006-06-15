@@ -20,26 +20,27 @@
 #include "common.qh"
 
 //Frame definitions
-#define	ZOMBIE_STAND_START		0		//Stand = frames 0-59
-#define	ZOMBIE_STAND_END		59
-#define	ZOMBIE_RUN_START		60		//Run (and walk) = frames 60-89
-#define	ZOMBIE_RUN_END			89
-#define	ZOMBIE_PAIN_START		90		//Pain = frames 90-114
-#define	ZOMBIE_PAIN_END			114
-#define	ZOMBIE_DEATH1_START		115		//Death1 = frames 115-144
-#define	ZOMBIE_DEATH1_END		144		//Death1 has a head, Death2 does not
-#define	ZOMBIE_ATTACK_START		145		//Attack = frames 145-174
-#define	ZOMBIE_ATTACK_END		174
-#define	ZOMBIE_ARISE_START		175		//Arise = frames 175-219
-#define	ZOMBIE_ARISE_END		219
-#define ZOMBIE_FALLBACK_START	220		//FallBack = frames 220 - 239
-#define	ZOMBIE_FALLBACK_END		239
-#define ZOMBIE_STANDUP_START	240		//StandUp = frames 240 - 274
-#define ZOMBIE_STANDUP_END		274
-#define	ZOMBIE_HIDE_START		175		//really just the first arise frame
-#define	ZOMBIE_HIDE_END			175		//single frame only
-#define ZOMBIE_DEATH2_START		0		//Death2 animation is a seperate model
-#define ZOMBIE_DEATH2_END		29
+#define ZOMBIE_REFERENCE        0
+#define	ZOMBIE_STAND_START		1		//Stand = frames 0-59
+#define	ZOMBIE_STAND_END		60
+#define	ZOMBIE_RUN_START		61		//Run (and walk) = frames 60-89
+#define	ZOMBIE_RUN_END			90
+#define	ZOMBIE_PAIN_START		91		//Pain = frames 90-114
+#define	ZOMBIE_PAIN_END			115
+#define	ZOMBIE_DEATH1_START		116		//Death1 = frames 115-144
+#define	ZOMBIE_DEATH1_END		145		//Death1 has a head, Death2 does not
+#define	ZOMBIE_ATTACK_START		146		//Attack = frames 145-174
+#define	ZOMBIE_ATTACK_END		175
+#define	ZOMBIE_ARISE_START		176		//Arise = frames 175-219
+#define	ZOMBIE_ARISE_END		220
+#define ZOMBIE_FALLBACK_START	221		//FallBack = frames 220 - 239
+#define	ZOMBIE_FALLBACK_END		240
+#define ZOMBIE_STANDUP_START	241		//StandUp = frames 240 - 274
+#define ZOMBIE_STANDUP_END		270
+#define	ZOMBIE_HIDE_START		176		//really just the first arise frame
+#define	ZOMBIE_HIDE_END			176		//single frame only
+#define ZOMBIE_DEATH2_START		1		//Death2 animation is a seperate model
+#define ZOMBIE_DEATH2_END		30
 #define ZOMBIE_EXPLODE_START	0		//Explode animation is also a seperate model
 #define ZOMBIE_EXPLODE_END		15
 

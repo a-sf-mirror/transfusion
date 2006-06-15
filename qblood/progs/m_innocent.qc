@@ -19,14 +19,15 @@
 
 #include "common.qh"
 
-#define INNOCENT_STAND_START    0
-#define INNOCENT_STAND_END      59
-#define INNOCENT_RUN_START      60
-#define INNOCENT_RUN_END        89
-#define INNOCENT_PAIN_START     90
-#define INNOCENT_PAIN_END       109
-#define INNOCENT_DEATH_START    110
-#define INNOCENT_DEATH_END      149
+#define INNOCENT_REFERENCE      0
+#define INNOCENT_STAND_START    1
+#define INNOCENT_STAND_END      60
+#define INNOCENT_RUN_START      61
+#define INNOCENT_RUN_END        90
+#define INNOCENT_PAIN_START     91
+#define INNOCENT_PAIN_END       110
+#define INNOCENT_DEATH_START    111
+#define INNOCENT_DEATH_END      150
 
 #define INNOCENT_STAND_TIME     3.0
 #define INNOCENT_RUN_TIME       1.0
@@ -261,7 +262,7 @@ void() monster_innocent =
 	self.solid = SOLID_SLIDEBOX;
 	self.movetype = MOVETYPE_WALK;
 	setmodel (self, "models/enemies/innocent/innocent.psk");
-	setsize (self, '-6 -14 0', '15 10 55');
+	setsize (self, '-6.7 -24.3 -0.2', '14.3 24.3 55.9');
 	self.health = 40;
 	self.resist_acid = 0;
 	self.resist_shock = 0;
