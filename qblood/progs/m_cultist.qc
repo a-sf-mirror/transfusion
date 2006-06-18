@@ -565,5 +565,6 @@ void () cultist_spawn =
 	self.touch = monster_stepped_on;
 	self.attack_state = AS_MISSILE;
 	self.classname = "monster";
+
 	walkmonster_start ();    
 };
