@@ -1438,7 +1438,7 @@ void() precache_sawedoff =
 	precache_model ("models/weapons/v_shotgun.psk");
 	precache_model ("models/weapons/ga_shotgun.md3");				// akimbo model
 	precache_model ("models/weapons/g_shotgun.md3");
-	precache_model ("models/weapons/objects/shotshell.md3");	// shotgun shell
+	precache_model ("models/weapons/objects/shotgunshell.md3");	// shotgun shell
 		
 	// Precache the necessary sounds
 	precache_sound ("weapons/shotgun/shotguncock.wav");  // shell ejection
