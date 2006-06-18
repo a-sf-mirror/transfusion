@@ -338,7 +338,7 @@ void(string hand) Flare_Fire =
 		if (hand == "right")
 			orig = self.origin + v_forward * 8 + '0 0 16' + v_right * 10 + v_forward * 24;
 		else
-			orig = self.origin + v_forward * 8 + '0 0 16' + v_right * -10 + v_forward * 24;
+			orig = self.origin + v_forward * 8 + '0 0 16' + v_right * -16 + v_forward * 24;
 	}
 	else
 	{
@@ -531,7 +531,7 @@ void () flare_animate =
 			muzzleflash ();
 			Flare_Fire ("right");
 		}			
-		else if (self.weaponframe == FLARE_AKIMBO_FIRE_START + 2)
+		else if (self.weaponframe == FLARE_AKIMBO_FIRE_START + 5)
 		{
 			muzzleflash ();
 			Flare_Fire ("left");
