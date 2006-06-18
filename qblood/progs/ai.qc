@@ -631,7 +631,7 @@ float() FacingIdeal =
 float() CheckAnyAttack =
 {
 	if (!enemy_vis)
-	return;
+		return;
 	return CheckAttack ();
 };
 

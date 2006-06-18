@@ -118,13 +118,17 @@ void(string flame_model) light_flame_generic =
 	setmodel (self, flame_model);
 
 	FireAmbient ();
-	makestatic (self);
 };
 
 // Small wall torch
 void() light_torch_small_walltorch =
 {
 	light_flame_generic ("models/world/torch1.md3");
+	AttachObject("torch1");
+	precache_model("progs/flame2.spr");
+	setmodel(self.attachedobject, "progs/flame2.spr");
+	self.attachedobject.scale = 0.25;
+	self.attachedobject.origin = '0 0 0';
 };
 
 // Large yellow flame

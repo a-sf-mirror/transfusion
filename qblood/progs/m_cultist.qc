@@ -566,5 +566,7 @@ void () cultist_spawn =
 	self.attack_state = AS_MISSILE;
 	self.classname = "monster";
 
+	cultist_animate();
+
 	walkmonster_start ();    
 };

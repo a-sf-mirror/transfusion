@@ -39,9 +39,7 @@ void(string attach_point) AttachObject =
 	self.attachedobject = spawn();
 	self.attachedobject.solid = SOLID_NOT;
 	self.attachedobject.owner = self;
-	self.attachedobject.origin = '0 0 0';
-	self.attachedobject.angles = '0 0 0';
-	setattachment(self.attachedobject, self.attachedobject.owner, attach_point);
+	setattachment(self.attachedobject, self, attach_point);
 };
 
 /*
@@ -410,9 +408,6 @@ void() obj_world_tree2 =
 {
 	StartObject ("models/world/tree2.md3", '-32 -41 0', '52 45 174');
 };
-
-
-
 
 // Axe (tile1709)
 void() obj_axe = 

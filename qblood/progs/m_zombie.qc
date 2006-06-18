@@ -68,7 +68,6 @@ void () zombie_fallback =
 
 void () zombie_standup =
 {
-	sound(self, CHAN_VOICE, "axezombie/azomrise.wav", 1, ATTN_NORM);
 	if (self.anim_type == "fallback")
 		self.nextthink = time + 1.5;
 	self.anim_type = "standup";

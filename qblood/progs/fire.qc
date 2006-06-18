@@ -286,7 +286,7 @@ void(entity victim, entity attacker, float dmgtype, float burn, float burntime) 
 {
 	// Check for fire immunity.
 	if (!victim.takedamage)
-	return;
+		return;
 
 	if (victim.classname == "door"              || // If it's a door, a plat or a wall, don't burn
 		victim.classname == "plat"              ||
