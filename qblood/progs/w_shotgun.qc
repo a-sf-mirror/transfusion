@@ -220,12 +220,12 @@ void() Shotgun_UpdateView =
 {
 	if (self.akimbo_finished > time && self.currentammo >= 2)
 	{
-		self.weaponmodel = "models/weapons/ga_shot.md3";
+		self.weaponmodel = "models/weapons/ga_shotgun.md3";
 		self.items = self.items | IT_GUNS_AKIMBO;
 	}
 	else
 	{
-		self.weaponmodel = "models/weapons/v_shot.psk";
+		self.weaponmodel = "models/weapons/v_shotgun.psk";
 		self.items = self.items - (self.items & IT_GUNS_AKIMBO);
 	}
 };
