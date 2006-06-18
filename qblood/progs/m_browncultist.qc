@@ -93,10 +93,12 @@ void () monster_browncultist =
 {
 	// Precache files needed for TNT tossing
 	precache_model ("models/weapons/grenades/gr_tnt.md3");// TNT Projectile
-	precache_model ("models/weapons/g_shot.md3");		  // Shotgun
 	precache_sound ("cultist/culttoss.wav");              // TNT toss sound
 	precache_sound ("weapons/r_exp3.wav");                // TNT explosion sound
 	
+	// Precache files needed for the shotgun
+	precache_sawedoff();
+
 	// Precache files needed for shooting shotgun
 	precache_sound ("cultist/cultatt1.wav"); // Shotgun boom
 	precache_sound ("cultist/cultatt2.wav"); // Shotgun boom
@@ -109,6 +111,6 @@ void () monster_browncultist =
 
 	cultist_spawn();
 
-	AttachWeapon("shot", "Weapon_Right");
+	AttachWeapon("shotgun", "Weapon_Right");
 	self.attachedweapon.origin = '0 0 0' + v_up * -4; // FIXME: adjust the weapon bone?
 };

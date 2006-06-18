@@ -68,7 +68,7 @@ void() Shotgun_SpawnShell =
 	// 1st shell
 	shell = spawn ();
 	shell.owner = self;
-	shell.mdl   = "models/weapons/objects/shotshell.md3";
+	shell.mdl   = "models/weapons/objects/shotgunshell.md3";
 	shell.noise = "weapons/shtshl2.wav";
 
 	setorigin (shell, self.origin + v_forward * 15);
@@ -85,7 +85,7 @@ void() Shotgun_SpawnShell =
 	shell2.velocity = (crandom () + 1) * v_forward * 30 + v_up * (220 + crandom () * 10) - v_right * crandom () * 30;
 	DropShell (shell2);
 
-	sound (shell, CHAN_WEAPON, "weapons/shotgun/shotcock.wav", 1, ATTN_NORM);
+	sound (shell, CHAN_WEAPON, "weapons/shotgun/shotguncock.wav", 1, ATTN_NORM);
 };
 
 /*

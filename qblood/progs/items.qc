@@ -1435,16 +1435,16 @@ void() weapon_flaregun =
 
 void() precache_sawedoff =
 {
-	precache_model ("models/weapons/v_shot.psk");
-	precache_model ("models/weapons/ga_shot.md3");				// akimbo model
-	precache_model ("models/weapons/g_shot.md3");
+	precache_model ("models/weapons/v_shotgun.psk");
+	precache_model ("models/weapons/ga_shotgun.md3");				// akimbo model
+	precache_model ("models/weapons/g_shotgun.md3");
 	precache_model ("models/weapons/objects/shotshell.md3");	// shotgun shell
 		
 	// Precache the necessary sounds
-	precache_sound ("weapons/shotgun/shotcock.wav");  // shell ejection
-	precache_sound ("weapons/shotgun/shotfir2.wav");  // shotgun alt-fire
-	precache_sound ("weapons/shotgun/shotfire.wav");  // shotgun fired
-	precache_sound ("weapons/shotgun/shotload.wav");  // reload sound
+	precache_sound ("weapons/shotgun/shotguncock.wav");  // shell ejection
+	precache_sound ("weapons/shotgun/shotgunfir2.wav");  // shotgun alt-fire
+	precache_sound ("weapons/shotgun/shotgunfire.wav");  // shotgun fired
+	precache_sound ("weapons/shotgun/shotgunload.wav");  // reload sound
 	precache_sound ("weapons/shtshl2.wav");  // shell hitting ground
 };
 
@@ -1457,7 +1457,7 @@ void() weapon_sawedoff =
 	else
 		self.classname = "weapon_sawedoff"; // For monster weapon drop
 
-	setmodel (self, "models/weapons/g_shot.md3");
+	setmodel (self, "models/weapons/g_shotgun.md3");
 	self.weapon = IT_SAWED_OFF;
 	self.netname = "Sawed-off";
 	
