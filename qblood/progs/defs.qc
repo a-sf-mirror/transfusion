@@ -407,7 +407,7 @@ float sight_entity_time;
 .float      search_time;
 .float      attack_state;
 
-.entity		attachedweapon;
+.entity		attachedobject;
 
 //new player/monster animation variables
 .string		last_action;	//transition to new anim_type, starts frame at 1

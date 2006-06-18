@@ -30,6 +30,21 @@ void() wall_killed;
 BE .8 .3 .4 IN COLOR */
 
 /*
+=================
+Object Attachment
+=================
+*/
+void(string attach_point) AttachObject =
+{
+	self.attachedobject = spawn();
+	self.attachedobject.solid = SOLID_NOT;
+	self.attachedobject.owner = self;
+	self.attachedobject.origin = '0 0 0';
+	self.attachedobject.angles = '0 0 0';
+	setattachment(self.attachedobject, self.attachedobject.owner, attach_point);
+};
+
+/*
 ============
 RotateItem
 

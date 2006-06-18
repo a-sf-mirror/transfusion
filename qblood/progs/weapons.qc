@@ -26,25 +26,6 @@ void() identify_player;
 //============================================================================
 
 /*
-=================
-Weapon Attachment
-=================
-*/
-void(string weapon_name, string attach_point) AttachWeapon =
-{
-	self.attachedweapon = spawn();
-	self.attachedweapon.solid = SOLID_NOT;
-	self.attachedweapon.owner = self;
-	self.attachedweapon.origin = '0 0 0';
-	self.attachedweapon.angles = '0 0 0';
-	local string weapon_path;
-	weapon_path = strcat("models/weapons/g_", weapon_name);
-	weapon_path = strcat(weapon_path, ".md3");
-	setmodel(self.attachedweapon, weapon_path);
-	setattachment(self.attachedweapon, self.attachedweapon.owner, attach_point);
-};
-
-/*
 ================
 SpawnBlood
 ================
