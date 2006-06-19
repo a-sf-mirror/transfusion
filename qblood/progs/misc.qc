@@ -127,8 +127,8 @@ void() light_torch_small_walltorch =
 	AttachObject("torch1");
 	precache_model("progs/flame2.spr");
 	setmodel(self.attachedobject, "progs/flame2.spr");
-	self.attachedobject.scale = 0.25;
-	self.attachedobject.origin = '0 0 0';
+	self.attachedobject.scale = 0.4;
+	self.attachedobject.origin = '0 0 0' + v_forward * 5;
 };
 
 // Large yellow flame

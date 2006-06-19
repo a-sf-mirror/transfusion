@@ -48,7 +48,7 @@
 
 //Animation Timing Configuration in seconds
 //FIXME: all values need to be changed here
-#define CULTIST_STAND_TIME			1.0
+#define CULTIST_STAND_TIME			5.0
 #define	CULTIST_RUN_TIME			0.6
 #define	CULTIST_WALK_TIME			1.2
 #define	CULTIST_PAIN_TIME			0.75
