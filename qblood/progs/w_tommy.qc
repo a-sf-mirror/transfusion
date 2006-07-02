@@ -27,6 +27,26 @@ void() Tommy_Fire;
 // Normal model
 $modelname v_tommy
 
+/*
+#define TOMMY_IDLE              0
+#define TOMMY_DRAW_START        1
+#define TOMMY_DRAW_END          4
+#define TOMMY_FIRE_START        5
+#define TOMMY_FIRE_END          6
+#define TOMMY_ALTFIRE_START     7
+#define TOMMY_ALTFIRE_END       14
+#define TOMMY_HOLSTER_START     15
+#define TOMMY_HOLSTER_END       18
+
+//FIXME: accurate timings
+#define TOMMY_IDLE_TIME         0.1
+#define TOMMY_DRAW_TIME         0.4
+#define TOMMY_FIRE_TIME         0.1
+#define TOMMY_ALTFIRE_TIME      1.0
+#define TOMMY_HOLSTER_TIME      0.4
+
+*/
+
 // idle
 $frame tommy_idle1
 
@@ -296,7 +316,7 @@ void() Tommy_UpdateView =
 	}
 	else
 	{
-		self.weaponmodel = "models/weapons/v_tommy.md3";
+		self.weaponmodel = "models/weapons/v_tommy.psk";
 		self.items = self.items - (self.items & IT_GUNS_AKIMBO);
 	}
 };

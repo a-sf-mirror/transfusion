@@ -715,36 +715,42 @@ void() obj_statue4 =
 void() obj_tombstn1 =
 {
 	StartObject ("models/world/tombstn1.md3", '-7.5 -22 -0.5', '7.5 22 71.9');
+    self.takedamage = DAMAGE_NO;
 };
 
 // Broken Tombstone (tile0705)
 void() obj_tombstn2 =
 {
 	StartObject ("models/world/tombstn2.md3", '-7.5 -22 -0.5', '7.5 22 57.5');
+    self.takedamage = DAMAGE_NO;
 };
 
 // RIP Tombstone (tile0701)
 void() obj_tombstn3 =
 {
 	StartObject ("models/world/tombstn3.md3", '-17.7 -6.1 0', '18.1 6 47.5');
+    self.takedamage = DAMAGE_NO;
 };
 
 // Old Tombstone (tile0704)
 void() obj_tombstn4 =
 {
 	StartObject ("models/world/tombstn4.md3", '-10.2 -19.5 0', '10.2 19.5 44.9');
+    self.takedamage = DAMAGE_NO;
 };
 
 // Large Cross Tombstone (tile0678)
 void() obj_tombstn5 =
 {
 	StartObject ("models/world/tombstn5.md3", '-10.4 -23.6 -0.3', '10.3 23.8 62.4');
+    self.takedamage = DMG_TNT;
 };
 
 // Wooden Cross Tombstone (tile0703)
 void() obj_tombstn6 =
 {
 	StartObject ("models/world/tombstn6.md3", '-8.1 -16.3 0', '8.3 13.6 47');
+    self.takedamage = DMG_TNT;
 };
 
 // Wall torch (tile0570)
@@ -1482,7 +1488,7 @@ void() weapon_sawedoff =
 
 void() precache_tommygun =
 {
-	precache_model ("models/weapons/v_tommy.md3");
+	precache_model ("models/weapons/v_tommy.psk");
 	precache_model ("models/weapons/ga_tommy.md3"); 			// akimbo model
 	precache_model ("models/weapons/g_tommy.md3");
 	precache_model ("models/weapons/objects/bulletshell.md3");	// tommy gun shell
