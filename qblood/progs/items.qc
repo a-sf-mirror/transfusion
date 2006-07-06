@@ -1656,7 +1656,7 @@ void() weapon_remote =
 // Napalm Launcher
 void() weapon_napalmlauncher =
 {
-	precache_model ("models/weapons/v_napalm.md3");
+	precache_model ("models/weapons/v_napalm.psk");
 	precache_model ("models/weapons/ga_napalm.md3");
 	precache_model ("models/weapons/g_napalm.md3");
 
