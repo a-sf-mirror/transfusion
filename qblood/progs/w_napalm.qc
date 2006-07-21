@@ -65,14 +65,14 @@ $modelname ga_napalm
 $frame anapalm_idle1
 
 // draw
-$frame anapalm_draw1 anapalm_draw2 anapalm_draw3
+$frame anapalm_draw1 anapalm_draw2 anapalm_draw3 anapalm_draw4
 
 // fire
 $frame anapalm_fire1 anapalm_fire2 anapalm_fire3 anapalm_fire4 anapalm_fire5
 $frame anapalm_fire6
 
 // holster
-$frame anapalm_holstr1 anapalm_holstr2 anapalm_holstr3
+$frame anapalm_holstr1 anapalm_holstr2 anapalm_holstr3 anapalm_holstr4
 
 // ----- Player related code ----- //
 // Normal fire
@@ -113,13 +113,15 @@ void() player_napalmholst5 = [$attack2, player_run         ] { W_DrawWeapon (sel
 // Akimbo draw
 void() player_aknapalmdraw1 = [$attack2, player_aknapalmdraw2] { self.weaponframe = $anapalm_draw1; };
 void() player_aknapalmdraw2 = [$attack2, player_aknapalmdraw3] { self.weaponframe = $anapalm_draw2; };
-void() player_aknapalmdraw3 = [$attack2, player_run          ] { self.weaponframe = $anapalm_draw3; };
+void() player_aknapalmdraw3 = [$attack2, player_aknapalmdraw4] { self.weaponframe = $anapalm_draw3; };
+void() player_aknapalmdraw4 = [$attack2, player_run          ] { self.weaponframe = $anapalm_draw4; };
 
 // Akimbo holster
 void() player_aknapalmholst1 = [$attack2, player_aknapalmholst2] { self.weaponframe = $anapalm_holstr1; };
 void() player_aknapalmholst2 = [$attack2, player_aknapalmholst3] { self.weaponframe = $anapalm_holstr2; };
 void() player_aknapalmholst3 = [$attack2, player_aknapalmholst4] { self.weaponframe = $anapalm_holstr3; };
-void() player_aknapalmholst4 = [$attack2, player_run           ] { W_DrawWeapon (self.newweapon); };
+void() player_aknapalmholst4 = [$attack2, player_aknapalmholst5] { self.weaponframe = $anapalm_holstr4; };
+void() player_aknapalmholst5 = [$attack2, player_run           ] { W_DrawWeapon (self.newweapon); };
 
 //============================================================================
 void() Napalm_BallTouch;
@@ -410,7 +412,7 @@ void() Napalm_UpdateView =
 {
 	if (self.akimbo_finished > time && self.currentammo >= 2)
 	{
-		self.weaponmodel = "models/weapons/ga_napalm.md3";
+		self.weaponmodel = "models/weapons/ga_napalm.psk";
 		self.items = self.items | IT_GUNS_AKIMBO;
 	}
 	else

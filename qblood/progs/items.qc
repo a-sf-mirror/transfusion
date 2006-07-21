@@ -1489,7 +1489,7 @@ void() weapon_sawedoff =
 void() precache_tommygun =
 {
 	precache_model ("models/weapons/v_tommy.psk");
-	precache_model ("models/weapons/ga_tommy.md3"); 			// akimbo model
+	precache_model ("models/weapons/ga_tommy.psk"); 			// akimbo model
 	precache_model ("models/weapons/g_tommy.md3");
 	precache_model ("models/weapons/objects/bulletshell.md3");	// tommy gun shell
 		
@@ -1657,7 +1657,7 @@ void() weapon_remote =
 void() weapon_napalmlauncher =
 {
 	precache_model ("models/weapons/v_napalm.psk");
-	precache_model ("models/weapons/ga_napalm.md3");
+	precache_model ("models/weapons/ga_napalm.psk");
 	precache_model ("models/weapons/g_napalm.md3");
 
 	setmodel (self, "models/weapons/g_napalm.md3");

@@ -51,7 +51,7 @@ $modelname v_tommy
 $frame tommy_idle1
 
 // draw
-$frame tommy_draw1 tommy_draw2 tommy_draw3
+$frame tommy_draw1 tommy_draw2 tommy_draw3 tommy_draw4
 
 // fire
 $frame tommy_fire1 tommy_fire2
@@ -64,7 +64,7 @@ $frame tommy_alt1 tommy_alt2 tommy_alt3 tommy_alt4 tommy_alt5
 $frame tommy_alt6 tommy_alt7 tommy_alt8
 
 // holster
-$frame tommy_holster1 tommy_holster2 tommy_holster3
+$frame tommy_holster1 tommy_holster2 tommy_holster3 tommy_holster4
 
 // Akimbo model
 $modelname ga_tommy
@@ -73,7 +73,7 @@ $modelname ga_tommy
 $frame atommy_idle1
 
 // draw
-$frame atommy_draw1 atommy_draw2 atommy_draw3
+$frame atommy_draw1 atommy_draw2 atommy_draw3 atommy_draw4
 
 // fire
 $frame atommy_fire1 atommy_fire2
@@ -83,7 +83,7 @@ $frame atommy_alt1 atommy_alt2 atommy_alt3 atommy_alt4 atommy_alt5
 $frame atommy_alt6 atommy_alt7 atommy_alt8
 
 // holster
-$frame atommy_holster1 atommy_holster2 atommy_holster3
+$frame atommy_holster1 atommy_holster2 atommy_holster3 atommy_holster4
 
 // ----- Player related code ----- //
 // WARNING: The code below assumes that both models have the exact same frame types
@@ -131,13 +131,15 @@ void() player_alttommy2 = [$attack2, player_alttommy1] { player_alttommy (); };
 // Normal draw
 void() player_tommydraw1 = [$attack2, player_tommydraw2] { self.weaponframe = $tommy_draw1; };
 void() player_tommydraw2 = [$attack2, player_tommydraw3] { self.weaponframe = $tommy_draw2; };
-void() player_tommydraw3 = [$attack2, player_run       ] { self.weaponframe = $tommy_draw3; };
+void() player_tommydraw3 = [$attack2, player_tommydraw4] { self.weaponframe = $tommy_draw3; };
+void() player_tommydraw4 = [$attack2, player_run       ] { self.weaponframe = $tommy_draw4; };
 
 // Normal holster
 void() player_tommyholster1 = [$attack2, player_tommyholster2] { self.weaponframe = $tommy_holster1; };
 void() player_tommyholster2 = [$attack2, player_tommyholster3] { self.weaponframe = $tommy_holster2; };
 void() player_tommyholster3 = [$attack2, player_tommyholster4] { self.weaponframe = $tommy_holster3; };
-void() player_tommyholster4 = [$attack2, player_run          ] { W_DrawWeapon (self.newweapon); };
+void() player_tommyholster4 = [$attack2, player_tommyholster5] { self.weaponframe = $tommy_holster4; };
+void() player_tommyholster5 = [$attack2, player_run          ] { W_DrawWeapon (self.newweapon); };
 
 //============================================================================
 
@@ -311,7 +313,7 @@ void() Tommy_UpdateView =
 {
 	if (self.akimbo_finished > time && self.currentammo >= 2)
 	{
-		self.weaponmodel = "models/weapons/ga_tommy.md3";
+		self.weaponmodel = "models/weapons/ga_tommy.psk";
 		self.items = self.items | IT_GUNS_AKIMBO;
 	}
 	else
