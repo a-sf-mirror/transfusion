@@ -549,7 +549,7 @@ void() obj_fence2 =
 // Soccer Goal
 void() obj_goal =
 {
-	StartObject ("models/world/goalposts.md3", '-40.1 -51.8 -0.4', '44 51.8 90');
+	StartObject ("models/world/goalposts.md3", '-41 -51.8 0', '41 51.8 90');
 	self.takedamage = DAMAGE_NO;
 };
 
@@ -1452,7 +1452,7 @@ void() weapon_flaregun =
 void() precache_sawedoff =
 {
 	precache_model ("models/weapons/v_shotgun.psk");
-	precache_model ("models/weapons/ga_shotgun.md3");				// akimbo model
+	precache_model ("models/weapons/ga_shotgun.psk");				// akimbo model
 	precache_model ("models/weapons/g_shotgun.md3");
 	precache_model ("models/weapons/objects/shotgunshell.md3");	// shotgun shell
 		

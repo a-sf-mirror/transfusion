@@ -37,11 +37,15 @@ void() shotgun_animate;
 #define SHOTGUN_RELOAD_END				32
 #define SHOTGUN_HOLSTER_START			33
 #define SHOTGUN_HOLSTER_END				36
-
-#define	SHOTGUN_AKIMBO_FIRE_START		4
-#define	SHOTGUN_AKIMBO_FIRE_END			6
-#define	SHOTGUN_AKIMBO_ALTFIRE_START	7
-#define	SHOTGUN_AKIMBO_ALTFIRE_END		10
+#define SHOTGUN_AKIMBO_IDLE             0
+#define	SHOTGUN_AKIMBO_DRAW_START		1
+#define	SHOTGUN_AKIMBO_DRAW_END 		4
+#define	SHOTGUN_AKIMBO_FIRE_START		5
+#define	SHOTGUN_AKIMBO_FIRE_END			10
+#define	SHOTGUN_AKIMBO_ALTFIRE_START	11
+#define	SHOTGUN_AKIMBO_ALTFIRE_END		14
+#define	SHOTGUN_AKIMBO_HOLSTER_START	15
+#define	SHOTGUN_AKIMBO_HOLSTER_END		18
 
 // times may need adjusting
 #define SHOTGUN_IDLE_TIME				0.01
@@ -220,7 +224,7 @@ void() Shotgun_UpdateView =
 {
 	if (self.akimbo_finished > time && self.currentammo >= 2)
 	{
-		self.weaponmodel = "models/weapons/ga_shotgun.md3";
+		self.weaponmodel = "models/weapons/ga_shotgun.psk";
 		self.items = self.items | IT_GUNS_AKIMBO;
 	}
 	else
