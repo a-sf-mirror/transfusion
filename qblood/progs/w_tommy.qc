@@ -34,9 +34,9 @@ $modelname v_tommy
 #define TOMMY_FIRE_START        5
 #define TOMMY_FIRE_END          6
 #define TOMMY_ALTFIRE_START     7
-#define TOMMY_ALTFIRE_END       14
-#define TOMMY_HOLSTER_START     15
-#define TOMMY_HOLSTER_END       18
+#define TOMMY_ALTFIRE_END       20
+#define TOMMY_HOLSTER_START     21
+#define TOMMY_HOLSTER_END       24
 
 //FIXME: accurate timings
 #define TOMMY_IDLE_TIME         0.1
