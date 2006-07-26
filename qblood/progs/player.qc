@@ -32,7 +32,7 @@ PLAYER
 */
 void() player_run;
 
-float(void() idleFunction) player_idleWeapon =
+float(void() idleFunction) player_idleWeapon = //nearly deprecated
 {
 	// Do NOTHING  when on the BOD
 	if (self.player_state == PS_BRINK_OF_DEATH)
@@ -59,8 +59,8 @@ float(void() idleFunction) player_idleWeapon =
 			else
 				self.weaponframe = self.weaponframe + 1;
 		}
-		else
-			self.weaponframe = 0;
+		/*else
+			self.weaponframe = 0;*/
 
 		// If there's a pending weapon change
 		if (self.newweapon)
@@ -114,11 +114,6 @@ void() player_run =
 		return;
 	}
 	self.frame = self.frame + 1;
-};
-
-void() muzzleflash =
-{
-	self.effects = self.effects | EF_MUZZLEFLASH;
 };
 
 /*

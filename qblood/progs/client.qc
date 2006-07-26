@@ -676,8 +676,6 @@ void() PutClientInServer =
 	self.velocity = '0 0 0';
 	self.avelocity = '0 0 0';
 
-	player_stand ();
-
 	if (self.do_observer && gametype != GT_SINGLE_PLAYER && gametype != GT_COOPERATIVE)
 	{
 		BecomeObserver (self);
@@ -1132,14 +1130,17 @@ void() PlayerPreThink =
 	// teleporters can force a non-moving pause time
 	if (time < self.pausetime)
 		self.velocity = '0 0 0';
-	if (self.button5)
+	if (self.button5 && self.flags & FL_ONGROUND)
 	{
 		if (!self.crouch)
 		{
 			self.crouch = TRUE;
 			self.view_ofs = VEC_HULL_CROUCH_VIEW_OFS;
 			setsize (self, VEC_HULL_CROUCH_MIN, VEC_HULL_CROUCH_MAX);
+			self.weaponentity.view_ofs = self.weaponentity.view_ofs - VEC_HULL_VIEW_OFS + VEC_HULL_CROUCH_VIEW_OFS;
 		}
+		self.velocity_x = self.velocity_x /1.1;
+		self.velocity_y = self.velocity_y /1.1;
 	}
 	else
 	{
@@ -1151,6 +1152,7 @@ void() PlayerPreThink =
 				self.crouch = FALSE;
 				self.view_ofs = VEC_HULL_VIEW_OFS;
 				setsize (self, VEC_HULL_MIN, VEC_HULL_MAX);
+				self.weaponentity.view_ofs = self.weaponentity.view_ofs + VEC_HULL_VIEW_OFS - VEC_HULL_CROUCH_VIEW_OFS;
 			}
 		}
 	}

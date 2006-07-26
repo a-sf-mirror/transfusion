@@ -42,7 +42,7 @@ void () greencultist_attack =
 	else
 	{
 		//greencultist_attack1 ();    // Throw TNT at enemy
-		self.anim_type = "attack1";
+		self.anim_type = ATTACK1;
 		cultist_animate();
 	}
 

@@ -51,7 +51,7 @@ void () redcultist_attackDecide =
 	{
 		ai_face();                        // Face player
 		//redcultist_attack1 ();
-		self.anim_type = "attack1";
+		self.anim_type = ATTACK1;
 		cultist_animate();
 	}
 	else

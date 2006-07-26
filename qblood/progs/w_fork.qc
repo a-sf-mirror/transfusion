@@ -20,74 +20,21 @@
 #include "common.qh"
 #include "player.qh"
 
-void() Fork_Fire;
+void() fork_animate;
 
-//============================================================================
-// ----- Pitchfork model ----- //
-$modelname v_pitch
+#define FORK_IDLE			0
+#define FORK_DRAW_START		1
+#define FORK_DRAW_END		3
+#define FORK_FIRE_START		4
+#define FORK_FIRE_END		7
+#define FORK_HOLSTER_START	8
+#define FORK_HOLSTER_END	10
 
-// idle
-$frame fork_idle1
-
-// draw
-$frame fork_draw1 fork_draw2 fork_draw3
-
-// fire
-$frame fork_fire1 fork_fire2 fork_fire3 fork_fire4
-
-// holster
-$frame fork_holster1 fork_holster2 fork_holster3
-
-// ----- Player related code ----- //
-void() player_fork4 =
-{
-	self.frame = self.frame + 1;
-	self.nextthink = time + 0.1;
-	self.think = player_run;
-
-	self.weaponframe = $fork_fire4;
-};
-
-void() player_fork3 =
-{
-	self.frame = self.frame + 1;
-	self.nextthink = time + 0.1;
-	self.think = player_fork4;
-
-	self.weaponframe = $fork_fire3;
-	Fork_Fire ();
-};
-
-void() player_fork2 =
-{
-	self.frame = self.frame + 1;
-	self.nextthink = time + 0.1;
-	self.think = player_fork3;
-
-	self.weaponframe = $fork_fire2;
-};
-
-void() player_fork1 =
-{
-	// self.frame has been initialized by Fork_Attack
-	self.nextthink = time + 0.1;
-	self.think = player_fork2;
-
-	self.weaponframe = $fork_fire1;
-
-	self.player_state = PS_FIRE;
-};
-
-// Normal draw
-void() player_forkdraw1 = [$pitchstand1, player_forkdraw2] { self.weaponframe = $fork_draw1; };
-void() player_forkdraw2 = [$pitchstand1, player_forkdraw3] { self.weaponframe = $fork_draw2; };
-void() player_forkdraw3 = [$pitchstand1, player_run      ] { self.weaponframe = $fork_draw3; };
-
-// Normal holster
-void() player_forkholster1 = [$pitchstand1, player_forkholster2] { self.weaponframe = $fork_holster1; };
-void() player_forkholster2 = [$pitchstand1, player_forkholster3] { self.weaponframe = $fork_holster2; };
-void() player_forkholster3 = [$pitchstand1, player_forkholster4] { self.weaponframe = $fork_holster3; };
-void() player_forkholster4 = [$pitchstand1, player_run         ] { W_DrawWeapon (self.newweapon); };
+// times may need adjusting
+#define FORK_IDLE_TIME		0.1
+#define FORK_DRAW_TIME		0.3
+#define FORK_FIRE_TIME		0.45
+#define FORK_HOLSTER_TIME	0.3
 
 //============================================================================
 
@@ -185,12 +132,11 @@ Attack code for the pitchfork
 */
 void() Fork_Attack =
 {
-	local float r;
-
-	self.frame = $pitchattack1;
-
-	player_fork1 ();
-	self.attack_finished = time + 0.5;
+	self.player_state = PS_FIRE;
+	self.weaponentity.frame = FORK_FIRE_START;
+	self.weaponentity.attack_finished = time + FORK_FIRE_TIME;
+	self.weaponentity.anim_type = FIRE;
+	fork_animate();
 };
 
 /*
@@ -204,12 +150,18 @@ void() Fork_Draw =
 {
 	self.weapon = IT_PITCHFORK;
 	self.currentammo = 0;
-	self.items = self.items - (self.items & (IT_SHELLS | IT_NAILS | IT_CELLS | IT_ROCKETS));
+	self.weaponentity = spawn();
+	self.weaponentity.solid = SOLID_NOT;
+	self.weaponentity.owner = self;
+	self.weaponentity.weaponentity = self.weaponentity;
+	self.weaponentity.origin = '0 0 0';
+	self.weaponentity.angles = '0 0 0';
+	self.weaponentity.viewmodelforclient = self;
 
 	Fork_UpdateView ();
-
-	self.attack_finished = time + 0.3;
-	player_forkdraw1 ();
+	self.weaponentity.attack_finished = time + FORK_DRAW_TIME;
+	self.weaponentity.anim_type = DRAW;
+	fork_animate();
 };
 
 /*
@@ -221,8 +173,9 @@ Holster code for the pitchfork
 */
 void() Fork_Holster =
 {
-	self.attack_finished = time + 0.3;
-	player_forkholster1 ();
+	self.attack_finished = time + FORK_HOLSTER_TIME;
+	self.weaponentity.anim_type = HOLSTER;
+	fork_animate();
 };
 
 /*
@@ -234,6 +187,81 @@ Choose the right pitchfork model to display
 */
 void() Fork_UpdateView =
 {
-	self.weaponmodel = "models/weapons/v_pitch.psk";
+	setmodel(self.weaponentity, "models/weapons/v_pitch.psk");
 	self.items = self.items - (self.items & IT_GUNS_AKIMBO);
+};
+
+void() Fork_Idle =
+{
+	self.weaponentity.anim_type = IDLE;
+	self.player_state = PS_IDLE;
+	self.weaponentity.frame = FORK_IDLE;
+	fork_animate();
+};
+
+void () fork_animate =
+{
+	if (self.weaponentity.anim_type == self.weaponentity.last_action)
+	{
+		if (self.weaponentity.frame < self.weaponentity.anim_end)
+			self.weaponentity.frame = self.weaponentity.frame + 1; //if its a new animation type, it will be set to the proper frame next
+		else
+			self.weaponentity.frame = self.weaponentity.anim_end - self.weaponentity.anim_end_num + 1;
+	}
+	else
+	{
+		if (self.weaponentity.anim_type == IDLE)
+		{
+			self.weaponentity.anim_end = FORK_IDLE;
+			self.weaponentity.anim_end_num = FORK_IDLE + 1;
+			self.weaponentity.anim_time = FORK_IDLE_TIME;
+			self.weaponentity.frame = FORK_IDLE;
+		}
+		else if (self.weaponentity.anim_type == DRAW)
+		{
+			self.weaponentity.anim_end = FORK_DRAW_END;
+			self.weaponentity.anim_end_num = FORK_DRAW_END - FORK_DRAW_START + 1;
+			self.weaponentity.anim_time = FORK_DRAW_TIME;
+			self.weaponentity.frame = FORK_DRAW_START;
+		}
+		else if (self.weaponentity.anim_type == FIRE)
+		{
+			self.weaponentity.anim_end = FORK_FIRE_END;
+			self.weaponentity.anim_end_num = FORK_FIRE_END - FORK_FIRE_START + 1;
+			self.weaponentity.anim_time = FORK_FIRE_TIME;
+			self.weaponentity.frame = FORK_FIRE_START;
+		}
+		else if (self.weaponentity.anim_type == HOLSTER)
+		{
+			self.weaponentity.anim_end = FORK_HOLSTER_END;
+			self.weaponentity.anim_end_num = FORK_HOLSTER_END - FORK_HOLSTER_START + 1;
+			self.weaponentity.anim_time = FORK_HOLSTER_TIME;
+			self.weaponentity.frame = FORK_HOLSTER_START;
+		}
+		self.weaponentity.last_action = self.weaponentity.anim_type;
+	}
+	if (self.weaponentity.anim_type != IDLE)
+	{
+		self.nextthink = time + (self.weaponentity.anim_time / self.weaponentity.anim_end_num);
+		self.think = fork_animate;
+	}
+
+	if (self.weaponentity.anim_type == FIRE)
+	{
+		if (self.weaponentity.frame == FORK_FIRE_START + 2)
+			Fork_Fire();
+		if (self.weaponentity.frame == FORK_FIRE_END && (!self.button0 || !self.button3))
+			Fork_Idle();
+	}
+	else if ((self.weaponentity.frame == self.weaponentity.anim_end) && (self.weaponentity.anim_type == DRAW))
+	{
+		self.nextthink = time + FORK_DRAW_TIME;
+		self.think = Fork_Idle;
+	}
+	else if ((self.weaponentity.frame == self.weaponentity.anim_end) && (self.weaponentity.anim_type == HOLSTER))
+	{
+		remove(self.weaponentity);
+		W_DrawWeapon (self.newweapon);
+		return;
+	}
 };

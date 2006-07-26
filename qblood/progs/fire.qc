@@ -52,8 +52,35 @@ float(vector vec) VecInWater =
 //  Fire Damage
 
 void(entity victim, entity attacker, float dmgtype, float burn, float burntime) Ignite;
+void(string attach_point, entity attach_to) AttachObject;
 
-void() muzzleflash;
+/*
+================
+muzzleflash
+
+creates the muzzle flash for weapons
+================
+*/
+void() muzzleflash =
+{
+	local string sprite;
+	local float offset;
+	if (self.weapon == IT_SAWED_OFF)
+	{
+		sprite = "models/weapons/muzzle_shotgun.spr32";
+		if ((self.player_state == PS_ALTFIRE) && (self.weaponentity.ammo_in_chamber == 2))
+			offset = 0;
+		else
+		{
+			if (self.weaponentity.ammo_in_chamber == 2)
+				offset = -4;
+			else
+				offset = 4;
+		}
+		effect(self.origin + v_forward * 100 + v_right * offset, sprite, 0, 2, 20);
+	}
+	//FIXME - add other weapons, and fix shotgun
+};
 
 //------------------------------------------------------------------------//
 //  This inflicts standard fire damage like in Blood.

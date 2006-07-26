@@ -1049,25 +1049,27 @@ void(float isAlive) Impulses_Player;
 float() W_FireCharge;
 void() W_WeaponFrame =
 {
-	if (time < self.attack_finished)
-		return;
+	if (time < self.weaponentity.attack_finished)
+	return;
 
 	if (! W_AmmoAvailable ())
+	{
 		if (self.player_state != PS_HOLD_FIRE)
 		{
 			W_SwitchToWeapon (W_BestWeapon ());
 			return;
 		}
+	}
 
-		Impulses_Player (TRUE);
+	Impulses_Player (TRUE);
 
-		if (W_FireCharge ())
-			return;
+	if (W_FireCharge ())
+		return;
 
-		// Check for attack
-		if (self.button0 || self.button3)
-		{
-			ResetIdle (self);
-			W_Attack ();
-		}
+	// Check for attack
+	if (self.button0 || self.button3)
+	{
+		ResetIdle (self);
+		W_Attack ();
+	}
 };

@@ -62,13 +62,13 @@ void () browncultist_attackDecide =
 		if (dist == RANGE_NEAR || dist == RANGE_MELEE)// If the player is near shoot them		      
 		{
 			//browncultist_attacka1 ();
-			self.anim_type = "attack";
+			self.anim_type = ATTACK1;
 			cultist_animate();
 		}
 		else
 		{
 			//browncultist_attackb1 ();        // Otherwise TNT them
-			self.anim_type = "attack2";
+			self.anim_type = ATTACK2;
 			cultist_animate();
 		}
 	}
@@ -111,7 +111,7 @@ void () monster_browncultist =
 
 	cultist_spawn();
 
-	AttachObject("Weapon_Right");
+	AttachObject("Weapon_Right", self);
 	self.attachedobject.scale = 0.5;
 	self.attachedobject.origin = '0 0 0' + v_forward * 4; // FIXME: adjust the weapon bone?
 	setmodel(self.attachedobject, "models/weapons/g_shotgun.md3");

@@ -42,7 +42,7 @@ void () blackcultist_attack =
 	if (vlen (delta) <= 1200)
 	{
 		//blackcultist_attack1 ();    // If the player is near shoot them
-		self.anim_type = "attack1";
+		self.anim_type = ATTACK1;
 		cultist_animate();
 	}
 };

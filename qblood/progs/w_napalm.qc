@@ -20,111 +20,32 @@
 #include "common.qh"
 #include "player.qh"
 
-void() Napalm_Fire;
+void() napalm_animate;
+void() Napalm_BallTouch;
 
-//============================================================================
-// ----- Napalm launcher models ----- //
-
-// Normal model
-$modelname v_napalm
-
-
-/*
-#define NAPALM_IDLE             0
-#define NAPALM_DRAW_START       1
-#define NAPALM_DRAW_END         4 
-#define NAPALM_FIRE_START       5
-#define NAPALM_FIRE_END         8
-#define NAPALM_HOLSTER_START    9
-#define NAPALM_HOLSTER_END      12
+#define NAPALM_IDLE					0
+#define NAPALM_DRAW_START			1
+#define NAPALM_DRAW_END				4
+#define NAPALM_FIRE_START			5
+#define NAPALM_FIRE_END				8
+#define NAPALM_HOLSTER_START		9
+#define NAPALM_HOLSTER_END			12
+#define	NAPALM_AKIMBO_IDLE			0
+#define	NAPALM_AKIMBO_DRAW_START	1
+#define	NAPALM_AKIMBO_DRAW_END		4
+#define NAPALM_AKIMBO_FIRE_START	5
+#define	NAPALM_AKIMBO_FIRE_END		10
+#define	NAPALM_AKIMBO_HOLSTER_START	11
+#define	NAPALM_AKIMBO_HOLSTER_END	14
 
 //FIXME: accurate timings
-#define NAPALM_IDLE_TIME        0.1
-#define NAPALM_DRAW_TIME        0.4
-#define NAPALM_FIRE_TIME        0.5
-#define NAPALM_HOLSTER_TIME     0.4
-
-*/
-
-// idle
-$frame napalm_idle1
-
-// draw
-$frame napalm_draw1 napalm_draw2 napalm_draw3 napalm_draw4
-
-// fire & altfire
-$frame napalm_fire1 napalm_fire2 napalm_fire3 napalm_fire4
-
-// holster
-$frame napalm_holster1 napalm_holster2 napalm_holster3 napalm_holster4
-
-// Akimbo model
-$modelname ga_napalm
-
-// idle
-$frame anapalm_idle1
-
-// draw
-$frame anapalm_draw1 anapalm_draw2 anapalm_draw3 anapalm_draw4
-
-// fire
-$frame anapalm_fire1 anapalm_fire2 anapalm_fire3 anapalm_fire4 anapalm_fire5
-$frame anapalm_fire6
-
-// holster
-$frame anapalm_holstr1 anapalm_holstr2 anapalm_holstr3 anapalm_holstr4
-
-// ----- Player related code ----- //
-// Normal fire
-void() player_napalm1 = [$attack1, player_napalm2] { self.weaponframe = $napalm_fire1; muzzleflash (); };
-void() player_napalm2 = [$attack1, player_napalm3] { self.weaponframe = $napalm_fire2; };
-void() player_napalm3 = [$attack1, player_napalm4] { self.weaponframe = $napalm_fire3; };
-void() player_napalm4 = [$attack2, player_run    ] { self.weaponframe = $napalm_fire4; };
-
-// Akimbo fire
-void() player_aknapalm1 = [$attack1, player_aknapalm2] { self.weaponframe = $anapalm_fire1; muzzleflash (); };
-void() player_aknapalm2 = [$attack2, player_aknapalm3] { self.weaponframe = $anapalm_fire2; };
-void() player_aknapalm3 = [$attack1, player_aknapalm4] { self.weaponframe = $anapalm_fire3; muzzleflash ();  Napalm_Fire (); };
-void() player_aknapalm4 = [$attack1, player_aknapalm5] { self.weaponframe = $anapalm_fire4; };
-void() player_aknapalm5 = [$attack2, player_aknapalm6] { self.weaponframe = $anapalm_fire5; };
-void() player_aknapalm6 = [$attack2, player_aknapalm7] { self.weaponframe = $anapalm_fire6; };
-void() player_aknapalm7 =
-{
-	// If we don't have enough ammo anymore, drop the guns akimbo
-	if ((self.items & IT_GUNS_AKIMBO) && self.currentammo < 2)
-		Napalm_UpdateView ();
-
-	player_run ();
-};
-
-// Normal draw
-void() player_napalmdraw1 = [$attack2, player_napalmdraw2] { self.weaponframe = $napalm_draw1; };
-void() player_napalmdraw2 = [$attack2, player_napalmdraw3] { self.weaponframe = $napalm_draw2; };
-void() player_napalmdraw3 = [$attack2, player_napalmdraw4] { self.weaponframe = $napalm_draw3; };
-void() player_napalmdraw4 = [$attack2, player_run        ] { self.weaponframe = $napalm_draw4; };
-
-// Normal holster
-void() player_napalmholst1 = [$attack2, player_napalmholst2] { self.weaponframe = $napalm_holster1; };
-void() player_napalmholst2 = [$attack2, player_napalmholst3] { self.weaponframe = $napalm_holster2; };
-void() player_napalmholst3 = [$attack2, player_napalmholst4] { self.weaponframe = $napalm_holster3; };
-void() player_napalmholst4 = [$attack2, player_napalmholst5] { self.weaponframe = $napalm_holster4; };
-void() player_napalmholst5 = [$attack2, player_run         ] { W_DrawWeapon (self.newweapon); };
-
-// Akimbo draw
-void() player_aknapalmdraw1 = [$attack2, player_aknapalmdraw2] { self.weaponframe = $anapalm_draw1; };
-void() player_aknapalmdraw2 = [$attack2, player_aknapalmdraw3] { self.weaponframe = $anapalm_draw2; };
-void() player_aknapalmdraw3 = [$attack2, player_aknapalmdraw4] { self.weaponframe = $anapalm_draw3; };
-void() player_aknapalmdraw4 = [$attack2, player_run          ] { self.weaponframe = $anapalm_draw4; };
-
-// Akimbo holster
-void() player_aknapalmholst1 = [$attack2, player_aknapalmholst2] { self.weaponframe = $anapalm_holstr1; };
-void() player_aknapalmholst2 = [$attack2, player_aknapalmholst3] { self.weaponframe = $anapalm_holstr2; };
-void() player_aknapalmholst3 = [$attack2, player_aknapalmholst4] { self.weaponframe = $anapalm_holstr3; };
-void() player_aknapalmholst4 = [$attack2, player_aknapalmholst5] { self.weaponframe = $anapalm_holstr4; };
-void() player_aknapalmholst5 = [$attack2, player_run           ] { W_DrawWeapon (self.newweapon); };
+#define NAPALM_IDLE_TIME			0.1
+#define NAPALM_DRAW_TIME			0.4
+#define NAPALM_FIRE_TIME			0.4
+#define	NAPALM_AKIMBO_FIRE_TIME		0.7
+#define NAPALM_HOLSTER_TIME			0.4
 
 //============================================================================
-void() Napalm_BallTouch;
 
 /*
 ================
@@ -332,25 +253,27 @@ Attack code for the napalm launcher
 */
 void() Napalm_Attack =
 {
-	// Normal fire or altfire?
-	if (self.button3)
-		self.player_state = PS_ALTFIRE;
-	else
-		self.player_state = PS_FIRE;
-
-	// If we have guns akimbo
-	if (self.items & IT_GUNS_AKIMBO)
+	if (self.weaponentity.attack_finished < time)
 	{
-		player_aknapalm1 ();
-		self.attack_finished = time + 0.6;
-	}
-	else
-	{
-		player_napalm1 ();
-		self.attack_finished = time + 0.6;
-	}
+		// Normal fire or altfire?
+		if (self.button3)
+			self.player_state = PS_ALTFIRE;
+		else
+			self.player_state = PS_FIRE;
 
-	Napalm_Fire ();
+		// If we have guns akimbo
+		if (self.items & IT_GUNS_AKIMBO)
+		{
+			self.weaponentity.attack_finished = time + NAPALM_AKIMBO_FIRE_TIME;
+			self.weaponentity.anim_type = AKIMBO_FIRE;
+		}
+		else
+		{
+			self.weaponentity.attack_finished = time + NAPALM_FIRE_TIME;
+			self.weaponentity.anim_type = FIRE;
+		}
+		napalm_animate();
+	}
 };
 
 /*
@@ -364,20 +287,18 @@ void() Napalm_Draw =
 {
 	self.weapon = IT_NAPALM_LAUNCHER;
 	self.currentammo = self.ammo_rockets;
-	self.items = (self.items - (self.items & (IT_SHELLS | IT_NAILS | IT_CELLS))) | IT_ROCKETS;
+	self.weaponentity = spawn();
+	self.weaponentity.solid = SOLID_NOT;
+	self.weaponentity.owner = self;
+	self.weaponentity.weaponentity = self.weaponentity;
+	self.weaponentity.origin = '0 0 0';
+	self.weaponentity.angles = '0 0 0';
+	self.weaponentity.viewmodelforclient = self;
 
 	Napalm_UpdateView ();
-
-	if (self.items & IT_GUNS_AKIMBO)
-	{
-		self.attack_finished = time + 0.4;
-		player_aknapalmdraw1 ();
-	}
-	else
-	{
-		self.attack_finished = time + 0.4;
-		player_napalmdraw1 ();
-	}
+	self.weaponentity.attack_finished = time + NAPALM_DRAW_TIME;
+	self.weaponentity.anim_type = DRAW;
+	napalm_animate();
 };
 
 /*
@@ -389,16 +310,9 @@ Holster code for the napalm launcher
 */
 void() Napalm_Holster =
 {
-	if (self.items & IT_GUNS_AKIMBO)
-	{
-		self.attack_finished = time + 0.4;
-		player_aknapalmholst1 ();
-	}
-	else
-	{
-		self.attack_finished = time + 0.4;
-		player_napalmholst1 ();
-	}
+	self.weaponentity.attack_finished = time + NAPALM_HOLSTER_TIME;
+	self.weaponentity.anim_type = HOLSTER;
+	napalm_animate();
 };
 
 /*
@@ -412,12 +326,113 @@ void() Napalm_UpdateView =
 {
 	if (self.akimbo_finished > time && self.currentammo >= 2)
 	{
-		self.weaponmodel = "models/weapons/ga_napalm.psk";
+		setmodel(self.weaponentity, "models/weapons/ga_napalm.psk");
 		self.items = self.items | IT_GUNS_AKIMBO;
 	}
 	else
 	{
-		self.weaponmodel = "models/weapons/v_napalm.psk";
+		setmodel(self.weaponentity, "models/weapons/v_napalm.psk");
 		self.items = self.items - (self.items & IT_GUNS_AKIMBO);
+	}
+};
+
+void() Napalm_Idle =
+{
+	self.weaponentity.anim_type = IDLE;
+	self.player_state = PS_IDLE;
+	self.weaponentity.frame = NAPALM_IDLE;
+	napalm_animate();
+};
+
+void () napalm_animate =
+{
+	if (self.weaponentity.anim_type == self.weaponentity.last_action)
+	{
+		if (self.weaponentity.frame < self.weaponentity.anim_end)
+			self.weaponentity.frame = self.weaponentity.frame + 1; //if its a new animation type, it will be set to the proper frame next
+		else
+			self.weaponentity.frame = self.weaponentity.anim_end - self.weaponentity.anim_end_num + 1;
+	}
+	else
+	{
+		if (self.weaponentity.anim_type == IDLE)
+		{
+			self.weaponentity.anim_end = NAPALM_IDLE;
+			self.weaponentity.anim_end_num = NAPALM_IDLE + 1;
+			self.weaponentity.anim_time = NAPALM_IDLE_TIME;
+			self.weaponentity.frame = NAPALM_IDLE;
+		}
+		else if (self.weaponentity.anim_type == DRAW)
+		{
+			self.weaponentity.anim_end = NAPALM_DRAW_END;
+			self.weaponentity.anim_end_num = NAPALM_DRAW_END - NAPALM_DRAW_START + 1;
+			self.weaponentity.anim_time = NAPALM_DRAW_TIME;
+			self.weaponentity.frame = NAPALM_DRAW_START;
+		}
+		else if ((self.weaponentity.anim_type == FIRE) || (self.weaponentity.anim_type == ALTFIRE))
+		{
+			self.weaponentity.anim_end = NAPALM_FIRE_END;
+			self.weaponentity.anim_end_num = NAPALM_FIRE_END - NAPALM_FIRE_START + 1;
+			self.weaponentity.anim_time = NAPALM_FIRE_TIME;
+			self.weaponentity.frame = NAPALM_FIRE_START;
+		}
+		else if (self.weaponentity.anim_type == AKIMBO_FIRE)
+		{
+			self.weaponentity.anim_end = NAPALM_AKIMBO_FIRE_END;
+			self.weaponentity.anim_end_num = NAPALM_AKIMBO_FIRE_END - NAPALM_AKIMBO_FIRE_START + 1;
+			self.weaponentity.anim_time = NAPALM_AKIMBO_FIRE_TIME;
+			self.weaponentity.frame = NAPALM_AKIMBO_FIRE_START;
+		}
+		else if (self.weaponentity.anim_type == HOLSTER)
+		{
+			self.weaponentity.anim_end = NAPALM_HOLSTER_END;
+			self.weaponentity.anim_end_num = NAPALM_HOLSTER_END - NAPALM_HOLSTER_START + 1;
+			self.weaponentity.anim_time = NAPALM_HOLSTER_TIME;
+			self.weaponentity.frame = NAPALM_HOLSTER_START;
+		}
+		self.weaponentity.last_action = self.weaponentity.anim_type;
+	}
+	if (self.weaponentity.anim_type != IDLE)
+	{
+		self.nextthink = time + (self.weaponentity.anim_time / self.weaponentity.anim_end_num);
+		self.think = napalm_animate;
+	}
+
+	if ((self.weaponentity.anim_type == FIRE) || (self.weaponentity.anim_type == ALTFIRE))
+	{
+		if (self.weaponentity.frame == NAPALM_FIRE_START)
+		{
+			muzzleflash ();
+			Napalm_Fire ();
+		}
+		else if (self.weaponentity.frame == NAPALM_FIRE_END)
+		{
+			Napalm_UpdateView();
+			Napalm_Idle();
+		}
+	}
+	else if (self.weaponentity.anim_type == AKIMBO_FIRE)
+	{
+		if ((self.weaponentity.frame == NAPALM_AKIMBO_FIRE_START) || (self.weaponentity.frame == NAPALM_AKIMBO_FIRE_START + 2))
+		{
+			muzzleflash ();
+			Napalm_Fire ();
+		}
+		else if (self.weaponentity.frame == NAPALM_AKIMBO_FIRE_END)
+		{
+			Napalm_UpdateView();
+			Napalm_Idle();
+		}
+	}
+	else if ((self.weaponentity.frame == self.weaponentity.anim_end) && (self.weaponentity.anim_type == DRAW))
+	{
+		self.nextthink = time + NAPALM_DRAW_TIME;
+		self.think = Napalm_Idle;
+	}
+	else if ((self.weaponentity.frame == self.weaponentity.anim_end) && (self.weaponentity.anim_type == HOLSTER))
+	{
+		remove(self.weaponentity);
+		W_DrawWeapon (self.newweapon);
+		return;
 	}
 };

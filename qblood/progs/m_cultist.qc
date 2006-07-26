@@ -115,7 +115,7 @@ void () cultist_taunt =
 //--- Death sequence
 void () cultist_die =
 {
-	self.anim_type = "death";
+	self.anim_type = DEATH;
 	cultist_animate();
 };
 
@@ -270,35 +270,35 @@ void () cultist_stand =
 		sound (self, CHAN_WEAPON, "cultist/cultspt5.wav", 1, ATTN_NORM);
 
 	self.style = 1;
-	self.anim_type = "stand";
+	self.anim_type = STAND;
 	cultist_animate();
 };
 
 void () cultist_walk =
 {
 	self.style = 2;
-	self.anim_type = "walk";
+	self.anim_type = WALK;
 	cultist_animate();
 };
 
 void () cultist_run =
 {    
 	self.style = 3;
-	self.anim_type = "run";
+	self.anim_type = RUN;
 	cultist_animate();
 };
 
 // primary attack
 void () cultist_attack = 
 {
-	self.anim_type = "attack";
+	self.anim_type = ATTACK;
 	cultist_animate();
 };
 
 // secondary attack
 void () cultist_attack2 =
 {
-	self.anim_type = "attack2";
+	self.anim_type = ATTACK2;
 	cultist_animate();
 };
 
@@ -306,7 +306,7 @@ void () cultist_attack2 =
 void () cultist_crawl =
 {
 	//self.style = 1; //FIXME style for crawling?
-	self.anim_type = "crawl";
+	self.anim_type = CRAWL;
 	cultist_animate();
 };
 
@@ -314,7 +314,7 @@ void () cultist_crawl =
 void () cultist_crawl_fire =
 {
 	//self.style = 1; //FIXME style for crawling?
-	self.anim_type = "crawl_fire";
+	self.anim_type = CRAWL_FIRE;
 	cultist_animate();
 };
 
@@ -322,7 +322,7 @@ void () cultist_crawl_fire =
 void () cultist_swim =
 {
 	//self.style = 1; //FIXME style for swimming?
-	self.anim_type = "swim";
+	self.anim_type = SWIM;
 	cultist_animate();
 };
 
@@ -330,7 +330,7 @@ void () cultist_swim =
 void () cultist_swim_fire =
 {
 	//self.style = 1; //FIXME style for swimming?
-	self.anim_type = "crawl_fire";
+	self.anim_type = CRAWL_FIRE;
 	cultist_animate();
 };
 
@@ -345,21 +345,21 @@ void () cultist_animate =
 	}
 	else
 	{
-		if (self.anim_type == "stand")
+		if (self.anim_type == STAND)
 		{
 			self.anim_end = CULTIST_STAND_END;
 			self.anim_end_num = CULTIST_STAND_END - CULTIST_STAND_START + 1;
 			self.anim_time = CULTIST_STAND_TIME;
 			self.frame = CULTIST_STAND_START;
 		}
-		else if (self.anim_type == "walk")
+		else if (self.anim_type == WALK)
 		{
 			self.anim_end = CULTIST_WALK_END;
 			self.anim_end_num = CULTIST_WALK_END - CULTIST_WALK_START + 1;
 			self.anim_time = CULTIST_WALK_TIME;
 			self.frame = CULTIST_WALK_START;
 		}
-		else if (self.anim_type == "run")
+		else if (self.anim_type == RUN)
 		{
 			//FIXME? walking animation with changed timings
 			self.anim_end = CULTIST_WALK_END;
@@ -367,56 +367,56 @@ void () cultist_animate =
 			self.anim_time = CULTIST_RUN_TIME;
 			self.frame = CULTIST_WALK_START;
 		}
-		else if (self.anim_type == "attack")
+		else if (self.anim_type == ATTACK)
 		{
 			self.anim_end = CULTIST_ATTACK_END;
 			self.anim_end_num = CULTIST_ATTACK_END - CULTIST_ATTACK_START + 1;
 			self.anim_time = CULTIST_ATTACK_TIME;
 			self.frame = CULTIST_ATTACK_START;
 		}
-		else if (self.anim_type == "attack2")
+		else if (self.anim_type == ATTACK2)
 		{
 			self.anim_end = CULTIST_ATTACK2_END;
 			self.anim_end_num = CULTIST_ATTACK2_END - CULTIST_ATTACK2_START + 1;
 			self.anim_time = CULTIST_ATTACK2_TIME;
 			self.frame = CULTIST_ATTACK2_START;
 		}
-		else if (self.anim_type == "pain")
+		else if (self.anim_type == PAIN)
 		{
 			self.anim_end = CULTIST_PAIN_END;
 			self.anim_end_num = CULTIST_PAIN_END - CULTIST_PAIN_START + 1;
 			self.anim_time = CULTIST_PAIN_TIME;
 			self.frame = CULTIST_PAIN_START;
 		}
-		else if (self.anim_type == "crawl")
+		else if (self.anim_type == CRAWL)
 		{
 			self.anim_end = CULTIST_CRAWL_END;
 			self.anim_end_num = CULTIST_CRAWL_END - CULTIST_CRAWL_START + 1;
 			self.anim_time = CULTIST_CRAWL_TIME;
 			self.frame = CULTIST_CRAWL_START;
 		}
-		else if (self.anim_type == "crawl_fire")
+		else if (self.anim_type == CRAWL_FIRE)
 		{
 			self.anim_end = CULTIST_CRAWL_FIRE_END;
 			self.anim_end_num = CULTIST_CRAWL_FIRE_END - CULTIST_CRAWL_FIRE_START + 1;
 			self.anim_time = CULTIST_CRAWL_FIRE_TIME;
 			self.frame = CULTIST_CRAWL_FIRE_START;
 		}
-		else if (self.anim_type == "swim")
+		else if (self.anim_type == SWIM)
 		{
 			self.anim_end = CULTIST_SWIM_END;
 			self.anim_end_num = CULTIST_SWIM_END - CULTIST_SWIM_START + 1;
 			self.anim_time = CULTIST_SWIM_TIME;
 			self.frame = CULTIST_SWIM_START;
 		}
-		else if (self.anim_type == "swim_fire")
+		else if (self.anim_type == SWIM_FIRE)
 		{
 			self.anim_end = CULTIST_SWIM_FIRE_END;
 			self.anim_end_num = CULTIST_SWIM_FIRE_END - CULTIST_SWIM_FIRE_START + 1;
 			self.anim_time = CULTIST_SWIM_FIRE_TIME;
 			self.frame = CULTIST_SWIM_FIRE_START;
 		}
-		else if (self.anim_type == "death")
+		else if (self.anim_type == DEATH)
 		{
 			self.anim_end = CULTIST_DEATH_END;
 			self.anim_end_num = CULTIST_DEATH_END - CULTIST_DEATH_START + 1;
@@ -428,7 +428,7 @@ void () cultist_animate =
 	self.nextthink = time + (self.anim_time / self.anim_end_num);
 	self.think = cultist_animate;
 
-	if (self.anim_type == "death")
+	if (self.anim_type == DEATH)
 	{
 		if (self.netname != "monster_redcultist")
 		{
@@ -451,6 +451,22 @@ void () cultist_animate =
 			}
 			else
 				sound (self, CHAN_VOICE, "cultist/cultdie2.wav", 1, ATTN_NORM);
+			if (self.frame == self.anim_end)
+			{
+				local entity drop_weapon;
+
+				drop_weapon = spawn();
+				drop_weapon.origin = self.origin;
+				drop_weapon.velocity = '0 0 0';
+				drop_weapon.think = weapon_sawedoff;
+
+				drop_weapon.nextthink = time + 0.01;
+				remove(self.attachedobject);
+				self.nextthink = 0;
+				monster_death();
+				monster_become_corpse();
+				return;
+			}
 		}
 		else // It is a red cultist (priest)
 		{
@@ -461,22 +477,12 @@ void () cultist_animate =
 			spawn a beast at same facing / coordinates
 			*/
 		}
-		if (self.frame == self.anim_end)
-		{
-			self.nextthink = 0;
-			monster_death();
-			monster_become_corpse();
-			return;
-		}
 	}
 
-	if (self.frame == self.anim_end)
-		self.frame = self.anim_end - self.anim_end_num + 1;
-	
 	//AI control
 	ai_main();
 	
-	if (self.anim_type == "attack")
+	if (self.anim_type == ATTACK)
 	{
 		if (self.netname == "monster_browncultist")
 		{
@@ -487,17 +493,17 @@ void () cultist_animate =
 		}
 		
 	}
-	else if (self.anim_type == "attack2")
+	else if (self.anim_type == ATTACK2)
 	{
 		if (self.frame == CULTIST_ATTACK2_START + 30)
 			cultist_throw_TNT();
 	}
 
-	if (self.anim_type == "stand") basic_ai(3);
-	else if (self.anim_type == "walk") basic_ai(3);
-	else if (self.anim_type == "run") basic_ai(6);
-	else if (self.anim_type == "attack") ai_face();
-	else if (self.anim_type == "attack2") ai_face();
+	if (self.anim_type == STAND) basic_ai(3);
+	else if (self.anim_type == WALK) basic_ai(3);
+	else if (self.anim_type == RUN) basic_ai(6);
+	else if (self.anim_type == ATTACK) ai_face();
+	else if (self.anim_type == ATTACK2) ai_face();
 
 	//insert sounds or attack damage here with if statements
 };
@@ -552,7 +558,7 @@ void () cultist_spawn =
 	precache_sound ("cultist/cultspt5.wav"); // Spotted
 
 	self.solid = SOLID_SLIDEBOX;
-	self.movetype = MOVETYPE_WALK;
+	self.movetype = MOVETYPE_STEP;
 	setmodel (self, "models/enemies/cultist/cultist.psk");
 	setsize (self,'-9.9 -18.6 -0.2', '21.6 18.6 63.7');    
 	self.speed = 50;	// walkspeed

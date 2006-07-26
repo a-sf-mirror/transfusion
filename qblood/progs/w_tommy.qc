@@ -20,14 +20,12 @@
 #include "common.qh"
 #include "player.qh"
 
-void() Tommy_Fire;
+void() tommy_animate;
 
 //============================================================================
 // ----- Tommy Gun models ----- //
 // Normal model
-$modelname v_tommy
 
-/*
 #define TOMMY_IDLE              0
 #define TOMMY_DRAW_START        1
 #define TOMMY_DRAW_END          4
@@ -41,107 +39,9 @@ $modelname v_tommy
 //FIXME: accurate timings
 #define TOMMY_IDLE_TIME         0.1
 #define TOMMY_DRAW_TIME         0.4
-#define TOMMY_FIRE_TIME         0.1
+#define TOMMY_FIRE_TIME         0.13
 #define TOMMY_ALTFIRE_TIME      1.0
 #define TOMMY_HOLSTER_TIME      0.4
-
-*/
-
-// idle
-$frame tommy_idle1
-
-// draw
-$frame tommy_draw1 tommy_draw2 tommy_draw3 tommy_draw4
-
-// fire
-$frame tommy_fire1 tommy_fire2
-
-// altfire
-// tommy_alt1 = tommy_alt5 = center
-// tommy_alt2 = tommy_alt4 = near left
-// tommy_alt6 = tommy_alt8 = near right
-$frame tommy_alt1 tommy_alt2 tommy_alt3 tommy_alt4 tommy_alt5
-$frame tommy_alt6 tommy_alt7 tommy_alt8
-
-// holster
-$frame tommy_holster1 tommy_holster2 tommy_holster3 tommy_holster4
-
-// Akimbo model
-$modelname ga_tommy
-
-// idle
-$frame atommy_idle1
-
-// draw
-$frame atommy_draw1 atommy_draw2 atommy_draw3 atommy_draw4
-
-// fire
-$frame atommy_fire1 atommy_fire2
-
-// altfire
-$frame atommy_alt1 atommy_alt2 atommy_alt3 atommy_alt4 atommy_alt5
-$frame atommy_alt6 atommy_alt7 atommy_alt8
-
-// holster
-$frame atommy_holster1 atommy_holster2 atommy_holster3 atommy_holster4
-
-// ----- Player related code ----- //
-// WARNING: The code below assumes that both models have the exact same frame types
-void() player_tommy =
-{
-	if (!self.button0 || intermission_running || self.ammo_nails < 1)
-	{
-		player_run ();
-		return;
-	}
-
-	muzzleflash ();
-
-	Tommy_Fire ();
-	self.attack_finished = time + 0.1;
-
-	self.impulse = IMP_NONE;
-};
-
-void() player_tommy1 = [$attack1, player_tommy2] { player_tommy (); self.weaponframe = $tommy_fire1; };
-void() player_tommy2 = [$attack2, player_tommy1] { player_tommy (); self.weaponframe = $tommy_fire2; };
-
-void() player_alttommy =
-{
-	if ((!self.button3 && self.weaponframe == $atommy_alt8) || intermission_running ||
-	self.ammo_nails < 1 || (self.ammo_nails < 2 && (self.items & IT_GUNS_AKIMBO)))
-	{
-		player_run ();
-		return;
-	}
-
-	muzzleflash ();
-
-	self.weaponframe = self.weaponframe + 1;
-	if (self.weaponframe > $tommy_alt8 || self.weaponframe < $tommy_alt1)
-		self.weaponframe = $tommy_alt1;
-	Tommy_Fire ();
-	self.attack_finished = time + 0.1;
-
-	self.impulse = IMP_NONE;
-};
-void() player_alttommy1 = [$attack1, player_alttommy2] { player_alttommy (); };
-void() player_alttommy2 = [$attack2, player_alttommy1] { player_alttommy (); };
-
-// Normal draw
-void() player_tommydraw1 = [$attack2, player_tommydraw2] { self.weaponframe = $tommy_draw1; };
-void() player_tommydraw2 = [$attack2, player_tommydraw3] { self.weaponframe = $tommy_draw2; };
-void() player_tommydraw3 = [$attack2, player_tommydraw4] { self.weaponframe = $tommy_draw3; };
-void() player_tommydraw4 = [$attack2, player_run       ] { self.weaponframe = $tommy_draw4; };
-
-// Normal holster
-void() player_tommyholster1 = [$attack2, player_tommyholster2] { self.weaponframe = $tommy_holster1; };
-void() player_tommyholster2 = [$attack2, player_tommyholster3] { self.weaponframe = $tommy_holster2; };
-void() player_tommyholster3 = [$attack2, player_tommyholster4] { self.weaponframe = $tommy_holster3; };
-void() player_tommyholster4 = [$attack2, player_tommyholster5] { self.weaponframe = $tommy_holster4; };
-void() player_tommyholster5 = [$attack2, player_run          ] { W_DrawWeapon (self.newweapon); };
-
-//============================================================================
 
 /*
 ================
@@ -163,8 +63,8 @@ void(vector orig) Tommy_SpawnShell =
 	else
 		shell.noise = "weapons/shtshl3.wav";
 
-	setorigin (shell, orig);
-	shell.velocity = (crandom() + 1)*v_forward*30 - v_right*(100 + crandom()*10) + v_up*(100 + crandom()*10);
+	setorigin (shell, orig + v_up * 11 + v_right * -5);
+	shell.velocity = (crandom() + 1)*v_forward*40 - v_right*(80 + crandom()*10) + v_up*(110 + crandom()*10);
 
 	DropShell (shell);
 };
@@ -193,22 +93,21 @@ void() Tommy_Fire =
 	makevectors (self.v_angle);
 
 	sound (self, CHAN_WEAPON, "weapons/tommygun/_tom.wav", 1, ATTN_NORM);
-	self.attack_finished = time + 0.1;
 	self.currentammo = self.ammo_nails = self.ammo_nails - akimboFactor;
 
 	// set the bullet direction according to the weapon real direction
 	dir = aim (self, 1000);
-	if (self.weaponframe == $tommy_alt2 || self.weaponframe == $tommy_alt4)
+	if (self.weaponentity.frame == TOMMY_ALTFIRE_START + 1 || self.weaponentity.frame == TOMMY_ALTFIRE_START + 3)
 		dir = dir - v_right * (1 / 6);
-	else if (self.weaponframe == $tommy_alt3)
+	else if (self.weaponentity.frame == TOMMY_ALTFIRE_START + 2)
 		dir = dir - v_right * (1 / 3);
-	else if (self.weaponframe == $tommy_alt6 || self.weaponframe == $tommy_alt8)
+	else if (self.weaponentity.frame == TOMMY_ALTFIRE_START + 5 || self.weaponentity.frame == TOMMY_ALTFIRE_START + 7)
 		dir = dir + v_right * (1 / 6);
-	else if (self.weaponframe == $tommy_alt7)
+	else if (self.weaponentity.frame == TOMMY_ALTFIRE_START + 6)
 		dir = dir + v_right * (1 / 3);
 
 	// If we are in altfire mode
-	if (self.weaponframe >= $tommy_alt1)
+	if (self.player_state == PS_ALTFIRE)
 		damage = 20;
 	else
 		damage = 12;
@@ -220,7 +119,7 @@ void() Tommy_Fire =
 	if (akimboFactor == 2)
 	{
 		// Spawn 1 shell alternatively for each gun
-		if ((self.weaponframe - $atommy_fire1) & 1)
+		if ((self.weaponentity.frame == TOMMY_FIRE_START) || (self.weaponentity.frame & 2))
 			orig = orig + v_right * 4;
 		else
 			orig = orig - v_right * 4;
@@ -239,13 +138,13 @@ void() Tommy_Fire =
 	else
 	{
 		// Spawn 1 shell every 2 shots
-		if ((self.weaponframe - $tommy_fire1) & 1)
+		if ((self.weaponentity.frame == TOMMY_FIRE_START) || (self.weaponentity.frame & 1)) // FIXME PS_ALTFIRE && &1
 			Tommy_SpawnShell (orig);
 
 		FireBullets (self.origin + v_up * 20, dir, 1, damage, spread);
 	}
 
-	self.punchangle_x = -2 * akimboFactor;
+	//self.punchangle_x = -2 * akimboFactor;
 };
 
 /*
@@ -260,14 +159,22 @@ void() Tommy_Attack =
 	// If it's a tommy gun altfire start and if we have enough ammo
 	if (self.button3 && (! (self.items & IT_GUNS_AKIMBO) || self.ammo_nails >= 2))
 	{
-		self.player_state = PS_ALTFIRE;
-		player_alttommy1 ();
+		if ((self.weaponentity.attack_finished < time) && (self.player_state != PS_ALTFIRE))
+		{
+			self.player_state = PS_ALTFIRE;
+			self.weaponentity.anim_type = ALTFIRE;
+			self.weaponentity.attack_finished = time + TOMMY_ALTFIRE_TIME;
+			self.nextthink = time;
+		}
 	}
 	else
 	{
 		self.player_state = PS_FIRE;
-		player_tommy1 ();
+		self.weaponentity.anim_type = FIRE;
+		self.weaponentity.attack_finished = time + TOMMY_FIRE_TIME;
+		self.nextthink = time + TOMMY_FIRE_TIME / (TOMMY_FIRE_END - TOMMY_FIRE_START + 1);
 	}
+	self.think = tommy_animate;
 };
 
 /*
@@ -281,12 +188,17 @@ void() Tommy_Draw =
 {
 	self.weapon = IT_TOMMYGUN;
 	self.currentammo = self.ammo_nails;
-	self.items = (self.items - (self.items & (IT_SHELLS | IT_CELLS | IT_ROCKETS))) | IT_NAILS;
-
+	self.weaponentity = spawn();
+	self.weaponentity.solid = SOLID_NOT;
+	self.weaponentity.owner = self;
+	self.weaponentity.weaponentity = self.weaponentity;
+	self.weaponentity.origin = '0 0 0';
+	self.weaponentity.angles = '0 0 0';
+	self.weaponentity.viewmodelforclient = self;
 	Tommy_UpdateView ();
-
-	self.attack_finished = time + 0.4;
-	player_tommydraw1 ();
+	self.weaponentity.attack_finished = time + TOMMY_DRAW_TIME;
+	self.weaponentity.anim_type = DRAW;
+	tommy_animate();
 };
 
 /*
@@ -298,8 +210,9 @@ Holster code for the tommygun
 */
 void() Tommy_Holster =
 {
-	self.attack_finished = time + 0.4;
-	player_tommyholster1 ();
+	self.attack_finished = time + TOMMY_HOLSTER_TIME;
+	self.weaponentity.anim_type = HOLSTER;
+	tommy_animate();
 };
 
 /*
@@ -313,12 +226,104 @@ void() Tommy_UpdateView =
 {
 	if (self.akimbo_finished > time && self.currentammo >= 2)
 	{
-		self.weaponmodel = "models/weapons/ga_tommy.psk";
+		setmodel(self.weaponentity, "models/weapons/ga_tommy.psk");
 		self.items = self.items | IT_GUNS_AKIMBO;
 	}
 	else
 	{
-		self.weaponmodel = "models/weapons/v_tommy.psk";
+		setmodel(self.weaponentity, "models/weapons/v_tommy.psk");
 		self.items = self.items - (self.items & IT_GUNS_AKIMBO);
+	}
+};
+
+void() Tommy_Idle =
+{
+	self.weaponentity.anim_type = IDLE;
+	self.player_state = PS_IDLE;
+	self.weaponentity.frame = TOMMY_IDLE;
+	tommy_animate();
+};
+
+void () tommy_animate =
+{
+	if (self.weaponentity.anim_type == self.weaponentity.last_action)
+	{
+		if (self.weaponentity.frame < self.weaponentity.anim_end)
+			self.weaponentity.frame = self.weaponentity.frame + 1; //if its a new animation type, it will be set to the proper frame next
+		else
+			self.weaponentity.frame = self.weaponentity.anim_end - self.weaponentity.anim_end_num + 1;
+	}
+	else
+	{
+		if (self.weaponentity.anim_type == IDLE)
+		{
+			self.weaponentity.anim_end = TOMMY_IDLE;
+			self.weaponentity.anim_end_num = TOMMY_IDLE + 1;
+			self.weaponentity.anim_time = TOMMY_IDLE_TIME;
+			self.weaponentity.frame = TOMMY_IDLE;
+		}
+		else if (self.weaponentity.anim_type == DRAW)
+		{
+			self.weaponentity.anim_end = TOMMY_DRAW_END;
+			self.weaponentity.anim_end_num = TOMMY_DRAW_END - TOMMY_DRAW_START + 1;
+			self.weaponentity.anim_time = TOMMY_DRAW_TIME;
+			self.weaponentity.frame = TOMMY_DRAW_START;
+		}
+		else if (self.weaponentity.anim_type == FIRE)
+		{
+			self.weaponentity.anim_end = TOMMY_FIRE_END;
+			self.weaponentity.anim_end_num = TOMMY_FIRE_END - TOMMY_FIRE_START + 1;
+			self.weaponentity.anim_time = TOMMY_FIRE_TIME;
+			self.weaponentity.frame = TOMMY_FIRE_START;
+		}
+		else if (self.weaponentity.anim_type == ALTFIRE)
+		{
+			self.weaponentity.anim_end = TOMMY_ALTFIRE_END;
+			self.weaponentity.anim_end_num = TOMMY_ALTFIRE_END - TOMMY_ALTFIRE_START + 1;
+			self.weaponentity.anim_time = TOMMY_ALTFIRE_TIME;
+			self.weaponentity.frame = TOMMY_ALTFIRE_START;
+		}
+		else if (self.weaponentity.anim_type == HOLSTER)
+		{
+			self.weaponentity.anim_end = TOMMY_HOLSTER_END;
+			self.weaponentity.anim_end_num = TOMMY_HOLSTER_END - TOMMY_HOLSTER_START + 1;
+			self.weaponentity.anim_time = TOMMY_HOLSTER_TIME;
+			self.weaponentity.frame = TOMMY_HOLSTER_START;
+		}
+		self.weaponentity.last_action = self.weaponentity.anim_type;
+	}
+	if (self.weaponentity.anim_type != IDLE)
+	{
+		self.nextthink = time + (self.weaponentity.anim_time / self.weaponentity.anim_end_num);
+		self.think = tommy_animate;
+	}
+
+	if (self.weaponentity.anim_type == FIRE)
+	{
+		if (!self.button0 && self.weaponentity.attack_finished <= time)
+			Tommy_Idle();
+		muzzleflash ();
+		Tommy_Fire ();
+		self.impulse = IMP_NONE;
+	}
+	else if (self.weaponentity.anim_type == ALTFIRE)
+	{
+		if (!self.button3 && self.weaponentity.frame == TOMMY_ALTFIRE_END)
+			Tommy_Idle();
+
+		muzzleflash ();
+		Tommy_Fire ();
+		self.impulse = IMP_NONE;
+	}
+	else if ((self.weaponentity.frame == self.weaponentity.anim_end) && (self.weaponentity.anim_type == DRAW))
+	{
+		self.nextthink = time + TOMMY_DRAW_TIME;
+		self.think = Tommy_Idle;
+	}
+	else if ((self.weaponentity.frame == self.weaponentity.anim_end) && (self.weaponentity.anim_type == HOLSTER))
+	{
+		remove(self.weaponentity);
+		W_DrawWeapon (self.newweapon);
+		return;
 	}
 };

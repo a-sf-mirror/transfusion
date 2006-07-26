@@ -409,20 +409,17 @@ float sight_entity_time;
 
 .entity		attachedobject;
 
-//new player/monster animation variables
-.string		last_action;	//transition to new anim_type, starts frame at 1
-.string		anim_type;		//animation type: stand,walk,run,pain,death,attack
+//new player/monster/weapon animation variables
+.float		last_action;	//transition to new anim_type, starts frame at 1
+.float		anim_type;		//animation type: stand,walk,run,pain,death,attack
 .float		anim_end;		//last animation $frame name
 .float		anim_end_num;	//number associated with the last $frame
 .float		anim_time;		//the length in seconds of one animation cycle
 
 //new player weapon animation variables
-.string		weapon_last_action;	//transition to new weapon_anim_type, starts frame at 1
-.string		weapon_anim_type;		//animation type: idle,fire,altfire,holster,etc...
-.float		weapon_anim_end;		//last animation $weaponframe name
-.float		weapon_anim_end_num;	//number associated with the last $weaponframe
-.float		weapon_anim_time;		//the length in seconds of one animation cycle
-.float		shotgun_loaded_ammo;	//the number of shells the shotgun has in its chamber.
+.entity		weaponentity;			//Entity for the client's weapon
+.float		ammo_in_chamber;	//the number of shells the shotgun has in its chamber.
+
 
 //
 // player only fields

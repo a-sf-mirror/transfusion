@@ -20,7 +20,6 @@
 #include "common.qh"
 #include "player.qh"
 
-void(string hand) Flare_Fire;
 void() FlareThink;
 void() flare_animate;
 
@@ -93,7 +92,7 @@ void() FlareTouch =
 		self.effects = EF_STARDUST;
 
 		// Flares stick for max of 6 seconds
-		self.attack_finished = time + 6;
+		self.weaponentity.attack_finished = time + 6;
 		FlareThink();
 	}
 	else
@@ -104,7 +103,7 @@ void () FlareThink =
 {
 	local float percent;
 
-	if (self.attack_finished < time ||  // flare is burnt out
+	if (self.weaponentity.attack_finished < time ||  // flare is burnt out
 		self.enemy.health <=0)          // enemy is dead
 		remove (self);
 
@@ -318,7 +317,7 @@ Flare_Fire
 Launch a flare
 ================
 */
-void(string hand) Flare_Fire =
+void(float hand) Flare_Fire =
 {
 	local vector dir;
 	local float  mspeed;
@@ -335,7 +334,7 @@ void(string hand) Flare_Fire =
 	makevectors(self.v_angle);
 	if (self.items & IT_GUNS_AKIMBO)
 	{
-		if (hand == "right")
+		if (hand == RIGHT)
 			orig = self.origin + v_forward * 8 + '0 0 16' + v_right * 10 + v_forward * 24;
 		else
 			orig = self.origin + v_forward * 8 + '0 0 16' + v_right * -16 + v_forward * 24;
@@ -366,19 +365,17 @@ Attack code for the flaregun
 */
 void() Flare_Attack =
 {
-	// Normal fire or altfire?
-	if (self.button3)
+	if (self.button3) // Altfire
 		self.player_state = PS_ALTFIRE;
 	else
 		self.player_state = PS_FIRE;
 
-	self.attack_finished = time + FLARE_FIRE_TIME;
-	// If we have guns akimbo
 	if (self.items & IT_GUNS_AKIMBO)
-		self.weapon_anim_type = "akimbofire";
+		self.weaponentity.anim_type = AKIMBO_FIRE;
 	else
-		self.weapon_anim_type = "fire";
+		self.weaponentity.anim_type = FIRE;
 
+	self.weaponentity.attack_finished = time + FLARE_FIRE_TIME;
 	flare_animate();
 };
 
@@ -393,13 +390,16 @@ void() Flare_Draw =
 {
 	self.weapon = IT_FLAREGUN;
 	self.currentammo = self.ammo_flare;
-	self.items = self.items - (self.items & (IT_SHELLS | IT_NAILS | IT_CELLS | IT_ROCKETS));
-
+	self.weaponentity = spawn();
+	self.weaponentity.solid = SOLID_NOT;
+	self.weaponentity.owner = self;
+	self.weaponentity.weaponentity = self.weaponentity;
+	self.weaponentity.origin = '0 0 0';
+	self.weaponentity.angles = '0 0 0';
+	self.weaponentity.viewmodelforclient = self;
 	Flare_UpdateView ();
-
-	self.attack_finished = time + FLARE_DRAW_TIME;
-
-	self.weapon_anim_type = "draw";
+	self.weaponentity.attack_finished = time + FLARE_DRAW_TIME;
+	self.weaponentity.anim_type = DRAW;
 	flare_animate();
 };
 
@@ -412,8 +412,8 @@ Holster code for the flaregun
 */
 void() Flare_Holster =
 {
-	self.attack_finished = time + FLARE_HOLSTER_TIME;
-	self.weapon_anim_type = "holster";
+	self.weaponentity.attack_finished = time + FLARE_HOLSTER_TIME;
+	self.weaponentity.anim_type = HOLSTER;
 	flare_animate();
 };
 
@@ -428,146 +428,144 @@ void() Flare_UpdateView =
 {
 	if (self.akimbo_finished > time && self.currentammo >= 2)
 	{
-		self.weaponmodel = "models/weapons/ga_flare.psk";
+		setmodel(self.weaponentity, "models/weapons/ga_flare.psk");
 		self.items = self.items | IT_GUNS_AKIMBO;
 	}
 	else
 	{
-		self.weaponmodel = "models/weapons/v_flare.psk";
+		setmodel(self.weaponentity, "models/weapons/v_flare.psk");
 		self.items = self.items - (self.items & IT_GUNS_AKIMBO);
 	}
 };
 
 void() Flare_Idle =
 {
-	self.weapon_anim_type = "idle";
+	self.weaponentity.anim_type = IDLE;
 	self.player_state = PS_IDLE;
-	self.weaponframe = FLARE_IDLE;
+	self.weaponentity.frame = FLARE_IDLE;
 	flare_animate();
 };
 
 void () flare_animate =
 {
-	if (self.weapon_anim_type == self.weapon_last_action)
+	if (self.weaponentity.anim_type == self.weaponentity.last_action)
 	{
-		if (self.weaponframe != self.weapon_anim_end)
-			self.weaponframe = self.weaponframe + 1; //if its a new animation type, it will be set to the proper frame next
+		if (self.weaponentity.frame != self.weaponentity.anim_end)
+			self.weaponentity.frame = self.weaponentity.frame + 1; //if its a new animation type, it will be set to the proper frame next
 		else
-			self.weaponframe = self.weapon_anim_end - self.weapon_anim_end_num + 1;
+			self.weaponentity.frame = self.weaponentity.anim_end - self.weaponentity.anim_end_num + 1;
 	}
 	else
 	{
-		if (self.weapon_anim_type == "idle")
+		if (self.weaponentity.anim_type == IDLE)
 		{
-			self.weapon_anim_end = FLARE_IDLE;
-			self.weapon_anim_end_num = FLARE_IDLE + 1;
-			self.weapon_anim_time = FLARE_IDLE_TIME;
-			self.weaponframe = FLARE_IDLE;
+			self.weaponentity.anim_end = FLARE_IDLE;
+			self.weaponentity.anim_end_num = FLARE_IDLE + 1;
+			self.weaponentity.anim_time = FLARE_IDLE_TIME;
+			self.weaponentity.frame = FLARE_IDLE;
 		}
-		else if (self.weapon_anim_type == "draw")
+		else if (self.weaponentity.anim_type == DRAW)
 		{
-			self.weapon_anim_end = FLARE_DRAW_END;
-			self.weapon_anim_end_num = FLARE_DRAW_END - FLARE_DRAW_START + 1;
-			self.weapon_anim_time = FLARE_DRAW_TIME;
-			self.weaponframe = FLARE_DRAW_START;
+			self.weaponentity.anim_end = FLARE_DRAW_END;
+			self.weaponentity.anim_end_num = FLARE_DRAW_END - FLARE_DRAW_START + 1;
+			self.weaponentity.anim_time = FLARE_DRAW_TIME;
+			self.weaponentity.frame = FLARE_DRAW_START;
 		}
-		else if (self.weapon_anim_type == "fire")
+		else if (self.weaponentity.anim_type == FIRE)
 		{
-			self.weapon_anim_end = FLARE_FIRE_END;
-			self.weapon_anim_end_num = FLARE_FIRE_END - FLARE_FIRE_START + 1;
-			self.weapon_anim_time = FLARE_FIRE_TIME;
-			self.weaponframe = FLARE_FIRE_START;
+			self.weaponentity.anim_end = FLARE_FIRE_END;
+			self.weaponentity.anim_end_num = FLARE_FIRE_END - FLARE_FIRE_START + 1;
+			self.weaponentity.anim_time = FLARE_FIRE_TIME;
+			self.weaponentity.frame = FLARE_FIRE_START;
 		}
-		else if (self.weapon_anim_type == "akimbofire")
+		else if (self.weaponentity.anim_type == AKIMBO_FIRE)
 		{
-			self.weapon_anim_end = FLARE_AKIMBO_FIRE_END;
-			self.weapon_anim_end_num = FLARE_AKIMBO_FIRE_END - FLARE_AKIMBO_FIRE_START + 1;
-			self.weapon_anim_time = FLARE_FIRE_TIME;
-			self.weaponframe = FLARE_AKIMBO_FIRE_START;
+			self.weaponentity.anim_end = FLARE_AKIMBO_FIRE_END;
+			self.weaponentity.anim_end_num = FLARE_AKIMBO_FIRE_END - FLARE_AKIMBO_FIRE_START + 1;
+			self.weaponentity.anim_time = FLARE_FIRE_TIME;
+			self.weaponentity.frame = FLARE_AKIMBO_FIRE_START;
 		}	
-		else if (self.weapon_anim_type == "holster")
+		else if (self.weaponentity.anim_type == HOLSTER)
 		{
-			self.weapon_anim_end = FLARE_HOLSTER_END;
-			self.weapon_anim_end_num = FLARE_HOLSTER_END - FLARE_HOLSTER_START + 1;
-			self.weapon_anim_time = FLARE_HOLSTER_TIME;
-			self.weaponframe = FLARE_HOLSTER_START;
+			self.weaponentity.anim_end = FLARE_HOLSTER_END;
+			self.weaponentity.anim_end_num = FLARE_HOLSTER_END - FLARE_HOLSTER_START + 1;
+			self.weaponentity.anim_time = FLARE_HOLSTER_TIME;
+			self.weaponentity.frame = FLARE_HOLSTER_START;
 		}
-		self.weapon_last_action = self.weapon_anim_type;
+		self.weaponentity.last_action = self.weaponentity.anim_type;
+	}
+	if (self.weaponentity.anim_type != IDLE)
+	{
+		self.nextthink = time + (self.weaponentity.anim_time / self.weaponentity.anim_end_num);
+		self.think = flare_animate;
 	}
 
-	self.nextthink = time + (self.weapon_anim_time / self.weapon_anim_end_num);
-	self.think = flare_animate;
-
-	if (self.weapon_anim_type == "fire")
+	if (self.weaponentity.anim_type == FIRE)
 	{
-		if (self.weaponframe <= FLARE_FIRE_START + 4)
+		if (self.weaponentity.frame <= FLARE_FIRE_START + 4)
 			self.frame = $attack1;
 		else
 			self.frame = $attack2;
-		if (self.weaponframe == FLARE_FIRE_START)
+		if (self.weaponentity.frame == FLARE_FIRE_START)
 		{
 			muzzleflash();
-			Flare_Fire ("right");
+			Flare_Fire (RIGHT);
 		}
-		if (self.weaponframe == FLARE_FIRE_END)
+		if (self.weaponentity.frame == FLARE_FIRE_END)
 		{
+			Flare_UpdateView();
 			if ((!self.button0) || (!self.button3))
 			{
-				self.nextthink = time + FLARE_IDLE_TIME;
+				self.nextthink = time;
 				self.think = Flare_Idle;
 			}
 		}
-		Flare_UpdateView();
 	}
-
-	if (self.weapon_anim_type == "akimbofire")
+	else if (self.weaponentity.anim_type == AKIMBO_FIRE)
 	{
-		if (self.weaponframe == FLARE_AKIMBO_FIRE_START || self.weaponframe == FLARE_AKIMBO_FIRE_START + 2)
+		if (self.weaponentity.frame == FLARE_AKIMBO_FIRE_START || self.weaponentity.frame == FLARE_AKIMBO_FIRE_START + 2)
 			self.frame = $attack1;
 		else
 			self.frame = $attack2;
-		if (self.weaponframe == FLARE_AKIMBO_FIRE_START)
+		if (self.weaponentity.frame == FLARE_AKIMBO_FIRE_START)
 		{
 			muzzleflash ();
-			Flare_Fire ("right");
+			Flare_Fire (RIGHT);
 		}			
-		else if (self.weaponframe == FLARE_AKIMBO_FIRE_START + 5)
+		else if (self.weaponentity.frame == FLARE_AKIMBO_FIRE_START + 5)
 		{
 			muzzleflash ();
-			Flare_Fire ("left");
+			Flare_Fire (LEFT);
 		}
-		if (self.weaponframe == FLARE_AKIMBO_FIRE_END)
+		if (self.weaponentity.frame == FLARE_AKIMBO_FIRE_END)
 		{
+			Flare_UpdateView();
 			// If we don't have enough ammo anymore, drop the guns akimbo
 			if ((self.items & IT_GUNS_AKIMBO) && self.currentammo < 2)
 			{
 				Flare_UpdateView ();
-				self.weaponframe = FLARE_AKIMBO_FIRE_START;
+				self.weaponentity.frame = FLARE_AKIMBO_FIRE_START;
 			}
 
 			if ((!self.button0) || (!self.button3))
 			{
-				self.nextthink = time + FLARE_IDLE_TIME;
+				self.nextthink = time;
 				self.think = Flare_Idle;
 			}
 		}
-		Flare_UpdateView();
 	}
-
-	if ((self.weaponframe == self.weapon_anim_end) && (self.weapon_anim_type == "draw"))
+	else if ((self.weaponentity.frame == self.weaponentity.anim_end) && (self.weaponentity.anim_type == DRAW))
 	{
 		self.nextthink = time + FLARE_IDLE_TIME;
 		self.think = Flare_Idle;
-		player_run();
 	}
-	else if ((self.weaponframe == self.weapon_anim_end) && (self.weapon_anim_type == "holster"))
+	else if ((self.weaponentity.frame == self.weaponentity.anim_end) && (self.weaponentity.anim_type == HOLSTER))
 	{
-		self.nextthink = time + FLARE_IDLE_TIME;
+		remove(self.weaponentity);
 		W_DrawWeapon (self.newweapon);
-		self.think = player_run;
 		return;
 	}
-	if (self.weapon_anim_type == "idle")
+	else if (self.weaponentity.anim_type == IDLE)
 	{
 		self.nextthink = time + FLARE_IDLE_TIME;
 		self.think = Flare_Idle;

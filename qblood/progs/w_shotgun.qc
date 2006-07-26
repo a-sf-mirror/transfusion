@@ -20,8 +20,6 @@
 #include "common.qh"
 #include "player.qh"
 
-void() Shotgun_Fire;
-void() Shotgun_SpawnShell;
 void() shotgun_animate;
 
 #define SHOTGUN_IDLE					0
@@ -48,7 +46,7 @@ void() shotgun_animate;
 #define	SHOTGUN_AKIMBO_HOLSTER_END		18
 
 // times may need adjusting
-#define SHOTGUN_IDLE_TIME				0.01
+#define SHOTGUN_IDLE_TIME				0.1
 #define SHOTGUN_DRAW_TIME				0.4
 #define SHOTGUN_FIRE_TIME				0.35
 #define SHOTGUN_ALTFIRE_TIME			0.3
@@ -71,17 +69,17 @@ void() Shotgun_SpawnShell =
 
 	// 1st shell
 	shell = spawn ();
-	shell.owner = self;
+	shell.owner = self.weaponentity;
 	shell.mdl   = "models/weapons/objects/shotgunshell.md3";
 	shell.noise = "weapons/shtshl2.wav";
 
-	setorigin (shell, self.origin + v_forward * 15);
+	setorigin (shell, self.owner.origin + v_forward * 15);
 	shell.velocity = (crandom () + 1) * v_forward * 30 + v_up * (220 + crandom () * 10) - v_right * crandom () * 30;
 	DropShell (shell);
 
 	// 2nd shell
 	shell2 = spawn ();
-	shell2.owner = self;
+	shell2.owner = self.weaponentity;
 	shell2.mdl   = shell.mdl;
 	shell2.noise = shell.noise;
 
@@ -126,9 +124,9 @@ void() Shotgun_Fire =
 	self.currentammo = self.ammo_shells = self.ammo_shells - nbshots;
 
 	if (nbshots == 1)
-		sound (self, CHAN_AUTO, "weapons/shotgun/shotfire.wav", 1, ATTN_NORM);
+		sound (self, CHAN_AUTO, "weapons/shotgun/shotgunfire.wav", 1, ATTN_NORM);
 	else
-		sound (self ,CHAN_AUTO, "weapons/shotgun/shotfir2.wav", 1, ATTN_NORM);
+		sound (self ,CHAN_AUTO, "weapons/shotgun/shotgunfir2.wav", 1, ATTN_NORM);
 
 	dir = aim (self, 100000);
 
@@ -152,23 +150,21 @@ Attack code for the sawed-off
 */
 void() Shotgun_Attack =
 {
-	if (self.attack_finished < time)
+	if (self.weaponentity.attack_finished < time)
 	{
-	// If it's an altfire shot
-	if (self.button3)
-	{
-		self.attack_finished = time + SHOTGUN_ALTFIRE_TIME;
-		self.player_state = PS_ALTFIRE;
-		self.weapon_anim_type = "altfire";
-	}
-	else
-	{
-		self.attack_finished = time + SHOTGUN_FIRE_TIME;
-		self.player_state = PS_FIRE;
-		self.weapon_anim_type = "fire";
-	}
-
-	shotgun_animate();
+		if (self.button3) // If it's an altfire shot
+		{
+			self.weaponentity.attack_finished = time + SHOTGUN_ALTFIRE_TIME;
+			self.player_state = PS_ALTFIRE;
+			self.weaponentity.anim_type = ALTFIRE;
+		}
+		else // Regular fire
+		{
+			self.weaponentity.attack_finished = time + SHOTGUN_FIRE_TIME;
+			self.player_state = PS_FIRE;
+			self.weaponentity.anim_type = FIRE;
+		}
+		shotgun_animate();
 	}
 };
 
@@ -183,19 +179,23 @@ void() Shotgun_Draw =
 {
 	self.weapon = IT_SAWED_OFF;
 	self.currentammo = self.ammo_shells;
-	self.items = (self.items - (self.items & (IT_NAILS | IT_CELLS | IT_ROCKETS))) | IT_SHELLS;
+	self.weaponentity = spawn();
+	self.weaponentity.solid = SOLID_NOT;
+	self.weaponentity.owner = self;
+	self.weaponentity.weaponentity = self.weaponentity;
+	self.weaponentity.origin = '0 0 0';
+	self.weaponentity.angles = '0 0 0';
+	self.weaponentity.viewmodelforclient = self;
 
 	if (self.currentammo > 1)
-		self.shotgun_loaded_ammo = 2;
+		self.weaponentity.ammo_in_chamber = 2;
 	else
-		self.shotgun_loaded_ammo = 1;
+		self.weaponentity.ammo_in_chamber = 1;
 
 	Shotgun_UpdateView ();
+	self.weaponentity.attack_finished = time + SHOTGUN_DRAW_TIME;
 
-	self.attack_finished = time + 0.3;
-
-	self.weapon_anim_type = "draw";
-	self.weaponframe == SHOTGUN_DRAW_START;
+	self.weaponentity.anim_type = DRAW;
 	shotgun_animate();
 };
 
@@ -208,8 +208,8 @@ Holster code for the sawed-off
 */
 void() Shotgun_Holster =
 {
-	self.attack_finished = time + 0.3;
-	self.weapon_anim_type = "holster";
+	self.weaponentity.attack_finished = time + SHOTGUN_HOLSTER_TIME;
+	self.weaponentity.anim_type = HOLSTER;
 	shotgun_animate();
 };
 
@@ -222,169 +222,160 @@ Choose the right sawed-off model to display
 */
 void() Shotgun_UpdateView =
 {
+	self.weaponmodel = string_null;
 	if (self.akimbo_finished > time && self.currentammo >= 2)
 	{
-		self.weaponmodel = "models/weapons/ga_shotgun.psk";
+		setmodel(self.weaponentity, "models/weapons/ga_shotgun.psk");
 		self.items = self.items | IT_GUNS_AKIMBO;
 	}
 	else
 	{
-		self.weaponmodel = "models/weapons/v_shotgun.psk";
+		setmodel(self.weaponentity, "models/weapons/v_shotgun.psk");
 		self.items = self.items - (self.items & IT_GUNS_AKIMBO);
 	}
 };
 
 void() Shotgun_Idle =
 {
-	self.weapon_anim_type = "idle";
+	self.weaponentity.anim_type = IDLE;
 	self.player_state = PS_IDLE;
-	self.weaponframe = SHOTGUN_IDLE;
+	self.weaponentity.frame = SHOTGUN_IDLE;
 	shotgun_animate();
 };
 
 void () shotgun_animate =
 {
-	if (self.weapon_anim_type == self.weapon_last_action)
+	if (self.weaponentity.anim_type == self.weaponentity.last_action)
 	{
-		if (self.weaponframe < self.weapon_anim_end)
-			self.weaponframe = self.weaponframe + 1; //if its a new animation type, it will be set to the proper frame next
-		else if (self.weapon_anim_type != "reload")
-			self.weaponframe = self.weapon_anim_end - self.weapon_anim_end_num + 1;
+		if (self.weaponentity.frame < self.weaponentity.anim_end)
+			self.weaponentity.frame = self.weaponentity.frame + 1; //if its a new animation type, it will be set to the proper frame next
+		else if (self.weaponentity.anim_type != RELOAD)
+			self.weaponentity.frame = self.weaponentity.anim_end - self.weaponentity.anim_end_num + 1;
 	}
 	else
 	{
-		if (self.weapon_anim_type == "idle")
+		if (self.weaponentity.anim_type == IDLE)
 		{
-			self.weapon_anim_end = SHOTGUN_IDLE;
-			self.weapon_anim_end_num = SHOTGUN_IDLE + 1;
-			self.weapon_anim_time = SHOTGUN_IDLE_TIME;
-			self.weaponframe = SHOTGUN_IDLE;
+			self.weaponentity.anim_end = SHOTGUN_IDLE;
+			self.weaponentity.anim_end_num = SHOTGUN_IDLE + 1;
+			self.weaponentity.anim_time = SHOTGUN_IDLE_TIME;
+			self.weaponentity.frame = SHOTGUN_IDLE;
 		}
-		else if (self.weapon_anim_type == "draw")
+		else if (self.weaponentity.anim_type == DRAW)
 		{
-			self.weapon_anim_end = SHOTGUN_DRAW_END;
-			self.weapon_anim_end_num = SHOTGUN_DRAW_END - SHOTGUN_DRAW_START + 1;
-			self.weapon_anim_time = SHOTGUN_DRAW_TIME;
-			self.weaponframe = SHOTGUN_DRAW_START;
+			self.weaponentity.anim_end = SHOTGUN_DRAW_END;
+			self.weaponentity.anim_end_num = SHOTGUN_DRAW_END - SHOTGUN_DRAW_START + 1;
+			self.weaponentity.anim_time = SHOTGUN_DRAW_TIME;
+			self.weaponentity.frame = SHOTGUN_DRAW_START;
 		}
-		else if (self.weapon_anim_type == "fire")
+		else if (self.weaponentity.anim_type == FIRE)
 		{
-			if (self.shotgun_loaded_ammo == 2)
+			if (self.weaponentity.ammo_in_chamber == 2)
 			{
-				self.weapon_anim_end = SHOTGUN_FIREL_END;
-				self.weapon_anim_end_num = SHOTGUN_FIREL_END - SHOTGUN_FIREL_START + 1;
-				self.weapon_anim_time = SHOTGUN_FIRE_TIME;
-				self.weaponframe = SHOTGUN_FIREL_START;
+				self.weaponentity.anim_end = SHOTGUN_FIREL_END;
+				self.weaponentity.anim_end_num = SHOTGUN_FIREL_END - SHOTGUN_FIREL_START + 1;
+				self.weaponentity.anim_time = SHOTGUN_FIRE_TIME;
+				self.weaponentity.frame = SHOTGUN_FIREL_START;
 			}
-			else if (self.shotgun_loaded_ammo == 1)
+			else if (self.weaponentity.ammo_in_chamber == 1)
 			{
-				self.weapon_anim_end = SHOTGUN_FIRER_END;
-				self.weapon_anim_end_num = SHOTGUN_FIRER_END - SHOTGUN_FIRER_START + 1;
-				self.weapon_anim_time = SHOTGUN_FIRE_TIME;
-				self.weaponframe = SHOTGUN_FIRER_START;
+				self.weaponentity.anim_end = SHOTGUN_FIRER_END;
+				self.weaponentity.anim_end_num = SHOTGUN_FIRER_END - SHOTGUN_FIRER_START + 1;
+				self.weaponentity.anim_time = SHOTGUN_FIRE_TIME;
+				self.weaponentity.frame = SHOTGUN_FIRER_START;
 			}
 		}
-		else if (self.weapon_anim_type == "altfire")
+		else if (self.weaponentity.anim_type == ALTFIRE)
 		{
-			self.weapon_anim_end = SHOTGUN_ALTFIRE_END;
-			self.weapon_anim_end_num = SHOTGUN_ALTFIRE_END - SHOTGUN_ALTFIRE_START + 1;
-			self.weapon_anim_time = SHOTGUN_ALTFIRE_TIME;
-			self.weaponframe = SHOTGUN_ALTFIRE_START;
+			self.weaponentity.anim_end = SHOTGUN_ALTFIRE_END;
+			self.weaponentity.anim_end_num = SHOTGUN_ALTFIRE_END - SHOTGUN_ALTFIRE_START + 1;
+			self.weaponentity.anim_time = SHOTGUN_ALTFIRE_TIME;
+			self.weaponentity.frame = SHOTGUN_ALTFIRE_START;
 		}
-		else if (self.weapon_anim_type == "reload")
+		else if (self.weaponentity.anim_type == RELOAD)
 		{
-			self.weapon_anim_end = SHOTGUN_RELOAD_END;
-			self.weapon_anim_end_num = SHOTGUN_RELOAD_END - SHOTGUN_RELOAD_START + 1;
-			self.weapon_anim_time = SHOTGUN_RELOAD_TIME;
-			self.weaponframe = SHOTGUN_RELOAD_START;
+			self.weaponentity.anim_end = SHOTGUN_RELOAD_END;
+			self.weaponentity.anim_end_num = SHOTGUN_RELOAD_END - SHOTGUN_RELOAD_START + 1;
+			self.weaponentity.anim_time = SHOTGUN_RELOAD_TIME;
+			self.weaponentity.frame = SHOTGUN_RELOAD_START;
 		}
-		else if (self.weapon_anim_type == "holster")
+		else if (self.weaponentity.anim_type == HOLSTER)
 		{
-			self.weapon_anim_end = SHOTGUN_HOLSTER_END;
-			self.weapon_anim_end_num = SHOTGUN_HOLSTER_END - SHOTGUN_HOLSTER_START + 1;
-			self.weapon_anim_time = SHOTGUN_HOLSTER_TIME;
-			self.weaponframe = SHOTGUN_HOLSTER_START;
+			self.weaponentity.anim_end = SHOTGUN_HOLSTER_END;
+			self.weaponentity.anim_end_num = SHOTGUN_HOLSTER_END - SHOTGUN_HOLSTER_START + 1;
+			self.weaponentity.anim_time = SHOTGUN_HOLSTER_TIME;
+			self.weaponentity.frame = SHOTGUN_HOLSTER_START;
 		}
-		self.weapon_last_action = self.weapon_anim_type;
+		self.weaponentity.last_action = self.weaponentity.anim_type;
+	}
+	if (self.weaponentity.anim_type != IDLE)
+	{
+		self.nextthink = time + (self.weaponentity.anim_time / self.weaponentity.anim_end_num);
+		self.think = shotgun_animate;
 	}
 
-	self.nextthink = time + (self.weapon_anim_time / self.weapon_anim_end_num);
-	self.think = shotgun_animate;
-
-	if (self.weapon_anim_type == "idle")
+	if (self.weaponentity.anim_type == FIRE)
 	{
-		self.nextthink = time + SHOTGUN_IDLE_TIME;
-		self.think = Shotgun_Idle;
-	}
-	else if (self.weapon_anim_type == "fire")
-	{
-		if ((self.weaponframe == SHOTGUN_FIRER_START) || (self.weaponframe == SHOTGUN_FIREL_START))
+		if ((self.weaponentity.frame == SHOTGUN_FIRER_START) || (self.weaponentity.frame == SHOTGUN_FIREL_START))
 		{
 			muzzleflash();
 			Shotgun_Fire ();
-			self.shotgun_loaded_ammo = self.shotgun_loaded_ammo - 1;
+			self.weaponentity.ammo_in_chamber = self.weaponentity.ammo_in_chamber - 1;
 			if (self.items & IT_GUNS_AKIMBO)
 				Shotgun_Fire ();
 		}
-		if ((self.weaponframe == SHOTGUN_FIRER_END) || (self.weaponframe == SHOTGUN_FIREL_END))
+		else if ((self.weaponentity.frame == SHOTGUN_FIRER_END) || (self.weaponentity.frame == SHOTGUN_FIREL_END))
 		{
 			Shotgun_UpdateView();
-			if (self.shotgun_loaded_ammo <= 0)
+			if (self.weaponentity.ammo_in_chamber <= 0)
 			{
-				self.weapon_anim_type = "reload";
-				self.attack_finished = time + SHOTGUN_RELOAD_TIME;
+				self.weaponentity.anim_type = RELOAD;
+				self.weaponentity.attack_finished = time + SHOTGUN_RELOAD_TIME;
 				shotgun_animate();
 			}
 			else
 				Shotgun_Idle();
 		}
 	}
-	else if (self.weapon_anim_type == "altfire")
+	else if (self.weaponentity.anim_type == ALTFIRE)
 	{
-		if (self.weaponframe == SHOTGUN_ALTFIRE_START)
+		if (self.weaponentity.frame == SHOTGUN_ALTFIRE_START)
 		{
-			if (self.shotgun_loaded_ammo < 2)
+			if (self.weaponentity.ammo_in_chamber < 2)
 				self.player_state = PS_FIRE;
 			muzzleflash ();
 			Shotgun_Fire ();
-			self.shotgun_loaded_ammo = self.shotgun_loaded_ammo - 2;
+			self.weaponentity.ammo_in_chamber = self.weaponentity.ammo_in_chamber - 2;
 			if (self.items & IT_GUNS_AKIMBO)
 				Shotgun_Fire ();
 		}
-		else if (self.weaponframe == SHOTGUN_ALTFIRE_END)
+		else if (self.weaponentity.frame == SHOTGUN_ALTFIRE_END)
 		{
 			Shotgun_UpdateView();
-			if (self.shotgun_loaded_ammo <= 0)
-			{
-				self.weapon_anim_type = "reload";
-				self.attack_finished = time + SHOTGUN_RELOAD_TIME;
-				shotgun_animate();
-			}
-			else if (!self.button3)
-				Shotgun_Idle();
+			self.weaponentity.anim_type = RELOAD;
+			self.weaponentity.attack_finished = time + SHOTGUN_RELOAD_TIME;
+			shotgun_animate();
 		}
 	}
-	else if (self.weapon_anim_type == "reload")
+	else if (self.weaponentity.anim_type == RELOAD)
 	{
-		if (self.weaponframe == SHOTGUN_RELOAD_START + 3)
+		if (self.weaponentity.frame == SHOTGUN_RELOAD_START + 3)
 			Shotgun_SpawnShell ();
-		if ((self.weaponframe == SHOTGUN_RELOAD_END) && ((!self.button0) || (!self.button3)))
+		if ((self.weaponentity.frame == SHOTGUN_RELOAD_END) && ((!self.button0) || (!self.button3)))
 		{
-			self.shotgun_loaded_ammo = 2;
+			self.weaponentity.ammo_in_chamber = 2;
 			Shotgun_Idle();
 		}
 	}
-	else if ((self.weaponframe == self.weapon_anim_end) && (self.weapon_anim_type == "draw"))
+	else if ((self.weaponentity.frame == self.weaponentity.anim_end) && (self.weaponentity.anim_type == DRAW))
 	{
-		self.nextthink = time + SHOTGUN_IDLE_TIME;
+		self.nextthink = time + SHOTGUN_DRAW_TIME;
 		self.think = Shotgun_Idle;
 	}
-	else if ((self.weaponframe == self.weapon_anim_end) && (self.weapon_anim_type == "holster"))
+	else if ((self.weaponentity.frame == self.weaponentity.anim_end) && (self.weaponentity.anim_type == HOLSTER))
 	{
-		self.nextthink = time + SHOTGUN_IDLE_TIME;
+		remove(self.weaponentity);
 		W_DrawWeapon (self.newweapon);
-		self.think = player_run;
 		return;
 	}
-
 };

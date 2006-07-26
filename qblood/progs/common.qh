@@ -55,6 +55,7 @@
 #define FL_WATERJUMP        2048  // player jumping out of water
 #define FL_JUMPRELEASED     4096  // for jump debouncing
 #define FL_FALLING          8192  // when falling a large distance
+#define FL_CROUCHING		16384
 
 // edict.spawnflags
 // let 10 flags (1 -> 512) free for each entity type
@@ -550,5 +551,50 @@
 #define NONBLOCKING  4
 
 #define STAYOPEN  1
+
+//Weapon States
+#define	IDLE			1
+#define	DRAW			2
+#define	FIRE			3	
+#define	ALTFIRE			4
+#define	HOLSTER			5
+#define RELOAD			6
+#define	REBOUND			7
+#define	AKIMBO_IDLE		8
+#define AKIMBO_DRAW		9
+#define	AKIMBO_FIRE		10
+#define	AKIMBO_ALTFIRE	11
+#define	AKIMBO_HOLSTER	12
+#define	AKIMBO_RELOAD	13
+
+//Enemy States
+//order is not important as long as all are unique
+//FIXME - reorder them for prettyness once all are impimented
+#define	STAND		1
+#define	WALK		2
+#define	RUN			3
+#define	ATTACK		4
+#define CROUCH		5
+#define	PAIN		6
+#define	DEATH		7
+#define	SWIM		8
+#define	SWIM_FIRE	9
+//Zombie specific
+#define	ARISE		10
+#define	FALLBACK	11
+#define	STANDUP		12
+#define HIDE		13
+#define	EXPLODE		14
+#define	DEATH1		15 // Also used for Rat
+#define	DEATH2		16 // Also used for Rat
+//Cultist specific
+#define	ATTACK1		17
+#define	ATTACK2		18
+#define	CRAWL		19
+#define	CRAWL_FIRE	20
+
+//Akimbo handedness
+#define	RIGHT	1
+#define	LEFT	2
 
 #endif  // #ifndef _COMMON_QH_

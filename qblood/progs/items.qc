@@ -34,12 +34,12 @@ BE .8 .3 .4 IN COLOR */
 Object Attachment
 =================
 */
-void(string attach_point) AttachObject =
+void(string attach_point, entity attach_to) AttachObject =
 {
-	self.attachedobject = spawn();
-	self.attachedobject.solid = SOLID_NOT;
-	self.attachedobject.owner = self;
-	setattachment(self.attachedobject, self, attach_point);
+	attach_to.attachedobject = spawn();
+	attach_to.attachedobject.solid = SOLID_NOT;
+	attach_to.attachedobject.owner = attach_to;
+	setattachment(attach_to.attachedobject, attach_to, attach_point);
 };
 
 /*
@@ -248,8 +248,8 @@ void(float isAnObject) PlaceItemOrObject =
 			dprint (" fell out of level at ");
 			dprint (vtos(self.origin));
 			dprint ("\n");
-			local entity	dummy;
 
+			local entity	dummy;
 			dummy = spawn();
 			dummy.origin = self.origin;
 			setmodel(dummy, "null");
@@ -1451,6 +1451,7 @@ void() weapon_flaregun =
 
 void() precache_sawedoff =
 {
+	precache_model ("models/weapons/muzzle_shotgun.spr32"); // Shotgun Muzzle Flash
 	precache_model ("models/weapons/v_shotgun.psk");
 	precache_model ("models/weapons/ga_shotgun.psk");				// akimbo model
 	precache_model ("models/weapons/g_shotgun.md3");
@@ -1470,9 +1471,8 @@ void() weapon_sawedoff =
 	// already precached, and you can't precache in the middle of a game
 	if (self.classname != "drop_item")
 		precache_sawedoff();
-	else
-		self.classname = "weapon_sawedoff"; // For monster weapon drop
 
+	self.classname = "weapon_sawedoff"; // For monster weapon drop
 	setmodel (self, "models/weapons/g_shotgun.md3");
 	self.weapon = IT_SAWED_OFF;
 	self.netname = "Sawed-off";

@@ -274,8 +274,7 @@ void () monster_drop_key =
 
 	key = spawn();
 	key.spawnflags = self.items2;		
-	key.origin = self.origin;
-	key.origin_z = self.origin_z + 5;
+	key.origin = self.origin + v_up * 5;
 	key.velocity = '0 0 0';
 	key.think = item_key;
 	key.nextthink = time + 0.1;

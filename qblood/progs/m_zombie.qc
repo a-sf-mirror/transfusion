@@ -62,22 +62,22 @@ void () zombie_animate;
 
 void () zombie_fallback =
 {
-	self.anim_type = "fallback";
+	self.anim_type = FALLBACK;
 	zombie_animate();
 };
 
 void () zombie_standup =
 {
-	if (self.anim_type == "fallback")
+	if (self.anim_type == FALLBACK)
 		self.nextthink = time + 1.5;
-	self.anim_type = "standup";
+	self.anim_type = STANDUP;
 	self.think = zombie_animate;
 };
 
 void () zombie_arise =
 {
 	sound(self, CHAN_VOICE, "axezombie/azomrise.wav", 1, ATTN_NORM);
-	self.anim_type = "arise";
+	self.anim_type = ARISE;
 	self.spawnposition = 1; //once it has arisen, it stays standing
 	zombie_animate();
 };
@@ -85,7 +85,7 @@ void () zombie_arise =
 void () zombie_hide =
 {
     self.style = 1;
-	self.anim_type = "hide";
+	self.anim_type = HIDE;
 	zombie_animate();
 };
 
@@ -94,7 +94,7 @@ void () zombie_stand =
     if (random () < 0.05)
         sound (self, CHAN_VOICE, "axezombie/azomroam.wav", 1, ATTN_IDLE);
     self.style = 1;
-	self.anim_type = "stand";
+	self.anim_type = STAND;
 	zombie_animate();
 };
 
@@ -102,14 +102,14 @@ void () zombie_stand =
 void () zombie_walk =
 {
     self.style = 2;
-	self.anim_type = "walk";
+	self.anim_type = WALK;
 	zombie_animate();
 };
 
 void () zombie_run =
 {
     self.style = 3;
-	self.anim_type = "run";
+	self.anim_type = RUN;
 	zombie_animate();
 };
 
@@ -120,7 +120,7 @@ void () zombie_attack =
     delta = (self.enemy.origin - self.origin);
     if (vlen (delta) <= 60)
 	{
-		self.anim_type = "attack";
+		self.anim_type = ATTACK;
 		zombie_animate();
 	}
 };
@@ -162,7 +162,7 @@ void () zombie_pain =
 	}
 	if (self.pain_finished > time)
         return;
-	self.anim_type = "pain";
+	self.anim_type = PAIN;
 	zombie_animate();
 };
 
@@ -185,11 +185,11 @@ void () zombie_die =
 		setsize (self,'-7 -21 0', '15 14 59');
 		// FIXME: need to add dropped head spawn here as well
 		self.frame = ZOMBIE_EXPLODE_START;
-		self.anim_type = "explode";
+		self.anim_type = EXPLODE;
 	}
     else if (random () < 0.75)
 	{
-		self.anim_type = "death1";
+		self.anim_type = DEATH1;
 	}
     else
 	{
@@ -197,7 +197,7 @@ void () zombie_die =
 		setsize (self,'-7 -21 0', '15 14 59');
 		// FIXME: need to add dropped head spawn here as well
 		self.frame = ZOMBIE_DEATH2_START;
-		self.anim_type = "death2";
+		self.anim_type = DEATH2;
 	}
 	if (random() < 0.75)
 		sound (self, CHAN_VOICE, "axezombie/azomdie1.wav", 1, ATTN_NORM);
@@ -218,80 +218,80 @@ void () zombie_animate =
 	}
 	else
 	{
-		if (self.anim_type == "stand")
+		if (self.anim_type == STAND)
 		{
 			self.anim_end = ZOMBIE_STAND_END;
 			self.anim_end_num = ZOMBIE_STAND_END - ZOMBIE_STAND_START + 1;
 			self.anim_time = ZOMBIE_STAND_TIME;
 			self.frame = ZOMBIE_STAND_START;
 		}
-		else if ((self.anim_type == "walk") || (self.anim_type == "run"))
+		else if ((self.anim_type == WALK) || (self.anim_type == RUN))
 		{
 			self.anim_end = ZOMBIE_RUN_END;
 			self.anim_end_num = ZOMBIE_RUN_END - ZOMBIE_RUN_START + 1;
-			if (self.anim_type == "walk")
+			if (self.anim_type == WALK)
 				self.anim_time = ZOMBIE_WALK_TIME;
 			else
 				self.anim_time = ZOMBIE_RUN_TIME;
 			self.frame = ZOMBIE_RUN_START;
 		}
-		else if (self.anim_type == "attack")
+		else if (self.anim_type == ATTACK)
 		{
 			self.anim_end = ZOMBIE_ATTACK_END;
 			self.anim_end_num = ZOMBIE_ATTACK_END - ZOMBIE_ATTACK_START + 1;
 			self.anim_time = ZOMBIE_ATTACK_TIME;
 			self.frame = ZOMBIE_ATTACK_START;
 		}
-		else if (self.anim_type == "pain")
+		else if (self.anim_type == PAIN)
 		{
 			self.anim_end = ZOMBIE_PAIN_END;
 			self.anim_end_num = ZOMBIE_PAIN_END - ZOMBIE_PAIN_START + 1;
 			self.anim_time = ZOMBIE_PAIN_TIME;
 			self.frame = ZOMBIE_PAIN_START;
 		}
-		else if (self.anim_type == "arise")
+		else if (self.anim_type == ARISE)
 		{
 			self.anim_end = ZOMBIE_ARISE_END;
 			self.anim_end_num = ZOMBIE_ARISE_END - ZOMBIE_ARISE_START + 1;
 			self.anim_time = ZOMBIE_ARISE_TIME;
 			self.frame = ZOMBIE_ARISE_START;
 		}
-		else if (self.anim_type == "standup")
+		else if (self.anim_type == STANDUP)
 		{
 			self.anim_end = ZOMBIE_STANDUP_END;
 			self.anim_end_num = ZOMBIE_STANDUP_END - ZOMBIE_STANDUP_START + 1;
 			self.anim_time = ZOMBIE_STANDUP_TIME;
 			self.frame = ZOMBIE_STANDUP_START;
 		}
-		else if (self.anim_type == "fallback")
+		else if (self.anim_type == FALLBACK)
 		{
 			self.anim_end = ZOMBIE_FALLBACK_END;
 			self.anim_end_num = ZOMBIE_FALLBACK_END - ZOMBIE_FALLBACK_START + 1;
 			self.anim_time = ZOMBIE_FALLBACK_TIME;
 			self.frame = ZOMBIE_FALLBACK_START;
 		}
-		else if (self.anim_type == "death1")
+		else if (self.anim_type == DEATH1)
 		{
 			self.anim_end = ZOMBIE_DEATH1_END;
 			self.anim_end_num = ZOMBIE_DEATH1_END - ZOMBIE_DEATH1_START + 1;
 			self.anim_time = ZOMBIE_DEATH1_TIME;
 			self.frame = ZOMBIE_DEATH1_START;
 		}
-		else if (self.anim_type == "death2")
+		else if (self.anim_type == DEATH2)
 		{
 			self.anim_end = ZOMBIE_DEATH2_END;
 			self.anim_end_num = ZOMBIE_DEATH2_END - ZOMBIE_DEATH2_START + 1;
 			self.anim_time = ZOMBIE_DEATH2_TIME;
 			self.frame = ZOMBIE_DEATH2_START;
 		}
-		else if (self.anim_type == "explode")
+		else if (self.anim_type == EXPLODE)
 		{
 			self.anim_end = ZOMBIE_EXPLODE_END;
 			self.anim_end_num = ZOMBIE_EXPLODE_END - ZOMBIE_EXPLODE_START + 1;
 			self.anim_time = ZOMBIE_EXPLODE_TIME;
 			self.frame = ZOMBIE_EXPLODE_START;
 		}
-		else if (self.anim_type == "hide")
+		else if (self.anim_type == HIDE)
 		{
 			self.anim_end = ZOMBIE_HIDE_END;
 			self.anim_end_num = ZOMBIE_HIDE_END - ZOMBIE_HIDE_START + 1;
@@ -303,7 +303,7 @@ void () zombie_animate =
 	self.nextthink = time + (self.anim_time / self.anim_end_num);
 	self.think = zombie_animate;
 
-	if ((self.anim_type == "death1") || (self.anim_type == "death2") || (self.anim_type == "explode"))
+	if ((self.anim_type == DEATH1) || (self.anim_type == DEATH2) || (self.anim_type == EXPLODE))
 	{
 		if (self.frame == self.anim_end)
 		{
@@ -313,11 +313,11 @@ void () zombie_animate =
 		}
 	}
 
-	if ((self.frame == self.anim_end) && (self.anim_type != "hide"))
+	if ((self.frame == self.anim_end) && (self.anim_type != HIDE))
 	{
-		if (self.anim_type == "fallback")
+		if (self.anim_type == FALLBACK)
 			self.th_standup();
-		else if ((self.anim_type == "run") || (self.anim_type == "walk"))
+		else if ((self.anim_type == RUN) || (self.anim_type == WALK))
 			self.frame = ZOMBIE_RUN_START;
 		else
 			self.th_run();
@@ -327,9 +327,9 @@ void () zombie_animate =
 	//insert sounds or attack damage here with if statements
 	if (self.frame == ZOMBIE_ATTACK_START + 7) sound (self, CHAN_VOICE, "axezombie/azomswip.wav", 1, ATTN_NORM);
 	if (self.frame == ZOMBIE_ATTACK_START + 12) zombie_axeAttack();
-	if ((self.anim_type == "stand") || (self.anim_type == "hide")) ai_stand();
-	else if ((self.anim_type == "walk") || (self.anim_type == "run")) basic_ai (2);
-	else if (self.anim_type == "attack") ai_face();
+	if ((self.anim_type == STAND) || (self.anim_type == HIDE)) ai_stand();
+	else if ((self.anim_type == WALK) || (self.anim_type == RUN)) basic_ai (2);
+	else if (self.anim_type == ATTACK) ai_face();
 };
 
 /*
@@ -396,7 +396,7 @@ void () monster_zombie =
 	self.th_hide = zombie_hide;
 	self.th_melee = zombie_attack;
 	self.touch = monster_stepped_on;
-	self.anim_type = "null";
+	self.anim_type = HIDE;
 	self.classname = "monster";
 	self.netname = "monster_zombie";
 	walkmonster_start ();

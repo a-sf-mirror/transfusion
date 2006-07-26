@@ -39,14 +39,14 @@ void () innocent_animate;
 void () innocent_stand =
 {
 	self.style = 1;
-	self.anim_type = "stand";
+	self.anim_type = STAND;
 	innocent_animate();
 };
 
 void () innocent_run =
 {
 	self.style = 3;
-	self.anim_type = "run";
+	self.anim_type = RUN;
 	innocent_animate();
 };
 
@@ -135,7 +135,7 @@ void(entity attacker, float damage) innocent_pain =
 
 	self.enemy = attacker;
 
-	self.anim_type = "pain";
+	self.anim_type = PAIN;
 	innocent_animate();
 };
 
@@ -175,7 +175,7 @@ void () innocent_death =
 	else
 		sound (self, CHAN_VOICE, "innocent/sobbing.wav", 1, ATTN_NORM);
 
-	self.anim_type = "death";
+	self.anim_type = DEATH;
 	innocent_animate();
 };
 
@@ -190,21 +190,21 @@ void () innocent_animate =
 	}
 	else
 	{
-		if (self.anim_type == "stand")
+		if (self.anim_type == STAND)
 		{
 			self.anim_end = INNOCENT_STAND_END;
 			self.anim_end_num = INNOCENT_STAND_END - INNOCENT_STAND_START + 1; //add one to compensate for the first frame not being counted
 			self.anim_time = INNOCENT_STAND_TIME; // one idle animation lasts 2.5 seconds
 			self.frame = INNOCENT_STAND_START;
 		}
-		else if (self.anim_type == "run")
+		else if (self.anim_type == RUN)
 		{
 			self.anim_end = INNOCENT_RUN_END;
 			self.anim_end_num = INNOCENT_RUN_END - INNOCENT_RUN_START + 1;
 			self.anim_time = INNOCENT_RUN_TIME;
 			self.frame = INNOCENT_RUN_START;
 		}
-		else if (self.anim_type == "pain")
+		else if (self.anim_type == PAIN)
 		{
 			self.anim_end = INNOCENT_PAIN_END;
 			self.anim_end_num = INNOCENT_PAIN_END - INNOCENT_PAIN_START + 1;
@@ -214,7 +214,7 @@ void () innocent_animate =
 			else
 				self.frame = INNOCENT_PAIN_START;
 		}
-		else if (self.anim_type == "death")
+		else if (self.anim_type == DEATH)
 		{
 			self.anim_end = INNOCENT_DEATH_END;
 			self.anim_end_num = INNOCENT_DEATH_END - INNOCENT_DEATH_START + 1;
@@ -227,7 +227,7 @@ void () innocent_animate =
 	self.nextthink = time + (self.anim_time / self.anim_end_num);
 	self.think = innocent_animate;
 
-	if ((self.anim_type == "death") && (self.frame == self.anim_end))
+	if ((self.anim_type == DEATH) && (self.frame == self.anim_end))
 	{
 		self.nextthink = 0;
 		monster_become_corpse();
@@ -235,9 +235,9 @@ void () innocent_animate =
 
 	/*ai_main();
 	//insert sounds or attack damage here with if statements*/
-	if (self.anim_type == "stand")
+	if (self.anim_type == STAND)
 		self.think = innocent_think;
-	if (self.anim_type == "run")
+	if (self.anim_type == RUN)
 		ai_run_away(4);
 };
 

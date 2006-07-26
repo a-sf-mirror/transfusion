@@ -45,14 +45,14 @@ void () rat_idle =
 		sound (self, CHAN_VOICE, "rat/ratroam.wav", 1, ATTN_IDLE);
 
 	self.style = 1;
-	self.anim_type = "idle";
+	self.anim_type = IDLE;
 	rat_animate();
 };
 
 void () rat_run =
 {
 	self.style = 3;
-	self.anim_type = "run";
+	self.anim_type = RUN;
 	rat_animate();
 };
 
@@ -68,7 +68,7 @@ void () rat_attack =
 
 	if (vlen (delta) <= 90)
 	{
-		self.anim_type = "attack";    // If the player is near bite them
+		self.anim_type = ATTACK;    // If the player is near bite them
 		rat_animate();
 	}
 
@@ -117,14 +117,14 @@ void () rat_pain =
 
 void () rat_death1 =
 {
-	self.anim_type = "death1";
+	self.anim_type = DEATH1;
 	rat_animate();
 };
 
 void () rat_death2 =
 {
 	//setmodel (self, "models/enemies/rat/rat_death2.psk");
-	self.anim_type = "death2";
+	self.anim_type = DEATH2;
 	rat_animate();
 };
 
@@ -148,21 +148,21 @@ void () rat_animate =
 	}
 	else
 	{
-		if (self.anim_type == "idle")
+		if (self.anim_type == IDLE)
 		{
 			self.anim_end = RAT_IDLE_END;
 			self.anim_end_num = RAT_IDLE_END - RAT_IDLE_START + 1;
 			self.anim_time = RAT_IDLE_TIME;
 			self.frame = RAT_IDLE_START;
 		}
-		else if (self.anim_type == "run")
+		else if (self.anim_type == RUN)
 		{
 			self.anim_end = RAT_RUN_END;
 			self.anim_end_num = RAT_RUN_END - RAT_RUN_START + 1;
 			self.anim_time = RAT_RUN_TIME;
 			self.frame = RAT_RUN_START;
 		}
-		else if (self.anim_type == "attack")
+		else if (self.anim_type == ATTACK)
 		{
 			self.anim_end = RAT_ATTACK_END;
 			self.anim_end_num = RAT_ATTACK_END - RAT_ATTACK_START + 1;
@@ -172,7 +172,7 @@ void () rat_animate =
 			else
 				self.frame = RAT_ATTACK_START;
 		}
-		else if (self.anim_type == "death2")
+		else if (self.anim_type == DEATH2)
 		{
 			self.anim_end = RAT_DEATH2_END;
 			self.anim_end_num = RAT_DEATH2_END - RAT_DEATH2_START + 1;
@@ -184,7 +184,7 @@ void () rat_animate =
 	self.nextthink = time + (self.anim_time / self.anim_end_num);
 	self.think = rat_animate;
 
-	if (((self.anim_type == "death1") || (self.anim_type == "death2")) && (self.frame == self.anim_end))
+	if (((self.anim_type == DEATH1) || (self.anim_type == DEATH2)) && (self.frame == self.anim_end))
 	{
 		//FIXME: add blood shower for rat death and final squeak?
 		self.nextthink = 0;
@@ -212,9 +212,9 @@ void () rat_animate =
 
 	ai_main();
 	//insert sounds or attack damage here with if statements
-	if (self.anim_type == "idle") ai_stand();
-	else if (self.anim_type == "run") basic_ai (3);
-	else if (self.anim_type == "attack")
+	if (self.anim_type == IDLE) ai_stand();
+	else if (self.anim_type == RUN) basic_ai (3);
+	else if (self.anim_type == ATTACK)
 	{
 		if (self.frame == RAT_ATTACK_START + 1) rat_bite();
 		ai_face();
