@@ -290,10 +290,7 @@ void() Napalm_Draw =
 	self.weaponentity.solid = SOLID_NOT;
 	self.weaponentity.owner = self;
 	self.weaponentity.weaponentity = self.weaponentity;
-	self.weaponentity.origin = '0 0 0';
-	self.weaponentity.angles = '0 0 0';
 	self.weaponentity.viewmodelforclient = self;
-
 	Napalm_UpdateView();
 	self.weaponentity.attack_finished = time + NAPALM_DRAW_TIME;
 	self.weaponentity.anim_type = DRAW;
@@ -412,10 +409,7 @@ void() napalm_animate =
 			Napalm_Fire();
 		}
 		else if (self.weaponentity.frame == NAPALM_FIRE_END)
-		{
-			Napalm_UpdateView();
 			Napalm_Idle();
-		}
 	}
 	else if (self.weaponentity.anim_type == AKIMBO_FIRE)
 	{
@@ -425,10 +419,7 @@ void() napalm_animate =
 			Napalm_Fire();
 		}
 		else if (self.weaponentity.frame == NAPALM_AKIMBO_FIRE_END)
-		{
-			Napalm_UpdateView();
 			Napalm_Idle();
-		}
 	}
 	else if ((self.weaponentity.frame == self.weaponentity.anim_end) && (self.weaponentity.anim_type == DRAW))
 	{

@@ -204,8 +204,6 @@ void() Voodoo_Draw =
 	self.weaponentity.solid = SOLID_NOT;
 	self.weaponentity.owner = self;
 	self.weaponentity.weaponentity = self.weaponentity;
-	self.weaponentity.origin = '0 0 0';
-	self.weaponentity.angles = '0 0 0';
 	self.weaponentity.viewmodelforclient = self;
 	Voodoo_UpdateView();
 	self.weaponentity.attack_finished = time + VOODOO_DRAW_TIME;

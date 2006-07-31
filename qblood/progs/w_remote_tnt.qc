@@ -118,12 +118,8 @@ void() Remote_Draw =
 	self.weaponentity.solid = SOLID_NOT;
 	self.weaponentity.owner = self;
 	self.weaponentity.weaponentity = self.weaponentity;
-	self.weaponentity.origin = '0 0 0';
-	self.weaponentity.angles = '0 0 0';
 	self.weaponentity.viewmodelforclient = self;
-
 	Remote_UpdateView();
-
 	self.weaponentity.attack_finished = time + REMOTE_DRAW_TIME;
 	self.player_state = PS_DRAW;
 	self.weaponentity.tnt_type = REMOTE_AND_BOMB;

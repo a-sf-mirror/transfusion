@@ -184,18 +184,13 @@ void() Shotgun_Draw =
 	self.weaponentity.solid = SOLID_NOT;
 	self.weaponentity.owner = self;
 	self.weaponentity.weaponentity = self.weaponentity;
-	self.weaponentity.origin = '0 0 0';
-	self.weaponentity.angles = '0 0 0';
 	self.weaponentity.viewmodelforclient = self;
-
 	if (self.currentammo > 1)
 		self.weaponentity.ammo_in_chamber = 2;
 	else
 		self.weaponentity.ammo_in_chamber = 1;
-
 	Shotgun_UpdateView();
 	self.weaponentity.attack_finished = time + SHOTGUN_DRAW_TIME;
-
 	self.weaponentity.anim_type = DRAW;
 	shotgun_animate();
 };
@@ -333,7 +328,6 @@ void() shotgun_animate =
 		}
 		else if ((self.weaponentity.frame == SHOTGUN_FIRER_END) || (self.weaponentity.frame == SHOTGUN_FIREL_END))
 		{
-			Shotgun_UpdateView();
 			if (self.weaponentity.ammo_in_chamber <= 0)
 			{
 				self.weaponentity.anim_type = RELOAD;
@@ -358,7 +352,6 @@ void() shotgun_animate =
 		}
 		else if (self.weaponentity.frame == SHOTGUN_ALTFIRE_END)
 		{
-			Shotgun_UpdateView();
 			self.weaponentity.anim_type = RELOAD;
 			self.weaponentity.attack_finished = time + SHOTGUN_RELOAD_TIME;
 			shotgun_animate();

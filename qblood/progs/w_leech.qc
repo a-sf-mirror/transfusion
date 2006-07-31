@@ -422,10 +422,7 @@ void() Leech_Draw =
 	self.weaponentity.solid = SOLID_NOT;
 	self.weaponentity.owner = self;
 	self.weaponentity.weaponentity = self.weaponentity;
-	self.weaponentity.origin = '0 0 0';
-	self.weaponentity.angles = '0 0 0';
 	self.weaponentity.viewmodelforclient = self;
-
 	Leech_UpdateView();
 	self.weaponentity.attack_finished = time + LEECH_DRAW_TIME;
 	self.weaponentity.anim_type = DRAW;

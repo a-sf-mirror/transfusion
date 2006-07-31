@@ -57,11 +57,8 @@ void() TNT_Draw =
 	self.weaponentity.solid = SOLID_NOT;
 	self.weaponentity.owner = self;
 	self.weaponentity.weaponentity = self.weaponentity;
-	self.weaponentity.origin = '0 0 0';
-	self.weaponentity.angles = '0 0 0';
 	self.weaponentity.viewmodelforclient = self;
 	TNT_UpdateView();
-
 	// If we need to pop up the lighter
 	if (self.weapon != IT_SPRAY_CAN)
 	{

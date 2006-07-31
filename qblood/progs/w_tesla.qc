@@ -246,13 +246,8 @@ void() Tesla_Draw =
 	self.weaponentity.solid = SOLID_NOT;
 	self.weaponentity.owner = self;
 	self.weaponentity.weaponentity = self.weaponentity;
-	//self.weaponentity.origin = '0 0 0';
-	//self.weaponentity.origin = self.origin;
-	self.weaponentity.angles = '0 0 0';
 	self.weaponentity.viewmodelforclient = self;
-
 	Tesla_UpdateView();
-
 	self.weaponentity.attack_finished = time + TESLA_DRAW_TIME;
 	self.weaponentity.anim_type = DRAW;
 	tesla_animate();
@@ -395,7 +390,6 @@ void() tesla_animate =
 		}
 		else
 			Tesla_Fire(); // Keep on firing...
-		Tesla_UpdateView();
 	}
 
 	if (self.weaponentity.anim_type == ALTFIRE)
@@ -416,7 +410,6 @@ void() tesla_animate =
 				self.think = Tesla_Idle;
 			}
 		}
-		Tesla_UpdateView();
 	}
 
 	if ((self.weaponentity.frame == self.weaponentity.anim_end) && (self.weaponentity.anim_type == DRAW))

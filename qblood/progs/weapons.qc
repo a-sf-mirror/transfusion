@@ -1055,6 +1055,14 @@ void() W_WeaponFrame =
 		}
 	}
 
+	if (self.akimbo_finished)
+		W_SetCurrentAmmo();
+	if (self.akimbo_finished <= time)
+	{
+		self.akimbo_finished = 0;
+		W_SetCurrentAmmo();
+	}
+
 	Impulses_Player(TRUE);
 
 	// Check for attack

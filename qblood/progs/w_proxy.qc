@@ -68,12 +68,8 @@ void() Proxy_Draw =
 	self.weaponentity.solid = SOLID_NOT;
 	self.weaponentity.owner = self;
 	self.weaponentity.weaponentity = self.weaponentity;
-	self.weaponentity.origin = '0 0 0';
-	self.weaponentity.angles = '0 0 0';
 	self.weaponentity.viewmodelforclient = self;
-
 	Proxy_UpdateView();
-
 	self.weaponentity.attack_finished = time + PROXY_DRAW_TIME;
 	self.weaponentity.anim_type = DRAW;
 	proxy_animate();

@@ -107,8 +107,6 @@ void() Spray_Draw =
 	self.weaponentity.solid = SOLID_NOT;
 	self.weaponentity.owner = self;
 	self.weaponentity.weaponentity = self.weaponentity;
-	self.weaponentity.origin = '0 0 0';
-	self.weaponentity.angles = '0 0 0';
 	self.weaponentity.viewmodelforclient = self;
 	Spray_UpdateView();
 	// If we need to pop up the lighter
@@ -119,7 +117,6 @@ void() Spray_Draw =
 	}
 	else
 		self.weaponentity.anim_type = HALF_DRAW;
-
 	self.weapon = IT_SPRAY_CAN;
 	self.weaponentity.attack_finished = time + SPRAY_DRAW_TIME; // possibly divide by 2 when halfdraw?
 	spray_animate();

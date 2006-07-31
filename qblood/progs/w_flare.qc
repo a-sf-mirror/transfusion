@@ -388,8 +388,6 @@ void() Flare_Draw =
 	self.weaponentity.solid = SOLID_NOT;
 	self.weaponentity.owner = self;
 	self.weaponentity.weaponentity = self.weaponentity;
-	self.weaponentity.origin = '0 0 0';
-	self.weaponentity.angles = '0 0 0';
 	self.weaponentity.viewmodelforclient = self;
 	Flare_UpdateView();
 	self.weaponentity.attack_finished = time + FLARE_DRAW_TIME;
@@ -514,7 +512,6 @@ void() flare_animate =
 		}
 		if (self.weaponentity.frame == FLARE_FIRE_END)
 		{
-			Flare_UpdateView();
 			if ((!self.button0) || (!self.button3))
 			{
 				self.nextthink = time;
@@ -540,13 +537,9 @@ void() flare_animate =
 		}
 		if (self.weaponentity.frame == FLARE_AKIMBO_FIRE_END)
 		{
-			Flare_UpdateView();
 			// If we don't have enough ammo anymore, drop the guns akimbo
 			if ((self.items & IT_GUNS_AKIMBO) && self.currentammo < 2)
-			{
-				Flare_UpdateView();
 				self.weaponentity.frame = FLARE_AKIMBO_FIRE_START;
-			}
 
 			if ((!self.button0) || (!self.button3))
 			{
