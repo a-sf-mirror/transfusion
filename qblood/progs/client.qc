@@ -89,21 +89,6 @@ void() InitPlayerCharacteristics =
 	if (gametype == GT_BLOODBATH)
 		self.items2 = self.items2 | IT2_KEY_SKULL | IT2_KEY_EYE | IT2_KEY_FIRE | IT2_KEY_DAGGER | IT2_KEY_SPIDER | IT2_KEY_MOON;
 
-					self.items = self.items | IT_FLAREGUN | IT_SAWED_OFF | IT_TOMMYGUN | IT_NAPALM_LAUNCHER | IT_TNT
-											| IT_PROXIMITY_BOMB | IT_REMOTE_DETONATOR | IT_SPRAY_CAN
-											| IT_TESLA_CANNON | IT_VOODOO_DOLL | IT_LIFE_LEECH;
-					self.ammo_flare = 100;
-					self.ammo_shells = 100;
-					self.ammo_nails = 500;
-					self.ammo_rockets = 100;
-					self.ammo_tnt_bundle = 50;
-					self.ammo_tnt_proxy = 50;
-					self.ammo_tnt_remote = 50;
-					self.ammo_spray = 288;
-					self.ammo_cells = 250;
-					self.ammo_leech = 100;
-					self.ammo_voodoo = 100;
-
 	// If the warmup is not over, let's give him some extra stuff  :)
 	if (!warmup_done)
 	{
