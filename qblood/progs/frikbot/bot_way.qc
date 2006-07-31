@@ -42,7 +42,7 @@ this notice in its entirety.
 
 */
 
-#include "common.qh"
+#include "../common.qh"
 
 /*
 -=-=-=-=-=-=-=-=-=-=-=-=-=-=-=-=-=-=-=-=-=-=-=
@@ -53,7 +53,7 @@ Waypoint Linking code
 */
 
 
-float (entity e1, entity e2) CheckLinked =
+float(entity e1, entity e2) CheckLinked =
 {
 	if ((e1 == e2) || (e2 == world) || (e1 == world))
 		return FALSE;
@@ -86,7 +86,7 @@ float (entity e1, entity e2) CheckLinked =
 };
 
 
-float (entity e1, entity e2) LinkWays =
+float(entity e1, entity e2) LinkWays =
 {
 	if ((e1 == e2) || (e2 == world) || (e1 == world))
 		return FALSE;
@@ -118,7 +118,7 @@ float (entity e1, entity e2) LinkWays =
 };
 // Link Ways part 2, used only for teleporters
 
-float (entity e1, entity e2) TeleLinkWays =
+float(entity e1, entity e2) TeleLinkWays =
 {
 	if ((e1 == e2) || (e2 == world) || (e1 == world))
 		return FALSE;
@@ -154,7 +154,7 @@ float (entity e1, entity e2) TeleLinkWays =
 
 };
 
-void (entity e1, entity e2) UnlinkWays =
+void(entity e1, entity e2) UnlinkWays =
 {
 	if ((e1 == e2) || (e2 == world) || (e1 == world))
 		return;
@@ -596,7 +596,7 @@ entity(string s) FindThing =
 	local entity best;
 	dst = 100000;
 	best = world;
-	t = find (world, classname, s);
+	t = find(world, classname, s);
 	while (t != world)
 	{
 		tdst = vlen(((t.absmin + t.absmax) * 0.5) - self.origin);

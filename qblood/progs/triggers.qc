@@ -19,7 +19,7 @@
 
 #include "common.qh"
 
-void () shake_screen;
+void() shake_screen;
 
 void() trigger_reactivate =
 {
@@ -54,11 +54,11 @@ void() multi_trigger =
 		if (self.enemy.classname != "player")
 			return;
 		found_secrets = found_secrets + 1;
-		WriteByte (MSG_ALL, SVC_FOUNDSECRET);
+		WriteByte(MSG_ALL, SVC_FOUNDSECRET);
 	}
 
 	if (self.noise)
-		sound (self, CHAN_VOICE, self.noise, 1, ATTN_NORM);
+		sound(self, CHAN_VOICE, self.noise, 1, ATTN_NORM);
 
 	// don't trigger again until reset
 	self.takedamage = DAMAGE_NO;
@@ -101,13 +101,13 @@ void() multi_touch =
 	// if the trigger has an angles field, check player's facing direction
 	if (self.movedir != '0 0 0')
 	{
-		makevectors (other.angles);
+		makevectors(other.angles);
 		if (v_forward * self.movedir < 0)
 			return;     // not facing the right way
 	}
 
 	self.enemy = other;
-	multi_trigger ();
+	multi_trigger();
 };
 
 /*QUAKED trigger_multiple (.5 .5 .5) ? notouch
@@ -127,14 +127,14 @@ void() trigger_multiple =
 {
 	/*if (self.sounds == 1)
 	{
-		precache_sound ("bludbath/powerup.wav");
+		precache_sound("bludbath/powerup.wav");
 		self.noise = "bludbath/powerup.wav";
 	}
 		else if (self.sounds == 2)
 		self.noise = "bludbath/message.wav";
 	else if (self.sounds == 3)
 	{
-		precache_sound ("locks/baseuse.wav");
+		precache_sound("locks/baseuse.wav");
 		self.noise = "locks/baseuse.wav";
 	}*/
 
@@ -142,24 +142,22 @@ void() trigger_multiple =
 	self.wait = 0.2;
 	self.use = multi_use;
 
-	InitTrigger ();
+	InitTrigger();
 
 	if (self.health)
 	{
 		if (self.spawnflags & SPAWNFLAG_NOTOUCH)
-			objerror ("health and notouch don't make sense\n");
+			objerror("health and notouch don't make sense\n");
 		self.max_health = self.health;
 		self.th_die = multi_killed;
 		self.takedamage = DAMAGE_YES;
 		self.solid = SOLID_BBOX;
-		setorigin (self, self.origin);  // make sure it links into the world
+		setorigin(self, self.origin);  // make sure it links into the world
 	}
 	else
 	{
-		if ( !(self.spawnflags & SPAWNFLAG_NOTOUCH) )
-		{
+		if (!(self.spawnflags & SPAWNFLAG_NOTOUCH))
 			self.touch = multi_touch;
-		}
 	}
 };
 
@@ -212,20 +210,18 @@ void() trigger_secret =
 
 	if (self.sounds == 1)
 	{
-		precache_sound ("bludbath/powerup.wav");
+		precache_sound("bludbath/powerup.wav");
 		self.noise = "bludbath/powerup.wav";
 	}
 	else if (self.sounds == 2)
 		self.noise = "bludbath/message.wav";*/
 
-	trigger_multiple ();
+	trigger_multiple();
 };
 
 //=============================================================================
 void() counter_use =
 {
-	local string junk;
-
 	self.count = self.count - 1;
 	if (self.count < 0)
 		return;
@@ -236,13 +232,13 @@ void() counter_use =
 			&& (self.spawnflags & SPAWNFLAG_NOMESSAGE) == 0)
 		{
 			if (self.count >= 4)
-				centerprint (activator, "There are more to go...");
+				centerprint(activator, "There are more to go...");
 			else if (self.count == 3)
-				centerprint (activator, "Only 3 more to go...");
+				centerprint(activator, "Only 3 more to go...");
 			else if (self.count == 2)
-				centerprint (activator, "Only 2 more to go...");
+				centerprint(activator, "Only 2 more to go...");
 			else
-				centerprint (activator, "Only 1 more to go...");
+				centerprint(activator, "Only 1 more to go...");
 		}
 		return;
 	}
@@ -251,7 +247,7 @@ void() counter_use =
 		&& (self.spawnflags & SPAWNFLAG_NOMESSAGE) == 0)
 		centerprint(activator, "Sequence completed!");
 	self.enemy = activator;
-	multi_trigger ();
+	multi_trigger();
 };
 
 // Acts as an intermediary for an action that takes multiple inputs.
@@ -288,24 +284,24 @@ void() play_teleport =
 	else
 		tmpstr = "misc/r_tele5.wav";
 
-	sound (self, CHAN_VOICE, tmpstr, 1, ATTN_NORM);
-	remove (self);
+	sound(self, CHAN_VOICE, tmpstr, 1, ATTN_NORM);
+	remove(self);
 };
 
 void(vector org) spawn_tfog =
 {
 	local entity ent;
 
-	ent = spawn ();
+	ent = spawn();
 	ent.origin = org;
 	ent.nextthink = time + 0.2;
 	ent.think = play_teleport;
 
-	WriteByte (MSG_BROADCAST, SVC_TEMPENTITY);
-	WriteByte (MSG_BROADCAST, TE_TELEPORT);
-	WriteCoord (MSG_BROADCAST, org_x);
-	WriteCoord (MSG_BROADCAST, org_y);
-	WriteCoord (MSG_BROADCAST, org_z);
+	WriteByte(MSG_BROADCAST, SVC_TEMPENTITY);
+	WriteByte(MSG_BROADCAST, TE_TELEPORT);
+	WriteCoord(MSG_BROADCAST, org_x);
+	WriteCoord(MSG_BROADCAST, org_y);
+	WriteCoord(MSG_BROADCAST, org_z);
 };
 
 void() tdeath_touch =
@@ -322,30 +318,30 @@ void() tdeath_touch =
 			self.classname = "teledeath3";
 			other.invincible_finished = 0;
 			self.owner.invincible_finished = 0;
-			T_Damage (other, self, self, 50000, DF_NO_PROTECT, string_null);
+			T_Damage(other, self, self, 50000, DF_NO_PROTECT, string_null);
 			other2 = self.owner;
 			self.owner = other;
-			T_Damage (other2, self, self, 50000, DF_NO_PROTECT, string_null);
+			T_Damage(other2, self, self, 50000, DF_NO_PROTECT, string_null);
 		}
 
 		if (other.invincible_finished > time)
 		{
 			self.classname = "teledeath2";
-			T_Damage (self.owner, self, self, 50000, DF_NO_PROTECT, string_null);
+			T_Damage(self.owner, self, self, 50000, DF_NO_PROTECT, string_null);
 			return;
 		}
 
 		if (self.owner.classname != "player")
 		{
 			// Other monsters explode themselves
-			T_Damage (self.owner, self, self, 50000, DF_NO_PROTECT, string_null);
+			T_Damage(self.owner, self, self, 50000, DF_NO_PROTECT, string_null);
 			return;
 		}
 	}
 
 	if (other.health)
 	{
-		T_Damage (other, self, self, 50000, DF_NO_PROTECT, string_null);
+		T_Damage(other, self, self, 50000, DF_NO_PROTECT, string_null);
 	}
 };
 
@@ -358,8 +354,8 @@ void(vector org, entity death_owner) spawn_tdeath =
 	death.movetype = MOVETYPE_NONE;
 	death.solid = SOLID_TRIGGER;
 	death.angles = '0 0 0';
-	setsize (death, death_owner.mins - '1 1 1', death_owner.maxs + '1 1 1');
-	setorigin (death, org);
+	setsize(death, death_owner.mins - '1 1 1', death_owner.maxs + '1 1 1');
+	setorigin(death, org);
 	death.touch = tdeath_touch;
 	death.nextthink = time + 0.2;
 	death.think = SUB_Remove;
@@ -391,22 +387,22 @@ void() teleport_touch =
 	if (other.health <= 0 || other.solid != SOLID_SLIDEBOX)
 		return;
 
-	SUB_UseTargets ();
+	SUB_UseTargets();
 
 	// put a tfog where the player was
 	if (!(self.spawnflags & SILENT))
-		spawn_tfog (other.origin);
+		spawn_tfog(other.origin);
 
-	t = find (world, targetname, self.target);
+	t = find(world, targetname, self.target);
 	if (!t)
-		objerror ("couldn't find target");
+		objerror("couldn't find target");
 
 	// spawn a tfog flash in front of the destination
-	makevectors (t.mangle);
+	makevectors(t.mangle);
 	org = t.origin + 32 * v_forward;
 
 	if (!(self.spawnflags & SILENT))
-		spawn_tfog (org);
+		spawn_tfog(org);
 	spawn_tdeath(t.origin, other);
 
 	// move the player and lock him down for a little while
@@ -417,7 +413,7 @@ void() teleport_touch =
 		return;
 	}
 
-	setorigin (other, t.origin);
+	setorigin(other, t.origin);
 	other.angles = t.mangle;
 	if (other.classname == "player")
 	{
@@ -440,7 +436,7 @@ void() info_teleport_destination =
 	self.model = string_null;
 	self.origin = self.origin + '0 0 27';
 	if (!self.targetname)
-		objerror ("no targetname");
+		objerror("no targetname");
 };
 
 void() teleport_use =
@@ -458,19 +454,19 @@ void() trigger_teleport =
 {
 	local vector o;
 
-	InitTrigger ();
+	InitTrigger();
 	self.touch = teleport_touch;
 
 	// Find the destination
 	if (!self.target)
-		objerror ("no target");
+		objerror("no target");
 	self.use = teleport_use;
 
 	if (!(self.spawnflags & SILENT))
 	{
-		precache_sound ("ambience/amb17.wav");
+		precache_sound("ambience/amb17.wav");
 		o = (self.mins + self.maxs)*0.5;
-		ambientsound (o, "ambience/amb17.wav",0.5 , ATTN_STATIC);
+		ambientsound(o, "ambience/amb17.wav",0.5 , ATTN_STATIC);
 	}
 };
 
@@ -486,7 +482,7 @@ void() hurt_touch =
 	if (other.takedamage)
 	{
 		self.solid = SOLID_NOT;
-		T_Damage (other, self, self, self.dmg, DF_PUMMEL, string_null);
+		T_Damage(other, self, self, self.dmg, DF_PUMMEL, string_null);
 		self.think = hurt_on;
 		self.nextthink = time + 1;
 	}
@@ -501,7 +497,7 @@ defalt dmg = 5
 */
 void() trigger_hurt =
 {
-	InitTrigger ();
+	InitTrigger();
 	self.touch = hurt_touch;
 	if (!self.dmg)
 		self.dmg = 5;
@@ -520,7 +516,7 @@ void() trigger_push_touch =
 			if (other.fly_sound < time)
 			{
 				other.fly_sound = time + 1.5;
-				sound (other, CHAN_AUTO, "misc/qwindfly.wav", 1, ATTN_NORM);
+				sound(other, CHAN_AUTO, "misc/qwindfly.wav", 1, ATTN_NORM);
 			}
 		}
 	}
@@ -533,8 +529,8 @@ Pushes the player
 */
 void() trigger_push =
 {
-	InitTrigger ();
-	precache_sound ("misc/qwindfly.wav");
+	InitTrigger();
+	precache_sound("misc/qwindfly.wav");
 	self.touch = trigger_push_touch;
 	if (!self.speed)
 		self.speed = 1000;
@@ -543,7 +539,7 @@ void() trigger_push =
 void( entity ent, float amount ) hurt_setdamage =
 {
 	ent.dmg = amount;
-	if ( !amount )
+	if (!amount)
 		ent.solid = SOLID_NOT;
 	else
 		ent.solid = SOLID_TRIGGER;
@@ -557,9 +553,9 @@ When the player touches this, he gets sent to the map listed in the "map" variab
 void() trigger_changelevel =
 {
 	if (!self.map)
-		objerror ("changelevel trigger doesn't have map");
+		objerror("changelevel trigger doesn't have map");
 
-	InitTrigger ();
+	InitTrigger();
 	self.use = changelevel_use;	
 };
 
@@ -579,9 +575,9 @@ void() trigger_use_touch =
 void() trigger_use =
 {    
 	if (!self.target)
-		objerror ("trigger_use doesn't have a target");
+		objerror("trigger_use doesn't have a target");
 
-	InitTrigger ();
+	InitTrigger();
 
 	self.touch = trigger_use_touch;
 };

@@ -1,7 +1,6 @@
 progs.dat
 
 defs.qc
-dpextensions.qc
 
 frikbot/bot.qc
 frikbot/bot_way.qc
@@ -20,11 +19,14 @@ items.qc
 menu.qc
 weapons.qc
 w_bomb.qc
+w_tnt.qc
+w_remote_tnt.qc
+w_proxy.qc
+w_spray.qc
 w_flare.qc
 w_fork.qc
 w_napalm.qc
 w_shotgun.qc
-w_spray.qc
 w_tesla.qc
 w_tommy.qc
 w_voodoo.qc

@@ -42,7 +42,7 @@ this notice in its entirety.
 
 */
 
-#include "common.qh"
+#include "../common.qh"
 
 .entity avoid;
 
@@ -236,6 +236,7 @@ vector(float wep) weapon_range =
 		return '180 48 3000';
 	else if (wep == 64) // IT_LIGHTNING
 		return '350 0 512';
+	return '128 0 99999';
 };
 /*
 -=-=-=-=-=-=-=-=-=-=-=-=-=-=-=-=-=-=-=-=-=-=-=

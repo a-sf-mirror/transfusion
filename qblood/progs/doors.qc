@@ -50,23 +50,23 @@ void() door_blocked =
 	return;
 
 	// Used to do self.dmg for damage.
-	T_Damage (other, self, self, 999/*other.health + 10*/, DF_NO_PROTECT, "squish");
+	T_Damage(other, self, self, 999/*other.health + 10*/, DF_NO_PROTECT, "squish");
 
 	// if a door has a negative wait, it would never come back if blocked,
 	// so let it just squash the object to death real fast
 	if (self.wait >= 0)
 	{
 		if (self.state == STATE_DOWN)
-			door_go_up ();
+			door_go_up();
 		else
-			door_go_down ();
+			door_go_down();
 	}
 };
 
 
 void() door_hit_top =
 {
-	sound (self, CHAN_VOICE, self.noise1, 1, ATTN_NORM);
+	sound(self, CHAN_VOICE, self.noise1, 1, ATTN_NORM);
 	self.state = STATE_TOP;
 
 	if (self.spawnflags & DOOR_TOGGLE)
@@ -77,14 +77,14 @@ void() door_hit_top =
 
 void() door_hit_bottom =
 {
-	sound (self, CHAN_VOICE, self.noise1, 1, ATTN_NORM);
+	sound(self, CHAN_VOICE, self.noise1, 1, ATTN_NORM);
 	self.state = STATE_BOTTOM;
 };
 
 void() door_go_down =
 {
-	//dprint ("door_go_down\n");
-	sound (self, CHAN_VOICE, self.noise2, 1, ATTN_NORM);
+	//dprint("door_go_down\n");
+	sound(self, CHAN_VOICE, self.noise2, 1, ATTN_NORM);
 	if (self.max_health)
 	{
 		self.takedamage = DAMAGE_YES;
@@ -92,12 +92,12 @@ void() door_go_down =
 	}
 
 	self.state = STATE_DOWN;
-	SUB_CalcMove (self.pos1, self.speed, door_hit_bottom);
+	SUB_CalcMove(self.pos1, self.speed, door_hit_bottom);
 };
 
 void() door_go_up =
 {
-	//dprint ("door_go_up\n");
+	//dprint("door_go_up\n");
 	if (self.state == STATE_UP)
 	return;     // already going up
 
@@ -107,9 +107,9 @@ void() door_go_up =
 		return;
 	}
 
-	sound (self, CHAN_VOICE, self.noise2, 1, ATTN_NORM);
+	sound(self, CHAN_VOICE, self.noise2, 1, ATTN_NORM);
 	self.state = STATE_UP;
-	SUB_CalcMove (self.pos2, self.speed, door_hit_top);
+	SUB_CalcMove(self.pos2, self.speed, door_hit_top);
 
 	SUB_UseTargets();
 };
@@ -124,7 +124,7 @@ ACTIVATION FUNCTIONS
 
 void() door_fire =
 {
-	//dprint ("door_fire\n");
+	//dprint("door_fire\n");
 	local entity    oself;
 	local entity    starte;
 
@@ -134,7 +134,7 @@ void() door_fire =
 	// play use key sound
 
 	if (self.items2)
-		sound (self, CHAN_VOICE, self.noise4, 1, ATTN_NORM);
+		sound(self, CHAN_VOICE, self.noise4, 1, ATTN_NORM);
 
 	self.message = string_null;     // no more message
 	oself = self;
@@ -146,7 +146,7 @@ void() door_fire =
 			starte = self;
 			do
 			{
-				door_go_down ();
+				door_go_down();
 				self = self.enemy;
 			} while ( (self != starte) && (self != world) );
 			self = oself;
@@ -159,9 +159,9 @@ void() door_fire =
 	do
 	{
 		self.goalentity = activator;        // Who fired us
-		door_go_up ();
+		door_go_up();
 		self = self.enemy;
-	} while ( (self != starte) && (self != world) );
+	} while ((self != starte) && (self != world));
 	self = oself;
 };
 
@@ -183,23 +183,23 @@ void() door_use =
 		// So all doors are unlocked in deathmatch/ctf
 	{
 		if (self.owner.items2 == IT2_KEY_SKULL)
-			centerprint (other, "You need the skull key");
+			centerprint(other, "You need the skull key");
 		else if (self.owner.items2 == IT2_KEY_EYE)
-			centerprint (other, "You need the eye key");
+			centerprint(other, "You need the eye key");
 		else if (self.owner.items2 == IT2_KEY_FIRE)
-			centerprint (other, "You need the fire key");
+			centerprint(other, "You need the fire key");
 		else if (self.owner.items2 == IT2_KEY_DAGGER)
-			centerprint (other, "You need the dagger key");
+			centerprint(other, "You need the dagger key");
 		else if (self.owner.items2 == IT2_KEY_SPIDER)
-			centerprint (other, "You need the spider key");
+			centerprint(other, "You need the spider key");
 		else if (self.owner.items2 == IT2_KEY_MOON)
-			centerprint (other, "You need the moon key");
+			centerprint(other, "You need the moon key");
 		else
-			centerprint (other, "It's locked but the key doesn't exist!");
+			centerprint(other, "It's locked but the key doesn't exist!");
 
 		// Play on two channels so the player can hear himself clearly.
-		sound (other, CHAN_VOICE, self.noise3, 1, ATTN_NORM);
-		sound (other, CHAN_BODY, self.noise3, 1, ATTN_NORM);
+		sound(other, CHAN_VOICE, self.noise3, 1, ATTN_NORM);
+		sound(other, CHAN_BODY, self.noise3, 1, ATTN_NORM);
 		return;
 	}    
 
@@ -209,7 +209,7 @@ void() door_use =
 		self.cnt = 1;
 	}	
 
-	door_fire ();
+	door_fire();
 	self = oself;
 };
 
@@ -225,19 +225,19 @@ void() door_trigger_touch =
 	activator = other;
 
 	self = self.owner;
-	door_use ();
+	door_use();
 };
 
 void() door_killed =
 {
-	//dprint ("door_killed\n");
+	//dprint("door_killed\n");
 	local entity oself;
 
 	oself = self;
 	self = self.owner;
 	self.health = self.max_health;
 	self.takedamage = DAMAGE_NO;    // will be reset upon return
-	door_use ();
+	door_use();
 	self = oself;
 };
 
@@ -259,8 +259,8 @@ void() door_touch =
 
 	if (self.owner.message != string_null)
 	{
-		centerprint (other, self.owner.message);
-		sound (other, CHAN_VOICE, "bludbath/message.wav", 1, ATTN_NORM);
+		centerprint(other, self.owner.message);
+		sound(other, CHAN_VOICE, "bludbath/message.wav", 1, ATTN_NORM);
 	}
 	/*
 	// key door stuff
@@ -274,29 +274,29 @@ void() door_touch =
 		// So all doors are unlocked in deathmatch/ctf
 	{
 		if (self.owner.items2 == IT2_KEY_SKULL)
-			centerprint (other, "You need the skull key");
+			centerprint(other, "You need the skull key");
 		else if (self.owner.items2 == IT2_KEY_EYE)
-			centerprint (other, "You need the eye key");
+			centerprint(other, "You need the eye key");
 		else if (self.owner.items2 == IT2_KEY_DAGGER)
-			centerprint (other, "You need the fire key");
+			centerprint(other, "You need the fire key");
 		else if (self.owner.items2 == IT2_KEY_SPIDER)
-			centerprint (other, "You need the dagger key");
+			centerprint(other, "You need the dagger key");
 		else if (self.owner.items2 == IT2_KEY_MOON)
-			centerprint (other, "You need the spider key");
+			centerprint(other, "You need the spider key");
 		else if (self.owner.items2 == IT2_KEY_MOON)
-			centerprint (other, "You need the moon key");
+			centerprint(other, "You need the moon key");
 		else
-			centerprint (other, "It's locked but the key doesn't exist!");
+			centerprint(other, "It's locked but the key doesn't exist!");
 
 		// Play on two channels so the player can hear himself clearly.
-		sound (other, CHAN_VOICE, self.noise3, 1, ATTN_NORM);
-		sound (other, CHAN_BODY, self.noise3, 1, ATTN_NORM);
+		sound(other, CHAN_VOICE, self.noise3, 1, ATTN_NORM);
+		sound(other, CHAN_BODY, self.noise3, 1, ATTN_NORM);
 		return;
 	}    */
 	self.touch = SUB_Null;
 	if (self.enemy)
 		self.enemy.touch = SUB_Null;    // get paired door
-	door_use ();
+	door_use();
 };
 
 /*
@@ -320,11 +320,11 @@ entity(vector fmins, vector fmaxs) spawn_field =
 
 	t1 = fmins;
 	t2 = fmaxs;
-	setsize (trigger, t1 - '60 60 8', t2 + '60 60 8');
-	return (trigger);
+	setsize(trigger, t1 - '60 60 8', t2 + '60 60 8');
+	return trigger;
 };
 
-float (entity e1, entity e2) EntitiesTouching =
+float(entity e1, entity e2) EntitiesTouching =
 {
 	if (e1.mins_x > e2.maxs_x)
 	return FALSE;
@@ -376,7 +376,7 @@ void() LinkDoors =
 		if (self.message != string_null)
 			starte.message = self.message;
 
-		t = find (t, classname, self.classname);
+		t = find(t, classname, self.classname);
 		if (!t)
 		{
 			self.enemy = starte;        // make the chain a loop
@@ -454,7 +454,7 @@ void() func_door =
 {
 	local string sound1, sound2;
 
-	precache_sound ("thevoice/squash.wav");
+	precache_sound("thevoice/squash.wav");
 
 	// REMOVEME: temporary hack
 	// shootable, fired, or key doors can't get triggered manually
@@ -462,27 +462,27 @@ void() func_door =
 		self.spawnflags = self.spawnflags | SF_USABLE;
 
 	// All key doors make Caleb say "I need a key!"
-	precache_sound ("player/hunt4.wav");
+	precache_sound("player/hunt4.wav");
 	self.noise3 = "player/hunt4.wav";
 
 	// Worldtype for key doors
 	if (world.worldtype == 0)
 	{
-		precache_sound ("locks/baseuse.wav");
+		precache_sound("locks/baseuse.wav");
 		self.noise4 = "locks/baseuse.wav";
 	}
 	else if (world.worldtype == 1)
 	{
-		precache_sound ("locks/runeuse.wav");
+		precache_sound("locks/runeuse.wav");
 		self.noise4 = "locks/runeuse.wav";
 	}
 	else if (world.worldtype == 2)
 	{
-		precache_sound ("locks/swtchwrk.wav");
+		precache_sound("locks/swtchwrk.wav");
 		self.noise4 = "locks/swtchwrk.wav";
 	}
 	else
-		dprint ("no worldtype set!\n");
+		dprint("no worldtype set!\n");
 
 	if (self.sounds == 0)
 	{
@@ -513,16 +513,16 @@ void() func_door =
 		self.noise1 = sound1;
 	if (self.noise2 == string_null)
 		self.noise2 = sound2;
-	precache_sound (self.noise1);
-	precache_sound (self.noise2);
+	precache_sound(self.noise1);
+	precache_sound(self.noise2);
 
-	SetMovedir ();
+	SetMovedir();
 
 	self.max_health = self.health;
 	self.solid = SOLID_BSP;
 	self.movetype = MOVETYPE_PUSH;
-	setorigin (self, self.origin);
-	setmodel (self, self.model);
+	setorigin(self, self.origin);
+	setmodel(self, self.model);
 	self.classname = "door";
 
 	self.blocked = door_blocked;
@@ -557,7 +557,7 @@ void() func_door =
 	// but spawn in the open position
 	if (self.spawnflags & DOOR_START_OPEN)
 	{
-		setorigin (self, self.pos2);
+		setorigin(self, self.pos2);
 		self.pos2 = self.pos1;
 		self.pos1 = self.origin;
 	}
@@ -585,7 +585,7 @@ void() func_door =
 
 };
 
-void () func_door_secret =
+void() func_door_secret =
 {
 	func_door();
 };

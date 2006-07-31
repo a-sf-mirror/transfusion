@@ -102,7 +102,7 @@ To remove these waypoints:
 Delete the code in bot_map_load, located below.
 */
 
-#include "common.qh"
+#include "../common.qh"
 
 /* commented out to rid of QuakeDM's waypoints
 void() bot_map_load =
@@ -137,7 +137,7 @@ for all variable in the bot...
 // ----- entity fields ---
 .float	wallhug, keys, oldkeys, ishuman;
 .float	b_frags, b_clientno, b_shirt, b_pants; 
-.float	priority, ai_time, b_sound, missile_speed;
+.float	ai_time, b_sound, missile_speed;
 .float	portal_time, b_skill, switch_wallhug;
 .float	b_aiflags, b_num, b_chattime;
 .float	b_menu, b_menu_time, b_menu_value;
@@ -147,7 +147,7 @@ for all variable in the bot...
 .entity	target1, target2, target3, target4;
 .entity	_next, _last;
 .entity	current_way;
-.vector	b_angle, b_dest, mouse_emu, obs_dir;
+.vector	b_angle, mouse_emu, obs_dir;
 .vector	movevect, b_dir;
 .vector dyn_dest;
 
@@ -566,12 +566,12 @@ float() botcam =
 	self.punchangle = self.enemy.punchangle;
 	self.deadflag = self.enemy.deadflag;
 	msg_entity = self;
-	WriteByte (MSG_ONE,5);
-	WriteEntity (MSG_ONE, self.enemy); 
-	WriteByte (MSG_ONE, 10);
-     	WriteAngle (MSG_ONE,self.enemy.v_angle_x);
-     	WriteAngle (MSG_ONE,self.enemy.v_angle_y);
-     	WriteAngle (MSG_ONE,self.enemy.v_angle_z);
+	WriteByte(MSG_ONE,5);
+	WriteEntity(MSG_ONE, self.enemy); 
+	WriteByte(MSG_ONE, 10);
+     	WriteAngle(MSG_ONE,self.enemy.v_angle_x);
+     	WriteAngle(MSG_ONE,self.enemy.v_angle_y);
+     	WriteAngle(MSG_ONE,self.enemy.v_angle_z);
 	self.modelindex = 0;
 	
 	self.impulse = 0;	
@@ -610,7 +610,7 @@ void() botcam_u =
 	{
 		sprint(self, "No one left to track!\n");
 		msg_entity = self;
-		WriteByte (MSG_ONE,5);
+		WriteByte(MSG_ONE,5);
 		WriteEntity (MSG_ONE, self);
 		PutClientInServer();
 		return;
@@ -661,7 +661,7 @@ void() ClientInRankings =
 	local float cno;
 
    	cno = self.colormap - 1;
-	BotInvalidClientNo (cno);
+	BotInvalidClientNo(cno);
 	
 	if (player_head)
 		player_head._last = self;
@@ -710,7 +710,7 @@ bot easier to install
 
 -=-=-=-=-=-=-=-=-=-=-=-=-=-=-=-=-=-=-=-=-=-=-=
 */
-float () BotPreFrame =
+float() BotPreFrame =
 {
 	if (self.b_clientno == -1)
 		return TRUE;
@@ -739,7 +739,7 @@ float () BotPreFrame =
 	DynamicWaypoint();
 	return FALSE;
 };
-float () BotPostFrame =
+float() BotPostFrame =
 {
 	if (self.b_clientno == -1)
 		return TRUE;
@@ -872,15 +872,15 @@ signs on to the server.
 
 void(entity who) UpdateClient =
 {
-	WriteByte (MSG_ALL, SVC_UPDATENAME);
-	WriteByte (MSG_ALL, who.b_clientno);
-	WriteString (MSG_ALL, who.netname);
-	WriteByte (MSG_ALL, SVC_UPDATECOLORS);
-	WriteByte (MSG_ALL, who.b_clientno);
-	WriteByte (MSG_ALL, who.b_shirt * 16 + who.b_pants);
-	WriteByte (MSG_ALL, SVC_UPDATEFRAGS);
-	WriteByte (MSG_ALL, who.b_clientno);
-	WriteShort (MSG_ALL, who.frags);
+	WriteByte(MSG_ALL, SVC_UPDATENAME);
+	WriteByte(MSG_ALL, who.b_clientno);
+	WriteString(MSG_ALL, who.netname);
+	WriteByte(MSG_ALL, SVC_UPDATECOLORS);
+	WriteByte(MSG_ALL, who.b_clientno);
+	WriteByte(MSG_ALL, who.b_shirt * 16 + who.b_pants);
+	WriteByte(MSG_ALL, SVC_UPDATEFRAGS);
+	WriteByte(MSG_ALL, who.b_clientno);
+	WriteShort(MSG_ALL, who.frags);
 };
 
 float(float clientno) ClientBitFlag =
@@ -941,18 +941,18 @@ float() ClientNextAvailable =
 void(entity e1, entity e2, float flag) DeveloperLightning =
 {
 	// used to show waypoint links for debugging
-	WriteByte (MSG_BROADCAST, 23);
+	WriteByte(MSG_BROADCAST, 23);
 	if (flag)
-		WriteByte (MSG_BROADCAST, 6);
+		WriteByte(MSG_BROADCAST, 6);
 	else
-		WriteByte (MSG_BROADCAST, 13);
-	WriteEntity (MSG_BROADCAST, e2);
-	WriteCoord (MSG_BROADCAST, e1.origin_x);
-	WriteCoord (MSG_BROADCAST, e1.origin_y);
-	WriteCoord (MSG_BROADCAST, e1.origin_z);
-	WriteCoord (MSG_BROADCAST, e2.origin_x);
-	WriteCoord (MSG_BROADCAST, e2.origin_y);
-	WriteCoord (MSG_BROADCAST, e2.origin_z); 
+		WriteByte(MSG_BROADCAST, 13);
+	WriteEntity(MSG_BROADCAST, e2);
+	WriteCoord(MSG_BROADCAST, e1.origin_x);
+	WriteCoord(MSG_BROADCAST, e1.origin_y);
+	WriteCoord(MSG_BROADCAST, e1.origin_z);
+	WriteCoord(MSG_BROADCAST, e2.origin_x);
+	WriteCoord(MSG_BROADCAST, e2.origin_y);
+	WriteCoord(MSG_BROADCAST, e2.origin_z); 
 };
 
 /*
@@ -1260,7 +1260,7 @@ void() WaypointWatch =
 			saved_skills1 = cvar("scratch2");
 			saved_skills2 = cvar("scratch3");
 		}
-		cvar_set ("saved4", "0");
+		cvar_set("saved4", "0");
 		if (max_clients > 1)
 		{
 			localcmd("exec maps/");

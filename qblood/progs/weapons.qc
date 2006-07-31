@@ -19,7 +19,7 @@
 
 #include "common.qh"
 
-void () player_run;
+void() player_run;
 void(entity bomb, entity attacker, float rad, float dflags, entity ignore, string dtype) T_RadiusDamage;
 void() identify_player;
 
@@ -32,10 +32,8 @@ SpawnBlood
 */
 void(vector org, vector vel, float damage) SpawnBlood =
 {
-	damage = ceil (damage / 2);
+	damage = ceil(damage / 2);
 	//te_particlecube(org, org + '0 0 32', vel, damage, 73, TRUE, 250);
-
-	local   vector  vel;
 
 	vel_x = crandom() * 300;
 	vel_y = crandom() * 300;
@@ -53,7 +51,7 @@ Bleeds when generic meat spray touches something
 */
 void() MeatSprayTouch =
 {
-	SpawnBlood (self.origin, '0 0 50', 16);
+	SpawnBlood(self.origin, '0 0 50', 16);
 
 	if (other.classname == "player")
 		remove(self);
@@ -70,7 +68,7 @@ void(vector org, vector vel, entity ignore) BloodMeatSpray =
 {
 	local   entity  missile;
 
-	missile = spawn ();
+	missile = spawn();
 	missile.owner       = ignore;
 	missile.movetype    = MOVETYPE_TOSS;    // Was *_BOUNCE
 	missile.solid       = SOLID_BBOX;       // Was *_NOT
@@ -83,9 +81,9 @@ void(vector org, vector vel, entity ignore) BloodMeatSpray =
 	missile.think       = SUB_Remove;
 	missile.touch       = MeatSprayTouch;
 
-	setmodel (missile, "models/objects/gib4.md3");
-	setsize (missile, '0 0 0', '0 0 0');
-	setorigin (missile, org);
+	setmodel(missile, "models/objects/gib4.md3");
+	setsize(missile, '0 0 0', '0 0 0');
+	setorigin(missile, org);
 
 	te_blood(org, vel, 8);
 };
@@ -104,7 +102,7 @@ void(entity targ, vector org) SpawnBloodSpray =
 		vel_x = crandom() * 300;
 		vel_y = crandom() * 300;
 		vel_z = random() * 300 + 200;
-		BloodMeatSpray (org, vel, targ);
+		BloodMeatSpray(org, vel, targ);
 	}
 };
 
@@ -112,7 +110,6 @@ float(entity targ) Reflected =
 {
 	if (!targ)
 		return FALSE;
-
 	return (targ.reflect_finished >= time);
 };
 
@@ -138,7 +135,7 @@ void(float dflags) ApplyMultiDamage =
 {
 	if (!multi_ent)
 		return;
-	T_Damage (multi_ent, self, self, multi_damage, dflags, string_null);
+	T_Damage(multi_ent, self, self, multi_damage, dflags, string_null);
 };
 
 void(entity hit, float damage) AddMultiDamage =
@@ -148,7 +145,7 @@ void(entity hit, float damage) AddMultiDamage =
 
 	if (hit != multi_ent)
 	{
-		ApplyMultiDamage (DF_NONE);
+		ApplyMultiDamage(DF_NONE);
 		multi_damage = damage;
 		multi_ent = hit;
 	}
@@ -169,9 +166,9 @@ TraceAttack
 */
 void(float damage, vector dir) TraceAttack =
 {
-	if (Reflected (trace_ent))
+	if (Reflected(trace_ent))
 	{
-		if (Reflected (self))
+		if (Reflected(self))
 			return;     // Both have reflection, so negate attack.
 
 		// Hit attacker instead.
@@ -189,22 +186,22 @@ void(float damage, vector dir) TraceAttack =
 	org = trace_endpos - dir*4;
 
 	if (trace_ent.takedamage)
-		AddMultiDamage (trace_ent, damage);
+		AddMultiDamage(trace_ent, damage);
 
 	// If the target can bleed, spawn some blood
 	if (trace_ent.classname == "player" || (trace_ent.flags & FL_MONSTER) ||
 		trace_ent.classname == "corpse" ||  trace_ent.classname == "head")
 	{
-		SpawnBlood (org, vel*0.2, damage);
-		SpawnBloodSpray (trace_ent, org);
+		SpawnBlood(org, vel*0.2, damage);
+		SpawnBloodSpray(trace_ent, org);
 	}
 	else
 	{
-		WriteByte (MSG_BROADCAST, SVC_TEMPENTITY);
-		WriteByte (MSG_BROADCAST, TE_GUNSHOT);
-		WriteCoord (MSG_BROADCAST, org_x);
-		WriteCoord (MSG_BROADCAST, org_y);
-		WriteCoord (MSG_BROADCAST, org_z);
+		WriteByte(MSG_BROADCAST, SVC_TEMPENTITY);
+		WriteByte(MSG_BROADCAST, TE_GUNSHOT);
+		WriteCoord(MSG_BROADCAST, org_x);
+		WriteCoord(MSG_BROADCAST, org_y);
+		WriteCoord(MSG_BROADCAST, org_z);
 	}
 };
 
@@ -226,19 +223,19 @@ void(vector orig, vector dir, float shotcount, float damage, vector spread) Fire
 	src = orig + v_forward*10;
 	src_z = self.absmin_z + self.size_z * 0.7;
 
-	ClearMultiDamage ();
+	ClearMultiDamage();
 
 	while (shotcount > 0)
 	{
 		direction = dir + crandom()*spread_x*v_right + crandom()*spread_y*v_up;
 
-		traceline (src, src + direction*2048, FALSE, self);
+		traceline(src, src + direction*2048, FALSE, self);
 		if (trace_fraction != 1.0)
-			TraceAttack (damage, direction);
+			TraceAttack(damage, direction);
 
 		shotcount = shotcount - 1;
 	}
-	ApplyMultiDamage (DF_BULLET);
+	ApplyMultiDamage(DF_BULLET);
 };
 
 /*
@@ -252,7 +249,7 @@ void() ShellHit =
 {
 	// prevent sound if last shellhit sound occured within last 2 frames
 	if (self.ltime <= (time - 0.2))
-		sound (self, CHAN_WEAPON, self.noise, 1,ATTN_NORM);
+		sound(self, CHAN_WEAPON, self.noise, 1,ATTN_NORM);
 
 	self.ltime = time; // marks time of current touch triggeractivation
 };
@@ -269,9 +266,9 @@ void(entity shell) DropShell =
 {
 	shell.movetype = MOVETYPE_BOUNCE;
 	shell.solid = SOLID_BBOX;
-	setmodel (shell, shell.mdl);
-	setsize (shell, VEC_ORIGIN, VEC_ORIGIN);
-	makevectors (shell.owner.v_angle);
+	setmodel(shell, shell.mdl);
+	setsize(shell, VEC_ORIGIN, VEC_ORIGIN);
+	makevectors(shell.owner.v_angle);
 
 	shell.avelocity_x = crandom()*500;
 	shell.avelocity_y = crandom()*500;
@@ -310,7 +307,7 @@ void(entity client) BoredCaleb =
 	local   float   rs;
 	local   string  playit;
 
-	rs = floor (random() * 12);
+	rs = floor(random() * 12);
 
 	if (rs == 0)
 		playit = "player/songs/1093.wav";   // "Strangers in the night..."
@@ -338,7 +335,7 @@ void(entity client) BoredCaleb =
 		playit = "player/songs/vo3039.wav";   // "i've got you under my skin"
 
 	client.voice_finished = time + 8;
-	sound (client, CHAN_VOICE, playit, 1, ATTN_NORM);
+	sound(client, CHAN_VOICE, playit, 1, ATTN_NORM);
 };
 
 // This makes the player laugh or utter one of Caleb's signature one-liners.
@@ -358,7 +355,7 @@ void(entity client) PsychoCaleb =
 	local   float   rs;
 	local   string  playit;
 
-	rs = floor (random() * 3);
+	rs = floor(random() * 3);
 
 	if (rs == 0)
 		playit = "player/quips/1039.wav";   // "Son of a bitch must pay!"
@@ -369,7 +366,7 @@ void(entity client) PsychoCaleb =
 	else
 	{
 		// Laugh like a psycho.
-		rs = floor (random() * 8);
+		rs = floor(random() * 8);
 
 		if (rs == 0)
 			playit = "player/play1109.wav";
@@ -390,7 +387,7 @@ void(entity client) PsychoCaleb =
 	}
 
 	client.voice_finished = time + 5;
-	sound (client, CHAN_VOICE, playit, 1, ATTN_NORM);
+	sound(client, CHAN_VOICE, playit, 1, ATTN_NORM);
 };
 
 // 13 frames for Blood's explosion
@@ -413,18 +410,16 @@ void() BecomeExplosion =
 	self.movetype = MOVETYPE_NONE;
 	self.velocity = '0 0 0';
 	self.touch = SUB_Null;
-	setmodel (self, "progs/s_explod.spr");
+	setmodel(self, "progs/s_explod.spr");
 	self.solid = SOLID_NOT;
 	self.alpha = 0.9;
 	self.reset = SUB_Remove;
-	s_explode1 ();
+	s_explode1();
 };
 
 //=============================================================================
 void() flame_touch =
 {
-	local float rand;
-
 	if (other == self.owner)
 		return;
 
@@ -440,10 +435,10 @@ void() flame_touch =
 	// hit something that bleeds
 	if (other.takedamage)
 	{
-		BurnDamage (other, self, 5, DF_BURN, 10, 3);
+		BurnDamage(other, self, 5, DF_BURN, 10, 3);
 
 		if (other.flags & FL_MONSTER)
-			T_Damage (other, self, self.owner, 4, DF_BURN, "fire");
+			T_Damage(other, self, self.owner, 4, DF_BURN, "fire");
 	}
 
 	remove(self);
@@ -486,35 +481,35 @@ void(float weap) W_DrawWeapon =
 	if (self.waterlevel == 3)
 	{
 		if (self.weapon == IT_TNT || self.weapon == IT_SPRAY_CAN)
-			weap = W_BestWeapon ();
+			weap = W_BestWeapon();
 	}
 
 	self.player_state = PS_DRAW;
 
 	if (weap == IT_PITCHFORK)
-		Fork_Draw ();
+		Fork_Draw();
 	else if (weap == IT_FLAREGUN)
-		Flare_Draw ();
+		Flare_Draw();
 	else if (weap == IT_SAWED_OFF)
-		Shotgun_Draw ();
+		Shotgun_Draw();
 	else if (weap == IT_TOMMYGUN)
-		Tommy_Draw ();
+		Tommy_Draw();
 	else if (weap == IT_SPRAY_CAN)
-		Spray_Draw ();
+		Spray_Draw();
 	else if (weap == IT_TNT)
-		TNT_Draw ();
+		TNT_Draw();
 	else if (weap == IT_PROXIMITY_BOMB)
-		Proxy_Draw ();
+		Proxy_Draw();
 	else if (weap == IT_REMOTE_DETONATOR)
-		Remote_Draw ();
+		Remote_Draw();
 	else if (weap == IT_NAPALM_LAUNCHER)
-		Napalm_Draw ();
+		Napalm_Draw();
 	else if (weap == IT_TESLA_CANNON)
-		Tesla_Draw ();
+		Tesla_Draw();
 	else if (weap == IT_VOODOO_DOLL)
-		Voodoo_Draw ();
+		Voodoo_Draw();
 	else if (weap == IT_LIFE_LEECH)
-		Leech_Draw ();
+		Leech_Draw();
 
 	self.newweapon = 0;
 };
@@ -542,29 +537,29 @@ void(float newWeapon) W_SwitchToWeapon =
 	self.player_state = PS_HOLSTER;
 
 	if (self.weapon == IT_PITCHFORK)
-		Fork_Holster ();
+		Fork_Holster();
 	else if (self.weapon == IT_FLAREGUN)
-		Flare_Holster ();
+		Flare_Holster();
 	else if (self.weapon == IT_SAWED_OFF)
-		Shotgun_Holster ();
+		Shotgun_Holster();
 	else if (self.weapon == IT_TOMMYGUN)
-		Tommy_Holster ();
+		Tommy_Holster();
 	else if (self.weapon == IT_SPRAY_CAN)
-		Spray_Holster ();
+		Spray_Holster();
 	else if (self.weapon == IT_TNT)
-		TNT_Holster ();
+		TNT_Holster();
 	else if (self.weapon == IT_PROXIMITY_BOMB)
-		Proxy_Holster ();
+		Proxy_Holster();
 	else if (self.weapon == IT_REMOTE_DETONATOR)
-		Remote_Holster ();
+		Remote_Holster();
 	else if (self.weapon == IT_NAPALM_LAUNCHER)
-		Napalm_Holster ();
+		Napalm_Holster();
 	else if (self.weapon == IT_TESLA_CANNON)
-		Tesla_Holster ();
+		Tesla_Holster();
 	else if (self.weapon == IT_VOODOO_DOLL)
-		Voodoo_Holster ();
+		Voodoo_Holster();
 	else if (self.weapon == IT_LIFE_LEECH)
-		Leech_Holster ();
+		Leech_Holster();
 };
 
 void() W_SetCurrentAmmo =
@@ -572,72 +567,72 @@ void() W_SetCurrentAmmo =
 	if (self.weapon == IT_PITCHFORK)
 	{
 		self.currentammo = 0;
-		Fork_UpdateView ();
+		Fork_UpdateView();
 	}
 	else if (self.weapon == IT_FLAREGUN)
 	{
 		self.currentammo = self.ammo_flare;
-		Flare_UpdateView ();
+		Flare_UpdateView();
 		//self.items = self.items | IT_SHELLS;
 	}
 	else if (self.weapon == IT_SAWED_OFF)
 	{
 		self.currentammo = self.ammo_shells;
-		Shotgun_UpdateView ();
+		Shotgun_UpdateView();
 		self.items = self.items | IT_SHELLS;
 	}
 	else if (self.weapon == IT_TOMMYGUN)
 	{
 		self.currentammo = self.ammo_nails;
-		Tommy_UpdateView ();
+		Tommy_UpdateView();
 		self.items = self.items | IT_NAILS;
 	}
 	else if (self.weapon == IT_SPRAY_CAN)
 	{
 		self.currentammo = self.ammo_spray;
-		Spray_UpdateView ();
+		Spray_UpdateView();
 		//self.items = self.items | IT_NAILS;
 	}
 	else if (self.weapon == IT_TNT)
 	{
 		self.currentammo = self.ammo_tnt_bundle;
-		TNT_UpdateView ();
+		TNT_UpdateView();
 		//self.items = self.items | IT_ROCKETS;
 	}
 	else if (self.weapon == IT_PROXIMITY_BOMB)
 	{
 		self.currentammo = self.ammo_tnt_proxy;
-		Proxy_UpdateView ();
+		Proxy_UpdateView();
 		//self.items = self.items | IT_ROCKETS;
 	}
 	else if (self.weapon == IT_REMOTE_DETONATOR)
 	{
 		self.currentammo = self.ammo_tnt_remote;
-		Remote_UpdateView ();
+		Remote_UpdateView();
 		//self.items = self.items | IT_ROCKETS;
 	}
 	else if (self.weapon == IT_NAPALM_LAUNCHER)
 	{
 		self.currentammo = self.ammo_rockets;
-		Napalm_UpdateView ();
+		Napalm_UpdateView();
 		self.items = self.items | IT_ROCKETS;
 	}
 	else if (self.weapon == IT_TESLA_CANNON)
 	{
 		self.currentammo = self.ammo_cells;
-		Tesla_UpdateView ();
+		Tesla_UpdateView();
 		self.items = self.items | IT_CELLS;
 	}
 	else if (self.weapon == IT_VOODOO_DOLL)
 	{
 		self.currentammo = self.ammo_voodoo;
-		Voodoo_UpdateView ();
+		Voodoo_UpdateView();
 		//self.items = self.items | IT_CELLS;
 	}
 	else if (self.weapon == IT_LIFE_LEECH)
 	{
 		self.currentammo = self.ammo_leech;
-		Leech_UpdateView ();
+		Leech_UpdateView();
 		//self.items = self.items | IT_CELLS;
 	}
 	else
@@ -715,32 +710,32 @@ An attack impulse can be triggered now
 */
 void() W_Attack =
 {
-	makevectors (self.v_angle);    // calculate forward angle for velocity
+	makevectors(self.v_angle);    // calculate forward angle for velocity
 
 	if (self.weapon == IT_PITCHFORK)
-		Fork_Attack ();
+		Fork_Attack();
 	else if (self.weapon == IT_FLAREGUN)
-		Flare_Attack ();
+		Flare_Attack();
 	else if (self.weapon == IT_SAWED_OFF)
-		Shotgun_Attack ();
+		Shotgun_Attack();
 	else if (self.weapon == IT_TOMMYGUN)
-		Tommy_Attack ();
+		Tommy_Attack();
 	else if (self.weapon == IT_SPRAY_CAN)
-		Spray_Attack ();
+		Spray_Attack();
 	else if (self.weapon == IT_TNT)
-		TNT_Attack ();
+		TNT_Attack();
 	else if (self.weapon == IT_PROXIMITY_BOMB)
-		Proxy_Attack ();
+		Proxy_Attack();
 	else if (self.weapon == IT_REMOTE_DETONATOR)
-		Remote_Attack ();
+		Remote_Attack();
 	else if (self.weapon == IT_NAPALM_LAUNCHER)
-		Napalm_Attack ();
+		Napalm_Attack();
 	else if (self.weapon == IT_TESLA_CANNON)
-		Tesla_Attack ();
+		Tesla_Attack();
 	else if (self.weapon == IT_VOODOO_DOLL)
-		Voodoo_Attack ();
+		Voodoo_Attack();
 	else if (self.weapon == IT_LIFE_LEECH)
-		Leech_Attack ();
+		Leech_Attack();
 
 	self.impulse = IMP_NONE;
 };
@@ -756,7 +751,7 @@ void() W_ChangeWeapon =
 	local float old, am, new;
 
 	// Don't let player change weapons while holding lit dynamite.
-	if (self.tnt_time)
+	if (self.weaponentity.tnt_time)
 		return;
 
 	old = self.weapon;
@@ -873,7 +868,7 @@ void() W_ChangeWeapon =
 	{
 		if (new == IT_SPRAY_CAN || new == IT_TNT)
 		{
-			sprint (self, "You can't select that weapon under water.\n");
+			sprint(self, "You can't select that weapon under water.\n");
 			return;
 		}
 	}
@@ -881,20 +876,20 @@ void() W_ChangeWeapon =
 	// don't have the weapon
 	if (!(self.items & new))
 	{
-		sprint (self, "You don't have that weapon.\n");
+		sprint(self, "You don't have that weapon.\n");
 		return;
 	}
 
 	// don't have the ammo
 	if (am)
 	{
-		sprint (self, "You are out of ammo.\n");
+		sprint(self, "You are out of ammo.\n");
 		return;
 	}
 
 	// If the weapon has really changed
 	if (new != old)
-		W_SwitchToWeapon (new);
+		W_SwitchToWeapon(new);
 };
 
 /*
@@ -911,7 +906,7 @@ void(float reverse) CycleWeaponCommand =
 	newWeapon = self.weapon;
 
 	// Don't let player change weapons while holding lit dynamite.
-	if (self.tnt_time)
+	if (self.weaponentity.tnt_time)
 		return;
 
 	while (1)
@@ -978,7 +973,7 @@ void(float reverse) CycleWeaponCommand =
 
 		if ((self.items & newWeapon) && am == 0)
 		{
-			W_SwitchToWeapon (newWeapon);
+			W_SwitchToWeapon(newWeapon);
 			return;
 		}
 	}
@@ -988,10 +983,10 @@ void(float reverse) CycleWeaponCommand =
 void() Cheat_Akimbo =
 {
 	self.akimbo_finished = time + 30;
-	W_SetCurrentAmmo ();
+	W_SetCurrentAmmo();
 
-	sprint (self, "Tequila!\n");
-	dprint ("Akimbo cheat\n");
+	sprint(self, "Tequila!\n");
+	dprint("Akimbo cheat\n");
 };
 
 // PM:  Let's player change the armor shown if he has more than one armor.
@@ -1046,30 +1041,26 @@ Called every frame so impulse events can be handled as well as possible
 ============
 */
 void(float isAlive) Impulses_Player;
-float() W_FireCharge;
 void() W_WeaponFrame =
 {
 	if (time < self.weaponentity.attack_finished)
-	return;
+		return;
 
-	if (! W_AmmoAvailable ())
+	if (!W_AmmoAvailable())
 	{
 		if (self.player_state != PS_HOLD_FIRE)
 		{
-			W_SwitchToWeapon (W_BestWeapon ());
+			W_SwitchToWeapon(W_BestWeapon());
 			return;
 		}
 	}
 
-	Impulses_Player (TRUE);
-
-	if (W_FireCharge ())
-		return;
+	Impulses_Player(TRUE);
 
 	// Check for attack
 	if (self.button0 || self.button3)
 	{
-		ResetIdle (self);
-		W_Attack ();
+		ResetIdle(self);
+		W_Attack();
 	}
 };

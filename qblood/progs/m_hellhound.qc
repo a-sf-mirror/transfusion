@@ -42,88 +42,88 @@ $frame pain1 pain2 pain3
 $frame death1 death2 death3 death4 death5 death6
 
 // Prototypes
-void () hellhound_stand1;
-void () hellhound_bite;
-void () hellhound_breath;
+void() hellhound_stand1;
+void() hellhound_bite;
+void() hellhound_breath;
 void() hellhound_flameSpawn;
 
-void () hellhound_walk1 = [$run1, hellhound_walk2] {basic_ai (10);};
-void () hellhound_walk2 = [$run2, hellhound_walk3] {basic_ai (10);};
-void () hellhound_walk3 = [$run3, hellhound_walk4] {basic_ai (10);};
-void () hellhound_walk4 = [$run4, hellhound_walk5] {basic_ai (10);};
-void () hellhound_walk5 = [$run5, hellhound_walk6] {basic_ai (10);};
-void () hellhound_walk6 = [$run6, hellhound_walk7] {basic_ai (10);};
-void () hellhound_walk7 = [$run7, hellhound_walk8] {basic_ai (10);};
-void () hellhound_walk8 = [$run8, hellhound_walk9] {basic_ai (10);};
-void () hellhound_walk9 = [$run9, hellhound_walk10] {basic_ai (10);};
-void () hellhound_walk10 = [$run10, hellhound_walk11] {basic_ai (10);};
-void () hellhound_walk11 = [$run11, hellhound_walk12] {basic_ai (10);};
-void () hellhound_walk12 = [$run12, hellhound_walk1] {basic_ai (10);};
+void() hellhound_walk1 = [$run1, hellhound_walk2] {basic_ai(10);};
+void() hellhound_walk2 = [$run2, hellhound_walk3] {basic_ai(10);};
+void() hellhound_walk3 = [$run3, hellhound_walk4] {basic_ai(10);};
+void() hellhound_walk4 = [$run4, hellhound_walk5] {basic_ai(10);};
+void() hellhound_walk5 = [$run5, hellhound_walk6] {basic_ai(10);};
+void() hellhound_walk6 = [$run6, hellhound_walk7] {basic_ai(10);};
+void() hellhound_walk7 = [$run7, hellhound_walk8] {basic_ai(10);};
+void() hellhound_walk8 = [$run8, hellhound_walk9] {basic_ai(10);};
+void() hellhound_walk9 = [$run9, hellhound_walk10] {basic_ai(10);};
+void() hellhound_walk10 = [$run10, hellhound_walk11] {basic_ai(10);};
+void() hellhound_walk11 = [$run11, hellhound_walk12] {basic_ai(10);};
+void() hellhound_walk12 = [$run12, hellhound_walk1] {basic_ai(10);};
 
-void () hellhound_stand =
+void() hellhound_stand =
 {
-	if (random () < 0.05)
-		sound (self, CHAN_VOICE, "hellhound/smalwoof.wav", 1, ATTN_IDLE);
+	if (random() < 0.05)
+		sound(self, CHAN_VOICE, "hellhound/smalwoof.wav", 1, ATTN_IDLE);
 
 	self.style = 1;
 	hellhound_stand1();
 };
 
 // idle
-void () hellhound_stand1 = [$idle1, hellhound_stand2] {basic_ai(0);};
-void () hellhound_stand2 = [$idle2, hellhound_stand3] {basic_ai(0);};
-void () hellhound_stand3 = [$idle3, hellhound_stand4] {basic_ai(0);};
-void () hellhound_stand4 = [$idle4, hellhound_stand5] {basic_ai(0);};
-void () hellhound_stand5 = [$idle5, hellhound_stand6] {basic_ai(0);};
-void () hellhound_stand6 = [$idle6, hellhound_stand7] {basic_ai(0);};
-void () hellhound_stand7 = [$idle7, hellhound_stand8] {basic_ai(0);};
-void () hellhound_stand8 = [$idle8, hellhound_stand9] {basic_ai(0);};
-void () hellhound_stand9 = [$idle9, hellhound_stand10] {basic_ai(0);};
-void () hellhound_stand10 = [$idle10, hellhound_stand11] {basic_ai(0);};
-void () hellhound_stand11 = [$idle11, hellhound_stand12] {basic_ai(0);};
-void () hellhound_stand12 = [$idle12, hellhound_stand] {};
+void() hellhound_stand1 = [$idle1, hellhound_stand2] {basic_ai(0);};
+void() hellhound_stand2 = [$idle2, hellhound_stand3] {basic_ai(0);};
+void() hellhound_stand3 = [$idle3, hellhound_stand4] {basic_ai(0);};
+void() hellhound_stand4 = [$idle4, hellhound_stand5] {basic_ai(0);};
+void() hellhound_stand5 = [$idle5, hellhound_stand6] {basic_ai(0);};
+void() hellhound_stand6 = [$idle6, hellhound_stand7] {basic_ai(0);};
+void() hellhound_stand7 = [$idle7, hellhound_stand8] {basic_ai(0);};
+void() hellhound_stand8 = [$idle8, hellhound_stand9] {basic_ai(0);};
+void() hellhound_stand9 = [$idle9, hellhound_stand10] {basic_ai(0);};
+void() hellhound_stand10 = [$idle10, hellhound_stand11] {basic_ai(0);};
+void() hellhound_stand11 = [$idle11, hellhound_stand12] {basic_ai(0);};
+void() hellhound_stand12 = [$idle12, hellhound_stand] {};
 
-void () hellhound_walk =
+void() hellhound_walk =
 {
 	self.style = 2;
-	hellhound_walk1 ();
+	hellhound_walk1();
 };
 
-void () hellhound_run =
+void() hellhound_run =
 {
 	self.style = 3;
-	hellhound_walk1 ();
+	hellhound_walk1();
 };
 
 // --- Bite sequence
-void () hellhound_attacka1 = [$attacka1, hellhound_attacka2] {ai_face ();};
-void () hellhound_attacka2 = [$attacka2, hellhound_attacka3] {ai_face ();};
-void () hellhound_attacka3 = [$attacka3, hellhound_attacka4] {ai_face ();};
-void () hellhound_attacka4 = [$attacka4, hellhound_attacka5] {ai_face ();};
-void () hellhound_attacka5 = [$attacka5, hellhound_attacka6] {hellhound_bite(); ai_face ();};
-void () hellhound_attacka6 = [$attacka6, hellhound_run] {ai_face ();};
+void() hellhound_attacka1 = [$attacka1, hellhound_attacka2] {ai_face();};
+void() hellhound_attacka2 = [$attacka2, hellhound_attacka3] {ai_face();};
+void() hellhound_attacka3 = [$attacka3, hellhound_attacka4] {ai_face();};
+void() hellhound_attacka4 = [$attacka4, hellhound_attacka5] {ai_face();};
+void() hellhound_attacka5 = [$attacka5, hellhound_attacka6] {hellhound_bite(); ai_face();};
+void() hellhound_attacka6 = [$attacka6, hellhound_run] {ai_face();};
 
 //--- Flame sequence
-void () hellhound_attackb1 = [$attackb1, hellhound_attackb2] {ai_face ();};
-void () hellhound_attackb2 = [$attackb2, hellhound_attackb3]
+void() hellhound_attackb1 = [$attackb1, hellhound_attackb2] {ai_face();};
+void() hellhound_attackb2 = [$attackb2, hellhound_attackb3]
 {
 	self.attack_finished = time + 2;
 	hellhound_breath();
-	ai_face ();
+	ai_face();
 };
-void () hellhound_attackb3 = [$attackb3, hellhound_run] {ai_face ();};
+void() hellhound_attackb3 = [$attackb3, hellhound_run] {ai_face();};
 
 //--- Decide whether to flame or bite an enemy
-void () hellhound_attack =
+void() hellhound_attack =
 {
 	local vector delta;
 
 	delta = (self.enemy.origin - self.origin);
 
-	if (vlen (delta) <= 90)
-		hellhound_attacka1 ();    // If the player is near bite them
-	else if (vlen (delta) <= 340)
-		hellhound_attackb1 ();    // Otherwise flame them when in range
+	if (vlen(delta) <= 90)
+		hellhound_attacka1();    // If the player is near bite them
+	else if (vlen(delta) <= 340)
+		hellhound_attackb1();    // Otherwise flame them when in range
 	else
 		return;
 };
@@ -153,12 +153,12 @@ void() hellhound_flameSpawn =
 {
 	local vector    dir;
 
-	makevectors (self.v_angle);
+	makevectors(self.v_angle);
 
 	dir = (self.enemy.origin - self.origin);
-	dir = normalize (dir);
+	dir = normalize(dir);
 
-	newmis = spawn ();
+	newmis = spawn();
 	newmis.owner = self;
 	newmis.movetype = MOVETYPE_FLYMISSILE;
 	newmis.solid = SOLID_BBOX;
@@ -172,13 +172,13 @@ void() hellhound_flameSpawn =
 	newmis.reset = SUB_Remove;
 	newmis.think = SUB_Remove;
 	newmis.nextthink = time + 0.6;
-	setmodel (newmis, "progs/sprayfir.spr");
-	setsize (newmis, '-1 -1 -1', '1 1 1');
-	setorigin (newmis, self.origin + '0 -35 10');
+	setmodel(newmis, "progs/sprayfir.spr");
+	setsize(newmis, '-1 -1 -1', '1 1 1');
+	setorigin(newmis, self.origin + '0 -35 10');
 
 	newmis.velocity = dir * 550;
 
-	newmis.frame = floor (random () * 3);
+	newmis.frame = floor(random() * 3);
 
 	self.think = hellhound_breath;
 	self.nextthink = time + 0.1;
@@ -196,7 +196,7 @@ void() hellhound_bite =
 
 	ai_charge(10);
 
-	if (!CanDamage (self.enemy, self))
+	if (!CanDamage(self.enemy, self))
 		return;
 
 	delta = self.enemy.origin - self.origin;
@@ -205,95 +205,95 @@ void() hellhound_bite =
 		return;
 
 	ldmg = (random() + random() + random()) * 8;
-	T_Damage (self.enemy, self, self, ldmg, DF_STAB, string_null);
+	T_Damage(self.enemy, self, self, ldmg, DF_STAB, string_null);
 
-	r = random ();
+	r = random();
 
-	sound (self, CHAN_VOICE, "hellhound/houndbit.wav", 1, ATTN_NORM);
+	sound(self, CHAN_VOICE, "hellhound/houndbit.wav", 1, ATTN_NORM);
 };
 
 //--- Pain sequence
-void () hellhound_pain1 = [$pain1, hellhound_pain2] {};
-void () hellhound_pain2 = [$pain2, hellhound_pain3] {};
-void () hellhound_pain3 = [$pain3, hellhound_run] {};
+void() hellhound_pain1 = [$pain1, hellhound_pain2] {};
+void() hellhound_pain2 = [$pain2, hellhound_pain3] {};
+void() hellhound_pain3 = [$pain3, hellhound_run] {};
 
 //--- Wimper and show pain
-void () hellhound_pain =
+void() hellhound_pain =
 {
 	if (self.pain_finished > time)
 		return;
 
-	if (random () < 0.5)
+	if (random() < 0.5)
 	{
-		sound (self, CHAN_VOICE, "hellhound/cerbpain.wav", 1, ATTN_NORM);
+		sound(self, CHAN_VOICE, "hellhound/cerbpain.wav", 1, ATTN_NORM);
 		self.pain_finished = (time + 0.87);
 	}
 	else
 	{
-		sound (self, CHAN_VOICE, "hellhound/smalpain.wav", 1, ATTN_NORM);
+		sound(self, CHAN_VOICE, "hellhound/smalpain.wav", 1, ATTN_NORM);
 		self.pain_finished = (time + 1.26);
 	}
 
-	hellhound_pain1 ();
+	hellhound_pain1();
 };
 
 // --- Death sequence
-void () hellhound_death1 = [$death1, hellhound_death2] {};
-void () hellhound_death2 = [$death2, hellhound_death3] {};
-void () hellhound_death3 = [$death3, hellhound_death4] {};
-void () hellhound_death4 = [$death4, hellhound_death5] {};
-void () hellhound_death5 = [$death5, hellhound_death6] {};
-void () hellhound_death6 = [$death6, hellhound_death6]
+void() hellhound_death1 = [$death1, hellhound_death2] {};
+void() hellhound_death2 = [$death2, hellhound_death3] {};
+void() hellhound_death3 = [$death3, hellhound_death4] {};
+void() hellhound_death4 = [$death4, hellhound_death5] {};
+void() hellhound_death5 = [$death5, hellhound_death6] {};
+void() hellhound_death6 = [$death6, hellhound_death6]
 {
 	monster_become_corpse();
 };
 
-void () hellhound_die =
+void() hellhound_die =
 {
 	monster_death();
 
 	if (self.health < -40)
 	{
-		sound (self, CHAN_VOICE, "hellhound/cerbdie3.wav", 1, ATTN_NORM);
+		sound(self, CHAN_VOICE, "hellhound/cerbdie3.wav", 1, ATTN_NORM);
 
 		// Very large blood splat!
-		te_bloodshower (self.origin, self.origin + self.size, 100, 150);
+		te_bloodshower(self.origin, self.origin + self.size, 100, 150);
 		RandomHumanGibs();
-		remove (self);
+		remove(self);
 		return;
 	}
 
-	if (random () < 0.5)
-		sound (self, CHAN_VOICE, "hellhound/cerbdie1.wav", 1, ATTN_NORM);
+	if (random() < 0.5)
+		sound(self, CHAN_VOICE, "hellhound/cerbdie1.wav", 1, ATTN_NORM);
 	else
-		sound (self, CHAN_VOICE, "hellhound/cerbdie2.wav", 1, ATTN_NORM);
+		sound(self, CHAN_VOICE, "hellhound/cerbdie2.wav", 1, ATTN_NORM);
 
-	hellhound_death1 ();    
+	hellhound_death1();    
 };
 
 //--- The spawn
-void () monster_hellhound =
+void() monster_hellhound =
 {
 	//  Disable for testing
 	if(monster_check())
 		return;
 
-	precache_model ("models/enemies/hellhound.md3");
-	precache_model ("progs/sprayfir.spr");
+	precache_model("models/enemies/hellhound.md3");
+	precache_model("progs/sprayfir.spr");
 
-	precache_sound ("hellhound/cerbdie1.wav");
-	precache_sound ("hellhound/cerbdie2.wav");
-	precache_sound ("hellhound/cerbdie3.wav");
-	precache_sound ("hellhound/cerbpain.wav");
-	precache_sound ("hellhound/cerbspot.wav");
-	precache_sound ("hellhound/houndbit.wav");
-	precache_sound ("hellhound/smalpain.wav");
-	precache_sound ("hellhound/smalwoof.wav");
+	precache_sound("hellhound/cerbdie1.wav");
+	precache_sound("hellhound/cerbdie2.wav");
+	precache_sound("hellhound/cerbdie3.wav");
+	precache_sound("hellhound/cerbpain.wav");
+	precache_sound("hellhound/cerbspot.wav");
+	precache_sound("hellhound/houndbit.wav");
+	precache_sound("hellhound/smalpain.wav");
+	precache_sound("hellhound/smalwoof.wav");
 
 	self.solid = SOLID_SLIDEBOX;
 	self.movetype = MOVETYPE_TOSS;
-	setmodel (self, "models/enemies/hellhound.md3");
-	setsize (self,'-39 -17 0', '38 17 35');
+	setmodel(self, "models/enemies/hellhound.md3");
+	setsize(self,'-39 -17 0', '38 17 35');
 	self.health = 100;
 	self.max_health = self.health;
 	self.th_stand = hellhound_stand;
@@ -305,5 +305,5 @@ void () monster_hellhound =
 	self.touch = monster_stepped_on;
 	self.classname = "monster";
 	self.netname = "monster_hellhound";
-	walkmonster_start ();
+	walkmonster_start();
 };

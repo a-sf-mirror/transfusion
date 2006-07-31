@@ -63,22 +63,22 @@
 #define CULTIST_BURN_TIME			0
 #define CULTIST_VARIOUS_DEATHS_TIME	0
 
-void () cultist_animate;
+void() cultist_animate;
 
 // Shared cultist functions
-void () cultist_die;         // Brown, Black, Blue, Green
-void () cultist_fireShotgun; // Brown, Red
-void () cultist_pain;        // all
-void () cultist_stand;       // all
-void () cultist_throw_TNT;   // Brown, Green
+void() cultist_die;         // Brown, Black, Blue, Green
+void() cultist_fireShotgun; // Brown, Red
+void() cultist_pain;        // all
+void() cultist_stand;       // all
+void() cultist_throw_TNT;   // Brown, Green
 
-void () browncultist_attack;
-void () blackcultist_attack;
-void () bluecultist_attack;
-void () greencultist_attack;
-void () redcultist_attack;
+void() browncultist_attack;
+void() blackcultist_attack;
+void() bluecultist_attack;
+void() greencultist_attack;
+void() redcultist_attack;
 
-void () cultist_taunt =
+void() cultist_taunt =
 {
 	if (self.pain_finished < time && self.voice_finished < time)// To avoid several sounds at once
 	{
@@ -87,22 +87,22 @@ void () cultist_taunt =
 
 		if (r <= 0.05)
 		{
-			sound (self, CHAN_AUTO, "cultist/cultglo1.wav", 1, ATTN_NORM);
+			sound(self, CHAN_AUTO, "cultist/cultglo1.wav", 1, ATTN_NORM);
 			self.voice_finished = time + 3.46;
 		}
 		else if (r <= 0.1)
 		{
-			sound (self, CHAN_AUTO, "cultist/cultglo2.wav", 1, ATTN_NORM);
+			sound(self, CHAN_AUTO, "cultist/cultglo2.wav", 1, ATTN_NORM);
 			self.voice_finished = time + 3.21;
 		}
 		else if (r <= 0.15)
 		{
-			sound (self, CHAN_AUTO, "cultist/cultglo3.wav", 1, ATTN_NORM);
+			sound(self, CHAN_AUTO, "cultist/cultglo3.wav", 1, ATTN_NORM);
 			self.voice_finished = time + 2.27;
 		}
 		else if (r <= 0.2)
 		{
-			sound (self, CHAN_AUTO, "cultist/cultglo4.wav", 1, ATTN_NORM);
+			sound(self, CHAN_AUTO, "cultist/cultglo4.wav", 1, ATTN_NORM);
 			self.voice_finished = time + 2.27;
 		}
 
@@ -113,30 +113,29 @@ void () cultist_taunt =
 };
 
 //--- Death sequence
-void () cultist_die =
+void() cultist_die =
 {
 	self.anim_type = DEATH;
 	cultist_animate();
 };
 
-void () cultist_fireShotgun =
+void() cultist_fireShotgun =
 {
 	local float r;
 	local vector dir;
 	local vector org;
-	local vector spread;
 
 	self.effects = self.effects | EF_MUZZLEFLASH;
 
 	r = random();
 
 	if (r < 0.5)
-		sound (self, CHAN_AUTO, "cultist/cultatt1.wav", 1, ATTN_NORM);
+		sound(self, CHAN_AUTO, "cultist/cultatt1.wav", 1, ATTN_NORM);
 	else
-		sound (self ,CHAN_AUTO, "cultist/cultatt2.wav", 1, ATTN_NORM);
+		sound(self ,CHAN_AUTO, "cultist/cultatt2.wav", 1, ATTN_NORM);
 
 	dir = (self.enemy.origin - self.origin);	
-	dir = normalize (dir);	
+	dir = normalize(dir);	
 	org = self.origin;
 
 	/* 
@@ -167,10 +166,10 @@ void () cultist_fireShotgun =
 	
 	org_z = org_z + 35;	
 	
-	FireBullets (org, dir, 8, 8, '0.1 0.1 0');  // 8 "shot pellets" per shell
+	FireBullets(org, dir, 8, 8, '0.1 0.1 0');  // 8 "shot pellets" per shell
 };
 
-void () cultist_pain =
+void() cultist_pain =
 {
 	local float r;
 
@@ -183,32 +182,59 @@ void () cultist_pain =
 	if (self.deathtype == "fire" && (self.health / self.max_health) <= 0.35)
 	{
 		if (r < 0.33)
-			{sound (self,2,"cultist/cultfir1.wav",1,1); self.pain_finished = (time + 3.2);}
+		{
+			sound(self,2,"cultist/cultfir1.wav",1,1);
+			self.pain_finished = (time + 3.2);
+		}
 		else if (r < 0.66)
-			{sound (self,2,"cultist/cultfir2.wav",1,1);    self.pain_finished = (time + 4.62);}
+		{
+			sound(self,2,"cultist/cultfir2.wav",1,1);
+			self.pain_finished = (time + 4.62);
+		}
 		else
-			{sound (self,2,"cultist/cultfir3.wav",1,1);    self.pain_finished = (time + 3.62);}
+		{
+			sound(self,2,"cultist/cultfir3.wav",1,1);
+			self.pain_finished = (time + 3.62);
+		}
 	}
 	else if (r < 0.25)
-		{sound (self,2,"cultist/cultpan1.wav",1,1);    self.pain_finished = (time + 1.38);}
+	{
+		sound(self,2,"cultist/cultpan1.wav",1,1);
+		self.pain_finished = (time + 1.38);
+	}
 	else if (r < 0.5)
 	{
 		// Unique tommygun cultist sound
 		if (self.netname == "monster_blackcultist")
-			{sound (self,2,"cultist/tcltpan2.wav",1,1);    self.pain_finished = (time + 1.28);}
+		{
+			sound(self,2,"cultist/tcltpan2.wav",1,1);
+			self.pain_finished = (time + 1.28);
+		}
 		else
-			{sound (self,2,"cultist/cultpan2.wav",1,1);    self.pain_finished = (time + 1.35);}
+		{
+			sound(self,2,"cultist/cultpan2.wav",1,1);
+			self.pain_finished = (time + 1.35);
+		}
 	}
 	else if (r < 0.75)
 	{
 		// Unique tommygun cultist sound
 		if (self.netname == "monster_blackcultist")
-			{sound (self,2,"cultist/tcltpan3.wav",1,1);    self.pain_finished = (time + 1.21);}
+		{
+			sound(self,2,"cultist/tcltpan3.wav",1,1);
+			self.pain_finished = (time + 1.21);
+		}
 		else
-			{sound (self,2,"cultist/cultpan3.wav",1,1);    self.pain_finished = (time + 1.4);}		
+		{
+			sound(self,2,"cultist/cultpan3.wav",1,1);
+			self.pain_finished = (time + 1.4);
+		}
 	}
 	else
-		{sound (self,2,"cultist/cultpan4.wav",1,1);    self.pain_finished = (time + 1.29);}
+	{
+		sound(self,2,"cultist/cultpan4.wav",1,1);
+		self.pain_finished = (time + 1.29);
+	}
 
 	/* da_weezle: knockback handled via T_Damage, this is deprecated		
 	if (self.deathtype != "fire") // FIXME: This is here until I can spread it through pain frames
@@ -218,21 +244,21 @@ void () cultist_pain =
 
 //--- Function used by brown, black and green cultists
 
-void () cultist_throw_TNT =
+void() cultist_throw_TNT =
 {
 	local    entity missile;
 	local    vector delta;
 	local     float dist;
 
-	sound (self, CHAN_WEAPON, "cultist/culttoss.wav", 1, ATTN_NORM);
+	sound(self, CHAN_WEAPON, "cultist/culttoss.wav", 1, ATTN_NORM);
 
-	missile = spawn ();
+	missile = spawn();
 	missile.owner = self;
 	missile.movetype = MOVETYPE_BOUNCE;
 	missile.solid = SOLID_BBOX;
 
 	// set missile speed
-	makevectors (self.angles);
+	makevectors(self.angles);
 	delta = (self.enemy.origin - self.origin);
 	dist = vlen(delta);
 	missile.velocity = normalize(self.enemy.origin - self.origin);
@@ -247,41 +273,41 @@ void () cultist_throw_TNT =
 	missile.touch = Bomb_Trigger;
 // todo: make cultist release TNT at ~frame 20 of CULTIST_ATTACK2
 
-	setmodel (missile, "models/weapons/grenades/gr_tnt.md3");
-	setsize (missile, '0 0 0', '0 0 0');
-	setorigin (missile, self.origin);
+	setmodel(missile, "models/weapons/grenades/gr_tnt.md3");
+	setsize(missile, '0 0 0', '0 0 0');
+	setorigin(missile, self.origin);
 };
 
 //--- Decide what to say
-void () cultist_stand =
+void() cultist_stand =
 {
 	local float     r;
 	r = random();
 
 	if (r <= 0.02)
-		sound (self, CHAN_WEAPON, "cultist/cultspt1.wav", 1, ATTN_NORM);
+		sound(self, CHAN_WEAPON, "cultist/cultspt1.wav", 1, ATTN_NORM);
 	else if (r <= 0.04)
-		sound (self, CHAN_WEAPON, "cultist/cultspt2.wav", 1, ATTN_NORM);
+		sound(self, CHAN_WEAPON, "cultist/cultspt2.wav", 1, ATTN_NORM);
 	else if (r <= 0.06)
-		sound (self, CHAN_WEAPON, "cultist/cultspt3.wav", 1, ATTN_NORM);
+		sound(self, CHAN_WEAPON, "cultist/cultspt3.wav", 1, ATTN_NORM);
 	else if (r <= 0.08)
-		sound (self, CHAN_WEAPON, "cultist/cultspt4.wav", 1, ATTN_NORM);
+		sound(self, CHAN_WEAPON, "cultist/cultspt4.wav", 1, ATTN_NORM);
 	else if (r <= 0.1)
-		sound (self, CHAN_WEAPON, "cultist/cultspt5.wav", 1, ATTN_NORM);
+		sound(self, CHAN_WEAPON, "cultist/cultspt5.wav", 1, ATTN_NORM);
 
 	self.style = 1;
 	self.anim_type = STAND;
 	cultist_animate();
 };
 
-void () cultist_walk =
+void() cultist_walk =
 {
 	self.style = 2;
 	self.anim_type = WALK;
 	cultist_animate();
 };
 
-void () cultist_run =
+void() cultist_run =
 {    
 	self.style = 3;
 	self.anim_type = RUN;
@@ -289,21 +315,21 @@ void () cultist_run =
 };
 
 // primary attack
-void () cultist_attack = 
+void() cultist_attack = 
 {
 	self.anim_type = ATTACK;
 	cultist_animate();
 };
 
 // secondary attack
-void () cultist_attack2 =
+void() cultist_attack2 =
 {
 	self.anim_type = ATTACK2;
 	cultist_animate();
 };
 
 // crawl
-void () cultist_crawl =
+void() cultist_crawl =
 {
 	//self.style = 1; //FIXME style for crawling?
 	self.anim_type = CRAWL;
@@ -311,7 +337,7 @@ void () cultist_crawl =
 };
 
 // fire while crawling
-void () cultist_crawl_fire =
+void() cultist_crawl_fire =
 {
 	//self.style = 1; //FIXME style for crawling?
 	self.anim_type = CRAWL_FIRE;
@@ -319,7 +345,7 @@ void () cultist_crawl_fire =
 };
 
 // swim
-void () cultist_swim =
+void() cultist_swim =
 {
 	//self.style = 1; //FIXME style for swimming?
 	self.anim_type = SWIM;
@@ -327,14 +353,21 @@ void () cultist_swim =
 };
 
 // fire while swimming
-void () cultist_swim_fire =
+void() cultist_swim_fire =
 {
 	//self.style = 1; //FIXME style for swimming?
 	self.anim_type = CRAWL_FIRE;
 	cultist_animate();
 };
 
-void () cultist_animate =
+/*
+============
+cultist_animate
+
+Animation and frame based code for the Cultist
+============
+*/
+void() cultist_animate =
 {
 	if (self.anim_type == self.last_action)
 	{
@@ -434,23 +467,23 @@ void () cultist_animate =
 		{
 			if (self.health < -40)
 			{
-				sound (self, CHAN_VOICE, "cultist/cultdie3.wav", 1, ATTN_NORM);
+				sound(self, CHAN_VOICE, "cultist/cultdie3.wav", 1, ATTN_NORM);
 				// Very large blood splat!
-				te_bloodshower (self.origin, self.origin + self.size, 100, 100);
-				RandomHumanGibs ();
-				remove (self);
+				te_bloodshower(self.origin, self.origin + self.size, 100, 100);
+				RandomHumanGibs();
+				remove(self);
 				return;
 			}
-			else if (random () < 0.5)
+			else if (random() < 0.5)
 			{
 				// Unique tommygun cultist sound
 				if (self.netname == "monster_blackcultist")
-					sound (self, CHAN_VOICE, "cultist/tcltdie1.wav", 1, ATTN_NORM);
+					sound(self, CHAN_VOICE, "cultist/tcltdie1.wav", 1, ATTN_NORM);
 				else
-					sound (self, CHAN_VOICE, "cultist/cultdie1.wav", 1, ATTN_NORM);
+					sound(self, CHAN_VOICE, "cultist/cultdie1.wav", 1, ATTN_NORM);
 			}
 			else
-				sound (self, CHAN_VOICE, "cultist/cultdie2.wav", 1, ATTN_NORM);
+				sound(self, CHAN_VOICE, "cultist/cultdie2.wav", 1, ATTN_NORM);
 			if (self.frame == self.anim_end)
 			{
 				local entity drop_weapon;
@@ -470,7 +503,7 @@ void () cultist_animate =
 		}
 		else // It is a red cultist (priest)
 		{
-			sound (self,2,"cultist/cultmorp.wav",1,1);
+			sound(self,2,"cultist/cultmorp.wav",1,1);
 			/*
 			do morph (from cultist to beast) animation sequence
 			remove self here
@@ -510,7 +543,7 @@ void () cultist_animate =
 
 
 //	Generic Cultist settings that apply to all go in here
-void () cultist_spawn =
+void() cultist_spawn =
 {   
 	//  Disable for testing
 	if(monster_check())
@@ -534,33 +567,33 @@ void () cultist_spawn =
 	// Don't precache sounds that won't be used by black cultist
 	if (self.netname != "monster_blackcultist")
 	{
-		precache_sound ("cultist/cultdie1.wav"); // Death
-		precache_sound ("cultist/cultpan2.wav"); // Pain
-		precache_sound ("cultist/cultpan3.wav"); // Pain
+		precache_sound("cultist/cultdie1.wav"); // Death
+		precache_sound("cultist/cultpan2.wav"); // Pain
+		precache_sound("cultist/cultpan3.wav"); // Pain
 	}
 	
-	precache_model ("models/enemies/cultist/cultist.psk");    
-	precache_sound ("cultist/cultdie2.wav"); // Death
-	precache_sound ("cultist/cultdie3.wav"); // Death
-	precache_sound ("cultist/cultfir1.wav"); // On fire
-	precache_sound ("cultist/cultfir2.wav"); // On fire
-	precache_sound ("cultist/cultfir3.wav"); // On fire
-	precache_sound ("cultist/cultglo1.wav"); // Gloating
-	precache_sound ("cultist/cultglo2.wav"); // Gloating
-	precache_sound ("cultist/cultglo3.wav"); // Gloating
-	precache_sound ("cultist/cultglo4.wav"); // Gloating
-	precache_sound ("cultist/cultpan1.wav"); // Pain
-	precache_sound ("cultist/cultpan4.wav"); // Pain
-	precache_sound ("cultist/cultspt1.wav"); // Spotted
-	precache_sound ("cultist/cultspt2.wav"); // Spotted
-	precache_sound ("cultist/cultspt3.wav"); // Spotted
-	precache_sound ("cultist/cultspt4.wav"); // Spotted
-	precache_sound ("cultist/cultspt5.wav"); // Spotted
+	precache_model("models/enemies/cultist/cultist.psk");    
+	precache_sound("cultist/cultdie2.wav"); // Death
+	precache_sound("cultist/cultdie3.wav"); // Death
+	precache_sound("cultist/cultfir1.wav"); // On fire
+	precache_sound("cultist/cultfir2.wav"); // On fire
+	precache_sound("cultist/cultfir3.wav"); // On fire
+	precache_sound("cultist/cultglo1.wav"); // Gloating
+	precache_sound("cultist/cultglo2.wav"); // Gloating
+	precache_sound("cultist/cultglo3.wav"); // Gloating
+	precache_sound("cultist/cultglo4.wav"); // Gloating
+	precache_sound("cultist/cultpan1.wav"); // Pain
+	precache_sound("cultist/cultpan4.wav"); // Pain
+	precache_sound("cultist/cultspt1.wav"); // Spotted
+	precache_sound("cultist/cultspt2.wav"); // Spotted
+	precache_sound("cultist/cultspt3.wav"); // Spotted
+	precache_sound("cultist/cultspt4.wav"); // Spotted
+	precache_sound("cultist/cultspt5.wav"); // Spotted
 
 	self.solid = SOLID_SLIDEBOX;
 	self.movetype = MOVETYPE_STEP;
-	setmodel (self, "models/enemies/cultist/cultist.psk");
-	setsize (self,'-9.9 -18.6 -0.2', '21.6 18.6 63.7');    
+	setmodel(self, "models/enemies/cultist/cultist.psk");
+	setsize(self,'-9.9 -18.6 -0.2', '21.6 18.6 63.7');    
 	self.speed = 50;	// walkspeed
 	self.max_health = self.health;
 	self.th_stand = cultist_stand;
@@ -574,5 +607,5 @@ void () cultist_spawn =
 
 	cultist_animate();
 
-	walkmonster_start ();    
+	walkmonster_start();    
 };

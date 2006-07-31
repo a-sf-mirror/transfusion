@@ -21,22 +21,22 @@
 
 // Prototypes
 
-void () browncultist_attackDecide;
-void () browncultist_fireShotgun;
+void() browncultist_attackDecide;
+void() browncultist_fireShotgun;
 
 //--- Shooting shotgun
 /*
-void () browncultist_attacka1 = [$attack1, browncultist_attacka2] {ai_face ();};
-void () browncultist_attacka2 = [$attack2, browncultist_attacka3] {browncultist_fireShotgun (); ai_face ();};
-void () browncultist_attacka3 = [$idle1, cultist_run] {ai_face ();};
+void() browncultist_attacka1 = [$attack1, browncultist_attacka2] {ai_face();};
+void() browncultist_attacka2 = [$attack2, browncultist_attacka3] {browncultist_fireShotgun(); ai_face();};
+void() browncultist_attacka3 = [$idle1, cultist_run] {ai_face();};
 
 //--- Throwing TNT
 
-void () browncultist_attackb1 = [$idle1, browncultist_attackb2] {cultist_throw_TNT (); ai_face ();};
-void () browncultist_attackb2 = [$idle1, cultist_run] {ai_face ();};
+void() browncultist_attackb1 = [$idle1, browncultist_attackb2] {cultist_throw_TNT(); ai_face();};
+void() browncultist_attackb2 = [$idle1, cultist_run] {ai_face();};
 */
 
-void () browncultist_attack =
+void() browncultist_attack =
 {
 	if (!visible(self.enemy)) // If there's something blocking the shot
 		return;
@@ -46,7 +46,7 @@ void () browncultist_attack =
 	browncultist_attackDecide();
 };
 
-void () browncultist_attackDecide =
+void() browncultist_attackDecide =
 {
 	local float vis;
 
@@ -61,13 +61,13 @@ void () browncultist_attackDecide =
 
 		if (dist == RANGE_NEAR || dist == RANGE_MELEE)// If the player is near shoot them		      
 		{
-			//browncultist_attacka1 ();
+			//browncultist_attacka1();
 			self.anim_type = ATTACK1;
 			cultist_animate();
 		}
 		else
 		{
-			//browncultist_attackb1 ();        // Otherwise TNT them
+			//browncultist_attackb1();        // Otherwise TNT them
 			self.anim_type = ATTACK2;
 			cultist_animate();
 		}
@@ -81,7 +81,7 @@ void () browncultist_attackDecide =
 
 //--- Shoot the player
 
-void () browncultist_fireShotgun =
+void() browncultist_fireShotgun =
 {
 	ai_face();
 	cultist_fireShotgun();
@@ -89,19 +89,19 @@ void () browncultist_fireShotgun =
 	self.nextthink = time + 0.5;
 };
 
-void () monster_browncultist =
+void() monster_browncultist =
 {
 	// Precache files needed for TNT tossing
-	precache_model ("models/weapons/grenades/gr_tnt.md3");// TNT Projectile
-	precache_sound ("cultist/culttoss.wav");              // TNT toss sound
-	precache_sound ("weapons/r_exp3.wav");                // TNT explosion sound
+	precache_model("models/weapons/grenades/gr_tnt.md3");// TNT Projectile
+	precache_sound("cultist/culttoss.wav");              // TNT toss sound
+	precache_sound("weapons/r_exp3.wav");                // TNT explosion sound
 	
 	// Precache files needed for the shotgun
 	precache_sawedoff();
 
 	// Precache files needed for shooting shotgun
-	precache_sound ("cultist/cultatt1.wav"); // Shotgun boom
-	precache_sound ("cultist/cultatt2.wav"); // Shotgun boom
+	precache_sound("cultist/cultatt1.wav"); // Shotgun boom
+	precache_sound("cultist/cultatt2.wav"); // Shotgun boom
 
 	// Setup all brown cultists unique attributes
 	self.skin = CULTIST_BROWN;

@@ -290,7 +290,7 @@ float map_cycle;
 //
 // globals
 //
-float current_yaw;
+//float current_yaw;  //not used?
 
 //
 // when a monster becomes angry at a player, that monster will be used
@@ -306,7 +306,6 @@ float sight_entity_time;
 //
 // world fields (FIXME: make globals)
 //
-.string     wad;        // FIXME: It doesn't seem to be used anymore
 .string     map;
 .float      worldtype;  // 0=medieval 1=metal 2=base
 
@@ -342,7 +341,6 @@ float sight_entity_time;
 .float      reflect_finished;
 
 .float      charge;
-.float      powertime;
 .float      tnt_time;
 .float      tnt_type;
 
@@ -366,7 +364,7 @@ float sight_entity_time;
 .float		button5;		// crouch; DP_INPUTBUTTONS extnsion
 .float		crouch;		
 .float		oldbutton4;		// throttle control for use key
-.float      alpha;          // controls opacity of the entity (0.0 or 1.0 is solid, -1 is invisible); DP_ENT_ALPHA extension
+.float      alpha;          // controls opacity of the entity(0.0 or 1.0 is solid, -1 is invisible); DP_ENT_ALPHA extension
 .float      glow_color;     // Glowing light effect, paletted color (note: 0 and 254 are white); DP_ENT_GLOW extension
 .float      glow_size;      // 0 or higher (Darkplaces imposes a 1020 limit); DP_ENT_GLOW extension
 .float      glow_trail;     // If true, leave a trail of particles of the same color as the light; DP_ENT_GLOW extension
@@ -380,7 +378,7 @@ float sight_entity_time;
 //
 // quakeed fields
 //
-.float      light_lev;  // not used by game, but parsed by light util
+//.float      light_lev;  // not used by game, but parsed by light util
 .float      style;      // mainly used for the light styles
 
 //
@@ -407,6 +405,9 @@ float sight_entity_time;
 .float      search_time;
 .float      attack_state;
 
+//this is a very special capability, attachs the entity to the view of the client specified, origin and angles become relative to the view of that client, all effects can be used (multiple skins on a weapon model etc)...  the entity is not visible to any other client.
+.entity viewmodelforclient;
+
 .entity		attachedobject;
 
 //new player/monster/weapon animation variables
@@ -419,6 +420,8 @@ float sight_entity_time;
 //new player weapon animation variables
 .entity		weaponentity;			//Entity for the client's weapon
 .float		ammo_in_chamber;	//the number of shells the shotgun has in its chamber.
+.float		stab_damage;	//Voodoo Doll damage value
+.float		stab_type;		//Voodoo Doll stab method
 
 
 //
@@ -439,8 +442,7 @@ float sight_entity_time;
 .float      do_observer;
 
 .float      items2;	//keys
-.float		spawnposition;
-.float		spawposition;	//spawn position
+.float		spawnposition; //spawn position
 .float		spawntype;	// for SP & BB & Coop spawn values
 
 .float      player_state;   // cf PS_*
@@ -655,7 +657,7 @@ void(string s) changelevel              = #70;
 void(string var, string val) cvar_set   = #72;  // sets cvar.value
 
 #ifdef NO_FRIKBOT
-// The various versions of centerprint (sprint, but in middle)
+// The various versions of centerprint(sprint, but in middle)
 void(entity client, string s) centerprint                           = #73;
 void(entity client, string s1, string s2) centerprint2              = #73;
 void(entity client, string s1, string s2, string s3) centerprint3   = #73;
@@ -667,8 +669,6 @@ void(vector pos, string samp, float vol, float atten) ambientsound  = #74;
 void(entity e) setspawnparms = #78;  // set parm1... to the values at level start for coop respawn
 #endif
 
-//commented out, declared in dpextensions.qc
-/*
 // QC extensions
 float(string name, string value) registercvar   = #93;
 float(string s) checkextension                  = #99;
@@ -676,7 +676,7 @@ float(string s) checkextension                  = #99;
 // concatenates two strings (for example "abc", "def" would return "abcdef") and returns as a tempstring
 string(string s1, string s2) strcat             = #115; 
 
-Temporary entities were simplified.  Here's the simpler functions...
+//Temporary entities were simplified.  Here's the simpler functions...
 
 //creates a blood effect
 void(vector org, vector velocity, float howmany) te_blood = #405;
@@ -697,4 +697,27 @@ void(vector mincorner, vector maxcorner, vector vel, float howmany, float color)
 void(vector mincorner, vector maxcorner, vector vel, float howmany, float color) te_particlesnow = #410;
 
 //creates a customized light flash.
-void(vector org, float radius, float lifetime, vector color) te_customflash = #417;*/
+void(vector org, float radius, float lifetime, vector color) te_customflash = #417;
+
+//clientside playback of simple custom sprite effects (explosion sprites, etc).
+void(vector org, string modelname, float startframe, float endframe, float framerate) effect = #404;
+
+//DP_GFX_QUAKE3MODELTAGS
+//idea: id Software
+//darkplaces implementation: LordHavoc
+//field definitions:
+/* enable these ones needed?
+.entity tag_entity; // entity this is attached to (call setattachment to set this)
+.float tag_index; // which tag on that entity(0 is relative to the entity, > 0 is an index into the tags on the model if it has any) (call setattachment to set this)
+*/
+//builtin definitions:
+void(entity e, entity tagentity, string tagname) setattachment = #443; // attachs e to a tag on tagentity(note: use "" to attach to entity origin/angles instead of a tag)
+//description:
+//allows entities to be visually attached to model tags (which follow animations perfectly) on other entities, for example attaching a weapon to a player's hand, or upper body attached to lower body, allowing it to change angles and frame separately (note: origin and angles are relative to the tag, use '0 0 0' for both if you want it to follow exactly, this is similar to viewmodelforclient's behavior).
+//note 2: if the tag is not found, it defaults to "" (attach to origin/angles of entity)
+//note 3: attaching to world turns off attachment
+//note 4: the entity that this is attached to must be visible for this to work
+//note 5: if an entity is attached to the player entity it will not be drawn in first person.
+
+//similar to traceline but much more useful, traces a box of the size specified (technical note: in quake1 and halflife bsp maps the mins and maxs will be rounded up to one of the hull sizes, quake3 bsp does not have this problem, this is the case with normal moving entities as well).
+void(vector v1, vector min, vector max, vector v2, float nomonsters, entity forent) tracebox = #90;

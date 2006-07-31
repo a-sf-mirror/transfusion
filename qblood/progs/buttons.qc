@@ -48,14 +48,14 @@ void() button_return =
 	if (self.state == STATE_TOP && !self.style)
 	{
 		activator = self.enemy;
-		sound (self, CHAN_VOICE, self.noise, 1, ATTN_NORM);
+		sound(self, CHAN_VOICE, self.noise, 1, ATTN_NORM);
 		SUB_UseTargets();
 	}
 
 	self.state = STATE_DOWN;
 
 	if (self.style)
-		SUB_CalcMove (self.pos1, self.speed, button_done);
+		SUB_CalcMove(self.pos1, self.speed, button_done);
 	else
 		button_done();
 
@@ -75,12 +75,12 @@ void() button_fire =
 	if (self.state == STATE_UP || self.state == STATE_TOP)
 	return;
 
-	sound (self, CHAN_VOICE, self.noise, 1, ATTN_NORM);
+	sound(self, CHAN_VOICE, self.noise, 1, ATTN_NORM);
 
 	self.state = STATE_UP;
 
 	if (self.style)
-		SUB_CalcMove (self.pos2, self.speed, button_wait);
+		SUB_CalcMove(self.pos2, self.speed, button_wait);
 	else
 		button_wait();
 };
@@ -89,7 +89,7 @@ void() button_fire =
 void() button_use =
 {
 	self.enemy = activator;
-	button_fire ();
+	button_fire();
 };
 
 void() button_touch =
@@ -111,7 +111,7 @@ void() button_touch =
 	if (self.state == STATE_TOP && !self.style)
 		button_return();
 	else
-		button_fire ();
+		button_fire();
 };
 
 void() button_killed =
@@ -119,7 +119,7 @@ void() button_killed =
 	self.enemy = damage_attacker;
 	self.health = self.max_health;
 	self.takedamage = DAMAGE_NO;    // wil be reset upon return
-	button_fire ();
+	button_fire();
 };
 
 /*QUAKED func_button (0 .5 .8) ?
@@ -144,43 +144,41 @@ and see what the engine chooses to use from current, then make adjustments.
 */
 void() func_button =
 {
-	local float     gtemp, ftemp;
-
 	if (self.noise)
 	{
-		precache_sound (self.noise);
+		precache_sound(self.noise);
 	}	
 	else if (self.sounds == 0)
 	{
-		precache_sound ("locks/switch1.wav");
+		precache_sound("locks/switch1.wav");
 		self.noise = "locks/switch1.wav";
 	}
 	else if (self.sounds == 1)
 	{
-		precache_sound ("locks/runeuse.wav");
+		precache_sound("locks/runeuse.wav");
 		self.noise = "locks/runeuse.wav";
 	}
 	else if (self.sounds == 2)
 	{
-		precache_sound ("locks/qlatch2.wav");
+		precache_sound("locks/qlatch2.wav");
 		self.noise = "locks/qlatch2.wav";
 	}
 	else if (self.sounds == 3)
 	{
-		precache_sound ("locks/qlatch2.wav");
+		precache_sound("locks/qlatch2.wav");
 		self.noise = "locks/qlatch2.wav";
 	}
 	else if (self.sounds == 4)
 	{
-		precache_sound ("misc/null.wav");
+		precache_sound("misc/null.wav");
 		self.noise = "misc/null.wav";
 	}
 
-	SetMovedir ();
+	SetMovedir();
 
 	self.movetype = MOVETYPE_PUSH;
 	self.solid = SOLID_BSP;
-	setmodel (self, self.model);
+	setmodel(self, self.model);
 
 	self.blocked = button_blocked;
 	self.use = button_use;
@@ -214,30 +212,28 @@ void() func_button =
 
 void() changelevel_use =
 {
-	local entity    pos;
-
 	if (other.classname != "player")
 		return;
 
 	if ((cvar("noexit") == 1) || ((cvar("noexit") == 2) && (mapname != "start")))
 	{
-		T_Damage (other, self, self, 50000, DF_PUMMEL, "exitkill");
+		T_Damage(other, self, self, 50000, DF_PUMMEL, "exitkill");
 		return;
 	}
 
 	if (gametype != GT_SINGLE_PLAYER)
 	{
-		bprint (other.netname);
-		bprint (" exited the level\n");
+		bprint(other.netname);
+		bprint(" exited the level\n");
 	}
 
 	nextmap = self.map;
 
-	SUB_UseTargets ();
+	SUB_UseTargets();
 
 	self.frame = 1 - self.frame;
 
-	if ( (self.spawnflags & 1) && gametype != GT_SINGLE_PLAYER)
+	if (self.spawnflags & 1 && gametype != GT_SINGLE_PLAYER)
 	{    // NO_INTERMISSION
 		GotoNextMap();
 		return;
@@ -254,7 +250,7 @@ When the player uses this, he gets sent to the map listed in the "map" variable.
 void() func_changelevel =
 {
 	if (!self.map)
-	objerror ("changelevel func doesn't have map");
+	objerror("changelevel func doesn't have map");
 
 	if (gametype != GT_SINGLE_PLAYER && gametype != GT_COOPERATIVE)
 	{
@@ -265,6 +261,6 @@ void() func_changelevel =
 	self.spawnflags = self.spawnflags | SF_USABLE;
 	self.solid = SOLID_BSP;
 	self.movetype = MOVETYPE_PUSH;
-	setmodel (self, self.model);
+	setmodel(self, self.model);
 	self.use = changelevel_use;
 };

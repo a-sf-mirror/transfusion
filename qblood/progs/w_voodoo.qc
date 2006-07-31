@@ -20,90 +20,44 @@
 #include "common.qh"
 #include "player.qh"
 
-void(float damage) Voodoo_ApplyDamage;
+void() voodoo_animate;
 
-//============================================================================
-// ----- Voodoo Doll model ----- //
-$modelname v_voodoo
+#define VOODOO_IDLE					0
+#define VOODOO_DRAW_START			1
+#define VOODOO_DRAW_END				3
+#define VOODOO_FIRE_STOMACH_START	4 // Stomach
+#define VOODOO_FIRE_STOMACH_END		7
+#define VOODOO_FIRE_EYE_START		8 // Eye
+#define VOODOO_FIRE_EYE_END			11
+#define VOODOO_FIRE_SHOULDER_START	12 // Shoulder
+#define VOODOO_FIRE_SHOULDER_END	15
+#define VOODOO_FIRE_GROIN_START		16 // Groin
+#define VOODOO_FIRE_GROIN_END		21
+#define VOODOO_FIRE_THUMB_START		22 // Thumb
+#define VOODOO_FIRE_THUMB_END		25
+#define VOODOO_SITUP_START			26
+#define VOODOO_SITUP_END			27
+#define VOODOO_ALTFIRE_START		28
+#define VOODOO_ALTFIRE_END			37
+#define VOODOO_HOLSTER_START		38
+#define VOODOO_HOLSTER_END			40
 
-// idle
-$frame voodoo_idle1
+#define VOODOO_IDLE_TIME			0.1
+#define VOODOO_DRAW_TIME			0.3
+#define VOODOO_FIRE_TIME			0.5	//This is only for attack_finished
+#define VOODOO_FIRE_STOMACH_TIME	0.4	//used in combination with FIRE_TIME keeps animation at
+#define VOODOO_FIRE_EYE_TIME		0.4 //the correct speed and all fire modes at the same pace
+#define VOODOO_FIRE_SHOULDER_TIME	0.4
+#define VOODOO_FIRE_GROIN_TIME		0.6
+#define VOODOO_FIRE_THUMB_TIME		0.4
+#define VOODOO_ALTFIRE_TIME			1.5
+#define VOODOO_HOLSTER_TIME			0.3
 
-// draw
-$frame voodoo_draw1 voodoo_draw2 voodoo_draw3
-
-// stab stomach
-$frame voodoo_stomach1 voodoo_stomach2 voodoo_stomach3 voodoo_stomach4
-
-// stab eye
-$frame voodoo_eye1 voodoo_eye2 voodoo_eye3 voodoo_eye4
-
-// stab shoulder
-$frame voodoo_shlder1 voodoo_shlder2 voodoo_shlder3 voodoo_shlder4
-
-// stab groin
-$frame voodoo_groin1 voodoo_groin2 voodoo_groin3 voodoo_groin4 voodoo_groin5
-$frame voodoo_groin6
-
-// miss stab
-$frame voodoo_thumb1 voodoo_thumb2 voodoo_thumb3 voodoo_thumb4
-
-// sit-up animation
-$frame voodoo_situp1 voodoo_situp2
-
-// alt-fire mode
-$frame voodoo_alt1 voodoo_alt2 voodoo_alt3 voodoo_alt4 voodoo_alt5
-$frame voodoo_alt6 voodoo_alt7 voodoo_alt8 voodoo_alt9 voodoo_alt10
-
-// holster
-$frame voodoo_holster1 voodoo_holster2 voodoo_holster3
-
-// ----- Player related code ----- //
-void() player_voodoo =
-{
-	self.weaponframe = self.weaponframe + 1;
-	if (self.weaponframe == $voodoo_thumb1 ||
-		self.weaponframe == $voodoo_groin1 ||
-		self.weaponframe == $voodoo_eye1   ||
-		self.weaponframe == $voodoo_shlder1 )
-	{
-		player_run ();
-		self.weaponframe = $voodoo_idle1;
-	}
-};
-
-void() player_voodoo1 = [$attack1, player_voodoo2] { player_voodoo (); };
-void() player_voodoo2 = [$attack2, player_voodoo1] { player_voodoo (); };
-
-void() player_altvoodoo1 = [$attack2, player_altvoodoo2] { self.weaponframe = $voodoo_alt1; };
-void() player_altvoodoo2 = [$attack2, player_altvoodoo3] { self.weaponframe = $voodoo_alt2; };
-void() player_altvoodoo3 = [$attack2, player_altvoodoo4] { self.weaponframe = $voodoo_alt3; };
-void() player_altvoodoo4 = [$attack2, player_altvoodoo5] { self.weaponframe = $voodoo_alt4; };
-void() player_altvoodoo5  = [$attack1, player_altvoodoo6 ] { self.weaponframe = $voodoo_alt5;  };
-void() player_altvoodoo6  = [$attack1, player_altvoodoo7 ] { self.weaponframe = $voodoo_alt6;  };
-void() player_altvoodoo7  = [$attack2, player_altvoodoo8 ]
-{
-	local float damage;
-
-	self.weaponframe = $voodoo_alt7;
-	damage = self.ammo_voodoo;
-	Voodoo_ApplyDamage (damage);
-};
-void() player_altvoodoo8  = [$attack2, player_altvoodoo9 ] { self.weaponframe = $voodoo_alt8;  };
-void() player_altvoodoo9  = [$attack2, player_altvoodoo10] { self.weaponframe = $voodoo_alt9;  };
-void() player_altvoodoo10 = [$attack2, player_altvoodoo11] { self.weaponframe = $voodoo_alt10; };
-void() player_altvoodoo11 = { W_DrawWeapon (W_BestWeapon ()); };
-
-// Draw
-void() player_voodoodraw1 = [$attack2, player_voodoodraw2] { self.weaponframe = $voodoo_draw1; };
-void() player_voodoodraw2 = [$attack2, player_voodoodraw3] { self.weaponframe = $voodoo_draw2; };
-void() player_voodoodraw3 = [$attack2, player_run        ] { self.weaponframe = $voodoo_draw3; };
-
-// Holster
-void() player_voodooholster1 = [$attack2, player_voodooholster2] { self.weaponframe = $voodoo_holster1; };
-void() player_voodooholster2 = [$attack2, player_voodooholster3] { self.weaponframe = $voodoo_holster2; };
-void() player_voodooholster3 = [$attack2, player_voodooholster4] { self.weaponframe = $voodoo_holster3; };
-void() player_voodooholster4 = [$attack2, player_run           ] { W_DrawWeapon (self.newweapon); };
+#define	STAB_STOMACH				1
+#define	STAB_EYE					2
+#define	STAB_SHOULDER				3
+#define	STAB_GROIN					4
+#define STAB_THUMB					5
 
 //============================================================================
 
@@ -114,7 +68,7 @@ Voodoo_ApplyDamage
 Apply the spiritual damage of the voodoo doll
 ================
 */
-void(float damage) Voodoo_ApplyDamage =
+void() Voodoo_ApplyDamage =
 {
 	local entity targ;
 	local string death_type;
@@ -122,22 +76,19 @@ void(float damage) Voodoo_ApplyDamage =
 
 	death_type = "voodoo";
 
-	if (gametype != GT_COOPERATIVE && gametype != GT_SINGLE_PLAYER)
-		targ_class = "player";
-	else // SP or Coop mode
+	if (gametype == GT_COOPERATIVE || gametype == GT_SINGLE_PLAYER)
 		targ_class = "monster";
-	targ = SUB_GetPointedClass (targ_class, 0.15);
+	else
+		targ_class = "player";
+	targ = SUB_GetPointedClass(targ_class, 0.15);
 
 	// If we had a target that can be damaged and seems alive
 	if (targ != world && targ.takedamage)
-	{
-		SpawnBlood (targ.origin, '0 0 0', damage);
-	}
-	// Else, WE take the damage
-	else
+		SpawnBlood(targ.origin, '0 0 0', self.weaponentity.stab_damage);
+	else // Else, WE take the damage
 	{
 		targ = self;
-		damage = 1;
+		self.weaponentity.stab_damage = 1;
 	}
 
 	// We don't consume ammo if we don't hit a target (except for altfire)
@@ -147,10 +98,11 @@ void(float damage) Voodoo_ApplyDamage =
 		death_type = "alt-voodoo";
 	}	
 	else if (targ != self)
-		self.ammo_voodoo = self.ammo_voodoo - damage / 4;
+		self.ammo_voodoo = self.ammo_voodoo - self.weaponentity.stab_damage / 4;
 	self.currentammo = self.ammo_voodoo;
 
-	T_Damage (targ, self, self, damage, DF_VOODOO, death_type);
+	T_Damage(targ, self, self, self.weaponentity.stab_damage, DF_VOODOO, death_type);
+	voodoo_animate();
 };
 
 /*
@@ -160,43 +112,50 @@ Voodoo_Stab
 Do a normal attack with the voodoo doll
 ================
 */
-float() Voodoo_Stab =
+void() Voodoo_Stab =
 {
-	local float damage;
-	local float stab_type;
+	local float random_stab_type;
 
-	stab_type = random()*4;
-	damage = random();
-	if (stab_type >= 3) // Stab Groin
+	random_stab_type = random()*4;
+	self.weaponentity.stab_damage = random();
+	if (random_stab_type >= 3) // Stab Groin
 	{
-		self.weaponframe = $voodoo_groin1;
-		damage = damage*49 + 4;
+		self.weaponentity.stab_type = STAB_GROIN;
+		self.weaponentity.stab_damage = self.weaponentity.stab_damage*49 + 4;
 	}
-	else if (stab_type >= 2) // Stab Shoulder (supposed to make player lower weapon in MP mode)
+	else if (random_stab_type >= 2) // Stab Shoulder (supposed to make player lower weapon in MP mode)
 	{
-		self.weaponframe = $voodoo_shlder1;
-		damage = damage*9 + 4;
+		self.weaponentity.stab_type = STAB_SHOULDER;
+		self.weaponentity.stab_damage = self.weaponentity.stab_damage*9 + 4;
 	}
-	else if (stab_type >= 1) // Stab Chest
+	else if (random_stab_type >= 1) // Stab Stomach
 	{
-		self.weaponframe = $voodoo_stomach1;
-		damage = damage*17 + 4;
+		self.weaponentity.stab_type = STAB_STOMACH;
+		self.weaponentity.stab_damage = self.weaponentity.stab_damage*17 + 4;
 	}
-	else if (stab_type < 1) // Stab Eye (supposed to blind player in MP mode)
+	else if (random_stab_type < 1) // Stab Eye (supposed to blind player in MP mode)
 	{
-		self.weaponframe = $voodoo_eye1;
-		damage = damage*11 + 4;
+		self.weaponentity.stab_type = STAB_EYE;
+		self.weaponentity.stab_damage = self.weaponentity.stab_damage*11 + 4;
 	}
 	else
-		sprint (self, "There's a problem with the voodoo doll code\n");
+		sprint(self, "There's a problem with the voodoo doll code\n");
 
-	// Play the appropriate sound
-	if (stab_type >= 3)  // Stab Groin
-		sound (self, CHAN_WEAPON, "weapons/voodoodl/voolaugh.wav", 1, ATTN_NORM);
+	local entity targ;
+	local string targ_class;
+
+	if (gametype == GT_COOPERATIVE || gametype == GT_SINGLE_PLAYER)
+		targ_class = "monster";
 	else
-		sound (self, CHAN_WEAPON, "weapons/voodoodl/voostab.wav", 1, ATTN_NORM);
+		targ_class = "player";
+	targ = SUB_GetPointedClass(targ_class, 0.15);
 
-	return damage;
+	// If we had a target that can be damaged and seems alive
+	if (targ == world)
+	{
+		self.weaponentity.stab_type = STAB_THUMB;
+		self.weaponentity.stab_damage = 1;
+	}
 };
 
 /*
@@ -208,32 +167,25 @@ Attack code for the voodoo doll
 */
 void() Voodoo_Attack =
 {
-	local float damage;
-
-	muzzleflash ();
-
-	// Alt-fire mode
-	if (self.button3 && self.ammo_voodoo >= 1)
+	if (self.weaponentity.attack_finished < time)
 	{
-		self.player_state = PS_ALTFIRE;
+		if (self.button3 && self.ammo_voodoo >= 1) // Alt-fire mode
+		{
+			self.player_state = PS_ALTFIRE;
+			sound(self, CHAN_WEAPON, "weapons/voodoodl/voochant.wav", 1, ATTN_NORM);
 
-		sound (self, CHAN_WEAPON, "weapons/voodoodl/voochant.wav", 1, ATTN_NORM);
-		player_altvoodoo1 ();
+			self.weaponentity.attack_finished = time + VOODOO_ALTFIRE_TIME;
+			self.weaponentity.anim_type = ALTFIRE;
+		}
+		else // Normal fire mode
+		{
+			self.player_state = PS_FIRE;
 
-		self.attack_finished = time + 1.5;
-	}
-
-	// Normal fire mode
-	else
-	{
-		self.player_state = PS_FIRE;
-
-		damage = Voodoo_Stab ();
-		self.nextthink = time + 0.1;
-		self.think = player_voodoo1;
-		Voodoo_ApplyDamage (damage);
-
-		self.attack_finished = time + 0.5;
+			Voodoo_Stab();
+			self.weaponentity.attack_finished = time + VOODOO_FIRE_TIME;
+			self.weaponentity.anim_type = FIRE;
+		}
+		voodoo_animate();
 	}
 };
 
@@ -248,12 +200,17 @@ void() Voodoo_Draw =
 {
 	self.weapon = IT_VOODOO_DOLL;
 	self.currentammo = self.ammo_voodoo;
-	self.items = self.items - (self.items & (IT_SHELLS | IT_NAILS | IT_CELLS | IT_ROCKETS));
-
-	Voodoo_UpdateView ();
-
-	self.attack_finished = time + 0.3;
-	player_voodoodraw1 ();
+	self.weaponentity = spawn();
+	self.weaponentity.solid = SOLID_NOT;
+	self.weaponentity.owner = self;
+	self.weaponentity.weaponentity = self.weaponentity;
+	self.weaponentity.origin = '0 0 0';
+	self.weaponentity.angles = '0 0 0';
+	self.weaponentity.viewmodelforclient = self;
+	Voodoo_UpdateView();
+	self.weaponentity.attack_finished = time + VOODOO_DRAW_TIME;
+	self.weaponentity.anim_type = DRAW;
+	voodoo_animate();
 };
 
 /*
@@ -265,8 +222,9 @@ Holster code for the voodoo doll
 */
 void() Voodoo_Holster =
 {
-	self.attack_finished = time + 0.3;
-	player_voodooholster1 ();
+	self.attack_finished = time + VOODOO_HOLSTER_TIME;
+	self.weaponentity.anim_type = HOLSTER;
+	voodoo_animate();
 };
 
 /*
@@ -278,6 +236,149 @@ Choose the right voodoo doll model to display
 */
 void() Voodoo_UpdateView =
 {
-	self.weaponmodel = "models/weapons/v_voodoo.md3";
+	setmodel(self.weaponentity, "models/weapons/v_voodoo.md3");
 	self.items = self.items - (self.items & IT_GUNS_AKIMBO);
+};
+
+void() Voodoo_Idle =
+{
+	self.weaponentity.anim_type = IDLE;
+	self.player_state = PS_IDLE;
+	self.weaponentity.frame = VOODOO_IDLE;
+	voodoo_animate();
+};
+
+/*
+============
+voodoo_animate
+
+Animation and frame based code for the Voodoo Doll
+============
+*/
+void() voodoo_animate =
+{
+	if (self.weaponentity.anim_type == self.weaponentity.last_action)
+	{
+		if (self.weaponentity.frame < self.weaponentity.anim_end)
+			self.weaponentity.frame = self.weaponentity.frame + 1; //if its a new animation type, it will be set to the proper frame next
+		else
+			self.weaponentity.frame = self.weaponentity.anim_end - self.weaponentity.anim_end_num + 1;
+	}
+	else
+	{
+		if (self.weaponentity.anim_type == IDLE)
+		{
+			self.weaponentity.anim_end = VOODOO_IDLE;
+			self.weaponentity.anim_end_num = VOODOO_IDLE + 1;
+			self.weaponentity.anim_time = VOODOO_IDLE_TIME;
+			self.weaponentity.frame = VOODOO_IDLE;
+		}
+		else if (self.weaponentity.anim_type == DRAW)
+		{
+			self.weaponentity.anim_end = VOODOO_DRAW_END;
+			self.weaponentity.anim_end_num = VOODOO_DRAW_END - VOODOO_DRAW_START + 1;
+			self.weaponentity.anim_time = VOODOO_DRAW_TIME;
+			self.weaponentity.frame = VOODOO_DRAW_START;
+		}
+		else if (self.weaponentity.anim_type == FIRE)
+		{
+			if (self.weaponentity.stab_type == STAB_STOMACH)
+			{
+				self.weaponentity.anim_end = VOODOO_FIRE_STOMACH_END;
+				self.weaponentity.anim_end_num = VOODOO_FIRE_STOMACH_END - VOODOO_FIRE_STOMACH_START + 1;
+				self.weaponentity.anim_time = VOODOO_FIRE_STOMACH_TIME;
+				self.weaponentity.frame = VOODOO_FIRE_STOMACH_START;
+			}
+			if (self.weaponentity.stab_type == STAB_EYE)
+			{
+				self.weaponentity.anim_end = VOODOO_FIRE_EYE_END;
+				self.weaponentity.anim_end_num = VOODOO_FIRE_EYE_END - VOODOO_FIRE_EYE_START + 1;
+				self.weaponentity.anim_time = VOODOO_FIRE_EYE_TIME;
+				self.weaponentity.frame = VOODOO_FIRE_EYE_START;
+			}
+			if (self.weaponentity.stab_type == STAB_SHOULDER)
+			{
+				self.weaponentity.anim_end = VOODOO_FIRE_SHOULDER_END;
+				self.weaponentity.anim_end_num = VOODOO_FIRE_SHOULDER_END - VOODOO_FIRE_SHOULDER_START + 1;
+				self.weaponentity.anim_time = VOODOO_FIRE_SHOULDER_TIME;
+				self.weaponentity.frame = VOODOO_FIRE_SHOULDER_START;
+			}
+			if (self.weaponentity.stab_type == STAB_GROIN)
+			{
+				self.weaponentity.anim_end = VOODOO_FIRE_GROIN_END;
+				self.weaponentity.anim_end_num = VOODOO_FIRE_GROIN_END - VOODOO_FIRE_GROIN_START + 1;
+				self.weaponentity.anim_time = VOODOO_FIRE_GROIN_TIME;
+				self.weaponentity.frame = VOODOO_FIRE_GROIN_START;
+			}
+			if (self.weaponentity.stab_type == STAB_THUMB)
+			{
+				self.weaponentity.anim_end = VOODOO_FIRE_THUMB_END;
+				self.weaponentity.anim_end_num = VOODOO_FIRE_THUMB_END - VOODOO_FIRE_THUMB_START + 1;
+				self.weaponentity.anim_time = VOODOO_FIRE_THUMB_TIME;
+				self.weaponentity.frame = VOODOO_FIRE_THUMB_START;
+			}
+		}
+		else if (self.weaponentity.anim_type == ALTFIRE)
+		{
+			self.weaponentity.anim_end = VOODOO_ALTFIRE_END;
+			self.weaponentity.anim_end_num = VOODOO_ALTFIRE_END - VOODOO_ALTFIRE_START + 1;
+			self.weaponentity.anim_time = VOODOO_ALTFIRE_TIME;
+			self.weaponentity.frame = VOODOO_ALTFIRE_START;
+		}
+		else if (self.weaponentity.anim_type == HOLSTER)
+		{
+			self.weaponentity.anim_end = VOODOO_HOLSTER_END;
+			self.weaponentity.anim_end_num = VOODOO_HOLSTER_END - VOODOO_HOLSTER_START + 1;
+			self.weaponentity.anim_time = VOODOO_HOLSTER_TIME;
+			self.weaponentity.frame = VOODOO_HOLSTER_START;
+		}
+		self.weaponentity.last_action = self.weaponentity.anim_type;
+	}
+	if (self.weaponentity.anim_type != IDLE)
+	{
+		self.nextthink = time + (self.weaponentity.anim_time / self.weaponentity.anim_end_num);
+		self.think = voodoo_animate;
+	}
+
+	if (self.weaponentity.anim_type == FIRE)
+	{
+		local float fire_start_frame;
+		fire_start_frame = self.weaponentity.anim_end - self.weaponentity.anim_end_num + 1;
+		if (self.weaponentity.frame == fire_start_frame + 1)
+		{
+			if (self.weaponentity.stab_type == STAB_GROIN)  // Stab Groin
+				sound(self, CHAN_WEAPON, "weapons/voodoodl/voolaugh.wav", 1, ATTN_NORM);
+			else
+				sound(self, CHAN_WEAPON, "weapons/voodoodl/voostab.wav", 1, ATTN_NORM);
+		}
+		if (self.weaponentity.frame == fire_start_frame + 2)
+		{
+			self.think = Voodoo_ApplyDamage;
+		}
+
+		if (self.weaponentity.frame == self.weaponentity.anim_end)
+			Voodoo_Idle();
+	}
+	else if (self.weaponentity.anim_type == ALTFIRE)
+	{
+		if (self.weaponentity.frame == VOODOO_ALTFIRE_START + 6)
+		{
+			self.weaponentity.stab_damage = self.ammo_voodoo;
+			Voodoo_ApplyDamage();
+		}
+		if (self.weaponentity.frame == VOODOO_ALTFIRE_END)
+			W_DrawWeapon(W_BestWeapon());
+		return;
+	}
+	else if ((self.weaponentity.frame == self.weaponentity.anim_end) && (self.weaponentity.anim_type == DRAW))
+	{
+		self.nextthink = time + VOODOO_DRAW_TIME;
+		self.think = Voodoo_Idle;
+	}
+	else if ((self.weaponentity.frame == self.weaponentity.anim_end) && (self.weaponentity.anim_type == HOLSTER))
+	{
+		remove(self.weaponentity);
+		W_DrawWeapon(self.newweapon);
+		return;
+	}
 };

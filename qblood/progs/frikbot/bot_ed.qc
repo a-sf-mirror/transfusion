@@ -42,7 +42,7 @@ this notice in its entirety.
 
 */
 
-#include "common.qh"
+#include "../common.qh"
 
 float saved1, saved2, saved3, scratch1, scratch2, scratch3, scratch4;
 float bytecounter, filecount;
@@ -1258,7 +1258,7 @@ void() PrintWaypoint =
 	else 
 		h = ftos(t.b_aiflags * 4 + 1);
 	bprint(h);
-	bprint ("; wait\n");
+	bprint("; wait\n");
 	self.nextthink = time + 0.01;
 	self.enemy = t;
 };

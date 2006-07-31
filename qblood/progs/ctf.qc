@@ -40,7 +40,7 @@ void(entity flg) RegenFlag =
 	flg.cnt = FLAG_AT_BASE; // it's at home base
 	flg.owner = world;
 	flg.velocity = '0 0 0';
-	sound (flg, CHAN_ITEM, "bludbath/respawn2.wav", 1, ATTN_NORM); // play respawn sound
+	sound(flg, CHAN_ITEM, "bludbath/respawn2.wav", 1, ATTN_NORM); // play respawn sound
 };
 
 void(entity flg) TeamCaptureReturnFlag =
@@ -52,14 +52,14 @@ void(entity flg) TeamCaptureReturnFlag =
 	p = find(world, classname, "player");
 	while (p != world) {
 		if (p.team != flg.team)
-			centerprint (p, "Enemy flag has been returned to base!");
+			centerprint(p, "Enemy flag has been returned to base!");
 		else if (p.team == flg.team)
-			centerprint (p, "Your flag has been returned to base!");
+			centerprint(p, "Your flag has been returned to base!");
 		p = find(p, classname, "player");
 	}
 };
 
-void () TeamCaptureRegenFlags =
+void() TeamCaptureRegenFlags =
 {
 	local entity f;
 	f = find(world, classname, "item_flag_team1");
@@ -72,12 +72,12 @@ void () TeamCaptureRegenFlags =
 
 void() CTF_FlagReset =
 {
-	RegenFlag (self);
+	RegenFlag(self);
 };
 
 void() CTF_FlagTouch =
 {
-	local entity p, oself;
+	local entity p;
 
 	if (other.classname != "player")
 		return;
@@ -92,7 +92,7 @@ void() CTF_FlagTouch =
 		if (self.cnt == FLAG_AT_BASE)
 		{
 			// the player doesn't have the enemy flag. Nothing to do...
-			if (! (other.items & IT_ENEMY_FLAG))
+			if (!(other.items & IT_ENEMY_FLAG))
 				return;
 			other.items = other.items - IT_ENEMY_FLAG;
 			// The score stays 0/0 until the warmup is finished
@@ -105,13 +105,13 @@ void() CTF_FlagTouch =
 			}
 			// the flag is at home base.  if the player has the enemy
 			// flag, he's just won!
-			bprint (other.netname);
+			bprint(other.netname);
 			if (other.team == TEAM_COLOR1)
-				bprint (" ãáğôõòåä the ÂÌÕÅ flag!\n"); // blue
+				bprint(" ãáğôõòåä the ÂÌÕÅ flag!\n"); // blue
 			else
-				bprint (" ãáğôõòåä the ÒÅÄ flag!\n"); // red
-			Cl_PrintTeamScores ();
-			sound (self, CHAN_VOICE, self.noise2, 1, ATTN_NONE);
+				bprint(" ãáğôõòåä the ÒÅÄ flag!\n"); // red
+			Cl_PrintTeamScores();
+			sound(self, CHAN_VOICE, self.noise2, 1, ATTN_NONE);
 			// other gets another 10 frag bonus
 			other.frags = other.frags + TEAM_CAPTURE_CAPTURE_BONUS;
 			// respawn flags
@@ -119,25 +119,25 @@ void() CTF_FlagTouch =
 			return;  // its at home base already
 		}
 		// hey, its not home.  return it by teleporting it back
-		bprint (other.netname);
+		bprint(other.netname);
 		if (other.team == TEAM_COLOR1)
-			bprint (" òåôõòîåä the ÒÅÄ flag!\n"); // red
+			bprint(" òåôõòîåä the ÒÅÄ flag!\n"); // red
 		else
-			bprint (" òåôõòîåä the ÂÌÕÅ flag!\n"); // blue
+			bprint(" òåôõòîåä the ÂÌÕÅ flag!\n"); // blue
 		other.frags = other.frags + TEAM_CAPTURE_RECOVERY_BONUS;
-		sound (self, CHAN_ITEM, self.noise1, 1, ATTN_NONE);
+		sound(self, CHAN_ITEM, self.noise1, 1, ATTN_NONE);
 		TeamCaptureReturnFlag(self);
 		return;
 	}
 	// hey, its not our flag, pick it up
-	bprint (other.netname);
+	bprint(other.netname);
 	if (other.team == TEAM_COLOR1)
-		bprint (" çïô the ÂÌÕÅ flag!\n"); // blue
+		bprint(" çïô the ÂÌÕÅ flag!\n"); // blue
 	else
-		bprint (" çïô the ÒÅÄ flag!\n"); // red
+		bprint(" çïô the ÒÅÄ flag!\n"); // red
 
-	centerprint (other, "ÙÏÕ ÇÏÔ ÔÈÅ ÅÎÅÍÙ ÆÌÁÇ\n\nÒÅÔÕÒÎ ÔÏ ÂÁÓÅ");  // == "YOU GOT THE ENEMY FLAG!\n\nRETURN TO BASE!"
-	sound (self, CHAN_ITEM, self.noise, 1, ATTN_NONE);
+	centerprint(other, "ÙÏÕ ÇÏÔ ÔÈÅ ÅÎÅÍÙ ÆÌÁÇ\n\nÒÅÔÕÒÎ ÔÏ ÂÁÓÅ");  // == "YOU GOT THE ENEMY FLAG!\n\nRETURN TO BASE!"
+	sound(self, CHAN_ITEM, self.noise, 1, ATTN_NONE);
 
 	other.items = other.items + IT_ENEMY_FLAG;
 
@@ -156,9 +156,9 @@ void() CTF_FlagTouch =
 		if (p != other) {
 			if ((p.team == TEAM_COLOR1 && other.team == TEAM_COLOR2) ||
 				(p.team == TEAM_COLOR2 && other.team == TEAM_COLOR1))
-				centerprint (p, "Your flag has been taken!");
+				centerprint(p, "Your flag has been taken!");
 			else if (p.team == other.team)
-				centerprint (p, "Your team has the enemy flag!");
+				centerprint(p, "Your team has the enemy flag!");
 		}
 		p = find(p, classname, "player");
 	}
@@ -166,16 +166,15 @@ void() CTF_FlagTouch =
 
 void(entity flg) TeamDropFlag =
 {
-	local entity item, f, oself;
 	local entity p;
 
 	p = flg.owner;
 
-	bprint (p.netname);
+	bprint(p.netname);
 	if (p.team == TEAM_COLOR1)
-		bprint (" ìïóô the ÂÌÕÅ flag!\n"); // blue
+		bprint(" ìïóô the ÂÌÕÅ flag!\n"); // blue
 	else
-		bprint (" ìïóô the ÒÅÄ flag!\n"); // red
+		bprint(" ìïóô the ÒÅÄ flag!\n"); // red
 	p.effects = p.effects - (p.effects & EF_DIMLIGHT);
 
 	flg.origin = p.origin - '0 0 24';
@@ -211,7 +210,7 @@ void() CTF_PlayerDropFlag =
 	self.items = self.items - IT_ENEMY_FLAG;
 	e = find(world, classname, kn);
 	if (e != world)
-		TeamDropFlag (e);
+		TeamDropFlag(e);
 };
 
 void() CTF_FlagThink =
@@ -219,7 +218,6 @@ void() CTF_FlagThink =
 	local entity e;
 	local vector v;
 	local float f;
-	local string s;
 
 	self.nextthink = time + 0.1;
 
@@ -241,7 +239,7 @@ void() CTF_FlagThink =
 		TeamDropFlag(self);
 		return;
 	}
-	makevectors (e.angles);
+	makevectors(e.angles);
 	v = v_forward;
 	v_z = (-1) * v_z; // reverse z component
 
@@ -265,12 +263,12 @@ void() CTF_FlagThink =
 
 	self.origin = e.origin + '0 0 -16' - f*v + v_right * 22;
 	self.angles = e.angles + '0 0 -45';
-	setorigin (self, self.origin);
+	setorigin(self, self.origin);
 	self.nextthink = time + 0.01;
 };
 
 void() place_flag = {
-	setmodel (self, "models/objects/flag.md3");
+	setmodel(self, "models/objects/flag.md3");
 	setsize(self, '-3 -20 0', '4 20 55');
 
 	self.mdl = self.model;      // so it can be restored on respawn
@@ -290,9 +288,9 @@ void() place_flag = {
 	else
 		self.effects = self.effects | EF_BLUE;
 	if (!droptofloor()) {
-		dprint ("Flag fell out of level at ");
-		dprint (vtos(self.origin));
-		dprint ("\n");
+		dprint("Flag fell out of level at ");
+		dprint(vtos(self.origin));
+		dprint("\n");
 		remove(self);
 		return;
 	}
@@ -309,13 +307,13 @@ void() item_flag_team1 =
 		return;
 	}
 
-	precache_model ("models/objects/flag.md3");
+	precache_model("models/objects/flag.md3");
 
-	precache_sound ("thevoice/8000.wav");  // "Red captures the flag"
-	precache_sound ("thevoice/8002.wav");  // "Red returns the flag"
-	precache_sound ("thevoice/8006.wav");  // "Red flag stolen"
+	precache_sound("thevoice/8000.wav");  // "Red captures the flag"
+	precache_sound("thevoice/8002.wav");  // "Red returns the flag"
+	precache_sound("thevoice/8006.wav");  // "Red flag stolen"
 
-	precache_sound ("bludbath/respawn2.wav");  // Respawn sound
+	precache_sound("bludbath/respawn2.wav");  // Respawn sound
 
 	self.noise = "thevoice/8006.wav";
 	self.noise1 = "thevoice/8002.wav";
@@ -337,13 +335,13 @@ void() item_flag_team2 =
 		return;
 	}
 
-	precache_model ("models/objects/flag.md3");
+	precache_model("models/objects/flag.md3");
 
-	precache_sound ("thevoice/8001.wav");  // "Blue captures the flag"
-	precache_sound ("thevoice/8003.wav");  // "Blue returns the flag"
-	precache_sound ("thevoice/8007.wav");  // "Blue flag stolen"
+	precache_sound("thevoice/8001.wav");  // "Blue captures the flag"
+	precache_sound("thevoice/8003.wav");  // "Blue returns the flag"
+	precache_sound("thevoice/8007.wav");  // "Blue flag stolen"
 
-	precache_sound ("bludbath/respawn2.wav");  // Respawn sound
+	precache_sound("bludbath/respawn2.wav");  // Respawn sound
 
 	self.noise = "thevoice/8007.wav";
 	self.noise1 = "thevoice/8003.wav";
@@ -370,5 +368,5 @@ void() func_ctf_wall =
 	self.angles = '0 0 0';
 	self.movetype = MOVETYPE_PUSH;  // so it doesn't get pushed by anything
 	self.solid = SOLID_BSP;
-	setmodel (self, self.model);
+	setmodel(self, self.model);
 };

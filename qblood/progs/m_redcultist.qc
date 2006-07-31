@@ -20,17 +20,17 @@
 #include "common.qh"
 
 // Prototypes
-void () redcultist_fireShotgun;
-void () redcultist_attackDecide;
+void() redcultist_fireShotgun;
+void() redcultist_attackDecide;
 
 //--- Shooting gun
 /*
-void () redcultist_attack1 = [$attack1, redcultist_attack2] {ai_face ();};
-void () redcultist_attack2 = [$attack2, redcultist_attack3] {redcultist_fireShotgun (); ai_face ();};
-void () redcultist_attack3 = [$idle1, cultist_run] {ai_face ();};
+void() redcultist_attack1 = [$attack1, redcultist_attack2] {ai_face();};
+void() redcultist_attack2 = [$attack2, redcultist_attack3] {redcultist_fireShotgun(); ai_face();};
+void() redcultist_attack3 = [$idle1, cultist_run] {ai_face();};
 */
 
-void () redcultist_attack =
+void() redcultist_attack =
 {
 	if (!visible(self.enemy)) // If there's something blocking the shot
 		return;
@@ -41,7 +41,7 @@ void () redcultist_attack =
 
 };
 
-void () redcultist_attackDecide =
+void() redcultist_attackDecide =
 {
 	local float vis;
 
@@ -50,7 +50,7 @@ void () redcultist_attackDecide =
 	if (self.attack_finished < time && vis)
 	{
 		ai_face();                        // Face player
-		//redcultist_attack1 ();
+		//redcultist_attack1();
 		self.anim_type = ATTACK1;
 		cultist_animate();
 	}
@@ -62,7 +62,7 @@ void () redcultist_attackDecide =
 };
 
 //--- Shoot the player
-void () redcultist_fireShotgun =
+void() redcultist_fireShotgun =
 {
 	ai_face();
 	cultist_fireShotgun();
@@ -71,17 +71,17 @@ void () redcultist_fireShotgun =
 	self.nextthink = time + 0.5;
 };
 
-void () monster_redcultist =
+void() monster_redcultist =
 {
 	// Precache files needed for shooting shotgun
-	precache_sound ("cultist/cultatt1.wav"); // Shotgun boom
-	precache_sound ("cultist/cultatt2.wav"); // Shotgun boom
+	precache_sound("cultist/cultatt1.wav"); // Shotgun boom
+	precache_sound("cultist/cultatt2.wav"); // Shotgun boom
 
 	// Setup all red cultists unique attributes
 	self.skin = CULTIST_RED;
 	self.health = 100;
 	self.th_missile = redcultist_attack;
-	precache_sound ("cultist/cultmorp.wav");
+	precache_sound("cultist/cultmorp.wav");
 	self.netname = "monster_redcultist";
 
 	cultist_spawn();

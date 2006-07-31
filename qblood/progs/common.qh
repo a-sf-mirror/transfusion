@@ -267,9 +267,12 @@
 #define VEC_HULL_MIN    '-16 -16 -20'
 #define VEC_HULL_MAX    '16 16 32'
 #define VEC_HULL_VIEW_OFS	'0 0 25'
+#define	VEC_HULL_VIEW_OFS_Z	25
 #define VEC_HULL_CROUCH_MIN	'-16 -16 -20'	// FIXME: dummy value
 #define VEC_HULL_CROUCH_MAX '16 16 10'		// FIXME: dummy value
-#define VEC_HULL_CROUCH_VIEW_OFS '0 0 1'	// FIXME: dummy value
+#define VEC_HULL_CROUCH_VIEW_OFS '0 0 3'	// FIXME: dummy value
+#define	VEC_HULL_CROUCH_VIEW_OFS_Z	3
+#define VEC_WEAPON_OFS	'0 0 -7'
 
 // protocol bytes
 #define SVC_TEMPENTITY      23
@@ -553,19 +556,28 @@
 #define STAYOPEN  1
 
 //Weapon States
-#define	IDLE			1
-#define	DRAW			2
-#define	FIRE			3	
-#define	ALTFIRE			4
-#define	HOLSTER			5
-#define RELOAD			6
-#define	REBOUND			7
-#define	AKIMBO_IDLE		8
-#define AKIMBO_DRAW		9
-#define	AKIMBO_FIRE		10
-#define	AKIMBO_ALTFIRE	11
-#define	AKIMBO_HOLSTER	12
-#define	AKIMBO_RELOAD	13
+#define	IDLE				1
+#define	DRAW				2
+#define	FIRE				3
+#define	ALTFIRE				4
+#define	HOLSTER				5
+#define RELOAD				6
+#define	REBOUND				7
+#define	AKIMBO_IDLE			8
+#define AKIMBO_DRAW			9
+#define	AKIMBO_FIRE			10
+#define	AKIMBO_ALTFIRE		11
+#define	AKIMBO_HOLSTER		12
+#define	AKIMBO_RELOAD		13
+#define	LIGHT_FUSE			14
+#define	THROW				15
+#define	HALF_DRAW			16
+#define	HALF_HOLSTER		17
+#define	IDLE_WITH_REMOTE	18
+
+//Remote TNT tracking
+#define REMOTE_AND_BOMB		0
+#define	REMOTE_ONLY			1
 
 //Enemy States
 //order is not important as long as all are unique

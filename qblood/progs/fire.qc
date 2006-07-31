@@ -67,7 +67,7 @@ void() muzzleflash =
 	local float offset;
 	if (self.weapon == IT_SAWED_OFF)
 	{
-		sprite = "models/weapons/muzzle_shotgun.spr32";
+		sprite = "models/weapons/objects/muzzle_shotgun.spr32";
 		if ((self.player_state == PS_ALTFIRE) && (self.weaponentity.ammo_in_chamber == 2))
 			offset = 0;
 		else
@@ -87,7 +87,7 @@ void() muzzleflash =
 //------------------------------------------------------------------------//
 void(entity targ, entity inflictor, entity attacker, float dmgtype, float damage) FireDamage =
 {
-	T_Damage (targ, inflictor, attacker, damage, dmgtype | DF_MIN_PAIN, "fire");
+	T_Damage(targ, inflictor, attacker, damage, dmgtype | DF_MIN_PAIN, "fire");
 };
 
 //------------------------------------------------------------------------//
@@ -101,7 +101,7 @@ void(entity victim, entity fire, float damage, float dmgtype, float burn, float 
 
 	// Apply damage next immediately.
 	if (damage > 0)
-		T_Damage (victim, fire, fire.owner, damage, dmgtype, fire.deathtype);
+		T_Damage(victim, fire, fire.owner, damage, dmgtype, fire.deathtype);
 };
 
 //------------------------------------------------------------------------//
@@ -147,9 +147,9 @@ void(entity fire, float radius, float damage, float burn, entity ignore) BurnRad
 			if (CanDamage (head, fire))
 			{
 				org = head.origin + (head.mins + head.maxs)*0.5;
-				dist = vlen (fire.origin - org);
+				dist = vlen(fire.origin - org);
 				dist = 1 - (dist * fade / radius);
-				BurnDamage (head, fire, damage * dist, DF_BURN, 10, burn * dist / 10);  // 10 points per sec
+				BurnDamage(head, fire, damage * dist, DF_BURN, 10, burn * dist / 10);  // 10 points per sec
 			}
 
 			head = head.chain;
@@ -166,7 +166,7 @@ void(entity fire, float radius, float damage, float burn, entity ignore) BurnRad
 //------------------------------------------------------------------------//
 void(entity fire) MakeSmoke =
 {
-	particle (fire.origin, '0 0 100', 6, 50);
+	particle(fire.origin, '0 0 100', 6, 50);
 };
 
 //------------------------------------------------------------------------//
@@ -174,8 +174,8 @@ void(entity fire) MakeSmoke =
 //------------------------------------------------------------------------//
 void(entity fire) MakeSteam =
 {
-	sound (fire, CHAN_AUTO, "player/slimbrn2.wav", 1, ATTN_NORM);
-	MakeSmoke (fire);
+	sound(fire, CHAN_AUTO, "player/slimbrn2.wav", 1, ATTN_NORM);
+	MakeSmoke(fire);
 };
 
 //==========================================================================
@@ -199,7 +199,7 @@ void(entity ent) KillBurner =
 		if (ent.effects & EF_FLAME)
 			ent.effects = ent.effects - (ent.effects | EF_FLAME);
 
-		remove (ent.burner);
+		remove(ent.burner);
 		ent.burner = world;
 	}
 };
@@ -225,7 +225,6 @@ void() MakeEmbers =
 {
 	local   entity  fire;       // The new fire that will be created.
 	local   vector  spot;       // The spot where the new fire will appear.
-	local   float   r;
 
 	// No flames on each 4th frame.
 	if ((floor(time * 10) & 3) == 0)
@@ -239,9 +238,9 @@ void() MakeEmbers =
 
 	// Create the fire.
 	fire = spawn();
-	setmodel (fire, "progs/flame.spr");
-	setsize (fire, '0 0 0', '0 0 0');
-	setorigin (fire, spot);
+	setmodel(fire, "progs/flame.spr");
+	setsize(fire, '0 0 0', '0 0 0');
+	setorigin(fire, spot);
 
 	fire.solid      = SOLID_NOT;
 	fire.takedamage = DAMAGE_NO;
@@ -252,8 +251,8 @@ void() MakeEmbers =
 	fire.reset      = SUB_Remove;
 
 	// Animate the flame
-	fire.alpha      = 0.9 - (0.4 * random ());
-	fire.scale      = 0.4 + (0.6 * random ());
+	fire.alpha      = 0.9 - (0.4 * random());
+	fire.scale      = 0.4 + (0.6 * random());
 	fire.think      = FlameThink;
 	fire.nextthink  = time + 0.1;
 };
@@ -271,7 +270,7 @@ void() Burn =
 
 		// Fuel is all gone.
 		self.enemy.burner = world;
-		remove (self);
+		remove(self);
 		return;
 	}
 
@@ -283,25 +282,25 @@ void() Burn =
 	else
 		spot = self.enemy.origin + self.enemy.view_ofs;
 
-	if (VecInWater (spot))
+	if (VecInWater(spot))
 	{
 		if (self.enemy.effects & EF_FLAME)
 			self.enemy.effects = self.enemy.effects - (self.enemy.effects | EF_FLAME);
 
 		// Victim is submerged under some liquid.
-		setorigin (self, spot);     // So steam comes from enemy.
+		setorigin(self, spot);     // So steam comes from enemy.
 
 		// Put out the fire and make some steam.
 		self.enemy.burner = world;
-		MakeSteam (self);
-		remove (self);
+		MakeSteam(self);
+		remove(self);
 		return;
 	}
 
 	// Keep on burning.
-	MakeEmbers ();
+	MakeEmbers();
 
-	FireDamage (self.enemy, self, self.owner, self.style, self.dmg);
+	FireDamage(self.enemy, self, self.owner, self.style, self.dmg);
 
 	self.nextthink  = time + 0.1;
 };
@@ -356,9 +355,9 @@ void(entity victim, entity attacker, float dmgtype, float burn, float burntime) 
 	local   entity  fire;
 
 	fire = spawn();
-	setmodel (fire, string_null);
-	setsize (fire, '0 0 0', '0 0 0');
-	setorigin (fire, VEC_ORIGIN);       // Doesn't matter where it is.
+	setmodel(fire, string_null);
+	setsize(fire, '0 0 0', '0 0 0');
+	setorigin(fire, VEC_ORIGIN);       // Doesn't matter where it is.
 	fire.solid      = SOLID_NOT;
 	fire.takedamage = DAMAGE_NO;
 	fire.frame      = 0;
@@ -391,7 +390,7 @@ void() OldExThink =
 {
 	if (self.frame >= 5)
 	{
-		remove (self);
+		remove(self);
 		return;
 	}
 	self.frame = self.frame + 1;
@@ -410,7 +409,7 @@ void() BecomeOldExplosion =
 	self.touch      = SUB_Null;
 	self.frame      = 0;
 	self.skin       = 0;
-	setmodel (self, "progs/s_oldexp.spr");
+	setmodel(self, "progs/s_oldexp.spr");
 	self.solid      = SOLID_NOT;
 
 	self.nextthink  = time + 0.1;

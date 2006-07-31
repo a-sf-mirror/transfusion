@@ -20,74 +20,22 @@
 #include "common.qh"
 #include "player.qh"
 
-void() Leech_BallFire;
+void() leech_animate;
+
+#define LEECH_IDLE				0
+#define LEECH_DRAW_START		1
+#define LEECH_DRAW_END			3
+#define LEECH_FIRE_START		4
+#define LEECH_FIRE_END			28
+#define LEECH_HOLSTER_START		29
+#define LEECH_HOLSTER_END		31
+
+#define LEECH_IDLE_TIME			0.1
+#define LEECH_DRAW_TIME			0.3
+#define LEECH_FIRE_TIME			2.6
+#define LEECH_HOLSTER_TIME		0.3
 
 //=======================================================================
-
-// ------------ Life Leech models ---------- //
-// Normal model
-$modelname v_leech
-
-// idle
-$frame leech_idle1
-
-// draw
-$frame leech_draw1 leech_draw2 leech_draw3
-
-// fire
-$frame leech_fire1  leech_fire2  leech_fire3  leech_fire4  leech_fire5
-$frame leech_fire6  leech_fire7  leech_fire8  leech_fire9  leech_fire10
-$frame leech_fire11 leech_fire12 leech_fire13 leech_fire14 leech_fire15
-$frame leech_fire16 leech_fire17 leech_fire18 leech_fire19 leech_fire20
-$frame leech_fire21 leech_fire22 leech_fire23 leech_fire24 leech_fire25
-
-// holster
-$frame leech_holster1 leech_holster2 leech_holster3
-
-// ------------ Player related code ---------- //
-// Normal fire
-void() player_leech1  = [$attack1, player_leech2 ]
-{
-	sound (self, CHAN_WEAPON, "weapons/lifelech/laltfr1.wav", 1, ATTN_NORM);
-	self.weaponframe = $leech_fire1;
-};
-void() player_leech2  = [$attack1, player_leech3 ] { self.weaponframe = $leech_fire2;  };
-void() player_leech3  = [$attack1, player_leech4 ] { self.weaponframe = $leech_fire3;  };
-void() player_leech4  = [$attack1, player_leech5 ] { self.weaponframe = $leech_fire4;  };
-void() player_leech5  = [$attack2, player_leech6 ] { self.weaponframe = $leech_fire5;  Leech_BallFire (); };
-void() player_leech6  = [$attack2, player_leech7 ] { self.weaponframe = $leech_fire6;  };
-void() player_leech7  = [$attack2, player_leech8 ] { self.weaponframe = $leech_fire7;  };
-void() player_leech8  = [$attack1, player_leech9 ] { self.weaponframe = $leech_fire8;  Leech_BallFire (); };
-void() player_leech9  = [$attack1, player_leech10] { self.weaponframe = $leech_fire9;  };
-void() player_leech10 = [$attack1, player_leech11] { self.weaponframe = $leech_fire10; };
-void() player_leech11 = [$attack2, player_leech12] { self.weaponframe = $leech_fire11; Leech_BallFire (); };
-void() player_leech12 = [$attack2, player_leech13] { self.weaponframe = $leech_fire12; };
-void() player_leech13 = [$attack2, player_leech14] { self.weaponframe = $leech_fire13; };
-void() player_leech14 = [$attack1, player_leech15] { self.weaponframe = $leech_fire14; Leech_BallFire (); };
-void() player_leech15 = [$attack1, player_leech16] { self.weaponframe = $leech_fire15; };
-void() player_leech16 = [$attack2, player_leech17] { self.weaponframe = $leech_fire16; Leech_BallFire (); };
-void() player_leech17 = [$attack2, player_leech18] { self.weaponframe = $leech_fire17; };
-void() player_leech18 = [$attack2, player_leech19] { self.weaponframe = $leech_fire18; };
-void() player_leech19 = [$attack1, player_leech20] { self.weaponframe = $leech_fire19; Leech_BallFire (); };
-void() player_leech20 = [$attack1, player_leech21] { self.weaponframe = $leech_fire20; };
-void() player_leech21 = [$attack1, player_leech22] { self.weaponframe = $leech_fire21; };
-void() player_leech22 = [$attack2, player_leech23] { self.weaponframe = $leech_fire22; Leech_BallFire (); };
-void() player_leech23 = [$attack2, player_leech24] { self.weaponframe = $leech_fire23; };
-void() player_leech24 = [$attack2, player_leech25] { self.weaponframe = $leech_fire24; };
-void() player_leech25 = [$attack2, player_run    ] { self.weaponframe = $leech_fire25; };
-
-// Normal draw
-void() player_leechdraw1 = [$attack2, player_leechdraw2] { self.weaponframe = $leech_draw1; };
-void() player_leechdraw2 = [$attack2, player_leechdraw3] { self.weaponframe = $leech_draw2; };
-void() player_leechdraw3 = [$attack2, player_run       ] { self.weaponframe = $leech_draw3; };
-
-// Normal holster
-void() player_leechholster1 = [$attack2, player_leechholster2] { self.weaponframe = $leech_holster1; };
-void() player_leechholster2 = [$attack2, player_leechholster3] { self.weaponframe = $leech_holster2; };
-void() player_leechholster3 = [$attack2, player_leechholster4] { self.weaponframe = $leech_holster3; };
-void() player_leechholster4 = [$attack2, player_run          ] { W_DrawWeapon (self.newweapon); };
-
-//=================================================================
 
 /*
 ================
@@ -111,19 +59,19 @@ void() Leech_BallTouch =
 	if (other.takedamage)
 	{
 		other.deathtype = "leech";
-		BurnDamage (other, self, self.dmg, DF_SPIRIT, self.dmg * 0.1, 5);
+		BurnDamage(other, self, self.dmg, DF_SPIRIT, self.dmg * 0.1, 5);
 	}
 
-	PsychoCaleb (self.owner);
+	PsychoCaleb(self.owner);
 
-	self.origin = self.origin - 8 * normalize (self.velocity);
+	self.origin = self.origin - 8 * normalize(self.velocity);
 
-	WriteByte (MSG_BROADCAST, SVC_TEMPENTITY);
-	WriteByte (MSG_BROADCAST, TE_EXPLOSION);
-	WriteCoord (MSG_BROADCAST, self.origin_x);
-	WriteCoord (MSG_BROADCAST, self.origin_y);
-	WriteCoord (MSG_BROADCAST, self.origin_z);
-	BecomeExplosion ();
+	WriteByte(MSG_BROADCAST, SVC_TEMPENTITY);
+	WriteByte(MSG_BROADCAST, TE_EXPLOSION);
+	WriteCoord(MSG_BROADCAST, self.origin_x);
+	WriteCoord(MSG_BROADCAST, self.origin_y);
+	WriteCoord(MSG_BROADCAST, self.origin_z);
+	BecomeExplosion();
 };
 
 /*
@@ -138,17 +86,17 @@ void() Leech_BallFire =
 	local vector spread;
 
 	self.punchangle_x = -2;
-	muzzleflash ();
+	muzzleflash();
 
-	newmis = spawn ();
+	newmis = spawn();
 
-	makevectors (self.v_angle);
-	newmis.velocity = aim (self, 1000);  // base velocity
+	makevectors(self.v_angle);
+	newmis.velocity = aim(self, 1000);  // base velocity
 
 	// If aim() hasn't found any interesting target, add some spread
-	traceline (self.origin, self.origin + newmis.velocity*2048, FALSE, self);
+	traceline(self.origin, self.origin + newmis.velocity*2048, FALSE, self);
 	if (trace_ent == world)
-		spread = crandom () * 0.18 * v_right + crandom () * 0.08 * v_up;
+		spread = crandom() * 0.18 * v_right + crandom() * 0.08 * v_up;
 	else
 		spread = '0 0 0';
 	newmis.velocity = 1500 * (newmis.velocity + spread);
@@ -162,7 +110,7 @@ void() Leech_BallFire =
 	// If we don't have enough ammo, use HP
 	if (self.ammo_leech < 2)
 	{
-		T_Damage (self, world, self, 2 - self.ammo_leech, DF_SPIRIT, "leech");
+		T_Damage(self, world, self, 2 - self.ammo_leech, DF_SPIRIT, "leech");
 		self.ammo_leech = 0;
 	}
 	else
@@ -170,10 +118,10 @@ void() Leech_BallFire =
 	self.currentammo = self.ammo_leech;
 
 	newmis.touch = Leech_BallTouch;
-	setmodel (newmis, "progs/leechball.spr");
+	setmodel(newmis, "progs/leechball.spr");
 	newmis.skin = 1;
-	setsize (newmis, '0 0 0', '0 0 0');
-	setorigin (newmis, self.origin + v_forward * 8 + '0 0 24');
+	setsize(newmis, '0 0 0', '0 0 0');
+	setorigin(newmis, self.origin + self.view_ofs + VEC_WEAPON_OFS + v_forward * 8);
 
 	newmis.dmg = 40;
 
@@ -201,16 +149,16 @@ void() Leech_AltBallTouch =
 
 	if (pointcontents(self.origin) == CONTENT_SKY)
 	{
-		remove (self);
+		remove(self);
 		return;
 	}
 
 	// If we can damage the entity we touch
 	if (other.takedamage)
-		T_Damage (other, self, self.owner, self.dmg, DF_SPIRIT, "leech");
+		T_Damage(other, self, self.owner, self.dmg, DF_SPIRIT, "leech");
 
-	sound (self, CHAN_AUTO, "weapons/napalm/explodfs.wav", 1, ATTN_NORM);
-	remove (self);
+	sound(self, CHAN_AUTO, "weapons/napalm/explodfs.wav", 1, ATTN_NORM);
+	remove(self);
 };
 
 /*
@@ -244,11 +192,11 @@ void() Leech_Think =
 					(gametype == GT_BLOODBATH || gametype == GT_COOPERATIVE || gametype == GT_SINGLE_PLAYER || ent.team != self.team))
 				{
 					// If he's closer than our current choice
-					diff = vlen (ent.origin - ballorigin);
+					diff = vlen(ent.origin - ballorigin);
 					if (diff < bestdiff)
 					{
 						// If he's visible
-						traceline (ballorigin, ent.origin, FALSE, self);
+						traceline(ballorigin, ent.origin, FALSE, self);
 						if (trace_ent == ent)
 						{
 							bestent = ent;
@@ -265,17 +213,17 @@ void() Leech_Think =
 		return;
 
 	// Fire a ball of energy on the target
-	newmis = spawn ();
+	newmis = spawn();
 	newmis.owner = self;
 	newmis.solid = SOLID_BBOX;
 	newmis.classname = "missile";
-	newmis.velocity = 1500 * normalize (bestent.origin - ballorigin);
-	newmis.angles = vectoangles (newmis.velocity);
+	newmis.velocity = 1500 * normalize(bestent.origin - ballorigin);
+	newmis.angles = vectoangles(newmis.velocity);
 	newmis.movetype = MOVETYPE_FLYMISSILE;
 	newmis.touch = Leech_AltBallTouch;
-	setmodel (newmis, "progs/teslaball.spr");  // the tesla ball is closer to the original look
-	setsize (newmis, '0 0 0', '0 0 0');
-	setorigin (newmis, ballorigin);
+	setmodel(newmis, "progs/teslaball.spr");  // the tesla ball is closer to the original look
+	setsize(newmis, '0 0 0', '0 0 0');
+	setorigin(newmis, ballorigin);
 	newmis.dmg = 15;
 	newmis.alpha  = 0.5;
 	newmis.reset = SUB_Remove;
@@ -296,7 +244,7 @@ void() Leech_FadeOut =
 		self.nextthink = time + 0.1;
 	}
 	else
-		remove (self);
+		remove(self);
 };
 
 /*
@@ -309,7 +257,7 @@ Reset function for a LL sentry
 void() Leech_Reset =
 {
 	self.leech_sentry.leech_sentry = world;
-	remove (self);
+	remove(self);
 };
 
 /*
@@ -322,9 +270,9 @@ Die function for a LL sentry
 void() Leech_Die =
 {
 	self.leech_sentry.leech_sentry = world;
-	sound (self, CHAN_VOICE, "weapons/lifelech/llaltht.wav", 1, ATTN_NORM);
+	sound(self, CHAN_VOICE, "weapons/lifelech/llaltht.wav", 1, ATTN_NORM);
 
-	KillBurner (self);
+	KillBurner(self);
 
 	// If the engine supports the QC extension DP_ENT_ALPHA, make it fade out
 	if (checkextension ("DP_ENT_ALPHA"))
@@ -341,7 +289,7 @@ void() Leech_Die =
 		self.nextthink = time + 0.1;
 	}
 	else
-		remove (self);
+		remove(self);
 };
 
 /*
@@ -359,11 +307,11 @@ void() Leech_Use =
 		other.items = other.items + IT_LIFE_LEECH;
 		other.leech_sentry = world;
 		other.ammo_leech = other.ammo_leech + self.ammo_leech;
-		sound (other, CHAN_ITEM, "items/weaponup.wav", 1, ATTN_NORM);
-		remove (self);
+		sound(other, CHAN_ITEM, "items/weaponup.wav", 1, ATTN_NORM);
+		remove(self);
 	}
 
-	SUB_SolidTouch ();
+	SUB_SolidTouch();
 };
 
 /*
@@ -377,12 +325,12 @@ void() Leech_Drop =
 {
 	local entity item;
 
-	makevectors (self.v_angle);
+	makevectors(self.v_angle);
 
 	// Drop the Life Leech
 	item = spawn();
-	setmodel (item, "models/weapons/g_leech.md3");
-	setsize (item, '-6 -6 0', '6 8 60');
+	setmodel(item, "models/weapons/g_leech.md3");
+	setsize(item, '-6 -6 0', '6 8 60');
 
 	item.classname = "sentry";
 	item.owner = self;             // we don't want to trigger the touch function yet
@@ -393,11 +341,11 @@ void() Leech_Drop =
 	item.health = 300;
 
 	item.origin = self.origin + '0 0 12' + v_forward * 8;
-	item.velocity = aim (self, 1000) * 50;
+	item.velocity = aim(self, 1000) * 50;
 	item.velocity_z = 150;
 	item.movetype = MOVETYPE_TOSS;
 
-	if (cvar ("g_flashyEffects"))
+	if (cvar("g_flashyEffects"))
 		item.effects = item.effects | EF_FLAME;
 
 	// Sentry mode
@@ -413,7 +361,7 @@ void() Leech_Drop =
 	// Dropping it requires 25 ammo/HP
 	if (self.ammo_leech < 25)
 	{
-		T_Damage (self, world, self, 25 - self.ammo_leech, DF_SPIRIT, "leech");
+		T_Damage(self, world, self, 25 - self.ammo_leech, DF_SPIRIT, "leech");
 		item.ammo_leech = 0;
 	}
 	else
@@ -426,8 +374,9 @@ void() Leech_Drop =
 	// If we're still alive
 	if (!self.deadflag)
 	{
+		remove(self.weaponentity);
 		self.newweapon = W_BestWeapon();
-		W_DrawWeapon (self.newweapon);
+		W_DrawWeapon(self.newweapon);
 	}
 };
 
@@ -440,20 +389,21 @@ Life Leech Attack Code
 */
 void() Leech_Attack =
 {
-	// Normal fire or altfire?
-	if (self.button3)
+	if (self.weaponentity.attack_finished < time)
 	{
-		self.player_state = PS_ALTFIRE;
-
-		Leech_Drop ();
-		self.attack_finished = time + 0.1;
-	}
-	else
-	{
-		self.player_state = PS_FIRE;
-
-		player_leech1 ();
-		self.attack_finished = time + 2.6;
+		if (self.button3) //Altfire
+		{
+			self.player_state = PS_ALTFIRE;
+			Leech_Drop();
+			self.attack_finished = time + 0.1;
+		}
+		else // Normal fire
+		{
+			self.player_state = PS_FIRE;
+			self.weaponentity.attack_finished = time + LEECH_FIRE_TIME;
+			self.weaponentity.anim_type = FIRE;
+			leech_animate();
+		}
 	}
 };
 
@@ -468,12 +418,18 @@ void() Leech_Draw =
 {
 	self.weapon = IT_LIFE_LEECH;
 	self.currentammo = self.ammo_leech;
-	self.items = (self.items - (self.items & (IT_SHELLS | IT_NAILS | IT_CELLS | IT_ROCKETS)));
+	self.weaponentity = spawn();
+	self.weaponentity.solid = SOLID_NOT;
+	self.weaponentity.owner = self;
+	self.weaponentity.weaponentity = self.weaponentity;
+	self.weaponentity.origin = '0 0 0';
+	self.weaponentity.angles = '0 0 0';
+	self.weaponentity.viewmodelforclient = self;
 
-	Leech_UpdateView ();
-
-	self.attack_finished = time + 0.1;
-	player_leechdraw1 ();
+	Leech_UpdateView();
+	self.weaponentity.attack_finished = time + LEECH_DRAW_TIME;
+	self.weaponentity.anim_type = DRAW;
+	leech_animate();
 };
 
 /*
@@ -485,8 +441,9 @@ Holster code for the life leech
 */
 void() Leech_Holster =
 {
-	self.attack_finished = time + 0.1;
-	player_leechholster1 ();
+	self.attack_finished = time + LEECH_HOLSTER_TIME;
+	self.weaponentity.anim_type = HOLSTER;
+	leech_animate();
 };
 
 /*
@@ -498,6 +455,96 @@ Choose the right life leech model to display
 */
 void() Leech_UpdateView =
 {
-	self.weaponmodel = "models/weapons/v_leech.md3";
+	setmodel(self.weaponentity, "models/weapons/v_leech.md3");
 	self.items = self.items - (self.items & IT_GUNS_AKIMBO);
+};
+
+void() Leech_Idle =
+{
+	self.weaponentity.anim_type = IDLE;
+	self.player_state = PS_IDLE;
+	self.weaponentity.frame = LEECH_IDLE;
+	leech_animate();
+};
+
+/*
+============
+leech_animate
+
+Animation and frame based code for the Life Leech
+============
+*/
+void() leech_animate =
+{
+	if (self.weaponentity.anim_type == self.weaponentity.last_action)
+	{
+		if (self.weaponentity.frame < self.weaponentity.anim_end)
+			self.weaponentity.frame = self.weaponentity.frame + 1; //if its a new animation type, it will be set to the proper frame next
+		else
+			self.weaponentity.frame = self.weaponentity.anim_end - self.weaponentity.anim_end_num + 1;
+	}
+	else
+	{
+		if (self.weaponentity.anim_type == IDLE)
+		{
+			self.weaponentity.anim_end = LEECH_IDLE;
+			self.weaponentity.anim_end_num = LEECH_IDLE + 1;
+			self.weaponentity.anim_time = LEECH_IDLE_TIME;
+			self.weaponentity.frame = LEECH_IDLE;
+		}
+		else if (self.weaponentity.anim_type == DRAW)
+		{
+			self.weaponentity.anim_end = LEECH_DRAW_END;
+			self.weaponentity.anim_end_num = LEECH_DRAW_END - LEECH_DRAW_START + 1;
+			self.weaponentity.anim_time = LEECH_DRAW_TIME;
+			self.weaponentity.frame = LEECH_DRAW_START;
+		}
+		else if (self.weaponentity.anim_type == FIRE)
+		{
+			self.weaponentity.anim_end = LEECH_FIRE_END;
+			self.weaponentity.anim_end_num = LEECH_FIRE_END - LEECH_FIRE_START + 1;
+			self.weaponentity.anim_time = LEECH_FIRE_TIME;
+			self.weaponentity.frame = LEECH_FIRE_START;
+		}
+		else if (self.weaponentity.anim_type == HOLSTER)
+		{
+			self.weaponentity.anim_end = LEECH_HOLSTER_END;
+			self.weaponentity.anim_end_num = LEECH_HOLSTER_END - LEECH_HOLSTER_START + 1;
+			self.weaponentity.anim_time = LEECH_HOLSTER_TIME;
+			self.weaponentity.frame = LEECH_HOLSTER_START;
+		}
+		self.weaponentity.last_action = self.weaponentity.anim_type;
+	}
+	if (self.weaponentity.anim_type != IDLE)
+	{
+		self.nextthink = time + (self.weaponentity.anim_time / self.weaponentity.anim_end_num);
+		self.think = leech_animate;
+	}
+
+	if (self.weaponentity.anim_type == FIRE)
+	{
+		if (self.weaponentity.frame == LEECH_FIRE_START)
+			sound(self, CHAN_WEAPON, "weapons/lifelech/laltfr1.wav", 1, ATTN_NORM);
+		else if (self.weaponentity.frame == LEECH_FIRE_START + 4 ||
+			self.weaponentity.frame == LEECH_FIRE_START + 7 ||
+			self.weaponentity.frame == LEECH_FIRE_START + 10 ||
+			self.weaponentity.frame == LEECH_FIRE_START + 13 ||
+			self.weaponentity.frame == LEECH_FIRE_START + 15 ||
+			self.weaponentity.frame == LEECH_FIRE_START + 18 ||
+			self.weaponentity.frame == LEECH_FIRE_START + 21)
+			Leech_BallFire();
+		else if (self.weaponentity.frame == LEECH_FIRE_END)
+			Leech_Idle();
+	}
+	else if ((self.weaponentity.frame == self.weaponentity.anim_end) && (self.weaponentity.anim_type == DRAW))
+	{
+		self.nextthink = time + LEECH_DRAW_TIME;
+		self.think = Leech_Idle;
+	}
+	else if ((self.weaponentity.frame == self.weaponentity.anim_end) && (self.weaponentity.anim_type == HOLSTER))
+	{
+		remove(self.weaponentity);
+		W_DrawWeapon(self.newweapon);
+		return;
+	}
 };

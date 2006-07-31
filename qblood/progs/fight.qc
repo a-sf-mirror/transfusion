@@ -55,7 +55,7 @@ float() CheckAttack =
 	spot1 = self.origin + self.view_ofs;
 	spot2 = targ.origin + targ.view_ofs;
 
-	traceline (spot1, spot2, FALSE, self);
+	traceline(spot1, spot2, FALSE, self);
 
 	if (trace_ent != targ)
 		return FALSE;       // don't have a clear shot
@@ -67,7 +67,7 @@ float() CheckAttack =
 	{   // melee attack
 		if (self.th_melee)
 		{
-			self.th_melee ();
+			self.th_melee();
 			return TRUE;
 		}
 	}
@@ -94,9 +94,9 @@ float() CheckAttack =
 	else
 		chance = 0;
 
-	if (random () <= chance)
+	if (random() <= chance)
 	{
-		self.th_missile ();        
+		self.th_missile();        
 		return TRUE;
 	}
 
@@ -113,7 +113,7 @@ Stay facing the enemy
 void() ai_face =
 {
 	self.ideal_yaw = vectoyaw(self.enemy.origin - self.origin);
-	ChangeYaw ();
+	ChangeYaw();
 };
 
 /*
@@ -123,14 +123,14 @@ ai_charge
 The monster is in a melee attack, so get as close as possible to .enemy
 =============
 */
-float (entity targ) visible;
+float(entity targ) visible;
 float(entity targ) infront;
 float(entity targ) range;
 
 void(float d) ai_charge =
 {
-	ai_face ();
-	movetogoal (d);     // done in C code...
+	ai_face();
+	movetogoal(d);     // done in C code...
 };
 
 void() ai_charge_side =
@@ -141,9 +141,9 @@ void() ai_charge_side =
 	// aim to the left of the enemy for a flyby
 
 	self.ideal_yaw = vectoyaw(self.enemy.origin - self.origin);
-	ChangeYaw ();
+	ChangeYaw();
 
-	makevectors (self.angles);
+	makevectors(self.angles);
 	dtemp = self.enemy.origin - 30*v_right;
 	heading = vectoyaw(dtemp - self.origin);
 
@@ -169,7 +169,7 @@ void() ai_melee =
 		return;
 
 	ldmg = (random() + random() + random()) * 3;
-	T_Damage (self.enemy, self, self, ldmg, DF_PUMMEL, string_null);
+	T_Damage(self.enemy, self, self, ldmg, DF_PUMMEL, string_null);
 };
 
 void() ai_melee_side =
@@ -186,8 +186,8 @@ void() ai_melee_side =
 
 	if (vlen(delta) > 60)
 		return;
-	if (!CanDamage (self.enemy, self))
+	if (!CanDamage(self.enemy, self))
 		return;
 	ldmg = (random() + random() + random()) * 3;
-	T_Damage (self.enemy, self, self, ldmg, DF_PUMMEL, string_null);
+	T_Damage(self.enemy, self, self, ldmg, DF_PUMMEL, string_null);
 };

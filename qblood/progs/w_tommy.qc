@@ -22,26 +22,23 @@
 
 void() tommy_animate;
 
+#define TOMMY_IDLE				0
+#define TOMMY_DRAW_START		1
+#define TOMMY_DRAW_END			4
+#define TOMMY_FIRE_START		5
+#define TOMMY_FIRE_END			6
+#define TOMMY_ALTFIRE_START		7
+#define TOMMY_ALTFIRE_END		20
+#define TOMMY_HOLSTER_START		21
+#define TOMMY_HOLSTER_END		24
+
+#define TOMMY_IDLE_TIME			0.1
+#define TOMMY_DRAW_TIME			0.3
+#define TOMMY_FIRE_TIME			0.13
+#define TOMMY_ALTFIRE_TIME		1.0
+#define TOMMY_HOLSTER_TIME		0.3
+
 //============================================================================
-// ----- Tommy Gun models ----- //
-// Normal model
-
-#define TOMMY_IDLE              0
-#define TOMMY_DRAW_START        1
-#define TOMMY_DRAW_END          4
-#define TOMMY_FIRE_START        5
-#define TOMMY_FIRE_END          6
-#define TOMMY_ALTFIRE_START     7
-#define TOMMY_ALTFIRE_END       20
-#define TOMMY_HOLSTER_START     21
-#define TOMMY_HOLSTER_END       24
-
-//FIXME: accurate timings
-#define TOMMY_IDLE_TIME         0.1
-#define TOMMY_DRAW_TIME         0.4
-#define TOMMY_FIRE_TIME         0.13
-#define TOMMY_ALTFIRE_TIME      1.0
-#define TOMMY_HOLSTER_TIME      0.4
 
 /*
 ================
@@ -54,7 +51,7 @@ void(vector orig) Tommy_SpawnShell =
 {
 	local entity shell;
 
-	shell = spawn ();
+	shell = spawn();
 	shell.owner = self;
 
 	shell.mdl = "models/weapons/objects/bulletshell.md3";
@@ -63,10 +60,10 @@ void(vector orig) Tommy_SpawnShell =
 	else
 		shell.noise = "weapons/shtshl3.wav";
 
-	setorigin (shell, orig + v_up * 11 + v_right * -5);
+	setorigin(shell, orig + v_up * 5 + v_right * -5);
 	shell.velocity = (crandom() + 1)*v_forward*40 - v_right*(80 + crandom()*10) + v_up*(110 + crandom()*10);
 
-	DropShell (shell);
+	DropShell(shell);
 };
 
 /*
@@ -79,7 +76,6 @@ Fire with the tommygun
 void() Tommy_Fire =
 {
 	local vector    dir;
-	local entity    old;
 	local vector    orig;
 	local float     akimboFactor;  // 2 if guns akimbo, else 1
 	local vector    spread;
@@ -90,21 +86,30 @@ void() Tommy_Fire =
 	else
 		akimboFactor = 1;
 
-	makevectors (self.v_angle);
+	makevectors(self.v_angle);
 
-	sound (self, CHAN_WEAPON, "weapons/tommygun/_tom.wav", 1, ATTN_NORM);
+	sound(self, CHAN_WEAPON, "weapons/tommygun/_tom.wav", 1, ATTN_NORM);
 	self.currentammo = self.ammo_nails = self.ammo_nails - akimboFactor;
 
-	// set the bullet direction according to the weapon real direction
-	dir = aim (self, 1000);
-	if (self.weaponentity.frame == TOMMY_ALTFIRE_START + 1 || self.weaponentity.frame == TOMMY_ALTFIRE_START + 3)
-		dir = dir - v_right * (1 / 6);
-	else if (self.weaponentity.frame == TOMMY_ALTFIRE_START + 2)
-		dir = dir - v_right * (1 / 3);
-	else if (self.weaponentity.frame == TOMMY_ALTFIRE_START + 5 || self.weaponentity.frame == TOMMY_ALTFIRE_START + 7)
-		dir = dir + v_right * (1 / 6);
-	else if (self.weaponentity.frame == TOMMY_ALTFIRE_START + 6)
-		dir = dir + v_right * (1 / 3);
+	/* Set the bullet direction according to the weapon's real direction.
+	   These are arbitrary values with a small bit of further horizontal spread. */
+	dir = aim(self, 1000);
+	if (self.weaponentity.frame == TOMMY_ALTFIRE_START || self.weaponentity.frame == TOMMY_ALTFIRE_START + 6)
+		dir = dir - v_right * (1/28);
+	if (self.weaponentity.frame == TOMMY_ALTFIRE_START + 1 || self.weaponentity.frame == TOMMY_ALTFIRE_START + 5)
+		dir = dir - v_right * (1/18);
+	if (self.weaponentity.frame == TOMMY_ALTFIRE_START + 2 || self.weaponentity.frame == TOMMY_ALTFIRE_START + 4)
+		dir = dir - v_right * (1/10);
+	if (self.weaponentity.frame == TOMMY_ALTFIRE_START + 3)
+		dir = dir - v_right * (1/6.5);
+	if (self.weaponentity.frame == TOMMY_ALTFIRE_START + 7 || self.weaponentity.frame == TOMMY_ALTFIRE_START + 13)
+		dir = dir + v_right * (1/28);
+	if (self.weaponentity.frame == TOMMY_ALTFIRE_START + 8 || self.weaponentity.frame == TOMMY_ALTFIRE_START + 12)
+		dir = dir + v_right * (1/18);
+	if (self.weaponentity.frame == TOMMY_ALTFIRE_START + 9 || self.weaponentity.frame == TOMMY_ALTFIRE_START + 11)
+		dir = dir + v_right * (1/10);
+	if (self.weaponentity.frame == TOMMY_ALTFIRE_START + 10)
+		dir = dir + v_right * (1/6.5);
 
 	// If we are in altfire mode
 	if (self.player_state == PS_ALTFIRE)
@@ -112,8 +117,12 @@ void() Tommy_Fire =
 	else
 		damage = 12;
 
-	orig = self.origin + v_forward * 15 + v_up * 12 + v_right * 4;
-	spread = '0.05 0.02 0';
+	//orig = self.origin + v_forward * 15 + v_up * 12 + v_right * 4;
+	orig = self.origin + self.view_ofs + VEC_WEAPON_OFS + v_forward * 15 + v_right * 4;
+	if (self.player_state == PS_FIRE) // Normal Fire
+		spread = '0.05 0.02 0';
+	else // Altfire
+		spread = '0.03 0.001 0';
 
 	// If we're in akimbo mode
 	if (akimboFactor == 2)
@@ -123,25 +132,25 @@ void() Tommy_Fire =
 			orig = orig + v_right * 4;
 		else
 			orig = orig - v_right * 4;
-		Tommy_SpawnShell (orig);
+		Tommy_SpawnShell(orig);
 
 		orig = self.origin + v_right * 4 + v_up * 20;
 
-		FireBullets (orig, dir, 1, damage, spread);
+		FireBullets(orig, dir, 1, damage, spread);
 		orig = orig - v_right * 8;
-		FireBullets (orig, dir, 1, damage, spread);
+		FireBullets(orig, dir, 1, damage, spread);
 
 		// If we don't have enough ammo anymore, drop the akimbo mode for now
 		if (self.currentammo < 2)
-			W_SetCurrentAmmo ();
+			W_SetCurrentAmmo();
 	}
 	else
 	{
 		// Spawn 1 shell every 2 shots
 		if ((self.weaponentity.frame == TOMMY_FIRE_START) || (self.weaponentity.frame & 1)) // FIXME PS_ALTFIRE && &1
-			Tommy_SpawnShell (orig);
+			Tommy_SpawnShell(orig);
 
-		FireBullets (self.origin + v_up * 20, dir, 1, damage, spread);
+		FireBullets(self.origin + v_up * 20, dir, 1, damage, spread);
 	}
 
 	//self.punchangle_x = -2 * akimboFactor;
@@ -195,7 +204,7 @@ void() Tommy_Draw =
 	self.weaponentity.origin = '0 0 0';
 	self.weaponentity.angles = '0 0 0';
 	self.weaponentity.viewmodelforclient = self;
-	Tommy_UpdateView ();
+	Tommy_UpdateView();
 	self.weaponentity.attack_finished = time + TOMMY_DRAW_TIME;
 	self.weaponentity.anim_type = DRAW;
 	tommy_animate();
@@ -244,7 +253,7 @@ void() Tommy_Idle =
 	tommy_animate();
 };
 
-void () tommy_animate =
+void() tommy_animate =
 {
 	if (self.weaponentity.anim_type == self.weaponentity.last_action)
 	{
@@ -302,8 +311,8 @@ void () tommy_animate =
 	{
 		if (!self.button0 && self.weaponentity.attack_finished <= time)
 			Tommy_Idle();
-		muzzleflash ();
-		Tommy_Fire ();
+		muzzleflash();
+		Tommy_Fire();
 		self.impulse = IMP_NONE;
 	}
 	else if (self.weaponentity.anim_type == ALTFIRE)
@@ -311,8 +320,8 @@ void () tommy_animate =
 		if (!self.button3 && self.weaponentity.frame == TOMMY_ALTFIRE_END)
 			Tommy_Idle();
 
-		muzzleflash ();
-		Tommy_Fire ();
+		muzzleflash();
+		Tommy_Fire();
 		self.impulse = IMP_NONE;
 	}
 	else if ((self.weaponentity.frame == self.weaponentity.anim_end) && (self.weaponentity.anim_type == DRAW))
@@ -323,7 +332,7 @@ void () tommy_animate =
 	else if ((self.weaponentity.frame == self.weaponentity.anim_end) && (self.weaponentity.anim_type == HOLSTER))
 	{
 		remove(self.weaponentity);
-		W_DrawWeapon (self.newweapon);
+		W_DrawWeapon(self.newweapon);
 		return;
 	}
 };

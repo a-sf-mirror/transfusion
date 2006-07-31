@@ -45,13 +45,12 @@ void() shotgun_animate;
 #define	SHOTGUN_AKIMBO_HOLSTER_START	15
 #define	SHOTGUN_AKIMBO_HOLSTER_END		18
 
-// times may need adjusting
 #define SHOTGUN_IDLE_TIME				0.1
-#define SHOTGUN_DRAW_TIME				0.4
+#define SHOTGUN_DRAW_TIME				0.3
 #define SHOTGUN_FIRE_TIME				0.35
 #define SHOTGUN_ALTFIRE_TIME			0.3
 #define SHOTGUN_RELOAD_TIME				0.7
-#define SHOTGUN_HOLSTER_TIME			0.4
+#define SHOTGUN_HOLSTER_TIME			0.3
 
 //============================================================================
 
@@ -68,26 +67,28 @@ void() Shotgun_SpawnShell =
 	local entity shell2;
 
 	// 1st shell
-	shell = spawn ();
-	shell.owner = self.weaponentity;
+	shell = spawn();
+	shell.owner = self;
+	shell.solid = SOLID_NOT;
 	shell.mdl   = "models/weapons/objects/shotgunshell.md3";
 	shell.noise = "weapons/shtshl2.wav";
 
-	setorigin (shell, self.owner.origin + v_forward * 15);
-	shell.velocity = (crandom () + 1) * v_forward * 30 + v_up * (220 + crandom () * 10) - v_right * crandom () * 30;
-	DropShell (shell);
+	setorigin(shell, self.origin + self.view_ofs + VEC_WEAPON_OFS + v_forward * 25);
+	shell.velocity = (random() - 1) * v_forward * 30 + v_up * (160 + random() * 10) + v_right * (random() + 1) * 40;
+	DropShell(shell);
 
 	// 2nd shell
-	shell2 = spawn ();
-	shell2.owner = self.weaponentity;
+	shell2 = spawn();
+	shell2.owner = self;
+	shell2.solid = SOLID_NOT;
 	shell2.mdl   = shell.mdl;
 	shell2.noise = shell.noise;
 
-	setorigin (shell2, shell.origin);
-	shell2.velocity = (crandom () + 1) * v_forward * 30 + v_up * (220 + crandom () * 10) - v_right * crandom () * 30;
-	DropShell (shell2);
+	setorigin(shell2, shell.origin);
+	shell2.velocity = (random() - 1) * v_forward * 30 + v_up * (160 + random() * 10) + v_right * (random() + 1) * 40;
+	DropShell(shell2);
 
-	sound (shell, CHAN_WEAPON, "weapons/shotgun/shotguncock.wav", 1, ATTN_NORM);
+	sound(shell, CHAN_WEAPON, "weapons/shotgun/shotguncock.wav", 1, ATTN_NORM);
 };
 
 /*
@@ -100,10 +101,9 @@ Shot with the sawed-off
 void() Shotgun_Fire =
 {
 	local float nbshots;
-	local vector dir;
-	local vector spread;
+	local vector dir, spread, orig;
 
-	if (! self.ammo_shells)
+	if (!self.ammo_shells)
 		return;
 
 	if (self.player_state == PS_ALTFIRE)
@@ -124,20 +124,21 @@ void() Shotgun_Fire =
 	self.currentammo = self.ammo_shells = self.ammo_shells - nbshots;
 
 	if (nbshots == 1)
-		sound (self, CHAN_AUTO, "weapons/shotgun/shotgunfire.wav", 1, ATTN_NORM);
+		sound(self, CHAN_AUTO, "weapons/shotgun/shotgunfire.wav", 1, ATTN_NORM);
 	else
-		sound (self ,CHAN_AUTO, "weapons/shotgun/shotgunfir2.wav", 1, ATTN_NORM);
+		sound(self ,CHAN_AUTO, "weapons/shotgun/shotgunfir2.wav", 1, ATTN_NORM);
 
-	dir = aim (self, 100000);
+	dir = aim(self, 100000);
 
+	orig = self.origin + self.view_ofs + VEC_WEAPON_OFS;
 	// Total damage from an alt-fire is about 3 times normal damage (1*8*8=64, 2*8*12=192)
 	if (nbshots == 1)
 	{
-		FireBullets (self.origin + v_up * 20, dir, 8 * nbshots, 8, spread);  // 8 "shot pellets" per shell
+		FireBullets(orig, dir, 8 * nbshots, 8, spread);  // 8 "shot pellets" per shell
 	}
 	else if (nbshots == 2)
 	{
-		FireBullets (self.origin + v_up * 20, dir, 8 * nbshots, 12, spread);  // 8 "shot pellets" per shell
+		FireBullets(orig, dir, 8 * nbshots, 12, spread);  // 8 "shot pellets" per shell
 	}
 };
 
@@ -192,7 +193,7 @@ void() Shotgun_Draw =
 	else
 		self.weaponentity.ammo_in_chamber = 1;
 
-	Shotgun_UpdateView ();
+	Shotgun_UpdateView();
 	self.weaponentity.attack_finished = time + SHOTGUN_DRAW_TIME;
 
 	self.weaponentity.anim_type = DRAW;
@@ -222,7 +223,6 @@ Choose the right sawed-off model to display
 */
 void() Shotgun_UpdateView =
 {
-	self.weaponmodel = string_null;
 	if (self.akimbo_finished > time && self.currentammo >= 2)
 	{
 		setmodel(self.weaponentity, "models/weapons/ga_shotgun.psk");
@@ -243,7 +243,14 @@ void() Shotgun_Idle =
 	shotgun_animate();
 };
 
-void () shotgun_animate =
+/*
+============
+shotgun_animate
+
+Animation and frame based code for the Sawed-Off Shotgun
+============
+*/
+void() shotgun_animate =
 {
 	if (self.weaponentity.anim_type == self.weaponentity.last_action)
 	{
@@ -319,10 +326,10 @@ void () shotgun_animate =
 		if ((self.weaponentity.frame == SHOTGUN_FIRER_START) || (self.weaponentity.frame == SHOTGUN_FIREL_START))
 		{
 			muzzleflash();
-			Shotgun_Fire ();
+			Shotgun_Fire();
 			self.weaponentity.ammo_in_chamber = self.weaponentity.ammo_in_chamber - 1;
 			if (self.items & IT_GUNS_AKIMBO)
-				Shotgun_Fire ();
+				Shotgun_Fire();
 		}
 		else if ((self.weaponentity.frame == SHOTGUN_FIRER_END) || (self.weaponentity.frame == SHOTGUN_FIREL_END))
 		{
@@ -343,11 +350,11 @@ void () shotgun_animate =
 		{
 			if (self.weaponentity.ammo_in_chamber < 2)
 				self.player_state = PS_FIRE;
-			muzzleflash ();
-			Shotgun_Fire ();
+			muzzleflash();
+			Shotgun_Fire();
 			self.weaponentity.ammo_in_chamber = self.weaponentity.ammo_in_chamber - 2;
 			if (self.items & IT_GUNS_AKIMBO)
-				Shotgun_Fire ();
+				Shotgun_Fire();
 		}
 		else if (self.weaponentity.frame == SHOTGUN_ALTFIRE_END)
 		{
@@ -360,7 +367,7 @@ void () shotgun_animate =
 	else if (self.weaponentity.anim_type == RELOAD)
 	{
 		if (self.weaponentity.frame == SHOTGUN_RELOAD_START + 3)
-			Shotgun_SpawnShell ();
+			Shotgun_SpawnShell();
 		if ((self.weaponentity.frame == SHOTGUN_RELOAD_END) && ((!self.button0) || (!self.button3)))
 		{
 			self.weaponentity.ammo_in_chamber = 2;
@@ -375,7 +382,7 @@ void () shotgun_animate =
 	else if ((self.weaponentity.frame == self.weaponentity.anim_end) && (self.weaponentity.anim_type == HOLSTER))
 	{
 		remove(self.weaponentity);
-		W_DrawWeapon (self.newweapon);
+		W_DrawWeapon(self.newweapon);
 		return;
 	}
 };

@@ -30,7 +30,7 @@ void() SUB_Null = {};
 
 void() SUB_Remove =
 {
-	remove (self);
+	remove(self);
 };
 
 /*
@@ -44,11 +44,11 @@ void(string text) bcenterprint =
 {
 	local entity ent;
 
-	ent = find (world, classname, "player");
+	ent = find(world, classname, "player");
 	while (ent != world)
 	{
-		centerprint (ent, text);
-		ent = find (ent, classname, "player");
+		centerprint(ent, text);
+		ent = find(ent, classname, "player");
 	}
 };
 
@@ -63,11 +63,11 @@ void(string text1, string text2, string text3) bcenterprint3 =
 {
 	local entity ent;
 
-	ent = find (world, classname, "player");
+	ent = find(world, classname, "player");
 	while (ent != world)
 	{
-		centerprint3 (ent, text1, text2, text3);
-		ent = find (ent, classname, "player");
+		centerprint3(ent, text1, text2, text3);
+		ent = find(ent, classname, "player");
 	}
 };
 
@@ -94,7 +94,7 @@ SUB_SolidTouch
 So you don't slip on corpses, Life Leeches, ...
 ====================
 */
-void () SUB_SolidTouch =
+void() SUB_SolidTouch =
 {
 	if ((!other.flags & FL_ONGROUND) && (other.health) && (other.flags & FL_CLIENT))
 		other.flags = other.flags + FL_ONGROUND;
@@ -104,7 +104,7 @@ void () SUB_SolidTouch =
 QuakeEd only writes a single float for angles (bad idea), so up and down are
 just constant angles.
 */
-vector() SetMovedir =
+void() SetMovedir =
 {
 	if (self.angles == '0 -1 0')
 		self.movedir = '0 0 1';
@@ -112,7 +112,7 @@ vector() SetMovedir =
 		self.movedir = '0 0 -1';
 	else
 	{
-		makevectors (self.angles);
+		makevectors(self.angles);
 		self.movedir = v_forward;
 	}
 
@@ -129,9 +129,9 @@ void() InitTrigger =
 	// trigger angles are used for one-way touches.  An angle of 0 is assumed
 	// to mean no restrictions, so use a yaw of 360 instead.
 	if (self.angles != '0 0 0')
-		SetMovedir ();
+		SetMovedir();
 	self.solid = SOLID_TRIGGER;
-	setmodel (self, self.model);    // set size and link into world
+	setmodel(self, self.model);    // set size and link into world
 	self.movetype = MOVETYPE_NONE;
 	self.modelindex = 0;
 	self.model = string_null;
@@ -168,7 +168,7 @@ void(vector tdest, float tspeed, void() func) SUB_CalcMove =
 	vdestdelta = tdest - self.origin;
 
 	// calculate length of vector
-	len = vlen (vdestdelta);
+	len = vlen(vdestdelta);
 
 	// divide by speed to get time to reach dest
 	traveltime = len / tspeed;
@@ -233,7 +233,7 @@ void(vector destangle, float tspeed, void() func) SUB_CalcAngleMove =
 	destdelta = destangle - self.angles;
 
 	// calculate length of vector
-	len = vlen (destdelta);
+	len = vlen(destdelta);
 
 	// divide by speed to get time to reach dest
 	traveltime = len / tspeed;
@@ -255,7 +255,7 @@ void() SUB_UseTargets;
 void() DelayThink =
 {
 	activator = self.enemy;
-	SUB_UseTargets ();
+	SUB_UseTargets();
 	remove(self);
 };
 
@@ -300,9 +300,9 @@ void() SUB_UseTargets =
 	// print the message
 	/*if (activator.classname == "player" && self.message != string_null)
 	{
-	centerprint (activator, self.message);
+	centerprint(activator, self.message);
 	if (!self.noise)
-	sound (activator, CHAN_VOICE, "bludbath/message.wav", 1, ATTN_NORM);
+	sound(activator, CHAN_VOICE, "bludbath/message.wav", 1, ATTN_NORM);
 	}*/
 	if (activator.classname == "player" && self.message != string_null)
 		sprint(activator, self.message);
@@ -313,9 +313,9 @@ void() SUB_UseTargets =
 		t = world;
 		do
 		{
-			t = find (t, targetname, self.killtarget);
+			t = find(t, targetname, self.killtarget);
 			if (t)
-				remove (t);
+				remove(t);
 		} while (t);
 	}
 
@@ -326,7 +326,7 @@ void() SUB_UseTargets =
 		t = world;
 		do
 		{
-			t = find (t, targetname, self.target);
+			t = find(t, targetname, self.target);
 			if (!t)
 				return;
 			stemp = self;
@@ -334,7 +334,7 @@ void() SUB_UseTargets =
 			self = t;
 			other = stemp;
 			if (self.use)
-				self.use ();
+				self.use();
 			self = stemp;
 			other = otemp;
 			activator = act;
@@ -359,12 +359,12 @@ entity(string targ_class, float closeness) SUB_GetPointedClass =
 	local entity e, guy;
 
 	// Temp vars.
-	local vector diff, point, start_point;
+	local vector diff, start_point;
 	local float currclose, length;
 
 	// Normalize self.angles so we can do a length-independent
 	// consideration
-	makevectors (self.v_angle);
+	makevectors(self.v_angle);
 
 	start_point = self.origin + self.view_ofs;
 
@@ -375,24 +375,24 @@ entity(string targ_class, float closeness) SUB_GetPointedClass =
 		// Get a vector pointing from the viewer to the current
 		// player under consideration
 		diff = e.origin - start_point;
-		length = vlen (diff);
+		length = vlen(diff);
 
 		// Normalize it since we only care where he's pointing,
 		// not how far away the guy is.
-		diff = normalize (diff);
+		diff = normalize(diff);
 
 		// Find the different between the current player's angle
 		// and the viewer's vision angle
 		diff = diff - v_forward;
 
 		// The length is going to be our definition of closeness
-		currclose = vlen (diff) * length / 500;
-		traceline (start_point, e.origin, FALSE, self);
+		currclose = vlen(diff) * length / 500;
+		traceline(start_point, e.origin, FALSE, self);
 		if (trace_ent == e && (closeness == -1 || currclose < closeness)) {
 			closeness = currclose;
 			guy = e;
 		}
-		e = find (e, classname, targ_class);
+		e = find(e, classname, targ_class);
 	}
 
 	return guy;
@@ -409,13 +409,13 @@ void() identify_player =
 {
 	local entity guy;
 
-	guy = SUB_GetPointedClass ("player", -1);
+	guy = SUB_GetPointedClass("player", -1);
 	if (guy == world)
-		guy = SUB_GetPointedClass ("monster", -1);
+		guy = SUB_GetPointedClass("monster", -1);
 	if (guy == world)
-		centerprint (self, "You're not looking at anyone!");
+		centerprint(self, "You're not looking at anyone!");
 	else
-		centerprint2 (self, "You are looking at ", guy.netname);
+		centerprint2(self, "You are looking at ", guy.netname);
 };
 
 //=========================
@@ -423,7 +423,7 @@ void() identify_player =
 // SUB_NormalizeAngles
 //
 //=========================
-vector ( vector ang ) SUB_NormalizeAngles =
+vector( vector ang ) SUB_NormalizeAngles =
 {
 	while( ang_x > 360 )
 	{

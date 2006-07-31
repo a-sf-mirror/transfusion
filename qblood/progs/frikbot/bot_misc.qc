@@ -41,7 +41,7 @@ this notice in its entirety.
 
 */
 
-#include "common.qh"
+#include "../common.qh"
 
 /*
 -=-=-=-=-=-=-=-=-=-=-=-=-=-=-=-=-=-=-=-=-=-=-=
@@ -151,8 +151,9 @@ string(float r) BotName =
 		self.b_shirt = 10;
 		return "Wells";
 	}
+	return "Bot"; //catch-all
 };
-string () PickARandomName =
+string() PickARandomName =
 {
 	if (bot_count > 16)
 		return "player";
@@ -214,7 +215,7 @@ void() bot_chat =
 	local float r;
 	if (b_options & OPT_NOCHAT)
 		return;
-	r = ceil (random() * 6);
+	r = ceil(random() * 6);
 	
 	if (self.b_chattime > time)
 	{
@@ -580,7 +581,7 @@ of the bounding boxes
 -=-=-=-=-=-=-=-=-=-=-=-=-=-=-=-=-=-=-=-=-=-=-=
 */
 
-float (entity targ) fisible =
+float(entity targ) fisible =
 {
 	local vector	spot1, org;
 	local float thruwater, pc1, pc2;
@@ -590,7 +591,7 @@ float (entity targ) fisible =
 	
 	if (targ.solid == SOLID_BSP)
 	{
-		traceline (spot1, org, TRUE, self);
+		traceline(spot1, org, TRUE, self);
 		if (trace_ent == targ)
 			return TRUE;
 		else if (trace_fraction == 1)
@@ -614,7 +615,7 @@ float (entity targ) fisible =
 		if (pc2 != pc1)
 		{
 			// look for their head
-			traceline (spot1, org + targ.mins, TRUE, self);
+			traceline(spot1, org + targ.mins, TRUE, self);
 			// cross the water check
 			if (trace_inopen)
 				if (trace_inwater)
@@ -631,7 +632,7 @@ float (entity targ) fisible =
 	{
 		if (pc2 != pc1)
 		{
-			traceline (spot1, org + targ.maxs, TRUE, self);
+			traceline(spot1, org + targ.maxs, TRUE, self);
 			if (trace_inopen)
 				if (trace_inwater)
 					if (!thruwater)
@@ -643,17 +644,17 @@ float (entity targ) fisible =
 			return FALSE;
 		}
 	}
-	traceline (spot1, org, TRUE, self);
+	traceline(spot1, org, TRUE, self);
 	if (trace_ent == targ)
 		return TRUE;
 	else if (trace_fraction == 1)
 		return TRUE;
-	traceline (spot1, org + targ.maxs, TRUE, self);
+	traceline(spot1, org + targ.maxs, TRUE, self);
 	if (trace_ent == targ)
 		return TRUE;
 	else if (trace_fraction == 1)
 		return TRUE;
-	traceline (spot1, org + targ.mins, TRUE, self);
+	traceline(spot1, org + targ.mins, TRUE, self);
 	if (trace_ent == targ)
 		return TRUE;
 	else if (trace_fraction == 1)
@@ -674,7 +675,7 @@ for waypoints
 */
 
 // this is used for waypoint stuff....
-float (entity targ1, entity targ2) wisible =
+float(entity targ1, entity targ2) wisible =
 {
 	local vector	spot1, spot2;
 	local entity ignore;
@@ -685,7 +686,7 @@ float (entity targ1, entity targ2) wisible =
 	ignore = self;
 	do
 	{
-		traceline (spot1, spot2, TRUE, ignore);
+		traceline(spot1, spot2, TRUE, ignore);
 		spot1 = realorigin(trace_ent);
                 ignore = trace_ent;
 	} while ((trace_ent != world) && (trace_fraction != 1));
@@ -707,13 +708,14 @@ used when we need just a simple traceline nothing else
 -=-=-=-=-=-=-=-=-=-=-=-=-=-=-=-=-=-=-=-=-=-=-=
 */
 
-float (entity targ) sisible =
+float(entity targ) sisible =
 {
-	traceline (self.origin, targ.origin, TRUE, self);
+	traceline(self.origin, targ.origin, TRUE, self);
 	if (trace_ent == targ)
 		return TRUE;
 	else if (trace_fraction == 1)
 		return TRUE;
+	return FALSE; //I'm assuming?
 };
 /*
 -=-=-=-=-=-=-=-=-=-=-=-=-=-=-=-=-=-=-=-=-=-=-=
@@ -725,7 +727,7 @@ subtracts one angle from another
 -=-=-=-=-=-=-=-=-=-=-=-=-=-=-=-=-=-=-=-=-=-=-=
 */
 
-float (float y1, float y2) angcomp = 
+float(float y1, float y2) angcomp = 
 {
 	y1 = frik_anglemod(y1);
 	y2 = frik_anglemod(y2);
@@ -748,7 +750,7 @@ is the entity in the bot's field of view
 
 -=-=-=-=-=-=-=-=-=-=-=-=-=-=-=-=-=-=-=-=-=-=-=
 */
-float (entity targ) fov =
+float(entity targ) fov =
 {
 	local vector yawn;
 	local float g;

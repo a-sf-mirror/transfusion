@@ -94,7 +94,7 @@ void(entity targ, entity attacker) Killed =
 	// doors, triggers, etc
 	if (self.movetype == MOVETYPE_PUSH || self.movetype == MOVETYPE_NONE)
 	{
-		self.th_die ();
+		self.th_die();
 		self = oself;
 		return;
 	}
@@ -105,10 +105,10 @@ void(entity targ, entity attacker) Killed =
 	if (self.flags & FL_MONSTER)
 	{
 		killed_monsters = killed_monsters + 1;
-		WriteByte (MSG_ALL, SVC_KILLEDMONSTER);
+		WriteByte(MSG_ALL, SVC_KILLEDMONSTER);
 	}
 
-	ClientObituary (attacker);
+	ClientObituary(attacker);
 
 	self.takedamage = DAMAGE_NO;
 	self.touch = SUB_Null;
@@ -123,10 +123,10 @@ void(entity targ, entity attacker) Killed =
 	if (self.target)
 	{
 		activator = self.enemy;
-		SUB_UseTargets ();
+		SUB_UseTargets();
 	}
 
-	self.th_die ();
+	self.th_die();
 
 	self = oself;
 };
@@ -356,7 +356,7 @@ void(entity targ, entity inflictor, entity attacker, float damage, float dflags,
 
 	// Save fractions for later use.
 	take = damage + targ.remain_dmg;
-	damage = floor (take);
+	damage = floor(take);
 	targ.remain_dmg = take - damage;
 
 	// Figure momentum add
@@ -394,11 +394,11 @@ void(entity targ, entity inflictor, entity attacker, float damage, float dflags,
 		// Save damage based on the target's armor level, but do not apply
 		// the savings to the armor yet... in case target is invulnerable.
 		if (dflags & DF_BURN)
-			save = ArmorSave (targ, targ.armor_fire, damage);
+			save = ArmorSave(targ, targ.armor_fire, damage);
 		else if (dflags & DF_SPIRIT || dflags & DF_VOODOO)
-			save = ArmorSave (targ, targ.armor_spirit, damage);
+			save = ArmorSave(targ, targ.armor_spirit, damage);
 		else if (dflags & DF_BULLET || dflags & DF_STAB || dflags & DF_EXPLODE)
-			save = ArmorSave (targ, targ.armor_body, damage);
+			save = ArmorSave(targ, targ.armor_body, damage);
 		take = ceil(damage-save);
 
 		// Check for godmode or invincibility.
@@ -410,7 +410,7 @@ void(entity targ, entity inflictor, entity attacker, float damage, float dflags,
 		{
 			if (self.invincible_sound < time)
 			{
-				sound (targ, CHAN_ITEM, "bludbath/powerup.wav", 1, ATTN_NORM);
+				sound(targ, CHAN_ITEM, "bludbath/powerup.wav", 1, ATTN_NORM);
 				self.invincible_sound = time + 2;
 			}
 			protected = TRUE;
@@ -425,7 +425,7 @@ void(entity targ, entity inflictor, entity attacker, float damage, float dflags,
 	}
 
 	// If client, use damage values for hud effects.
-	if (targ.flags & FL_CLIENT)
+	if (targ.flags & FL_CLIENT && targ != self)
 	{
 		targ.dmg_take = targ.dmg_take + take;
 		targ.dmg_save = targ.dmg_save + save;
@@ -525,7 +525,7 @@ void(entity targ, entity inflictor, entity attacker, float damage, float dflags,
 		targ != attacker                       && // and if he doesn't kill himself
 		targ.burner == world)
 	{
-		Player_BrinkOfDeath (targ, attacker);
+		Player_BrinkOfDeath(targ, attacker);
 		return;
 	}
 	else if (targ.health <= 0)
@@ -558,7 +558,7 @@ void(entity targ, entity inflictor, entity attacker, float damage, float dflags,
 		if (dflags & DF_MIN_PAIN)
 			take = 0;
 
-		self.th_pain (attacker, take);
+		self.th_pain(attacker, take);
 
 		// nightmare mode monsters don't go into pain frames often
 		if (skill == 3)
@@ -589,16 +589,16 @@ void(entity inflictor, entity attacker, float damage, float dflags, entity ignor
 			if (head.takedamage)
 			{
 				org = head.origin + (head.mins + head.maxs)*0.5;
-				points = 0.5*vlen (inflictor.origin - org);
+				points = 0.5*vlen(inflictor.origin - org);
 				if (points < 0)
 					points = 0;
 				points = damage - points;
 
 				if (points > 0)
 				{
-					if (CanDamage (head, inflictor))
+					if (CanDamage(head, inflictor))
 					{
-						T_Damage (head, inflictor, attacker, points, dflags, dtype);
+						T_Damage(head, inflictor, attacker, points, dflags, dtype);
 					}
 				}
 			}

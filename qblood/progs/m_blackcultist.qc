@@ -21,17 +21,17 @@
 
 // Prototypes
 
-void () blackcultist_fireTommygun;
+void() blackcultist_fireTommygun;
 
 //--- Shooting gun
 
 /*
-void () blackcultist_attack1 = [$attack1, blackcultist_attack2] {ai_face ();};
-void () blackcultist_attack2 = [$attack2, blackcultist_attack3] {blackcultist_fireTommygun (); ai_face ();};
-void () blackcultist_attack3 = [$idle1, cultist_run] {ai_face ();};
+void() blackcultist_attack1 = [$attack1, blackcultist_attack2] {ai_face();};
+void() blackcultist_attack2 = [$attack2, blackcultist_attack3] {blackcultist_fireTommygun(); ai_face();};
+void() blackcultist_attack3 = [$idle1, cultist_run] {ai_face();};
 */
 
-void () blackcultist_attack =
+void() blackcultist_attack =
 {
 	local vector delta;
 
@@ -39,9 +39,9 @@ void () blackcultist_attack =
 
 	delta = (self.enemy.origin - self.origin);
 
-	if (vlen (delta) <= 1200)
+	if (vlen(delta) <= 1200)
 	{
-		//blackcultist_attack1 ();    // If the player is near shoot them
+		//blackcultist_attack1();    // If the player is near shoot them
 		self.anim_type = ATTACK1;
 		cultist_animate();
 	}
@@ -49,30 +49,27 @@ void () blackcultist_attack =
 
 //--- Shoot the player
 
-void () blackcultist_fireTommygun =
+void() blackcultist_fireTommygun =
 {
 	local vector    dir;
-	local entity    old;
 	local vector    orig;
-	local vector    spread;
 	local vector    org;
-	local float     damage;
 
-	makevectors (self.v_angle);
+	makevectors(self.v_angle);
 
 	self.effects = self.effects | EF_MUZZLEFLASH;
 
-	sound (self, CHAN_WEAPON, "weapons/tommygun/_tom.wav", 1, ATTN_NORM);
+	sound(self, CHAN_WEAPON, "weapons/tommygun/_tom.wav", 1, ATTN_NORM);
 	self.attack_finished = time + 0.1;
 
 	// set the bullet direction according to the weapon real direction
 	dir = (self.enemy.origin - self.origin);
-	dir = normalize (dir);
+	dir = normalize(dir);
 
 	orig = self.origin + v_forward * 15 + v_up * 12 + v_right * 4;
 
 	// Spawn 1 shell every 2 shots
-	Tommy_SpawnShell (orig);
+	Tommy_SpawnShell(orig);
 
 	org = self.origin;
 
@@ -104,7 +101,7 @@ void () blackcultist_fireTommygun =
 
 	org_z = org_z + 35;
 
-	FireBullets (org, dir, 1, 10, '0.1 0.1 0');
+	FireBullets(org, dir, 1, 10, '0.1 0.1 0');
 
 	// Keep attacking until enemy is out of range or dead
 	if(visible(self.enemy) && self.enemy.health > 1)
@@ -116,16 +113,16 @@ void () blackcultist_fireTommygun =
 
 };
 
-void () monster_blackcultist =
+void() monster_blackcultist =
 {
 	// Setup all black cultists unique attributes
 	self.skin = CULTIST_BLACK;
 	self.health = 50;
 	self.th_missile = blackcultist_attack;	
-	precache_sound ("weapons/tommygun/_tom.wav");
-	precache_sound ("cultist/tcltdie1.wav"); // Unique Tommy gun cultist sounds
-	precache_sound ("cultist/tcltpan2.wav");
-	precache_sound ("cultist/tcltpan3.wav");
+	precache_sound("weapons/tommygun/_tom.wav");
+	precache_sound("cultist/tcltdie1.wav"); // Unique Tommy gun cultist sounds
+	precache_sound("cultist/tcltpan2.wav");
+	precache_sound("cultist/tcltpan3.wav");
 	self.netname = "monster_blackcultist";
 
 	cultist_spawn();

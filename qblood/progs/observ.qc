@@ -121,7 +121,7 @@ void(entity player,entity door) ObserverDoor =
 		if (dir * v < 0.5)
 			return;
 		player.origin = or;
-		setorigin (player, player.origin);
+		setorigin(player, player.origin);
 	}
 };
 
@@ -130,19 +130,21 @@ void(entity player,entity tele) ObserverTeleporter =
 	local entity targ;
 	local vector v1,v2;
 
-	v1 = ((tele.absmax + tele.absmin) * 0.5) - player.origin; normalize(v1);
-	v2 = player.velocity; normalize(v2);
+	v1 = ((tele.absmax + tele.absmin) * 0.5) - player.origin;
+	normalize(v1);
+	v2 = player.velocity;
+	normalize(v2);
 	if (v1 * v2 <= 0.1)
 		return;
 
-	targ = find (world, targetname, tele.target);
+	targ = find(world, targetname, tele.target);
 	if (!targ)
 	{
 		dprint("ObserverTeleport: couldn't find teleporter target\n");
 		return;
 	}
-	makevectors (targ.mangle);
-	setorigin (player, targ.origin);
+	makevectors(targ.mangle);
+	setorigin(player, targ.origin);
 	player.angles = targ.mangle;
 	player.fixangle = TRUE; // turn this way immediately
 	player.teleport_time = time + 0.7;
@@ -167,7 +169,7 @@ void() Impulses_Observer =
 		if (self.impulse == 1 || self.impulse == 2 || self.button0 || self.button1 || self.button2 || self.button3 || self.button4)
 		{
 			self.observer = 0;
-			respawn (FALSE);
+			respawn(FALSE);
 		}
 	}
 
@@ -175,40 +177,40 @@ void() Impulses_Observer =
 	else
 	{
 		if (self.button0 || self.button1 || self.button2 || self.button3 || self.button4)
-			centerprint (self, "Type:\nimpulse 1 for joining the RED team\nimpulse 2 for joining the BLUE team");
+			centerprint(self, "Type:\nimpulse 1 for joining the RED team\nimpulse 2 for joining the BLUE team");
 		else if (self.impulse == 1 || self.impulse == 2)
 		{
 			// If a warmup has been done, the teams may be locked now
-			if (warmup_done && warmup_endtime && cvar ("g_lockTeams"))
-				centerprint (self, "You can't join a team\nThey have been locked after the warmup");
+			if (warmup_done && warmup_endtime && cvar("g_lockTeams"))
+				centerprint(self, "You can't join a team\nThey have been locked after the warmup");
 			else
 			{
 				// Choose the color...
 				if (self.impulse == 1)
 				{
 					self.team = TEAM_COLOR1;
-					centerprint (self, "You have joined the RED team");
+					centerprint(self, "You have joined the RED team");
 				}
 				else
 				{
 					self.team = TEAM_COLOR2;
-					centerprint (self, "You have joined the BLUE team");
+					centerprint(self, "You have joined the BLUE team");
 				}
 				self.team_save = self.team;  // backup the team of the player
 
 				// ...and join the game
 				self.observer = 0;
-				respawn (FALSE);
+				respawn(FALSE);
 			}
 		}
 	}
 
 	// If the player has just spawned into the arena
 	if (!self.observer)
-		bprint2 (self.netname, " lives again!\n");
+		bprint2(self.netname, " lives again!\n");
 
 	if (self.impulse == IMP_IDENT_PLAYER)
-		identify_player ();
+		identify_player();
 
 	self.impulse = IMP_NONE;
 };
@@ -216,8 +218,7 @@ void() Impulses_Observer =
 void() ObserverThink =
 {
 	local entity e;
-	local float cont;
-	local float invcos,nv,nvp,nvpmax,nvs,nsp,sp,svz;
+	local float invcos,nvp,nvpmax,sp,svz;
 	local vector f,vp,vs;
 
 	self.flags = self.flags | FL_ONGROUND;
@@ -229,19 +230,26 @@ void() ObserverThink =
 	f_x = v_forward_x;
 	f_y = v_forward_y;
 	f_z = 0;
-	invcos = vlen(f); if (invcos) invcos= 1/invcos; else invcos=0;
+	invcos = vlen(f);
+	if (invcos)
+		invcos= 1/invcos;
+	else
+		invcos=0;
 	f = f*invcos; // normalize f
 
 	sp = f * self.velocity;
 	vp = sp*f;
-	nvp = vlen(vp); if (sp<0) nvp = nvp*(-1);
+	nvp = vlen(vp);
+	if (sp<0)
+		nvp = nvp*(-1);
 	vs = self.velocity - vp;
 
 	vp = v_forward * (nvp * invcos);
 	vp_z = vp_z + svz;
 	nvp = vlen(vp);
 	nvpmax = (320 - 100*(v_forward * '0 0 1'));
-	if (nvp > nvpmax) { vp = vp * (nvpmax/nvp); }
+	if (nvp > nvpmax)
+		vp = vp * (nvpmax/nvp);
 
 	self.velocity = vp + vs;
 
@@ -275,8 +283,8 @@ void(entity player) BecomeObserver =
 
 	player.skin = 0;
 	player.frame = 0;
-	setmodel (player, "models/objects/eyes.md3");
-	setsize (player, '-10 -10 -20', '10 10 28');
+	setmodel(player, "models/objects/eyes.md3");
+	setsize(player, '-10 -10 -20', '10 10 28');
 
 	player.weaponmodel = string_null;
 	player.weaponframe = 0;

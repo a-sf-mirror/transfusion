@@ -42,7 +42,7 @@ this notice in its entirety.
 
 */
 
-#include "common.qh"
+#include "../common.qh"
 
 /*
 -=-=-=-=-=-=-=-=-=-=-=-=-=-=-=-=-=-=-=-=-=-=-=
@@ -985,7 +985,7 @@ void() BotAI =
   	{
 		if (time > (self.air_finished - 2))
 		{
-			traceline (self.origin, self.origin + '0 0 6800', TRUE, self);
+			traceline(self.origin, self.origin + '0 0 6800', TRUE, self);
 			if (trace_inopen)	
 			{
 				self.keys = KEY_MOVEUP;

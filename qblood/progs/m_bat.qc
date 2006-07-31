@@ -58,7 +58,7 @@ void() bat_wake3  =[$wake3, bat_run1 ] {ai_face();};
 void() bat_stand1  =[$fly1, bat_stand2 ]
 {
 	if (random() < 0.05)
-		sound (self, CHAN_VOICE, "bat/batroam.wav", 1, ATTN_NORM);
+		sound(self, CHAN_VOICE, "bat/batroam.wav", 1, ATTN_NORM);
 
 	ai_stand();
 };
@@ -95,20 +95,20 @@ void() bat_death =[$fly1, bat_death]
 	r = random();
 
 	if (r <= 0.25)
-		sound (self, CHAN_VOICE, "bat/batdie1.wav", 1, ATTN_NORM);
+		sound(self, CHAN_VOICE, "bat/batdie1.wav", 1, ATTN_NORM);
 	else if (r <= 0.50)
-		sound (self, CHAN_VOICE, "bat/batdie2.wav", 1, ATTN_NORM);
+		sound(self, CHAN_VOICE, "bat/batdie2.wav", 1, ATTN_NORM);
 	else if (r <= 0.75)
-		sound (self, CHAN_VOICE, "bat/batdie3.wav", 1, ATTN_NORM);
+		sound(self, CHAN_VOICE, "bat/batdie3.wav", 1, ATTN_NORM);
 	else
-		sound (self, CHAN_VOICE, "bat/bat.wav", 1, ATTN_NORM);
+		sound(self, CHAN_VOICE, "bat/bat.wav", 1, ATTN_NORM);
 
 	if (self.health <= -20)
 	{
 		// blood splat!
-		te_bloodshower (self.origin, self.origin + self.size, 100, 25);
-		ThrowGib ("models/objects/gib4.md3", self.health);
-		remove (self);
+		te_bloodshower(self.origin, self.origin + self.size, 100, 25);
+		ThrowGib("models/objects/gib4.md3", self.health);
+		remove(self);
 		return;
 	}
 	else
@@ -124,7 +124,7 @@ void(entity attacker, float damage)    bat_pain =
 	// don't make multiple pain sounds right after each other
 	if (self.pain_finished > time)
 		return;
-	sound (self, CHAN_VOICE, "bat/batpain.wav", 1, ATTN_NORM);
+	sound(self, CHAN_VOICE, "bat/batpain.wav", 1, ATTN_NORM);
 	self.pain_finished = time + 0.52;
 	//    ai_pain(6);	//deprecated
 };
@@ -135,22 +135,22 @@ void() monster_bat =
 	if(monster_check())
 		return;
 
-	precache_model ("models/enemies/bat.md3");
+	precache_model("models/enemies/bat.md3");
 
-	precache_sound ("bat/batdie1.wav");
-	precache_sound ("bat/batdie2.wav");
-	precache_sound ("bat/batdie3.wav");
-	precache_sound ("bat/batpain.wav");
-	precache_sound ("bat/batroam.wav");
-	precache_sound ("bat/batspot.wav");
-	precache_sound ("bat/bat.wav");
+	precache_sound("bat/batdie1.wav");
+	precache_sound("bat/batdie2.wav");
+	precache_sound("bat/batdie3.wav");
+	precache_sound("bat/batpain.wav");
+	precache_sound("bat/batroam.wav");
+	precache_sound("bat/batspot.wav");
+	precache_sound("bat/bat.wav");
 
 	self.solid = SOLID_SLIDEBOX;
 	self.movetype = MOVETYPE_FLY;
 
-	setmodel (self, "models/enemies/bat.md3");
+	setmodel(self, "models/enemies/bat.md3");
 
-	setsize (self, '-4 -4 -5', '5 3 7');
+	setsize(self, '-4 -4 -5', '5 3 7');
 	self.resist_acid = 0;
 	self.resist_shock = 0;
 	self.resist_pummel = 0;
@@ -173,5 +173,5 @@ void() monster_bat =
 	self.classname = "monster";
 	self.netname = "monster_bat";
 
-	flymonster_start ();
+	flymonster_start();
 };

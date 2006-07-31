@@ -34,16 +34,16 @@
 #define INNOCENT_PAIN_TIME      1.0
 #define INNOCENT_DEATH_TIME     2.0
 
-void () innocent_animate;
+void() innocent_animate;
 
-void () innocent_stand =
+void() innocent_stand =
 {
 	self.style = 1;
 	self.anim_type = STAND;
 	innocent_animate();
 };
 
-void () innocent_run =
+void() innocent_run =
 {
 	self.style = 3;
 	self.anim_type = RUN;
@@ -78,9 +78,9 @@ void(entity attacker, float damage) innocent_pain =
 	r = random();
 
 	if (r <= 0.5)
-		sound (self, CHAN_VOICE, "innocent/iscream1.wav", 1, ATTN_NORM);
+		sound(self, CHAN_VOICE, "innocent/iscream1.wav", 1, ATTN_NORM);
 	else
-		sound (self, CHAN_VOICE, "innocent/iscream2.wav", 1, ATTN_NORM);
+		sound(self, CHAN_VOICE, "innocent/iscream2.wav", 1, ATTN_NORM);
 
 	r = random();
 	if (r >= 0.5)
@@ -90,42 +90,42 @@ void(entity attacker, float damage) innocent_pain =
 
 		if (r <= 0.125)
 		{
-			sound (self, CHAN_VOICE, "innocent/icrying.wav", 1, ATTN_NORM);
+			sound(self, CHAN_VOICE, "innocent/icrying.wav", 1, ATTN_NORM);
 			self.pain_finished = time + 1.82;
 		}
 		else if (r <= 0.25)
 		{
-			sound (self, CHAN_VOICE, "innocent/icrying2.wav", 1, ATTN_NORM);
+			sound(self, CHAN_VOICE, "innocent/icrying2.wav", 1, ATTN_NORM);
 			self.pain_finished = time + 1.46;
 		}
 		else if (r <= 0.375)
 		{
-			sound (self, CHAN_VOICE, "innocent/idonhme.wav", 1, ATTN_NORM);
+			sound(self, CHAN_VOICE, "innocent/idonhme.wav", 1, ATTN_NORM);
 			self.pain_finished = time + 0.63;
 		}
 		else if (r <= 0.5)
 		{
-			sound (self, CHAN_VOICE, "innocent/igoaway2.wav", 1, ATTN_NORM);
+			sound(self, CHAN_VOICE, "innocent/igoaway2.wav", 1, ATTN_NORM);
 			self.pain_finished = time + 1.12;
 		}
 		else if (r <= 0.625)
 		{
-			sound (self, CHAN_VOICE, "innocent/igoaway3.wav", 1, ATTN_NORM);
+			sound(self, CHAN_VOICE, "innocent/igoaway3.wav", 1, ATTN_NORM);
 			self.pain_finished = time + 1.23;
 		}
 		else if (r <= 0.75)
 		{
-			sound (self, CHAN_VOICE, "innocent/inoplace.wav", 1, ATTN_NORM);
+			sound(self, CHAN_VOICE, "innocent/inoplace.wav", 1, ATTN_NORM);
 			self.pain_finished = time + 1.1;
 		}
 		else if (r <= 0.875)
 		{
-			sound (self, CHAN_VOICE, "innocent/iplease.wav", 1, ATTN_NORM);
+			sound(self, CHAN_VOICE, "innocent/iplease.wav", 1, ATTN_NORM);
 			self.pain_finished = time + 1.24;
 		}
 		else
 		{
-			sound (self, CHAN_VOICE, "innocent/sobbing.wav", 1, ATTN_NORM);
+			sound(self, CHAN_VOICE, "innocent/sobbing.wav", 1, ATTN_NORM);
 			self.pain_finished = time + 3.2;
 		}
 	}
@@ -139,7 +139,7 @@ void(entity attacker, float damage) innocent_pain =
 	innocent_animate();
 };
 
-void () innocent_death =
+void() innocent_death =
 {
 	local float     r;
 
@@ -148,38 +148,45 @@ void () innocent_death =
 	if (self.health < -40)
 	{
 		// Very large blood splat!
-		te_bloodshower (self.origin, self.origin + self.size, 100, 100);
+		te_bloodshower(self.origin, self.origin + self.size, 100, 100);
 
-		sound (self, CHAN_VOICE, "innocent/iscream1.wav", 1, ATTN_NORM);
+		sound(self, CHAN_VOICE, "innocent/iscream1.wav", 1, ATTN_NORM);
 		RandomHumanGibs();
-		remove (self);
+		remove(self);
 		return;
 	}
 
 	r = random();
 
 	if (r <= 0.125)
-		sound (self, CHAN_VOICE, "innocent/icrying.wav", 1, ATTN_NORM);
+		sound(self, CHAN_VOICE, "innocent/icrying.wav", 1, ATTN_NORM);
 	else if (r <= 0.25)
-		sound (self, CHAN_VOICE, "innocent/icrying2.wav", 1, ATTN_NORM);
+		sound(self, CHAN_VOICE, "innocent/icrying2.wav", 1, ATTN_NORM);
 	else if (r <= 0.375)
-		sound (self, CHAN_VOICE, "innocent/idonhme.wav", 1, ATTN_NORM);
+		sound(self, CHAN_VOICE, "innocent/idonhme.wav", 1, ATTN_NORM);
 	else if (r <= 0.5)
-		sound (self, CHAN_VOICE, "innocent/igoaway2.wav", 1, ATTN_NORM);
+		sound(self, CHAN_VOICE, "innocent/igoaway2.wav", 1, ATTN_NORM);
 	else if (r <= 0.625)
-		sound (self, CHAN_VOICE, "innocent/igoaway3.wav", 1, ATTN_NORM);
+		sound(self, CHAN_VOICE, "innocent/igoaway3.wav", 1, ATTN_NORM);
 	else if (r <= 0.75)
-		sound (self, CHAN_VOICE, "innocent/inoplace.wav", 1, ATTN_NORM);
+		sound(self, CHAN_VOICE, "innocent/inoplace.wav", 1, ATTN_NORM);
 	else if (r <= 0.875)
-		sound (self, CHAN_VOICE, "innocent/iplease.wav", 1, ATTN_NORM);
+		sound(self, CHAN_VOICE, "innocent/iplease.wav", 1, ATTN_NORM);
 	else
-		sound (self, CHAN_VOICE, "innocent/sobbing.wav", 1, ATTN_NORM);
+		sound(self, CHAN_VOICE, "innocent/sobbing.wav", 1, ATTN_NORM);
 
 	self.anim_type = DEATH;
 	innocent_animate();
 };
 
-void () innocent_animate =
+/*
+============
+innocent_animate
+
+Animation and frame based code for the Innocent
+============
+*/
+void() innocent_animate =
 {
 	if (self.anim_type == self.last_action)
 	{
@@ -247,22 +254,22 @@ void() monster_innocent =
 	if(monster_check())
 		return;
 
-	precache_model ("models/enemies/innocent/innocent.psk");
-	precache_sound ("innocent/icrying.wav");
-	precache_sound ("innocent/icrying2.wav");
-	precache_sound ("innocent/idonhme.wav");
-	precache_sound ("innocent/igoaway2.wav");
-	precache_sound ("innocent/igoaway3.wav");
-	precache_sound ("innocent/inoplace.wav"); // There's no place like home!
-	precache_sound ("innocent/iplease.wav");
-	precache_sound ("innocent/iscream1.wav"); // Pain
-	precache_sound ("innocent/iscream2.wav"); // Pain
-	precache_sound ("innocent/sobbing.wav");
+	precache_model("models/enemies/innocent/innocent.psk");
+	precache_sound("innocent/icrying.wav");
+	precache_sound("innocent/icrying2.wav");
+	precache_sound("innocent/idonhme.wav");
+	precache_sound("innocent/igoaway2.wav");
+	precache_sound("innocent/igoaway3.wav");
+	precache_sound("innocent/inoplace.wav"); // There's no place like home!
+	precache_sound("innocent/iplease.wav");
+	precache_sound("innocent/iscream1.wav"); // Pain
+	precache_sound("innocent/iscream2.wav"); // Pain
+	precache_sound("innocent/sobbing.wav");
 
 	self.solid = SOLID_SLIDEBOX;
 	self.movetype = MOVETYPE_WALK;
-	setmodel (self, "models/enemies/innocent/innocent.psk");
-	setsize (self, '-6.7 -24.3 -0.2', '14.3 24.3 55.9');
+	setmodel(self, "models/enemies/innocent/innocent.psk");
+	setsize(self, '-6.7 -24.3 -0.2', '14.3 24.3 55.9');
 	self.health = 40;
 	self.resist_acid = 0;
 	self.resist_shock = 0;
@@ -286,5 +293,5 @@ void() monster_innocent =
 	self.touch = monster_stepped_on;
 	self.classname = "monster";
 	self.netname = "monster_innocent";
-	walkmonster_start ();
+	walkmonster_start();
 };

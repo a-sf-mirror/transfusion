@@ -35,162 +35,162 @@ Precache all necessary sounds
 void() PrecacheSounds =
 {
 	// DON'T TOUCH !! - The following sounds are used by the engine code
-	precache_sound ("misc/h2ohit1.wav");     // object entering water
-	precache_sound ("demon/dland2.wav");     // landing thud
+	precache_sound("misc/h2ohit1.wav");     // object entering water
+	precache_sound("demon/dland2.wav");     // landing thud
 
 	// --- A few weapon sounds. Most of them are in weapon spawn functions --- //
 
 	// pitchfork
-	precache_sound ("weapons/pitchfrk/pflesh.wav");
-	//precache_sound ("weapons/pitchfrk/pmetal.wav");
-	precache_sound ("weapons/pitchfrk/pstone.wav");  // Hit a stone
-	//precache_sound ("weapons/pitchfrk/pwood.wav");
+	precache_sound("weapons/pitchfrk/pflesh.wav");
+	//precache_sound("weapons/pitchfrk/pmetal.wav");
+	precache_sound("weapons/pitchfrk/pstone.wav");  // Hit a stone
+	//precache_sound("weapons/pitchfrk/pwood.wav");
 
 	// ----- Player pain sounds ----- //
 
-	precache_sound ("player/pain/play1105.wav");
-	precache_sound ("player/pain/play1106.wav");
-	precache_sound ("player/pain/play1107.wav");
-	precache_sound ("player/pain/play1108.wav");
+	precache_sound("player/pain/play1105.wav");
+	precache_sound("player/pain/play1106.wav");
+	precache_sound("player/pain/play1107.wav");
+	precache_sound("player/pain/play1108.wav");
 
 	// It burns !!!
-	precache_sound ("player/pain/play1118.wav");
-	precache_sound ("player/pain/play1119.wav");
-	precache_sound ("player/pain/play1120.wav");
+	precache_sound("player/pain/play1118.wav");
+	precache_sound("player/pain/play1119.wav");
+	precache_sound("player/pain/play1120.wav");
 
 	// ----- Player songs (when idle for too long) ----- //
 
-	precache_sound ("player/songs/1093.wav");
-	precache_sound ("player/songs/1094.wav");
-	precache_sound ("player/songs/1095.wav");
-	precache_sound ("player/songs/1097.wav");
-	precache_sound ("player/songs/vo3011.wav");
-	precache_sound ("player/songs/vo3024.wav");
-	precache_sound ("player/songs/vo3026.wav");
-	precache_sound ("player/songs/vo3030.wav");
-	precache_sound ("player/songs/vo3033.wav");
-	precache_sound ("player/songs/vo3034.wav");
-	precache_sound ("player/songs/vo3035.wav");
-	precache_sound ("player/songs/vo3039.wav");
+	precache_sound("player/songs/1093.wav");
+	precache_sound("player/songs/1094.wav");
+	precache_sound("player/songs/1095.wav");
+	precache_sound("player/songs/1097.wav");
+	precache_sound("player/songs/vo3011.wav");
+	precache_sound("player/songs/vo3024.wav");
+	precache_sound("player/songs/vo3026.wav");
+	precache_sound("player/songs/vo3030.wav");
+	precache_sound("player/songs/vo3033.wav");
+	precache_sound("player/songs/vo3034.wav");
+	precache_sound("player/songs/vo3035.wav");
+	precache_sound("player/songs/vo3039.wav");
 
 	// ----- The Voice ----- //
 
-	precache_sound ("thevoice/vo1.wav");  // Let the bloodbath begins !
-	precache_sound ("thevoice/vo2.wav");
-	precache_sound ("thevoice/vo5.wav");
-	precache_sound ("thevoice/splatt.wav");
+	precache_sound("thevoice/vo1.wav");  // Let the bloodbath begins !
+	precache_sound("thevoice/vo2.wav");
+	precache_sound("thevoice/vo5.wav");
+	precache_sound("thevoice/splatt.wav");
 
 	// Obituary sounds
-	precache_sound ("thevoice/boned.wav");
-	precache_sound ("thevoice/castra.wav");
-	precache_sound ("thevoice/creamed.wav");
-	precache_sound ("thevoice/decimat.wav");
-	precache_sound ("thevoice/destro.wav");
-	precache_sound ("thevoice/diced.wav");
-	precache_sound ("thevoice/disembo.wav");
-	precache_sound ("thevoice/flatte.wav");
-	precache_sound ("thevoice/justice.wav");
-	precache_sound ("thevoice/killed.wav");
-	precache_sound ("thevoice/madness.wav");
-	precache_sound ("thevoice/massacr.wav");
-	precache_sound ("thevoice/mincmeat.wav");
-	precache_sound ("thevoice/mutila.wav");
-	precache_sound ("thevoice/reamed.wav");
-	precache_sound ("thevoice/ripped.wav");
-	precache_sound ("thevoice/slaught.wav");
-	precache_sound ("thevoice/sliced.wav");
-	precache_sound ("thevoice/smashed.wav");
-	precache_sound ("thevoice/sodomiz.wav");
-	precache_sound ("thevoice/throttl.wav");
-	precache_sound ("thevoice/wasted.wav");
-	precache_sound ("thevoice/vo10.wav");
-	precache_sound ("thevoice/vo12.wav");  // Population control
-	precache_sound ("thevoice/vo13.wav");  // Unassisted death
-	precache_sound ("thevoice/vo14.wav");
-	precache_sound ("thevoice/vo15.wav");  // Finish him
-	precache_sound ("thevoice/vo16.wav");  // Darwin Award
-	precache_sound ("thevoice/vo19.wav");
-	precache_sound ("thevoice/vo20.wav");
-	precache_sound ("thevoice/vo21.wav");
-	precache_sound ("thevoice/vo22.wav");
-	precache_sound ("thevoice/vo23.wav");
-	precache_sound ("thevoice/vo24.wav");
-	precache_sound ("thevoice/vo25.wav");
-	precache_sound ("thevoice/vo26.wav");
-	precache_sound ("thevoice/vo27.wav");
-	precache_sound ("thevoice/vo28.wav");
-	precache_sound ("thevoice/vo29.wav");
-	precache_sound ("thevoice/vo30.wav");
-	precache_sound ("thevoice/vo31.wav");
-	precache_sound ("thevoice/vo32.wav");
-	precache_sound ("thevoice/vo33.wav");
-	precache_sound ("thevoice/vo34.wav");
-	precache_sound ("thevoice/vo35.wav");
-	precache_sound ("thevoice/vo36.wav");
-	precache_sound ("thevoice/vo38.wav");
-	precache_sound ("thevoice/vo39.wav");
-	precache_sound ("thevoice/vo40.wav");
-	precache_sound ("thevoice/vo41.wav");
-	precache_sound ("thevoice/vo42.wav");
-	precache_sound ("thevoice/vo43.wav");
-	precache_sound ("thevoice/vo44.wav");
-	precache_sound ("thevoice/vo7.wav");
-	precache_sound ("thevoice/vo8.wav");  // Hamburger
-	precache_sound ("thevoice/vo9.wav");
+	precache_sound("thevoice/boned.wav");
+	precache_sound("thevoice/castra.wav");
+	precache_sound("thevoice/creamed.wav");
+	precache_sound("thevoice/decimat.wav");
+	precache_sound("thevoice/destro.wav");
+	precache_sound("thevoice/diced.wav");
+	precache_sound("thevoice/disembo.wav");
+	precache_sound("thevoice/flatte.wav");
+	precache_sound("thevoice/justice.wav");
+	precache_sound("thevoice/killed.wav");
+	precache_sound("thevoice/madness.wav");
+	precache_sound("thevoice/massacr.wav");
+	precache_sound("thevoice/mincmeat.wav");
+	precache_sound("thevoice/mutila.wav");
+	precache_sound("thevoice/reamed.wav");
+	precache_sound("thevoice/ripped.wav");
+	precache_sound("thevoice/slaught.wav");
+	precache_sound("thevoice/sliced.wav");
+	precache_sound("thevoice/smashed.wav");
+	precache_sound("thevoice/sodomiz.wav");
+	precache_sound("thevoice/throttl.wav");
+	precache_sound("thevoice/wasted.wav");
+	precache_sound("thevoice/vo10.wav");
+	precache_sound("thevoice/vo12.wav");  // Population control
+	precache_sound("thevoice/vo13.wav");  // Unassisted death
+	precache_sound("thevoice/vo14.wav");
+	precache_sound("thevoice/vo15.wav");  // Finish him
+	precache_sound("thevoice/vo16.wav");  // Darwin Award
+	precache_sound("thevoice/vo19.wav");
+	precache_sound("thevoice/vo20.wav");
+	precache_sound("thevoice/vo21.wav");
+	precache_sound("thevoice/vo22.wav");
+	precache_sound("thevoice/vo23.wav");
+	precache_sound("thevoice/vo24.wav");
+	precache_sound("thevoice/vo25.wav");
+	precache_sound("thevoice/vo26.wav");
+	precache_sound("thevoice/vo27.wav");
+	precache_sound("thevoice/vo28.wav");
+	precache_sound("thevoice/vo29.wav");
+	precache_sound("thevoice/vo30.wav");
+	precache_sound("thevoice/vo31.wav");
+	precache_sound("thevoice/vo32.wav");
+	precache_sound("thevoice/vo33.wav");
+	precache_sound("thevoice/vo34.wav");
+	precache_sound("thevoice/vo35.wav");
+	precache_sound("thevoice/vo36.wav");
+	precache_sound("thevoice/vo38.wav");
+	precache_sound("thevoice/vo39.wav");
+	precache_sound("thevoice/vo40.wav");
+	precache_sound("thevoice/vo41.wav");
+	precache_sound("thevoice/vo42.wav");
+	precache_sound("thevoice/vo43.wav");
+	precache_sound("thevoice/vo44.wav");
+	precache_sound("thevoice/vo7.wav");
+	precache_sound("thevoice/vo8.wav");  // Hamburger
+	precache_sound("thevoice/vo9.wav");
 
 	// ----- Various game sounds ----- //
 
 	// Fire
-	precache_sound ("weapons/napalm/burn.wav");  // burning on lava
+	precache_sound("weapons/napalm/burn.wav");  // burning on lava
 
 	// Death and gib sounds
-	precache_sound ("firepod/fpodcol2.wav");  // telefragged player
-	precache_sound ("misc/gibsq.wav");        // used when gibbing a corpse/head
-	precache_sound ("player/die1.wav");
-	precache_sound ("player/die2.wav");
-	precache_sound ("player/die3.wav");
+	precache_sound("firepod/fpodcol2.wav");  // telefragged player
+	precache_sound("misc/gibsq.wav");        // used when gibbing a corpse/head
+	precache_sound("player/die1.wav");
+	precache_sound("player/die2.wav");
+	precache_sound("player/die3.wav");
 
 	// Moving, swimming, jumping, ...
-	precache_sound ("foley/emerge.wav");    // leaving water sound
-	precache_sound ("foley/gasp.wav");      // gasping for air
-	precache_sound ("foley/jump.wav");      // player jump
-	precache_sound ("foley/land.wav");      // player landing
-	precache_sound ("foley/lndwater.wav");  // player jumping into water
-	precache_sound ("foley/punt.wav");      // used by kickable heads
-	precache_sound ("foley/submerge.wav");  // swimming
-	precache_sound ("foley/swim.wav");      // swimming
-	precache_sound ("foley/undchoke.wav");  // drowning pain
-	precache_sound ("player/fall.wav");     // falling large distance scream
+	precache_sound("foley/emerge.wav");    // leaving water sound
+	precache_sound("foley/gasp.wav");      // gasping for air
+	precache_sound("foley/jump.wav");      // player jump
+	precache_sound("foley/land.wav");      // player landing
+	precache_sound("foley/lndwater.wav");  // player jumping into water
+	precache_sound("foley/punt.wav");      // used by kickable heads
+	precache_sound("foley/submerge.wav");  // swimming
+	precache_sound("foley/swim.wav");      // swimming
+	precache_sound("foley/undchoke.wav");  // drowning pain
+	precache_sound("player/fall.wav");     // falling large distance scream
 
 	// Teleport sounds
-	precache_sound ("misc/r_tele1.wav");
-	precache_sound ("misc/r_tele2.wav");
-	precache_sound ("misc/r_tele3.wav");
-	precache_sound ("misc/r_tele4.wav");
-	precache_sound ("misc/r_tele5.wav");
+	precache_sound("misc/r_tele1.wav");
+	precache_sound("misc/r_tele2.wav");
+	precache_sound("misc/r_tele3.wav");
+	precache_sound("misc/r_tele4.wav");
+	precache_sound("misc/r_tele5.wav");
 
 	// Miscellaneous sounds
-	precache_sound ("ambience/bubrise.wav");       // bubble sound
-	precache_sound ("ambience/sizzle.wav");        // smelt on slime
-	precache_sound ("bludbath/reappear.wav");      // item respawn sound
-	precache_sound ("bludbath/message.wav");       // Messages  (TODO: not always used...)
-	precache_sound ("items/ammo.wav");             // ammo pick up
-	precache_sound ("items/pickarmr.wav");         // armor pick up
-	precache_sound ("items/weaponup.wav");         // weapon pick up
-	precache_sound ("misc/moans.wav");             // intermission sound
-	precache_sound ("misc/null.wav");              // null sound (used as a placeholder, and to stop sounds)
-	precache_sound ("player/slimbrn2.wav");
-	precache_sound ("player/taunts/t1010.wav");    // "I live ... again !"
-	precache_sound ("player/taunts/taunt0.wav");   // Player taunts
-	precache_sound ("player/taunts/taunt1.wav");
-	precache_sound ("player/taunts/taunt2.wav");
-	precache_sound ("player/taunts/taunt3.wav");
-	precache_sound ("player/taunts/taunt4.wav");
-	precache_sound ("player/taunts/taunt5.wav");
-	precache_sound ("player/taunts/taunt6.wav");
-	precache_sound ("player/taunts/taunt7.wav");
-	precache_sound ("player/taunts/taunt8.wav");
-	precache_sound ("player/taunts/taunt9.wav");
+	precache_sound("ambience/bubrise.wav");       // bubble sound
+	precache_sound("ambience/sizzle.wav");        // smelt on slime
+	precache_sound("bludbath/reappear.wav");      // item respawn sound
+	precache_sound("bludbath/message.wav");       // Messages  (TODO: not always used...)
+	precache_sound("items/ammo.wav");             // ammo pick up
+	precache_sound("items/pickarmr.wav");         // armor pick up
+	precache_sound("items/weaponup.wav");         // weapon pick up
+	precache_sound("misc/moans.wav");             // intermission sound
+	precache_sound("misc/null.wav");              // null sound(used as a placeholder, and to stop sounds)
+	precache_sound("player/slimbrn2.wav");
+	precache_sound("player/taunts/t1010.wav");    // "I live ... again !"
+	precache_sound("player/taunts/taunt0.wav");   // Player taunts
+	precache_sound("player/taunts/taunt1.wav");
+	precache_sound("player/taunts/taunt2.wav");
+	precache_sound("player/taunts/taunt3.wav");
+	precache_sound("player/taunts/taunt4.wav");
+	precache_sound("player/taunts/taunt5.wav");
+	precache_sound("player/taunts/taunt6.wav");
+	precache_sound("player/taunts/taunt7.wav");
+	precache_sound("player/taunts/taunt8.wav");
+	precache_sound("player/taunts/taunt9.wav");
 };
 
 /*
@@ -202,8 +202,8 @@ Check the availability of a QuakeC extension we absolutely need
 */
 void(string ext) MandatoryExtension =
 {
-	if (!checkextension (ext))
-		error2 ("A mandatory QuakeC extension is missing: ", ext);
+	if (!checkextension(ext))
+		error2("A mandatory QuakeC extension is missing: ", ext);
 };
 
 //=======================
@@ -221,27 +221,27 @@ World Types:
 void() worldspawn =
 {
 	// Check for QC extensions
-	if (!cvar ("pr_checkextension"))
-		error ("QuakeC extensions are not supported by this engine");
-	MandatoryExtension ("DP_EF_BLUE");
-	MandatoryExtension ("DP_EF_RED");
-	MandatoryExtension ("DP_INPUTBUTTONS");
-	MandatoryExtension ("DP_QUAKE3_MODEL");
-	MandatoryExtension ("DP_REGISTERCVAR");
+	if (!cvar("pr_checkextension"))
+		error("QuakeC extensions are not supported by this engine");
+	MandatoryExtension("DP_EF_BLUE");
+	MandatoryExtension("DP_EF_RED");
+	MandatoryExtension("DP_INPUTBUTTONS");
+	MandatoryExtension("DP_QUAKE3_MODEL");
+	MandatoryExtension("DP_REGISTERCVAR");
 
 	// Create our own cvars as soon as possible
-	registercvar ("g_flashyEffects", "0");
-	registercvar ("g_lockTeams", "0");
-	registercvar ("g_warmup", "0");
-	registercvar ("g_weaponStay", "0");
-	registercvar ("sv_cheats", "0");
-	registercvar ("sv_disable", "0");
+	registercvar("g_flashyEffects", "0");
+	registercvar("g_lockTeams", "0");
+	registercvar("g_warmup", "0");
+	registercvar("g_weaponStay", "0");
+	registercvar("sv_cheats", "0");
+	registercvar("sv_disable", "0");
 
 	// For testing:
-	registercvar ("show_damage", "0");
+	registercvar("show_damage", "0");
 
 	// Warmup initialization
-	warmup_done = (! cvar ("g_warmup"));
+	warmup_done = (!cvar("g_warmup"));
 	warmup_endtime = 0;
 	warmup_counttime = 0;
 
@@ -251,14 +251,14 @@ void() worldspawn =
 	available_weapons = IT_PITCHFORK;
 
 	// Save the map index before BotInit has a chance to overwrite it
-	map_cycle = cvar ("saved1");
+	map_cycle = cvar("saved1");
 
 	// Compute the game type
 	if (cvar("coop"))
 	{
 		gametype = GT_COOPERATIVE;
-		cvar_set ("deathmatch", "0");
-		cvar_set ("teamplay", "0");
+		cvar_set("deathmatch", "0");
+		cvar_set("teamplay", "0");
 	}
 	else if (cvar("teamplay"))
 	{
@@ -266,7 +266,7 @@ void() worldspawn =
 			gametype = GT_TEAM_BLOODBATH;
 		else
 			gametype = GT_CAPTURE_THE_FLAG;
-		cvar_set ("coop", "0");
+		cvar_set("coop", "0");
 	}
 	else if (cvar("deathmatch"))
 		gametype = GT_BLOODBATH;
@@ -290,38 +290,38 @@ void() worldspawn =
 		friendlyfire = (cvar("teamplay") == 2);
 
 	// Set gravity
-	cvar_set ("sv_gravity", "800");
+	cvar_set("sv_gravity", "800");
 
 	// Some CTF variables need an initialization
 	team1score = team2score = 0;
 
 	// It's time to precache some sounds...
-	PrecacheSounds ();
+	PrecacheSounds();
 
-	precache_model ("progs/flame.spr");     // Used for people on fire
-	precache_model ("progs/s_oldexp.spr");
-	precache_model ("progs/player.mdl");    // Warning: this model is also referenced by the engine itself
-	precache_model ("models/objects/eyes.md3");
+	precache_model("progs/flame.spr");     // Used for people on fire
+	precache_model("progs/s_oldexp.spr");
+	precache_model("progs/player.mdl");    // Warning: this model is also referenced by the engine itself
+	precache_model("models/objects/eyes.md3");
 
 	// Gibs and other stuff
-	precache_model ("progs/h_player.mdl");
-	precache_model ("models/objects/gib1.md3");
-	precache_model ("models/objects/gib2.md3");
-	precache_model ("models/objects/gib3.md3");
-	precache_model ("models/objects/gib4.md3");
-	precache_model ("models/objects/gib5.md3");
-	precache_model ("models/objects/m_arm.md3");
-	precache_model ("models/objects/m_brain.md3");
-	precache_model ("models/objects/m_chest.md3");
-	precache_model ("models/objects/m_foot.md3");
-	precache_model ("models/objects/m_guts.md3");
-	precache_model ("models/objects/m_leg.md3");
-	precache_model ("models/objects/m_eyeball.md3");
-	precache_model ("models/objects/m_hand.md3");
+	precache_model("progs/h_player.mdl");
+	precache_model("models/objects/gib1.md3");
+	precache_model("models/objects/gib2.md3");
+	precache_model("models/objects/gib3.md3");
+	precache_model("models/objects/gib4.md3");
+	precache_model("models/objects/gib5.md3");
+	precache_model("models/objects/m_arm.md3");
+	precache_model("models/objects/m_brain.md3");
+	precache_model("models/objects/m_chest.md3");
+	precache_model("models/objects/m_foot.md3");
+	precache_model("models/objects/m_guts.md3");
+	precache_model("models/objects/m_leg.md3");
+	precache_model("models/objects/m_eyeball.md3");
+	precache_model("models/objects/m_hand.md3");
 
-	precache_model ("progs/s_explod.spr");  // napalm sprite explosion
+	precache_model("progs/s_explod.spr");  // napalm sprite explosion
 
-	precache_model ("models/weapons/v_pitch.psk");
+	precache_model("models/weapons/v_pitch.psk");
 
 	//
 	// Setup light animation tables. 'a' is total darkness, 'z' is maxbright.
@@ -376,10 +376,10 @@ void() StartFrame =
 	fraglimit = cvar("fraglimit");
 	skill     = cvar("skill");
 
-	World_WarmupCountdown ();
+	World_WarmupCountdown();
 
 #ifndef NO_FRIKBOT
-	BotFrame ();
+	BotFrame();
 #endif
 };
 
@@ -404,7 +404,7 @@ void() World_EndWarmup =
 
 	local entity ent, tempEnt;
 
-	bcenterprint ("Resetting level...\n");
+	bcenterprint("Resetting level...\n");
 	warmup_done = TRUE;
 	warmup_counttime = 0;
 
@@ -413,7 +413,7 @@ void() World_EndWarmup =
 	tempEnt = self;
 
 	// Reset all entities
-	ent = nextent (world);
+	ent = nextent(world);
 	while (ent != world)
 	{
 		// If the entity has a reset function, call it
@@ -423,26 +423,26 @@ void() World_EndWarmup =
 			if (ent.classname != "player")
 			{
 				self = ent;
-				self.reset ();
+				self.reset();
 			}
 		}
-		ent = nextent (ent);
+		ent = nextent(ent);
 	}
 
 	// Respawn all players
-	ent = find (world, classname, "player");
+	ent = find(world, classname, "player");
 	while (ent != world)
 	{
 		self = ent;
-		self.reset ();
-		ent = find (ent, classname, "player");
+		self.reset();
+		ent = find(ent, classname, "player");
 	}
 
 	self = tempEnt;
 
 	// Use this occasion to test if cheats are enabled (the players should know that)
-	if (cvar ("sv_cheats"))
-		bprint ("◊¡“Œ…Œ«∫ Cheats are enabled on this server!!\n");
+	if (cvar("sv_cheats"))
+		bprint("◊¡“Œ…Œ«∫ Cheats are enabled on this server!!\n");
 };
 
 /*
@@ -473,7 +473,7 @@ void() World_WarmupCountdown =
 		if (warmup_counttime <= time)
 		{
 			warmup_counttime = warmup_counttime + 10;
-			bcenterprint ("ææ Waiting for opponents ºº\n");
+			bcenterprint("ææ Waiting for opponents ºº\n");
 		}
 		return;
 	}
@@ -481,7 +481,7 @@ void() World_WarmupCountdown =
 	// If the warmup is over
 	if (warmup_endtime <= time)
 	{
-		World_EndWarmup ();
+		World_EndWarmup();
 		return;
 	}
 
@@ -495,8 +495,8 @@ void() World_WarmupCountdown =
 		else
 			warmup_counttime = warmup_counttime + 5;
 
-		remaining = ftos (rint (warmup_endtime - time));
-		bcenterprint3 ("◊¡“Õ’–∫ ", remaining, " sec\n");  // "WARMUP: ... sec"
+		remaining = ftos(rint(warmup_endtime - time));
+		bcenterprint3("◊¡“Õ’–∫ ", remaining, " sec\n");  // "WARMUP: ... sec"
 	}
 };
 
@@ -517,15 +517,15 @@ void() World_StartWarmup =
 		return;
 
 	// If you must do a warmup, make it last at least 5 secondes
-	warmupduration = cvar ("g_warmup");
+	warmupduration = cvar("g_warmup");
 	if (warmupduration < 5)
 		warmupduration = 5;
 
 	warmup_endtime = time + warmupduration;
-	warmup_counttime = time + warmupduration - (floor (warmupduration / 5) * 5);
+	warmup_counttime = time + warmupduration - (floor(warmupduration / 5) * 5);
 
-	str = ftos (warmupduration);
-	bprint3 ("ææ Warmup started (", str, " sec) ºº\n");
+	str = ftos(warmupduration);
+	bprint3("ææ Warmup started (", str, " sec) ºº\n");
 };
 
 /*
@@ -543,7 +543,7 @@ void() World_StopWarmup =
 
 	warmup_endtime = 0;
 	warmup_counttime = time + 5;  // "waiting for opponents" in 5 sec
-	bprint ("ææ Warmup canceled ºº\n");
+	bprint("ææ Warmup canceled ºº\n");
 };
 
 /*
@@ -564,14 +564,14 @@ void() World_CheckWarmup =
 		return;
 
 	count1 = count2 = 0;
-	ent = find (world, classname, "player");
+	ent = find(world, classname, "player");
 	while (ent != world)
 	{
 		if (ent.team != TEAM_COLOR2)
 			count1 = count1 + 1;
 		else
 			count2 = count2 + 1;
-		ent = find (ent, classname, "player");
+		ent = find(ent, classname, "player");
 	}
 
 	// At least 2 players in BloodBath mode, and at least 1 player in each team for teamplay
@@ -581,9 +581,9 @@ void() World_CheckWarmup =
 		doWarmup = (count1 >= 1 && count2 >= 1);
 
 	if (doWarmup)
-		World_StartWarmup ();
+		World_StartWarmup();
 	else
-		World_StopWarmup ();
+		World_StopWarmup();
 };
 
 /*
@@ -657,11 +657,11 @@ Remove a player's corpse and throw gibs
 void() RandomHumanGibs;
 void() GibPlayerCorpse =
 {
-	RandomHumanGibs ();
+	RandomHumanGibs();
 	KillBurner (self);
-	sound (self, CHAN_ITEM, "misc/gibsq.wav", 1, ATTN_NORM);
+	sound(self, CHAN_ITEM, "misc/gibsq.wav", 1, ATTN_NORM);
 
-	remove (self);
+	remove(self);
 };
 
 /*
@@ -677,7 +677,7 @@ void(entity ent) CloneCorpse =
 	local entity tempEnt;
 
 	// Copy the entity characteristics
-	clone = spawn ();
+	clone = spawn();
 	clone.angles = ent.angles;
 	clone.model = ent.model;
 	clone.modelindex = ent.modelindex;
@@ -690,8 +690,8 @@ void(entity ent) CloneCorpse =
 	clone.scale = ent.scale;
 	clone.classname = "corpse";
 
-	setorigin (clone, ent.origin);
-	setsize (clone, ent.mins, ent.maxs);
+	setorigin(clone, ent.origin);
+	setsize(clone, ent.mins, ent.maxs);
 	tempEnt = self;
 	self = clone;
 
@@ -700,7 +700,7 @@ void(entity ent) CloneCorpse =
 	{
 		self.classname = "head";
 		self.touch = HeadTouch;
-		BecomeCorpse (80, HeadDie);
+		BecomeCorpse(80, HeadDie);
 	}
 	// Corpse will turn into gibs if destroyed
 	else
@@ -716,10 +716,10 @@ void(entity ent) CloneCorpse =
 			minBbox_z = ent.mins_z;
 
 		maxBbox_z = minBbox_z + 5;
-		setsize (self, minBbox, maxBbox);
+		setsize(self, minBbox, maxBbox);
 		self.touch = SUB_SolidTouch;
 
-		BecomeCorpse (100, GibPlayerCorpse);
+		BecomeCorpse(100, GibPlayerCorpse);
 	}
 
 	self = tempEnt;

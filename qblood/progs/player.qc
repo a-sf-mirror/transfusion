@@ -59,12 +59,10 @@ float(void() idleFunction) player_idleWeapon = //nearly deprecated
 			else
 				self.weaponframe = self.weaponframe + 1;
 		}
-		/*else
-			self.weaponframe = 0;*/
 
 		// If there's a pending weapon change
 		if (self.newweapon)
-			W_SwitchToWeapon (self.newweapon);
+			W_SwitchToWeapon(self.newweapon);
 		else
 			self.player_state = PS_IDLE;
 	}
@@ -74,7 +72,7 @@ float(void() idleFunction) player_idleWeapon = //nearly deprecated
 
 void() player_stand =
 {
-	if (!player_idleWeapon (player_stand))
+	if (!player_idleWeapon(player_stand))
 		return;
 
 	if (self.velocity_x || self.velocity_y)
@@ -91,20 +89,20 @@ void() player_stand =
 
 void() player_run =
 {
-	if (!player_idleWeapon (player_run))
+	if (!player_idleWeapon(player_run))
 		return;
 
 	if (!self.velocity_x && !self.velocity_y)
 	{
-		player_stand ();
+		player_stand();
 		return;
 	}
 
 	if (self.weapon == IT_PITCHFORK)
 	{
-		if (self.frame >= $pitchrun6 || self.frame < $pitchrun1)
+		if (self.frame >= PLAYER_PITCH_RUN_END || self.frame < PLAYER_PITCH_RUN_START)
 		{
-			self.frame = $pitchrun1;
+			self.frame = PLAYER_PITCH_RUN_START;
 			return;
 		}
 	}
@@ -125,7 +123,7 @@ Called at the end of the warmup
 */
 void() Player_Reset =
 {
-	respawn (FALSE);
+	respawn(FALSE);
 };
 
 //============================================================================
@@ -172,24 +170,24 @@ void(entity player, entity attacker) Player_BrinkOfDeath =
 
 	oself = self;
 	self = player;
-	player_bod1 ();
+	player_bod1();
 	self = oself;
 	player.weaponmodel = string_null;
 
 	player.t_length = time + 15;  // the effect will last 15 sec
-	sound (player, CHAN_VOICE, "thevoice/vo15.wav", 1, ATTN_NONE);
-	centerprint (player, "YOU ARE ON THE BRINK OF DEATH!!");
+	sound(player, CHAN_VOICE, "thevoice/vo15.wav", 1, ATTN_NONE);
+	centerprint(player, "YOU ARE ON THE BRINK OF DEATH!!");
 	// If there's a real attacker (not a BOD triggered by cheat code)
 	if (attacker != world)
-		centerprint (attacker, "FINISH HIM!!");
+		centerprint(attacker, "FINISH HIM!!");
 };
 
 void() Player_LiveAgain =
 {
-	sound (self, CHAN_VOICE, "player/taunts/t1010.wav", 1, ATTN_NORM);  // I live ... again!
+	sound(self, CHAN_VOICE, "player/taunts/t1010.wav", 1, ATTN_NORM);  // I live ... again!
 	self.player_state = PS_IDLE;
-	player_run ();
-	W_DrawWeapon (self.weapon);
+	player_run();
+	W_DrawWeapon(self.weapon);
 };
 
 //============================================================================
@@ -208,14 +206,14 @@ float() PainSound =
 	if (self.deathtype == "drowning")
 	{
 		if (random() > 0.5)
-			sound (self, CHAN_VOICE, "ambience/bubrise.wav", 1, ATTN_NORM);
+			sound(self, CHAN_VOICE, "ambience/bubrise.wav", 1, ATTN_NORM);
 		else
-			sound (self, CHAN_VOICE, "foley/undchoke.wav", 1, ATTN_NORM);
+			sound(self, CHAN_VOICE, "foley/undchoke.wav", 1, ATTN_NORM);
 		return TRUE;
 	}
 	if (self.deathtype == "falling")
 	{
-		sound (self, CHAN_VOICE, "player/pain/play1105.wav", 1, ATTN_NORM);
+		sound(self, CHAN_VOICE, "player/pain/play1105.wav", 1, ATTN_NORM);
 		return TRUE;
 	}
 	if (self.deathtype == "fire")
@@ -237,7 +235,7 @@ float() PainSound =
 			self.noise = "player/pain/play1118.wav";
 			self.pain_finished = time + 2.6;
 		}
-		sound (self, CHAN_VOICE, self.noise, 1, ATTN_NORM);
+		sound(self, CHAN_VOICE, self.noise, 1, ATTN_NORM);
 		return TRUE;
 	}
 
@@ -250,7 +248,7 @@ float() PainSound =
 	else
 		self.noise = "player/pain/play1108.wav";
 
-	sound (self, CHAN_VOICE, self.noise, 1, ATTN_NORM);
+	sound(self, CHAN_VOICE, self.noise, 1, ATTN_NORM);
 	return TRUE;
 };
 
@@ -276,12 +274,12 @@ void() player_pain =
 		return;     // eyes don't have pain frames
 
 	// Changed so player only shows pain when player make noise.
-	if (PainSound ())
+	if (PainSound())
 	{
 		if (self.weapon == IT_PITCHFORK)
-			player_axpain1 ();
+			player_axpain1();
 		else
-			player_pain1 ();
+			player_pain1();
 	}
 };
 
@@ -309,11 +307,11 @@ void() DeathSound =
 	// water death sounds
 	if (self.waterlevel == 3)
 	{
-		sound (self, CHAN_VOICE, "ambience/bubrise.wav", 1, ATTN_NONE);
+		sound(self, CHAN_VOICE, "ambience/bubrise.wav", 1, ATTN_NONE);
 		return;
 	}
 
-	rs = rint (random() * 2);
+	rs = rint(random() * 2);
 
 	if (rs == 0)
 		self.noise = "player/die1.wav";
@@ -322,7 +320,7 @@ void() DeathSound =
 	else
 		self.noise = "player/die3.wav";
 
-	sound (self, CHAN_VOICE, self.noise, 1, ATTN_NONE);
+	sound(self, CHAN_VOICE, self.noise, 1, ATTN_NONE);
 	return;
 };
 
@@ -361,9 +359,9 @@ void(string gibname, float dm) ThrowGib =
 
 	new = spawn();
 	new.origin = self.origin;
-	setmodel (new, gibname);
-	setsize (new, '-1 -1 -1', '1 1 1');
-	new.velocity = VelocityForDamage (dm);
+	setmodel(new, gibname);
+	setsize(new, '-1 -1 -1', '1 1 1');
+	new.velocity = VelocityForDamage(dm);
 	new.movetype = MOVETYPE_BOUNCE;
 	new.solid = SOLID_NOT;
 	new.avelocity_x = random()*600;
@@ -388,9 +386,9 @@ Function called when a head "dies"
 */
 void() HeadDie =
 {
-	sound (self, CHAN_ITEM, "misc/gibsq.wav", 1, ATTN_NORM);
-	ThrowGib ("models/objects/m_brain.md3", self.health);
-	remove (self);
+	sound(self, CHAN_ITEM, "misc/gibsq.wav", 1, ATTN_NORM);
+	ThrowGib("models/objects/m_brain.md3", self.health);
+	remove(self);
 };
 
 /*
@@ -415,7 +413,7 @@ void() HeadTouch =
 		if (self.health <= 0)
 		{
 			self.enemy = other;
-			self.th_die ();
+			self.th_die();
 			return;
 		}
 	}
@@ -438,21 +436,21 @@ void(string headmodel, float dm) ThrowHead =
 {
 	self.frame = 0;
 	self.skin = 0;
-	setmodel (self, headmodel);
+	setmodel(self, headmodel);
 
 	if (self.classname == "player")
-		setsize (self, '-10 -13 -3', '12 6 18');
+		setsize(self, '-10 -13 -3', '12 6 18');
 
 	else if (self.netname == "monster_butcher")
-		setsize (self, '-5 12 0', '5 20 9');
+		setsize(self, '-5 12 0', '5 20 9');
 
 	else
-		setsize (self, '0 0 0', '0 0 0');
+		setsize(self, '0 0 0', '0 0 0');
 
 	self.view_ofs = '0 0 8';
 
 	self.movetype = MOVETYPE_BOUNCE;
-	self.velocity = VelocityForDamage (dm);
+	self.velocity = VelocityForDamage(dm);
 	self.avelocity_x = crandom() * 600;
 	self.avelocity_y = crandom() * 600;
 	self.avelocity_z = crandom() * 600;
@@ -487,38 +485,38 @@ void() RandomHumanGibs =
 	local   float   gibs, r;
 
 	// throw torso, and heart
-	if (random () < 0.75)
-		ThrowGib ("models/objects/m_chest.md3", self.health);
-	if (random () < 0.25)
-		ThrowGib ("models/objects/gib3.md3", self.health);
+	if (random() < 0.75)
+		ThrowGib("models/objects/m_chest.md3", self.health);
+	if (random() < 0.25)
+		ThrowGib("models/objects/gib3.md3", self.health);
 
 	// throw eyes
-	r = random ();
+	r = random();
 	if (r > 0.33)
-		ThrowGib ("models/objects/m_eyeball.md3", self.health);
+		ThrowGib("models/objects/m_eyeball.md3", self.health);
 	if (r > 0.66)
-		ThrowGib ("models/objects/m_eyeball.md3", self.health);
+		ThrowGib("models/objects/m_eyeball.md3", self.health);
 
 	// throw guts
-	r = random ();
+	r = random();
 	if (r > 0.33)
-		ThrowGib ("models/objects/m_guts.md3", self.health);
+		ThrowGib("models/objects/m_guts.md3", self.health);
 	if (r > 0.66)
-		ThrowGib ("models/objects/m_guts.md3", self.health);
+		ThrowGib("models/objects/m_guts.md3", self.health);
 
 	// throw arms / hands
 	gibs = 2;
 	while (gibs > 0)
 	{
-		r = random ();
+		r = random();
 		if (r < 0.2)
-			ThrowGib ("models/objects/gib4.md3", self.health);
+			ThrowGib("models/objects/gib4.md3", self.health);
 		else if (r < 0.4)
-			ThrowGib ("models/objects/gib5.md3", self.health);
+			ThrowGib("models/objects/gib5.md3", self.health);
 		else if (r < 0.6)
-			ThrowGib ("models/objects/m_arm.md3", self.health);
+			ThrowGib("models/objects/m_arm.md3", self.health);
 		else if (r < 0.8)
-			ThrowGib ("models/objects/m_hand.md3", self.health);
+			ThrowGib("models/objects/m_hand.md3", self.health);
 		gibs = gibs - 1;
 	}
 
@@ -528,9 +526,9 @@ void() RandomHumanGibs =
 	{
 		r = random();
 		if (r < 0.33)
-			ThrowGib ("models/objects/m_leg.md3", self.health);
+			ThrowGib("models/objects/m_leg.md3", self.health);
 		else if (r < 66)
-			ThrowGib ("models/objects/m_foot.md3", self.health);
+			ThrowGib("models/objects/m_foot.md3", self.health);
 		gibs = gibs - 1;
 	}
 };
@@ -540,10 +538,10 @@ void() GibPlayer =
 	local float rs;
 
 	// Very large blood splat!
-	te_bloodshower (self.origin, self.origin + self.size, 100, 200);
+	te_bloodshower(self.origin, self.origin + self.size, 100, 200);
 
-	ThrowHead ("progs/h_player.mdl", self.health);
-	RandomHumanGibs ();
+	ThrowHead("progs/h_player.mdl", self.health);
+	RandomHumanGibs();
 
 	self.deadflag = DEAD_DEAD;
 
@@ -551,11 +549,11 @@ void() GibPlayer =
 		damage_attacker.classname == "teledeath2" ||
 		damage_attacker.classname == "teledeath3" )
 	{
-		sound (self, CHAN_VOICE, "firepod/fpodcol2.wav", 1, ATTN_NONE);
+		sound(self, CHAN_VOICE, "firepod/fpodcol2.wav", 1, ATTN_NONE);
 		return;
 	}
 
-	rs = rint (random() * 2);
+	rs = rint(random() * 2);
 
 	if (self.deathtype == "falling")
 		self.noise =  "misc/gibsq.wav";
@@ -566,45 +564,45 @@ void() GibPlayer =
 	else
 		self.noise = "player/die3.wav";
 
-	sound (self, CHAN_VOICE, self.noise, 1, ATTN_NONE);
+	sound(self, CHAN_VOICE, self.noise, 1, ATTN_NONE);
 	return;
 };
 
 void() PlayerDie =
 {
-	local   float   i;
 	local   string  s;
 
 	// I may not die alone...
-	W_ActivateRemoteBombs ();
+	ActivateRemoteBombs();
 
 	// Drop any lighted bomb/can
 	if (self.weapon == IT_TNT || self.weapon == IT_SPRAY_CAN)
 	{
-		if (self.player_state == PS_HOLD_FIRE || self.charge)
+		if (self.player_state == PS_HOLD_FIRE || self.weaponentity.charge)
 		{
-			self.charge = 0;
-			Bomb_Fire ();
+			self.weaponentity.charge = 0;
+			Bomb_Fire();
 		}
 	}
 
+	remove(self.weaponentity);
 	self.items = self.items - (self.items & IT_INVISIBILITY);
 
 	if (self.akimbo_finished > 0)
 	{
 		s = ftos(rint(self.akimbo_finished - time));
-		bprint4 (self.netname, " lost a Guns Akimbo with ", s, " seconds remaining\n");
-		Akimbo_Drop (self.akimbo_finished - time);
+		bprint4(self.netname, " lost a Guns Akimbo with ", s, " seconds remaining\n");
+		Akimbo_Drop(self.akimbo_finished - time);
 	}
 
 	if (self.invisible_finished > 0)
 	{
 		s = ftos(rint(self.invisible_finished - time));
-		bprint4 (self.netname, " lost a cloak with ", s, " seconds remaining\n");
-		Invisibility_Drop (self.invisible_finished - time);
+		bprint4(self.netname, " lost a cloak with ", s, " seconds remaining\n");
+		Invisibility_Drop(self.invisible_finished - time);
 	}
 
-	CTF_PlayerDropFlag ();
+	CTF_PlayerDropFlag();
 
 	self.invisible_finished = 0;    // don't die as eyes
 	self.invincible_finished = 0;
@@ -624,7 +622,7 @@ void() PlayerDie =
 	if (self.health < -40)
 	{
 		self.nextthink = -1;
-		GibPlayer ();
+		GibPlayer();
 		return;
 	}
 
@@ -639,32 +637,30 @@ void() PlayerDie =
 		// If the head is removed in the process
 		if (self.health < -10)
 		{
-			local entity player_head;
-
 			// The player entity will be the head, so we must
 			// create a new entity for the corpse
 			player_head = self;
-			self = spawn ();
-			setmodel (self, player_head.model);
-			setorigin (self, player_head.origin);
-			setsize (self, player_head.mins, player_head.maxs);
+			self = spawn();
+			setmodel(self, player_head.model);
+			setorigin(self, player_head.origin);
+			setsize(self, player_head.mins, player_head.maxs);
 			self.angles = player_head.angles;
 			self.frame = player_head.frame;
 			self.skin = player_head.skin;
 			self.colormap = player_head.colormap;
 			self.movetype = player_head.movetype;
 			self.velocity = player_head.velocity;
-			player_bod_die1 ();
+			player_bod_die1();
 
 			self = player_head;
 			self.deadflag = DEAD_DEAD;
-			ThrowHead ("progs/h_player.mdl", self.health);
+			ThrowHead("progs/h_player.mdl", self.health);
 		}
 		else
-			player_bod_dieh1 ();
+			player_bod_dieh1();
 	}
 	else
-		player_die1 ();
+		player_die1();
 };
 
 // used by kill command and disconnect command

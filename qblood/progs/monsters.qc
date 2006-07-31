@@ -53,10 +53,10 @@ void() walkmonster_start_go =
 
 	if (!walkmove(0,0))
 	{
-		bprint (self.classname);
-		bprint (" stuck at: ");
-		bprint (vtos(self.origin));
-		bprint ("\n");		
+		bprint(self.classname);
+		bprint(" stuck at: ");
+		bprint(vtos(self.origin));
+		bprint("\n");		
 	}
 
 	self.takedamage = DAMAGE_AIM;
@@ -75,14 +75,14 @@ void() walkmonster_start_go =
 		self.ideal_yaw = vectoyaw(self.goalentity.origin - self.origin);
 		if (!self.movetarget)
 		{
-			dprint ("Monster can't find target at ");
-			dprint (vtos(self.origin));
-			dprint ("\n");
+			dprint("Monster can't find target at ");
+			dprint(vtos(self.origin));
+			dprint("\n");
 		}
 		// this used to be an objerror
 		if (self.movetarget.classname == "path_corner")
 		{
-			self.th_walk ();
+			self.th_walk();
 		}
 		else
 		{
@@ -90,16 +90,16 @@ void() walkmonster_start_go =
 			if (self.netname == "monster_zombie" && self.spawnposition == ZOMBIE_SPAWN_UNDERGROUND)
 				self.th_hide();
 			else
-				self.th_stand ();
+				self.th_stand();
 		}
 	}
 	else
 	{
 		self.pausetime = 99999999;
 		if (self.netname == "monster_zombie" && self.spawnposition == ZOMBIE_SPAWN_UNDERGROUND)
-			self.th_hide ();
+			self.th_hide();
 		else
-			self.th_stand ();
+			self.th_stand();
 	}
 
 	// spread think times so they don't all happen at same time
@@ -115,35 +115,35 @@ void() walkmonster_start =
 	total_monsters = total_monsters + 1;
 
 	// Needed for random health drop
-	precache_model ("models/items/i_essence.md3");
-	precache_sound ("items/pickheal.wav");
+	precache_model("models/items/i_essence.md3");
+	precache_sound("items/pickheal.wav");
 
 	// Needed for random weapon / ammo drops	
 	if (self.netname == "monster_browncultist")
 	{
-		precache_model ("models/ammo/a_fewshell.md3");		
+		precache_model("models/ammo/a_fewshell.md3");		
 		precache_sawedoff();	 
 	}
 	else if (self.netname == "monster_blackcultist")
 	{
-		precache_model ("models/ammo/a_fewbullet.md3");		
+		precache_model("models/ammo/a_fewbullet.md3");		
 		precache_tommygun();
 	}
 	else if (self.netname == "monster_greencultist")
 	{
-		precache_model ("models/ammo/a_tnt.md3");
+		precache_model("models/ammo/a_tnt.md3");
 		precache_tnt();
 	}
 	else if (self.netname == "monster_bluecultist")
 	{
-		precache_model ("models/ammo/a_battery.md3");
+		precache_model("models/ammo/a_battery.md3");
 		precache_teslacannon();
 	}
 	else if (self.netname == "monster_gargoyle" ||
 		self.netname == "monster_hellhound"||
 		self.netname == "monster_phantasm")
 	{
-		precache_model ("models/items/i_seed.md3");
+		precache_model("models/items/i_seed.md3");
 	}	
 };
 
@@ -162,9 +162,9 @@ void() flymonster_start_go =
 
 	if (!walkmove(0,0))
 	{
-		dprint ("flymonster in wall at: ");
-		dprint (vtos(self.origin));
-		dprint ("\n");
+		dprint("flymonster in wall at: ");
+		dprint(vtos(self.origin));
+		dprint("\n");
 	}
 
 	if (self.target)
@@ -172,25 +172,25 @@ void() flymonster_start_go =
 		self.goalentity = self.movetarget = find(world, targetname, self.target);
 		if (!self.movetarget)
 		{
-			dprint ("Monster can't find target at ");
-			dprint (vtos(self.origin));
-			dprint ("\n");
+			dprint("Monster can't find target at ");
+			dprint(vtos(self.origin));
+			dprint("\n");
 		}
 		// this used to be an objerror
 		if (self.movetarget.classname == "path_corner")
 		{
-			self.th_walk ();
+			self.th_walk();
 		}
 		else
 		{
 			self.pausetime = 99999999;
-			self.th_stand ();
+			self.th_stand();
 		}
 	}
 	else
 	{
 		self.pausetime = 99999999;
-		self.th_stand ();
+		self.th_stand();
 	}
 };
 
@@ -222,18 +222,18 @@ void() swimmonster_start_go =
 		self.goalentity = self.movetarget = find(world, targetname, self.target);
 		if (!self.movetarget)
 		{
-			dprint ("Monster can't find target at ");
-			dprint (vtos(self.origin));
-			dprint ("\n");
+			dprint("Monster can't find target at ");
+			dprint(vtos(self.origin));
+			dprint("\n");
 		}
 		// this used to be an objerror
 		self.ideal_yaw = vectoyaw(self.goalentity.origin - self.origin);
-		self.th_walk ();
+		self.th_walk();
 	}
 	else
 	{
 		self.pausetime = 99999999;
-		self.th_stand ();
+		self.th_stand();
 	}
 
 	// spread think times so they don't all happen at same time
@@ -253,14 +253,14 @@ void() swimmonster_start =
 monster_stepped_on
 For everything that can be stepped on and damaged (i.e. rats, spiders, minicaleb)
 */
-void () monster_stepped_on =
+void() monster_stepped_on =
 {
 	SUB_SolidTouch();
 
 	// If we've gotten here an enemy is touching my bbox.  But is the enemy on TOP of me?
 	if ((self.enemy.absmin_z <= self.absmax_z + 3) && 
 		(self.enemy.absmin_z >= self.absmax_z - 3))		
-		T_Damage (self, self.enemy, self.enemy, 1, DF_PUMMEL, "squashing");		
+		T_Damage(self, self.enemy, self.enemy, 1, DF_PUMMEL, "squashing");		
 	else 
 		return;
 
@@ -268,7 +268,7 @@ void () monster_stepped_on =
 		self.th_pain(self.enemy, 0);
 };
 
-void () monster_drop_key =
+void() monster_drop_key =
 {
 	local entity key;
 
@@ -280,7 +280,7 @@ void () monster_drop_key =
 	key.nextthink = time + 0.1;
 };
 
-float () monster_check =
+float() monster_check =
 {
 	skill     = cvar("skill");
 	if (skill == 1)			//skillbit variable gets the last 5 values
@@ -304,10 +304,11 @@ float () monster_check =
 		(self.spawntype && !(gametype & self.spawntype)) || gametype > 3) //gametype above 3 is Bloodbath
 	{
 		remove(self);
-		return 1;
+		return TRUE;
 	}
 
 	self.netname = "monster";
+	return FALSE;
 };
 
 /*
@@ -318,7 +319,7 @@ drops random item based on monster class
 drops key if monster has key
 
 */
-void () monster_death =
+void() monster_death =
 {
 	local float r;
 	local entity drop_item;
@@ -358,7 +359,7 @@ void () monster_death =
 
 	if (r <= 0.2)
 	{
-		drop_item = spawn ();
+		drop_item = spawn();
 		drop_item.classname = "drop_item";
 		drop_item.owner = self;
 		drop_item.origin = self.origin;
@@ -420,7 +421,7 @@ void () monster_death =
 	}
 };
 
-void () monster_become_corpse =
+void() monster_become_corpse =
 {
 	local vector minBbox, maxBbox;
 
@@ -437,7 +438,7 @@ void () monster_become_corpse =
 
 	maxBbox_z = minBbox_z + 5;
 	self.solid = SOLID_BBOX;
-	setsize (self, minBbox, maxBbox);
+	setsize(self, minBbox, maxBbox);
 	self.touch = SUB_SolidTouch;
 	self.nextthink = time + 30;
 	self.think = FadeAway;
@@ -450,22 +451,22 @@ void () monster_become_corpse =
 	self.takedamage = DAMAGE_AIM;
 };
 
-void () mime_stand1 = [1, mime_stand2 ]{self.nextthink = time + 1;};
-void () mime_stand2 = [2, mime_stand3 ]{self.nextthink = time + 1;};
-void () mime_stand3 = [3, mime_stand4 ]{self.nextthink = time + 1;};
-void () mime_stand4 = [0, mime_stand1 ]{self.nextthink = time + 1;};
+void() mime_stand1 = [1, mime_stand2 ]{self.nextthink = time + 1;};
+void() mime_stand2 = [2, mime_stand3 ]{self.nextthink = time + 1;};
+void() mime_stand3 = [3, mime_stand4 ]{self.nextthink = time + 1;};
+void() mime_stand4 = [0, mime_stand1 ]{self.nextthink = time + 1;};
 
-void () mime_die = 
+void() mime_die = 
 {
 	if (self.sounds == 1)
 	{
 		//localcmd("play player/quips/1081.wav\n"); // I hate mimes!
-		sound (self, CHAN_VOICE, "player/quips/1081.wav", 1, ATTN_NORM); // I hate mines!
+		sound(self, CHAN_VOICE, "player/quips/1081.wav", 1, ATTN_NORM); // I hate mines!
 	}
 	else if (self.sounds == 2)
 	{
 		//localcmd("play player/quips/1082.wav\n"); // Pathetic insects
-		sound (self, CHAN_VOICE, "player/quips/1082.wav", 1, ATTN_NORM); // Pathetic insects
+		sound(self, CHAN_VOICE, "player/quips/1082.wav", 1, ATTN_NORM); // Pathetic insects
 	}
 
 	RandomHumanGibs();
@@ -473,15 +474,15 @@ void () mime_die =
 	remove(self);
 };
 
-void () monster_mime =
+void() monster_mime =
 {
-	precache_model ("mime.spr");
+	precache_model("mime.spr");
 	self.solid = SOLID_SLIDEBOX;
 	self.movetype = MOVETYPE_TOSS;
 	self.takedamage = DAMAGE_AIM;
 	self.flags = self.flags | FL_MONSTER;
-	setmodel (self, "mime.spr");
-	setsize (self, '-10 -10 -30', '10 10 29');
+	setmodel(self, "mime.spr");
+	setsize(self, '-10 -10 -30', '10 10 29');
 	self.health = 50;
 	self.th_die = mime_die;
 	self.max_health = self.health;

@@ -137,7 +137,7 @@ void() UpdateKnockback =
 	}
 };
 
-entity () FindInnocent;
+entity() FindInnocent;
 
 float(float v) anglemod =
 {
@@ -170,21 +170,17 @@ The number of seconds to spend standing or bowing for path_stand or path_bow
 void() movetarget_f =
 {
 	if (!self.targetname)
-	objerror ("monster_movetarget: no targetname");
+	objerror("monster_movetarget: no targetname");
 
 	self.solid = SOLID_TRIGGER;
 	self.touch = t_movetarget;
-	setsize (self, '-8 -8 -8', '8 8 8');
-
+	setsize(self, '-8 -8 -8', '8 8 8');
 };
 
 /*QUAKED path_corner (0.5 0.3 0) (-8 -8 -8) (8 8 8)
 Monsters will continue walking towards the next target corner.
 */
-void() path_corner =
-{
-	movetarget_f ();
-};
+void() path_corner = { movetarget_f(); };
 
 /*
 =============
@@ -208,12 +204,12 @@ void() t_movetarget =
 	self = other;
 	other = temp;
 
-	self.goalentity = self.movetarget = find (world, targetname, other.target);
+	self.goalentity = self.movetarget = find(world, targetname, other.target);
 	self.ideal_yaw = vectoyaw(self.goalentity.origin - self.origin);
 	if (!self.movetarget)
 	{
 		self.pausetime = time + 999999;
-		self.th_stand ();
+		self.th_stand();
 		return;
 	}
 };
@@ -237,7 +233,7 @@ float(entity targ) range =
 	spot1 = self.origin + self.view_ofs;
 	spot2 = targ.origin + targ.view_ofs;
 
-	r = vlen (spot1 - spot2);
+	r = vlen(spot1 - spot2);
 	if (r < 60)  //was 90/500/1000
 		return RANGE_MELEE;
 	if (r < 500)
@@ -257,13 +253,13 @@ visible
 returns 1 if the entity is visible to self, even if not infront ()
 =============
 */
-float (entity targ) visible =
+float(entity targ) visible =
 {
 	local vector    spot1, spot2;
 
 	spot1 = self.origin + self.view_ofs;
 	spot2 = targ.origin + targ.view_ofs;
-	traceline (spot1, spot2, TRUE, self);   // see through other monsters
+	traceline(spot1, spot2, TRUE, self);   // see through other monsters
 
 	if (trace_inopen && trace_inwater)
 		return FALSE;           // sight line crossed contents
@@ -286,11 +282,11 @@ float(entity targ) infront =
 	local vector    vec;
 	local float     dot;
 
-	makevectors (self.angles);
+	makevectors(self.angles);
 	vec = normalize (targ.origin - self.origin);
 	dot = vec * v_forward;
 
-	if ( dot > 0.3)
+	if (dot > 0.3)
 	{
 		return TRUE;
 	}
@@ -326,21 +322,21 @@ void() SightSound =
 	local float rsnd;
 
 	if (self.netname == "monster_butcher")
-		sound (self, CHAN_VOICE, "butcher/fzomspot.wav", 1, ATTN_NORM);
+		sound(self, CHAN_VOICE, "butcher/fzomspot.wav", 1, ATTN_NORM);
 	else if (self.netname == "monster_hellhound")
-		sound (self, CHAN_VOICE, "hellhound/cerbspot.wav", 1, ATTN_NORM);
+		sound(self, CHAN_VOICE, "hellhound/cerbspot.wav", 1, ATTN_NORM);
 	else if (self.netname == "monster_rat")
-		sound (self, CHAN_VOICE, "rat/ratspot.wav", 1, ATTN_NORM);
+		sound(self, CHAN_VOICE, "rat/ratspot.wav", 1, ATTN_NORM);
 	else if (self.netname == "monster_bat")
-		sound (self, CHAN_VOICE, "bat/batspot.wav", 1, ATTN_NORM);
+		sound(self, CHAN_VOICE, "bat/batspot.wav", 1, ATTN_NORM);
 	else if (self.netname == "monster_zombie")
-		sound (self, CHAN_VOICE, "axezombie/azomspot.wav", 1, ATTN_NORM);
+		sound(self, CHAN_VOICE, "axezombie/azomspot.wav", 1, ATTN_NORM);
 	else if (self.netname == "monster_eel")
-		sound (self, CHAN_VOICE, "eel/eelspot.wav", 1, ATTN_NORM);
+		sound(self, CHAN_VOICE, "eel/eelspot.wav", 1, ATTN_NORM);
 	else if (self.netname == "monster_gargoyle")
-		sound (self, CHAN_VOICE, "gargoyle/gargspot.wav", 1, ATTN_NORM);
+		sound(self, CHAN_VOICE, "gargoyle/gargspot.wav", 1, ATTN_NORM);
 	else if (self.netname == "monster_stonegargoyle")
-		sound (self, CHAN_VOICE, "stonegargoyle/sargspot.wav", 1, ATTN_NORM);
+		sound(self, CHAN_VOICE, "stonegargoyle/sargspot.wav", 1, ATTN_NORM);
 	else if (self.netname == "monster_browncultist" ||
 		self.netname == "monster_blackcultist" ||
 		self.netname == "monster_redcultist"   ||
@@ -350,15 +346,15 @@ void() SightSound =
 		rsnd = random();
 
 		if (rsnd <= 0.2)
-			sound (self, CHAN_VOICE, "cultist/cultspt1.wav", 1, ATTN_NORM);
+			sound(self, CHAN_VOICE, "cultist/cultspt1.wav", 1, ATTN_NORM);
 		else if (rsnd <= 0.4)
-			sound (self, CHAN_VOICE, "cultist/cultspt2.wav", 1, ATTN_NORM);
+			sound(self, CHAN_VOICE, "cultist/cultspt2.wav", 1, ATTN_NORM);
 		else if (rsnd <= 0.6)
-			sound (self, CHAN_VOICE, "cultist/cultspt3.wav", 1, ATTN_NORM);
+			sound(self, CHAN_VOICE, "cultist/cultspt3.wav", 1, ATTN_NORM);
 		else if (rsnd <= 0.8)
-			sound (self, CHAN_VOICE, "cultist/cultspt4.wav", 1, ATTN_NORM);
+			sound(self, CHAN_VOICE, "cultist/cultspt4.wav", 1, ATTN_NORM);
 		else
-			sound (self, CHAN_VOICE, "cultist/cultspt5.wav", 1, ATTN_NORM);
+			sound(self, CHAN_VOICE, "cultist/cultspt5.wav", 1, ATTN_NORM);
 	}
 
 	self.voice_finished = time + 2;
@@ -375,13 +371,13 @@ void() FoundTarget =
 	//self.show_hostile = time + 1;       // wake up other monsters
 
 	if (self.pain_finished < time && self.voice_finished < time)// To avoid several sounds at once
-		SightSound ();
+		SightSound();
 
-	HuntTarget ();
+	HuntTarget();
 };
 
 
-entity () FindInnocent =
+entity() FindInnocent =
 {
 	local entity ent;
 
@@ -434,7 +430,7 @@ float() FindTarget =
 	}
 	else
 	{
-		client = checkclient ();
+		client = checkclient();
 
 		if (!client)   // current check entity isn't in PVS
 			client = FindInnocent();
@@ -479,7 +475,7 @@ float() FindTarget =
 		}
 	}
 
-	FoundTarget ();
+	FoundTarget();
 
 	return TRUE;
 };
@@ -488,12 +484,12 @@ float() FindTarget =
 // ----------
 void(float dist) ai_forward =
 {
-	walkmove (self.angles_y, dist);
+	walkmove(self.angles_y, dist);
 };
 
 void(float dist) ai_back =
 {
-	walkmove ( (self.angles_y+180), dist);
+	walkmove((self.angles_y+180), dist);
 };
 // ----------
 
@@ -511,14 +507,12 @@ The monster is walking it's beat
 */
 void() ai_walk =
 {
-	local vector        mtemp;
-
 	// check for noticing a player
-	if (FindTarget ())
+	if (FindTarget())
 		return;
 
 	MoveToEnemy(1);	// 1 means walk
-	//movetogoal (dist);
+	//movetogoal(dist);
 };
 
 
@@ -531,7 +525,7 @@ The monster is staying in one place for a while, with slight angle turns
 */
 void() ai_stand =
 {
-	if (FindTarget ())
+	if (FindTarget())
 	{
 		if (self.netname == "monster_zombie" && self.enemy.health >= 0 && self.spawnposition == ZOMBIE_SPAWN_UNDERGROUND)
 			self.th_arise();
@@ -554,7 +548,7 @@ void() ai_stand =
 
 	if (time > self.pausetime)
 	{
-		self.th_walk ();
+		self.th_walk();
 		return;
 	}
 
@@ -571,10 +565,10 @@ don't move, but turn towards ideal_yaw
 */
 void() ai_turn =
 {
-	if (FindTarget ())
+	if (FindTarget())
 	return;
 
-	ChangeYaw ();
+	ChangeYaw();
 };
 
 //=============================================================================
@@ -631,8 +625,8 @@ float() FacingIdeal =
 float() CheckAnyAttack =
 {
 	if (!enemy_vis)
-		return;
-	return CheckAttack ();
+		return FALSE;
+	return CheckAttack();
 };
 
 
@@ -646,11 +640,11 @@ Turn and close until within an angle to launch a melee attack
 void() ai_run_melee =
 {
 	self.ideal_yaw = enemy_yaw;
-	ChangeYaw ();
+	ChangeYaw();
 
 	if (FacingIdeal())
 	{
-		self.th_melee ();
+		self.th_melee();
 		self.attack_state = AS_STRAIGHT;
 	}
 };
@@ -666,10 +660,10 @@ Turn in place until within an angle to launch a missile attack
 void() ai_run_missile =
 {
 	self.ideal_yaw = enemy_yaw;
-	ChangeYaw ();
+	ChangeYaw();
 	if (FacingIdeal())
 	{
-		self.th_missile ();
+		self.th_missile();
 		self.attack_state = AS_STRAIGHT;
 	}
 };
@@ -690,18 +684,18 @@ void() ai_run_slide =
 	local float ofs;
 
 	self.ideal_yaw = enemy_yaw;
-	ChangeYaw ();
+	ChangeYaw();
 	if (self.lefty)
 	ofs = 90;
 	else
 	ofs = -90;
 
-	if (walkmove (self.ideal_yaw + ofs, movedist))
+	if (walkmove(self.ideal_yaw + ofs, movedist))
 	return;
 
 	self.lefty = 1 - self.lefty;
 
-	walkmove (self.ideal_yaw - ofs, movedist);
+	walkmove(self.ideal_yaw - ofs, movedist);
 	*/
 };
 
@@ -715,10 +709,6 @@ The monster has an enemy it is trying to kill
 */
 void() ai_run =
 {
-	local   vector  delta;
-	local   float   axis;
-	local   float   direct, ang_rint, ang_floor, ang_ceil;
-
 	// see if the enemy is dead
 	if (self.enemy.health <= 0)
 	{
@@ -728,14 +718,14 @@ void() ai_run =
 		if (self.oldenemy.health > 0)
 		{
 			self.enemy = self.oldenemy;
-			HuntTarget ();
+			HuntTarget();
 		}
 		else
 		{
 			if (self.movetarget)
-				self.th_walk ();
+				self.th_walk();
 			else
-				self.th_stand ();
+				self.th_stand();
 			return;
 		}
 	}
@@ -755,7 +745,7 @@ void() ai_run =
 	// look for other coop players
 	if (gametype == GT_COOPERATIVE && self.search_time < time)
 	{
-		if (FindTarget ())
+		if (FindTarget())
 			return;
 	}
 
@@ -765,21 +755,21 @@ void() ai_run =
 
 	if (self.attack_state == AS_MISSILE)
 	{
-		ai_run_missile ();
+		ai_run_missile();
 		return;
 	}
 	if (self.attack_state == AS_MELEE)
 	{
-		ai_run_melee ();
+		ai_run_melee();
 		return;
 	}
 
-	if (CheckAnyAttack ())
+	if (CheckAnyAttack())
 		return;                 // beginning an attack
 
 	if (self.attack_state == AS_SLIDING)
 	{
-		ai_run_slide ();
+		ai_run_slide();
 		return;
 	}
 
@@ -793,7 +783,7 @@ void() ai_run =
 
 // Search a specified radius for monsters/players
 
-float (float dist) ai_search_area =
+float(float dist) ai_search_area =
 {
 	local entity thing;
 
@@ -849,7 +839,7 @@ void(float dist) ai_run_away =
 	}
 
 	// Change the way self is facing
-	ChangeYaw ();
+	ChangeYaw();
 
 	//---------------------------------------------------------------------------
 	// Try to run straight
@@ -862,7 +852,7 @@ void(float dist) ai_run_away =
 	//---------------------------------------------------------------------------    
 };
 
-void (float dist) basic_ai =
+void(float dist) basic_ai =
 {
 	if (self.enemy.classname == "player")
 	self.style = 3;
@@ -878,15 +868,15 @@ void (float dist) basic_ai =
 	}
 
 	if (self.style == 1)
-		ai_stand ();
+		ai_stand();
 	else
 	{
 		if (self.style == 2)
-			ai_walk ();
+			ai_walk();
 		else if (self.style == 3)
 		{
-			ai_run ();
-			ai_face ();
+			ai_run();
+			ai_face();
 		}
 	}
 };

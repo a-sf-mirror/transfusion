@@ -26,6 +26,37 @@ PLAYER MODEL
 ==============================================================================
 */
 
+#define	PLAYER_PITCH_RUN_START			0
+#define	PLAYER_PITCH_RUN_END			5
+#define	PLAYER_RUN_START				6
+#define	PLAYER_RUN_END					11
+#define	PLAYER_PITCH_STAND				12
+#define	PLAYER_STAND					13
+#define	PLAYER_PITCH_PAIN_START			14
+#define	PLAYER_PITCH_PAIN_END			18
+#define	PLAYER_PAIN_START				19
+#define	PLAYER_PAIN_END					23
+#define	PLAYER_DEATH					24
+#define	PLAYER_BOD_FALL_START			25
+#define	PLAYER_BOD_FALL_END				33
+#define	PLAYER_BOD_DEATH_START			34
+#define	PLAYER_BOD_DEATH_END			37
+#define	PLAYER_PITCH_ATTACK_START		38
+#define	PLAYER_PITCH_ATTACK_END			41
+#define	PLAYER_ATTACK_START				42
+#define	PLAYER_ATTACK_END				43
+#define	PLAYER_ATTACK_RUNNING_START		44
+#define	PLAYER_ATTACK_RUNNING_END		49
+#define	PLAYER_PITCH_JUMP_START			50
+#define	PLAYER_PITCH_JUMP_END			53
+#define	PLAYER_JUMP_START				54
+#define	PLAYER_JUMP_END					57
+#define	PLAYER_SWITCH_TO_PITCH_START	58
+#define	PLAYER_SWITCH_TO_PITCH_END		61
+#define	PLAYER_SWITCH_TO_GUN_START		62
+#define	PLAYER_SWITCH_TO_GUN_END		65
+
+
 $modelname player
 
 // Running with pitchfork

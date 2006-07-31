@@ -47,7 +47,7 @@ this notice in its entirety.
 
 */
 
-#include "common.qh"
+#include "../common.qh"
 
 /*
 =========================================
@@ -443,12 +443,12 @@ void() SV_CheckOnGround =
 		self.origin = org;
 	v = org;
 	v_z = self.maxs_z + org_z + 1;
-	traceline (org, v, TRUE, self); 
+	traceline(org, v, TRUE, self); 
 	if ((self.waterlevel == 3) && (self.movetype == MOVETYPE_WALK))
 		self.flags = self.flags - FL_ONGROUND;
 	else if ((trace_plane_normal_z <= 0.7) && (trace_fraction != 1))
 		self.flags = self.flags - FL_ONGROUND;
-        else if (!droptofloor) //was !droptofloor(0,0)
+	else if (!droptofloor()) //was !droptofloor(0,0)
 		self.flags = self.flags - FL_ONGROUND;
 	else if (org_z - self.origin_z < 2)
 		self.flags = self.flags | FL_ONGROUND;
@@ -470,7 +470,7 @@ float(vector dir) botCheckForStep =
 	yaw = vectoyaw(dir); 
 	if(walkmove(yaw, 3))
 	{	
-		if(droptofloor) //was droptofloor(0,0)
+		if(droptofloor()) //was droptofloor(0,0)
 		{	
 			stepdistance = self.origin_z - currentorigin_z;
 			v = self.origin - currentorigin;
@@ -602,7 +602,7 @@ void() SV_FlyMove =
 		}
 	}
 
-	setmodel (self.phys_obj, string_null);
+	setmodel(self.phys_obj, string_null);
 	self.phys_obj.movetype = MOVETYPE_STEP;
 	
 	self.phys_obj.solid = SOLID_TRIGGER;

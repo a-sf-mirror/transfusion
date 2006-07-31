@@ -22,11 +22,11 @@
 //--- Throwing TNT
 
 /*
-void () greencultist_attack1 = [$idle1, greencultist_attack2] {cultist_throw_TNT (); ai_face ();};
-void () greencultist_attack2 = [$idle1, cultist_run] {ai_face ();};
+void() greencultist_attack1 = [$idle1, greencultist_attack2] {cultist_throw_TNT(); ai_face();};
+void() greencultist_attack2 = [$idle1, cultist_run] {ai_face();};
 */
 
-void () greencultist_attack =
+void() greencultist_attack =
 {
 	local vector delta;
 
@@ -37,23 +37,23 @@ void () greencultist_attack =
 
 	delta = (self.enemy.origin - self.origin);
 
-	if (vlen (delta) <= 300)
+	if (vlen(delta) <= 300)
 		ai_back(100);
 	else
 	{
-		//greencultist_attack1 ();    // Throw TNT at enemy
+		//greencultist_attack1();    // Throw TNT at enemy
 		self.anim_type = ATTACK1;
 		cultist_animate();
 	}
 
 };
 
-void () monster_greencultist =
+void() monster_greencultist =
 {
 	// Precache files needed for TNT tossing
-	precache_model ("models/weapons/grenades/gr_tnt.md3");// TNT Projectile
-	precache_sound ("cultist/culttoss.wav");              // TNT toss sound
-	precache_sound ("weapons/r_exp3.wav");                // TNT explosion sound
+	precache_model("models/weapons/grenades/gr_tnt.md3");// TNT Projectile
+	precache_sound("cultist/culttoss.wav");              // TNT toss sound
+	precache_sound("weapons/r_exp3.wav");                // TNT explosion sound
 
 	// Setup all green cultists unique attributes
 	self.skin = CULTIST_GREEN;

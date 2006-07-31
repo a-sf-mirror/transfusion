@@ -38,12 +38,11 @@ void() Napalm_BallTouch;
 #define	NAPALM_AKIMBO_HOLSTER_START	11
 #define	NAPALM_AKIMBO_HOLSTER_END	14
 
-//FIXME: accurate timings
 #define NAPALM_IDLE_TIME			0.1
-#define NAPALM_DRAW_TIME			0.4
-#define NAPALM_FIRE_TIME			0.4
+#define NAPALM_DRAW_TIME			0.3
+#define NAPALM_FIRE_TIME			0.5
 #define	NAPALM_AKIMBO_FIRE_TIME		0.7
-#define NAPALM_HOLSTER_TIME			0.4
+#define NAPALM_HOLSTER_TIME			0.3
 
 //============================================================================
 
@@ -98,8 +97,8 @@ void(entity newball) Napalm_ThrowBouncingBall =
 
 	newball.reset = SUB_Remove;
 
-	setmodel (newball, "models/weapons/objects/naltball.md3");
-	setsize (newball, '0 0 0', '0 0 0');
+	setmodel(newball, "models/weapons/objects/naltball.md3");
+	setsize(newball, '0 0 0', '0 0 0');
 };
 
 /*
@@ -126,27 +125,27 @@ void() T_MissileTouch =
 	if (other.health)
 	{
 		other.deathtype = "missile";
-		BurnDamage (other, self, self.dmg * 0.75, DF_BURN, 10, (self.dmg * 0.25) / 10);
+		BurnDamage(other, self, self.dmg * 0.75, DF_BURN, 10, (self.dmg * 0.25) / 10);
 	}
 
 	// don't do radius damage to "other", because all the damage
 	// was done in the impact
-	BurnRadius (self, 160, self.dmg * 0.75, self.dmg * 0.5, other);
+	BurnRadius(self, 160, self.dmg * 0.75, self.dmg * 0.5, other);
 
 	// Make detonation sound
-	sound (self, CHAN_AUTO, "weapons/napalm/explodcl.wav", 1, ATTN_NORM);
+	sound(self, CHAN_AUTO, "weapons/napalm/explodcl.wav", 1, ATTN_NORM);
 
-	PsychoCaleb (self.owner);
+	PsychoCaleb(self.owner);
 
-	self.origin = self.origin - 8 * normalize (self.velocity);
+	self.origin = self.origin - 8 * normalize(self.velocity);
 
-	WriteByte (MSG_BROADCAST, SVC_TEMPENTITY);
-	WriteByte (MSG_BROADCAST, TE_EXPLOSION);
-	WriteCoord (MSG_BROADCAST, self.origin_x);
-	WriteCoord (MSG_BROADCAST, self.origin_y);
-	WriteCoord (MSG_BROADCAST, self.origin_z);
+	WriteByte(MSG_BROADCAST, SVC_TEMPENTITY);
+	WriteByte(MSG_BROADCAST, TE_EXPLOSION);
+	WriteCoord(MSG_BROADCAST, self.origin_x);
+	WriteCoord(MSG_BROADCAST, self.origin_y);
+	WriteCoord(MSG_BROADCAST, self.origin_z);
 
-	BecomeExplosion ();
+	BecomeExplosion();
 };
 
 /*
@@ -164,27 +163,27 @@ void() Napalm_BallTouch =
 		local vector neworig;
 
 		// "self.angles" allows us to recover the original direction
-		makevectors (self.angles);
+		makevectors(self.angles);
 
-		neworig = self.origin - 8 * normalize (self.velocity);
+		neworig = self.origin - 8 * normalize(self.velocity);
 
-		newmis = spawn ();
-		newmis.cnt = floor (self.cnt / 2);
+		newmis = spawn();
+		newmis.cnt = floor(self.cnt / 2);
 		self.cnt = self.cnt - newmis.cnt;
 		newmis.velocity = v_forward * 300 + v_right * 100;
 		newmis.velocity_z = random() * 150 + 350;
-		Napalm_ThrowBouncingBall (newmis);
-		setorigin (newmis, neworig);
+		Napalm_ThrowBouncingBall(newmis);
+		setorigin(newmis, neworig);
 
-		newball = spawn ();
+		newball = spawn();
 		newball.cnt = self.cnt;
 		newball.velocity = v_forward * 300 - v_right * 100;
 		newball.velocity_z = random() * 150 + 350;
-		Napalm_ThrowBouncingBall (newball);
-		setorigin (newball, neworig);
+		Napalm_ThrowBouncingBall(newball);
+		setorigin(newball, neworig);
 	}
 
-	T_MissileTouch ();
+	T_MissileTouch();
 };
 
 /*
@@ -196,14 +195,14 @@ Shot a napalm ball
 */
 void() Napalm_Fire =
 {
-	sound (self, CHAN_WEAPON, "weapons/napalm/blaster.wav", 1, ATTN_NORM);
+	sound(self, CHAN_WEAPON, "weapons/napalm/blaster.wav", 1, ATTN_NORM);
 
 	self.punchangle_x = -2;
 
-	newmis = spawn ();
+	newmis = spawn();
 
-	makevectors (self.v_angle);
-	newmis.velocity = aim (self, 1000);  // base velocity
+	makevectors(self.v_angle);
+	newmis.velocity = aim(self, 1000);  // base velocity
 
 	if (self.player_state == PS_ALTFIRE)
 	{
@@ -215,7 +214,7 @@ void() Napalm_Fire =
 		self.ammo_rockets = self.ammo_rockets - newmis.cnt;
 		newmis.velocity = newmis.velocity * 400 + '0 0 200';
 
-		Napalm_ThrowBouncingBall (newmis);
+		Napalm_ThrowBouncingBall(newmis);
 	}
 	else
 	{        
@@ -230,10 +229,10 @@ void() Napalm_Fire =
 		self.ammo_rockets = self.ammo_rockets - 1;
 
 		newmis.touch = T_MissileTouch;
-		setmodel (newmis, "models/weapons/objects/napalm.md3");
-		setsize (newmis, '0 0 0', '0 0 0');
+		setmodel(newmis, "models/weapons/objects/napalm.md3");
+		setsize(newmis, '0 0 0', '0 0 0');
 
-		newmis.dmg = 100 + rint (random () * 40);
+		newmis.dmg = 100 + rint(random() * 40);
 
 		// set newmis duration
 		newmis.nextthink = time + 5;
@@ -241,7 +240,7 @@ void() Napalm_Fire =
 		newmis.reset = SUB_Remove;
 	}
 	self.currentammo = self.ammo_rockets;
-	setorigin (newmis, self.origin + v_forward * 8 + '0 0 16');
+	setorigin(newmis, self.origin + self.view_ofs + VEC_WEAPON_OFS + v_forward * 24 + v_right * 3);
 };
 
 /*
@@ -295,7 +294,7 @@ void() Napalm_Draw =
 	self.weaponentity.angles = '0 0 0';
 	self.weaponentity.viewmodelforclient = self;
 
-	Napalm_UpdateView ();
+	Napalm_UpdateView();
 	self.weaponentity.attack_finished = time + NAPALM_DRAW_TIME;
 	self.weaponentity.anim_type = DRAW;
 	napalm_animate();
@@ -344,7 +343,14 @@ void() Napalm_Idle =
 	napalm_animate();
 };
 
-void () napalm_animate =
+/*
+============
+napalm_animate
+
+Animation and frame based code for the Napalmn Launcher
+============
+*/
+void() napalm_animate =
 {
 	if (self.weaponentity.anim_type == self.weaponentity.last_action)
 	{
@@ -402,8 +408,8 @@ void () napalm_animate =
 	{
 		if (self.weaponentity.frame == NAPALM_FIRE_START)
 		{
-			muzzleflash ();
-			Napalm_Fire ();
+			muzzleflash();
+			Napalm_Fire();
 		}
 		else if (self.weaponentity.frame == NAPALM_FIRE_END)
 		{
@@ -415,8 +421,8 @@ void () napalm_animate =
 	{
 		if ((self.weaponentity.frame == NAPALM_AKIMBO_FIRE_START) || (self.weaponentity.frame == NAPALM_AKIMBO_FIRE_START + 2))
 		{
-			muzzleflash ();
-			Napalm_Fire ();
+			muzzleflash();
+			Napalm_Fire();
 		}
 		else if (self.weaponentity.frame == NAPALM_AKIMBO_FIRE_END)
 		{
@@ -432,7 +438,7 @@ void () napalm_animate =
 	else if ((self.weaponentity.frame == self.weaponentity.anim_end) && (self.weaponentity.anim_type == HOLSTER))
 	{
 		remove(self.weaponentity);
-		W_DrawWeapon (self.newweapon);
+		W_DrawWeapon(self.newweapon);
 		return;
 	}
 };

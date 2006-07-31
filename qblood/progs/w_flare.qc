@@ -23,11 +23,6 @@
 void() FlareThink;
 void() flare_animate;
 
-//============================================================================
-// ----- Flaregun model ----- //
-// Normal model
-$modelname v_flare
-
 #define FLARE_IDLE					0
 #define FLARE_DRAW_START			1
 #define FLARE_DRAW_END				4
@@ -45,9 +40,11 @@ $modelname v_flare
 #define FLARE_AKIMBO_HOLSTER_END	24
 
 #define FLARE_IDLE_TIME				0.1
-#define FLARE_DRAW_TIME				0.4
+#define FLARE_DRAW_TIME				0.3
 #define FLARE_FIRE_TIME				1.0
-#define FLARE_HOLSTER_TIME			0.4
+#define FLARE_HOLSTER_TIME			0.3
+
+//============================================================================
 
 /*
 ================
@@ -78,9 +75,9 @@ void() FlareTouch =
 	}
 
 	if (other.takedamage && !(other.flags & FL_MONSTER))
-		BurnDamage (other, self, self.dmg, DF_BURN, self.charge, self.dmgtime);
+		BurnDamage(other, self, self.dmg, DF_BURN, self.charge, self.dmgtime);
 
-	FlareSpark ();   // Throw a few sparks.
+	FlareSpark();   // Throw a few sparks.
 
 	if (other.classname == "player" || (other.flags & FL_MONSTER))
 	{
@@ -96,21 +93,19 @@ void() FlareTouch =
 		FlareThink();
 	}
 	else
-		remove (self);
+		remove(self);
 };
 
-void () FlareThink =
+void() FlareThink =
 {
-	local float percent;
-
 	if (self.weaponentity.attack_finished < time ||  // flare is burnt out
 		self.enemy.health <=0)          // enemy is dead
-		remove (self);
+		remove(self);
 
 	if (!VecInWater(self.origin) && self.enemy.flags & FL_MONSTER)
 	{
 		Ignite(self.enemy, self, DF_BURN, 10, 1);
-		T_Damage (self.enemy, self, self.owner, 1, DF_BURN, "fire");
+		T_Damage(self.enemy, self, self.owner, 1, DF_BURN, "fire");
 	}
 
 	if ((self.enemy.origin - self.origin) != self.v_angle)
@@ -133,9 +128,9 @@ entity(entity attacker, vector spot) NewFlare =
 
 	fire = spawn();
 
-	setmodel (fire, "models/weapons/objects/flare.md3");
-	setsize (fire, '0 0 0', '0 0 0');
-	setorigin (fire, spot);
+	setmodel(fire, "models/weapons/objects/flare.md3");
+	setsize(fire, '0 0 0', '0 0 0');
+	setorigin(fire, spot);
 
 	fire.solid      = SOLID_NOT;
 	fire.takedamage = DAMAGE_NO;
@@ -174,7 +169,7 @@ void() AltFlareTouch =
 		self.dmg = 1;
 		self.charge = 18;
 		self.dmgtime = 5;
-		FlareTouch ();
+		FlareTouch();
 		return;
 	}
 
@@ -185,19 +180,19 @@ void() AltFlareTouch =
 	}
 
 	// Explode!
-	muzzleflash ();
+	muzzleflash();
 
 	// Do the damage.
-	BurnRadius (self, 120, self.dmg, self.cnt, other);
+	BurnRadius(self, 120, self.dmg, self.cnt, other);
 	self.origin = self.origin - 8*normalize(self.velocity);
 	if (other.takedamage)
-		BurnDamage (other, self, self.dmg, DF_BURN, self.cnt, self.dmgtime);
+		BurnDamage(other, self, self.dmg, DF_BURN, self.cnt, self.dmgtime);
 
 	// Make some fire.
 	self.solid = SOLID_NOT;     // So embers can't touch 'self'.
-	PsychoCaleb (self.owner);
-	sound (self, CHAN_AUTO, "weapons/napalm/explodfs.wav", 1, ATTN_NORM);
-	BecomeOldExplosion ();
+	PsychoCaleb(self.owner);
+	sound(self, CHAN_AUTO, "weapons/napalm/explodfs.wav", 1, ATTN_NORM);
+	BecomeOldExplosion();
 };
 
 /*
@@ -213,10 +208,10 @@ void() AltFlareSplit =
 	local   vector  dir, spread;
 	local   float   loop;
 
-	dir = normalize (self.velocity);
-	dir = vectoangles (dir);
+	dir = normalize(self.velocity);
+	dir = vectoangles(dir);
 	dir_x = 0 - dir_x;
-	makevectors (dir);
+	makevectors(dir);
 
 	// Create eight new flares.
 	loop = 8;
@@ -242,7 +237,7 @@ void() AltFlareSplit =
 			spread = '1 0 0';   // This shouldn't happen.
 
 		dir = (v_forward * spread_x) + (v_right * spread_y) + (v_up * spread_z);
-		dir = normalize (dir);
+		dir = normalize(dir);
 
 		fire = NewFlare (self.owner, self.origin);
 		fire.angles     = vectoangles(dir) + '90 0 0';
@@ -260,7 +255,7 @@ void() AltFlareSplit =
 	}
 
 	// Remove the old flare.
-	remove (self);
+	remove(self);
 };
 
 /*
@@ -274,7 +269,7 @@ void(entity attacker, vector org, vector dir, float sped, float damage, float bu
 {
 	local   entity  fire;
 
-	fire = NewFlare (attacker, org);
+	fire = NewFlare(attacker, org);
 	fire.angles     = vectoangles(dir) + '90 0 0';
 	fire.velocity   = dir * sped;
 	fire.touch      = AltFlareTouch;
@@ -299,7 +294,7 @@ void(entity attacker, vector org, vector dir, float sped) FireFlare =
 {
 	local   entity  fire;
 
-	fire = NewFlare (attacker, org);
+	fire = NewFlare(attacker, org);
 	fire.angles     = vectoangles(dir) + '90 0 0';
 	fire.velocity   = dir * sped;
 	fire.touch      = FlareTouch;
@@ -322,12 +317,12 @@ void(float hand) Flare_Fire =
 	local vector dir;
 	local float  mspeed;
 
-	sound (self, CHAN_WEAPON, "weapons/flaregun/flaref.wav", 1, ATTN_NORM);
+	sound(self, CHAN_WEAPON, "weapons/flaregun/flaref.wav", 1, ATTN_NORM);
 
 	self.punchangle_x = -2;
 
 	mspeed = 1000;
-	dir = aim (self, mspeed);
+	dir = aim(self, mspeed);
 
 	// Spawn the flare a little ahead of the player
 	local vector orig;
@@ -335,25 +330,24 @@ void(float hand) Flare_Fire =
 	if (self.items & IT_GUNS_AKIMBO)
 	{
 		if (hand == RIGHT)
-			orig = self.origin + v_forward * 8 + '0 0 16' + v_right * 10 + v_forward * 24;
+			orig = self.origin + self.view_ofs + VEC_WEAPON_OFS + v_forward * 32 + v_right * 10 + v_up * 16;
 		else
-			orig = self.origin + v_forward * 8 + '0 0 16' + v_right * -16 + v_forward * 24;
+			orig = self.origin + self.view_ofs + VEC_WEAPON_OFS + v_forward * 32 + v_right * -16 + v_up * 16;
 	}
 	else
-	{
-		orig = self.origin + v_forward * 8 + '0 0 16' + v_right * 6.25 + v_forward * 24;
-	}
+		orig = self.origin + self.view_ofs + VEC_WEAPON_OFS + v_forward * 32 + v_right * 6.25;
+
 
 	// If we want to (and can) launch alt-flares
 	if (self.player_state == PS_ALTFIRE && self.ammo_flare >= 8)
 	{
 		self.currentammo = self.ammo_flare = self.ammo_flare - 8;
-		FireAltFlares (self, orig, dir, mspeed, 1, 20, 3);
+		FireAltFlares(self, orig, dir, mspeed, 1, 20, 3);
 		return;
 	}
 
 	self.currentammo = self.ammo_flare = self.ammo_flare - 1;
-	FireFlare (self, orig, dir, mspeed);
+	FireFlare(self, orig, dir, mspeed);
 };
 
 /*
@@ -397,7 +391,7 @@ void() Flare_Draw =
 	self.weaponentity.origin = '0 0 0';
 	self.weaponentity.angles = '0 0 0';
 	self.weaponentity.viewmodelforclient = self;
-	Flare_UpdateView ();
+	Flare_UpdateView();
 	self.weaponentity.attack_finished = time + FLARE_DRAW_TIME;
 	self.weaponentity.anim_type = DRAW;
 	flare_animate();
@@ -446,7 +440,14 @@ void() Flare_Idle =
 	flare_animate();
 };
 
-void () flare_animate =
+/*
+============
+flare_animate
+
+Animation and frame based code for the Flare gun
+============
+*/
+void() flare_animate =
 {
 	if (self.weaponentity.anim_type == self.weaponentity.last_action)
 	{
@@ -509,7 +510,7 @@ void () flare_animate =
 		if (self.weaponentity.frame == FLARE_FIRE_START)
 		{
 			muzzleflash();
-			Flare_Fire (RIGHT);
+			Flare_Fire(RIGHT);
 		}
 		if (self.weaponentity.frame == FLARE_FIRE_END)
 		{
@@ -529,13 +530,13 @@ void () flare_animate =
 			self.frame = $attack2;
 		if (self.weaponentity.frame == FLARE_AKIMBO_FIRE_START)
 		{
-			muzzleflash ();
-			Flare_Fire (RIGHT);
+			muzzleflash();
+			Flare_Fire(RIGHT);
 		}			
 		else if (self.weaponentity.frame == FLARE_AKIMBO_FIRE_START + 5)
 		{
-			muzzleflash ();
-			Flare_Fire (LEFT);
+			muzzleflash();
+			Flare_Fire(LEFT);
 		}
 		if (self.weaponentity.frame == FLARE_AKIMBO_FIRE_END)
 		{
@@ -543,7 +544,7 @@ void () flare_animate =
 			// If we don't have enough ammo anymore, drop the guns akimbo
 			if ((self.items & IT_GUNS_AKIMBO) && self.currentammo < 2)
 			{
-				Flare_UpdateView ();
+				Flare_UpdateView();
 				self.weaponentity.frame = FLARE_AKIMBO_FIRE_START;
 			}
 
@@ -562,7 +563,7 @@ void () flare_animate =
 	else if ((self.weaponentity.frame == self.weaponentity.anim_end) && (self.weaponentity.anim_type == HOLSTER))
 	{
 		remove(self.weaponentity);
-		W_DrawWeapon (self.newweapon);
+		W_DrawWeapon(self.newweapon);
 		return;
 	}
 	else if (self.weaponentity.anim_type == IDLE)

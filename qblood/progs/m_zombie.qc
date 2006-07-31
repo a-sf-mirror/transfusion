@@ -58,15 +58,15 @@
 #define ZOMBIE_DEATH2_TIME		1.2
 #define ZOMBIE_EXPLODE_TIME		1.2
 
-void () zombie_animate;
+void() zombie_animate;
 
-void () zombie_fallback =
+void() zombie_fallback =
 {
 	self.anim_type = FALLBACK;
 	zombie_animate();
 };
 
-void () zombie_standup =
+void() zombie_standup =
 {
 	if (self.anim_type == FALLBACK)
 		self.nextthink = time + 1.5;
@@ -74,7 +74,7 @@ void () zombie_standup =
 	self.think = zombie_animate;
 };
 
-void () zombie_arise =
+void() zombie_arise =
 {
 	sound(self, CHAN_VOICE, "axezombie/azomrise.wav", 1, ATTN_NORM);
 	self.anim_type = ARISE;
@@ -82,31 +82,31 @@ void () zombie_arise =
 	zombie_animate();
 };
 
-void () zombie_hide =
+void() zombie_hide =
 {
     self.style = 1;
 	self.anim_type = HIDE;
 	zombie_animate();
 };
 
-void () zombie_stand =
+void() zombie_stand =
 {
-    if (random () < 0.05)
-        sound (self, CHAN_VOICE, "axezombie/azomroam.wav", 1, ATTN_IDLE);
+    if (random() < 0.05)
+        sound(self, CHAN_VOICE, "axezombie/azomroam.wav", 1, ATTN_IDLE);
     self.style = 1;
 	self.anim_type = STAND;
 	zombie_animate();
 };
 
 
-void () zombie_walk =
+void() zombie_walk =
 {
     self.style = 2;
 	self.anim_type = WALK;
 	zombie_animate();
 };
 
-void () zombie_run =
+void() zombie_run =
 {
     self.style = 3;
 	self.anim_type = RUN;
@@ -114,11 +114,11 @@ void () zombie_run =
 };
 
 //--- Decide when to axeAttack an enemy
-void () zombie_attack =
+void() zombie_attack =
 {
     local vector delta;
     delta = (self.enemy.origin - self.origin);
-    if (vlen (delta) <= 60)
+    if (vlen(delta) <= 60)
 	{
 		self.anim_type = ATTACK;
 		zombie_animate();
@@ -140,22 +140,28 @@ void() zombie_axeAttack =
         return;
     //ldmg = (random() + random() + random()) * 8;
 	ldmg = 18;
-    SpawnBlood (self.origin, '0 0 0', ldmg);
-	SpawnBloodSpray (trace_ent, self.origin);
-	sound (self, CHAN_WEAPON, "weapons/pitchfrk/pflesh.wav", 1, ATTN_NORM);
-    T_Damage (self.enemy, self, self, ldmg, DF_STAB, string_null);
+    SpawnBlood(self.origin, '0 0 0', ldmg);
+	SpawnBloodSpray(trace_ent, self.origin);
+	sound(self, CHAN_WEAPON, "weapons/pitchfrk/pflesh.wav", 1, ATTN_NORM);
+    T_Damage(self.enemy, self, self, ldmg, DF_STAB, string_null);
 };
 
 //--- Moan and show pain
-void () zombie_pain =
+void() zombie_pain =
 {
     local float r;
     // don't make multiple pain sounds right after each other
     r = random();
     if (r < 0.5)
-	{sound (self, CHAN_VOICE, "axezombie/azompain.wav", 1, ATTN_NORM); self.pain_finished = (time + 1.17);}
+	{
+		sound(self, CHAN_VOICE, "axezombie/azompain.wav", 1, ATTN_NORM);
+		self.pain_finished = (time + 1.17);
+	}
     else
-	{sound (self, CHAN_VOICE, "axezombie/azommoan.wav", 1, ATTN_NORM); self.pain_finished = (time + 1.48);}
+	{
+		sound(self, CHAN_VOICE, "axezombie/azommoan.wav", 1, ATTN_NORM);
+		self.pain_finished = (time + 1.48);
+	}
 	if (self.health < 50 && r < 0.3)
 	{
 		zombie_fallback();
@@ -167,47 +173,54 @@ void () zombie_pain =
 };
 
 // --- Death sequence
-void () zombie_die =
+void() zombie_die =
 {
     monster_death();
 	if (self.health < -40)
     {
         // Very large blood splat!
-        te_bloodshower (self.origin, self.origin + self.size, 100, 100);
-		sound (self, CHAN_VOICE, "axezombie/azomdie3.wav", 1, ATTN_NORM);
+        te_bloodshower(self.origin, self.origin + self.size, 100, 100);
+		sound(self, CHAN_VOICE, "axezombie/azomdie3.wav", 1, ATTN_NORM);
         RandomHumanGibs();
-        remove (self);
+        remove(self);
         return;
     }
 	if ((self.enemy.weapon == IT_VOODOO_DOLL) && (self.enemy.player_state == PS_ALTFIRE))
 	{
-		setmodel (self, "models/enemies/zombie/zombie_explode.psk");
-		setsize (self,'-7 -21 0', '15 14 59');
+		setmodel(self, "models/enemies/zombie/zombie_explode.psk");
+		setsize(self,'-7 -21 0', '15 14 59');
 		// FIXME: need to add dropped head spawn here as well
 		self.frame = ZOMBIE_EXPLODE_START;
 		self.anim_type = EXPLODE;
 	}
-    else if (random () < 0.75)
+    else if (random() < 0.75)
 	{
 		self.anim_type = DEATH1;
 	}
     else
 	{
-		setmodel (self, "models/enemies/zombie/zombie_headless.psk");
-		setsize (self,'-7 -21 0', '15 14 59');
+		setmodel(self, "models/enemies/zombie/zombie_headless.psk");
+		setsize(self,'-7 -21 0', '15 14 59');
 		// FIXME: need to add dropped head spawn here as well
 		self.frame = ZOMBIE_DEATH2_START;
 		self.anim_type = DEATH2;
 	}
 	if (random() < 0.75)
-		sound (self, CHAN_VOICE, "axezombie/azomdie1.wav", 1, ATTN_NORM);
+		sound(self, CHAN_VOICE, "axezombie/azomdie1.wav", 1, ATTN_NORM);
 	else
-		sound (self, CHAN_VOICE, "axezombie/azomdie2.wav", 1, ATTN_NORM);
+		sound(self, CHAN_VOICE, "axezombie/azomdie2.wav", 1, ATTN_NORM);
 
 	zombie_animate();
 };
 
-void () zombie_animate =
+/*
+============
+zombie_animate
+
+Animation and frame based code for the Zombie
+============
+*/
+void() zombie_animate =
 {
 	if (self.anim_type == self.last_action)
 	{
@@ -325,7 +338,7 @@ void () zombie_animate =
 
 	ai_main();
 	//insert sounds or attack damage here with if statements
-	if (self.frame == ZOMBIE_ATTACK_START + 7) sound (self, CHAN_VOICE, "axezombie/azomswip.wav", 1, ATTN_NORM);
+	if (self.frame == ZOMBIE_ATTACK_START + 7) sound(self, CHAN_VOICE, "axezombie/azomswip.wav", 1, ATTN_NORM);
 	if (self.frame == ZOMBIE_ATTACK_START + 12) zombie_axeAttack();
 	if ((self.anim_type == STAND) || (self.anim_type == HIDE)) ai_stand();
 	else if ((self.anim_type == WALK) || (self.anim_type == RUN)) basic_ai (2);
@@ -337,30 +350,30 @@ void () zombie_animate =
 	Config values here
 */
 
-void () monster_zombie =
+void() monster_zombie =
 {
 	//  Disable for testing
 	if(monster_check())
 		return;
-	precache_model ("models/enemies/zombie/zombie.psk");
-	precache_model ("models/enemies/zombie/zombie_headless.psk");
-	precache_model ("models/enemies/zombie/zombie_head.psk");
-	precache_model ("models/enemies/zombie/zombie_explode.psk");
-	precache_sound ("axezombie/azomdie1.wav");
-	precache_sound ("axezombie/azomdie2.wav");
-	precache_sound ("axezombie/azomdie3.wav");
-	precache_sound ("axezombie/azommoan.wav");
-	precache_sound ("axezombie/azompain.wav");
-	precache_sound ("axezombie/azomrise.wav");
-	precache_sound ("axezombie/azomroam.wav");
-	precache_sound ("axezombie/azomspot.wav");
-	precache_sound ("axezombie/azomstnd.wav");
-	precache_sound ("axezombie/azomswip.wav");
+	precache_model("models/enemies/zombie/zombie.psk");
+	precache_model("models/enemies/zombie/zombie_headless.psk");
+	precache_model("models/enemies/zombie/zombie_head.psk");
+	precache_model("models/enemies/zombie/zombie_explode.psk");
+	precache_sound("axezombie/azomdie1.wav");
+	precache_sound("axezombie/azomdie2.wav");
+	precache_sound("axezombie/azomdie3.wav");
+	precache_sound("axezombie/azommoan.wav");
+	precache_sound("axezombie/azompain.wav");
+	precache_sound("axezombie/azomrise.wav");
+	precache_sound("axezombie/azomroam.wav");
+	precache_sound("axezombie/azomspot.wav");
+	precache_sound("axezombie/azomstnd.wav");
+	precache_sound("axezombie/azomswip.wav");
 	self.solid = SOLID_SLIDEBOX;
 	self.movetype = MOVETYPE_WALK;
-	setmodel (self, "models/enemies/zombie/zombie.psk");
+	setmodel(self, "models/enemies/zombie/zombie.psk");
 	self.frame = 0;
-	setsize (self,'-7 -21 0', '15 14 59');
+	setsize(self,'-7 -21 0', '15 14 59');
 
 	self.health = 50;
 	self.max_health = self.health;
@@ -399,5 +412,5 @@ void () monster_zombie =
 	self.anim_type = HIDE;
 	self.classname = "monster";
 	self.netname = "monster_zombie";
-	walkmonster_start ();
+	walkmonster_start();
 };

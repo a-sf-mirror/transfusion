@@ -30,7 +30,6 @@ void() fork_animate;
 #define FORK_HOLSTER_START	8
 #define FORK_HOLSTER_END	10
 
-// times may need adjusting
 #define FORK_IDLE_TIME		0.1
 #define FORK_DRAW_TIME		0.3
 #define FORK_FIRE_TIME		0.45
@@ -49,9 +48,9 @@ void(entity targ, vector org, float damage) TineHit =
 {
 	if (targ.takedamage)
 	{
-		if (Reflected (targ))
+		if (Reflected(targ))
 		{
-			if (Reflected (self))
+			if (Reflected(self))
 				return;     // Both have reflection, so negate attack.
 
 			// Hit attacker instead.
@@ -62,24 +61,24 @@ void(entity targ, vector org, float damage) TineHit =
 		if (targ.classname == "player" || (targ.flags & FL_MONSTER) ||
 			targ.classname == "corpse" || targ.classname == "head")
 		{
-			SpawnBlood (org, '0 0 0', damage);
-			SpawnBloodSpray (trace_ent, org);
-			sound (self, CHAN_WEAPON, "weapons/pitchfrk/pflesh.wav", 1, ATTN_NORM);
+			SpawnBlood(org, '0 0 0', damage);
+			SpawnBloodSpray(trace_ent, org);
+			sound(self, CHAN_WEAPON, "weapons/pitchfrk/pflesh.wav", 1, ATTN_NORM);
 		}
 		else
-			sound (self, CHAN_WEAPON, "weapons/pitchfrk/pstone.wav", 1, ATTN_NORM);
-		AddMultiDamage (targ, damage);
+			sound(self, CHAN_WEAPON, "weapons/pitchfrk/pstone.wav", 1, ATTN_NORM);
+		AddMultiDamage(targ, damage);
 	}
 	else
 	{
 		// hit wall
-		sound (self, CHAN_WEAPON, "weapons/pitchfrk/pstone.wav", 1, ATTN_NORM);
+		sound(self, CHAN_WEAPON, "weapons/pitchfrk/pstone.wav", 1, ATTN_NORM);
 
-		WriteByte (MSG_BROADCAST, SVC_TEMPENTITY);
-		WriteByte (MSG_BROADCAST, TE_GUNSHOT);
-		WriteCoord (MSG_BROADCAST, org_x);
-		WriteCoord (MSG_BROADCAST, org_y);
-		WriteCoord (MSG_BROADCAST, org_z);
+		WriteByte(MSG_BROADCAST, SVC_TEMPENTITY);
+		WriteByte(MSG_BROADCAST, TE_GUNSHOT);
+		WriteCoord(MSG_BROADCAST, org_x);
+		WriteCoord(MSG_BROADCAST, org_y);
+		WriteCoord(MSG_BROADCAST, org_z);
 	}
 };
 
@@ -94,33 +93,29 @@ void() Fork_Fire =
 {
 	local   vector  source;
 	local   vector  start, end;     // Endpoints per tine.
-	local   vector  vx, vy, vz;     // forward, right, up unit vectors.
 	local   float   damage;         // Damage per tine.
 	local   float   loop;           // Number of tines.
 
-	makevectors (self.v_angle);
-	vx = v_forward;
-	vy = v_right;
-	vz = v_up;
-	source = self.origin + '0 0 16';
+	makevectors(self.v_angle);
+	source = self.origin + self.view_ofs + VEC_WEAPON_OFS + v_up * 3;
 	damage = 17;
 	loop = 4;
 
 	// Tines attacks start at the right, and end at the left.
-	ClearMultiDamage ();
+	ClearMultiDamage();
 	while (loop > 0)
 	{
-		start = source + vy * ((loop - 2) * 4 - 2);
-		end = start + vx * 64;
-		traceline (start, end, FALSE, self);
+		start = source + v_right * ((loop - 2) * 4 - 2);
+		end = start + v_forward * 64;
+		traceline(start, end, FALSE, self);
 		if (trace_fraction < 1)
 		{
-			end = trace_endpos - vx * 4;
-			TineHit (trace_ent, end, damage);
+			end = trace_endpos - v_forward * 4;
+			TineHit(trace_ent, end, damage);
 		}
 		loop = loop - 1;
 	}
-	ApplyMultiDamage (DF_STAB);
+	ApplyMultiDamage(DF_STAB);
 };
 
 /*
@@ -158,7 +153,7 @@ void() Fork_Draw =
 	self.weaponentity.angles = '0 0 0';
 	self.weaponentity.viewmodelforclient = self;
 
-	Fork_UpdateView ();
+	Fork_UpdateView();
 	self.weaponentity.attack_finished = time + FORK_DRAW_TIME;
 	self.weaponentity.anim_type = DRAW;
 	fork_animate();
@@ -199,7 +194,14 @@ void() Fork_Idle =
 	fork_animate();
 };
 
-void () fork_animate =
+/*
+============
+fork_animate
+
+Animation and frame based code for the Pitchfork
+============
+*/
+void() fork_animate =
 {
 	if (self.weaponentity.anim_type == self.weaponentity.last_action)
 	{
@@ -261,7 +263,7 @@ void () fork_animate =
 	else if ((self.weaponentity.frame == self.weaponentity.anim_end) && (self.weaponentity.anim_type == HOLSTER))
 	{
 		remove(self.weaponentity);
-		W_DrawWeapon (self.newweapon);
+		W_DrawWeapon(self.newweapon);
 		return;
 	}
 };

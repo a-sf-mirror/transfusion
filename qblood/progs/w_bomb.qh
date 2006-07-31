@@ -1,0 +1,112 @@
+/*  Copyright (C) 2001-2006  Transfusion Developement Team
+
+    This program is free software; you can redistribute it and/or modify
+    it under the terms of the GNU General Public License as published by
+    the Free Software Foundation; either version 2 of the License, or
+    (at your option) any later version.
+
+    This program is distributed in the hope that it will be useful,
+    but WITHOUT ANY WARRANTY; without even the implied warranty of
+    MERCHANTABILITY or FITNESS FOR A PARTICULAR PURPOSE.  See the
+    GNU General Public License for more details.
+
+    You should have received a copy of the GNU General Public License
+    along with this program; if not, write to the Free Software
+    Foundation, Inc., 59 Temple Place, Suite 330, Boston, MA 02111-1307 USA
+
+    See file, 'COPYING', for details.
+*/
+void() Bomb_Fire;
+void() Bomb_Uncharge;
+void() ShowThrowMeter;
+
+//============================================================================
+// ----- TNT ----- //
+#define	TNT_IDLE_START				0
+#define	TNT_IDLE_END				2
+#define	TNT_DRAW_START				3
+#define	TNT_DRAW_END				10
+#define	TNT_HALF_DRAW_START			11
+#define	TNT_HALF_DRAW_END			13
+#define	TNT_LIGHT_FUSE_START		14
+#define	TNT_LIGHT_FUSE_END			22
+#define	TNT_THROW_START				23
+#define	TNT_THROW_END				29
+#define	TNT_HOLSTER_START			30
+#define	TNT_HOLSTER_END				32
+#define	TNT_HALF_HOLSTER_START		33
+#define	TNT_HALF_HOLSTER_END		35
+
+#define	TNT_IDLE_TIME				0.3
+#define	TNT_DRAW_TIME				0.3
+#define	TNT_LIGHT_FUSE_TIME			0.9
+#define	TNT_THROW_TIME				0.7
+#define	TNT_DROP_TIME				0.2
+#define	TNT_HOLSTER_TIME			0.3
+
+//============================================================================
+// ----- Proximity TNT ----- //
+#define	PROXY_IDLE					0
+#define	PROXY_DRAW_START			1
+#define	PROXY_DRAW_END				3
+#define	PROXY_THROW_START			4
+#define	PROXY_THROW_END				10
+#define	PROXY_HOLSTER_START			11
+#define	PROXY_HOLSTER_END			13
+
+#define	PROXY_IDLE_TIME				0.1
+#define	PROXY_DRAW_TIME				0.3
+#define	PROXY_DROP_TIME				0.2
+#define	PROXY_THROW_TIME			0.7
+#define	PROXY_HOLSTER_TIME			0.3
+
+//============================================================================
+// ----- Remote TNT ----- //
+#define REMOTE_IDLE					0
+#define REMOTE_DRAW_START			1
+#define REMOTE_DRAW_END				3
+#define REMOTE_HALF_DRAW_START		4
+#define REMOTE_HALF_DRAW_END		6
+#define REMOTE_THROW_START			7
+#define REMOTE_THROW_END			13
+#define REMOTE_FIRE_START			14
+#define REMOTE_FIRE_END				16
+#define REMOTE_HOLSTER_START		17
+#define REMOTE_HOLSTER_END			19
+#define REMOTE_HALF_HOLSTER_START	20
+#define	REMOTE_HALF_HOLSTER_END		22
+
+#define	REMOTE_IDLE_TIME			0.1
+#define	REMOTE_DRAW_TIME			0.3
+#define	REMOTE_THROW_TIME			0.7
+#define	REMOTE_DROP_TIME			0.2
+#define	REMOTE_FIRE_TIME			0.3
+#define	REMOTE_HOLSTER_TIME			0.3
+
+//============================================================================
+// ----- Spray Can ----- //
+#define SPRAY_IDLE_START			0
+#define	SPRAY_IDLE_END				2
+#define SPRAY_DRAW_START			3
+#define SPRAY_DRAW_END				10
+#define	SPRAY_HALF_DRAW_START		11
+#define	SPRAY_HALF_DRAW_END			13
+#define SPRAY_LIGHT_FUSE_START		14
+#define SPRAY_LIGHT_FUSE_END		22
+#define	SPRAY_THROW_START			23
+#define	SPRAY_THROW_END				29
+#define SPRAY_HOLSTER_START			30
+#define SPRAY_HOLSTER_END			32
+#define SPRAY_HALF_HOLSTER_START	33
+#define SPRAY_HALF_HOLSTER_END		35
+#define SPRAY_FIRE_START			36
+#define SPRAY_FIRE_END				38
+
+#define SPRAY_IDLE_TIME				0.3
+#define SPRAY_DRAW_TIME				0.3
+#define SPRAY_FIRE_TIME				0.3
+#define SPRAY_HOLDFIRE_TIME			0.2
+#define	SPRAY_DROP_TIME				0.2
+#define	SPRAY_THROW_TIME			0.9
+#define SPRAY_LIGHT_FUSE_TIME		1.0
+#define SPRAY_HOLSTER_TIME			0.3

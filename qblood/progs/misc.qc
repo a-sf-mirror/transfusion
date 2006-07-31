@@ -39,8 +39,8 @@ void() info_notnull =
 // Emit a fire ambient sound
 void() FireAmbient =
 {
-	precache_sound ("ambience/sizzle.ogg");
-	ambientsound (self.origin, "ambience/sizzle.ogg", 0.4, ATTN_STATIC);
+	precache_sound("ambience/sizzle.ogg");
+	ambientsound(self.origin, "ambience/sizzle.ogg", 0.4, ATTN_STATIC);
 };
 
 //============================================================================
@@ -85,10 +85,10 @@ void() light =
 // As "light" + makes steady fluorescent humming sound
 void() light_fluoro =
 {
-	precache_sound ("ambience/amb2.wav");
-	ambientsound (self.origin, "ambience/amb2.wav", 0.5, ATTN_STATIC);
+	precache_sound("ambience/amb2.wav");
+	ambientsound(self.origin, "ambience/amb2.wav", 0.5, ATTN_STATIC);
 
-	light ();
+	light();
 };
 
 // Sparking fluorescent light
@@ -99,31 +99,31 @@ void() light_fluorospark =
 	if (!self.style)
 		self.style = 10;
 
-	precache_sound ("ambience/elecgen2.wav");
-	ambientsound (self.origin, "ambience/elecgen2.wav", 0.5, ATTN_STATIC);
+	precache_sound("ambience/elecgen2.wav");
+	ambientsound(self.origin, "ambience/elecgen2.wav", 0.5, ATTN_STATIC);
 };
 
 // Globe light
 void() light_globe =
 {
-	precache_model ("progs/s_light.spr");
-	setmodel (self, "progs/s_light.spr");
-	makestatic (self);
+	precache_model("progs/s_light.spr");
+	setmodel(self, "progs/s_light.spr");
+	makestatic(self);
 };
 
 // Generic code for the following torches / flames
 void(string flame_model) light_flame_generic =
 {
-	precache_model (flame_model);
-	setmodel (self, flame_model);
+	precache_model(flame_model);
+	setmodel(self, flame_model);
 
-	FireAmbient ();
+	FireAmbient();
 };
 
 // Small wall torch
 void() light_torch_small_walltorch =
 {
-	light_flame_generic ("models/world/torch1.md3");
+	light_flame_generic("models/world/torch1.md3");
 	AttachObject("torch1", self);
 	precache_model("progs/flame2.spr");
 	setmodel(self.attachedobject, "progs/flame2.spr");
@@ -132,16 +132,10 @@ void() light_torch_small_walltorch =
 };
 
 // Large yellow flame
-void() light_flame_large_yellow =
-{
-	light_flame_generic ("progs/flame2.spr");
-};
+void() light_flame_large_yellow = { light_flame_generic("progs/flame2.spr");	};
 
 // Small yellow flame
-void() light_flame_small_yellow =
-{
-	light_flame_generic ("progs/flame.spr");
-};
+void() light_flame_small_yellow = { light_flame_generic("progs/flame.spr");		};
 
 //============================================================================
 void() barrel_reset =
@@ -158,30 +152,31 @@ void() barrel_reset =
 //  explosions can occur without interference from the barrel.
 void() barrel_damage =
 {
+	precache_sound("weapons/napalm/explodfl.wav");
 	local entity tempEnt;
 
 	// If the warmup hasn't been done, don't really destroy it
-	if (! warmup_done)
+	if (!warmup_done)
 	{
 		self.solid = SOLID_NOT;
 		self.model = string_null;
 
 		tempEnt = self;
-		self = spawn ();
+		self = spawn();
 		self.dmg = tempEnt.dmg;
 		self.origin = tempEnt.origin;
 	}
 
-	KillBurner (self);
+	KillBurner(self);
 
-	setorigin (self, self.origin + '0 0 32');
+	setorigin(self, self.origin + '0 0 32');
 
 	if (self.dmg > 0)    // If we only want the flashy effects don't do damahe
-		T_RadiusDamage (self, self, self.dmg, DF_EXPLODE, world, string_null);
+		T_RadiusDamage(self, self, self.dmg, DF_EXPLODE, world, string_null);
 
-	sound (self, CHAN_VOICE, "weapons/napalm/explodfl.wav", 1, ATTN_NORM);
-	particle (self.origin, '0 0 0', 75, 255);
-	BecomeExplosion ();
+	sound(self, CHAN_VOICE, "weapons/napalm/explodfl.wav", 1, ATTN_NORM);
+	particle(self.origin, '0 0 0', 75, 255);
+	BecomeExplosion();
 
 	if (! warmup_done)
 		self = tempEnt;
@@ -201,10 +196,10 @@ void() exploding_barrel =
 
 	self.solid = SOLID_BBOX;
 	self.movetype = MOVETYPE_NONE;
-	precache_model ("models/world/barrel.md3");
-	setmodel (self, "models/world/barrel.md3");
-	setsize (self, '-16 -16 0', '16 16 32');
-	precache_sound ("weapons/napalm/explodfl.wav");
+	precache_model("models/world/barrel.md3");
+	setmodel(self, "models/world/barrel.md3");
+	setsize(self, '-16 -16 0', '16 16 32');
+	precache_sound("weapons/napalm/explodfl.wav");
 	if (!self.dmg)
 		self.dmg = 240;
 	self.health = self.max_health = 20;
@@ -219,9 +214,9 @@ void() exploding_barrel =
 	droptofloor();
 	if (oldz - self.origin_z > 250)
 	{
-		dprint ("item fell out of level at ");
-		dprint (vtos(self.origin));
-		dprint ("\n");
+		dprint("item fell out of level at ");
+		dprint(vtos(self.origin));
+		dprint("\n");
 		remove(self);
 	}
 };
@@ -229,43 +224,43 @@ void() exploding_barrel =
 void() hidden_explosion =
 {
 	if (self.dmg > 0)
-	T_RadiusDamage (self, self.owner, self.dmg, DF_EXPLODE, world, "hidden");
+	T_RadiusDamage(self, self.owner, self.dmg, DF_EXPLODE, world, "hidden");
 
-	sound (self, CHAN_WEAPON, self.noise, 1, ATTN_NORM);
+	sound(self, CHAN_WEAPON, self.noise, 1, ATTN_NORM);
 
 	if (self.style >= 1 && self.style <= 6)
 	{
-		WriteByte (MSG_BROADCAST, SVC_TEMPENTITY);
+		WriteByte(MSG_BROADCAST, SVC_TEMPENTITY);
 		// Use neato opengl explosion splash
 		if (self.style == 1)
-			WriteByte (MSG_BROADCAST, TE_EXPLOSION);
+			WriteByte(MSG_BROADCAST, TE_EXPLOSION);
 		// Pinkish light, then splash
 		else if (self.style == 2)
-			WriteByte (MSG_BROADCAST, TE_TAREXPLOSION);
+			WriteByte(MSG_BROADCAST, TE_TAREXPLOSION);
 		// red circles floating upward
 		else if (self.style == 3)
-			WriteByte (MSG_BROADCAST, TE_LAVASPLASH);
+			WriteByte(MSG_BROADCAST, TE_LAVASPLASH);
 		// white circle
 		else if (self.style == 4)
-			WriteByte (MSG_BROADCAST, TE_TELEPORT);
+			WriteByte(MSG_BROADCAST, TE_TELEPORT);
 		// larger than default explosion
 		else if (self.style == 5)
-			WriteByte (MSG_BROADCAST, TE_TEI_BIGEXPLOSION);
+			WriteByte(MSG_BROADCAST, TE_TEI_BIGEXPLOSION);
 		// large particle based explosion
 		else if (self.style == 6)
-			WriteByte (MSG_BROADCAST, TE_EXPLOSION2);
+			WriteByte(MSG_BROADCAST, TE_EXPLOSION2);
 		// default to explosion
 		else
-			WriteByte (MSG_BROADCAST, TE_EXPLOSION);
+			WriteByte(MSG_BROADCAST, TE_EXPLOSION);
 
-		WriteCoord (MSG_BROADCAST, self.origin_x);
-		WriteCoord (MSG_BROADCAST, self.origin_y);
-		WriteCoord (MSG_BROADCAST, self.origin_z);
+		WriteCoord(MSG_BROADCAST, self.origin_x);
+		WriteCoord(MSG_BROADCAST, self.origin_y);
+		WriteCoord(MSG_BROADCAST, self.origin_z);
 
 		if (self.style == 6)
 		{
-			WriteByte  (MSG_BROADCAST, self.colormap);
-			WriteByte  (MSG_BROADCAST, 3);
+			WriteByte(MSG_BROADCAST, self.colormap);
+			WriteByte(MSG_BROADCAST, 3);
 		}
 
 		remove(self);
@@ -273,7 +268,7 @@ void() hidden_explosion =
 
 	// or use blood sprite explosion
 	else
-		BecomeExplosion ();
+		BecomeExplosion();
 
 	if (self.target)
 		SUB_UseTargets();
@@ -293,6 +288,7 @@ void() hidden_use =
 
 void() hidden_exploder =
 {
+	precache_sound("weapons/napalm/explodfl.wav");
 	self.solid = SOLID_NOT;
 	self.movetype = MOVETYPE_NONE;
 
@@ -301,7 +297,7 @@ void() hidden_exploder =
 	if (!self.colormap)
 		self.colormap = 195;
 
-	precache_sound (self.noise);
+	precache_sound(self.noise);
 	self.use = hidden_use;
 };
 
@@ -336,7 +332,7 @@ void() shake_screen =
 
 };
 
-void () shake_start =
+void() shake_start =
 {
 	local entity shaker;
 	local entity temp;
@@ -370,10 +366,10 @@ void() trap_tommygun_think =
 {
 	local vector aim_vec;
 
-	sound (self, CHAN_WEAPON, "weapons/tommygun/_tom.wav", 1, ATTN_NORM);
+	sound(self, CHAN_WEAPON, "weapons/tommygun/_tom.wav", 1, ATTN_NORM);
 
 	makevectors (self.v_angle);
-	aim_vec = aim (self, 1000);
+	aim_vec = aim(self, 1000);
 	FireBullets (self.origin, aim_vec, 1, 5, '0.05 0.02 0');
 
 	// Continue until we have shot all our bullets
@@ -399,7 +395,7 @@ void() trap_tommygun_use =
 
 void() trap_tommygun =
 {
-	precache_sound ("weapons/tommygun/_tom.wav");
+	precache_sound("weapons/tommygun/_tom.wav");
 
 	self.v_angle = self.angles;
 
@@ -411,16 +407,16 @@ void() trap_flame_think =
 {
 	if (self.t_width < time)
 	{
-		sound (self, CHAN_WEAPON, "weapons/spraycan/sprayfir.wav", 0.5, ATTN_NORM);
+		sound(self, CHAN_WEAPON, "weapons/spraycan/sprayfir.wav", 0.5, ATTN_NORM);
 		self.t_width = time + 2.5;
 	}
 
-	Spray_Fire ();
+	Spray_Fire();
 
 	if (self.ammo_spray)
 		self.nextthink = time + 0.1;
 	else
-		sound (self, CHAN_WEAPON, "misc/null.wav", 0, ATTN_NORM);
+		sound(self, CHAN_WEAPON, "misc/null.wav", 0, ATTN_NORM);
 };
 
 void() trap_flame_use =
@@ -438,13 +434,13 @@ void() trap_flame_use =
 
 void() trap_flame =
 {
-	precache_sound ("weapons/spraycan/sprayfir.wav");
-	precache_model ("progs/sprayfir.spr");
+	precache_sound("weapons/spraycan/sprayfir.wav");
+	precache_model("progs/sprayfir.spr");
 
 	self.v_angle = self.angles;
 
 	// a little hack so it will shot from its origin...
-	makevectors (self.v_angle);
+	makevectors(self.v_angle);
 	self.origin = self.origin - '0 0 10' - v_forward * 50 - v_right * 8;
 
 	self.player_state = PS_FIRE;
@@ -456,7 +452,7 @@ void() trap_flame =
 // ------ Napalm trap ------ //
 void() trap_napalm_think =
 {
-	Napalm_Fire ();
+	Napalm_Fire();
 	self.ammo_rockets = 999;
 	self.nextthink = time + 5;
 };
@@ -474,8 +470,8 @@ void() trap_napalm_use =
 
 void() trap_napalm =
 {
-	precache_sound ("weapons/napalm/blaster.wav");
-	precache_model ("models/weapons/objects/napalm.md3");
+	precache_sound("weapons/napalm/blaster.wav");
+	precache_model("models/weapons/objects/napalm.md3");
 
 	// a little hack so it will shot from its origin...
 	self.origin = self.origin - '0 0 16';
@@ -505,7 +501,7 @@ void() sentry_detect_think =
 
 	// store count of players in .cnt
 	lcnt = 0;
-	ent = findradius (self.origin, 200);
+	ent = findradius(self.origin, 200);
 	while (ent)
 	{
 		if (ent.classname == "player")
@@ -517,7 +513,7 @@ void() sentry_detect_think =
 	// NOTE: there's a mimimum time between each warning (6 sec)
 	if (lcnt > self.cnt && self.ltime < time)
 	{
-		sound (self, CHAN_VOICE, self.noise, 1, ATTN_NORM);
+		sound(self, CHAN_VOICE, self.noise, 1, ATTN_NORM);
 		self.ltime = time + 6;
 	}
 
@@ -532,25 +528,21 @@ void(string soundname) sentry_detect_init =
 	self.noise = soundname;
 
 	// Initialize some stuff
-	precache_sound (self.noise);
+	precache_sound(self.noise);
 	self.nextthink = time + 0.2;  // check every 200 ms
 	self.think = sentry_detect_think;
 };
 
 // Howling sound
-void() sentry_detect_crypt = { sentry_detect_init ("misc/b2_crypt.wav"); };
-
+void() sentry_detect_crypt = { sentry_detect_init("misc/b2_crypt.wav");			};
 // Custom sentry (sound chosen by mapper)
-void() sentry_detect_custom = { sentry_detect_init (self.noise); };
-
+void() sentry_detect_custom = { sentry_detect_init(self.noise);					};
 // Laugh sound
-void() sentry_detect_laugh = { sentry_detect_init ("ambience/laugh.wav"); };
-
+void() sentry_detect_laugh = { sentry_detect_init("ambience/laugh.wav");		};
 // Switch sound
-void() sentry_detect_switch1 = { sentry_detect_init ("locks/switch1.wav"); };
-
+void() sentry_detect_switch1 = { sentry_detect_init("locks/switch1.wav");		};
 // Thunder sound
-void() sentry_detect_thunder = { sentry_detect_init ("ambience/thunder3.wav"); };
+void() sentry_detect_thunder = { sentry_detect_init("ambience/thunder3.wav");	};
 
 /*
 ==============================================================================
@@ -577,13 +569,13 @@ void() func_wall_hit_bottom =
 void() func_wall_go_down =
 {
 	self.state = STATE_DOWN;
-	SUB_CalcMove (self.pos1, self.speed, func_wall_hit_bottom);
+	SUB_CalcMove(self.pos1, self.speed, func_wall_hit_bottom);
 };
 
 void() func_wall_go_up =
 {
 	self.state = STATE_UP;
-	SUB_CalcMove (self.pos2, self.speed, func_wall_hit_top);
+	SUB_CalcMove(self.pos2, self.speed, func_wall_hit_top);
 };
 
 /*QUAKED func_wall (0 .5 .8) ?
@@ -593,7 +585,7 @@ void() func_wall =
 {
 	self.movetype = MOVETYPE_PUSH;  // so it doesn't get pushed by anything
 	self.solid = SOLID_BSP;
-	setmodel (self, self.model);
+	setmodel(self, self.model);
 
 	if (!self.style)
 	{
@@ -602,8 +594,8 @@ void() func_wall =
 	}
 	else // It's automated
 	{
-		SetMovedir ();
-		setorigin (self, self.origin);
+		SetMovedir();
+		setorigin(self, self.origin);
 
 		if (!self.speed)
 			self.speed = 100;
@@ -631,8 +623,8 @@ void() func_illusionary =
 	self.angles = '0 0 0';
 	self.movetype = MOVETYPE_NONE;
 	self.solid = SOLID_NOT;
-	setmodel (self, self.model);
-	makestatic (self);
+	setmodel(self, self.model);
+	makestatic(self);
 };
 
 void() func_transparent =
@@ -669,8 +661,8 @@ void() func_transparent =
 	else
 		self.solid = SOLID_NOT;
 
-	setmodel (self, self.model);
-	makestatic (self);	
+	setmodel(self, self.model);
+	makestatic(self);	
 };
 
 /*
@@ -696,18 +688,18 @@ void() brik_touch =
 		self.nextthink = time + (6 * random()) + 2;
 		return;
 	}
-	if (! self.cnt)
+	if (!self.cnt)
 		return;
 
-	if (self.attack_finished < time && pointcontents (self.origin) > -3)
+	if (self.attack_finished < time && pointcontents(self.origin) > -3)
 	{
 		// bounce sound
 		if (self.noise1) // if noise has been set, sound is enabled so play sounds
 		{
 			if (self.cnt == 1)
-				sound (self, CHAN_AUTO, self.noise1, 1, ATTN_NORM);
+				sound(self, CHAN_AUTO, self.noise1, 1, ATTN_NORM);
 			else
-				sound (self, CHAN_AUTO, self.noise2, 1, ATTN_NORM);
+				sound(self, CHAN_AUTO, self.noise2, 1, ATTN_NORM);
 		}
 
 		self.attack_finished = time + 0.3;
@@ -725,8 +717,8 @@ void(string gibname, float dm) ThrowRubble=
 	new.origin_x = self.absmin_x + (random() * self.size_x);
 	new.origin_y = self.absmin_y + (random() * self.size_y);
 	new.origin_z = self.absmin_z + (random() * self.size_z);
-	setmodel (new, gibname);
-	setsize (new, '0 0 0', '0 0 0');
+	setmodel(new, gibname);
+	setsize(new, '0 0 0', '0 0 0');
 
 	if (sndrnd < 0.25)
 		new.cnt = 1;
@@ -746,7 +738,7 @@ void(string gibname, float dm) ThrowRubble=
 		new.noise1 = self.noise1;  // set noise1 for the rubble
 		new.noise2 = self.noise2;  // set noise2 for the rubble
 	}
-	new.velocity = VelocityForDamage (dm);
+	new.velocity = VelocityForDamage(dm);
 	new.movetype = MOVETYPE_BOUNCE;
 	new.classname = "rubble";
 	new.solid = SOLID_TRIGGER;
@@ -769,7 +761,7 @@ void() wall_reset =
 	else
 		self.solid = SOLID_BBOX;
 
-	if (! (self.spawnflags & 1))
+	if (!(self.spawnflags & 1))
 	{
 		self.takedamage = DAMAGE_AIM;
 		self.health = self.max_health;
@@ -780,10 +772,10 @@ void() wall_reset =
 
 // called when the wall is destroyed.
 // throws gibs (rubble).
-void () wall_killed =
+void() wall_killed =
 {
 	// If the warmup hasn't been done, don't really destroy it
-	if (! warmup_done)
+	if (!warmup_done)
 	{
 		self.solid = SOLID_NOT;
 		self.model = string_null;
@@ -796,16 +788,16 @@ void () wall_killed =
 		sndspot = spawn();
 		sndspot.origin = self.absmin;
 		setorigin(sndspot, sndspot.origin);
-		sound (sndspot, CHAN_AUTO, self.noise, 1, ATTN_NORM);
+		sound(sndspot, CHAN_AUTO, self.noise, 1, ATTN_NORM);
 		remove(sndspot);
 	}
 
-	if (! (self.spawnflags & 16)) // if rubble is not disabled
+	if (!(self.spawnflags & 16)) // if rubble is not disabled
 	{
 		local float nbRubbles;
 
 		// if cnt is not set, use object bbox volume to set it
-		if (! self.cnt)
+		if (!self.cnt)
 			self.cnt = (self.size_x * self.size_y * self.size_z) / 64000;
 		if (self.cnt > 6)
 			self.cnt = 6;
@@ -815,15 +807,15 @@ void () wall_killed =
 		{
 			if (self.skin > 4)
 			{
-				ThrowRubble ("models/objects/glass1.md3", self.health);
-				ThrowRubble ("models/objects/glass2.md3", self.health);
-				ThrowRubble ("models/objects/glass3.md3", self.health);
+				ThrowRubble("models/objects/glass1.md3", self.health);
+				ThrowRubble("models/objects/glass2.md3", self.health);
+				ThrowRubble("models/objects/glass3.md3", self.health);
 			}
 			else
 			{
-				ThrowRubble ("models/objects/rubble1.md3", self.health);
-				ThrowRubble ("models/objects/rubble2.md3", self.health);
-				ThrowRubble ("models/objects/rubble3.md3", self.health);
+				ThrowRubble("models/objects/rubble1.md3", self.health);
+				ThrowRubble("models/objects/rubble2.md3", self.health);
+				ThrowRubble("models/objects/rubble3.md3", self.health);
 			}
 
 			nbRubbles = nbRubbles - 1;
@@ -835,7 +827,7 @@ void () wall_killed =
 
 	// We only remove it if the warmup has been done
 	if (warmup_done)
-		remove (self);
+		remove(self);
 };
 
 void() wall_pain =
@@ -891,30 +883,30 @@ SPAWNFLAGS
 */
 void() exploding_wall =
 {
-	setmodel (self, self.model);
+	setmodel(self, self.model);
 
 	// Save the model name for wall_reset
 	self.mdl = self.model;
 
 	// precache rubble models (two models used since red trails on gibs, grey on other rubble)
-	if (! (self.spawnflags & 16))  // if rubble is not turned off
+	if (!(self.spawnflags & 16))  // if rubble is not turned off
 	{
 		if (self.skin > 4)  // if skin is set to glass, use the glass shards instead - d.turner
 		{
-			precache_model ("models/objects/glass1.md3");
-			precache_model ("models/objects/glass2.md3");
-			precache_model ("models/objects/glass3.md3");			
+			precache_model("models/objects/glass1.md3");
+			precache_model("models/objects/glass2.md3");
+			precache_model("models/objects/glass3.md3");			
 		}
 		else
 		{
-			precache_model ("models/objects/rubble1.md3");
-			precache_model ("models/objects/rubble2.md3");
-			precache_model ("models/objects/rubble3.md3");			
+			precache_model("models/objects/rubble1.md3");
+			precache_model("models/objects/rubble2.md3");
+			precache_model("models/objects/rubble3.md3");			
 		}
 	}
 
 	// if sounds are not turned off
-	if (! (self.spawnflags & 8))
+	if (!(self.spawnflags & 8))
 	{
 		// self.noise  - object breaking
 		// self.noise1 - rubble bounce 1
@@ -969,7 +961,7 @@ void() exploding_wall =
 	else
 	{
 		self.takedamage = DAMAGE_AIM;
-		if (! self.health)
+		if (!self.health)
 			self.health = 15;  // set default health if none set
 	}
 
@@ -995,38 +987,38 @@ void() decal_custom =
 
 	// The model must be set by the mapper
 	if (self.model == "")
-		objerror ("A decal must have a sprite model");
+		objerror("A decal must have a sprite model");
 
 	// Look backward to see if we can stick to a wall nearby
-	makevectors (self.angles);
-	dir = normalize (v_forward) * -100;
-	traceline (self.origin, self.origin + dir, TRUE, world);
+	makevectors(self.angles);
+	dir = normalize(v_forward) * -100;
+	traceline(self.origin, self.origin + dir, TRUE, world);
 
 	// If we can't find any wall behind the decal
 	if (trace_fraction >= 1 || trace_ent.solid != SOLID_BSP)
-		objerror ("Can't attach to a wall");
+		objerror("Can't attach to a wall");
 
 	// Push the decal origin off the surface
-	dir = normalize (trace_plane_normal);
+	dir = normalize(trace_plane_normal);
 	org = trace_endpos + dir;
 
 	// Orient the bullet hole properly
 	// NOTE: due to a bug in the Quake engine, it has to be done that way
-	dirangles = vectoangles ('0 0 0' - dir);
+	dirangles = vectoangles('0 0 0' - dir);
 	dirangles_x = 0 - dirangles_x;
 
 	// Finally, we initialize the entity
-	precache_model (self.model);
-	setmodel (self, self.model);
+	precache_model(self.model);
+	setmodel(self, self.model);
 	self.angles = dirangles;
-	setorigin (self, org);
-	setsize (self, '0 0 0', '0 0 0');
+	setorigin(self, org);
+	setsize(self, '0 0 0', '0 0 0');
 
 	// If the surface may move, we must follow it
 	if (trace_ent != world)
 	{
-		if (!checkextension ("DP_MOVETYPEFOLLOW"))
-			error ("The engine doesn't support the DP_MOVETYPEFOLLOW extension.\n"
+		if (!checkextension("DP_MOVETYPEFOLLOW"))
+			error("The engine doesn't support the DP_MOVETYPEFOLLOW extension.\n"
 			"You can't put decals on non-static walls.\n");
 
 		self.solid = SOLID_NOT;
@@ -1039,20 +1031,20 @@ void() decal_custom =
 		self.v_angle = self.angles - trace_ent.angles;
 	}
 	else
-		makestatic (self);
+		makestatic(self);
 };
 
 //============================================================================
 void() sound_player_use =
 {
 	if (self.noise)
-		sound (self, CHAN_AUTO, self.noise, 1, ATTN_NORM);
+		sound(self, CHAN_AUTO, self.noise, 1, ATTN_NORM);
 };
 
 void() sound_player =
 {
 	if (self.noise)
-		precache_sound (self.noise);
+		precache_sound(self.noise);
 	else
 		remove(self);
 
@@ -1062,128 +1054,128 @@ void() sound_player =
 //============================================================================
 void(string soundname, float volume, float atten) ambient_generic_vol_attn =
 {
-	precache_sound (soundname);
-	ambientsound (self.origin, soundname, volume, atten);
-	remove (self);  // we don't need the entity anymore
+	precache_sound(soundname);
+	ambientsound(self.origin, soundname, volume, atten);
+	remove(self);  // we don't need the entity anymore
 };
 
 // Ambient sounds with custom attenuation
-void(string soundname, float atten) ambient_generic_attn =
-{
-	ambient_generic_vol_attn (soundname, 1, atten);
-};
-
-void() ambient_hrtbt    = { ambient_generic_attn ("ambience/hrtbt.wav", ATTN_NONE);     };
-void() ambient_eriedrne = { ambient_generic_attn ("ambience/eriedrne.wav", ATTN_NONE);  };
+void(string soundname, float atten) ambient_generic_attn = { ambient_generic_vol_attn(soundname, 1, atten);				};
+void() ambient_hrtbt = { ambient_generic_attn("ambience/hrtbt.wav", ATTN_NONE);											};
+void() ambient_eriedrne = {	ambient_generic_attn("ambience/eriedrne.wav", ATTN_NONE);									};
 
 // Ambient sounds with custom volume
-void(string soundname, float volume) ambient_generic_vol =
+void(string soundname, float volume) ambient_generic_vol = { ambient_generic_vol_attn(soundname, volume, ATTN_STATIC);	};
+void() ambient_drip = { ambient_generic_vol("ambience/drip3.wav", 0.5);													};
+void() ambient_sizzle = { ambient_generic_vol("ambience/sizzle.ogg", 0.4);												};
+void() ambient_sizzle1 = { ambient_generic_vol("ambience/sizzle1.ogg", 0.4);											};
+
+void() ambient_sizzle2 =
 {
-	ambient_generic_vol_attn (soundname, volume, ATTN_STATIC);
+	ambient_generic_vol("ambience/sizzle2.ogg", 0.4);
 };
 
-void() ambient_drip     = { ambient_generic_vol ("ambience/drip3.wav", 0.5);    };
-void() ambient_sizzle   = { ambient_generic_vol ("ambience/sizzle.ogg", 0.4);   };
-void() ambient_sizzle1  = { ambient_generic_vol ("ambience/sizzle1.ogg", 0.4);  };
-void() ambient_sizzle2  = { ambient_generic_vol ("ambience/sizzle2.ogg", 0.4);  };
-void() ambient_water1   = { ambient_generic_vol ("ambience/water1.wav", 0.5);   };
+void() ambient_water1 =
+{
+	ambient_generic_vol("ambience/water1.wav", 0.5);
+};
 
 // Ambient sounds with generic parameters
 void(string soundname) ambient_generic =
 {
-	ambient_generic_vol_attn (soundname, 1, ATTN_STATIC);
+	ambient_generic_vol_attn(soundname, 1, ATTN_STATIC);
 };
 
 void() ambient_custom       = {
-	precache_sound (self.noise);
-	ambientsound (self.origin, self.noise, 1, ATTN_STATIC);
+	precache_sound(self.noise);
+	ambientsound(self.origin, self.noise, 1, ATTN_STATIC);
 	makestatic (self);
-};//ambient_generic (self.noise);               };  // Custom entity for mappers
+};//ambient_generic(self.noise);               };  // Custom entity for mappers
 
-void() ambient_1wind        = { ambient_generic ("ambience/1wind.wav");     };
-void() ambient_altair2      = { ambient_generic ("ambience/altair2.wav");   };
-void() ambient_amb10        = { ambient_generic ("ambience/amb10.wav");     };
-void() ambient_amb11        = { ambient_generic ("ambience/amb11.wav");     };
-void() ambient_amb12        = { ambient_generic ("ambience/amb12.wav");     };
-void() ambient_amb13        = { ambient_generic ("ambience/amb13.wav");     };
-void() ambient_amb14        = { ambient_generic ("ambience/amb14.wav");     };
-void() ambient_amb15        = { ambient_generic ("ambience/amb15.wav");     };
-void() ambient_amb16        = { ambient_generic ("ambience/amb16.wav");     };
-void() ambient_amb17        = { ambient_generic ("ambience/amb17.wav");     };
-void() ambient_amb18        = { ambient_generic ("ambience/amb18.wav");     };  // for Winter Wonderland
-void() ambient_amb2         = { ambient_generic ("ambience/amb2.wav");      };
-void() ambient_amb20        = { ambient_generic ("ambience/amb20.wav");     };
-void() ambient_amb21        = { ambient_generic ("ambience/amb21.wav");     };
-void() ambient_amb22        = { ambient_generic ("ambience/amb22.wav");     };
-void() ambient_amb24        = { ambient_generic ("ambience/amb24.wav");     };
-void() ambient_amb25        = { ambient_generic ("ambience/amb25.wav");     };
-void() ambient_amb26        = { ambient_generic ("ambience/amb26.wav");     };
-void() ambient_amb3         = { ambient_generic ("ambience/amb3.wav");      };
-void() ambient_amb4         = { ambient_generic ("ambience/amb4.wav");      };
-void() ambient_amb5         = { ambient_generic ("ambience/amb5.wav");      };
-void() ambient_amb6         = { ambient_generic ("ambience/amb6.wav");      };
-void() ambient_amb7         = { ambient_generic ("ambience/amb7.wav");      };
-void() ambient_amb8         = { ambient_generic ("ambience/amb8.wav");      };
-void() ambient_amb9         = { ambient_generic ("ambience/amb9.wav");      };
-void() ambient_brgloop      = { ambient_generic ("ambience/brgloop.wav");   };
-void() ambient_buzslow2     = { ambient_generic ("ambience/buzslow2.wav");  };
-void() ambient_buzz2        = { ambient_generic ("ambience/buzz2.wav");     };
-void() ambient_chain1       = { ambient_generic ("ambience/chain1.wav");    };
-void() ambient_chain2       = { ambient_generic ("ambience/chain2.wav");    };
-void() ambient_chain4       = { ambient_generic ("ambience/chain4.wav");    };
-void() ambient_chain5       = { ambient_generic ("ambience/chain5.wav");    };
-void() ambient_chain6       = { ambient_generic ("ambience/chain6.wav");    };
-void() ambient_chant1lp     = { ambient_generic ("ambience/chant1lp.wav");  };
-void() ambient_chant2lp     = { ambient_generic ("ambience/chant2lp.wav");  };
-void() ambient_chant3lp     = { ambient_generic ("ambience/chant3lp.wav");  };
-void() ambient_clock        = { ambient_generic ("ambience/clock.wav");     };
-void() ambient_comp_hum     = { ambient_generic ("ambience/fanlup2.wav");   };
-void() ambient_cryptlp      = { ambient_generic ("ambience/cryptlp.wav");   };
-void() ambient_dialtone     = { ambient_generic ("ambience/dialtone.wav");  };
-void() ambient_drip1        = { ambient_generic ("ambience/drip1.wav");     };
-void() ambient_drip2        = { ambient_generic ("ambience/drip2.wav");     };
-void() ambient_drip5        = { ambient_generic ("ambience/drip5.wav");     };
-void() ambient_drone        = { ambient_generic ("ambience/drone.wav");     };
-void() ambient_elcloop1     = { ambient_generic ("ambience/elcloop1.wav");  };
-void() ambient_erthloop     = { ambient_generic ("ambience/erthloop.wav");  };
-void() ambient_flatlin2     = { ambient_generic ("ambience/flatlin2.wav");  };
-void() ambient_flouro_buzz  = { ambient_generic ("ambience/elecgen2.wav");  };
-void() ambient_flybuzz      = { ambient_generic ("ambience/flybuzz.wav");   };
-void() ambient_grglng       = { ambient_generic ("ambience/grglng.wav");    };
-void() ambient_howling      = { ambient_generic ("ambience/howling.wav");   };
-void() ambient_icemellp     = { ambient_generic ("ambience/icemellp.wav");  };
-void() ambient_icevio       = { ambient_generic ("ambience/icevio.wav");    };
-void() ambient_laugh        = { ambient_generic ("ambience/laugh.wav");     };
-void() ambient_light_buzz   = { ambient_generic ("ambience/hum.wav");       };
-void() ambient_mfly         = { ambient_generic ("ambience/mfly.wav");      };
-void() ambient_moan2lp      = { ambient_generic ("ambience/moan2lp.wav");   };
-void() ambient_mtldrn       = { ambient_generic ("ambience/mtldrn.wav");    };
-void() ambient_qamb10       = { ambient_generic ("ambience/qamb10.wav");    };
-void() ambient_qamb11       = { ambient_generic ("ambience/qamb11.wav");    };
-void() ambient_qamb12       = { ambient_generic ("ambience/qamb12.wav");    };
-void() ambient_qamb2        = { ambient_generic ("ambience/qamb2.wav");     };
-void() ambient_qamb3        = { ambient_generic ("ambience/qamb3.wav");     };
-void() ambient_qamb4        = { ambient_generic ("ambience/qamb4.wav");     };
-void() ambient_qamb5        = { ambient_generic ("ambience/qamb5.wav");     };
-void() ambient_qamb6        = { ambient_generic ("ambience/qamb6.wav");     };
-void() ambient_qamb7        = { ambient_generic ("ambience/qamb7.wav");     };
-void() ambient_qamb8        = { ambient_generic ("ambience/qamb8.wav");     };
-void() ambient_qamb9        = { ambient_generic ("ambience/qamb9.wav");     };
-void() ambient_qsuck1       = { ambient_generic ("ambience/qsuck1.wav");    };
-void() ambient_qtrain1      = { ambient_generic ("ambience/qtrain1.wav");   };
-void() ambient_qwindfly     = { ambient_generic ("ambience/qwindfly.wav");  };
-void() ambient_rain2        = { ambient_generic ("ambience/rain2.wav");     };
-void() ambient_sawcut       = { ambient_generic ("ambience/sawcut.wav");    };
-void() ambient_sawrun       = { ambient_generic ("ambience/sawrun.wav");    };
-void() ambient_sewage       = { ambient_generic ("ambience/sewage.wav");    };
-void() ambient_snakepit     = { ambient_generic ("ambience/snakepit.wav");  };
-void() ambient_sngair2      = { ambient_generic ("ambience/sngair2.wav");   };
-void() ambient_suck_wind    = { ambient_generic ("ambience/amb1.wav");      };
-void() ambient_swamp1       = { ambient_generic ("ambience/swamp.wav");     };
-void() ambient_swamp2       = { ambient_generic ("ambience/amb19.wav");     };
-void() ambient_torch        = { ambient_generic ("ambience/torch.wav");     };
-void() ambient_train1       = { ambient_generic ("ambience/train1.wav");    };
-void() ambient_underwat     = { ambient_generic ("ambience/underwat.wav");  };
-void() ambient_water        = { ambient_generic ("ambience/water.wav");     };
-void() ambient_waterlap     = { ambient_generic ("ambience/waterlap.wav");  };
-void() ambient_wind2        = { ambient_generic ("ambience/wind2.wav");     };
+void() ambient_1wind        = { ambient_generic("ambience/1wind.wav");     };
+void() ambient_altair2      = { ambient_generic("ambience/altair2.wav");   };
+void() ambient_amb10        = { ambient_generic("ambience/amb10.wav");     };
+void() ambient_amb11        = { ambient_generic("ambience/amb11.wav");     };
+void() ambient_amb12        = { ambient_generic("ambience/amb12.wav");     };
+void() ambient_amb13        = { ambient_generic("ambience/amb13.wav");     };
+void() ambient_amb14        = { ambient_generic("ambience/amb14.wav");     };
+void() ambient_amb15        = { ambient_generic("ambience/amb15.wav");     };
+void() ambient_amb16        = { ambient_generic("ambience/amb16.wav");     };
+void() ambient_amb17        = { ambient_generic("ambience/amb17.wav");     };
+void() ambient_amb18        = { ambient_generic("ambience/amb18.wav");     };  // for Winter Wonderland
+void() ambient_amb2         = { ambient_generic("ambience/amb2.wav");      };
+void() ambient_amb20        = { ambient_generic("ambience/amb20.wav");     };
+void() ambient_amb21        = { ambient_generic("ambience/amb21.wav");     };
+void() ambient_amb22        = { ambient_generic("ambience/amb22.wav");     };
+void() ambient_amb24        = { ambient_generic("ambience/amb24.wav");     };
+void() ambient_amb25        = { ambient_generic("ambience/amb25.wav");     };
+void() ambient_amb26        = { ambient_generic("ambience/amb26.wav");     };
+void() ambient_amb3         = { ambient_generic("ambience/amb3.wav");      };
+void() ambient_amb4         = { ambient_generic("ambience/amb4.wav");      };
+void() ambient_amb5         = { ambient_generic("ambience/amb5.wav");      };
+void() ambient_amb6         = { ambient_generic("ambience/amb6.wav");      };
+void() ambient_amb7         = { ambient_generic("ambience/amb7.wav");      };
+void() ambient_amb8         = { ambient_generic("ambience/amb8.wav");      };
+void() ambient_amb9         = { ambient_generic("ambience/amb9.wav");      };
+void() ambient_brgloop      = { ambient_generic("ambience/brgloop.wav");   };
+void() ambient_buzslow2     = { ambient_generic("ambience/buzslow2.wav");  };
+void() ambient_buzz2        = { ambient_generic("ambience/buzz2.wav");     };
+void() ambient_chain1       = { ambient_generic("ambience/chain1.wav");    };
+void() ambient_chain2       = { ambient_generic("ambience/chain2.wav");    };
+void() ambient_chain4       = { ambient_generic("ambience/chain4.wav");    };
+void() ambient_chain5       = { ambient_generic("ambience/chain5.wav");    };
+void() ambient_chain6       = { ambient_generic("ambience/chain6.wav");    };
+void() ambient_chant1lp     = { ambient_generic("ambience/chant1lp.wav");  };
+void() ambient_chant2lp     = { ambient_generic("ambience/chant2lp.wav");  };
+void() ambient_chant3lp     = { ambient_generic("ambience/chant3lp.wav");  };
+void() ambient_clock        = { ambient_generic("ambience/clock.wav");     };
+void() ambient_comp_hum     = { ambient_generic("ambience/fanlup2.wav");   };
+void() ambient_cryptlp      = { ambient_generic("ambience/cryptlp.wav");   };
+void() ambient_dialtone     = { ambient_generic("ambience/dialtone.wav");  };
+void() ambient_drip1        = { ambient_generic("ambience/drip1.wav");     };
+void() ambient_drip2        = { ambient_generic("ambience/drip2.wav");     };
+void() ambient_drip5        = { ambient_generic("ambience/drip5.wav");     };
+void() ambient_drone        = { ambient_generic("ambience/drone.wav");     };
+void() ambient_elcloop1     = { ambient_generic("ambience/elcloop1.wav");  };
+void() ambient_erthloop     = { ambient_generic("ambience/erthloop.wav");  };
+void() ambient_flatlin2     = { ambient_generic("ambience/flatlin2.wav");  };
+void() ambient_flouro_buzz  = { ambient_generic("ambience/elecgen2.wav");  };
+void() ambient_flybuzz      = { ambient_generic("ambience/flybuzz.wav");   };
+void() ambient_grglng       = { ambient_generic("ambience/grglng.wav");    };
+void() ambient_howling      = { ambient_generic("ambience/howling.wav");   };
+void() ambient_icemellp     = { ambient_generic("ambience/icemellp.wav");  };
+void() ambient_icevio       = { ambient_generic("ambience/icevio.wav");    };
+void() ambient_laugh        = { ambient_generic("ambience/laugh.wav");     };
+void() ambient_light_buzz   = { ambient_generic("ambience/hum.wav");       };
+void() ambient_mfly         = { ambient_generic("ambience/mfly.wav");      };
+void() ambient_moan2lp      = { ambient_generic("ambience/moan2lp.wav");   };
+void() ambient_mtldrn       = { ambient_generic("ambience/mtldrn.wav");    };
+void() ambient_qamb10       = { ambient_generic("ambience/qamb10.wav");    };
+void() ambient_qamb11       = { ambient_generic("ambience/qamb11.wav");    };
+void() ambient_qamb12       = { ambient_generic("ambience/qamb12.wav");    };
+void() ambient_qamb2        = { ambient_generic("ambience/qamb2.wav");     };
+void() ambient_qamb3        = { ambient_generic("ambience/qamb3.wav");     };
+void() ambient_qamb4        = { ambient_generic("ambience/qamb4.wav");     };
+void() ambient_qamb5        = { ambient_generic("ambience/qamb5.wav");     };
+void() ambient_qamb6        = { ambient_generic("ambience/qamb6.wav");     };
+void() ambient_qamb7        = { ambient_generic("ambience/qamb7.wav");     };
+void() ambient_qamb8        = { ambient_generic("ambience/qamb8.wav");     };
+void() ambient_qamb9        = { ambient_generic("ambience/qamb9.wav");     };
+void() ambient_qsuck1       = { ambient_generic("ambience/qsuck1.wav");    };
+void() ambient_qtrain1      = { ambient_generic("ambience/qtrain1.wav");   };
+void() ambient_qwindfly     = { ambient_generic("ambience/qwindfly.wav");  };
+void() ambient_rain2        = { ambient_generic("ambience/rain2.wav");     };
+void() ambient_sawcut       = { ambient_generic("ambience/sawcut.wav");    };
+void() ambient_sawrun       = { ambient_generic("ambience/sawrun.wav");    };
+void() ambient_sewage       = { ambient_generic("ambience/sewage.wav");    };
+void() ambient_snakepit     = { ambient_generic("ambience/snakepit.wav");  };
+void() ambient_sngair2      = { ambient_generic("ambience/sngair2.wav");   };
+void() ambient_suck_wind    = { ambient_generic("ambience/amb1.wav");      };
+void() ambient_swamp1       = { ambient_generic("ambience/swamp.wav");     };
+void() ambient_swamp2       = { ambient_generic("ambience/amb19.wav");     };
+void() ambient_torch        = { ambient_generic("ambience/torch.wav");     };
+void() ambient_train1       = { ambient_generic("ambience/train1.wav");    };
+void() ambient_underwat     = { ambient_generic("ambience/underwat.wav");  };
+void() ambient_water        = { ambient_generic("ambience/water.wav");     };
+void() ambient_waterlap     = { ambient_generic("ambience/waterlap.wav");  };
+void() ambient_wind2        = { ambient_generic("ambience/wind2.wav");     };

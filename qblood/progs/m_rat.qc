@@ -37,19 +37,19 @@
 #define RAT_ATTACK_TIME			1.0
 #define RAT_DEATH2_TIME			1.0
 
-void () rat_animate;
+void() rat_animate;
 
-void () rat_idle =
+void() rat_idle =
 {
-	if (random () < 0.05)
-		sound (self, CHAN_VOICE, "rat/ratroam.wav", 1, ATTN_IDLE);
+	if (random() < 0.05)
+		sound(self, CHAN_VOICE, "rat/ratroam.wav", 1, ATTN_IDLE);
 
 	self.style = 1;
 	self.anim_type = IDLE;
 	rat_animate();
 };
 
-void () rat_run =
+void() rat_run =
 {
 	self.style = 3;
 	self.anim_type = RUN;
@@ -57,7 +57,7 @@ void () rat_run =
 };
 
 //--- Decide when to bite an enemy
-void () rat_attack =
+void() rat_attack =
 {
 	local vector delta;
 
@@ -66,7 +66,7 @@ void () rat_attack =
 
 	delta = (self.enemy.origin - self.origin);
 
-	if (vlen (delta) <= 90)
+	if (vlen(delta) <= 90)
 	{
 		self.anim_type = ATTACK;    // If the player is near bite them
 		rat_animate();
@@ -94,41 +94,41 @@ void() rat_bite =
 		return;
 
 	ldmg = (random() + random() + random()) * 8;
-	T_Damage (self.enemy, self, self, ldmg, DF_STAB, string_null);
+	T_Damage(self.enemy, self, self, ldmg, DF_STAB, string_null);
 
-	sound (self, CHAN_VOICE, "hellhound/houndbit.wav", 1, ATTN_NORM);  //FIXME: Verify this is correct biting sound
+	sound(self, CHAN_VOICE, "hellhound/houndbit.wav", 1, ATTN_NORM);  //FIXME: Verify this is correct biting sound
 
 	self.attack_finished = time + 1;
 
 };
 
 //--- Show pain
-void () rat_pain =
+void() rat_pain =
 {
 	// don't make multiple pain sounds right after each other
 	if (self.pain_finished > time)
 		return;
 
-	sound (self, CHAN_VOICE, "rat/ratpain.wav", 1, ATTN_NORM);
+	sound(self, CHAN_VOICE, "rat/ratpain.wav", 1, ATTN_NORM);
 
 	// FIXME?: No pain sequence for now, just requires sound?
 	self.pain_finished = (time + 1); // is really 0.33 seconds long, but that really sounds crappy
 };
 
-void () rat_death1 =
+void() rat_death1 =
 {
 	self.anim_type = DEATH1;
 	rat_animate();
 };
 
-void () rat_death2 =
+void() rat_death2 =
 {
-	//setmodel (self, "models/enemies/rat/rat_death2.psk");
+	//setmodel(self, "models/enemies/rat/rat_death2.psk");
 	self.anim_type = DEATH2;
 	rat_animate();
 };
 
-void () rat_death =
+void() rat_death =
 {
 	//FIXME: add detection of weapon that causes death
 	if (random() > 0.5)
@@ -137,7 +137,14 @@ void () rat_death =
 		rat_death2();
 };
 
-void () rat_animate =
+/*
+============
+rat_animate
+
+Animation and frame based code for the Rat
+============
+*/
+void() rat_animate =
 {
 	if (self.anim_type == self.last_action)
 	{
@@ -193,18 +200,18 @@ void () rat_animate =
 		if (self.health < -20)
 		{
 			// Very large blood splat!
-			te_bloodshower (self.origin, self.origin + self.size, 100, 25);
+			te_bloodshower(self.origin, self.origin + self.size, 100, 25);
 
-			sound (self, CHAN_VOICE, "rat/ratdie3.wav", 1, ATTN_NORM);
-			ThrowGib ("models/objects/gib4.md3", self.health);
-			remove (self);
+			sound(self, CHAN_VOICE, "rat/ratdie3.wav", 1, ATTN_NORM);
+			ThrowGib("models/objects/gib4.md3", self.health);
+			remove(self);
 			return;
 		}
 
-		if (random () < 0.5)
-			sound (self, CHAN_VOICE, "rat/ratdie1.wav", 1, ATTN_NORM);
+		if (random() < 0.5)
+			sound(self, CHAN_VOICE, "rat/ratdie1.wav", 1, ATTN_NORM);
 		else
-			sound (self, CHAN_VOICE, "rat/ratdie2.wav", 1, ATTN_NORM);
+			sound(self, CHAN_VOICE, "rat/ratdie2.wav", 1, ATTN_NORM);
 	}
 
 	if (self.frame == self.anim_end)
@@ -222,27 +229,27 @@ void () rat_animate =
 };
 
 //--- The spawn
-void () monster_rat =
+void() monster_rat =
 {
 	//  Disable for testing
 	if (monster_check())
 		return;
 
-	precache_model ("models/enemies/rat/rat.psk");
-	//precache_model ("models/enemies/rat/rat_death2.psk");
+	precache_model("models/enemies/rat/rat.psk");
+	//precache_model("models/enemies/rat/rat_death2.psk");
 
-	precache_sound ("rat/ratdie1.wav");
-	precache_sound ("rat/ratdie2.wav");
-	precache_sound ("rat/ratdie3.wav");
-	precache_sound ("rat/ratpain.wav");
-	precache_sound ("rat/ratroam.wav");
-	precache_sound ("rat/ratspot.wav");
-	precache_sound ("hellhound/houndbit.wav");
+	precache_sound("rat/ratdie1.wav");
+	precache_sound("rat/ratdie2.wav");
+	precache_sound("rat/ratdie3.wav");
+	precache_sound("rat/ratpain.wav");
+	precache_sound("rat/ratroam.wav");
+	precache_sound("rat/ratspot.wav");
+	precache_sound("hellhound/houndbit.wav");
 
 	self.solid = SOLID_SLIDEBOX;
 	self.movetype = MOVETYPE_TOSS;
-	setmodel (self, "models/enemies/rat/rat.psk");
-	setsize (self,'-13 -3 0', '13 3 6');     // FIXME: Need real coordinates
+	setmodel(self, "models/enemies/rat/rat.psk");
+	setsize(self,'-13 -3 0', '13 3 6');     // FIXME: Need real coordinates
 	self.health = 40;
 	self.resist_acid = 0;
 	self.resist_shock = 0;
@@ -267,5 +274,5 @@ void () monster_rat =
 	self.attack_finished = 0;
 	self.classname = "monster";
 	self.netname = "monster_rat";
-	walkmonster_start ();
+	walkmonster_start();
 };

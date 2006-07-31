@@ -48,7 +48,7 @@ void() swimmonster_start;
 void() eel_stand1  =[      $idle1, eel_stand1 ]
 {
 	if (random() < 0.05)
-		sound (self, CHAN_VOICE, "eel/eelroam.wav", 1, ATTN_NORM);
+		sound(self, CHAN_VOICE, "eel/eelroam.wav", 1, ATTN_NORM);
 
 	ai_stand();
 };
@@ -84,9 +84,9 @@ void() eel_melee =
 	if (vlen(delta) > 60)
 		return;
 
-	//sound (self, CHAN_VOICE, "eel/bite.wav", 1, ATTN_NORM); // FIXME: I need eel biting sound
+	//sound(self, CHAN_VOICE, "eel/bite.wav", 1, ATTN_NORM); // FIXME: I need eel biting sound
 	ldmg = (random() + random()) * 3;
-	T_Damage (self.enemy, self, self, ldmg, DF_STAB, string_null);
+	T_Damage(self.enemy, self, self, ldmg, DF_STAB, string_null);
 };
 
 void() eel_attack1 =[      $attack1,       eel_attack2 ] {ai_charge(10);};
@@ -116,34 +116,34 @@ void() eel_death =
 	r = random();
 
 	if (r <= 0.33)
-		sound (self, CHAN_VOICE, "eel/eeldie1.wav", 1, ATTN_NORM);
+		sound(self, CHAN_VOICE, "eel/eeldie1.wav", 1, ATTN_NORM);
 	else if (r <= 0.66)
-		sound (self, CHAN_VOICE, "eel/eeldie2.wav", 1, ATTN_NORM);
+		sound(self, CHAN_VOICE, "eel/eeldie2.wav", 1, ATTN_NORM);
 	else
-		sound (self, CHAN_VOICE, "eel/eeldie3.wav", 1, ATTN_NORM);
+		sound(self, CHAN_VOICE, "eel/eeldie3.wav", 1, ATTN_NORM);
 
 	if (self.health < -20)
 	{        
 		if (random() < 0.5)
-			ThrowGib ("models/objects/gib4.md3", self.health);
+			ThrowGib("models/objects/gib4.md3", self.health);
 		else
-			ThrowGib ("models/objects/gib5.md3", self.health);
+			ThrowGib("models/objects/gib5.md3", self.health);
 
-		remove (self);
+		remove(self);
 		return;
 	}
 	else
 		eel_death1();
 };
 
-void(entity attacker, float damage)    eel_pain =
+void(entity attacker, float damage) eel_pain =
 {
 
 	// don't make multiple pain sounds right after each other
 	if (self.pain_finished > time)
 		return;
 
-	sound (self, CHAN_VOICE, "eel/eelpain.wav", 1, ATTN_NORM);
+	sound(self, CHAN_VOICE, "eel/eelpain.wav", 1, ATTN_NORM);
 
 	self.pain_finished = time + 1;
 	//    ai_pain(12);	// deprecated
@@ -155,21 +155,21 @@ void() monster_eel =
 	if(monster_check())
 		return;
 
-	precache_model ("models/enemies/eel/bone_eel.psk");
+	precache_model("models/enemies/eel/bone_eel.psk");
 
-	precache_sound ("eel/eeldie1.wav");
-	precache_sound ("eel/eeldie2.wav");
-	precache_sound ("eel/eeldie3.wav");
-	precache_sound ("eel/eelpain.wav");
-	precache_sound ("eel/eelroam.wav");
-	precache_sound ("eel/eelspot.wav");
+	precache_sound("eel/eeldie1.wav");
+	precache_sound("eel/eeldie2.wav");
+	precache_sound("eel/eeldie3.wav");
+	precache_sound("eel/eelpain.wav");
+	precache_sound("eel/eelroam.wav");
+	precache_sound("eel/eelspot.wav");
 
 	self.solid = SOLID_SLIDEBOX;
 	self.movetype = MOVETYPE_STEP;
 
-	setmodel (self, "models/enemies/eel/bone_eel.psk");
+	setmodel(self, "models/enemies/eel/bone_eel.psk");
 
-	setsize (self, '-9 -1 -2', '6 1 2');
+	setsize(self, '-9 -1 -2', '6 1 2');
 	self.health = 25;
 	self.max_health = self.health;
 	self.th_stand = eel_stand1;
@@ -181,5 +181,5 @@ void() monster_eel =
 	self.touch = monster_stepped_on;
 	self.classname = "monster";
 	self.netname = "monster_eel";
-	swimmonster_start ();
+	swimmonster_start();
 };
