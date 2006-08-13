@@ -19,6 +19,8 @@
 void() Bomb_Fire;
 void() Bomb_Uncharge;
 void() ShowThrowMeter;
+void() ProxyBombThink;
+void() ProxyBombArmed;
 
 //============================================================================
 // ----- TNT ----- //

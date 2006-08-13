@@ -55,7 +55,7 @@ void(entity targ, vector org, float damage) TineHit =
 
 			// Hit attacker instead.
 			targ = self;
-			org = self.origin;
+			org = W_Origin();
 		}
 		// If the target can bleed, spawn some blood
 		if (targ.classname == "player" || (targ.flags & FL_MONSTER) ||
@@ -97,7 +97,7 @@ void() Fork_Fire =
 	local   float   loop;           // Number of tines.
 
 	makevectors(self.v_angle);
-	source = self.origin + self.view_ofs + VEC_WEAPON_OFS + v_up * 3;
+	source = W_Origin();
 	damage = 17;
 	loop = 4;
 

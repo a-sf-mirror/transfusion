@@ -97,7 +97,7 @@ void() Voodoo_ApplyDamage =
 		self.ammo_voodoo = 0;
 		death_type = "alt-voodoo";
 	}	
-	else if (targ != self)
+	else if (targ != self && !(self.flags & FL_INFINATE_AMMO))
 		self.ammo_voodoo = self.ammo_voodoo - self.weaponentity.stab_damage / 4;
 	self.currentammo = self.ammo_voodoo;
 

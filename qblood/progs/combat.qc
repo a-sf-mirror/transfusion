@@ -223,134 +223,86 @@ void(entity targ, entity inflictor, entity attacker, float damage, float dflags,
 		if (dflags & DF_ACID && targ.resist_acid != 0)
 		{
 			if (targ.resist_acid < 0)
-			{
 				damage = 0;
-			}
 			else
-			{
 				damage = damage / targ.resist_acid;
-			}
 		}	    
 		if (dflags & DF_SHOCK && targ.resist_shock != 0)
 		{
 			if (targ.resist_shock < 0)
-			{
 				damage = 0;
-			}
 			else
-			{
 				damage = damage / targ.resist_shock;
-			}
 		}
 		if (dflags & DF_PUMMEL && targ.resist_pummel != 0)
 		{
 			if (targ.resist_pummel < 0)
-			{
 				damage = 0;
-			}
 			else
-			{
 				damage = damage / targ.resist_pummel;
-			}
 		}
 		if (dflags & DF_FALL && targ.resist_fall != 0)
 		{
 			if (targ.resist_fall < 0)
-			{
 				damage = 0;
-			}
 			else
-			{
 				damage = damage / targ.resist_fall;
-			}
 		}
 		if (dflags & DF_BURN && targ.resist_burn != 0)
 		{
 			if (targ.resist_burn < 0)
-			{
 				damage = 0;
-			}
 			else
-			{
 				damage = damage / targ.resist_burn;
-			}
 		}
 		if (dflags & DF_BULLET && targ.resist_bullet != 0)
 		{
 			if (targ.resist_bullet < 0)
-			{
 				damage = 0;
-			}
 			else
-			{
 				damage = damage / targ.resist_bullet;
-			}
 		}
 		if (dflags & DF_STAB && targ.resist_stab != 0)
 		{
 			if (targ.resist_stab < 0)
-			{
 				damage = 0;
-			}
 			else
-			{
 				damage = damage / targ.resist_stab;
-			}
 		}
 		if (dflags & DF_EXPLODE && targ.resist_explode != 0)
 		{
 			if (targ.resist_explode < 0)
-			{
 				damage = 0;
-			}
 			else
-			{
 				damage = damage / targ.resist_explode;
-			}
 		}
 		if (dflags & DF_GAS && targ.resist_gas != 0)
 		{
 			if (targ.resist_gas < 0)
-			{
 				damage = 0;
-			}
 			else
-			{
 				damage = damage / targ.resist_gas;
-			}
 		}
 		if (dflags & DF_DROWN && targ.resist_drown != 0)
 		{
 			if (targ.resist_drown < 0)
-			{
 				damage = 0;
-			}
 			else
-			{
 				damage = damage / targ.resist_drown;
-			}
 		}
 		if (dflags & DF_SPIRIT && targ.resist_spirit != 0)
 		{
 			if (targ.resist_spirit < 0)
-			{
 				damage = 0;
-			}
 			else
-			{
 				damage = damage / targ.resist_spirit;
-			}
 		}
 		if (dflags & DF_VOODOO && targ.resist_voodoo != 0)
 		{
 			if (targ.resist_voodoo < 0)
-			{
 				damage = 0;
-			}
 			else
-			{
 				damage = damage / targ.resist_voodoo;
-			}
 		}
 	}
 
@@ -363,8 +315,10 @@ void(entity targ, entity inflictor, entity attacker, float damage, float dflags,
 	if (inflictor != world)
 	{
 		// Only knockback on these attack-types:
-		if(dflags & (DF_PUMMEL | DF_BULLET | DF_EXPLODE | DF_STAB | DF_SPIRIT))
+		if (dflags & (DF_PUMMEL | DF_BULLET | DF_EXPLODE | DF_STAB | DF_SPIRIT))
 		{
+			if (dflags & DF_PUMMEL && dtype == "squashing")  //If you're being stepped on, you don't get knocked backwards
+				return;
 			dir = (targ.absmin + targ.absmax) * 0.5 - (inflictor.absmin + inflictor.absmax) * 0.5;
 			if (dflags & DF_RADIUS)
 				dir = normalize(dir) * (damage * 8);    // Standard.

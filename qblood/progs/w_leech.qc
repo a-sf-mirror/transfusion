@@ -31,6 +31,7 @@ void() leech_animate;
 #define LEECH_HOLSTER_END		31
 
 #define LEECH_IDLE_TIME			0.1
+#define LEECH_DROP_TIME			0.1
 #define LEECH_DRAW_TIME			0.3
 #define LEECH_FIRE_TIME			2.6
 #define LEECH_HOLSTER_TIME		0.3
@@ -94,7 +95,7 @@ void() Leech_BallFire =
 	newmis.velocity = aim(self, 1000);  // base velocity
 
 	// If aim() hasn't found any interesting target, add some spread
-	traceline(self.origin, self.origin + newmis.velocity*2048, FALSE, self);
+	traceline(W_Origin(), W_Origin() + newmis.velocity*2048, FALSE, self);
 	if (trace_ent == world)
 		spread = crandom() * 0.18 * v_right + crandom() * 0.08 * v_up;
 	else
@@ -108,20 +109,20 @@ void() Leech_BallFire =
 	newmis.movetype = MOVETYPE_FLYMISSILE;
 
 	// If we don't have enough ammo, use HP
-	if (self.ammo_leech < 2)
-	{
-		T_Damage(self, world, self, 2 - self.ammo_leech, DF_SPIRIT, "leech");
-		self.ammo_leech = 0;
-	}
+	if (self.ammo_leech == 0)
+		T_Damage(self, world, self, 1, DF_SPIRIT, "leech");
 	else
-		self.ammo_leech = self.ammo_leech - 2;
+	{
+		if (!(self.flags & FL_INFINATE_AMMO))
+			self.ammo_leech = self.ammo_leech - 1;
+	}
 	self.currentammo = self.ammo_leech;
 
 	newmis.touch = Leech_BallTouch;
 	setmodel(newmis, "progs/leechball.spr");
 	newmis.skin = 1;
 	setsize(newmis, '0 0 0', '0 0 0');
-	setorigin(newmis, self.origin + self.view_ofs + VEC_WEAPON_OFS + v_forward * 8);
+	setorigin(newmis, W_Origin() + v_forward * 8);
 
 	newmis.dmg = 40;
 
@@ -129,6 +130,7 @@ void() Leech_BallFire =
 	newmis.nextthink = time + 5;
 	newmis.think = SUB_Remove;
 	newmis.reset = SUB_Remove;
+	return;
 };
 
 /*
@@ -305,6 +307,7 @@ void() Leech_Use =
 	if (self.leech_sentry == other)
 	{
 		other.items = other.items + IT_LIFE_LEECH;
+		other.weapon = IT_LIFE_LEECH;
 		other.leech_sentry = world;
 		other.ammo_leech = other.ammo_leech + self.ammo_leech;
 		sound(other, CHAN_ITEM, "items/weaponup.wav", 1, ATTN_NORM);
@@ -340,7 +343,7 @@ void() Leech_Drop =
 	item.takedamage = DAMAGE_AIM;
 	item.health = 300;
 
-	item.origin = self.origin + '0 0 12' + v_forward * 8;
+	item.origin = W_Origin() + v_forward * 8 + v_up * 12;
 	item.velocity = aim(self, 1000) * 50;
 	item.velocity_z = 150;
 	item.movetype = MOVETYPE_TOSS;
@@ -367,7 +370,8 @@ void() Leech_Drop =
 	else
 		item.ammo_leech = self.ammo_leech - 25;
 	*/
-	self.currentammo = self.ammo_leech = 0;
+	if (!(self.flags & FL_INFINATE_AMMO))
+		self.currentammo = self.ammo_leech = 0;
 	self.items = self.items - self.weapon;
 	self.leech_sentry = item;
 
@@ -394,8 +398,8 @@ void() Leech_Attack =
 		if (self.button3) //Altfire
 		{
 			self.player_state = PS_ALTFIRE;
+			self.weaponentity.attack_finished = time + LEECH_DROP_TIME;
 			Leech_Drop();
-			self.attack_finished = time + 0.1;
 		}
 		else // Normal fire
 		{
@@ -522,15 +526,17 @@ void() leech_animate =
 	{
 		if (self.weaponentity.frame == LEECH_FIRE_START)
 			sound(self, CHAN_WEAPON, "weapons/lifelech/laltfr1.wav", 1, ATTN_NORM);
-		else if (self.weaponentity.frame == LEECH_FIRE_START + 4 ||
-			self.weaponentity.frame == LEECH_FIRE_START + 7 ||
-			self.weaponentity.frame == LEECH_FIRE_START + 10 ||
-			self.weaponentity.frame == LEECH_FIRE_START + 13 ||
-			self.weaponentity.frame == LEECH_FIRE_START + 15 ||
-			self.weaponentity.frame == LEECH_FIRE_START + 18 ||
-			self.weaponentity.frame == LEECH_FIRE_START + 21)
+		//FIXME - Ugly ugly ugly hack... animation needs to be 2 frames longer then set every other frame starting on the first
+		if (self.weaponentity.frame == LEECH_FIRE_START || self.weaponentity.frame == LEECH_FIRE_START + 1 ||
+			self.weaponentity.frame == LEECH_FIRE_START + 2 || self.weaponentity.frame == LEECH_FIRE_START + 4 ||
+			self.weaponentity.frame == LEECH_FIRE_START + 6 || self.weaponentity.frame == LEECH_FIRE_START + 8 ||
+			self.weaponentity.frame == LEECH_FIRE_START + 10 || self.weaponentity.frame == LEECH_FIRE_START + 12 ||
+			self.weaponentity.frame == LEECH_FIRE_START + 14 || self.weaponentity.frame == LEECH_FIRE_START + 16 ||
+			self.weaponentity.frame == LEECH_FIRE_START + 18 || self.weaponentity.frame == LEECH_FIRE_START + 20 ||
+			self.weaponentity.frame == LEECH_FIRE_START + 22 || self.weaponentity.frame == LEECH_FIRE_START + 24 ||
+			self.weaponentity.frame == LEECH_FIRE_START + 26 || self.weaponentity.frame == LEECH_FIRE_START + 28)
 			Leech_BallFire();
-		else if (self.weaponentity.frame == LEECH_FIRE_END)
+		if (self.weaponentity.frame == LEECH_FIRE_END)
 			Leech_Idle();
 	}
 	else if ((self.weaponentity.frame == self.weaponentity.anim_end) && (self.weaponentity.anim_type == DRAW))

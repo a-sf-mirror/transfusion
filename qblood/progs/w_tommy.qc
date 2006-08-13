@@ -47,7 +47,7 @@ Tommy_SpawnShell
 Spawns new shell entity but doesn't display it until reloadtime
 ================
 */
-void(vector orig) Tommy_SpawnShell =
+void(vector orig, string gun) Tommy_SpawnShell =
 {
 	local entity shell;
 
@@ -60,8 +60,21 @@ void(vector orig) Tommy_SpawnShell =
 	else
 		shell.noise = "weapons/shtshl3.wav";
 
-	setorigin(shell, orig + v_up * 5 + v_right * -5);
-	shell.velocity = (crandom() + 1)*v_forward*40 - v_right*(80 + crandom()*10) + v_up*(110 + crandom()*10);
+	if (gun == "right" && !self.akimbo_finished && self.player_state != PS_ALTFIRE)
+	{
+		setorigin(shell, orig + v_right * -5);
+		shell.velocity = (crandom() + 1)*v_forward*40 - v_right*(80 + crandom()*10) + v_up*(110 + crandom()*10);
+	}
+	else if (gun == "right" && self.akimbo_finished && self.player_state != PS_ALTFIRE)
+	{
+		setorigin(shell, orig + v_right * 5);
+		shell.velocity = (crandom() + 1)*v_forward*40 + v_right*(80 + crandom()*10) + v_up*(110 + crandom()*10);
+	}
+	else if (gun == "left")
+	{
+		setorigin(shell, orig + v_right * -13);
+		shell.velocity = (crandom() + 1)*v_forward*40 - v_right*(80 + crandom()*10) + v_up*(110 + crandom()*10);
+	}
 
 	DropShell(shell);
 };
@@ -89,7 +102,8 @@ void() Tommy_Fire =
 	makevectors(self.v_angle);
 
 	sound(self, CHAN_WEAPON, "weapons/tommygun/_tom.wav", 1, ATTN_NORM);
-	self.currentammo = self.ammo_nails = self.ammo_nails - akimboFactor;
+	if (!(self.flags & FL_INFINATE_AMMO))
+		self.currentammo = self.ammo_nails = self.ammo_nails - akimboFactor;
 
 	/* Set the bullet direction according to the weapon's real direction.
 	   These are arbitrary values with a small bit of further horizontal spread. */
@@ -117,8 +131,6 @@ void() Tommy_Fire =
 	else
 		damage = 12;
 
-	//orig = self.origin + v_forward * 15 + v_up * 12 + v_right * 4;
-	orig = self.origin + self.view_ofs + VEC_WEAPON_OFS + v_forward * 15 + v_right * 4;
 	if (self.player_state == PS_FIRE) // Normal Fire
 		spread = '0.05 0.02 0';
 	else // Altfire
@@ -128,13 +140,10 @@ void() Tommy_Fire =
 	if (akimboFactor == 2)
 	{
 		// Spawn 1 shell alternatively for each gun
-		if ((self.weaponentity.frame == TOMMY_FIRE_START) || (self.weaponentity.frame & 2))
-			orig = orig + v_right * 4;
-		else
-			orig = orig - v_right * 4;
-		Tommy_SpawnShell(orig);
+		Tommy_SpawnShell(orig, "right");
+		Tommy_SpawnShell(orig, "left");
 
-		orig = self.origin + v_right * 4 + v_up * 20;
+		orig = W_Origin() + v_right * 4;
 
 		FireBullets(orig, dir, 1, damage, spread);
 		orig = orig - v_right * 8;
@@ -146,11 +155,12 @@ void() Tommy_Fire =
 	}
 	else
 	{
+		orig = W_Origin() + v_forward * 15 + v_right * 4;
 		// Spawn 1 shell every 2 shots
 		if ((self.weaponentity.frame == TOMMY_FIRE_START) || (self.weaponentity.frame & 1)) // FIXME PS_ALTFIRE && &1
-			Tommy_SpawnShell(orig);
+			Tommy_SpawnShell(orig, "right");
 
-		FireBullets(self.origin + v_up * 20, dir, 1, damage, spread);
+		FireBullets(orig, dir, 1, damage, spread);
 	}
 
 	//self.punchangle_x = -2 * akimboFactor;

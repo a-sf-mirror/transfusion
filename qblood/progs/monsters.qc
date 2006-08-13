@@ -81,9 +81,7 @@ void() walkmonster_start_go =
 		}
 		// this used to be an objerror
 		if (self.movetarget.classname == "path_corner")
-		{
 			self.th_walk();
-		}
 		else
 		{
 			self.pausetime = 99999999;
@@ -178,9 +176,7 @@ void() flymonster_start_go =
 		}
 		// this used to be an objerror
 		if (self.movetarget.classname == "path_corner")
-		{
 			self.th_walk();
-		}
 		else
 		{
 			self.pausetime = 99999999;
@@ -258,9 +254,8 @@ void() monster_stepped_on =
 	SUB_SolidTouch();
 
 	// If we've gotten here an enemy is touching my bbox.  But is the enemy on TOP of me?
-	if ((self.enemy.absmin_z <= self.absmax_z + 3) && 
-		(self.enemy.absmin_z >= self.absmax_z - 3))		
-		T_Damage(self, self.enemy, self.enemy, 1, DF_PUMMEL, "squashing");		
+	if ((self.enemy.absmin_z <= self.absmax_z + 3) && (self.enemy.absmin_z >= self.absmax_z - 3))
+		T_Damage(self, self.enemy, self.enemy, 1, DF_PUMMEL, "squashing");
 	else 
 		return;
 

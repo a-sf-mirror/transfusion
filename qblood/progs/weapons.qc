@@ -26,6 +26,76 @@ void() identify_player;
 //============================================================================
 
 /*
+============
+W_WeaponFrame
+
+Called every frame so impulse events can be handled as well as possible
+============
+*/
+vector() W_Origin =
+{
+	if (self.crouch)
+		return self.origin + PL_CROUCH_VIEW_OFS;
+	else
+		return self.origin + PL_VIEW_OFS;
+};
+
+/*
+================
+muzzleflash
+
+creates the muzzle flash for weapons
+================
+*/
+void() muzzleflash =
+{
+	if (cvar("developer"))
+	{
+	local entity muzzle;
+	muzzle = spawn();
+	muzzle.viewmodelforclient = self;
+	muzzle.origin = W_Origin();
+	muzzle.solid = SOLID_NOT;
+	muzzle.aiment = self;
+	muzzle.punchangle = self.angles;
+	muzzle.view_ofs = muzzle.origin - self.origin;
+	muzzle.v_angle = muzzle.angles - self.angles;
+
+//hole.movetype = MOVETYPE_FOLLOW; // make the hole follow
+//hole.solid = SOLID_NOT; // MOVETYPE_FOLLOW is always non-solid
+//hole.aiment = bmodel; // make the hole follow bmodel
+//hole.punchangle = bmodel.angles; // the original angles of bmodel
+//hole.view_ofs = hole.origin - bmodel.origin; // relative origin
+//hole.v_angle = hole.angles - bmodel.angles; // relative angles
+
+	local string sprite;
+	local float offset;
+	if (self.weapon == IT_SAWED_OFF)
+	{
+		sprite = "models/weapons/objects/muzzle_shotgun.spr32";
+		if ((self.player_state == PS_ALTFIRE) && (self.weaponentity.ammo_in_chamber == 2))
+			offset = 0;
+		else
+		{
+			if (self.weaponentity.ammo_in_chamber == 2)
+				offset = -4;
+			else
+				offset = 4;
+		}
+		effect(W_Origin() + v_forward * 100 + v_right * offset, sprite, 0, 2, 20);
+	}
+	else if (self.weapon == IT_TOMMYGUN)
+	{
+		setmodel(muzzle, "models/weapons/objects/muzzle_tommy.spr32");
+		//setorigin(muzzle, self.origin + v_forward * 50 + v_up * 30);
+		sprite = "models/weapons/objects/muzzle_tommy.spr32";
+		//effect(self.origin + v_forward * 75 + v_up * 8 + v_right * 8, sprite, 0, 2, 20);
+	}
+	//FIXME - add other weapons, and fix shotgun
+	}
+};
+
+/*
 ================
 SpawnBlood
 ================
@@ -267,7 +337,7 @@ void(entity shell) DropShell =
 	shell.movetype = MOVETYPE_BOUNCE;
 	shell.solid = SOLID_BBOX;
 	setmodel(shell, shell.mdl);
-	setsize(shell, VEC_ORIGIN, VEC_ORIGIN);
+	setsize(shell, PL_ORIGIN, PL_ORIGIN);
 	makevectors(shell.owner.v_angle);
 
 	shell.avelocity_x = crandom()*500;
@@ -474,14 +544,19 @@ Draw a new weapon
 */
 void(float weap) W_DrawWeapon =
 {
-	if (! (self.items & weap))
-	return;
+	if (weap && !(self.items & weap))
+		return;
 
+	if (!weap)
+	{
+		self.weapon = self.currentammo = 0;
+		//return;
+	}
 	// Don't draw a fire based weapon under water
 	if (self.waterlevel == 3)
 	{
-		if (self.weapon == IT_TNT || self.weapon == IT_SPRAY_CAN)
-			weap = W_BestWeapon();
+		if (weap == IT_TNT || weap == IT_SPRAY_CAN)
+			return;
 	}
 
 	self.player_state = PS_DRAW;
@@ -526,7 +601,7 @@ void(float newWeapon) W_SwitchToWeapon =
 	self.newweapon = 0;
 
 	// If we don't have that weapon
-	if (! (self.items & newWeapon))
+	if (newWeapon && !(self.items & newWeapon)) //if newWeapon = 0, we're forcing a holster
 		return;
 
 	// If the new weapon is already the current one
@@ -758,9 +833,7 @@ void() W_ChangeWeapon =
 	am = 0;
 
 	if (self.impulse == IMP_PITCHFORK)
-	{
 		new = IT_PITCHFORK;
-	}
 	else if (self.impulse == IMP_FLAREGUN)
 	{
 		new = IT_FLAREGUN;
@@ -888,8 +961,10 @@ void() W_ChangeWeapon =
 	}
 
 	// If the weapon has really changed
-	if (new != old)
+	if (old && new != old)
 		W_SwitchToWeapon(new);
+	else if (!old)
+		W_DrawWeapon(new);
 };
 
 /*
@@ -980,15 +1055,6 @@ void(float reverse) CycleWeaponCommand =
 
 };
 
-void() Cheat_Akimbo =
-{
-	self.akimbo_finished = time + 30;
-	W_SetCurrentAmmo();
-
-	sprint(self, "Tequila!\n");
-	dprint("Akimbo cheat\n");
-};
-
 // PM:  Let's player change the armor shown if he has more than one armor.
 void() ArmorTest =
 {
@@ -1046,6 +1112,9 @@ void() W_WeaponFrame =
 	if (time < self.weaponentity.attack_finished)
 		return;
 
+	//check for changeweapon before ammo incase we currently have no weapon drawn
+	Impulses_Player(TRUE);
+
 	if (!W_AmmoAvailable())
 	{
 		if (self.player_state != PS_HOLD_FIRE)
@@ -1062,8 +1131,6 @@ void() W_WeaponFrame =
 		self.akimbo_finished = 0;
 		W_SetCurrentAmmo();
 	}
-
-	Impulses_Player(TRUE);
 
 	// Check for attack
 	if (self.button0 || self.button3)

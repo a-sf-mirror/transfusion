@@ -127,7 +127,7 @@ void(vector org, vector dir, float mspeed) Tesla_LaunchJolt =
 		jolt.style = TESLA_NORMALJOLT;
 		jolt.effects = EF_ADDITIVE;
 		jolt.alpha = 0.6;
-		setorigin(jolt, org + '0 0 4');
+		setorigin(jolt, org);
 	}
 	jolt.touch = Tesla_JoltTouch;
 	jolt.nextthink = time + (8000 / mspeed);
@@ -170,25 +170,29 @@ void() Tesla_Fire =
 	{
 		// NOTE: we have already started the sound in "player_alttesla1"
 
-		self.ammo_cells = self.ammo_cells - 35 * akimboFactor;
+		if (!(self.flags & FL_INFINATE_AMMO))
+			self.ammo_cells = self.ammo_cells - 35 * akimboFactor;
 		mspeed = 2000;
 	}
 	else
 	{
 		sound(self, CHAN_WEAPON, "weapons/tesla/tessngfr.wav", 1, ATTN_NORM);
 
-		self.ammo_cells = self.ammo_cells - akimboFactor;
+		if (!(self.flags & FL_INFINATE_AMMO))
+			self.ammo_cells = self.ammo_cells - akimboFactor;
 		mspeed = 1500;
 	}
-	self.currentammo = self.ammo_cells;
+	if (!(self.flags & FL_INFINATE_AMMO))
+		self.currentammo = self.ammo_cells;
 
 	makevectors(self.v_angle);
 	dir = aim(self, mspeed);
-	org = self.origin + self.view_ofs + VEC_WEAPON_OFS + v_forward * 8;
+	org = W_Origin() + v_forward * 8 + v_up * -9;
 
 	// Akimbo mode
 	if (akimboFactor == 2)
 	{
+		org = org + v_forward * 8;
 		Tesla_LaunchJolt(org + v_right * 14, dir, mspeed);
 		Tesla_LaunchJolt(org - v_right * 14, dir, mspeed);
 

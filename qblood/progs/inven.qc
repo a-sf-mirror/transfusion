@@ -486,17 +486,6 @@ void(float add, float noprint) InvenSelect =
 		InvenList(self.it_select);
 };
 
-// This gives the cheater all items.
-void() Cheat_Inventory =
-{
-	InvenSet(self, INV_FIRST_AID, 100);
-	InvenSet(self, INV_DIVING_SUIT, 100);
-	InvenSet(self, INV_CRYSTAL_BALL, 100);
-	InvenSet(self, INV_BEAST_VISION, 100);
-	InvenSet(self, INV_JUMP_BOOTS, 100);
-	sprint(self, "satchel -- Your inventory is full.\n");
-};
-
 //========================================================================
 //  Inventory Check
 // NOTE:  100 points == 30 seconds.  1 point == 3 frames.

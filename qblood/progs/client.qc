@@ -299,6 +299,335 @@ void() execute_changelevel =
 };
 
 /*
+============
+Cheat_Weapons
+
+This is used by multiple cheat commands, and is rather large, so it is now a function.
+============
+*/
+void() Cheat_Weapons = 
+{
+	sprint(self, "You have full ammo.\n");
+	sprint(self, "You have all weapons.\n");
+	self.items = self.items | IT_PITCHFORK | IT_FLAREGUN | IT_SAWED_OFF | IT_TOMMYGUN
+		| IT_NAPALM_LAUNCHER | IT_TNT | IT_PROXIMITY_BOMB | IT_REMOTE_DETONATOR | IT_SPRAY_CAN
+		| IT_TESLA_CANNON | IT_VOODOO_DOLL | IT_LIFE_LEECH;
+	self.ammo_flare = 100;
+	self.ammo_shells = 100;
+	self.ammo_nails = 500;
+	self.ammo_rockets = 100;
+	self.ammo_tnt_bundle = 50;
+	self.ammo_tnt_proxy = 50;
+	self.ammo_tnt_remote = 50;
+	self.ammo_spray = 288;
+	self.ammo_cells = 250;
+	self.ammo_leech = 100;
+	self.ammo_voodoo = 100;
+};
+
+/*
+============
+SV_ParseClientCommand
+
+DP Extension for deciphering local commands such as say
+We only really need this for Blood's cheat system.
+============
+*/
+void(string s) SV_ParseClientCommand =
+{
+	local float args;
+	args = tokenize(s);
+	if (gametype < GT_BLOODBATH) //FIXME -? was cheating available in co-op?
+	{
+		if (argv(0) == "say")
+		{
+			//special case, if mario/calgon code messed up, don't say anything.
+			if ((argv(1) == "mario" || argv(1) == "calgon" || argv(1) == "spielberg") && args != 4)
+				return;
+			if (args == 2) //one word cheat codes
+			{
+				if (argv(1) == "mpkfa" || argv(1) == "nocapinmyass")
+				{
+					if (!(self.flags & FL_GODMODE) || argv(1) == "nocapinmyass")
+					{
+						sprint(self, "You are immortal.\n");
+						self.flags = self.flags | FL_GODMODE;
+					}
+					else
+					{
+						sprint(self, "You are mortal.\n");
+						self.flags = self.flags - FL_GODMODE;
+					}
+				}
+				else if (argv(1) == "voorhees")
+				{
+					if (!(self.items & IT_INVULNERABILITY))
+					{
+						sprint(self, "You are invulnerable.\n");
+						self.items = self.items | IT_INVULNERABILITY;
+						self.invincible_finished = time + 30;
+					}
+					else
+					{
+						sprint(self, "You are vulnerable.\n");
+						self.invincible_finished = time;
+					}
+				}
+				else if (argv(1) == "hongkong")
+				{
+					self.flags = self.flags | FL_INFINATE_AMMO;
+					Cheat_Weapons();
+					sprint(self, "You have infinate ammo.\n");
+				}
+				else if (argv(1) == "capinmyass")
+				{
+					sprint(self, "You are mortal.\n");
+					self.flags = self.flags - FL_GODMODE;
+				}
+				else if (argv(1) == "idaho")
+					Cheat_Weapons();
+				else if (argv(1) == "montana")
+				{
+					Cheat_Weapons();
+					sprint(self, "Your inventory is full.\n");
+					InvenSet(self, INV_FIRST_AID, 100);
+					InvenSet(self, INV_DIVING_SUIT, 100);
+					InvenSet(self, INV_CRYSTAL_BALL, 100);
+					InvenSet(self, INV_BEAST_VISION, 100);
+					InvenSet(self, INV_JUMP_BOOTS, 100);
+				}
+				else if (argv(1) == "bunz")
+				{
+					sound(self, CHAN_ITEM, "bludbath/powerup.wav", 1, ATTN_NORM);
+					self.akimbo_finished = time + 30;
+					W_SetCurrentAmmo();
+					Cheat_Weapons();
+				}
+				else if (argv(1) == "tequila")
+				{
+					self.akimbo_finished = time + 30;
+					W_SetCurrentAmmo();
+				}
+				else if (argv(1) == "spork")
+				{
+					self.health = 200;
+					self.noise = "items/pickup.wav";
+				}
+				else if (argv(1) == "griswold")
+				{
+					sprint(self, "You have full armor.\n");
+					self.armor_fire = self.armor_body = self.armor_spirit = self.armorvalue = 200;
+					self.items = self.items | IT_ARMOR_ALL;
+				}
+				else if (argv(1) == "keymaster")
+				{
+					sprint(self, "You have all keys.\n");
+					self.items2 = self.items2 | IT2_KEY_SKULL | IT2_KEY_EYE | IT2_KEY_FIRE | IT2_KEY_DAGGER | IT2_KEY_SPIDER | IT2_KEY_MOON;
+				}
+				else if (argv(1) == "satchel")
+				{
+					sprint(self, "Your inventory is full.\n");
+					InvenSet(self, INV_FIRST_AID, 100);
+					InvenSet(self, INV_DIVING_SUIT, 100);
+					InvenSet(self, INV_CRYSTAL_BALL, 100);
+					InvenSet(self, INV_BEAST_VISION, 100);
+					InvenSet(self, INV_JUMP_BOOTS, 100);
+				}
+				else if (argv(1) == "sterno")
+				{
+					sprint(self, "FIXME: add temporary screen blanking.\n");
+					//FIXME - add short screen blanking.
+				}
+				else if (argv(1) == "cousteau")
+				{
+					self.health = 200;
+					self.noise = "items/pickup.wav";
+					InvenSet(self, INV_DIVING_SUIT, 100);
+				}
+				else if (argv(1) == "onering")
+				{
+					if (self.invisible_finished > time)
+						sprint(self, "You are visible.\n"); //FIXME ? Blood echo'd this, but left you invisible
+					else
+					{
+						sprint(self, "You are invisible.\n");
+						self.invisible_finished = time + 30;
+					}
+				}
+				else if (argv(1) == "goonies")
+				{
+					sprint(self, "You will someday have the map.\n");
+					//FIXME - change when map support is added.
+				}
+				else if (argv(1) == "kevorkian" || argv(1) == "edmark")
+				{
+					if (self.health > 0 && !(self.flags & FL_GODMODE))
+					{
+						sprint(self, "You killed yourself!\n");
+						PlayerDie();
+						//FIXME: add red screen overlay? cvar v_cshift 255 0 0 128 doesn't overlay the hud.
+					}
+					if (argv(1) == "kevorkian")
+						sprint(self, "Kevorkian approves.\n");
+					else
+						sprint(self, "Ahhh...those were the days.\n");
+				}
+				else if (argv(1) == "mcgee")
+				{
+					sprint(self, "You're fired!\n");
+					Ignite(self, self, DF_BURN, (100/6.5), 20);  // 100 damage points is 6.5 seconds
+				}
+				else if (argv(1) == "krueger")
+				{
+					sprint(self, "Flame retardant!\n");
+					self.health = 200;
+					self.noise = "items/pickup.wav";
+					Ignite(self, self, DF_BURN, (100/6.5), 20);  // 100 damage points is 6.5 seconds
+				}
+				else if (argv(1) == "rate")
+				{
+					if (cvar("showfps"))
+						cvar_set("showfps", "0");
+					else
+						cvar_set("showfps", "1");
+				}
+				else if (argv(1) == "jojo")
+				{
+					sprint(self, "FIXME: You will someday be delerious.\n");
+					//FIXME - add delerious mode.
+				}
+				else
+					clientcommand(self, s);
+			}
+			else if (args == 3) //two word cheat codes
+			{
+				if (argv(1) == "lara" && argv(2) == "croft")
+				{
+					if (!(self.flags & FL_INFINATE_AMMO))
+					{
+						self.flags = self.flags | FL_INFINATE_AMMO;
+						sprint(self, "You have infinate ammo.\n");
+						Cheat_Weapons();
+					}
+					else
+					{
+						self.flags = self.flags - FL_INFINATE_AMMO;
+						sprint(self, "You have limited ammo.\n");
+						sprint(self, "You have no ammo.\n");
+						sprint(self, "You have no weapons.\n");
+						if (self.weapon != IT_PITCHFORK)
+						{
+							self.weapon = 0;
+							remove(self.weaponentity);
+							self.items = self.items - IT_PITCHFORK;
+						}
+						self.items = self.items - IT_FLAREGUN - IT_SAWED_OFF - IT_TOMMYGUN - IT_NAPALM_LAUNCHER - IT_TNT -
+							IT_PROXIMITY_BOMB - IT_REMOTE_DETONATOR - IT_SPRAY_CAN - IT_TESLA_CANNON - IT_VOODOO_DOLL - IT_LIFE_LEECH;
+						self.ammo_flare = self.ammo_shells = self.ammo_nails = self.ammo_rockets =
+							self.ammo_tnt_bundle = self.ammo_tnt_proxy = self.ammo_tnt_remote = self.ammo_spray =
+							self.ammo_cells = self.ammo_leech =	self.ammo_voodoo = 0;
+					}
+				}
+				else if (argv(1) == "funky" && argv(2) == "shoes")
+				{
+					if (!self.boots_on)
+					{
+						sprint(self, "You have the jumping boots.\n");
+						if (!InvenFuel(INV_JUMP_BOOTS))
+							InvenSet(self, INV_JUMP_BOOTS, 100);
+						sound(self, CHAN_ITEM, "bludbath/powerup.wav", 1, ATTN_NORM);
+						self.boots_on = TRUE;
+					}
+					else
+					{
+						sprint(self, "You have no jumping boots.\n");
+						self.boots_on = FALSE;
+					}
+				}
+				else if (argv(1) == "eva" && argv(2) == "galli")
+				{
+					if (cvar("noclip"))
+					{
+						sprint(self, "Normal movement.\n");
+						clientcommand(self, "noclip");
+					}
+					else
+					{
+						sprint(self, "Unclipped movement.\n");
+						clientcommand(self, "noclip");
+					}
+				}
+				else if (argv(1) == "fork" && argv(2) == "broussard")
+				{
+					sound(self, CHAN_ITEM, "bludbath/powerup.wav", 1, ATTN_NORM);
+					self.items = self.items - IT_FLAREGUN - IT_SAWED_OFF - IT_TOMMYGUN - IT_NAPALM_LAUNCHER - IT_TNT -
+						IT_PROXIMITY_BOMB - IT_REMOTE_DETONATOR - IT_SPRAY_CAN - IT_TESLA_CANNON - IT_VOODOO_DOLL - IT_LIFE_LEECH;
+					self.ammo_flare = self.ammo_shells = self.ammo_nails = self.ammo_rockets =
+						self.ammo_tnt_bundle = self.ammo_tnt_proxy = self.ammo_tnt_remote = self.ammo_spray =
+						self.ammo_cells = self.ammo_leech =	self.ammo_voodoo = 0;
+					self.items2 = self.inven1 = self.inven2 = 0;
+					self.akimbo_finished = time + 30;
+					W_SetCurrentAmmo();
+					self.weapon = IT_PITCHFORK;
+					sprint(self, "Watch your ammo!\n");
+					sprint(self, "Find your own way home.\n");
+					sprint(self, "No ammo!\n");
+					sprint(self, "Sitting duck!\n");
+					sprint(self, "No ammo!\n");
+					sprint(self, "Nude!\n");
+					sprint(self, "Empty satchel.\n");
+					sprint(self, "You need AAA!\n");
+					self.health = 1;
+					//FIXME - add delerious mode.
+				}
+				else
+					clientcommand(self, s);
+			}
+			else if (args == 4) //three word cheat codes
+			{
+				if (argv(1) == "mario" || argv(1) == "calgon" || argv(1) == "spielberg")
+				{
+					if (argv(1) == "spielberg")
+						cvar_set("sv_cheats", "0");
+					local string tmapname, findmap, mario;
+					tmapname = "e";
+					tmapname = strcat(tmapname, argv(2));
+					tmapname = strcat(tmapname, "m");
+					tmapname = strcat(tmapname, argv(3));
+					findmap = "ls maps/";
+					findmap = strcat(findmap, tmapname);
+					findmap = strcat(findmap, ".bsp");
+
+					mario = "map ";
+					mario = strcat(mario, tmapname);
+					/*if (localcmd(findmap) == "no files found.")
+						sprint(self, "Map found!\n");*/
+					localcmd(mario);
+					sprint(self, "FIXME - parse out bad maps\n");
+					//FIXME - add level warp parsing
+				}
+				else
+					clientcommand(self, s);
+			}
+			else if (args == 6) //five word cheat code
+			{
+				if (argv(1) == "i" && argv(2) == "wanna" && argv(3) == "be" && argv(4) == "like" && argv(5) == "kevin")
+				{
+					sprint(self, "You are immortal.\n");
+					self.flags = self.flags | FL_GODMODE;
+				}
+				else
+					clientcommand(self, s);
+			}
+		}
+		else
+			clientcommand(self, s);
+	}
+	else
+		clientcommand(self, s);
+}
+
+/*
 =============================================================================
 
                 PLAYER GAME EDGE FUNCTIONS
@@ -671,9 +1000,9 @@ void() PutClientInServer =
 	setmodel(self, "progs/player.mdl");
 	modelindex_player = self.modelindex;
 
-	setsize(self, VEC_HULL_MIN, VEC_HULL_MAX);
+	setsize(self, PL_MIN, PL_MAX);
 
-	self.view_ofs = VEC_HULL_VIEW_OFS;
+	self.view_ofs = PL_VIEW_OFS;
 	self.velocity = '0 0 0';
 	self.avelocity = '0 0 0';
 
@@ -968,10 +1297,7 @@ void() WaterMove =
 			if (self.player_state != PS_HOLSTER)
 			{
 				Bomb_Uncharge();
-
-				// Switch to our best weapon
-				self.newweapon = W_BestWeapon();
-				W_SwitchToWeapon(self.newweapon);
+				W_SwitchToWeapon(0);
 			}
 		}
 	}
@@ -1127,25 +1453,22 @@ void() PlayerPreThink =
 	if (time < self.pausetime)
 		self.velocity = '0 0 0';
 
-	//force frametime change for smooth crouch transitions - disabled for now
-	/*if (self.view_ofs_z == VEC_HULL_CROUCH_VIEW_OFS_Z || self.view_ofs_z == VEC_HULL_VIEW_OFS_Z)
-		cvar_set("sys_ticrate", "0.03");
-	else
-		cvar_set("sys_ticrate", "0.01");*/
+	local vector offset, tempofs;
+	offset_z = frametime * 175; //FIXME: 130-200 is probably about right, need to recheck after the end bounce is in
 
-	local float offset;
-	offset = frametime * 175; //FIXME: 130-200 is probably about right, need to recheck after the end bounce is in
 	if (self.button5)
 	{
 		if (!self.crouch)
 		{
 			self.crouch = TRUE;
-			setsize(self, VEC_HULL_CROUCH_MIN, VEC_HULL_CROUCH_MAX);
+			setsize(self, PL_CROUCH_MIN, PL_CROUCH_MAX);
 		}
-		if (self.view_ofs_z - offset > VEC_HULL_CROUCH_VIEW_OFS_Z)
-			self.view_ofs_z = self.view_ofs_z - offset;
+		self.frame = 82;
+		tempofs = PL_CROUCH_VIEW_OFS;
+		if (self.view_ofs_z - offset_z > tempofs_z)
+			self.view_ofs_z = self.view_ofs_z - offset_z;
 		else
-			self.view_ofs = VEC_HULL_CROUCH_VIEW_OFS;
+			self.view_ofs_z = tempofs_z;
 		if (self.flags & FL_ONGROUND)
 		{
 			self.velocity_x = self.velocity_x * 0.7;
@@ -1161,17 +1484,23 @@ void() PlayerPreThink =
 	{
 		if (self.crouch)
 		{
-			tracebox(self.origin, VEC_HULL_MIN, VEC_HULL_MAX, self.origin, FALSE, self);
-			if (!trace_startsolid)
+			makevectors(self.v_angle);
+			tracebox(self.origin, PL_MIN, PL_MAX, self.origin, FALSE, self);
+			if (!trace_startsolid) 
 			{
 				self.crouch = FALSE;
-				setsize(self, VEC_HULL_MIN, VEC_HULL_MAX);
+				self.frame = PLAYER_STAND;
+				setsize(self, PL_MIN, PL_MAX);
 			}
 		}
-		if (self.view_ofs_z + offset < VEC_HULL_VIEW_OFS_Z)
-			self.view_ofs_z = self.view_ofs_z + offset;
-		else
-			self.view_ofs = VEC_HULL_VIEW_OFS;
+		if (!self.crouch)
+		{
+			tempofs = PL_VIEW_OFS;
+			if (self.view_ofs_z + offset_z < tempofs_z)
+				self.view_ofs = self.view_ofs + offset;
+			else
+				self.view_ofs_z = tempofs_z;
+		}
 	}
 };
 
@@ -1190,6 +1519,8 @@ void() CheckPowerups =
 	// invisibility
 	if (self.invisible_finished)
 	{
+		self.alpha = 0.15;
+		self.weaponentity.alpha = 0.25;
 		// sound and screen flash when items starts to run out
 		if (self.invisible_sound < time)
 		{
@@ -1222,10 +1553,6 @@ void() CheckPowerups =
 			self.invisible_time = 0;
 			self.alpha = 1;
 		}
-
-		// use the eyes
-		self.frame = 0;
-		self.modelindex = modelindex_eyes;
 	}
 	else
 		self.modelindex = modelindex_player;    // don't use eyes
@@ -1380,39 +1707,11 @@ void(float isAlive) Impulses_Player =
 		else if (self.impulse == IMP_ARMOR_NEXT)
 			ArmorTest();
 
-		else if (self.impulse <= IMP_TAUNT_0)
+		else if (self.impulse == IMP_TAUNT)
 		{
 			tauntnum = floor(random() * 10);
 			Taunt(tauntnum);
-			//Taunt(0);
 		}
-
-		/*else if (self.impulse == IMP_TAUNT_1)
-		Taunt(1);
-
-		else if (self.impulse == IMP_TAUNT_2)
-		Taunt(2);
-
-		else if (self.impulse == IMP_TAUNT_3)
-		Taunt(3);
-
-		else if (self.impulse == IMP_TAUNT_4)
-		Taunt(4);
-
-		else if (self.impulse == IMP_TAUNT_5)
-		Taunt(5);
-
-		else if (self.impulse == IMP_TAUNT_6)
-		Taunt(6);
-
-		else if (self.impulse == IMP_TAUNT_7)
-		Taunt(7);
-
-		else if (self.impulse == IMP_TAUNT_8)
-		Taunt(8);
-
-		else if (self.impulse == IMP_TAUNT_9)
-		Taunt(9);*/
 
 		else if (self.impulse == 80)
 			shake_start();
@@ -1427,43 +1726,6 @@ void(float isAlive) Impulses_Player =
 				bot_way_edit();
 			else
 #endif
-
-				if (self.impulse == IMP_CHEAT_ARMOR)
-				{
-					sprint(self, "griswold -- You have full armor.\n");
-					self.armor_fire = self.armor_body = self.armor_spirit = self.armorvalue = 200;
-					self.items = self.items - (self.items & IT_ARMOR_ALL) + IT_ARMOR_FIRE;
-				}
-				else if (self.impulse == IMP_CHEAT_IN_FIRE)
-				{
-					sprint(self, "mcgee -- You're fired!\n");
-					Ignite(self, self, DF_BURN, 10, 20);
-				}
-				else if (self.impulse == IMP_CHEAT_INVENT)
-					Cheat_Inventory();
-				else if (self.impulse == IMP_CHEAT_BOD)
-					Player_BrinkOfDeath(self, world);
-				else if (self.impulse == IMP_CHEAT_AKIMBO)
-					Cheat_Akimbo();
-				else if (self.impulse == IMP_COREDUMP)
-					coredump();
-				else if (self.impulse == IMP_CHEAT_WEAPONS)
-				{
-					self.items = self.items | IT_FLAREGUN | IT_SAWED_OFF | IT_TOMMYGUN | IT_NAPALM_LAUNCHER | IT_TNT
-											| IT_PROXIMITY_BOMB | IT_REMOTE_DETONATOR | IT_SPRAY_CAN
-											| IT_TESLA_CANNON | IT_VOODOO_DOLL | IT_LIFE_LEECH;
-					self.ammo_flare = 100;
-					self.ammo_shells = 100;
-					self.ammo_nails = 500;
-					self.ammo_rockets = 100;
-					self.ammo_tnt_bundle = 50;
-					self.ammo_tnt_proxy = 50;
-					self.ammo_tnt_remote = 50;
-					self.ammo_spray = 288;
-					self.ammo_cells = 250;
-					self.ammo_leech = 100;
-					self.ammo_voodoo = 100;
-				}
 		}
 	}
 
@@ -1745,7 +2007,7 @@ void(entity attacker) ClientObituary =
 		return;
 	}
 
-	if (attacker.classname == "player")
+	if (attacker.classname == "player" && gametype > GT_SINGLE_PLAYER)
 	{
 		if (self == attacker)
 		{
@@ -2114,7 +2376,8 @@ void(entity attacker) ClientObituary =
 			bprint("\n");
 		}
 	}
-
+	else if (attacker.classname == "player" && gametype == GT_SINGLE_PLAYER)
+		sprint(self, "You killed yourself!\n");
 	// If the player was killed by a monster
 	else if (attacker.flags & FL_MONSTER)
 	{

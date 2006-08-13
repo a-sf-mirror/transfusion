@@ -22,6 +22,101 @@
 void() proxy_animate;
 
 /*
+================
+ProxyBombCheck
+
+The proximity bomb checks its neighborhood and explodes if a living being is nearby
+================
+*/
+void() ProxyBombCheck =
+{
+	local entity thing;
+
+	// Try to find something interesting nearby
+	// Note: in T_RadiusDamage, an explosion can damage someone up to a distance of its damage + 40
+	thing = findradius(self.origin, self.dmg + 20);
+	while (thing)
+	{
+		// If it's a player or a monster, explode in 400 msec
+		if (thing.classname == "player" || (thing.flags & FL_MONSTER))
+		{
+			sound(self, CHAN_WEAPON, "weapons/tnt/proxdet.wav", 1, ATTN_NORM);
+			self.pausetime = time + 0.4;
+			self.think1 = SUB_Null;
+			return;
+		}
+
+		// Next one
+		thing = thing.chain;
+	}
+
+	// Retry in a moment
+	self.pausetime = time + 0.25;
+};
+
+/*
+================
+ProxyBombArmed
+
+The proximity bomb becomes armed, ready to explode as soon as someone is nearby
+================
+*/
+void() ProxyBombArmed =
+{
+	sound(self, CHAN_WEAPON, "weapons/tnt/proxarm.wav", 1, ATTN_NORM);
+
+	self.pausetime = time;
+	self.think1 = ProxyBombCheck;
+};
+
+/*
+================
+ProxyBombThink
+
+The proximity bomb does a generic think, then is checked against the world
+================
+*/
+void() ProxyBombThink =
+{
+	if (self.pausetime <= time)
+	{
+		if (self.think1 == SUB_Null)
+		{
+			Bomb_Explode();
+			return;
+		}
+		self.think1();
+	}
+
+	// Do the standard bomb thinking
+	BombThink();
+};
+
+/*
+====================
+proximity_mine
+
+Spawn function for proximity mines (BB6 map)
+====================
+*/
+void() proximity_mine =
+{
+	precache_sound("weapons/tnt/proxdet.wav");  // proximity bomb triggered
+
+	self.owner      = world;
+	self.solid      = SOLID_BBOX;
+	self.takedamage = DAMAGE_AIM;
+	self.health     = 1;
+	self.th_die     = Bomb_Trigger;
+	self.nextthink  = 0.1;
+	self.pausetime  = time;
+	self.think1     = ProxyBombCheck;
+	self.think      = ProxyBombThink;
+	self.dmg        = DMG_PROXIMITY_BOMB;
+	setsize(self, '-1 -1 -1', '1 1 1');	
+};
+
+/*
 ============
 Proxy_Attack
 

@@ -174,77 +174,6 @@ void() BombThink =
 
 /*
 ================
-ProximBombCheck
-
-The proximity bomb checks its neighborhood and explodes if a living being is nearby
-================
-*/
-void() ProximBombCheck =
-{
-	local entity thing;
-
-	// Try to find something interesting nearby
-	// Note: in T_RadiusDamage, an explosion can damage someone up to a distance of its damage + 40
-	thing = findradius(self.origin, self.dmg + 20);
-	while (thing)
-	{
-		// If it's a player or a monster, explode in 400 msec
-		if (thing.classname == "player" || (thing.flags & FL_MONSTER))
-		{
-			sound(self, CHAN_WEAPON, "weapons/tnt/proxdet.wav", 1, ATTN_NORM);
-			self.pausetime = time + 0.4;
-			self.think1 = SUB_Null;
-			return;
-		}
-
-		// Next one
-		thing = thing.chain;
-	}
-
-	// Retry in a moment
-	self.pausetime = time + 0.25;
-};
-
-/*
-================
-ProximBombArmed
-
-The proximity bomb becomes armed, ready to explode as soon as someone is nearby
-================
-*/
-void() ProximBombArmed =
-{
-	sound(self, CHAN_WEAPON, "weapons/tnt/proxarm.wav", 1, ATTN_NORM);
-
-	self.pausetime = time;
-	self.think1 = ProximBombCheck;
-};
-
-/*
-================
-ProximBombThink
-
-The proximity bomb does a generic think, then is checked against the world
-================
-*/
-void() ProximBombThink =
-{
-	if (self.pausetime <= time)
-	{
-		if (self.think1 == SUB_Null)
-		{
-			Bomb_Explode();
-			return;
-		}
-		self.think1();
-	}
-
-	// Do the standard bomb thinking
-	BombThink();
-};
-
-/*
-================
 GrenadeTouch
 
 "Touch" function for grenades
@@ -294,30 +223,6 @@ void() DynaThink =
 };
 
 /*
-====================
-proximity_mine
-
-Spawn function for proximity mines (BB6 map)
-====================
-*/
-void() proximity_mine =
-{
-	precache_sound("weapons/tnt/proxdet.wav");  // proximity bomb triggered
-
-	self.owner      = world;
-	self.solid      = SOLID_BBOX;
-	self.takedamage = DAMAGE_AIM;
-	self.health     = 1;
-	self.th_die     = Bomb_Trigger;
-	self.nextthink  = 0.1;
-	self.pausetime  = time;
-	self.think1     = ProximBombCheck;
-	self.think      = ProximBombThink;
-	self.dmg        = DMG_PROXIMITY_BOMB;
-	setsize(self, '-1 -1 -1', '1 1 1');	
-};
-
-/*
 ================
 Bomb_Fire
 
@@ -326,17 +231,17 @@ Fire a bomb
 */
 void() Bomb_Fire =
 {
-	if (self.weapon == IT_PROXIMITY_BOMB)
-	self.currentammo = self.ammo_tnt_proxy = self.ammo_tnt_proxy - 1;
-	else if (self.weapon == IT_REMOTE_DETONATOR)
+	if (self.weapon == IT_PROXIMITY_BOMB && !(self.flags & FL_INFINATE_AMMO))
+		self.currentammo = self.ammo_tnt_proxy = self.ammo_tnt_proxy - 1;
+	else if (self.weapon == IT_REMOTE_DETONATOR && !(self.flags & FL_INFINATE_AMMO))
 		self.currentammo = self.ammo_tnt_remote = self.ammo_tnt_remote - 1;
-	else if (self.weapon == IT_TNT)
+	else if (self.weapon == IT_TNT && !(self.flags & FL_INFINATE_AMMO))
 		self.currentammo = self.ammo_tnt_bundle = self.ammo_tnt_bundle - 1;
-	else  // if (self.weapon == IT_SPRAY_CAN)
+	else  if (!(self.flags & FL_INFINATE_AMMO)) // && (self.weapon == IT_SPRAY_CAN)
 	{
 		// If we have at least one full spray can, we use it
 		if (self.currentammo >= 48)
-			self.ammo_spray = self.ammo_spray - 48;
+				self.ammo_spray = self.ammo_spray - 48;
 		// Else, we burn our last one
 		else
 			self.ammo_spray = 0;
@@ -395,7 +300,7 @@ void() Bomb_Fire =
 	newmis.nextthink = 0.1;
 	newmis.think     = BombThink;
 
-	setorigin(newmis, self.origin + self.view_ofs + VEC_WEAPON_OFS + v_forward * 15);
+	setorigin(newmis, W_Origin() + v_forward * 15 + v_right * 6 + v_up * 16);
 
 	self.player_state = PS_FIRE;
 
@@ -404,8 +309,8 @@ void() Bomb_Fire =
 	{
 		newmis.pausetime = time + 2.5;
 		newmis.style =	TNT_TYPE_NORMAL;
-		newmis.think = ProximBombThink;
-		newmis.think1 = ProximBombArmed;
+		newmis.think = ProxyBombThink;
+		newmis.think1 = ProxyBombArmed;
 		newmis.netname = "Proximity Bomb";
 		newmis.dmg = DMG_PROXIMITY_BOMB;
 		newmis.avelocity = '0 300 0';
@@ -453,11 +358,8 @@ void() Bomb_Fire =
 	// (expect for remote detonators: we always have the remote)
 	if (self.currentammo == 0 && self.weapon != IT_REMOTE_DETONATOR)
 	{
-		local float newWeapon;
-
 		self.items = self.items - self.weapon;
 		remove(self.weaponentity);
-		newWeapon = W_BestWeapon();
-		W_DrawWeapon(newWeapon);
+		W_DrawWeapon(W_BestWeapon());
 	}
 };

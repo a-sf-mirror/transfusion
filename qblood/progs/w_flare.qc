@@ -89,7 +89,7 @@ void() FlareTouch =
 		self.effects = EF_STARDUST;
 
 		// Flares stick for max of 6 seconds
-		self.weaponentity.attack_finished = time + 6;
+		self.attack_finished = time + 6;
 		FlareThink();
 	}
 	else
@@ -98,7 +98,7 @@ void() FlareTouch =
 
 void() FlareThink =
 {
-	if (self.weaponentity.attack_finished < time ||  // flare is burnt out
+	if (self.attack_finished < time ||  // flare is burnt out
 		self.enemy.health <=0)          // enemy is dead
 		remove(self);
 
@@ -330,23 +330,25 @@ void(float hand) Flare_Fire =
 	if (self.items & IT_GUNS_AKIMBO)
 	{
 		if (hand == RIGHT)
-			orig = self.origin + self.view_ofs + VEC_WEAPON_OFS + v_forward * 32 + v_right * 10 + v_up * 16;
+			orig = W_Origin() + v_forward * 32 + v_right * 10;
 		else
-			orig = self.origin + self.view_ofs + VEC_WEAPON_OFS + v_forward * 32 + v_right * -16 + v_up * 16;
+			orig = W_Origin() + v_forward * 32 + v_right * -16;
 	}
 	else
-		orig = self.origin + self.view_ofs + VEC_WEAPON_OFS + v_forward * 32 + v_right * 6.25;
+		orig = W_Origin() + v_forward * 32 + v_right * 6.25;
 
 
 	// If we want to (and can) launch alt-flares
 	if (self.player_state == PS_ALTFIRE && self.ammo_flare >= 8)
 	{
-		self.currentammo = self.ammo_flare = self.ammo_flare - 8;
+		if (!(self.flags & FL_INFINATE_AMMO))
+			self.currentammo = self.ammo_flare = self.ammo_flare - 8;
 		FireAltFlares(self, orig, dir, mspeed, 1, 20, 3);
 		return;
 	}
 
-	self.currentammo = self.ammo_flare = self.ammo_flare - 1;
+	if (!(self.flags & FL_INFINATE_AMMO))
+		self.currentammo = self.ammo_flare = self.ammo_flare - 1;
 	FireFlare(self, orig, dir, mspeed);
 };
 

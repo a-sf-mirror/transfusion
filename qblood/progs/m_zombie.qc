@@ -149,6 +149,9 @@ void() zombie_axeAttack =
 //--- Moan and show pain
 void() zombie_pain =
 {
+	if (self.pain_finished > time)
+		return;
+
     local float r;
     // don't make multiple pain sounds right after each other
     r = random();
@@ -162,13 +165,12 @@ void() zombie_pain =
 		sound(self, CHAN_VOICE, "axezombie/azommoan.wav", 1, ATTN_NORM);
 		self.pain_finished = (time + 1.48);
 	}
-	if (self.health < 50 && r < 0.3)
-	{
-		zombie_fallback();
-	}
 	if (self.pain_finished > time)
         return;
-	self.anim_type = PAIN;
+	if (self.health < 50 && r < 0.3)
+		self.anim_type = FALLBACK;
+	else
+		self.anim_type = PAIN;
 	zombie_animate();
 };
 
@@ -194,9 +196,7 @@ void() zombie_die =
 		self.anim_type = EXPLODE;
 	}
     else if (random() < 0.75)
-	{
 		self.anim_type = DEATH1;
-	}
     else
 	{
 		setmodel(self, "models/enemies/zombie/zombie_headless.psk");

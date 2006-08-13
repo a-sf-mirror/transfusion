@@ -54,34 +54,6 @@ float(vector vec) VecInWater =
 void(entity victim, entity attacker, float dmgtype, float burn, float burntime) Ignite;
 void(string attach_point, entity attach_to) AttachObject;
 
-/*
-================
-muzzleflash
-
-creates the muzzle flash for weapons
-================
-*/
-void() muzzleflash =
-{
-	local string sprite;
-	local float offset;
-	if (self.weapon == IT_SAWED_OFF)
-	{
-		sprite = "models/weapons/objects/muzzle_shotgun.spr32";
-		if ((self.player_state == PS_ALTFIRE) && (self.weaponentity.ammo_in_chamber == 2))
-			offset = 0;
-		else
-		{
-			if (self.weaponentity.ammo_in_chamber == 2)
-				offset = -4;
-			else
-				offset = 4;
-		}
-		effect(self.origin + v_forward * 100 + v_right * offset, sprite, 0, 2, 20);
-	}
-	//FIXME - add other weapons, and fix shotgun
-};
-
 //------------------------------------------------------------------------//
 //  This inflicts standard fire damage like in Blood.
 //------------------------------------------------------------------------//
@@ -310,6 +282,7 @@ void() Burn =
 //------------------------------------------------------------------------//
 void(entity victim, entity attacker, float dmgtype, float burn, float burntime) Ignite =
 {
+	burn = (burn / 10) * (1 / frametime);
 	// Check for fire immunity.
 	if (!victim.takedamage)
 		return;
@@ -338,10 +311,10 @@ void(entity victim, entity attacker, float dmgtype, float burn, float burntime) 
 		victim_burner = victim.burner;
 
 		// How much damage remains to be apply by the current burner?
-		oldburn = victim_burner.dmg * 10 * (victim_burner.dmgtime - time);
+		oldburn = victim_burner.dmg * (1 / frametime) * (victim_burner.dmgtime - time);
 
 		// The damage per 1/10th sec is set to the new value
-		victim_burner.dmg = burn / 10;
+		victim_burner.dmg = burn / (1 / frametime);
 
 		// We add some time to the new burn time to make sure the remaining points
 		// will be apply nevertheless. Warning: the burner is always owned by
@@ -357,7 +330,7 @@ void(entity victim, entity attacker, float dmgtype, float burn, float burntime) 
 	fire = spawn();
 	setmodel(fire, string_null);
 	setsize(fire, '0 0 0', '0 0 0');
-	setorigin(fire, VEC_ORIGIN);       // Doesn't matter where it is.
+	setorigin(fire, PL_ORIGIN);       // Doesn't matter where it is.
 	fire.solid      = SOLID_NOT;
 	fire.takedamage = DAMAGE_NO;
 	fire.frame      = 0;
@@ -365,10 +338,10 @@ void(entity victim, entity attacker, float dmgtype, float burn, float burntime) 
 	fire.enemy      = victim;
 	fire.classname  = "burner";
 	fire.deathtype  = "fire";
-	fire.dmg        = burn / 10;        // points of damage per 1/10th sec
+	fire.dmg        = burn / (1 / frametime);        // points of damage per 1/10th sec
 	fire.dmgtime    = time + burntime;
 	fire.style      = dmgtype;			// damage-flag (DF_BURN or DF_SPIRIT)
-	fire.nextthink  = 0.1;
+	fire.nextthink  = time + frametime;
 	fire.think      = Burn;
 	fire.reset      = SUB_Remove;
 

@@ -259,7 +259,7 @@ entity(vector org) make_waypoint =
 	point.items = -1;
 	setorigin(point, org);
 	
-	setsize(point, VEC_HULL_MIN, VEC_HULL_MAX);
+	setsize(point, PL_MIN, PL_MAX);
 	waypoints = waypoints + 1;
 	if (!way_head)
 	{
@@ -938,7 +938,7 @@ void() waypoint =
 	self.movetype = MOVETYPE_NONE;
 	setorigin(self, self.origin);
 	
-	setsize(self, VEC_HULL_MIN, VEC_HULL_MAX);
+	setsize(self, PL_MIN, PL_MAX);
 	waypoints = waypoints + 1;
 	if (!way_head)
 	{
@@ -1003,5 +1003,5 @@ void(vector org) SpawnTempWaypoint =
 	tep.movetype = MOVETYPE_NOCLIP;
 	setorigin(tep, org);
 	target_add(tep);
-	setsize(tep, VEC_HULL_MIN, VEC_HULL_MAX); // FIXME: convert these to numerical
+	setsize(tep, PL_MIN, PL_MAX); // FIXME: convert these to numerical
 };

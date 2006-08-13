@@ -211,7 +211,8 @@ void() Napalm_Fire =
 			newmis.cnt = 12;
 		else
 			newmis.cnt = self.ammo_rockets;
-		self.ammo_rockets = self.ammo_rockets - newmis.cnt;
+		if (!(self.flags & FL_INFINATE_AMMO))
+			self.ammo_rockets = self.ammo_rockets - newmis.cnt;
 		newmis.velocity = newmis.velocity * 400 + '0 0 200';
 
 		Napalm_ThrowBouncingBall(newmis);
@@ -226,7 +227,8 @@ void() Napalm_Fire =
 
 		newmis.movetype = MOVETYPE_FLYMISSILE;
 		newmis.velocity = newmis.velocity * 1500;
-		self.ammo_rockets = self.ammo_rockets - 1;
+		if (!(self.flags & FL_INFINATE_AMMO))
+			self.ammo_rockets = self.ammo_rockets - 1;
 
 		newmis.touch = T_MissileTouch;
 		setmodel(newmis, "models/weapons/objects/napalm.md3");
@@ -239,8 +241,9 @@ void() Napalm_Fire =
 		newmis.think = SUB_Remove;
 		newmis.reset = SUB_Remove;
 	}
-	self.currentammo = self.ammo_rockets;
-	setorigin(newmis, self.origin + self.view_ofs + VEC_WEAPON_OFS + v_forward * 24 + v_right * 3);
+	if (!(self.flags & FL_INFINATE_AMMO))
+		self.currentammo = self.ammo_rockets;
+	setorigin(newmis, W_Origin() + v_forward * 24 + v_right * 3 + v_up * -4);
 };
 
 /*

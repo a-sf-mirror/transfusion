@@ -38,7 +38,8 @@ void() Spray_Fire =
 	makevectors(self.v_angle);
 
 	self.weaponentity.attack_finished = time + SPRAY_HOLDFIRE_TIME;
-	self.currentammo = self.ammo_spray = self.ammo_spray - 1;
+	if (!(self.flags & FL_INFINATE_AMMO))
+		self.currentammo = self.ammo_spray = self.ammo_spray - 1;
 	dir = aim(self, 1000);
 
 	newmis = spawn();
@@ -57,7 +58,7 @@ void() Spray_Fire =
 	newmis.nextthink = time + 0.6;
 	setmodel(newmis, "progs/sprayfir.spr");
 	setsize(newmis, '-1 -1 -1', '1 1 1');
-	setorigin(newmis, self.origin + self.view_ofs + VEC_WEAPON_OFS + v_forward * 50 + v_right * 2 + v_up * -2);
+	setorigin(newmis, W_Origin() + v_forward * 50 + v_right * 2 + v_up * -5);
 
 	newmis.velocity = dir * 550;
 	newmis.owner = self;

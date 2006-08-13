@@ -266,10 +266,6 @@ void() player_axpain5 = [$pitchpain5, player_run    ] {};
 
 void() player_pain =
 {
-	// FIXME: check the player state instead
-	if (self.weaponframe)
-		return;
-
 	if (self.invisible_finished > time)
 		return;     // eyes don't have pain frames
 

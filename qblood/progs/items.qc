@@ -166,8 +166,6 @@ void() Invisibility_Touch =
 	if (other.health <= 0)
 		return;
 
-	// FIXME: need to set alpha for each v_weapon
-	other.alpha = 0.2;
 	self.mdl = self.model;
 
 	sound(other, CHAN_VOICE, self.noise, 1, ATTN_NORM);
@@ -1390,9 +1388,9 @@ void() weapon_touch =
 	if (self.weapon == IT_PITCHFORK && self.player_state != PS_HOLSTER)
 	{
 		 if (self.player_state == PS_IDLE)
-			W_SwitchToWeapon(new);
+			W_SwitchToWeapon(W_BestWeapon());
 		 else
-			self.newweapon = new;
+			self.newweapon = W_BestWeapon();
 	}
 
 	self = temp;
@@ -2117,8 +2115,7 @@ void() item_key =
 
 	precache_model("models/items/i_key.md3");
 	setmodel(self, "models/items/i_key.md3");
-	//setsize(self, '-16 -16 -24', '16 16 32');
-	setsize(self, '-16 -16 0', '16 16 56');
+	setsize(self, '-16 -16 -24', '16 16 32');
 
 	if (!self.noise)
 		self.noise	= "items/pickkey.wav";

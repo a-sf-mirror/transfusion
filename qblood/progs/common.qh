@@ -55,7 +55,8 @@
 #define FL_WATERJUMP        2048  // player jumping out of water
 #define FL_JUMPRELEASED     4096  // for jump debouncing
 #define FL_FALLING          8192  // when falling a large distance
-#define FL_CROUCHING		16384
+#define FL_CROUCHING		16384 // when a player is crouching
+#define	FL_INFINATE_AMMO	32768 // player cheat
 
 // edict.spawnflags
 // let 10 flags (1 -> 512) free for each entity type
@@ -169,20 +170,11 @@
 #define IMP_MENU             55
 #define IMP_OBSERVER         56
 
-// Player taunts (70 - 79)
-#define IMP_TAUNT_0          70
-#define IMP_TAUNT_1          71
-#define IMP_TAUNT_2          72
-#define IMP_TAUNT_3          73
-#define IMP_TAUNT_4          74
-#define IMP_TAUNT_5          75
-#define IMP_TAUNT_6          76
-#define IMP_TAUNT_7          77
-#define IMP_TAUNT_8          78
-#define IMP_TAUNT_9          79
+#define IMP_TAUNT            70
 
 // Cheats (from 254, going down)
 // WARNING: all of them are CHEAT PROTECTED
+#define	IMP_GODMODE			 248  // God mode.
 #define IMP_CHEAT_WEAPONS	 249  // All weapons and ammo
 #define IMP_CHEAT_BOD        250  // Brink Of Death
 #define IMP_CHEAT_ARMOR      251  // griswold - full armor
@@ -263,16 +255,13 @@
 #define STATE_UP        2
 #define STATE_DOWN      3
 
-#define VEC_ORIGIN      '0 0 0'
-#define VEC_HULL_MIN    '-16 -16 -20'
-#define VEC_HULL_MAX    '16 16 32'
-#define VEC_HULL_VIEW_OFS	'0 0 25'
-#define	VEC_HULL_VIEW_OFS_Z	25
-#define VEC_HULL_CROUCH_MIN	'-16 -16 -20'	// FIXME: dummy value
-#define VEC_HULL_CROUCH_MAX '16 16 10'		// FIXME: dummy value
-#define VEC_HULL_CROUCH_VIEW_OFS '0 0 3'	// FIXME: dummy value
-#define	VEC_HULL_CROUCH_VIEW_OFS_Z	3
-#define VEC_WEAPON_OFS	'0 0 -7'
+#define PL_ORIGIN			'0 0 0'
+#define PL_MIN				'-16 -16 -20'
+#define PL_MAX				'16 16 32'
+#define	PL_VIEW_OFS			'0 0 25'
+#define PL_CROUCH_MIN		'-16 -16 -20'	// FIXME: dummy value
+#define PL_CROUCH_MAX		'16 16 -5'		// FIXME: dummy value
+#define PL_CROUCH_VIEW_OFS	'0 0 -5'
 
 // protocol bytes
 #define SVC_TEMPENTITY      23

@@ -73,7 +73,7 @@ void() Shotgun_SpawnShell =
 	shell.mdl   = "models/weapons/objects/shotgunshell.md3";
 	shell.noise = "weapons/shtshl2.wav";
 
-	setorigin(shell, self.origin + self.view_ofs + VEC_WEAPON_OFS + v_forward * 25);
+	setorigin(shell, W_Origin() + v_forward * 25);
 	shell.velocity = (random() - 1) * v_forward * 30 + v_up * (160 + random() * 10) + v_right * (random() + 1) * 40;
 	DropShell(shell);
 
@@ -121,7 +121,8 @@ void() Shotgun_Fire =
 
 	self.punchangle_x = -2 * nbshots;
 
-	self.currentammo = self.ammo_shells = self.ammo_shells - nbshots;
+	if (!(self.flags & FL_INFINATE_AMMO))
+		self.currentammo = self.ammo_shells = self.ammo_shells - nbshots;
 
 	if (nbshots == 1)
 		sound(self, CHAN_AUTO, "weapons/shotgun/shotgunfire.wav", 1, ATTN_NORM);
@@ -130,16 +131,12 @@ void() Shotgun_Fire =
 
 	dir = aim(self, 100000);
 
-	orig = self.origin + self.view_ofs + VEC_WEAPON_OFS;
+	orig = W_Origin();
 	// Total damage from an alt-fire is about 3 times normal damage (1*8*8=64, 2*8*12=192)
 	if (nbshots == 1)
-	{
 		FireBullets(orig, dir, 8 * nbshots, 8, spread);  // 8 "shot pellets" per shell
-	}
 	else if (nbshots == 2)
-	{
 		FireBullets(orig, dir, 8 * nbshots, 12, spread);  // 8 "shot pellets" per shell
-	}
 };
 
 /*

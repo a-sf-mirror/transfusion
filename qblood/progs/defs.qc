@@ -405,11 +405,6 @@ float sight_entity_time;
 .float      search_time;
 .float      attack_state;
 
-//this is a very special capability, attachs the entity to the view of the client specified, origin and angles become relative to the view of that client, all effects can be used (multiple skins on a weapon model etc)...  the entity is not visible to any other client.
-.entity viewmodelforclient;
-
-.entity		attachedobject;
-
 //new player/monster/weapon animation variables
 .float		last_action;	//transition to new anim_type, starts frame at 1
 .float		anim_type;		//animation type: stand,walk,run,pain,death,attack
@@ -673,6 +668,12 @@ void(entity e) setspawnparms = #78;  // set parm1... to the values at level star
 float(string name, string value) registercvar   = #93;
 float(string s) checkextension                  = #99;
 
+/*
+==================
+DP Extensions
+==================
+*/
+
 // concatenates two strings (for example "abc", "def" would return "abcdef") and returns as a tempstring
 string(string s1, string s2) strcat             = #115; 
 
@@ -721,3 +722,19 @@ void(entity e, entity tagentity, string tagname) setattachment = #443; // attach
 
 //similar to traceline but much more useful, traces a box of the size specified (technical note: in quake1 and halflife bsp maps the mins and maxs will be rounded up to one of the hull sizes, quake3 bsp does not have this problem, this is the case with normal moving entities as well).
 void(vector v1, vector min, vector max, vector v2, float nomonsters, entity forent) tracebox = #90;
+
+//this is a very special capability, attachs the entity to the view of the client specified, origin and angles become relative to the view of that client, all effects can be used (multiple skins on a weapon model etc)...  the entity is not visible to any other client.
+.entity viewmodelforclient;
+.entity		attachedobject;
+
+//KRIMZON_SV_PARSECLIENTCOMMAND
+//idea: KrimZon
+//darkplaces implementation: KrimZon, LordHavoc
+//engine-called QC prototypes:
+//void(string s) SV_ParseClientCommand;
+//builtin definitions:
+void(entity e, string s) clientcommand = #440;
+float(string s) tokenize = #441;
+string(float n) argv = #442;
+//description:
+//provides QC the ability to completely control server interpretation of client commands ("say" and "color" for example, clientcommand is necessary for this and substring (FRIK_FILE) is useful) as well as adding new commands (tokenize, argv, and stof (FRIK_FILE) are useful for this)), whenever a clc_stringcmd is received the QC function is called, and it is up to the QC to decide what (if anything) to do with it
