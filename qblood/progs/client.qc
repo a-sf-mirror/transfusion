@@ -405,6 +405,7 @@ void(string s) SV_ParseClientCommand =
 				}
 				else if (argv(1) == "tequila")
 				{
+					sound(self, CHAN_ITEM, "bludbath/powerup.wav", 1, ATTN_NORM);
 					self.akimbo_finished = time + 30;
 					W_SetCurrentAmmo();
 				}
