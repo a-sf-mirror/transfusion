@@ -590,9 +590,15 @@ void(string s) SV_ParseClientCommand =
 					if (argv(1) == "spielberg")
 						cvar_set("sv_cheats", "0");
 					local string tmapname, findmap, mario;
-					tmapname = "e";
-					tmapname = strcat(tmapname, argv(2));
-					tmapname = strcat(tmapname, "m");
+					if (argv(2) == "5")
+						tmapname = "bb";
+					else
+					{
+						tmapname = "e";
+						tmapname = strcat(tmapname, argv(2));
+					}
+					if (argv(2) != "5")
+						tmapname = strcat(tmapname, "m");
 					tmapname = strcat(tmapname, argv(3));
 					findmap = "ls maps/";
 					findmap = strcat(findmap, tmapname);
