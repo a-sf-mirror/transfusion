@@ -220,7 +220,7 @@ Holster code for the voodoo doll
 */
 void() Voodoo_Holster =
 {
-	self.attack_finished = time + VOODOO_HOLSTER_TIME;
+	self.weaponentity.attack_finished = time + VOODOO_HOLSTER_TIME;
 	self.weaponentity.anim_type = HOLSTER;
 	voodoo_animate();
 };

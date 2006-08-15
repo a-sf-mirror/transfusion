@@ -186,7 +186,7 @@ void() Player_LiveAgain =
 {
 	sound(self, CHAN_VOICE, "player/taunts/t1010.wav", 1, ATTN_NORM);  // I live ... again!
 	self.player_state = PS_IDLE;
-	player_run();
+	//player_run();
 	W_DrawWeapon(self.weapon);
 };
 
@@ -272,10 +272,12 @@ void() player_pain =
 	// Changed so player only shows pain when player make noise.
 	if (PainSound())
 	{
-		if (self.weapon == IT_PITCHFORK)
+		//FIXME - player re-animation.
+		/*if (self.weapon == IT_PITCHFORK)
 			player_axpain1();
 		else
-			player_pain1();
+			player_pain1();*/
+		return;
 	}
 };
 

@@ -74,24 +74,21 @@ Attack code for the spray can
 */
 void() Spray_Attack =
 {
-	if (self.weaponentity.attack_finished < time)
+	if (self.button3) // New Altfire
 	{
-		if (self.button3) // New Altfire
-		{
-			self.player_state = PS_ALTFIRE;
-			self.weaponentity.anim_type = LIGHT_FUSE;
-			self.weaponentity.attack_finished = self.weaponentity.tnt_time = time + FUSE_TIME;
-			self.weaponentity.charge = 0;
-			//We'll set a more accurate attack_finished when actually throwing the bomb		
-		}
-		else if (self.button0 && !self.weaponentity.tnt_time)// Normal fire
-		{
-			self.player_state = PS_FIRE;
-			self.weaponentity.attack_finished = time + SPRAY_FIRE_TIME;
-			self.weaponentity.anim_type = FIRE;
-		}
-		spray_animate();
+		self.player_state = PS_ALTFIRE;
+		self.weaponentity.anim_type = LIGHT_FUSE;
+		self.weaponentity.attack_finished = self.weaponentity.tnt_time = time + FUSE_TIME;
+		self.weaponentity.charge = 0;
+		//We'll set a more accurate attack_finished when actually throwing the bomb		
 	}
+	else if (self.button0 && !self.weaponentity.tnt_time)// Normal fire
+	{
+		self.player_state = PS_FIRE;
+		self.weaponentity.attack_finished = time + SPRAY_FIRE_TIME;
+		self.weaponentity.anim_type = FIRE;
+	}
+	spray_animate();
 };
 
 /*

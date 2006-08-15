@@ -241,6 +241,7 @@ void() Napalm_Fire =
 		newmis.think = SUB_Remove;
 		newmis.reset = SUB_Remove;
 	}
+	muzzleflash();
 	if (!(self.flags & FL_INFINATE_AMMO))
 		self.currentammo = self.ammo_rockets;
 	setorigin(newmis, W_Origin() + v_forward * 24 + v_right * 3 + v_up * -4);
@@ -255,27 +256,24 @@ Attack code for the napalm launcher
 */
 void() Napalm_Attack =
 {
-	if (self.weaponentity.attack_finished < time)
-	{
-		// Normal fire or altfire?
-		if (self.button3)
-			self.player_state = PS_ALTFIRE;
-		else
-			self.player_state = PS_FIRE;
+	// Normal fire or altfire?
+	if (self.button3)
+		self.player_state = PS_ALTFIRE;
+	else if (self.button0)
+		self.player_state = PS_FIRE;
 
-		// If we have guns akimbo
-		if (self.items & IT_GUNS_AKIMBO)
-		{
-			self.weaponentity.attack_finished = time + NAPALM_AKIMBO_FIRE_TIME;
-			self.weaponentity.anim_type = AKIMBO_FIRE;
-		}
-		else
-		{
-			self.weaponentity.attack_finished = time + NAPALM_FIRE_TIME;
-			self.weaponentity.anim_type = FIRE;
-		}
-		napalm_animate();
+	// If we have guns akimbo
+	if (self.items & IT_GUNS_AKIMBO)
+	{
+		self.weaponentity.attack_finished = time + NAPALM_AKIMBO_FIRE_TIME;
+		self.weaponentity.anim_type = AKIMBO_FIRE;
 	}
+	else
+	{
+		self.weaponentity.attack_finished = time + NAPALM_FIRE_TIME;
+		self.weaponentity.anim_type = FIRE;
+	}
+	napalm_animate();
 };
 
 /*
@@ -407,20 +405,14 @@ void() napalm_animate =
 	if ((self.weaponentity.anim_type == FIRE) || (self.weaponentity.anim_type == ALTFIRE))
 	{
 		if (self.weaponentity.frame == NAPALM_FIRE_START)
-		{
-			muzzleflash();
 			Napalm_Fire();
-		}
 		else if (self.weaponentity.frame == NAPALM_FIRE_END)
 			Napalm_Idle();
 	}
 	else if (self.weaponentity.anim_type == AKIMBO_FIRE)
 	{
 		if ((self.weaponentity.frame == NAPALM_AKIMBO_FIRE_START) || (self.weaponentity.frame == NAPALM_AKIMBO_FIRE_START + 2))
-		{
-			muzzleflash();
 			Napalm_Fire();
-		}
 		else if (self.weaponentity.frame == NAPALM_AKIMBO_FIRE_END)
 			Napalm_Idle();
 	}

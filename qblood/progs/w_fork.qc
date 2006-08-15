@@ -165,7 +165,7 @@ Holster code for the pitchfork
 */
 void() Fork_Holster =
 {
-	self.attack_finished = time + FORK_HOLSTER_TIME;
+	self.weaponentity.attack_finished = time + FORK_HOLSTER_TIME;
 	self.weaponentity.anim_type = HOLSTER;
 	fork_animate();
 };

@@ -222,7 +222,7 @@ void() Tesla_Attack =
 		self.weaponentity.anim_type = FIRE;
 		tesla_animate();
 	}
-	else
+	else if (self.button3)
 	{
 		self.player_state = PS_ALTFIRE;
 		self.weaponentity.attack_finished = time + TESLA_ALTFIRE_TIME;
@@ -370,18 +370,12 @@ void() tesla_animate =
 		}
 		self.weaponentity.last_action = self.weaponentity.anim_type;
 	}
-
 	self.nextthink = time + (self.weaponentity.anim_time / self.weaponentity.anim_end_num);
 	self.think = tesla_animate;
 
 	if (self.weaponentity.anim_type == FIRE)
 	{
-		if (self.frame == $attack1) //update player's 2 frame fire animation.
-			self.frame = $attack2;
-		else
-			self.frame = $attack1;
-
-		if (time > self.weaponentity.attack_finished)
+		if (self.weaponentity.attack_finished < time)
 		{
 			// Check to see if we are supposed to stop shooting.
 			if ((!self.button0) || (intermission_running) || (self.ammo_cells < 1))

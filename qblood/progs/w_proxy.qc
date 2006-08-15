@@ -125,27 +125,24 @@ Attack code for the proximity bomb
 */
 void() Proxy_Attack =
 {
-	if (self.weaponentity.attack_finished < time)
+	if (self.button0)
 	{
-		if (self.button0)
-		{
-			//Hack so that we can hold it as long as we want, its set properly when we throw it
-			self.weaponentity.attack_finished = time + 99999999999999;
-			self.weaponentity.anim_type = IDLE;
-			self.weaponentity.charge = 1;
-			self.player_state = PS_CHARGE;
-			ShowThrowMeter();
-		}
-		else // Altfire
-		{
-			self.weaponentity.charge = 0;
-			self.weaponentity.attack_finished = time + PROXY_DROP_TIME;
-			Bomb_Fire();
-			Bomb_Uncharge();
-			self.weaponentity.anim_type = IDLE;
-		}
-		proxy_animate();
+		//Hack so that we can hold it as long as we want, its set properly when we throw it
+		self.weaponentity.attack_finished = time + 99999999999999;
+		self.weaponentity.anim_type = IDLE;
+		self.weaponentity.charge = 1;
+		self.player_state = PS_CHARGE;
+		ShowThrowMeter();
 	}
+	else // Altfire
+	{
+		self.weaponentity.charge = 0;
+		self.weaponentity.attack_finished = time + PROXY_DROP_TIME;
+		Bomb_Fire();
+		Bomb_Uncharge();
+		self.weaponentity.anim_type = IDLE;
+	}
+	proxy_animate();
 };
 
 /*

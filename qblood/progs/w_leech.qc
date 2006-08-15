@@ -393,21 +393,18 @@ Life Leech Attack Code
 */
 void() Leech_Attack =
 {
-	if (self.weaponentity.attack_finished < time)
+	if (self.button3) //Altfire
 	{
-		if (self.button3) //Altfire
-		{
-			self.player_state = PS_ALTFIRE;
-			self.weaponentity.attack_finished = time + LEECH_DROP_TIME;
-			Leech_Drop();
-		}
-		else // Normal fire
-		{
-			self.player_state = PS_FIRE;
-			self.weaponentity.attack_finished = time + LEECH_FIRE_TIME;
-			self.weaponentity.anim_type = FIRE;
-			leech_animate();
-		}
+		self.player_state = PS_ALTFIRE;
+		self.weaponentity.attack_finished = time + LEECH_DROP_TIME;
+		Leech_Drop();
+	}
+	else if (self.button0) // Normal fire
+	{
+		self.player_state = PS_FIRE;
+		self.weaponentity.attack_finished = time + LEECH_FIRE_TIME;
+		self.weaponentity.anim_type = FIRE;
+		leech_animate();
 	}
 };
 
@@ -442,7 +439,7 @@ Holster code for the life leech
 */
 void() Leech_Holster =
 {
-	self.attack_finished = time + LEECH_HOLSTER_TIME;
+	self.weaponentity.attack_finished = time + LEECH_HOLSTER_TIME;
 	self.weaponentity.anim_type = HOLSTER;
 	leech_animate();
 };

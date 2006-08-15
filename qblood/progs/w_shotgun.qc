@@ -148,22 +148,19 @@ Attack code for the sawed-off
 */
 void() Shotgun_Attack =
 {
-	if (self.weaponentity.attack_finished < time)
+	if (self.button3) // If it's an altfire shot
 	{
-		if (self.button3) // If it's an altfire shot
-		{
-			self.weaponentity.attack_finished = time + SHOTGUN_ALTFIRE_TIME;
-			self.player_state = PS_ALTFIRE;
-			self.weaponentity.anim_type = ALTFIRE;
-		}
-		else // Regular fire
-		{
-			self.weaponentity.attack_finished = time + SHOTGUN_FIRE_TIME;
-			self.player_state = PS_FIRE;
-			self.weaponentity.anim_type = FIRE;
-		}
-		shotgun_animate();
+		self.weaponentity.attack_finished = time + SHOTGUN_ALTFIRE_TIME;
+		self.player_state = PS_ALTFIRE;
+		self.weaponentity.anim_type = ALTFIRE;
 	}
+	else if (self.button0) // Regular fire
+	{
+		self.weaponentity.attack_finished = time + SHOTGUN_FIRE_TIME;
+		self.player_state = PS_FIRE;
+		self.weaponentity.anim_type = FIRE;
+	}
+	shotgun_animate();
 };
 
 /*

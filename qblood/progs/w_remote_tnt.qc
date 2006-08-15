@@ -58,49 +58,46 @@ Attack code for the remote detonator
 */
 void() Remote_Attack =
 {
-	if (self.weaponentity.attack_finished < time)
+	if (self.button0)
 	{
-		if (self.button0)
+		if (self.weaponentity.tnt_type) // We only have the remote
 		{
-			if (self.weaponentity.tnt_type) // We only have the remote
-			{
-				sound(self, CHAN_WEAPON, "weapons/tnt/remfire.wav", 1, ATTN_NORM);
-				ActivateRemoteBombs();
-				self.weaponentity.attack_finished = time + REMOTE_DRAW_TIME;
-				self.weaponentity.anim_type = HALF_DRAW;
-				self.player_state = PS_DRAW;
-			}
-			else
-			{
-				//Hack so that we can hold it as long as we want, its set properly when we throw it
-				self.weaponentity.attack_finished = time + 99999999999999;
-				self.weaponentity.anim_type = IDLE;
-				self.weaponentity.charge = 1;
-				self.player_state = PS_CHARGE;
-				ShowThrowMeter();
-			}
+			sound(self, CHAN_WEAPON, "weapons/tnt/remfire.wav", 1, ATTN_NORM);
+			ActivateRemoteBombs();
+			self.weaponentity.attack_finished = time + REMOTE_DRAW_TIME;
+			self.weaponentity.anim_type = HALF_DRAW;
+			self.player_state = PS_DRAW;
 		}
-		else// Altfire
+		else
 		{
-			if (self.weaponentity.tnt_type) // If we only have a remote, draw another bomb
-			{
-				self.weaponentity.anim_type = HALF_DRAW;
-				self.weaponentity.attack_finished = time + REMOTE_DRAW_TIME;
-				self.player_state = PS_DRAW;
-			}
-			else
-			{
-				self.weaponentity.charge = 0;
-				self.weaponentity.attack_finished = time + REMOTE_DROP_TIME;
-				self.weaponentity.anim_type = IDLE_WITH_REMOTE;
-				self.weaponentity.tnt_type = REMOTE_ONLY;
-				self.player_state = PS_FIRE;
-				Bomb_Fire();
-				Bomb_Uncharge();
-			}
+			//Hack so that we can hold it as long as we want, its set properly when we throw it
+			self.weaponentity.attack_finished = time + 99999999999999;
+			self.weaponentity.anim_type = IDLE;
+			self.weaponentity.charge = 1;
+			self.player_state = PS_CHARGE;
+			ShowThrowMeter();
 		}
-		remote_animate();
 	}
+	else if (self.button3)// Altfire
+	{
+		if (self.weaponentity.tnt_type) // If we only have a remote, draw another bomb
+		{
+			self.weaponentity.anim_type = HALF_DRAW;
+			self.weaponentity.attack_finished = time + REMOTE_DRAW_TIME;
+			self.player_state = PS_DRAW;
+		}
+		else
+		{
+			self.weaponentity.charge = 0;
+			self.weaponentity.attack_finished = time + REMOTE_DROP_TIME;
+			self.weaponentity.anim_type = IDLE_WITH_REMOTE;
+			self.weaponentity.tnt_type = REMOTE_ONLY;
+			self.player_state = PS_FIRE;
+			Bomb_Fire();
+			Bomb_Uncharge();
+		}
+	}
+	remote_animate();
 };
 
 /*

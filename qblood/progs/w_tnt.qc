@@ -30,17 +30,14 @@ Attack code for the TNT
 */
 void() TNT_Attack =
 {
-	if (self.weaponentity.attack_finished < time)
-	{
-		if (self.button0)
-			self.player_state = PS_FIRE;
-		else
-			self.player_state = PS_ALTFIRE;
-		self.weaponentity.attack_finished = self.weaponentity.tnt_time = time + FUSE_TIME;
-		self.weaponentity.anim_type = LIGHT_FUSE;
-		self.weaponentity.charge = 0;
-		self.think = tnt_animate;
-	}
+	if (self.button0)
+		self.player_state = PS_FIRE;
+	else
+		self.player_state = PS_ALTFIRE;
+	self.weaponentity.attack_finished = self.weaponentity.tnt_time = time + FUSE_TIME;
+	self.weaponentity.anim_type = LIGHT_FUSE;
+	self.weaponentity.charge = 0;
+	self.think = tnt_animate;
 };
 
 /*

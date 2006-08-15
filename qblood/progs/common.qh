@@ -117,6 +117,7 @@
 #define PS_HOLSTER          6
 #define PS_MENU             7   // when a player is browsing the menu
 #define PS_BRINK_OF_DEATH   8   // when a player is around 0 HP
+#define	PS_CROUCH			9
 
 // takedamage values
 #define DAMAGE_NO   0

@@ -363,7 +363,7 @@ void() Flare_Attack =
 {
 	if (self.button3) // Altfire
 		self.player_state = PS_ALTFIRE;
-	else
+	else if (self.button0)
 		self.player_state = PS_FIRE;
 
 	if (self.items & IT_GUNS_AKIMBO)

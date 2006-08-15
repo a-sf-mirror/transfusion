@@ -19,7 +19,7 @@
 
 #include "common.qh"
 
-void() player_run;
+//void() player_run;
 void(entity bomb, entity attacker, float rad, float dflags, entity ignore, string dtype) T_RadiusDamage;
 void() identify_player;
 
@@ -27,9 +27,9 @@ void() identify_player;
 
 /*
 ============
-W_WeaponFrame
+W_Origin
 
-Called every frame so impulse events can be handled as well as possible
+Updates the origin with adjusted offset for crouched and uncrouched.
 ============
 */
 vector() W_Origin =
@@ -1109,9 +1109,8 @@ Called every frame so impulse events can be handled as well as possible
 void(float isAlive) Impulses_Player;
 void() W_WeaponFrame =
 {
-	if (time < self.weaponentity.attack_finished)
+	if (self.weaponentity.attack_finished > time)
 		return;
-
 	//check for changeweapon before ammo incase we currently have no weapon drawn
 	Impulses_Player(TRUE);
 

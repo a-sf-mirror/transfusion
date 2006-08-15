@@ -227,7 +227,7 @@ Holster code for the tommygun
 */
 void() Tommy_Holster =
 {
-	self.attack_finished = time + TOMMY_HOLSTER_TIME;
+	self.weaponentity.attack_finished = time + TOMMY_HOLSTER_TIME;
 	self.weaponentity.anim_type = HOLSTER;
 	tommy_animate();
 };

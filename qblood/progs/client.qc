@@ -980,8 +980,6 @@ void() PutClientInServer =
 
 	InitPlayerCharacteristics();
 
-	// You surely don't want to toss your brand new TNT *right now*...
-	self.attack_finished = time + 0.3;
 	self.impulse = IMP_NONE;
 
 	self.th_pain = player_pain;
@@ -1468,9 +1466,10 @@ void() PlayerPreThink =
 		if (!self.crouch)
 		{
 			self.crouch = TRUE;
+			self.player_state = PS_CROUCH;
 			setsize(self, PL_CROUCH_MIN, PL_CROUCH_MAX);
+			self.frame = PLAYER_CROUCH;
 		}
-		self.frame = 82;
 		tempofs = PL_CROUCH_VIEW_OFS;
 		if (self.view_ofs_z - offset_z > tempofs_z)
 			self.view_ofs_z = self.view_ofs_z - offset_z;
@@ -1496,8 +1495,9 @@ void() PlayerPreThink =
 			if (!trace_startsolid) 
 			{
 				self.crouch = FALSE;
-				self.frame = PLAYER_STAND;
+				self.player_state = PS_IDLE;
 				setsize(self, PL_MIN, PL_MAX);
+				self.frame = PLAYER_STAND;
 			}
 		}
 		if (!self.crouch)
