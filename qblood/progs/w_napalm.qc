@@ -38,7 +38,7 @@ void() Napalm_BallTouch;
 #define	NAPALM_AKIMBO_HOLSTER_START	11
 #define	NAPALM_AKIMBO_HOLSTER_END	14
 
-#define NAPALM_IDLE_TIME			0.1
+#define NAPALM_IDLE_TIME			0.08
 #define NAPALM_DRAW_TIME			0.3
 #define NAPALM_FIRE_TIME			0.5
 #define	NAPALM_AKIMBO_FIRE_TIME		0.7
@@ -273,6 +273,7 @@ void() Napalm_Attack =
 		self.weaponentity.attack_finished = time + NAPALM_FIRE_TIME;
 		self.weaponentity.anim_type = FIRE;
 	}
+	self.weaponentity.skin = 0;
 	napalm_animate();
 };
 
@@ -295,6 +296,7 @@ void() Napalm_Draw =
 	Napalm_UpdateView();
 	self.weaponentity.attack_finished = time + NAPALM_DRAW_TIME;
 	self.weaponentity.anim_type = DRAW;
+	self.weaponentity.skin = 1;
 	napalm_animate();
 };
 
@@ -335,6 +337,10 @@ void() Napalm_UpdateView =
 
 void() Napalm_Idle =
 {
+	if (self.weaponentity.skin == 5)
+		self.weaponentity.skin = 1;
+	else
+		self.weaponentity.skin = self.weaponentity.skin + 1;
 	self.weaponentity.anim_type = IDLE;
 	self.player_state = PS_IDLE;
 	self.weaponentity.frame = NAPALM_IDLE;
@@ -396,11 +402,8 @@ void() napalm_animate =
 		}
 		self.weaponentity.last_action = self.weaponentity.anim_type;
 	}
-	if (self.weaponentity.anim_type != IDLE)
-	{
-		self.nextthink = time + (self.weaponentity.anim_time / self.weaponentity.anim_end_num);
-		self.think = napalm_animate;
-	}
+	self.nextthink = time + (self.weaponentity.anim_time / self.weaponentity.anim_end_num);
+	self.think = napalm_animate;
 
 	if ((self.weaponentity.anim_type == FIRE) || (self.weaponentity.anim_type == ALTFIRE))
 	{
@@ -416,6 +419,8 @@ void() napalm_animate =
 		else if (self.weaponentity.frame == NAPALM_AKIMBO_FIRE_END)
 			Napalm_Idle();
 	}
+	else if (self.weaponentity.anim_type == IDLE)
+		self.think = Napalm_Idle;
 	else if ((self.weaponentity.frame == self.weaponentity.anim_end) && (self.weaponentity.anim_type == DRAW))
 	{
 		self.nextthink = time + NAPALM_DRAW_TIME;
