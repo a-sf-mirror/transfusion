@@ -360,7 +360,7 @@ void() shotgun_animate =
 	}
 	else if (self.weaponentity.anim_type == RELOAD)
 	{
-		if (self.weaponentity.frame == SHOTGUN_RELOAD_START + 3)
+		if ((ceil(self.weaponentity.frame) == SHOTGUN_RELOAD_START + 3) || (floor(self.weaponentity.frame) == SHOTGUN_RELOAD_START + 3))
 			Shotgun_SpawnShell();
 		if (self.weaponentity.frame >= SHOTGUN_RELOAD_END)
 		{
