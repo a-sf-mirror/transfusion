@@ -244,7 +244,14 @@ void() shotgun_animate =
 	if (self.weaponentity.anim_type == self.weaponentity.last_action)
 	{
 		if (self.weaponentity.frame < self.weaponentity.anim_end)
+		{
+			if (self.weaponentity.anim_end_num / self.weaponentity.anim_time > 1 / frametime)
+				self.weaponentity.frame = self.weaponentity.frame + ((self.weaponentity.anim_end_num / self.weaponentity.anim_time) / (1 / frametime));
+				/*This is a skip-frame system if all animation frames cannot be squeezed into the current sys_ticrate.
+				Such animations should only rely on == START or >= END */
+			else
 			self.weaponentity.frame = self.weaponentity.frame + 1; //if its a new animation type, it will be set to the proper frame next
+		}
 		else if (self.weaponentity.anim_type != RELOAD)
 			self.weaponentity.frame = self.weaponentity.anim_end - self.weaponentity.anim_end_num + 1;
 	}
@@ -340,7 +347,7 @@ void() shotgun_animate =
 				self.player_state = PS_FIRE;
 			muzzleflash();
 			Shotgun_Fire();
-			self.weaponentity.ammo_in_chamber = self.weaponentity.ammo_in_chamber - 2;
+			self.weaponentity.ammo_in_chamber = self.weaponentity.ammo_in_chamber - self.player_state;
 			if (self.items & IT_GUNS_AKIMBO)
 				Shotgun_Fire();
 		}
@@ -355,10 +362,10 @@ void() shotgun_animate =
 	{
 		if (self.weaponentity.frame == SHOTGUN_RELOAD_START + 3)
 			Shotgun_SpawnShell();
-		if ((self.weaponentity.frame == SHOTGUN_RELOAD_END) && ((!self.button0) || (!self.button3)))
+		if (self.weaponentity.frame >= SHOTGUN_RELOAD_END)
 		{
 			self.weaponentity.ammo_in_chamber = 2;
-			Shotgun_Idle();
+			self.think = Shotgun_Idle;
 		}
 	}
 	else if ((self.weaponentity.frame == self.weaponentity.anim_end) && (self.weaponentity.anim_type == DRAW))
