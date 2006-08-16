@@ -62,6 +62,7 @@ void() Remote_Attack =
 	{
 		if (self.weaponentity.tnt_type) // We only have the remote
 		{
+			self.button0 = 0;
 			sound(self, CHAN_WEAPON, "weapons/tnt/remfire.wav", 1, ATTN_NORM);
 			ActivateRemoteBombs();
 			self.weaponentity.attack_finished = time + REMOTE_DRAW_TIME;
@@ -71,7 +72,7 @@ void() Remote_Attack =
 		else
 		{
 			//Hack so that we can hold it as long as we want, its set properly when we throw it
-			self.weaponentity.attack_finished = time + 99999999999999;
+			self.weaponentity.attack_finished = time + 99999;
 			self.weaponentity.anim_type = IDLE;
 			self.weaponentity.charge = 1;
 			self.player_state = PS_CHARGE;
@@ -121,6 +122,7 @@ void() Remote_Draw =
 	self.player_state = PS_DRAW;
 	self.weaponentity.tnt_type = REMOTE_AND_BOMB;
 	self.weaponentity.anim_type = DRAW;
+	self.weaponentity.skin = 1;
 	remote_animate();
 };
 
@@ -232,6 +234,22 @@ void() remote_animate =
 	}
 	self.nextthink = time + (self.weaponentity.anim_time / self.weaponentity.anim_end_num);
 	self.think = remote_animate;
+
+	if (self.weaponentity.skin == 3)
+	{
+		self.weaponentity.skin = 2;
+		self.weaponentity.ammo_in_chamber = 1; //hack, using another weapons variable, indicating backwards animation
+	}
+	else if (!self.weaponentity.skin) // == 0
+	{
+		self.weaponentity.skin = 1;
+		self.weaponentity.ammo_in_chamber = 0; //animation is going forward when 0
+	}
+	else if (!self.weaponentity.ammo_in_chamber)
+		self.weaponentity.skin = self.weaponentity.skin + 1;
+	else // ammo_in_chamber == 1
+		self.weaponentity.skin = self.weaponentity.skin - 1;
+
 	if (self.button0 && !self.weaponentity.tnt_type) // we have a bomb in hand and holding fire
 	{
 		if (self.weaponentity.charge < 20)
@@ -241,7 +259,7 @@ void() remote_animate =
 	else if (self.weaponentity.charge && !self.weaponentity.tnt_type)
 	{
 		self.weaponentity.anim_type = THROW;
-		self.weaponentity.attack_finished = REMOTE_THROW_TIME;
+		self.weaponentity.attack_finished = time + REMOTE_THROW_TIME - 0.4; //- 0.4 so we can det it nearly quickly.
 		self.player_state = PS_FIRE;
 		ShowThrowMeter();
 		self.nextthink = time;
@@ -259,6 +277,8 @@ void() remote_animate =
 	}
 	else if ((self.weaponentity.frame == self.weaponentity.anim_end) && ((self.weaponentity.anim_type == DRAW) || (self.weaponentity.anim_type == HALF_DRAW)))
 	{
+		self.weaponentity.attack_finished = time + 0.5; // don't throw instantly after detonating.
+		self.button0 = 0;
 		self.weaponentity.tnt_type = REMOTE_AND_BOMB;
 		self.weaponentity.charge = 0;
 		self.weaponentity.anim_type = IDLE;

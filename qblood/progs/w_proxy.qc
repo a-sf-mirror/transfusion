@@ -164,6 +164,7 @@ void() Proxy_Draw =
 	Proxy_UpdateView();
 	self.weaponentity.attack_finished = time + PROXY_DRAW_TIME;
 	self.weaponentity.anim_type = DRAW;
+	self.weaponentity.skin = 0;
 	proxy_animate();
 };
 
@@ -245,6 +246,11 @@ void() proxy_animate =
 	}
 	self.nextthink = time + (self.weaponentity.anim_time / self.weaponentity.anim_end_num);
 	self.think = proxy_animate;
+
+	if (self.weaponentity.skin == 3)
+		self.weaponentity.skin = 0;
+	else
+		self.weaponentity.skin = self.weaponentity.skin + 1;
 	if (self.button0)
 	{
 		if (self.weaponentity.charge < 20)

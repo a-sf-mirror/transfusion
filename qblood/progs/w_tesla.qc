@@ -35,7 +35,7 @@ void() tesla_animate;
 #define TESLA_HOLSTER_START		55
 #define TESLA_HOLSTER_END		58
 
-#define TESLA_IDLE_TIME			0.1
+#define TESLA_IDLE_TIME			0.08
 #define TESLA_DRAW_TIME			0.3
 #define	TESLA_FIRE_TIME			0.5
 #define TESLA_REBOUND_TIME		0.2
@@ -254,6 +254,7 @@ void() Tesla_Draw =
 	Tesla_UpdateView();
 	self.weaponentity.attack_finished = time + TESLA_DRAW_TIME;
 	self.weaponentity.anim_type = DRAW;
+	self.weaponentity.skin = 0;
 	tesla_animate();
 };
 
@@ -372,6 +373,11 @@ void() tesla_animate =
 	}
 	self.nextthink = time + (self.weaponentity.anim_time / self.weaponentity.anim_end_num);
 	self.think = tesla_animate;
+
+	if (self.weaponentity.skin == 4)
+		self.weaponentity.skin = 0;
+	else
+		self.weaponentity.skin = self.weaponentity.skin + 1;
 
 	if (self.weaponentity.anim_type == FIRE)
 	{
