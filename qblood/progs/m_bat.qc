@@ -170,8 +170,8 @@ void() monster_bat =
 	self.th_run = bat_run;
 	self.th_die = bat_death;
 	self.th_pain = bat_pain;
-	self.classname = "monster";
-	self.netname = "monster_bat";
+	self.classname = "monster_bat";
+	self.netname = "Bat";
 
 	flymonster_start();
 };

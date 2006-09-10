@@ -90,7 +90,8 @@ void() Bomb_Explode =
 	sound(self, CHAN_BODY, "misc/null.wav", 0, ATTN_NORM);
 
 	// Make detonation sound
-	if (self.netname == "Lit Spray Can") sound(self, CHAN_AUTO, "weapons/napalm/explodfl.wav", 1, ATTN_NORM);
+	if (self.netname == "Lit Spray Can")
+		sound(self, CHAN_AUTO, "weapons/napalm/explodfl.wav", 1, ATTN_NORM);
 
 	// Don't let grenade explode twice.
 	self.takedamage = DAMAGE_NO;

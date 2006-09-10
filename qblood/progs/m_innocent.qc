@@ -291,7 +291,7 @@ void() monster_innocent =
 	self.th_pain = innocent_pain;
 	self.oldorigin = self.origin;
 	self.touch = monster_stepped_on;
-	self.classname = "monster";
-	self.netname = "monster_innocent";
+	self.classname = "monster_innocent";
+	self.netname = "Innocent";
 	walkmonster_start();
 };

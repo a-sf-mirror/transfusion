@@ -272,7 +272,7 @@ void() monster_rat =
 	self.th_missile = rat_attack;
 	self.touch = monster_stepped_on;
 	self.attack_finished = 0;
-	self.classname = "monster";
-	self.netname = "monster_rat";
+	self.classname = "monster_rat";
+	self.netname = "Rat";
 	walkmonster_start();
 };

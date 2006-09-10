@@ -179,7 +179,7 @@ void() monster_eel =
 	self.th_pain = eel_pain;
 	self.th_melee = eel_attack1;
 	self.touch = monster_stepped_on;
-	self.classname = "monster";
-	self.netname = "monster_eel";
+	self.classname = "monster_eel";
+	self.netname = "Bone Eel";
 	swimmonster_start();
 };

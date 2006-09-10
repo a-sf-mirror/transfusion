@@ -76,6 +76,7 @@ void() zombie_standup =
 
 void() zombie_arise =
 {
+	setsize(self,'-7 -21 0', '15 14 59');
 	sound(self, CHAN_VOICE, "axezombie/azomrise.wav", 1, ATTN_NORM);
 	self.anim_type = ARISE;
 	self.spawnposition = 1; //once it has arisen, it stays standing
@@ -84,6 +85,7 @@ void() zombie_arise =
 
 void() zombie_hide =
 {
+	setsize(self,'-7 -21 0', '15 14 2');
     self.style = 1;
 	self.anim_type = HIDE;
 	zombie_animate();
@@ -177,6 +179,7 @@ void() zombie_pain =
 // --- Death sequence
 void() zombie_die =
 {
+	setsize(self,'-7 -21 0', '15 14 15');
     monster_death();
 	if (self.health < -40)
     {
@@ -410,7 +413,7 @@ void() monster_zombie =
 	self.th_melee = zombie_attack;
 	self.touch = monster_stepped_on;
 	self.anim_type = HIDE;
-	self.classname = "monster";
-	self.netname = "monster_zombie";
+	self.classname = "monster_zombie";
+	self.netname = "Axe Zombie";
 	walkmonster_start();
 };

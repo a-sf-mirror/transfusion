@@ -286,8 +286,6 @@ void(entity player) BecomeObserver =
 	setmodel(player, "models/objects/eyes.md3");
 	setsize(player, '-10 -10 -20', '10 10 28');
 
-	player.weaponmodel = string_null;
-	player.weaponframe = 0;
 	player.weapon      = 0;
 	player.currentammo = 0;
 

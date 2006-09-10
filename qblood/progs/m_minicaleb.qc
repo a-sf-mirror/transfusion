@@ -227,8 +227,8 @@ void() monster_minicaleb =
 	self.th_pain = minicaleb_pain1;
 	self.th_missile = minicaleb_attack;
 	self.touch = monster_stepped_on;
-	self.classname = "monster";
-	self.netname = "monster_minicaleb";
+	self.classname = "monster_minicaleb";
+	self.netname = "Mini Caleb";
 	walkmonster_start();
 };
 

@@ -60,8 +60,8 @@
 #define CULTIST_CRAWL_FIRE_TIME		0.85
 #define CULTIST_SWIM_FIRE_TIME		0.85
 //Times to be added in the future
-#define CULTIST_BURN_TIME			0
-#define CULTIST_VARIOUS_DEATHS_TIME	0
+#define CULTIST_BURN_TIME			1.0
+#define CULTIST_VARIOUS_DEATHS_TIME	1.0
 
 void() cultist_animate;
 
@@ -205,7 +205,7 @@ void() cultist_pain =
 	else if (r < 0.5)
 	{
 		// Unique tommygun cultist sound
-		if (self.netname == "monster_blackcultist")
+		if (self.classname == "monster_blackcultist")
 		{
 			sound(self,2,"cultist/tcltpan2.wav",1,1);
 			self.pain_finished = (time + 1.28);
@@ -219,7 +219,7 @@ void() cultist_pain =
 	else if (r < 0.75)
 	{
 		// Unique tommygun cultist sound
-		if (self.netname == "monster_blackcultist")
+		if (self.classname == "monster_blackcultist")
 		{
 			sound(self,2,"cultist/tcltpan3.wav",1,1);
 			self.pain_finished = (time + 1.21);
@@ -477,7 +477,7 @@ void() cultist_animate =
 			else if (random() < 0.5)
 			{
 				// Unique tommygun cultist sound
-				if (self.netname == "monster_blackcultist")
+				if (self.classname == "monster_blackcultist")
 					sound(self, CHAN_VOICE, "cultist/tcltdie1.wav", 1, ATTN_NORM);
 				else
 					sound(self, CHAN_VOICE, "cultist/cultdie1.wav", 1, ATTN_NORM);
@@ -517,7 +517,7 @@ void() cultist_animate =
 	
 	if (self.anim_type == ATTACK)
 	{
-		if (self.netname == "monster_browncultist")
+		if (self.classname == "monster_browncultist")
 		{
 			if (range(self.enemy) == RANGE_NEAR)
 				cultist_fireShotgun();
@@ -603,8 +603,9 @@ void() cultist_spawn =
 	self.th_pain = cultist_pain;
 	self.touch = monster_stepped_on;
 	self.attack_state = AS_MISSILE;
-	self.classname = "monster";
+	self.classname = "monster_cultist";
 
+	self.anim_type = STAND;
 	cultist_animate();
 
 	walkmonster_start();    

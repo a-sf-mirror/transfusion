@@ -217,7 +217,7 @@ void() monster_gargoyle =
 	self.th_die = gargoyle_die;
 	self.th_pain = gargoyle_pain;
 	self.th_missile = gargoyle_attack;
-	self.classname = "monster";
-	self.netname = "monster_gargoyle";
+	self.classname = "monster_gargoyle";
+	self.netname = "Gargoyle";
 	flymonster_start();
 };

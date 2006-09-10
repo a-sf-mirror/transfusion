@@ -291,8 +291,8 @@ void(entity victim, entity attacker, float dmgtype, float burn, float burntime) 
 		victim.classname == "plat"              ||
 		victim.classname == "func_button"       ||
 		victim.classname == "exploding_wall"    ||  // the other types of walls can't burn anyway
-		victim.netname == "monster_hellhound" ||
-		victim.netname == "monster_cerebrus"  ||
+		victim.classname == "monster_hellhound" ||
+		victim.classname == "monster_cerebrus"  ||
 		victim.classname == "sentry"            ||
 		victim.classname == "corpse"            ||
 		victim.classname == "head")

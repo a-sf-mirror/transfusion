@@ -111,9 +111,12 @@ void() monster_browncultist =
 
 	cultist_spawn();
 
-	AttachObject("Weapon_Right", self);
+	self.attachedobject = spawn();
+	self.attachedobject.solid = SOLID_NOT;
+	self.attachedobject.owner = self;
+	setmodel(self.attachedobject, "models/weapons/g_shotgun.md3");
+	setattachment(self.attachedobject, self, "Weapon_Right");
 	self.attachedobject.scale = 0.5;
 	self.attachedobject.origin = '0 0 0' + v_forward * 4; // FIXME: adjust the weapon bone?
-	setmodel(self.attachedobject, "models/weapons/g_shotgun.md3");
 	
 };

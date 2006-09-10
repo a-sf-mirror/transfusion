@@ -43,23 +43,6 @@ float(void() idleFunction) player_idleWeapon = //nearly deprecated
 
 	if (self.player_state != PS_HOLD_FIRE && self.player_state != PS_MENU)
 	{
-		// Do pretty lighter flame motion (if you're holding a lighter)
-		if (self.weapon == IT_TNT || self.weapon == IT_SPRAY_CAN)
-		{
-			if (self.weaponframe >= 2)
-			{
-				self.weaponframe = 1;
-				self.lefty = TRUE;     // Move flames to the left
-			}
-			else if (self.lefty)
-			{
-				self.weaponframe = self.weaponframe - 1;
-				self.lefty = FALSE;
-			}			
-			else
-				self.weaponframe = self.weaponframe + 1;
-		}
-
 		// If there's a pending weapon change
 		if (self.newweapon)
 			W_SwitchToWeapon(self.newweapon);
@@ -172,7 +155,6 @@ void(entity player, entity attacker) Player_BrinkOfDeath =
 	self = player;
 	player_bod1();
 	self = oself;
-	player.weaponmodel = string_null;
 
 	player.t_length = time + 15;  // the effect will last 15 sec
 	sound(player, CHAN_VOICE, "thevoice/vo15.wav", 1, ATTN_NONE);
@@ -439,7 +421,7 @@ void(string headmodel, float dm) ThrowHead =
 	if (self.classname == "player")
 		setsize(self, '-10 -13 -3', '12 6 18');
 
-	else if (self.netname == "monster_butcher")
+	else if (self.classname == "monster_butcher")
 		setsize(self, '-5 12 0', '5 20 9');
 
 	else
@@ -608,7 +590,6 @@ void() PlayerDie =
 	self.modelindex = modelindex_player;    // don't use eyes
 	self.poison = 0;
 	self.alpha = 1;
-	self.weaponmodel = string_null;
 	self.view_ofs = '0 0 -8';
 	self.deadflag = DEAD_DYING;
 	self.solid = SOLID_NOT;

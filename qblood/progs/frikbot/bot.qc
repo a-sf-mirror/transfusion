@@ -550,9 +550,8 @@ float() botcam =
 	setorigin(self, self.enemy.origin);
 	self.items = self.enemy.items;
 	self.weapon = self.enemy.weapon;
-	self.weaponmodel = self.enemy.weaponmodel;
 	self.currentammo = self.enemy.currentammo;
-	self.weaponframe = self.enemy.weaponframe;
+	self.weaponentity = self.enemy.weaponentity;
 	self.ammo_shells = self.enemy.ammo_shells;
 	self.ammo_nails = self.enemy.ammo_nails;
 	self.ammo_rockets= self.enemy.ammo_rockets;
@@ -1125,7 +1124,6 @@ void(entity bot) BotDisconnect =
 		self.health = 0;
 		self.items = 0;
 		self.armorvalue = 0;
-		self.weaponmodel = "";
 		self.b_pants = 0;
 		self.b_shirt = 0;
 		self.ammo_shells = self.ammo_nails = self.ammo_rockets = self.ammo_cells = 0;

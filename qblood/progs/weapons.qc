@@ -42,6 +42,19 @@ vector() W_Origin =
 
 /*
 ================
+muzzleflash_animate
+
+runs the animation and removal of completed muzzle flashes
+================
+*/
+void() muzzle_remove =
+{
+	remove(self);
+	return;
+};
+
+/*
+================
 muzzleflash
 
 creates the muzzle flash for weapons
@@ -82,14 +95,19 @@ void() muzzleflash =
 			else
 				offset = 4;
 		}
-		effect(W_Origin() + v_forward * 100 + v_right * offset, sprite, 0, 2, 20);
+		//muzzle.scale = 0.4;
+		setmodel(muzzle, sprite);
+		setorigin(muzzle, W_Origin() + v_forward * 100 + v_right * offset);
+		muzzle.nextthink = time + 0.15;
+		muzzle.think = muzzle_remove;
+		//muzzle.think = muzzleflash_animate;
+		//effect(W_Origin() + v_forward * 100 + v_right * offset, sprite, 0, 2, 20);
 	}
 	else if (self.weapon == IT_TOMMYGUN)
 	{
-		setmodel(muzzle, "models/weapons/objects/muzzle_tommy.spr32");
-		//setorigin(muzzle, self.origin + v_forward * 50 + v_up * 30);
+		setorigin(muzzle, self.origin + v_forward * 50 + v_up * 30);
 		sprite = "models/weapons/objects/muzzle_tommy.spr32";
-		//effect(self.origin + v_forward * 75 + v_up * 8 + v_right * 8, sprite, 0, 2, 20);
+		effect(W_Origin() + v_forward * 75 + v_up * 8 + v_right * 8, sprite, 0, 2, 20);
 	}
 	//FIXME - add other weapons, and fix shotgun
 	}
@@ -711,10 +729,7 @@ void() W_SetCurrentAmmo =
 		//self.items = self.items | IT_CELLS;
 	}
 	else
-	{
 		self.currentammo = 0;
-		self.weaponmodel = string_null;
-	}
 };
 
 /*

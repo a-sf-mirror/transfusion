@@ -156,8 +156,11 @@ void    end_sys_globals;    // flag for structure dumping
 .float  health;
 .float  frags;
 .float  weapon;         // one of the IT_FLAREGUN, etc flags
+
+//weaponmodel and weaponframe have been deprecated for weaponentity
 .string weaponmodel;
 .float  weaponframe;
+
 .float  currentammo;
 .float  ammo_shells, ammo_nails, ammo_rockets, ammo_cells;
 
@@ -399,8 +402,6 @@ float sight_entity_time;
 .entity     oldenemy;   // mad at this player before taking damage
 
 .float      speed;
-
-.float      lefty;
 
 .float      search_time;
 .float      attack_state;

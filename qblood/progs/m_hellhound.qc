@@ -303,7 +303,7 @@ void() monster_hellhound =
 	self.th_pain = hellhound_pain;
 	self.th_missile = hellhound_attack;
 	self.touch = monster_stepped_on;
-	self.classname = "monster";
-	self.netname = "monster_hellhound";
+	self.classname = "monster_hellhound";
+	self.netname = "Hell Hound";
 	walkmonster_start();
 };

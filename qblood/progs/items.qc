@@ -1446,7 +1446,8 @@ void() weapon_flaregun =
 
 void() precache_sawedoff =
 {
-	precache_model("models/weapons/muzzle_shotgun.spr32"); // Shotgun Muzzle Flash
+	precache_model("models/weapons/objects/muzzle_shotgun.spr32"); // Shotgun Muzzle Flash
+	precache_model("models/weapons/objects/muzzle_tommy.spr32"); // Shotgun Muzzle Flash
 	precache_model("models/weapons/v_shotgun.psk");
 	precache_model("models/weapons/ga_shotgun.psk");				// akimbo model
 	precache_model("models/weapons/g_shotgun.md3");

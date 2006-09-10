@@ -437,6 +437,7 @@ void(string s) SV_ParseClientCommand =
 				else if (argv(1) == "sterno")
 				{
 					sprint(self, "FIXME: add temporary screen blanking.\n");
+					//cvar v_cshift 0 0 0 255
 					//FIXME - add short screen blanking.
 				}
 				else if (argv(1) == "cousteau")
@@ -2393,34 +2394,12 @@ void(entity attacker) ClientObituary =
 		// FIXME: Do you really lose a frag if you die in co-op?
 		Cl_UpdatePlayerFrags(self, -1);
 
-		if (attacker.netname == "monster_rat")
-			m_name = "a rat";
-		else if (attacker.netname == "monster_eel")
-			m_name = "an eel";
-		else if (attacker.netname == "monster_zombie")
-			m_name = "an axe zombie";
-		else if (attacker.netname == "monster_hellhound")
-			m_name = "a hellhound";
-		else if (attacker.netname == "monster_butcher")
-			m_name = "a bloated zombie";
-		else if (attacker.netname == "monster_browncultist")
-			m_name = "a Cultist";
-		else if (attacker.netname == "monster_blackcultist")
-			m_name = "a Fanatic";
-		else if (attacker.netname == "monster_greencultist")
-			m_name = "an Acolyte";
-		else if (attacker.netname == "monster_bluecultist")
-			m_name = "a Zealot";
-		else if (attacker.netname == "monster_redcultist")
-			m_name = "a Priest";
-		else if (attacker.netname == "monster_gargoyle")
-			m_name = "a gargoyle";
-		else if (attacker.netname == "monster_stonegargoyle")
-			m_name = "a stone gargoyle";
-		else if (attacker.netname == "monster_minicaleb")
-			m_name = "a mini-caleb";
-		else
-			m_name = "an unknown monster";
+		if (attacker.classname == "monster_eel" ||
+			attacker.classname == "monster_greencultist" ||
+			attacker.classname == "monster_zombie")
+			m_name = "an ";
+		else m_name = "a ";
+		m_name = strcat(m_name, attacker.netname);
 
 		bprint4(self.netname, " was killed by ", m_name, "\n");
 	}
