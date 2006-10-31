@@ -601,7 +601,8 @@ void() cultist_spawn =
 	self.th_run = cultist_run;
 	self.th_die = cultist_die;
 	self.th_pain = cultist_pain;
-	self.touch = monster_stepped_on;
+	//self.touch = monster_stepped_on;
+	self.touch = SUB_Null;
 	self.attack_state = AS_MISSILE;
 	self.classname = "monster_cultist";
 

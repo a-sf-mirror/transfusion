@@ -109,6 +109,19 @@ void() TNT_UpdateView =
 
 /*
 ============
+TNT_Idle
+============
+*/
+void() TNT_Idle =
+{
+	self.weaponentity.anim_type = IDLE;
+	self.player_state = PS_IDLE;
+	self.weaponentity.frame = TNT_IDLE_START;
+	tnt_animate();
+};
+
+/*
+============
 tnt_animate
 
 Animation and frame based code for TNT
@@ -125,6 +138,7 @@ void() tnt_animate =
 	}
 	else
 	{
+		local float last_action_start;
 		if (self.weaponentity.anim_type == IDLE)
 		{
 			self.player_state = PS_IDLE;
@@ -163,17 +177,47 @@ void() tnt_animate =
 		}
 		else if (self.weaponentity.anim_type == HOLSTER)
 		{
-			self.weaponentity.anim_end = TNT_HOLSTER_END;
-			self.weaponentity.anim_end_num = TNT_HOLSTER_END - TNT_HOLSTER_START + 1;
-			self.weaponentity.anim_time = TNT_HOLSTER_TIME;
-			self.weaponentity.frame = TNT_HOLSTER_START;
+			if ((self.weaponentity.last_action == DRAW) || (self.weaponentity.last_action == HALF_DRAW))
+			{
+				if (self.weaponentity.last_action == DRAW)
+					last_action_start = TNT_DRAW_START;
+				else //if (self.weaponentity.last_action == HALF_DRAW)
+					last_action_start = TNT_HALF_DRAW_START;
+				self.weaponentity.anim_end = TNT_HOLSTER_END;
+				self.weaponentity.anim_end_num = TNT_HOLSTER_END - TNT_HOLSTER_START + 1;
+				self.weaponentity.anim_time = (TNT_HOLSTER_TIME / (TNT_HOLSTER_END - TNT_HOLSTER_START + 1)) * (self.weaponentity.frame - last_action_start + 1);
+				self.weaponentity.attack_finished = time + self.weaponentity.anim_time;
+				self.weaponentity.frame = TNT_HOLSTER_END - (self.weaponentity.frame - last_action_start + 1) + 1;
+			}
+			else
+			{
+				self.weaponentity.anim_end = TNT_HOLSTER_END;
+				self.weaponentity.anim_end_num = TNT_HOLSTER_END - TNT_HOLSTER_START + 1;
+				self.weaponentity.anim_time = TNT_HOLSTER_TIME;
+				self.weaponentity.frame = TNT_HOLSTER_START;
+			}
 		}
 		else if (self.weaponentity.anim_type == HALF_HOLSTER)
 		{
-			self.weaponentity.anim_end = TNT_HALF_HOLSTER_END;
-			self.weaponentity.anim_end_num = TNT_HALF_HOLSTER_END - TNT_HALF_HOLSTER_START + 1;
-			self.weaponentity.anim_time = TNT_HOLSTER_TIME; // possibly divide by 2?
-			self.weaponentity.frame = TNT_HALF_HOLSTER_START;
+			if ((self.weaponentity.last_action == DRAW) || (self.weaponentity.last_action == HALF_DRAW))
+			{
+				if (self.weaponentity.last_action == DRAW)
+					last_action_start = TNT_DRAW_START;
+				else //if (self.weaponentity.last_action == HALF_DRAW)
+					last_action_start = TNT_HALF_DRAW_START;
+				self.weaponentity.anim_end = TNT_HALF_HOLSTER_END;
+				self.weaponentity.anim_end_num = TNT_HALF_HOLSTER_END - TNT_HALF_HOLSTER_START + 1;
+				self.weaponentity.anim_time = (TNT_HOLSTER_TIME / (TNT_HALF_HOLSTER_END - TNT_HALF_HOLSTER_START + 1)) * (self.weaponentity.frame - last_action_start + 1);
+				self.weaponentity.attack_finished = time + self.weaponentity.anim_time;
+				self.weaponentity.frame = TNT_HALF_HOLSTER_END - (self.weaponentity.frame - last_action_start + 1) + 1;
+			}
+			else
+			{
+				self.weaponentity.anim_end = TNT_HALF_HOLSTER_END;
+				self.weaponentity.anim_end_num = TNT_HALF_HOLSTER_END - TNT_HALF_HOLSTER_START + 1;
+				self.weaponentity.anim_time = TNT_HOLSTER_TIME; // possibly divide by 2?
+				self.weaponentity.frame = TNT_HALF_HOLSTER_START;
+			}
 		}
 		self.weaponentity.last_action = self.weaponentity.anim_type;
 	}
@@ -247,8 +291,8 @@ void() tnt_animate =
 	}
 	else if ((self.weaponentity.frame == self.weaponentity.anim_end) && ((self.weaponentity.anim_type == DRAW) || (self.weaponentity.anim_type == HALF_DRAW)))
 	{
-		self.weaponentity.anim_type = IDLE;
-		tnt_animate();
+		self.nextthink = time;
+		self.think = TNT_Idle;
 	}
 	else if ((self.weaponentity.frame == self.weaponentity.anim_end) && ((self.weaponentity.anim_type == HOLSTER) || (self.weaponentity.anim_type == HALF_HOLSTER)))
 	{

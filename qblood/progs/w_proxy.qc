@@ -197,6 +197,19 @@ void() Proxy_UpdateView =
 
 /*
 ============
+Proxy_Idle
+============
+*/
+void() Proxy_Idle =
+{
+	self.weaponentity.anim_type = IDLE;
+	self.player_state = PS_IDLE;
+	self.weaponentity.frame = PROXY_IDLE;
+	proxy_animate();
+};
+
+/*
+============
 proxy_animate
 
 Animation and frame based code for the Proximity Mine
@@ -237,10 +250,21 @@ void() proxy_animate =
 		}
 		else if (self.weaponentity.anim_type == HOLSTER)
 		{
-			self.weaponentity.anim_end = PROXY_HOLSTER_END;
-			self.weaponentity.anim_end_num = PROXY_HOLSTER_END - PROXY_HOLSTER_START + 1;
-			self.weaponentity.anim_time = PROXY_HOLSTER_TIME;
-			self.weaponentity.frame = PROXY_HOLSTER_START;
+			if (self.weaponentity.last_action == DRAW)
+			{
+				self.weaponentity.anim_end = PROXY_HOLSTER_END;
+				self.weaponentity.anim_end_num = PROXY_HOLSTER_END - PROXY_HOLSTER_START + 1;
+				self.weaponentity.anim_time = (PROXY_HOLSTER_TIME / (PROXY_HOLSTER_END - PROXY_HOLSTER_START + 1)) * (self.weaponentity.frame - PROXY_DRAW_START + 1);
+				self.weaponentity.attack_finished = time + self.weaponentity.anim_time;
+				self.weaponentity.frame = PROXY_HOLSTER_END - (self.weaponentity.frame - PROXY_DRAW_START + 1) + 1;
+			}
+			else
+			{
+				self.weaponentity.anim_end = PROXY_HOLSTER_END;
+				self.weaponentity.anim_end_num = PROXY_HOLSTER_END - PROXY_HOLSTER_START + 1;
+				self.weaponentity.anim_time = PROXY_HOLSTER_TIME;
+				self.weaponentity.frame = PROXY_HOLSTER_START;
+			}
 		}
 		self.weaponentity.last_action = self.weaponentity.anim_type;
 	}
@@ -277,8 +301,8 @@ void() proxy_animate =
 	}
 	else if ((self.weaponentity.frame == self.weaponentity.anim_end) && (self.weaponentity.anim_type == DRAW))
 	{
-		self.weaponentity.anim_type = IDLE;
-		proxy_animate();
+		self.nextthink = time;
+		self.think = Proxy_Idle;
 	}
 	else if ((self.weaponentity.frame == self.weaponentity.anim_end) && (self.weaponentity.anim_type == HOLSTER))
 	{

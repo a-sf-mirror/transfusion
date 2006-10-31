@@ -1415,31 +1415,36 @@ void() InitWeapon =
 	self.touch = weapon_touch;
 	// Exception for rotation: If it's not a TNT bundle but a TNT-box, don't rotate:
 	if (self.classname != "weapon_tnt" || !self.spawnflags)
-	{
 		self.rotate = ITEM_ROTATION;
-	}
 };
 
-// Flaregun
-void() weapon_flaregun =
+// Precache pitchfork, this is only here for consitancy.
+void() precache_pitchfork =
+{
+	precache_model("models/weapons/v_pitch.psk");
+};
+
+void() precache_flaregun =
 {
 	precache_model("models/weapons/v_flare.psk");
 	precache_model("models/weapons/g_flare.md3");
 	precache_model("models/weapons/ga_flare.psk");  // akimbo model
-
-	setmodel(self, "models/weapons/g_flare.md3");
-	self.weapon = IT_FLAREGUN;
-	self.netname = "Flare Gun";
-	setsize(self, '-16 -16 0', '16 16 56');
-
 	// precache the necessary sounds
 	PsychoCaleb_Precache();
 	precache_model("models/weapons/objects/flare.md3");
 	precache_sound("weapons/flaregun/flaref.wav");
 	precache_sound("weapons/napalm/explodfs.wav");  // For alt-flares
+};
 
+// Flaregun
+void() weapon_flaregun =
+{
+	precache_flaregun();
+	setmodel(self, "models/weapons/g_flare.md3");
+	self.weapon = IT_FLAREGUN;
+	self.netname = "Flare Gun";
+	setsize(self, '-16 -16 0', '16 16 56');
 	available_weapons = available_weapons | IT_FLAREGUN;
-	
 	InitWeapon();
 	StartItem();
 };
@@ -1452,7 +1457,6 @@ void() precache_sawedoff =
 	precache_model("models/weapons/ga_shotgun.psk");				// akimbo model
 	precache_model("models/weapons/g_shotgun.md3");
 	precache_model("models/weapons/objects/shotgunshell.md3");	// shotgun shell
-		
 	// Precache the necessary sounds
 	precache_sound("weapons/shotgun/shotguncock.wav");  // shell ejection
 	precache_sound("weapons/shotgun/shotgunfir2.wav");  // shotgun alt-fire
@@ -1461,7 +1465,7 @@ void() precache_sawedoff =
 	precache_sound("weapons/shtshl2.wav");  // shell hitting ground
 };
 
-// Sawed-off
+// Sawed-off Shotgun
 void() weapon_sawedoff =
 {
 	// already precached, and you can't precache in the middle of a game
@@ -1472,12 +1476,8 @@ void() weapon_sawedoff =
 	setmodel(self, "models/weapons/g_shotgun.md3");
 	self.weapon = IT_SAWED_OFF;
 	self.netname = "Sawed-off";
-	
 	setsize(self, '-16 -16 0', '16 16 56');
-
-	
 	available_weapons = available_weapons | IT_SAWED_OFF;
-
 	InitWeapon();
 	StartItem();
 };
@@ -1488,7 +1488,6 @@ void() precache_tommygun =
 	precache_model("models/weapons/ga_tommy.psk"); 			// akimbo model
 	precache_model("models/weapons/g_tommy.md3");
 	precache_model("models/weapons/objects/bulletshell.md3");	// tommy gun shell
-		
 	// Precache the necessary sounds
 	precache_sound("weapons/tommygun/_tom.wav");	  // Fire
 	precache_sound("weapons/tommygun/tomcock.wav");  // Out of bullet noise
@@ -1510,36 +1509,34 @@ void() weapon_tommygun =
 	self.weapon = IT_TOMMYGUN;
 	self.netname = "Tommy Gun";
 	setsize(self, '-16 -16 0', '16 16 56');		
-
 	available_weapons = available_weapons | IT_TOMMYGUN;
-
 	InitWeapon();
 	StartItem();
 };
 
-// Spray Can
-void() weapon_spraycan =
+void() precache_spraycan =
 {
 	precache_model("models/weapons/v_aerosol.md3");
 	precache_model("models/ammo/g_aerosol.md3");
 	precache_model("models/weapons/grenades/gr_aerosol.md3");
-
-	setmodel(self, "models/ammo/g_aerosol.md3");
-	self.weapon = IT_SPRAY_CAN;
-	self.netname = "Spray Can";
-	setsize(self, '-8 -8 0', '8 8 32');
-
 	// Precache the necessary sounds
 	precache_sound("weapons/spraycan/spraycan.wav");  // lighted spray can
 	precache_sound("weapons/spraycan/sprayfir.wav");  // fire
 	precache_sound("weapons/tnt/lighter.wav"); 	   // = zipopen.wav + ziplight.wav
 	precache_sound("weapons/tnt/zipclose.wav");
 	precache_sound("weapons/napalm/explodcl.wav");    // alt-fire detonation
-
 	precache_model("progs/sprayfir.spr");
+};
 
+// Spray Can
+void() weapon_spraycan =
+{
+	precache_spraycan();
+	setmodel(self, "models/ammo/g_aerosol.md3");
+	self.weapon = IT_SPRAY_CAN;
+	self.netname = "Spray Can";
+	setsize(self, '-8 -8 0', '8 8 32');
 	available_weapons = available_weapons | IT_SPRAY_CAN;
-
 	InitWeapon();
 	StartItem();
 };
@@ -1549,7 +1546,6 @@ void() precache_tnt =
 	precache_model("models/weapons/v_tnt.md3");
 	precache_model("models/weapons/grenades/gr_tnt.md3");	
 	precache_model(self.model);
-	
 	// Precache the necessary sounds
 	PsychoCaleb_Precache();
 	precache_sound("weapons/tnt/lighter.wav"); 	 // = zipopen.wav + ziplight.wav
@@ -1587,90 +1583,87 @@ void() weapon_tnt =
 	else
 		self.classname = "weapon_tnt";
 
-	
 	setmodel(self, self.model);
 	setsize(self, minSize, maxSize);
-
 	self.weapon = IT_TNT;
-
 	available_weapons = available_weapons | IT_TNT;
-
 	InitWeapon();
 	StartItem();
 };
 
-
-// Proximity bombs
-void() weapon_proximity =
+void() precache_proximity =
 {
 	precache_model("models/weapons/v_proxy.md3");
 	precache_model("models/weapons/g_proxy.md3");
 	precache_model("models/weapons/grenades/gr_proxy.md3");
-
-	setmodel(self, "models/weapons/g_proxy.md3");
-	self.weapon = IT_PROXIMITY_BOMB;
-	self.netname = "Proximity Bomb";
-	setsize(self, '-8 -8 0', '8 8 32');
-
 	// Precache the necessary sounds
 	PsychoCaleb_Precache();
 	precache_sound("weapons/tnt/proxarm.wav"); 	 // proximity bomb armed
 	precache_sound("weapons/tnt/proxdet.wav"); 	 // proximity bomb triggered
 	precache_sound("weapons/tnt/tnttoss.wav"); 	 // throw sound
 	precache_sound("weapons/napalm/explodcl.wav");  // detonation
+};
 
+// Proximity bombs
+void() weapon_proximity =
+{
+	setmodel(self, "models/weapons/g_proxy.md3");
+	self.weapon = IT_PROXIMITY_BOMB;
+	self.netname = "Proximity Bomb";
+	setsize(self, '-8 -8 0', '8 8 32');
 	available_weapons = available_weapons | IT_PROXIMITY_BOMB;
-
 	InitWeapon();
 	StartItem();
 };
 
-// Remote detonators
-void() weapon_remote =
+void() precache_remote =
 {
 	precache_model("models/weapons/v_remote.md3");
 	precache_model("models/weapons/grenades/gr_remote.md3");
 	precache_model("models/weapons/g_remote.md3");
-
-	setmodel(self, "models/weapons/g_remote.md3");
-	self.weapon = IT_REMOTE_DETONATOR;
-	self.netname = "Remote Detonator";
-	setsize(self, '-8 -8 0', '8 8 32');
-
 	// Precache the necessary sounds
 	PsychoCaleb_Precache();
 	precache_sound("weapons/tnt/remdet.wav");		 // bomb triggered
 	precache_sound("weapons/tnt/remfire.wav"); 	 // remote triggered
 	precache_sound("weapons/tnt/tnttoss.wav"); 	 // throw sound
 	precache_sound("weapons/napalm/explodcl.wav");  // detonation / impact
-	available_weapons = available_weapons | IT_REMOTE_DETONATOR;
+};
 
+// Remote detonators
+void() weapon_remote =
+{
+	precache_remote();
+	setmodel(self, "models/weapons/g_remote.md3");
+	self.weapon = IT_REMOTE_DETONATOR;
+	self.netname = "Remote Detonator";
+	setsize(self, '-8 -8 0', '8 8 32');
+	available_weapons = available_weapons | IT_REMOTE_DETONATOR;
 	InitWeapon();
 	StartItem();
+};
+
+void() precache_napalmlauncher =
+{
+	precache_model("models/weapons/v_napalm.psk");
+	precache_model("models/weapons/ga_napalm.psk");
+	precache_model("models/weapons/g_napalm.md3");
+	precache_model("models/weapons/objects/napalm.md3");  // napalm regular fire
+	precache_model("models/weapons/objects/naltball.md3"); // napalm alt fire model
+	// Precache the necessary sounds
+	PsychoCaleb_Precache();
+	precache_sound("weapons/napalm/blaster.wav");	 // Shot
+	precache_sound("weapons/napalm/explodcl.wav");  // Impact
 };
 
 // Napalm Launcher
 void() weapon_napalmlauncher =
 {
-	precache_model("models/weapons/v_napalm.psk");
-	precache_model("models/weapons/ga_napalm.psk");
-	precache_model("models/weapons/g_napalm.md3");
-
+	precache_napalmlauncher();
 	setmodel(self, "models/weapons/g_napalm.md3");
 	self.weapon = IT_NAPALM_LAUNCHER;
 	self.netname = "Napalm Launcher";
 	setsize(self, '-16 -16 0', '16 16 56');
-
-	precache_model("models/weapons/objects/napalm.md3");  // napalm regular fire
-	precache_model("models/weapons/objects/naltball.md3"); // napalm alt fire model
-
-	// Precache the necessary sounds
-	PsychoCaleb_Precache();
-	precache_sound("weapons/napalm/blaster.wav");	 // Shot
-	precache_sound("weapons/napalm/explodcl.wav");  // Impact
-
 	available_weapons = available_weapons | IT_NAPALM_LAUNCHER;
-
 	InitWeapon();
 	StartItem();
 };
@@ -1682,7 +1675,6 @@ void() precache_teslacannon =
 	precache_model("models/weapons/g_tesla.md3");
 	precache_model("progs/teslaball.spr");
 	precache_model("models/weapons/objects/alttesla.md3");
-		
 	// Precache the necessary sounds
 	precache_sound("weapons/tesla/tessngfr.wav");	// normal fire
 	precache_sound("weapons/tesla/tessnght.wav");	// normal hit
@@ -1712,51 +1704,52 @@ void() weapon_teslacannon =
 	StartItem();
 };
 
-// Voodoo Doll
-void() weapon_voodoodoll =
+void() precache_voodoodoll =
 {
 	precache_model("models/weapons/v_voodoo.md3");
 	precache_model("models/weapons/g_voodoo.md3");
-
-	setmodel(self, "models/weapons/g_voodoo.md3");
-	self.weapon = IT_VOODOO_DOLL;
-	self.netname = "Voodoo Doll";
-	setsize(self, '-16 -16 0', '16 16 56');
-
 	// Precache the necessary sounds
 	precache_sound("weapons/voodoodl/voolaugh.wav");
 	precache_sound("weapons/voodoodl/voostab.wav");
 	precache_sound("weapons/voodoodl/voochant.wav");
+};
 
+// Voodoo Doll
+void() weapon_voodoodoll =
+{
+	precache_voodoodoll();
+	setmodel(self, "models/weapons/g_voodoo.md3");
+	self.weapon = IT_VOODOO_DOLL;
+	self.netname = "Voodoo Doll";
+	setsize(self, '-16 -16 0', '16 16 56');
 	available_weapons = available_weapons | IT_VOODOO_DOLL;
-
 	InitWeapon();
 	StartItem();
+};
+
+void() precache_lifeleech =
+{
+	precache_model("models/weapons/v_leech.md3");
+	precache_model("models/weapons/g_leech.md3");
+	precache_model("progs/leechball.spr");
+	// precache the necessary sounds
+	precache_sound("weapons/lifelech/laltfr1.wav");
+	precache_sound("weapons/lifelech/llaltht.wav");	// LL sentry destroyed
+	precache_sound("weapons/napalm/explodfs.wav"); 	// altfire missile touch
 };
 
 // Life Leech
 void() weapon_lifeleech =
 {
-	precache_model("models/weapons/v_leech.md3");
-	precache_model("models/weapons/g_leech.md3");
-	precache_model("progs/leechball.spr");
-
+	precache_lifeleech();
 	setmodel(self, "models/weapons/g_leech.md3");
 	self.weapon = IT_LIFE_LEECH;
 	self.netname = "Life Leech";
 	setsize(self, '-16 -16 0', '16 16 56');
-
-	// precache the necessary sounds
-	precache_sound("weapons/lifelech/laltfr1.wav");
-	precache_sound("weapons/lifelech/llaltht.wav");	// LL sentry destroyed
-	precache_sound("weapons/napalm/explodfs.wav"); 	// altfire missile touch
-
 	available_weapons = available_weapons | IT_LIFE_LEECH;
-
 	InitWeapon();
 	StartItem();
 };
-
 
 /*
 ===============================================================================

@@ -232,10 +232,21 @@ void() fork_animate =
 		}
 		else if (self.weaponentity.anim_type == HOLSTER)
 		{
-			self.weaponentity.anim_end = FORK_HOLSTER_END;
-			self.weaponentity.anim_end_num = FORK_HOLSTER_END - FORK_HOLSTER_START + 1;
-			self.weaponentity.anim_time = FORK_HOLSTER_TIME;
-			self.weaponentity.frame = FORK_HOLSTER_START;
+			if (self.weaponentity.last_action == DRAW)
+			{
+				self.weaponentity.anim_end = FORK_HOLSTER_END;
+				self.weaponentity.anim_end_num = FORK_HOLSTER_END - FORK_HOLSTER_START + 1;
+				self.weaponentity.anim_time = (FORK_HOLSTER_TIME / (FORK_HOLSTER_END - FORK_HOLSTER_START + 1)) * (self.weaponentity.frame - FORK_DRAW_START + 1);
+				self.weaponentity.attack_finished = time + self.weaponentity.anim_time;
+				self.weaponentity.frame = FORK_HOLSTER_END - (self.weaponentity.frame - FORK_DRAW_START + 1) + 1;
+			}
+			else
+			{
+				self.weaponentity.anim_end = FORK_HOLSTER_END;
+				self.weaponentity.anim_end_num = FORK_HOLSTER_END - FORK_HOLSTER_START + 1;
+				self.weaponentity.anim_time = FORK_HOLSTER_TIME;
+				self.weaponentity.frame = FORK_HOLSTER_START;
+			}
 		}
 		self.weaponentity.last_action = self.weaponentity.anim_type;
 	}
@@ -254,7 +265,7 @@ void() fork_animate =
 	}
 	else if ((self.weaponentity.frame == self.weaponentity.anim_end) && (self.weaponentity.anim_type == DRAW))
 	{
-		self.nextthink = time + FORK_DRAW_TIME;
+		self.nextthink = time;
 		self.think = Fork_Idle;
 	}
 	else if ((self.weaponentity.frame == self.weaponentity.anim_end) && (self.weaponentity.anim_type == HOLSTER))

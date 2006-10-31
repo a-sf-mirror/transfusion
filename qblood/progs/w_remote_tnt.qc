@@ -158,6 +158,26 @@ void() Remote_UpdateView =
 
 /*
 ============
+Remote_Idle
+============
+*/
+void() Remote_Idle =
+{
+	self.weaponentity.anim_type = IDLE;
+	self.player_state = PS_IDLE;
+	self.weaponentity.frame = REMOTE_IDLE;
+
+	//self.weaponentity.attack_finished = time + 0.5; // don't throw instantly after detonating.
+	self.button0 = 0;
+	self.weaponentity.tnt_type = REMOTE_AND_BOMB;
+	self.weaponentity.charge = 0;
+
+	remote_animate();
+};
+
+
+/*
+============
 remote_animate
 
 Animation and frame based code for Remote TNT
@@ -174,6 +194,7 @@ void() remote_animate =
 	}
 	else
 	{
+		local float last_action_start;
 		if (self.weaponentity.anim_type == IDLE)
 		{
 			self.weaponentity.anim_end = REMOTE_IDLE;
@@ -218,17 +239,47 @@ void() remote_animate =
 		}
 		else if (self.weaponentity.anim_type == HOLSTER)
 		{
-			self.weaponentity.anim_end = REMOTE_HOLSTER_END;
-			self.weaponentity.anim_end_num = REMOTE_HOLSTER_END - REMOTE_HOLSTER_START + 1;
-			self.weaponentity.anim_time = REMOTE_HOLSTER_TIME;
-			self.weaponentity.frame = REMOTE_HOLSTER_START;
+			if ((self.weaponentity.last_action == DRAW) || (self.weaponentity.last_action == HALF_DRAW))
+			{
+				if (self.weaponentity.last_action == DRAW)
+					last_action_start = REMOTE_DRAW_START;
+				else //if (self.weaponentity.last_action == HALF_DRAW)
+					last_action_start = REMOTE_HALF_DRAW_START;
+				self.weaponentity.anim_end = REMOTE_HOLSTER_END;
+				self.weaponentity.anim_end_num = REMOTE_HOLSTER_END - REMOTE_HOLSTER_START + 1;
+				self.weaponentity.anim_time = (REMOTE_HOLSTER_TIME / (REMOTE_HOLSTER_END - REMOTE_HOLSTER_START + 1)) * (self.weaponentity.frame - last_action_start + 1);
+				self.weaponentity.attack_finished = time + self.weaponentity.anim_time;
+				self.weaponentity.frame = REMOTE_HOLSTER_END - (self.weaponentity.frame - last_action_start + 1) + 1;
+			}
+			else
+			{
+				self.weaponentity.anim_end = REMOTE_HOLSTER_END;
+				self.weaponentity.anim_end_num = REMOTE_HOLSTER_END - REMOTE_HOLSTER_START + 1;
+				self.weaponentity.anim_time = REMOTE_HOLSTER_TIME;
+				self.weaponentity.frame = REMOTE_HOLSTER_START;
+			}
 		}
 		else if (self.weaponentity.anim_type == HALF_HOLSTER)
 		{
-			self.weaponentity.anim_end = REMOTE_HALF_HOLSTER_END;
-			self.weaponentity.anim_end_num = REMOTE_HALF_HOLSTER_END - REMOTE_HALF_HOLSTER_START + 1;
-			self.weaponentity.anim_time = REMOTE_HOLSTER_TIME; // possibly divide by 2?
-			self.weaponentity.frame = REMOTE_HALF_HOLSTER_START;
+			if ((self.weaponentity.last_action == DRAW) || (self.weaponentity.last_action == HALF_DRAW))
+			{
+				if (self.weaponentity.last_action == DRAW)
+					last_action_start = REMOTE_DRAW_START;
+				else //if (self.weaponentity.last_action == HALF_DRAW)
+					last_action_start = REMOTE_HALF_DRAW_START;
+				self.weaponentity.anim_end = REMOTE_HALF_HOLSTER_END;
+				self.weaponentity.anim_end_num = REMOTE_HALF_HOLSTER_END - REMOTE_HALF_HOLSTER_START + 1;
+				self.weaponentity.anim_time = (REMOTE_HOLSTER_TIME / (REMOTE_HALF_HOLSTER_END - REMOTE_HALF_HOLSTER_START + 1)) * (self.weaponentity.frame - last_action_start + 1);
+				self.weaponentity.attack_finished = time + self.weaponentity.anim_time;
+				self.weaponentity.frame = REMOTE_HALF_HOLSTER_END - (self.weaponentity.frame - last_action_start + 1) + 1;
+			}
+			else
+			{
+				self.weaponentity.anim_end = REMOTE_HALF_HOLSTER_END;
+				self.weaponentity.anim_end_num = REMOTE_HALF_HOLSTER_END - REMOTE_HALF_HOLSTER_START + 1;
+				self.weaponentity.anim_time = REMOTE_HOLSTER_TIME; // possibly divide by 2?
+				self.weaponentity.frame = REMOTE_HALF_HOLSTER_START;
+			}
 		}
 		self.weaponentity.last_action = self.weaponentity.anim_type;
 	}
@@ -277,12 +328,8 @@ void() remote_animate =
 	}
 	else if ((self.weaponentity.frame == self.weaponentity.anim_end) && ((self.weaponentity.anim_type == DRAW) || (self.weaponentity.anim_type == HALF_DRAW)))
 	{
-		self.weaponentity.attack_finished = time + 0.5; // don't throw instantly after detonating.
-		self.button0 = 0;
-		self.weaponentity.tnt_type = REMOTE_AND_BOMB;
-		self.weaponentity.charge = 0;
-		self.weaponentity.anim_type = IDLE;
-		remote_animate();
+		self.nextthink = time;
+		self.think = Remote_Idle;
 	}
 	else if ((self.weaponentity.frame == self.weaponentity.anim_end) && ((self.weaponentity.anim_type == HOLSTER) || (self.weaponentity.anim_type == HALF_HOLSTER)))
 	{

@@ -395,10 +395,21 @@ void() napalm_animate =
 		}
 		else if (self.weaponentity.anim_type == HOLSTER)
 		{
-			self.weaponentity.anim_end = NAPALM_HOLSTER_END;
-			self.weaponentity.anim_end_num = NAPALM_HOLSTER_END - NAPALM_HOLSTER_START + 1;
-			self.weaponentity.anim_time = NAPALM_HOLSTER_TIME;
-			self.weaponentity.frame = NAPALM_HOLSTER_START;
+			if (self.weaponentity.last_action == DRAW)
+			{
+				self.weaponentity.anim_end = NAPALM_HOLSTER_END;
+				self.weaponentity.anim_end_num = NAPALM_HOLSTER_END - NAPALM_HOLSTER_START + 1;
+				self.weaponentity.anim_time = (NAPALM_HOLSTER_TIME / (NAPALM_HOLSTER_END - NAPALM_HOLSTER_START + 1)) * (self.weaponentity.frame - NAPALM_DRAW_START + 1);
+				self.weaponentity.attack_finished = time + self.weaponentity.anim_time;
+				self.weaponentity.frame = NAPALM_HOLSTER_END - (self.weaponentity.frame - NAPALM_DRAW_START + 1) + 1;
+			}
+			else
+			{
+				self.weaponentity.anim_end = NAPALM_HOLSTER_END;
+				self.weaponentity.anim_end_num = NAPALM_HOLSTER_END - NAPALM_HOLSTER_START + 1;
+				self.weaponentity.anim_time = NAPALM_HOLSTER_TIME;
+				self.weaponentity.frame = NAPALM_HOLSTER_START;
+			}
 		}
 		self.weaponentity.last_action = self.weaponentity.anim_type;
 	}
@@ -423,7 +434,7 @@ void() napalm_animate =
 		self.think = Napalm_Idle;
 	else if ((self.weaponentity.frame == self.weaponentity.anim_end) && (self.weaponentity.anim_type == DRAW))
 	{
-		self.nextthink = time + NAPALM_DRAW_TIME;
+		self.nextthink = time;
 		self.think = Napalm_Idle;
 	}
 	else if ((self.weaponentity.frame == self.weaponentity.anim_end) && (self.weaponentity.anim_type == HOLSTER))

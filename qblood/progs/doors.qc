@@ -574,10 +574,6 @@ void() func_door =
 	if (self.items2)
 		self.wait = -1;
 
-	// If the door can't be opened manually, it can be opened by touch
-	if (! (self.spawnflags & SF_USABLE))
-		self.touch = door_touch;
-
 	// LinkDoors can't be done until all of the doors have been spawned, so
 	// the sizes can be detected properly.
 	self.think = LinkDoors;

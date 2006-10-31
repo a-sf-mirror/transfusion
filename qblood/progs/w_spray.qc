@@ -218,17 +218,39 @@ void() spray_animate =
 		}
 		else if (self.weaponentity.anim_type == HOLSTER)
 		{
-			self.weaponentity.anim_end = SPRAY_HOLSTER_END;
-			self.weaponentity.anim_end_num = SPRAY_HOLSTER_END - SPRAY_HOLSTER_START + 1;
-			self.weaponentity.anim_time = SPRAY_HOLSTER_TIME;
-			self.weaponentity.frame = SPRAY_HOLSTER_START;
+			if (self.weaponentity.last_action == DRAW)
+			{
+				self.weaponentity.anim_end = SPRAY_HOLSTER_END;
+				self.weaponentity.anim_end_num = SPRAY_HOLSTER_END - SPRAY_HOLSTER_START + 1;
+				self.weaponentity.anim_time = (SPRAY_HOLSTER_TIME / (SPRAY_HOLSTER_END - SPRAY_HOLSTER_START + 1)) * (self.weaponentity.frame - SPRAY_DRAW_START + 1);
+				self.weaponentity.attack_finished = time + self.weaponentity.anim_time;
+				self.weaponentity.frame = SPRAY_HOLSTER_END - ((self.weaponentity.frame / SPRAY_DRAW_END) - SPRAY_DRAW_START + 1) + 1;
+			}
+			else
+			{
+				self.weaponentity.anim_end = SPRAY_HOLSTER_END;
+				self.weaponentity.anim_end_num = SPRAY_HOLSTER_END - SPRAY_HOLSTER_START + 1;
+				self.weaponentity.anim_time = SPRAY_HOLSTER_TIME;
+				self.weaponentity.frame = SPRAY_HOLSTER_START;
+			}
 		}
 		else if (self.weaponentity.anim_type == HALF_HOLSTER)
 		{
-			self.weaponentity.anim_end = SPRAY_HALF_HOLSTER_END;
-			self.weaponentity.anim_end_num = SPRAY_HALF_HOLSTER_END - SPRAY_HALF_HOLSTER_START + 1;
-			self.weaponentity.anim_time = SPRAY_HOLSTER_TIME; // possibly divide by 2?
-			self.weaponentity.frame = SPRAY_HALF_HOLSTER_START;
+			if (self.weaponentity.last_action == DRAW)
+			{
+				self.weaponentity.anim_end = SPRAY_HOLSTER_END;
+				self.weaponentity.anim_end_num = SPRAY_HOLSTER_END - SPRAY_HOLSTER_START + 1;
+				self.weaponentity.anim_time = (SPRAY_HOLSTER_TIME / (SPRAY_HOLSTER_END - SPRAY_HOLSTER_START + 1)) * (self.weaponentity.frame - SPRAY_DRAW_START + 1);
+				self.weaponentity.attack_finished = time + self.weaponentity.anim_time;
+				self.weaponentity.frame = SPRAY_HALF_HOLSTER_END - (self.weaponentity.frame - SPRAY_HALF_DRAW_START + 1) + 1;
+			}
+			else
+			{
+				self.weaponentity.anim_end = SPRAY_HALF_HOLSTER_END;
+				self.weaponentity.anim_end_num = SPRAY_HALF_HOLSTER_END - SPRAY_HALF_HOLSTER_START + 1;
+				self.weaponentity.anim_time = SPRAY_HOLSTER_TIME; // possibly divide by 2?
+				self.weaponentity.frame = SPRAY_HALF_HOLSTER_START;
+			}
 		}
 		self.weaponentity.last_action = self.weaponentity.anim_type;
 	}
@@ -316,7 +338,10 @@ void() spray_animate =
 	else if ((self.weaponentity.frame == self.weaponentity.anim_end) && ((self.weaponentity.anim_type == DRAW) || (self.weaponentity.anim_type == HALF_DRAW)))
 	{
 		self.weaponentity.anim_type = IDLE;
-		spray_animate();
+		self.player_state = PS_IDLE;
+		self.weaponentity.frame = SPRAY_IDLE_START;
+		self.nextthink = time + 0.01;
+		self.think = spray_animate;
 	}
 	else if ((self.weaponentity.frame == self.weaponentity.anim_end) && ((self.weaponentity.anim_type == HOLSTER) || (self.weaponentity.anim_type == HALF_HOLSTER)))
 	{

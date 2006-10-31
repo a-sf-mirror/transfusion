@@ -25,6 +25,22 @@ void() identify_player;
 
 //============================================================================
 
+void() precache_weapons =
+{
+	precache_pitchfork();
+	precache_flaregun();
+	precache_sawedoff();
+	precache_tommygun();
+	precache_napalmlauncher();
+	precache_tnt();
+	precache_remote();
+	precache_proximity();
+	precache_spraycan();
+	precache_teslacannon();
+	precache_lifeleech();
+	precache_voodoodoll();
+};
+
 /*
 ============
 W_Origin
@@ -1124,8 +1140,9 @@ Called every frame so impulse events can be handled as well as possible
 void(float isAlive) Impulses_Player;
 void() W_WeaponFrame =
 {
-	if (self.weaponentity.attack_finished > time)
+	if ((self.weaponentity.attack_finished > time) && ((self.weaponentity.anim_type != DRAW) && (self.weaponentity.anim_type != HOLSTER)))
 		return;
+
 	//check for changeweapon before ammo incase we currently have no weapon drawn
 	Impulses_Player(TRUE);
 
@@ -1147,7 +1164,7 @@ void() W_WeaponFrame =
 	}
 
 	// Check for attack
-	if (self.button0 || self.button3)
+	if (((self.button0) || (self.button3)) && ((self.weaponentity.anim_type != DRAW) && (self.weaponentity.anim_type != HOLSTER)))
 	{
 		ResetIdle(self);
 		W_Attack();

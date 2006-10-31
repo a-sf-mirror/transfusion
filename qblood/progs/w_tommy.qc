@@ -302,10 +302,21 @@ void() tommy_animate =
 		}
 		else if (self.weaponentity.anim_type == HOLSTER)
 		{
-			self.weaponentity.anim_end = TOMMY_HOLSTER_END;
-			self.weaponentity.anim_end_num = TOMMY_HOLSTER_END - TOMMY_HOLSTER_START + 1;
-			self.weaponentity.anim_time = TOMMY_HOLSTER_TIME;
-			self.weaponentity.frame = TOMMY_HOLSTER_START;
+			if (self.weaponentity.last_action == DRAW)
+			{
+				self.weaponentity.anim_end = TOMMY_HOLSTER_END;
+				self.weaponentity.anim_end_num = TOMMY_HOLSTER_END - TOMMY_HOLSTER_START + 1;
+				self.weaponentity.anim_time = (TOMMY_HOLSTER_TIME / (TOMMY_HOLSTER_END - TOMMY_HOLSTER_START + 1)) * (self.weaponentity.frame - TOMMY_DRAW_START + 1);
+				self.weaponentity.attack_finished = time + self.weaponentity.anim_time;
+				self.weaponentity.frame = TOMMY_HOLSTER_END - (self.weaponentity.frame - TOMMY_DRAW_START + 1) + 1;
+			}
+			else
+			{
+				self.weaponentity.anim_end = TOMMY_HOLSTER_END;
+				self.weaponentity.anim_end_num = TOMMY_HOLSTER_END - TOMMY_HOLSTER_START + 1;
+				self.weaponentity.anim_time = TOMMY_HOLSTER_TIME;
+				self.weaponentity.frame = TOMMY_HOLSTER_START;
+			}
 		}
 		self.weaponentity.last_action = self.weaponentity.anim_type;
 	}
@@ -334,7 +345,7 @@ void() tommy_animate =
 	}
 	else if ((self.weaponentity.frame == self.weaponentity.anim_end) && (self.weaponentity.anim_type == DRAW))
 	{
-		self.nextthink = time + TOMMY_DRAW_TIME;
+		self.nextthink = time;
 		self.think = Tommy_Idle;
 	}
 	else if ((self.weaponentity.frame == self.weaponentity.anim_end) && (self.weaponentity.anim_type == HOLSTER))

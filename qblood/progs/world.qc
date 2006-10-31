@@ -321,7 +321,8 @@ void() worldspawn =
 
 	precache_model("progs/s_explod.spr");  // napalm sprite explosion
 
-	precache_model("models/weapons/v_pitch.psk");
+	//weapons
+	precache_weapons();
 
 	//
 	// Setup light animation tables. 'a' is total darkness, 'z' is maxbright.

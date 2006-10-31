@@ -889,9 +889,7 @@ entity() SelectSpawnPoint =
 	// and fall back to a single player spawn point if necessary
 	// TODO: add single player support here
 	if (gametype == GT_SINGLE_PLAYER)
-	{
 		spawnpoint = Cl_GetRandomSpawnPoint ("info_player_start");
-	}
 	else if (gametype == GT_COOPERATIVE)
 	{
 		spawnpoint = Cl_GetRandomSpawnPoint("info_player_coop");
@@ -1195,7 +1193,7 @@ void() PlayerDeathThink =
 	if (!self.button2 && !self.button3 && !self.button0)
 		return;
 
-	self.button0 = self.button1 = self.button2 = self.button3 = self.button4 = 0;
+	self.button0 = self.button1 = self.button2 = self.button3 = self.button4 = self.button5 = 0;
 	respawn(TRUE);
 };
 
@@ -1478,8 +1476,8 @@ void() PlayerPreThink =
 			self.view_ofs_z = tempofs_z;
 		if (self.flags & FL_ONGROUND)
 		{
-			self.velocity_x = self.velocity_x * 0.7;
-			self.velocity_y = self.velocity_y * 0.7;
+			self.velocity_x = self.velocity_x * 0.85;
+			self.velocity_y = self.velocity_y * 0.85;
 		}
 		else // slight slowdown while crouching in mid-air
 		{
@@ -1860,7 +1858,7 @@ void() PlayerPostThink =
 		ResetIdle(self);
 		return;
 	}
-	//if (self.button4 && !self.oldbutton4){usesomething();}self.oldbutton4 = self.button4;
+
 	if (self.button4 && !self.oldbutton4)
 		Cl_Use();
 	self.oldbutton4 = self.button4;
