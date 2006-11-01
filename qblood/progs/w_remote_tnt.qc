@@ -68,6 +68,12 @@ void() Remote_Attack =
 			self.weaponentity.attack_finished = time + REMOTE_DRAW_TIME;
 			self.weaponentity.anim_type = HALF_DRAW;
 			self.player_state = PS_DRAW;
+			if (self.currentammo <= 0)
+			{
+				self.items = self.items - self.weapon;
+				remove(self.weaponentity);
+				W_DrawWeapon(W_BestWeapon());
+			}
 		}
 		else
 		{

@@ -357,7 +357,7 @@ void() Bomb_Fire =
 
 	// If we have no more dynamite, we "lose" the weapon
 	// (expect for remote detonators: we always have the remote)
-	if (self.currentammo == 0 && self.weapon != IT_REMOTE_DETONATOR)
+	if ((self.currentammo <= 0) && (self.weapon != IT_REMOTE_DETONATOR))
 	{
 		self.items = self.items - self.weapon;
 		remove(self.weaponentity);

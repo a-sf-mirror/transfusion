@@ -160,7 +160,7 @@ Impulse list for observers
 */
 void() Impulses_Observer =
 {
-	if (self.impulse == IMP_NONE && !self.button0 && !self.button2)
+	if (self.impulse == IMP_NONE && !self.button0 && !self.button2 && !self.button4)
 	return;
 
 	// If we're not in a team mode, join the game on impulse 1 or 2, or on "jump" or "fire"

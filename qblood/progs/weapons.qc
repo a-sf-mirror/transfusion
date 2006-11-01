@@ -1148,7 +1148,7 @@ void() W_WeaponFrame =
 
 	if (!W_AmmoAvailable())
 	{
-		if (self.player_state != PS_HOLD_FIRE)
+		if ((self.player_state != PS_HOLD_FIRE) && (self.weaponentity.tnt_type != REMOTE_ONLY))
 		{
 			W_SwitchToWeapon(W_BestWeapon());
 			return;
