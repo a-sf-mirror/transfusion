@@ -283,6 +283,7 @@ void() tnt_animate =
 			//fire it even if we're not done lighting the fuse.
 			if (self.weaponentity.charge < 3)
 				self.weaponentity.charge = 3;
+			self.weaponentity.attack_finished = time + TNT_THROW_TIME;
 			self.weaponentity.anim_type = THROW;
 		}
 	}
