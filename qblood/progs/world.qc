@@ -171,7 +171,9 @@ void() PrecacheSounds =
 
 	// Miscellaneous sounds
 	precache_sound("ambience/bubrise.wav");       // bubble sound
-	precache_sound("ambience/sizzle.wav");        // smelt on slime
+	precache_sound("ambience/sizzle.ogg");        // smelt on slime
+	precache_sound("ambience/sizzle1.ogg");
+	precache_sound("ambience/sizzle2.ogg");
 	precache_sound("bludbath/reappear.wav");      // item respawn sound
 	precache_sound("bludbath/message.wav");       // Messages  (TODO: not always used...)
 	precache_sound("items/ammo.wav");             // ammo pick up

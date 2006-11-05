@@ -1079,22 +1079,11 @@ void(string soundname, float volume) ambient_generic_vol = { ambient_generic_vol
 void() ambient_drip = { ambient_generic_vol("ambience/drip3.wav", 0.5);													};
 void() ambient_sizzle = { ambient_generic_vol("ambience/sizzle.ogg", 0.4);												};
 void() ambient_sizzle1 = { ambient_generic_vol("ambience/sizzle1.ogg", 0.4);											};
-
-void() ambient_sizzle2 =
-{
-	ambient_generic_vol("ambience/sizzle2.ogg", 0.4);
-};
-
-void() ambient_water1 =
-{
-	ambient_generic_vol("ambience/water1.wav", 0.5);
-};
+void() ambient_sizzle2 = { ambient_generic_vol("ambience/sizzle2.ogg", 0.4);											};
+void() ambient_water1 = { ambient_generic_vol("ambience/water1.wav", 0.5);												};
 
 // Ambient sounds with generic parameters
-void(string soundname) ambient_generic =
-{
-	ambient_generic_vol_attn(soundname, 1, ATTN_STATIC);
-};
+void(string soundname) ambient_generic = { ambient_generic_vol_attn(soundname, 1, ATTN_STATIC);							};
 
 void() ambient_custom       = {
 	precache_sound(self.noise);

@@ -19,7 +19,7 @@
 
 #include "common.qh"
 
-//void() player_run;
+void() player_run;
 void(entity bomb, entity attacker, float rad, float dflags, entity ignore, string dtype) T_RadiusDamage;
 void() identify_player;
 

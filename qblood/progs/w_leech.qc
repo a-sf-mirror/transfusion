@@ -172,63 +172,73 @@ Dropped LL think function
 */
 void() Leech_Think =
 {
-	local float diff, bestdiff;
-	local entity ent, bestent;
-	local vector ballorigin;
+	local float t;
+	t = time - self.ltime;
+	self.ltime = time;
+	self.angles = self.angles + (self.rotate * t);
+	self.angles = SUB_NormalizeAngles(self.angles);
+	self.nextthink = time + 0.02;
 
-	self.owner = world;  // the LL must be able to touch its owner
-	self.nextthink = time + 0.75;
-	ballorigin = self.origin + '0 0 45';
-
-	// Look for a target (the closer, the better)
-	bestdiff = 10000;
-	bestent = world;
-	ent = findradius (self.origin, 500);
-	while (ent != world)
+	if (self.attack_finished <= time)
 	{
-		if (ent.takedamage)
-			// If it's a player
-			if (ent.classname == "player" || (ent.flags & FL_MONSTER))
-				// If he's a valid target (not the owner or a player from the same team)
-				if (ent != self.leech_sentry && 
-					(gametype == GT_BLOODBATH || gametype == GT_COOPERATIVE || gametype == GT_SINGLE_PLAYER || ent.team != self.team))
-				{
-					// If he's closer than our current choice
-					diff = vlen(ent.origin - ballorigin);
-					if (diff < bestdiff)
+		local float diff, bestdiff;
+		local entity ent, bestent;
+		local vector ballorigin;
+
+		self.owner = world;  // the LL must be able to touch its owner
+		self.attack_finished = time + 0.75;
+		ballorigin = self.origin + '0 0 45';
+
+		// Look for a target (the closer, the better)
+		bestdiff = 10000;
+		bestent = world;
+		ent = findradius (self.origin, 500);
+		while (ent != world)
+		{
+			if (ent.takedamage)
+				// If it's a player
+				if (ent.classname == "player" || (ent.flags & FL_MONSTER))
+					// If he's a valid target (not the owner or a player from the same team)
+					if (ent != self.leech_sentry && 
+						(gametype == GT_BLOODBATH || gametype == GT_COOPERATIVE || gametype == GT_SINGLE_PLAYER || ent.team != self.team))
 					{
-						// If he's visible
-						traceline(ballorigin, ent.origin, FALSE, self);
-						if (trace_ent == ent)
+						// If he's closer than our current choice
+						diff = vlen(ent.origin - ballorigin);
+						if (diff < bestdiff)
 						{
-							bestent = ent;
-							bestdiff = diff;
+							// If he's visible
+							traceline(ballorigin, ent.origin, FALSE, self);
+							if (trace_ent == ent)
+							{
+								bestent = ent;
+								bestdiff = diff;
+							}
 						}
 					}
-				}
 
-				ent = ent.chain;
+					ent = ent.chain;
+		}
+
+		// If we haven't find a target, there's nothing to do
+		if (bestent == world)
+			return;
+
+		// Fire a ball of energy on the target
+		newmis = spawn();
+		newmis.owner = self;
+		newmis.solid = SOLID_BBOX;
+		newmis.classname = "missile";
+		newmis.velocity = 1500 * normalize(bestent.origin - ballorigin);
+		newmis.angles = vectoangles(newmis.velocity);
+		newmis.movetype = MOVETYPE_FLYMISSILE;
+		newmis.touch = Leech_AltBallTouch;
+		setmodel(newmis, "progs/teslaball.spr");  // the tesla ball is closer to the original look
+		setsize(newmis, '0 0 0', '0 0 0');
+		setorigin(newmis, ballorigin);
+		newmis.dmg = 15;
+		newmis.alpha  = 0.5;
+		newmis.reset = SUB_Remove;
 	}
-
-	// If we haven't find a target, there's nothing to do
-	if (bestent == world)
-		return;
-
-	// Fire a ball of energy on the target
-	newmis = spawn();
-	newmis.owner = self;
-	newmis.solid = SOLID_BBOX;
-	newmis.classname = "missile";
-	newmis.velocity = 1500 * normalize(bestent.origin - ballorigin);
-	newmis.angles = vectoangles(newmis.velocity);
-	newmis.movetype = MOVETYPE_FLYMISSILE;
-	newmis.touch = Leech_AltBallTouch;
-	setmodel(newmis, "progs/teslaball.spr");  // the tesla ball is closer to the original look
-	setsize(newmis, '0 0 0', '0 0 0');
-	setorigin(newmis, ballorigin);
-	newmis.dmg = 15;
-	newmis.alpha  = 0.5;
-	newmis.reset = SUB_Remove;
 };
 
 /*
@@ -307,7 +317,7 @@ void() Leech_Use =
 	if (self.leech_sentry == other)
 	{
 		other.items = other.items + IT_LIFE_LEECH;
-		other.weapon = IT_LIFE_LEECH;
+		other.impulse = IMP_LIFE_LEECH;
 		other.leech_sentry = world;
 		other.ammo_leech = other.ammo_leech + self.ammo_leech;
 		sound(other, CHAN_ITEM, "items/weaponup.wav", 1, ATTN_NORM);
@@ -342,6 +352,8 @@ void() Leech_Drop =
 	item.solid = SOLID_SLIDEBOX;
 	item.takedamage = DAMAGE_AIM;
 	item.health = 300;
+	item.ammo_leech = self.ammo_leech;
+	item.rotate = ITEM_ROTATION;
 
 	item.origin = W_Origin() + v_forward * 8 + v_up * 12;
 	item.velocity = aim(self, 1000) * 50;
@@ -353,7 +365,8 @@ void() Leech_Drop =
 
 	// Sentry mode
 	item.spawnflags = item.spawnflags | SF_USABLE;
-	item.nextthink = time + 1.5;
+	item.attack_finished = time + 1.5;	//hack, since we need to think at two different intervals to rotate.
+	item.nextthink = 0.02;
 	item.think = Leech_Think;
 	item.use = Leech_Use;
 	item.th_die = Leech_Die;

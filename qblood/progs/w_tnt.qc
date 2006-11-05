@@ -278,6 +278,13 @@ void() tnt_animate =
 			if (self.weaponentity.frame == TNT_LIGHT_FUSE_END)
 				self.weaponentity.frame = TNT_LIGHT_FUSE_END - 2;
 		}
+		else if ((!self.button0 && self.player_state == PS_FIRE) || (self.weaponentity.charge && !self.button0))
+		{
+			//fire it even if we're not done lighting the fuse.
+			if (self.weaponentity.charge < 3)
+				self.weaponentity.charge = 3;
+			self.weaponentity.anim_type = THROW;
+		}
 	}
 	else if (self.weaponentity.anim_type == THROW)
 	{
