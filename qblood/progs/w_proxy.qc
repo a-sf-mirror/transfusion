@@ -142,7 +142,8 @@ void() Proxy_Attack =
 		Bomb_Uncharge();
 		self.weaponentity.anim_type = IDLE;
 	}
-	proxy_animate();
+	self.weaponentity.nextthink = time;
+	self.weaponentity.think = proxy_animate;
 };
 
 /*
@@ -156,16 +157,13 @@ void() Proxy_Draw =
 {
 	self.weapon = IT_PROXIMITY_BOMB;
 	self.currentammo = self.ammo_tnt_proxy;
-	self.weaponentity = spawn();
-	self.weaponentity.solid = SOLID_NOT;
-	self.weaponentity.owner = self;
-	self.weaponentity.weaponentity = self.weaponentity;
-	self.weaponentity.viewmodelforclient = self;
 	Proxy_UpdateView();
 	self.weaponentity.attack_finished = time + PROXY_DRAW_TIME;
 	self.weaponentity.anim_type = DRAW;
+	self.weaponentity.frame = PROXY_DRAW_START;
 	self.weaponentity.skin = 0;
-	proxy_animate();
+	self.weaponentity.nextthink = time;
+	self.weaponentity.think = proxy_animate;
 };
 
 /*
@@ -179,7 +177,8 @@ void() Proxy_Holster =
 {
 	self.weaponentity.attack_finished = time + PROXY_HOLSTER_TIME;
 	self.weaponentity.anim_type = HOLSTER;
-	proxy_animate();
+	self.weaponentity.nextthink = time;
+	self.weaponentity.think = proxy_animate;
 };
 
 /*
@@ -203,9 +202,10 @@ Proxy_Idle
 void() Proxy_Idle =
 {
 	self.weaponentity.anim_type = IDLE;
-	self.player_state = PS_IDLE;
+	self.owner.player_state = PS_IDLE;
 	self.weaponentity.frame = PROXY_IDLE;
-	proxy_animate();
+	self.weaponentity.nextthink = time;
+	self.weaponentity.think = proxy_animate;
 };
 
 /*
@@ -268,14 +268,14 @@ void() proxy_animate =
 		}
 		self.weaponentity.last_action = self.weaponentity.anim_type;
 	}
-	self.nextthink = time + (self.weaponentity.anim_time / self.weaponentity.anim_end_num);
-	self.think = proxy_animate;
+	self.weaponentity.nextthink = time + (self.weaponentity.anim_time / self.weaponentity.anim_end_num);
+	self.weaponentity.think = proxy_animate;
 
 	if (self.weaponentity.skin == 3)
 		self.weaponentity.skin = 0;
 	else
 		self.weaponentity.skin = self.weaponentity.skin + 1;
-	if (self.button0)
+	if (self.owner.button0)
 	{
 		if (self.weaponentity.charge < 20)
 			self.weaponentity.charge = self.weaponentity.charge + 1;
@@ -285,9 +285,9 @@ void() proxy_animate =
 	{
 		self.weaponentity.anim_type = THROW;
 		self.weaponentity.attack_finished = PROXY_THROW_TIME;
-		self.player_state = PS_FIRE;
+		self.owner.player_state = PS_FIRE;
 		ShowThrowMeter();
-		self.nextthink = time;
+		self.weaponentity.nextthink = time;
 	}
 	if (self.weaponentity.anim_type == THROW)
 	{
@@ -301,13 +301,13 @@ void() proxy_animate =
 	}
 	else if ((self.weaponentity.frame == self.weaponentity.anim_end) && (self.weaponentity.anim_type == DRAW))
 	{
-		self.nextthink = time;
-		self.think = Proxy_Idle;
+		self.weaponentity.nextthink = time;
+		self.weaponentity.think = Proxy_Idle;
 	}
 	else if ((self.weaponentity.frame == self.weaponentity.anim_end) && (self.weaponentity.anim_type == HOLSTER))
 	{
-		remove(self.weaponentity);
-		W_DrawWeapon(self.newweapon);
+		setmodel(self.weaponentity, "");
+		W_DrawWeapon(self.owner.newweapon);
 		return;
 	}
 };

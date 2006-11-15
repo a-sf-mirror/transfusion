@@ -104,13 +104,13 @@ void(vector org, vector dir, float mspeed) Tesla_LaunchJolt =
 
 	jolt = spawn();
 
-	jolt.owner = self;
+	jolt.owner = self.owner;
 	jolt.movetype = MOVETYPE_FLYMISSILE;
 	jolt.solid = SOLID_BBOX;
 	jolt.classname = "tesla ball";
 	jolt.velocity = dir * mspeed;
 	jolt.angles = vectoangles(jolt.velocity);
-	if (self.player_state == PS_ALTFIRE)
+	if (self.owner.player_state == PS_ALTFIRE)
 	{
 		jolt.dmg = 180;
 		jolt.model = "models/weapons/objects/alttesla.md3";
@@ -152,42 +152,42 @@ void() Tesla_Fire =
 	local   float   mspeed;
 	local   float   akimboFactor;  // 2 if guns akimbo, else 1
 
-	if (self.items & IT_GUNS_AKIMBO)
+	if (self.owner.items & IT_GUNS_AKIMBO)
 		akimboFactor = 2;
 	else
 		akimboFactor = 1;
 
 	// If we don't have enough ammo
-	if (self.ammo_cells < akimboFactor)
+	if (self.owner.ammo_cells < akimboFactor)
 		return;
 
 	muzzleflash();
 
-	self.punchangle_x = -2;
+	self.owner.punchangle_x = -2;
 
 	// If we want an altfire shot (we've already checked the ammo count in Tesla_Attack)
-	if (self.player_state == PS_ALTFIRE)
+	if (self.owner.player_state == PS_ALTFIRE)
 	{
 		// NOTE: we have already started the sound in "player_alttesla1"
 
-		if (!(self.flags & FL_INFINATE_AMMO))
-			self.ammo_cells = self.ammo_cells - 35 * akimboFactor;
+		if (!(self.owner.flags & FL_INFINATE_AMMO))
+			self.owner.ammo_cells = self.owner.ammo_cells - 35 * akimboFactor;
 		mspeed = 2000;
 	}
 	else
 	{
-		sound(self, CHAN_WEAPON, "weapons/tesla/tessngfr.wav", 1, ATTN_NORM);
+		sound(self.owner, CHAN_WEAPON, "weapons/tesla/tessngfr.wav", 1, ATTN_NORM);
 
-		if (!(self.flags & FL_INFINATE_AMMO))
-			self.ammo_cells = self.ammo_cells - akimboFactor;
+		if (!(self.owner.flags & FL_INFINATE_AMMO))
+			self.owner.ammo_cells = self.owner.ammo_cells - akimboFactor;
 		mspeed = 1500;
 	}
-	if (!(self.flags & FL_INFINATE_AMMO))
-		self.currentammo = self.ammo_cells;
+	if (!(self.owner.flags & FL_INFINATE_AMMO))
+		self.owner.currentammo = self.owner.ammo_cells;
 
-	makevectors(self.v_angle);
-	dir = aim(self, mspeed);
-	org = W_Origin() + v_forward * 8 + v_up * -9;
+	makevectors(self.owner.v_angle);
+	dir = aim(self.owner, mspeed);
+	org = W_Origin() + v_forward * 8 + v_up * -10 + v_right * 4;
 
 	// Akimbo mode
 	if (akimboFactor == 2)
@@ -197,11 +197,11 @@ void() Tesla_Fire =
 		Tesla_LaunchJolt(org - v_right * 14, dir, mspeed);
 
 		// If we don't have enough ammo anymore, drop the akimbo mode for now
-		if (self.ammo_cells < 2)
+		if (self.owner.ammo_cells < 2)
 			W_SetCurrentAmmo();
 	}
-	else if (self.player_state == PS_ALTFIRE)
-		Tesla_LaunchJolt(org + v_right * 6.25 + v_forward * 24, dir, mspeed);
+	else if (self.owner.player_state == PS_ALTFIRE)
+		Tesla_LaunchJolt(org + v_right * 6 + v_forward * 24, dir, mspeed);
 	else
 		Tesla_LaunchJolt(org, dir, mspeed);
 };
@@ -220,7 +220,8 @@ void() Tesla_Attack =
 		self.player_state = PS_FIRE;
 		self.weaponentity.attack_finished = time + TESLA_FIRE_TIME - 0.01;
 		self.weaponentity.anim_type = FIRE;
-		tesla_animate();
+		self.weaponentity.nextthink = time;
+		self.weaponentity.think = tesla_animate;
 	}
 	else if (self.button3)
 	{
@@ -231,7 +232,8 @@ void() Tesla_Attack =
 			sound(self, CHAN_WEAPON, "weapons/tesla/tesakima.wav", 1, ATTN_NORM);
 		else
 			sound(self, CHAN_WEAPON, "weapons/tesla/tessuper.wav", 1, ATTN_NORM);
-		tesla_animate();
+		self.weaponentity.nextthink = time;
+		self.weaponentity.think = tesla_animate;
 	}
 };
 
@@ -246,16 +248,13 @@ void() Tesla_Draw =
 {
 	self.weapon = IT_TESLA_CANNON;
 	self.currentammo = self.ammo_cells;
-	self.weaponentity = spawn();
-	self.weaponentity.solid = SOLID_NOT;
-	self.weaponentity.owner = self;
-	self.weaponentity.weaponentity = self.weaponentity;
-	self.weaponentity.viewmodelforclient = self;
 	Tesla_UpdateView();
 	self.weaponentity.attack_finished = time + TESLA_DRAW_TIME;
 	self.weaponentity.anim_type = DRAW;
+	self.weaponentity.frame = TESLA_DRAW_START;
 	self.weaponentity.skin = 0;
-	tesla_animate();
+	self.weaponentity.nextthink = time;
+	self.weaponentity.think = tesla_animate;
 };
 
 /*
@@ -269,7 +268,8 @@ void() Tesla_Holster =
 {
 	self.weaponentity.attack_finished = time + TESLA_HOLSTER_TIME;
 	self.weaponentity.anim_type = HOLSTER;
-	tesla_animate();
+	self.weaponentity.nextthink = time;
+	self.weaponentity.think = tesla_animate;
 };
 
 /*
@@ -296,17 +296,19 @@ void() Tesla_UpdateView =
 void() Tesla_Idle =
 {
 	self.weaponentity.anim_type = IDLE;
-	self.player_state = PS_IDLE;
+	self.owner.player_state = PS_IDLE;
 	self.weaponentity.frame = TESLA_IDLE;
-	tesla_animate();
+	self.weaponentity.nextthink = time;
+	self.weaponentity.think = tesla_animate;
 };
 
 void() Tesla_Rebound =
 {
 	self.weaponentity.anim_type = REBOUND;
-	self.player_state = PS_IDLE;
+	self.owner.player_state = PS_IDLE;
 	self.weaponentity.frame = TESLA_REBOUND_START;
-	tesla_animate();
+	self.weaponentity.nextthink = time;
+	self.weaponentity.think = tesla_animate;
 };
 
 /*
@@ -382,8 +384,8 @@ void() tesla_animate =
 		}
 		self.weaponentity.last_action = self.weaponentity.anim_type;
 	}
-	self.nextthink = time + (self.weaponentity.anim_time / self.weaponentity.anim_end_num);
-	self.think = tesla_animate;
+	self.weaponentity.nextthink = time + (self.weaponentity.anim_time / self.weaponentity.anim_end_num);
+	self.weaponentity.think = tesla_animate;
 
 	if (self.weaponentity.skin == 4)
 		self.weaponentity.skin = 0;
@@ -395,10 +397,10 @@ void() tesla_animate =
 		if (self.weaponentity.attack_finished < time)
 		{
 			// Check to see if we are supposed to stop shooting.
-			if ((!self.button0) || (intermission_running) || (self.ammo_cells < 1))
+			if ((!self.owner.button0) || (intermission_running) || (self.owner.ammo_cells < 1))
 			{
-				self.nextthink = time + 0.01;
-				self.think = Tesla_Rebound;
+				self.weaponentity.nextthink = time + 0.01;
+				self.weaponentity.think = Tesla_Rebound;
 			}
 			else
 				Tesla_Fire();
@@ -411,41 +413,41 @@ void() tesla_animate =
 	{
 		if ((self.weaponentity.frame == TESLA_ALTFIRE_START) || ((self.weaponentity.frame == TESLA_ALTFIRE_START + 31) &&
 			(self.weaponentity.frame == TESLA_ALTFIRE_START+ 37))) //update player's 2 frame fire animation.
-			self.frame = $attack1;
+			self.owner.frame = PLAYER_ATTACK_START;
 		else
-			self.frame = $attack2;
+			self.owner.frame = PLAYER_ATTACK_END;
 
 		if (self.weaponentity.frame == TESLA_ALTFIRE_START + 31)
 			Tesla_Fire();
 		else if (self.weaponentity.frame == TESLA_ALTFIRE_END)
 		{
-			if (!self.button3)
+			if (!self.owner.button3)
 			{
-				self.nextthink = time + TESLA_IDLE_TIME;
-				self.think = Tesla_Idle;
+				self.weaponentity.nextthink = time + TESLA_IDLE_TIME;
+				self.weaponentity.think = Tesla_Idle;
 			}
 		}
 	}
 
 	if ((self.weaponentity.frame == self.weaponentity.anim_end) && (self.weaponentity.anim_type == DRAW))
 	{
-		self.nextthink = time + TESLA_IDLE_TIME;
-		self.think = Tesla_Idle;
+		self.weaponentity.nextthink = time + TESLA_IDLE_TIME;
+		self.weaponentity.think = Tesla_Idle;
 	}
 	else if ((self.weaponentity.frame == self.weaponentity.anim_end) && (self.weaponentity.anim_type == HOLSTER))
 	{
-		remove(self.weaponentity);
-		W_DrawWeapon(self.newweapon);
+		setmodel(self.weaponentity, "");
+		W_DrawWeapon(self.owner.newweapon);
 		return;
 	}
 	else if ((self.weaponentity.frame == self.weaponentity.anim_end) && (self.weaponentity.anim_type == REBOUND))
 	{
-		self.nextthink = time;
-		self.think = Tesla_Idle;
+		self.weaponentity.nextthink = time;
+		self.weaponentity.think = Tesla_Idle;
 	}
 	if (self.weaponentity.anim_type == IDLE)
 	{
-		self.nextthink = time + TESLA_IDLE_TIME;
-		self.think = Tesla_Idle;
+		self.weaponentity.nextthink = time + TESLA_IDLE_TIME;
+		self.weaponentity.think = Tesla_Idle;
 	}
 };

@@ -37,7 +37,8 @@ void() TNT_Attack =
 	self.weaponentity.attack_finished = self.weaponentity.tnt_time = time + FUSE_TIME;
 	self.weaponentity.anim_type = LIGHT_FUSE;
 	self.weaponentity.charge = 0;
-	self.think = tnt_animate;
+	self.weaponentity.nextthink = time;
+	self.weaponentity.think = tnt_animate;
 };
 
 /*
@@ -50,11 +51,6 @@ Draw code for the TNT
 void() TNT_Draw =
 {
 	self.currentammo = self.ammo_tnt_bundle;
-	self.weaponentity = spawn();
-	self.weaponentity.solid = SOLID_NOT;
-	self.weaponentity.owner = self;
-	self.weaponentity.weaponentity = self.weaponentity;
-	self.weaponentity.viewmodelforclient = self;
 	TNT_UpdateView();
 	// If we need to pop up the lighter
 	if (self.weapon != IT_SPRAY_CAN)
@@ -62,14 +58,17 @@ void() TNT_Draw =
 		sound(self, CHAN_WEAPON, "weapons/tnt/lighter.wav", 1, ATTN_NORM);
 		self.weaponentity.attack_finished = time + TNT_DRAW_TIME;
 		self.weaponentity.anim_type = DRAW;
+		self.weaponentity.frame = TNT_DRAW_START;
 	}
 	else
 	{
 		self.weaponentity.attack_finished = time + TNT_DRAW_TIME;
 		self.weaponentity.anim_type = HALF_DRAW;
+		self.weaponentity.frame = TNT_HALF_DRAW_START;
 	}
 	self.weapon = IT_TNT;
-	tnt_animate();
+	self.weaponentity.nextthink = time;
+	self.weaponentity.think = tnt_animate;
 };
 
 /*
@@ -91,7 +90,8 @@ void() TNT_Holster =
 	}
 	else
 		self.weaponentity.anim_type = HALF_HOLSTER;
-	tnt_animate();
+	self.weaponentity.nextthink = time;
+	self.weaponentity.think = tnt_animate;
 };
 
 /*
@@ -115,9 +115,10 @@ TNT_Idle
 void() TNT_Idle =
 {
 	self.weaponentity.anim_type = IDLE;
-	self.player_state = PS_IDLE;
+	self.owner.player_state = PS_IDLE;
 	self.weaponentity.frame = TNT_IDLE_START;
-	tnt_animate();
+	self.weaponentity.nextthink = time;
+	self.weaponentity.think = tnt_animate;
 };
 
 /*
@@ -141,7 +142,7 @@ void() tnt_animate =
 		local float last_action_start;
 		if (self.weaponentity.anim_type == IDLE)
 		{
-			self.player_state = PS_IDLE;
+			self.owner.player_state = PS_IDLE;
 			self.weaponentity.anim_end = TNT_IDLE_END;
 			self.weaponentity.anim_end_num = TNT_IDLE_END - TNT_IDLE_START + 1;
 			self.weaponentity.anim_time = TNT_IDLE_TIME;
@@ -221,13 +222,13 @@ void() tnt_animate =
 		}
 		self.weaponentity.last_action = self.weaponentity.anim_type;
 	}
-	self.nextthink = time + (self.weaponentity.anim_time / self.weaponentity.anim_end_num);
-	self.think = tnt_animate;
+	self.weaponentity.nextthink = time + (self.weaponentity.anim_time / self.weaponentity.anim_end_num);
+	self.weaponentity.think = tnt_animate;
 	if (self.weaponentity.anim_type == LIGHT_FUSE)
 	{
 		if (self.weaponentity.frame == TNT_LIGHT_FUSE_START)
 		{
-			if (self.player_state == PS_FIRE)
+			if (self.owner.player_state == PS_FIRE)
 				self.weaponentity.tnt_type = TNT_TYPE_NORMAL;
 			else //Altfire
 				self.weaponentity.tnt_type = TNT_TYPE_ALTFIRE;
@@ -235,27 +236,28 @@ void() tnt_animate =
 		ShowThrowMeter();
 		if (self.weaponentity.frame >= TNT_LIGHT_FUSE_END - 2)
 		{
+			self.weaponentity.nextthink = time + 0.1;
 			if (self.weaponentity.t_width <= time)
 			{
-				sound(self, CHAN_WEAPON, "weapons/tnt/tntfuse.wav", 0.5, ATTN_NORM);
+				sound(self.owner, CHAN_WEAPON, "weapons/tnt/tntfuse.wav", 0.5, ATTN_NORM);
 				self.weaponentity.t_width = time + 3.2;
 			}
-			if (self.button0 && self.weaponentity.tnt_time && !self.weaponentity.charge)
+			if (self.owner.button0 && self.weaponentity.tnt_time && !self.weaponentity.charge)
 			{
-				self.player_state = PS_CHARGE;
+				self.owner.player_state = PS_CHARGE;
 				self.weaponentity.charge = 1;
 			}
-			else if (self.button0 && self.weaponentity.charge < 20)
+			else if (self.owner.button0 && self.weaponentity.charge < 20)
 				self.weaponentity.charge = self.weaponentity.charge + 1;
-			if (self.weaponentity.charge && !self.button0)
+			if (self.weaponentity.charge && !self.owner.button0)
 			{
 				self.weaponentity.anim_type = THROW;
 				self.weaponentity.attack_finished = time + TNT_THROW_TIME;
-				self.player_state = PS_FIRE;
+				self.owner.player_state = PS_FIRE;
 				ShowThrowMeter();
 				tnt_animate();
 			}
-			else if (self.button3)
+			else if (self.owner.button3)
 			{
 				self.weaponentity.charge = 0;
 				self.weaponentity.attack_finished = time + TNT_DROP_TIME;
@@ -272,13 +274,14 @@ void() tnt_animate =
 				self.weaponentity.attack_finished = time + TNT_DROP_TIME;
 				Bomb_Fire();
 				Bomb_Uncharge();
-				remove(self.weaponentity);
-				self.weapon = 0;
+				setmodel(self.weaponentity, "");
+				self.owner.weapon = 0;
+				self.weaponentity.nextthink = 0;
 			}
 			if (self.weaponentity.frame == TNT_LIGHT_FUSE_END)
 				self.weaponentity.frame = TNT_LIGHT_FUSE_END - 2;
 		}
-		else if ((!self.button0 && self.player_state == PS_FIRE) || (self.weaponentity.charge && !self.button0))
+		else if ((!self.owner.button0 && self.owner.player_state == PS_FIRE) || (self.weaponentity.charge && !self.owner.button0))
 		{
 			//fire it even if we're not done lighting the fuse.
 			if (self.weaponentity.charge < 3)
@@ -299,13 +302,13 @@ void() tnt_animate =
 	}
 	else if ((self.weaponentity.frame == self.weaponentity.anim_end) && ((self.weaponentity.anim_type == DRAW) || (self.weaponentity.anim_type == HALF_DRAW)))
 	{
-		self.nextthink = time;
-		self.think = TNT_Idle;
+		self.weaponentity.nextthink = time;
+		self.weaponentity.think = TNT_Idle;
 	}
 	else if ((self.weaponentity.frame == self.weaponentity.anim_end) && ((self.weaponentity.anim_type == HOLSTER) || (self.weaponentity.anim_type == HALF_HOLSTER)))
 	{
-		remove(self.weaponentity);
-		W_DrawWeapon(self.newweapon);
+		setmodel(self.weaponentity, "");
+		W_DrawWeapon(self.owner.newweapon);
 		return;
 	}
 };

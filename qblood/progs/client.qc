@@ -23,10 +23,6 @@
 
 
 // prototypes
-void() W_WeaponFrame;
-void() PlayerDie;
-void() player_pain;
-void() player_stand;
 void(vector org) spawn_tfog;
 void(vector org, entity death_owner) spawn_tdeath;
 void(float snd) Taunt;
@@ -520,7 +516,7 @@ void(string s) SV_ParseClientCommand =
 						if (self.weapon != IT_PITCHFORK)
 						{
 							self.weapon = 0;
-							remove(self.weaponentity);
+							setmodel(self.weaponentity, "");
 							self.items = self.items - IT_PITCHFORK;
 						}
 						self.items = self.items - IT_FLAREGUN - IT_SAWED_OFF - IT_TOMMYGUN - IT_NAPALM_LAUNCHER - IT_TNT -
@@ -988,6 +984,7 @@ void() PutClientInServer =
 
 	self.deadflag = DEAD_NO;
 	self.player_state = PS_IDLE;
+	self.frame = PLAYER_PITCH_STAND;
 	self.newweapon = 0;
 
 	// paustime is set by teleporters to keep the player from moving a while
@@ -1028,14 +1025,14 @@ void() PutClientInServer =
 
 	spawn_tdeath(self.origin, self);
 
-	self.frame = PLAYER_PITCH_STAND;
-
+	SpawnWeaponentity();
 	// Let's start with our best weapon
 	self.weapon = W_BestWeapon();
 	W_DrawWeapon(self.weapon);
-	Bomb_Uncharge();
-
 	World_CheckWarmup();
+
+	self.nextthink = time + 0.1;
+	self.think = player_animate;
 };
 
 /*
@@ -1432,7 +1429,7 @@ void() PlayerPreThink =
 	}
 
 	// Players on the BOD can't move
-	if (self.player_state == PS_BRINK_OF_DEATH)
+	if (self.player_state >= PS_BOD_FALL && self.player_state <= PS_BOD_SWAY)
 	{
 		self.velocity_x = 0;
 		self.velocity_y = 0;
@@ -1605,7 +1602,7 @@ void() CheckPowerups =
 			self.akimbo_finished = 0;
 
 			// Don't reset the weapon view while on the BOD
-			if (self.player_state != PS_BRINK_OF_DEATH)
+			if (self.player_state < PS_BOD_FALL || self.player_state > PS_BOD_SWAY)
 				W_SetCurrentAmmo();
 		}
 	}
@@ -1851,7 +1848,7 @@ void() PlayerPostThink =
 	CheckPowerups();
 
 	// If we are on the Brink Of Death
-	if (self.player_state == PS_BRINK_OF_DEATH)
+	if (self.player_state >= PS_BOD_FALL && self.player_state <= PS_BOD_SWAY)
 	{
 		if (self.t_length < time)
 			Player_LiveAgain();

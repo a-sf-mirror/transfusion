@@ -195,24 +195,24 @@ Shot a napalm ball
 */
 void() Napalm_Fire =
 {
-	sound(self, CHAN_WEAPON, "weapons/napalm/blaster.wav", 1, ATTN_NORM);
+	sound(self.owner, CHAN_WEAPON, "weapons/napalm/blaster.wav", 1, ATTN_NORM);
 
-	self.punchangle_x = -2;
+	self.owner.punchangle_x = -2;
 
 	newmis = spawn();
 
-	makevectors(self.v_angle);
-	newmis.velocity = aim(self, 1000);  // base velocity
+	makevectors(self.owner.v_angle);
+	newmis.velocity = aim(self.owner, 1000);  // base velocity
 
-	if (self.player_state == PS_ALTFIRE)
+	if (self.owner.player_state == PS_ALTFIRE)
 	{
 		// set the number of bouncing balls
-		if (self.ammo_rockets > 12)
+		if (self.owner.ammo_rockets > 12)
 			newmis.cnt = 12;
 		else
-			newmis.cnt = self.ammo_rockets;
-		if (!(self.flags & FL_INFINATE_AMMO))
-			self.ammo_rockets = self.ammo_rockets - newmis.cnt;
+			newmis.cnt = self.owner.ammo_rockets;
+		if (!(self.owner.flags & FL_INFINATE_AMMO))
+			self.owner.ammo_rockets = self.owner.ammo_rockets - newmis.cnt;
 		newmis.velocity = newmis.velocity * 400 + '0 0 200';
 
 		Napalm_ThrowBouncingBall(newmis);
@@ -220,15 +220,15 @@ void() Napalm_Fire =
 	else
 	{        
 		newmis.effects = newmis.effects | EF_FLAME;
-		newmis.owner = self;
+		newmis.owner = self.owner;
 		newmis.solid = SOLID_BBOX;
 		newmis.classname = "missile";
 		newmis.angles = vectoangles(newmis.velocity);
 
 		newmis.movetype = MOVETYPE_FLYMISSILE;
 		newmis.velocity = newmis.velocity * 1500;
-		if (!(self.flags & FL_INFINATE_AMMO))
-			self.ammo_rockets = self.ammo_rockets - 1;
+		if (!(self.owner.flags & FL_INFINATE_AMMO))
+			self.owner.ammo_rockets = self.owner.ammo_rockets - 1;
 
 		newmis.touch = T_MissileTouch;
 		setmodel(newmis, "models/weapons/objects/napalm.md3");
@@ -242,9 +242,9 @@ void() Napalm_Fire =
 		newmis.reset = SUB_Remove;
 	}
 	muzzleflash();
-	if (!(self.flags & FL_INFINATE_AMMO))
-		self.currentammo = self.ammo_rockets;
-	setorigin(newmis, W_Origin() + v_forward * 24 + v_right * 3 + v_up * -4);
+	if (!(self.owner.flags & FL_INFINATE_AMMO))
+		self.owner.currentammo = self.owner.ammo_rockets;
+	setorigin(newmis, W_Origin() + v_forward * 24 + v_right * 3 + v_up * -8);
 };
 
 /*
@@ -274,7 +274,8 @@ void() Napalm_Attack =
 		self.weaponentity.anim_type = FIRE;
 	}
 	self.weaponentity.skin = 0;
-	napalm_animate();
+	self.weaponentity.nextthink = time;
+	self.weaponentity.think = napalm_animate;
 };
 
 /*
@@ -288,16 +289,13 @@ void() Napalm_Draw =
 {
 	self.weapon = IT_NAPALM_LAUNCHER;
 	self.currentammo = self.ammo_rockets;
-	self.weaponentity = spawn();
-	self.weaponentity.solid = SOLID_NOT;
-	self.weaponentity.owner = self;
-	self.weaponentity.weaponentity = self.weaponentity;
-	self.weaponentity.viewmodelforclient = self;
 	Napalm_UpdateView();
 	self.weaponentity.attack_finished = time + NAPALM_DRAW_TIME;
 	self.weaponentity.anim_type = DRAW;
 	self.weaponentity.skin = 1;
-	napalm_animate();
+	self.weaponentity.frame = NAPALM_DRAW_START;
+	self.weaponentity.nextthink = time;
+	self.weaponentity.think = napalm_animate;
 };
 
 /*
@@ -311,7 +309,8 @@ void() Napalm_Holster =
 {
 	self.weaponentity.attack_finished = time + NAPALM_HOLSTER_TIME;
 	self.weaponentity.anim_type = HOLSTER;
-	napalm_animate();
+	self.weaponentity.nextthink = time;
+	self.weaponentity.think = napalm_animate;
 };
 
 /*
@@ -342,9 +341,10 @@ void() Napalm_Idle =
 	else
 		self.weaponentity.skin = self.weaponentity.skin + 1;
 	self.weaponentity.anim_type = IDLE;
-	self.player_state = PS_IDLE;
+	self.owner.player_state = PS_IDLE;
 	self.weaponentity.frame = NAPALM_IDLE;
-	napalm_animate();
+	self.weaponentity.nextthink = time;
+	self.weaponentity.think = napalm_animate;
 };
 
 /*
@@ -413,8 +413,8 @@ void() napalm_animate =
 		}
 		self.weaponentity.last_action = self.weaponentity.anim_type;
 	}
-	self.nextthink = time + (self.weaponentity.anim_time / self.weaponentity.anim_end_num);
-	self.think = napalm_animate;
+	self.weaponentity.nextthink = time + (self.weaponentity.anim_time / self.weaponentity.anim_end_num);
+	self.weaponentity.think = napalm_animate;
 
 	if ((self.weaponentity.anim_type == FIRE) || (self.weaponentity.anim_type == ALTFIRE))
 	{
@@ -434,13 +434,13 @@ void() napalm_animate =
 		self.think = Napalm_Idle;
 	else if ((self.weaponentity.frame == self.weaponentity.anim_end) && (self.weaponentity.anim_type == DRAW))
 	{
-		self.nextthink = time;
-		self.think = Napalm_Idle;
+		self.weaponentity.nextthink = time;
+		self.weaponentity.think = Napalm_Idle;
 	}
 	else if ((self.weaponentity.frame == self.weaponentity.anim_end) && (self.weaponentity.anim_type == HOLSTER))
 	{
-		remove(self.weaponentity);
-		W_DrawWeapon(self.newweapon);
+		setmodel(self.weaponentity, "");
+		W_DrawWeapon(self.owner.newweapon);
 		return;
 	}
 };

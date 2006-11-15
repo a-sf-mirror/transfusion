@@ -56,13 +56,13 @@ PLAYER MODEL
 #define	PLAYER_PITCH_JUMP_END			69
 #define	PLAYER_JUMP_START				70
 #define	PLAYER_JUMP_END					73
-#define	PLAYER_SWITCH_TO_PITCH_START	74
-#define	PLAYER_SWITCH_TO_PITCH_END		77
-#define	PLAYER_SWITCH_TO_GUN_START		78
-#define	PLAYER_SWITCH_TO_GUN_END		81
+#define	PLAYER_DRAW_PITCH_START			74
+#define	PLAYER_DRAW_PITCH_END			77
+#define	PLAYER_DRAW_GUN_START			78
+#define	PLAYER_DRAW_GUN_END				81
 #define PLAYER_CROUCH                   82
 
-
+/*
 $modelname player
 
 // Running with pitchfork
@@ -120,6 +120,6 @@ $frame jump1 jump2 jump3 jump4
 $frame switchpitch1 switchpitch2 switchpitch3 switchpitch4
 
 // Changing from pitchfork to pistol (weapons 2-10)
-$frame switchpistol1 switchpistol2 switchpistol3 switchpistol4
+$frame switchpistol1 switchpistol2 switchpistol3 switchpistol4*/
 
 #endif  // #ifndef _PLAYER_QH_

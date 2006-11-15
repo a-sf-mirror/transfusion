@@ -41,7 +41,7 @@ void() ProxyBombArmed;
 
 #define	TNT_IDLE_TIME				0.3
 #define	TNT_DRAW_TIME				0.3
-#define	TNT_LIGHT_FUSE_TIME			0.9
+#define	TNT_LIGHT_FUSE_TIME			0.4
 #define	TNT_THROW_TIME				0.7
 #define	TNT_DROP_TIME				0.2
 #define	TNT_HOLSTER_TIME			0.3
@@ -110,5 +110,5 @@ void() ProxyBombArmed;
 #define SPRAY_HOLDFIRE_TIME			0.2
 #define	SPRAY_DROP_TIME				0.2
 #define	SPRAY_THROW_TIME			0.9
-#define SPRAY_LIGHT_FUSE_TIME		1.0
+#define SPRAY_LIGHT_FUSE_TIME		0.5
 #define SPRAY_HOLSTER_TIME			0.3

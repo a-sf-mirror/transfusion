@@ -103,10 +103,10 @@ void() Shotgun_Fire =
 	local float nbshots;
 	local vector dir, spread, orig;
 
-	if (!self.ammo_shells)
+	if (!self.owner.ammo_shells)
 		return;
 
-	if (self.player_state == PS_ALTFIRE)
+	if (self.owner.player_state == PS_ALTFIRE)
 	{
 		nbshots = 2;
 		spread = '0.14 0.08 0';
@@ -117,19 +117,19 @@ void() Shotgun_Fire =
 		spread = '0.1 0.03 0';
 	}
 
-	makevectors (self.v_angle);
+	makevectors (self.owner.v_angle);
 
-	self.punchangle_x = -2 * nbshots;
+	self.owner.punchangle_x = -2 * nbshots;
 
-	if (!(self.flags & FL_INFINATE_AMMO))
-		self.currentammo = self.ammo_shells = self.ammo_shells - nbshots;
+	if (!(self.owner.flags & FL_INFINATE_AMMO))
+		self.owner.currentammo = self.owner.ammo_shells = self.owner.ammo_shells - nbshots;
 
 	if (nbshots == 1)
-		sound(self, CHAN_AUTO, "weapons/shotgun/shotgunfire.wav", 1, ATTN_NORM);
+		sound(self.owner, CHAN_AUTO, "weapons/shotgun/shotgunfire.wav", 1, ATTN_NORM);
 	else
-		sound(self ,CHAN_AUTO, "weapons/shotgun/shotgunfir2.wav", 1, ATTN_NORM);
+		sound(self.owner ,CHAN_AUTO, "weapons/shotgun/shotgunfir2.wav", 1, ATTN_NORM);
 
-	dir = aim(self, 100000);
+	dir = aim(self.owner, 100000);
 
 	orig = W_Origin();
 	// Total damage from an alt-fire is about 3 times normal damage (1*8*8=64, 2*8*12=192)
@@ -160,7 +160,8 @@ void() Shotgun_Attack =
 		self.player_state = PS_FIRE;
 		self.weaponentity.anim_type = FIRE;
 	}
-	shotgun_animate();
+	self.weaponentity.nextthink = time;
+	self.weaponentity.think = shotgun_animate;
 };
 
 /*
@@ -174,19 +175,16 @@ void() Shotgun_Draw =
 {
 	self.weapon = IT_SAWED_OFF;
 	self.currentammo = self.ammo_shells;
-	self.weaponentity = spawn();
-	self.weaponentity.solid = SOLID_NOT;
-	self.weaponentity.owner = self;
-	self.weaponentity.weaponentity = self.weaponentity;
-	self.weaponentity.viewmodelforclient = self;
 	if (self.currentammo > 1)
 		self.weaponentity.ammo_in_chamber = 2;
 	else
 		self.weaponentity.ammo_in_chamber = 1;
 	Shotgun_UpdateView();
 	self.weaponentity.attack_finished = time + SHOTGUN_DRAW_TIME;
+	self.weaponentity.frame = SHOTGUN_DRAW_START;
 	self.weaponentity.anim_type = DRAW;
-	shotgun_animate();
+	self.weaponentity.nextthink = time;
+	self.weaponentity.think = shotgun_animate;
 };
 
 /*
@@ -200,7 +198,8 @@ void() Shotgun_Holster =
 {
 	self.weaponentity.attack_finished = time + SHOTGUN_HOLSTER_TIME;
 	self.weaponentity.anim_type = HOLSTER;
-	shotgun_animate();
+	self.weaponentity.nextthink = time;
+	self.weaponentity.think = shotgun_animate;
 };
 
 /*
@@ -227,9 +226,10 @@ void() Shotgun_UpdateView =
 void() Shotgun_Idle =
 {
 	self.weaponentity.anim_type = IDLE;
-	self.player_state = PS_IDLE;
+	self.owner.player_state = PS_IDLE;
 	self.weaponentity.frame = SHOTGUN_IDLE;
-	shotgun_animate();
+	self.weaponentity.nextthink = time;
+	self.weaponentity.think = shotgun_animate;
 };
 
 /*
@@ -324,8 +324,8 @@ void() shotgun_animate =
 	}
 	if (self.weaponentity.anim_type != IDLE)
 	{
-		self.nextthink = time + (self.weaponentity.anim_time / self.weaponentity.anim_end_num);
-		self.think = shotgun_animate;
+		self.weaponentity.nextthink = time + (self.weaponentity.anim_time / self.weaponentity.anim_end_num);
+		self.weaponentity.think = shotgun_animate;
 	}
 
 	if (self.weaponentity.anim_type == FIRE)
@@ -358,8 +358,8 @@ void() shotgun_animate =
 				self.player_state = PS_FIRE;
 			muzzleflash();
 			Shotgun_Fire();
-			self.weaponentity.ammo_in_chamber = self.weaponentity.ammo_in_chamber - self.player_state;
-			if (self.items & IT_GUNS_AKIMBO)
+			self.weaponentity.ammo_in_chamber = self.weaponentity.ammo_in_chamber - self.owner.player_state;
+			if (self.owner.items & IT_GUNS_AKIMBO)
 				Shotgun_Fire();
 		}
 		else if (self.weaponentity.frame == SHOTGUN_ALTFIRE_END)
@@ -376,18 +376,18 @@ void() shotgun_animate =
 		if (self.weaponentity.frame >= SHOTGUN_RELOAD_END)
 		{
 			self.weaponentity.ammo_in_chamber = 2;
-			self.think = Shotgun_Idle;
+			self.weaponentity.think = Shotgun_Idle;
 		}
 	}
 	else if ((self.weaponentity.frame == self.weaponentity.anim_end) && (self.weaponentity.anim_type == DRAW))
 	{
-		self.nextthink = time;
-		self.think = Shotgun_Idle;
+		self.weaponentity.nextthink = time;
+		self.weaponentity.think = Shotgun_Idle;
 	}
 	else if ((self.weaponentity.frame == self.weaponentity.anim_end) && (self.weaponentity.anim_type == HOLSTER))
 	{
-		remove(self.weaponentity);
-		W_DrawWeapon(self.newweapon);
+		setmodel(self.weaponentity, "");
+		W_DrawWeapon(self.owner.newweapon);
 		return;
 	}
 };

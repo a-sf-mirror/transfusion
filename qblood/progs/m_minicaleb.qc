@@ -16,7 +16,7 @@
 
     See file, 'COPYING', for details.
 */
-
+/*
 #include "common.qh"
 #include "player.qh"    // For player.mdl frames
 
@@ -235,4 +235,4 @@ void() monster_minicaleb =
 void() monster_hand =
 {
 	monster_minicaleb();
-};
+};*/

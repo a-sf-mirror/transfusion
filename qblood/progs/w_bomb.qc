@@ -24,6 +24,12 @@
 void() ShowThrowMeter =
 {
 	local   string  text;
+	local entity oldself;
+
+	oldself = self;
+
+	if (self == self.weaponentity.owner)
+		self = self.weaponentity;
 
 	if (self.weaponentity.charge == 20)
 		text = "žžžžžžžžžžžžžžžžž";
@@ -68,19 +74,30 @@ void() ShowThrowMeter =
 	else
 		text = string_null;
 
-	if (self.player_state == PS_CHARGE)
-		centerprint2(self, "\n\n\n\n\n\n\n\n\n\n\n\n\n\n\n\n\n\n\n\n\n\n\n\n\n\n\n\n\n\n\n\n\n\n\n\n\n\n\n\n\n\n\n\n\n\n\n\n", text);
+	if (self.owner.player_state == PS_CHARGE)
+		centerprint2(self.owner, "\n\n\n\n\n\n\n\n\n\n\n\n\n\n\n\n\n\n\n\n\n\n\n\n\n\n\n\n\n\n\n\n\n\n\n\n\n\n\n\n\n\n\n\n\n\n\n\n", text);
 	else
-		centerprint(self, string_null);
+		centerprint(self.owner, string_null);
+
+	self = oldself;
 };
 
 void() Bomb_Uncharge =
 {
+	local entity oldself;
+
+	oldself = self;
+
+	if (self == self.weaponentity.owner)
+		self = self.weaponentity;
+
 	// Stop the fuse sound if any
-	sound(self, CHAN_WEAPON, "misc/null.wav", 0, ATTN_NORM);
+	sound(self.owner, CHAN_WEAPON, "misc/null.wav", 0, ATTN_NORM);
 
 	self.weaponentity.charge = 0;
 	self.weaponentity.tnt_time = 0;
+
+	self = oldself;
 };
 
 void() Bomb_Explode =
@@ -232,38 +249,45 @@ Fire a bomb
 */
 void() Bomb_Fire =
 {
-	if (self.weapon == IT_PROXIMITY_BOMB && !(self.flags & FL_INFINATE_AMMO))
-		self.currentammo = self.ammo_tnt_proxy = self.ammo_tnt_proxy - 1;
-	else if (self.weapon == IT_REMOTE_DETONATOR && !(self.flags & FL_INFINATE_AMMO))
-		self.currentammo = self.ammo_tnt_remote = self.ammo_tnt_remote - 1;
-	else if (self.weapon == IT_TNT && !(self.flags & FL_INFINATE_AMMO))
-		self.currentammo = self.ammo_tnt_bundle = self.ammo_tnt_bundle - 1;
-	else  if (!(self.flags & FL_INFINATE_AMMO)) // && (self.weapon == IT_SPRAY_CAN)
+	local entity oldself;
+
+	oldself = self;
+
+	if (self.weaponentity.owner == self)
+		self = self.weaponentity;
+
+	if (self.owner.weapon == IT_PROXIMITY_BOMB && !(self.owner.flags & FL_INFINATE_AMMO))
+		self.owner.currentammo = self.owner.ammo_tnt_proxy = self.owner.ammo_tnt_proxy - 1;
+	else if (self.owner.weapon == IT_REMOTE_DETONATOR && !(self.owner.flags & FL_INFINATE_AMMO))
+		self.owner.currentammo = self.owner.ammo_tnt_remote = self.owner.ammo_tnt_remote - 1;
+	else if (self.owner.weapon == IT_TNT && !(self.owner.flags & FL_INFINATE_AMMO))
+		self.owner.currentammo = self.owner.ammo_tnt_bundle = self.owner.ammo_tnt_bundle - 1;
+	else  if (!(self.owner.flags & FL_INFINATE_AMMO)) // && (self.owner.weapon == IT_SPRAY_CAN)
 	{
 		// If we have at least one full spray can, we use it
-		if (self.currentammo >= 48)
-				self.ammo_spray = self.ammo_spray - 48;
+		if (self.owner.currentammo >= 48)
+				self.owner.ammo_spray = self.owner.ammo_spray - 48;
 		// Else, we burn our last one
 		else
-			self.ammo_spray = 0;
+			self.owner.ammo_spray = 0;
 
-		self.currentammo = self.ammo_spray;
+		self.owner.currentammo = self.owner.ammo_spray;
 	}
 
-	sound(self, CHAN_AUTO, "weapons/tnt/tnttoss.wav", 1, ATTN_NORM);
+	sound(self.owner, CHAN_AUTO, "weapons/tnt/tnttoss.wav", 1, ATTN_NORM);
 
 	newmis = spawn();
-	newmis.enemy = self;
+	newmis.enemy = self.owner;
 	newmis.solid = SOLID_NOT;
 	newmis.movetype = MOVETYPE_BOUNCE;
 	newmis.classname = "grenade";
 	newmis.cnt = 0;                     // Set up for frame count skip
 
 	// Wiggle player's screen just a little during toss
-	self.punchangle_x = -2;
+	self.owner.punchangle_x = -2;
 
 	// set newmis speed
-	makevectors(self.v_angle);
+	makevectors(self.owner.v_angle);
 
 	if (self.weaponentity.charge)
 	{
@@ -277,11 +301,11 @@ void() Bomb_Fire =
 		*/
 		mup = mspeed / 2; // was  / 1.75
 
-		if (self.v_angle_x)
+		if (self.owner.v_angle_x)
 			newmis.velocity = v_forward * mspeed + v_up * mup + crandom() * v_right * 10 + crandom() * v_up * 10;
 		else
 		{
-			newmis.velocity = aim(self, 10000);
+			newmis.velocity = aim(self.owner, 10000);
 			newmis.velocity = newmis.velocity * mspeed;
 			newmis.velocity_z = mup;
 		}
@@ -303,10 +327,10 @@ void() Bomb_Fire =
 
 	setorigin(newmis, W_Origin() + v_forward * 15 + v_right * 6);
 
-	self.player_state = PS_FIRE;
+	self.owner.player_state = PS_FIRE;
 
 	// If we fire a proximity bomb
-	if (self.weapon == IT_PROXIMITY_BOMB)
+	if (self.owner.weapon == IT_PROXIMITY_BOMB)
 	{
 		newmis.pausetime = time + 2.5;
 		newmis.style =	TNT_TYPE_NORMAL;
@@ -319,7 +343,7 @@ void() Bomb_Fire =
 		newmis.model = "models/weapons/grenades/gr_proxy.md3";
 	}
 	// else if we fire a remote detonator
-	else if (self.weapon == IT_REMOTE_DETONATOR)
+	else if (self.owner.weapon == IT_REMOTE_DETONATOR)
 	{
 		newmis.netname = "Remote Detonator";
 		newmis.style = TNT_TYPE_NORMAL;
@@ -337,7 +361,7 @@ void() Bomb_Fire =
 		newmis.touch     = DynaTouch;
 		newmis.dest      = normalize(newmis.velocity);
 
-		if (self.weapon == IT_SPRAY_CAN)
+		if (self.owner.weapon == IT_SPRAY_CAN)
 		{
 			newmis.netname   = "Lit Spray Can";
 			newmis.dmg       = DMG_SPRAY_CAN;
@@ -357,10 +381,12 @@ void() Bomb_Fire =
 
 	// If we have no more dynamite, we "lose" the weapon
 	// (expect for remote detonators: we always have the remote)
-	if ((self.currentammo <= 0) && (self.weapon != IT_REMOTE_DETONATOR))
+	if ((self.owner.currentammo <= 0) && (self.owner.weapon != IT_REMOTE_DETONATOR))
 	{
-		self.items = self.items - self.weapon;
-		remove(self.weaponentity);
+		self.owner.items = self.owner.items - self.owner.weapon;
+		setmodel(self.weaponentity, "");
 		W_DrawWeapon(W_BestWeapon());
 	}
+
+	self = oldself;
 };

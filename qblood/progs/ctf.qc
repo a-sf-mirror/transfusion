@@ -244,22 +244,22 @@ void() CTF_FlagThink =
 	v_z = (-1) * v_z; // reverse z component
 
 	f = 14;
-	if (self.owner.frame >= $pitchpain1 && self.owner.frame <= $pain5) {
-		if (self.owner.frame >= $pitchpain1 && self.owner.frame <= $pitchpain5) {
-			if      (self.owner.frame == $pitchpain1) f = f + 2;
-			else if (self.owner.frame == $pitchpain2) f = f + 8;
-			else if (self.owner.frame == $pitchpain3) f = f + 12;
-			else if (self.owner.frame == $pitchpain4) f = f + 10;
-			else if (self.owner.frame == $pitchpain5) f = f + 4;
-		} else if (self.owner.frame >= $pain1 && self.owner.frame <= $pain5) {
-			if      (self.owner.frame == $pain1) f = f + 2;
-			else if (self.owner.frame == $pain2) f = f + 10;
-			else if (self.owner.frame == $pain3) f = f + 10;
-			else if (self.owner.frame == $pain4) f = f + 8;
-			else if (self.owner.frame == $pain5) f = f + 2;
+	if (self.owner.frame >= PLAYER_PITCH_PAIN_START && self.owner.frame <= PLAYER_PAIN_END) {
+		if (self.owner.frame >= PLAYER_PITCH_PAIN_START && self.owner.frame <= PLAYER_PITCH_PAIN_END) {
+			if      (self.owner.frame == PLAYER_PITCH_PAIN_START) f = f + 2;
+			else if (self.owner.frame == PLAYER_PITCH_PAIN_START+1) f = f + 8;
+			else if (self.owner.frame == PLAYER_PITCH_PAIN_START+2) f = f + 12;
+			else if (self.owner.frame == PLAYER_PITCH_PAIN_START+3) f = f + 10;
+			else if (self.owner.frame == PLAYER_PITCH_PAIN_END) f = f + 4;
+		} else if (self.owner.frame >= PLAYER_PAIN_START && self.owner.frame <= PLAYER_PAIN_END) {
+			if      (self.owner.frame == PLAYER_PAIN_START) f = f + 2;
+			else if (self.owner.frame == PLAYER_PAIN_START+1) f = f + 10;
+			else if (self.owner.frame == PLAYER_PAIN_START+2) f = f + 10;
+			else if (self.owner.frame == PLAYER_PAIN_START+3) f = f + 8;
+			else if (self.owner.frame == PLAYER_PAIN_END) f = f + 2;
 		}
 	}
-	else if (self.owner.frame >= $attack1 && self.owner.frame <= $attack2) f = f + 6;
+	else if (self.owner.frame >= PLAYER_ATTACK_START && self.owner.frame <= PLAYER_ATTACK_END) f = f + 6;
 
 	self.origin = e.origin + '0 0 -16' - f*v + v_right * 22;
 	self.angles = e.angles + '0 0 -45';

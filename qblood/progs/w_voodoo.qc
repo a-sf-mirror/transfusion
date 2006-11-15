@@ -87,22 +87,21 @@ void() Voodoo_ApplyDamage =
 		SpawnBlood(targ.origin, '0 0 0', self.weaponentity.stab_damage);
 	else // Else, WE take the damage
 	{
-		targ = self;
+		targ = self.owner;
 		self.weaponentity.stab_damage = 1;
 	}
 
 	// We don't consume ammo if we don't hit a target (except for altfire)
-	if (self.player_state == PS_ALTFIRE)
+	if (self.owner.player_state == PS_ALTFIRE)
 	{
-		self.ammo_voodoo = 0;
+		self.owner.ammo_voodoo = 0;
 		death_type = "alt-voodoo";
 	}	
-	else if (targ != self && !(self.flags & FL_INFINATE_AMMO))
-		self.ammo_voodoo = self.ammo_voodoo - self.weaponentity.stab_damage / 4;
-	self.currentammo = self.ammo_voodoo;
+	else if (targ != self.owner && !(self.owner.flags & FL_INFINATE_AMMO))
+		self.owner.ammo_voodoo = self.owner.ammo_voodoo - self.owner.weaponentity.stab_damage / 4;
+	self.owner.currentammo = self.owner.ammo_voodoo;
 
-	T_Damage(targ, self, self, self.weaponentity.stab_damage, DF_VOODOO, death_type);
-	voodoo_animate();
+	T_Damage(targ, self.owner, self.owner, self.weaponentity.stab_damage, DF_VOODOO, death_type);
 };
 
 /*
@@ -173,6 +172,7 @@ void() Voodoo_Attack =
 		{
 			self.player_state = PS_ALTFIRE;
 			sound(self, CHAN_WEAPON, "weapons/voodoodl/voochant.wav", 1, ATTN_NORM);
+			self.weaponentity.stab_damage = self.ammo_voodoo;
 
 			self.weaponentity.attack_finished = time + VOODOO_ALTFIRE_TIME;
 			self.weaponentity.anim_type = ALTFIRE;
@@ -185,7 +185,8 @@ void() Voodoo_Attack =
 			self.weaponentity.attack_finished = time + VOODOO_FIRE_TIME;
 			self.weaponentity.anim_type = FIRE;
 		}
-		voodoo_animate();
+		self.weaponentity.nextthink = time;
+		self.weaponentity.think = voodoo_animate;
 	}
 };
 
@@ -200,15 +201,12 @@ void() Voodoo_Draw =
 {
 	self.weapon = IT_VOODOO_DOLL;
 	self.currentammo = self.ammo_voodoo;
-	self.weaponentity = spawn();
-	self.weaponentity.solid = SOLID_NOT;
-	self.weaponentity.owner = self;
-	self.weaponentity.weaponentity = self.weaponentity;
-	self.weaponentity.viewmodelforclient = self;
 	Voodoo_UpdateView();
+	self.weaponentity.frame = VOODOO_DRAW_START;
 	self.weaponentity.attack_finished = time + VOODOO_DRAW_TIME;
 	self.weaponentity.anim_type = DRAW;
-	voodoo_animate();
+	self.weaponentity.nextthink = time;
+	self.weaponentity.think = voodoo_animate;
 };
 
 /*
@@ -222,7 +220,8 @@ void() Voodoo_Holster =
 {
 	self.weaponentity.attack_finished = time + VOODOO_HOLSTER_TIME;
 	self.weaponentity.anim_type = HOLSTER;
-	voodoo_animate();
+	self.weaponentity.nextthink = time;
+	self.weaponentity.think = voodoo_animate;
 };
 
 /*
@@ -241,9 +240,10 @@ void() Voodoo_UpdateView =
 void() Voodoo_Idle =
 {
 	self.weaponentity.anim_type = IDLE;
-	self.player_state = PS_IDLE;
+	self.owner.player_state = PS_IDLE;
 	self.weaponentity.frame = VOODOO_IDLE;
-	voodoo_animate();
+	self.weaponentity.nextthink = time;
+	self.weaponentity.think = voodoo_animate;
 };
 
 /*
@@ -345,8 +345,8 @@ void() voodoo_animate =
 	}
 	if (self.weaponentity.anim_type != IDLE)
 	{
-		self.nextthink = time + (self.weaponentity.anim_time / self.weaponentity.anim_end_num);
-		self.think = voodoo_animate;
+		self.weaponentity.nextthink = time + (self.weaponentity.anim_time / self.weaponentity.anim_end_num);
+		self.weaponentity.think = voodoo_animate;
 	}
 
 	if (self.weaponentity.anim_type == FIRE)
@@ -356,14 +356,12 @@ void() voodoo_animate =
 		if (self.weaponentity.frame == fire_start_frame + 1)
 		{
 			if (self.weaponentity.stab_type == STAB_GROIN)  // Stab Groin
-				sound(self, CHAN_WEAPON, "weapons/voodoodl/voolaugh.wav", 1, ATTN_NORM);
+				sound(self.owner, CHAN_WEAPON, "weapons/voodoodl/voolaugh.wav", 1, ATTN_NORM);
 			else
-				sound(self, CHAN_WEAPON, "weapons/voodoodl/voostab.wav", 1, ATTN_NORM);
+				sound(self.owner, CHAN_WEAPON, "weapons/voodoodl/voostab.wav", 1, ATTN_NORM);
 		}
 		if (self.weaponentity.frame == fire_start_frame + 2)
-		{
-			self.think = Voodoo_ApplyDamage;
-		}
+			Voodoo_ApplyDamage();
 
 		if (self.weaponentity.frame == self.weaponentity.anim_end)
 			Voodoo_Idle();
@@ -371,23 +369,20 @@ void() voodoo_animate =
 	else if (self.weaponentity.anim_type == ALTFIRE)
 	{
 		if (self.weaponentity.frame == VOODOO_ALTFIRE_START + 6)
-		{
-			self.weaponentity.stab_damage = self.ammo_voodoo;
 			Voodoo_ApplyDamage();
-		}
 		if (self.weaponentity.frame == VOODOO_ALTFIRE_END)
 			W_DrawWeapon(W_BestWeapon());
 		return;
 	}
 	else if ((self.weaponentity.frame == self.weaponentity.anim_end) && (self.weaponentity.anim_type == DRAW))
 	{
-		self.nextthink = time;
-		self.think = Voodoo_Idle;
+		self.weaponentity.nextthink = time;
+		self.weaponentity.think = Voodoo_Idle;
 	}
 	else if ((self.weaponentity.frame == self.weaponentity.anim_end) && (self.weaponentity.anim_type == HOLSTER))
 	{
-		remove(self.weaponentity);
-		W_DrawWeapon(self.newweapon);
+		setmodel(self.weaponentity, "");
+		W_DrawWeapon(self.owner.newweapon);
 		return;
 	}
 };

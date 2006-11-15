@@ -71,7 +71,7 @@ void() Remote_Attack =
 			if (self.currentammo <= 0)
 			{
 				self.items = self.items - self.weapon;
-				remove(self.weaponentity);
+				setmodel(self.weaponentity, "");
 				W_DrawWeapon(W_BestWeapon());
 			}
 		}
@@ -104,7 +104,8 @@ void() Remote_Attack =
 			Bomb_Uncharge();
 		}
 	}
-	remote_animate();
+	self.weaponentity.nextthink = time;
+	self.weaponentity.think = remote_animate;
 };
 
 /*
@@ -118,18 +119,15 @@ void() Remote_Draw =
 {
 	self.weapon = IT_REMOTE_DETONATOR;
 	self.currentammo = self.ammo_tnt_remote;
-	self.weaponentity = spawn();
-	self.weaponentity.solid = SOLID_NOT;
-	self.weaponentity.owner = self;
-	self.weaponentity.weaponentity = self.weaponentity;
-	self.weaponentity.viewmodelforclient = self;
 	Remote_UpdateView();
 	self.weaponentity.attack_finished = time + REMOTE_DRAW_TIME;
 	self.player_state = PS_DRAW;
 	self.weaponentity.tnt_type = REMOTE_AND_BOMB;
 	self.weaponentity.anim_type = DRAW;
+	self.weaponentity.frame = REMOTE_DRAW_START;
 	self.weaponentity.skin = 1;
-	remote_animate();
+	self.weaponentity.nextthink = time;
+	self.weaponentity.think = remote_animate;
 };
 
 /*
@@ -146,7 +144,8 @@ void() Remote_Holster =
 		self.weaponentity.anim_type = HALF_HOLSTER;
 	else
 		self.weaponentity.anim_type = HOLSTER;
-	remote_animate();
+	self.weaponentity.nextthink = time;
+	self.weaponentity.think = remote_animate;
 };
 
 /*
@@ -170,15 +169,16 @@ Remote_Idle
 void() Remote_Idle =
 {
 	self.weaponentity.anim_type = IDLE;
-	self.player_state = PS_IDLE;
+	self.owner.player_state = PS_IDLE;
 	self.weaponentity.frame = REMOTE_IDLE;
 
 	//self.weaponentity.attack_finished = time + 0.5; // don't throw instantly after detonating.
-	self.button0 = 0;
+	self.owner.button0 = 0;
 	self.weaponentity.tnt_type = REMOTE_AND_BOMB;
 	self.weaponentity.charge = 0;
 
-	remote_animate();
+	self.weaponentity.nextthink = time;
+	self.weaponentity.think = remote_animate;
 };
 
 
@@ -289,8 +289,8 @@ void() remote_animate =
 		}
 		self.weaponentity.last_action = self.weaponentity.anim_type;
 	}
-	self.nextthink = time + (self.weaponentity.anim_time / self.weaponentity.anim_end_num);
-	self.think = remote_animate;
+	self.weaponentity.nextthink = time + (self.weaponentity.anim_time / self.weaponentity.anim_end_num);
+	self.weaponentity.think = remote_animate;
 
 	if (self.weaponentity.skin == 3)
 	{
@@ -307,7 +307,7 @@ void() remote_animate =
 	else // ammo_in_chamber == 1
 		self.weaponentity.skin = self.weaponentity.skin - 1;
 
-	if (self.button0 && !self.weaponentity.tnt_type) // we have a bomb in hand and holding fire
+	if (self.owner.button0 && !self.weaponentity.tnt_type) // we have a bomb in hand and holding fire
 	{
 		if (self.weaponentity.charge < 20)
 			self.weaponentity.charge = self.weaponentity.charge + 1;
@@ -317,9 +317,9 @@ void() remote_animate =
 	{
 		self.weaponentity.anim_type = THROW;
 		self.weaponentity.attack_finished = time + REMOTE_THROW_TIME - 0.4; //- 0.4 so we can det it nearly quickly.
-		self.player_state = PS_FIRE;
+		self.owner.player_state = PS_FIRE;
 		ShowThrowMeter();
-		self.nextthink = time;
+		self.weaponentity.nextthink = time;
 	}
 	if (self.weaponentity.anim_type == THROW)
 	{
@@ -334,13 +334,13 @@ void() remote_animate =
 	}
 	else if ((self.weaponentity.frame == self.weaponentity.anim_end) && ((self.weaponentity.anim_type == DRAW) || (self.weaponentity.anim_type == HALF_DRAW)))
 	{
-		self.nextthink = time;
-		self.think = Remote_Idle;
+		self.weaponentity.nextthink = time;
+		self.weaponentity.think = Remote_Idle;
 	}
 	else if ((self.weaponentity.frame == self.weaponentity.anim_end) && ((self.weaponentity.anim_type == HOLSTER) || (self.weaponentity.anim_type == HALF_HOLSTER)))
 	{
-		remove(self.weaponentity);
-		W_DrawWeapon(self.newweapon);
+		setmodel(self.weaponentity, "");
+		W_DrawWeapon(self.owner.newweapon);
 		return;
 	}
 };

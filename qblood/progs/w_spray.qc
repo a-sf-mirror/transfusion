@@ -32,18 +32,18 @@ void() Spray_Fire =
 {
 	local vector    dir;
 
-	if (self.ammo_spray < 1)
+	if (self.owner.ammo_spray < 1)
 		return;
 
-	makevectors(self.v_angle);
+	makevectors(self.owner.v_angle);
 
 	self.weaponentity.attack_finished = time + SPRAY_HOLDFIRE_TIME;
-	if (!(self.flags & FL_INFINATE_AMMO))
-		self.currentammo = self.ammo_spray = self.ammo_spray - 1;
-	dir = aim(self, 1000);
+	if (!(self.owner.flags & FL_INFINATE_AMMO))
+		self.owner.currentammo = self.owner.ammo_spray = self.owner.ammo_spray - 1;
+	dir = aim(self.owner, 1000);
 
 	newmis = spawn();
-	newmis.owner = self;
+	newmis.owner = self.owner;
 	newmis.movetype = MOVETYPE_FLYMISSILE;
 	newmis.solid = SOLID_BBOX;
 	newmis.alpha = 0.6;
@@ -61,7 +61,7 @@ void() Spray_Fire =
 	setorigin(newmis, W_Origin() + v_forward * 50 + v_right * 2 + v_up * -5);
 
 	newmis.velocity = dir * 550;
-	newmis.owner = self;
+	newmis.owner = self.owner;
 	newmis.frame = floor(random() * 3);
 };
 
@@ -88,7 +88,8 @@ void() Spray_Attack =
 		self.weaponentity.attack_finished = time + SPRAY_FIRE_TIME;
 		self.weaponentity.anim_type = FIRE;
 	}
-	spray_animate();
+	self.weaponentity.nextthink = time;
+	self.weaponentity.think = spray_animate;
 };
 
 /*
@@ -101,23 +102,23 @@ Draw code for the spray can
 void() Spray_Draw =
 {
 	self.currentammo = self.ammo_spray;
-	self.weaponentity = spawn();
-	self.weaponentity.solid = SOLID_NOT;
-	self.weaponentity.owner = self;
-	self.weaponentity.weaponentity = self.weaponentity;
-	self.weaponentity.viewmodelforclient = self;
 	Spray_UpdateView();
 	// If we need to pop up the lighter
 	if (self.weapon != IT_TNT)
 	{
 		sound(self, CHAN_WEAPON, "weapons/tnt/lighter.wav", 1, ATTN_NORM);
 		self.weaponentity.anim_type = DRAW;
+		self.weaponentity.frame = SPRAY_DRAW_START;
 	}
 	else
+	{
 		self.weaponentity.anim_type = HALF_DRAW;
+		self.weaponentity.frame = SPRAY_HALF_DRAW_START;
+	}
 	self.weapon = IT_SPRAY_CAN;
 	self.weaponentity.attack_finished = time + SPRAY_DRAW_TIME; // possibly divide by 2 when halfdraw?
-	spray_animate();
+	self.weaponentity.nextthink = time;
+	self.weaponentity.think = spray_animate;
 };
 
 /*
@@ -139,7 +140,9 @@ void() Spray_Holster =
 	}
 	else
 		self.weaponentity.anim_type = HALF_HOLSTER;
-	spray_animate();
+
+	self.weaponentity.nextthink = time;
+	self.weaponentity.think = spray_animate;
 };
 
 /*
@@ -175,7 +178,7 @@ void() spray_animate =
 	{
 		if (self.weaponentity.anim_type == IDLE)
 		{
-			self.player_state = PS_IDLE;
+			self.owner.player_state = PS_IDLE;
 			self.weaponentity.anim_end = SPRAY_IDLE_END;
 			self.weaponentity.anim_end_num = SPRAY_IDLE_END - SPRAY_IDLE_START + 1;
 			self.weaponentity.anim_time = SPRAY_IDLE_TIME;
@@ -254,20 +257,20 @@ void() spray_animate =
 		}
 		self.weaponentity.last_action = self.weaponentity.anim_type;
 	}
-	self.nextthink = time + (self.weaponentity.anim_time / self.weaponentity.anim_end_num);
-	self.think = spray_animate;
+	self.weaponentity.nextthink = time + (self.weaponentity.anim_time / self.weaponentity.anim_end_num);
+	self.weaponentity.think = spray_animate;
 	if (self.weaponentity.anim_type == FIRE)
 	{
 		// Start the fire sound if necessary
 		if (self.weaponentity.t_width <= time)
 		{
-			sound(self, CHAN_WEAPON, "weapons/spraycan/sprayfir.wav", 0.5, ATTN_NORM);
+			sound(self.owner, CHAN_WEAPON, "weapons/spraycan/sprayfir.wav", 0.5, ATTN_NORM);
 			self.weaponentity.t_width = time + 2.5;
 		}
-		if (!self.button0 || intermission_running || self.ammo_spray < 1)
+		if (!self.owner.button0 || intermission_running || self.owner.ammo_spray < 1)
 		{
 			// Stop the fire sound
-			sound(self, CHAN_WEAPON, "misc/null.wav", 0, ATTN_NORM);
+			sound(self.owner, CHAN_WEAPON, "misc/null.wav", 0, ATTN_NORM);
 			self.weaponentity.t_width = 0;
 			self.weaponentity.anim_type = IDLE;
 		}
@@ -278,19 +281,20 @@ void() spray_animate =
 	{
 		if (self.weaponentity.frame >= SPRAY_LIGHT_FUSE_END - 2)
 		{
+			self.weaponentity.nextthink = time + 0.1;
 			if (self.weaponentity.t_width <= time)
 			{
-				sound(self, CHAN_WEAPON, "weapons/spraycan/spraycan.wav", 1, ATTN_NORM);
+				sound(self.owner, CHAN_WEAPON, "weapons/spraycan/spraycan.wav", 1, ATTN_NORM);
 				self.weaponentity.t_width = time + 2.5;
 			}
-			if (self.button0 && self.weaponentity.tnt_time && !self.weaponentity.charge)
+			if (self.owner.button0 && self.weaponentity.tnt_time && !self.weaponentity.charge)
 			{
-				self.player_state = PS_CHARGE;
+				self.owner.player_state = PS_CHARGE;
 				self.weaponentity.charge = 1;
 			}
-			else if (self.button0 && self.weaponentity.charge < 20)
+			else if (self.owner.button0 && self.weaponentity.charge < 20)
 				self.weaponentity.charge = self.weaponentity.charge + 1;
-			if (self.button3)
+			if (self.owner.button3)
 			{
 				self.weaponentity.charge = 0;
 				self.weaponentity.tnt_type = TNT_TYPE_ALTFIRE;
@@ -308,20 +312,20 @@ void() spray_animate =
 				self.weaponentity.attack_finished = time + SPRAY_DROP_TIME;
 				Bomb_Fire();
 				Bomb_Uncharge();
-				remove(self.weaponentity);
-				self.weapon = 0;
+				setmodel(self.weaponentity, "");
+				self.owner.weapon = 0;
 			}
-			if (self.weaponentity.charge && !self.button0)
+			if (self.weaponentity.charge && !self.owner.button0)
 			{
 				self.weaponentity.anim_type = THROW;
 				self.weaponentity.attack_finished = time + SPRAY_THROW_TIME;
-				self.player_state = PS_FIRE;
+				self.owner.player_state = PS_FIRE;
 				spray_animate();
 			}
 			if (self.weaponentity.frame == SPRAY_LIGHT_FUSE_END)
 				self.weaponentity.frame = SPRAY_LIGHT_FUSE_END - 2;
 		}
-		ResetIdle(self);
+		ResetIdle(self.owner);
 		ShowThrowMeter();
 	}
 	else if (self.weaponentity.anim_type == THROW)
@@ -338,15 +342,15 @@ void() spray_animate =
 	else if ((self.weaponentity.frame == self.weaponentity.anim_end) && ((self.weaponentity.anim_type == DRAW) || (self.weaponentity.anim_type == HALF_DRAW)))
 	{
 		self.weaponentity.anim_type = IDLE;
-		self.player_state = PS_IDLE;
+		self.owner.player_state = PS_IDLE;
 		self.weaponentity.frame = SPRAY_IDLE_START;
-		self.nextthink = time + 0.01;
-		self.think = spray_animate;
+		self.weaponentity.nextthink = time;
+		self.weaponentity.think = spray_animate;
 	}
 	else if ((self.weaponentity.frame == self.weaponentity.anim_end) && ((self.weaponentity.anim_type == HOLSTER) || (self.weaponentity.anim_type == HALF_HOLSTER)))
 	{
-		remove(self.weaponentity);
-		W_DrawWeapon(self.newweapon);
+		setmodel(self.weaponentity, "");
+		W_DrawWeapon(self.owner.newweapon);
 		return;
 	}
 };

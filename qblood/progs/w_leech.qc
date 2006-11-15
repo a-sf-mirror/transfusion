@@ -86,43 +86,43 @@ void() Leech_BallFire =
 {
 	local vector spread;
 
-	self.punchangle_x = -2;
+	self.owner.punchangle_x = -2;
 	muzzleflash();
 
 	newmis = spawn();
 
-	makevectors(self.v_angle);
-	newmis.velocity = aim(self, 1000);  // base velocity
+	makevectors(self.owner.v_angle);
+	newmis.velocity = aim(self.owner, 1000);  // base velocity
 
 	// If aim() hasn't found any interesting target, add some spread
-	traceline(W_Origin(), W_Origin() + newmis.velocity*2048, FALSE, self);
+	traceline(W_Origin(), W_Origin() + newmis.velocity*2048, FALSE, self.owner);
 	if (trace_ent == world)
 		spread = crandom() * 0.18 * v_right + crandom() * 0.08 * v_up;
 	else
 		spread = '0 0 0';
 	newmis.velocity = 1500 * (newmis.velocity + spread);
 
-	newmis.owner = self;
+	newmis.owner = self.owner;
 	newmis.solid = SOLID_BBOX;
 	newmis.classname = "missile";
 	newmis.angles = vectoangles(newmis.velocity);
 	newmis.movetype = MOVETYPE_FLYMISSILE;
 
 	// If we don't have enough ammo, use HP
-	if (self.ammo_leech == 0)
-		T_Damage(self, world, self, 1, DF_SPIRIT, "leech");
+	if (self.owner.ammo_leech == 0)
+		T_Damage(self.owner, world, self.owner, 1, DF_SPIRIT, "leech");
 	else
 	{
-		if (!(self.flags & FL_INFINATE_AMMO))
-			self.ammo_leech = self.ammo_leech - 1;
+		if (!(self.owner.flags & FL_INFINATE_AMMO))
+			self.owner.ammo_leech = self.owner.ammo_leech - 1;
 	}
-	self.currentammo = self.ammo_leech;
+	self.owner.currentammo = self.owner.ammo_leech;
 
 	newmis.touch = Leech_BallTouch;
 	setmodel(newmis, "progs/leechball.spr");
 	newmis.skin = 1;
 	setsize(newmis, '0 0 0', '0 0 0');
-	setorigin(newmis, W_Origin() + v_forward * 8);
+	setorigin(newmis, W_Origin() + v_forward * 40 + v_up * -12);
 
 	newmis.dmg = 40;
 
@@ -338,7 +338,7 @@ void() Leech_Drop =
 {
 	local entity item;
 
-	makevectors(self.v_angle);
+	makevectors(self.owner.v_angle);
 
 	// Drop the Life Leech
 	item = spawn();
@@ -346,13 +346,13 @@ void() Leech_Drop =
 	setsize(item, '-6 -6 0', '6 8 60');
 
 	item.classname = "sentry";
-	item.owner = self;             // we don't want to trigger the touch function yet
-	item.leech_sentry = self;      // we can't use "owner" because the owner of an entity is never clipped against it
-	item.team = self.team;
+	item.owner = self.owner;		// we don't want to trigger the touch function yet
+	item.leech_sentry = self.owner;	// we can't use "owner" because the owner of an entity is never clipped against it
+	item.team = self.owner.team;
 	item.solid = SOLID_SLIDEBOX;
 	item.takedamage = DAMAGE_AIM;
 	item.health = 300;
-	item.ammo_leech = self.ammo_leech;
+	item.ammo_leech = self.owner.ammo_leech;
 	item.rotate = ITEM_ROTATION;
 
 	item.origin = W_Origin() + v_forward * 8 + v_up * 12;
@@ -383,17 +383,17 @@ void() Leech_Drop =
 	else
 		item.ammo_leech = self.ammo_leech - 25;
 	*/
-	if (!(self.flags & FL_INFINATE_AMMO))
-		self.currentammo = self.ammo_leech = 0;
-	self.items = self.items - self.weapon;
-	self.leech_sentry = item;
+	if (!(self.owner.flags & FL_INFINATE_AMMO))
+		self.owner.currentammo = self.owner.ammo_leech = 0;
+	self.owner.items = self.owner.items - self.owner.weapon;
+	self.owner.leech_sentry = item;
 
 	// If we're still alive
-	if (!self.deadflag)
+	if (!self.owner.deadflag)
 	{
-		remove(self.weaponentity);
-		self.newweapon = W_BestWeapon();
-		W_DrawWeapon(self.newweapon);
+		setmodel(self.weaponentity, "");
+		self.owner.newweapon = W_BestWeapon();
+		W_DrawWeapon(self.owner.newweapon);
 	}
 };
 
@@ -410,14 +410,16 @@ void() Leech_Attack =
 	{
 		self.player_state = PS_ALTFIRE;
 		self.weaponentity.attack_finished = time + LEECH_DROP_TIME;
-		Leech_Drop();
+		self.weaponentity.nextthink = time;
+		self.weaponentity.think = Leech_Drop;
 	}
 	else if (self.button0) // Normal fire
 	{
 		self.player_state = PS_FIRE;
 		self.weaponentity.attack_finished = time + LEECH_FIRE_TIME;
 		self.weaponentity.anim_type = FIRE;
-		leech_animate();
+		self.weaponentity.nextthink = time;
+		self.weaponentity.think = leech_animate;
 	}
 };
 
@@ -432,15 +434,12 @@ void() Leech_Draw =
 {
 	self.weapon = IT_LIFE_LEECH;
 	self.currentammo = self.ammo_leech;
-	self.weaponentity = spawn();
-	self.weaponentity.solid = SOLID_NOT;
-	self.weaponentity.owner = self;
-	self.weaponentity.weaponentity = self.weaponentity;
-	self.weaponentity.viewmodelforclient = self;
 	Leech_UpdateView();
 	self.weaponentity.attack_finished = time + LEECH_DRAW_TIME;
 	self.weaponentity.anim_type = DRAW;
-	leech_animate();
+	self.weaponentity.frame = LEECH_DRAW_START;
+	self.weaponentity.nextthink = time;
+	self.weaponentity.think = leech_animate;
 };
 
 /*
@@ -454,7 +453,8 @@ void() Leech_Holster =
 {
 	self.weaponentity.attack_finished = time + LEECH_HOLSTER_TIME;
 	self.weaponentity.anim_type = HOLSTER;
-	leech_animate();
+	self.weaponentity.nextthink = time;
+	self.weaponentity.think = leech_animate;
 };
 
 /*
@@ -473,9 +473,10 @@ void() Leech_UpdateView =
 void() Leech_Idle =
 {
 	self.weaponentity.anim_type = IDLE;
-	self.player_state = PS_IDLE;
+	self.owner.player_state = PS_IDLE;
 	self.weaponentity.frame = LEECH_IDLE;
-	leech_animate();
+	self.weaponentity.nextthink = time;
+	self.weaponentity.think = leech_animate;
 };
 
 /*
@@ -539,14 +540,14 @@ void() leech_animate =
 	}
 	if (self.weaponentity.anim_type != IDLE)
 	{
-		self.nextthink = time + (self.weaponentity.anim_time / self.weaponentity.anim_end_num);
-		self.think = leech_animate;
+		self.weaponentity.nextthink = time + (self.weaponentity.anim_time / self.weaponentity.anim_end_num);
+		self.weaponentity.think = leech_animate;
 	}
 
 	if (self.weaponentity.anim_type == FIRE)
 	{
 		if (self.weaponentity.frame == LEECH_FIRE_START)
-			sound(self, CHAN_WEAPON, "weapons/lifelech/laltfr1.wav", 1, ATTN_NORM);
+			sound(self.owner, CHAN_WEAPON, "weapons/lifelech/laltfr1.wav", 1, ATTN_NORM);
 		//FIXME - Ugly ugly ugly hack... animation needs to be 2 frames longer then set every other frame starting on the first
 		if (self.weaponentity.frame == LEECH_FIRE_START || self.weaponentity.frame == LEECH_FIRE_START + 1 ||
 			self.weaponentity.frame == LEECH_FIRE_START + 2 || self.weaponentity.frame == LEECH_FIRE_START + 4 ||
@@ -562,13 +563,13 @@ void() leech_animate =
 	}
 	else if ((self.weaponentity.frame == self.weaponentity.anim_end) && (self.weaponentity.anim_type == DRAW))
 	{
-		self.nextthink = time;
-		self.think = Leech_Idle;
+		self.weaponentity.nextthink = time;
+		self.weaponentity.think = Leech_Idle;
 	}
 	else if ((self.weaponentity.frame == self.weaponentity.anim_end) && (self.weaponentity.anim_type == HOLSTER))
 	{
-		remove(self.weaponentity);
-		W_DrawWeapon(self.newweapon);
+		setmodel(self.weaponentity, "");
+		W_DrawWeapon(self.owner.newweapon);
 		return;
 	}
 };

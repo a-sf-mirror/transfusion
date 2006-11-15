@@ -19,9 +19,7 @@
 
 #include "common.qh"
 
-void() player_run;
 void(entity bomb, entity attacker, float rad, float dflags, entity ignore, string dtype) T_RadiusDamage;
-void() identify_player;
 
 //============================================================================
 
@@ -50,10 +48,10 @@ Updates the origin with adjusted offset for crouched and uncrouched.
 */
 vector() W_Origin =
 {
-	if (self.crouch)
-		return self.origin + PL_CROUCH_VIEW_OFS;
+	if (self.owner.crouch)
+		return self.owner.origin + PL_CROUCH_VIEW_OFS;
 	else
-		return self.origin + PL_VIEW_OFS;
+		return self.owner.origin + PL_VIEW_OFS;
 };
 
 /*
@@ -239,7 +237,7 @@ void(float dflags) ApplyMultiDamage =
 {
 	if (!multi_ent)
 		return;
-	T_Damage(multi_ent, self, self, multi_damage, dflags, string_null);
+	T_Damage(multi_ent, self.owner, self.owner, multi_damage, dflags, string_null);
 };
 
 void(entity hit, float damage) AddMultiDamage =
@@ -322,18 +320,18 @@ void(vector orig, vector dir, float shotcount, float damage, vector spread) Fire
 	local vector direction;
 	local vector src;
 
-	makevectors(self.v_angle);
+	makevectors(self.owner.v_angle);
 
-	src = orig + v_forward*10;
-	src_z = self.absmin_z + self.size_z * 0.7;
+	src = orig + v_forward * 10;
+	src_z = self.owner.absmin_z + self.owner.size_z * 0.7;
 
 	ClearMultiDamage();
 
 	while (shotcount > 0)
 	{
-		direction = dir + crandom()*spread_x*v_right + crandom()*spread_y*v_up;
+		direction = dir + crandom() * spread_x * v_right + crandom() * spread_y * v_up;
 
-		traceline(src, src + direction*2048, FALSE, self);
+		traceline(src, src + direction*2048, FALSE, self.owner);
 		if (trace_fraction != 1.0)
 			TraceAttack(damage, direction);
 
@@ -578,6 +576,9 @@ Draw a new weapon
 */
 void(float weap) W_DrawWeapon =
 {
+	if (self == self.weaponentity)
+		self = self.owner;
+
 	if (weap && !(self.items & weap))
 		return;
 
@@ -1169,4 +1170,13 @@ void() W_WeaponFrame =
 		ResetIdle(self);
 		W_Attack();
 	}
+};
+
+void() SpawnWeaponentity =
+{
+	self.weaponentity = spawn();
+	self.weaponentity.solid = SOLID_NOT;
+	self.weaponentity.owner = self;
+	self.weaponentity.weaponentity = self.weaponentity;
+	self.weaponentity.viewmodelforclient = self;
 };

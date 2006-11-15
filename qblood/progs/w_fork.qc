@@ -96,7 +96,7 @@ void() Fork_Fire =
 	local   float   damage;         // Damage per tine.
 	local   float   loop;           // Number of tines.
 
-	makevectors(self.v_angle);
+	makevectors(self.owner.v_angle);
 	source = W_Origin();
 	damage = 17;
 	loop = 4;
@@ -107,7 +107,7 @@ void() Fork_Fire =
 	{
 		start = source + v_right * ((loop - 2) * 4 - 2);
 		end = start + v_forward * 64;
-		traceline(start, end, FALSE, self);
+		traceline(start, end, FALSE, self.owner);
 		if (trace_fraction < 1)
 		{
 			end = trace_endpos - v_forward * 4;
@@ -131,7 +131,8 @@ void() Fork_Attack =
 	self.weaponentity.frame = FORK_FIRE_START;
 	self.weaponentity.attack_finished = time + FORK_FIRE_TIME;
 	self.weaponentity.anim_type = FIRE;
-	fork_animate();
+	self.weaponentity.nextthink = time;
+	self.weaponentity.think = fork_animate;
 };
 
 /*
@@ -145,15 +146,12 @@ void() Fork_Draw =
 {
 	self.weapon = IT_PITCHFORK;
 	self.currentammo = 0;
-	self.weaponentity = spawn();
-	self.weaponentity.solid = SOLID_NOT;
-	self.weaponentity.owner = self;
-	self.weaponentity.weaponentity = self.weaponentity;
-	self.weaponentity.viewmodelforclient = self;
 	Fork_UpdateView();
 	self.weaponentity.attack_finished = time + FORK_DRAW_TIME;
 	self.weaponentity.anim_type = DRAW;
-	fork_animate();
+	self.weaponentity.nextthink = time;
+	self.weaponentity.frame = FORK_DRAW_START;
+	self.weaponentity.think = fork_animate;
 };
 
 /*
@@ -167,7 +165,8 @@ void() Fork_Holster =
 {
 	self.weaponentity.attack_finished = time + FORK_HOLSTER_TIME;
 	self.weaponentity.anim_type = HOLSTER;
-	fork_animate();
+	self.weaponentity.nextthink = time;
+	self.weaponentity.think = fork_animate;
 };
 
 /*
@@ -186,9 +185,10 @@ void() Fork_UpdateView =
 void() Fork_Idle =
 {
 	self.weaponentity.anim_type = IDLE;
-	self.player_state = PS_IDLE;
+	self.owner.player_state = PS_IDLE;
 	self.weaponentity.frame = FORK_IDLE;
-	fork_animate();
+	self.weaponentity.nextthink = time;
+	self.weaponentity.think = fork_animate;
 };
 
 /*
@@ -250,11 +250,8 @@ void() fork_animate =
 		}
 		self.weaponentity.last_action = self.weaponentity.anim_type;
 	}
-	if (self.weaponentity.anim_type != IDLE)
-	{
-		self.nextthink = time + (self.weaponentity.anim_time / self.weaponentity.anim_end_num);
-		self.think = fork_animate;
-	}
+	self.weaponentity.nextthink = time + (self.weaponentity.anim_time / self.weaponentity.anim_end_num);
+	self.weaponentity.think = fork_animate;
 
 	if (self.weaponentity.anim_type == FIRE)
 	{
@@ -265,13 +262,13 @@ void() fork_animate =
 	}
 	else if ((self.weaponentity.frame == self.weaponentity.anim_end) && (self.weaponentity.anim_type == DRAW))
 	{
-		self.nextthink = time;
-		self.think = Fork_Idle;
+		self.weaponentity.nextthink = time;
+		self.weaponentity.think = Fork_Idle;
 	}
 	else if ((self.weaponentity.frame == self.weaponentity.anim_end) && (self.weaponentity.anim_type == HOLSTER))
 	{
-		remove(self.weaponentity);
-		W_DrawWeapon(self.newweapon);
+		setmodel(self.weaponentity, "");
+		W_DrawWeapon(self.owner.newweapon);
 		return;
 	}
 };

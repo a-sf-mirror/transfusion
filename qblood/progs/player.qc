@@ -30,72 +30,6 @@ void(entity ent) CloneCorpse;
 PLAYER
 ==============================================================================
 */
-void() player_run;
-
-float(void() idleFunction) player_idleWeapon = //nearly deprecated
-{
-	// Do NOTHING  when on the BOD
-	if (self.player_state == PS_BRINK_OF_DEATH)
-	return FALSE;
-
-	self.nextthink = time + 0.1;
-	self.think = idleFunction;
-
-	if (self.player_state != PS_HOLD_FIRE && self.player_state != PS_MENU)
-	{
-		// If there's a pending weapon change
-		if (self.newweapon)
-			W_SwitchToWeapon(self.newweapon);
-		else
-			self.player_state = PS_IDLE;
-	}
-
-	return TRUE;
-};
-
-void() player_stand =
-{
-	if (!player_idleWeapon(player_stand))
-		return;
-
-	if (self.velocity_x || self.velocity_y)
-	{
-		player_run();
-		return;
-	}
-
-	if (self.weapon == IT_PITCHFORK)
-		self.frame = $pitchstand1;
-	else
-		self.frame = $stand1;
-};
-
-void() player_run =
-{
-	if (!player_idleWeapon(player_run))
-		return;
-
-	if (!self.velocity_x && !self.velocity_y)
-	{
-		player_stand();
-		return;
-	}
-
-	if (self.weapon == IT_PITCHFORK)
-	{
-		if (self.frame >= PLAYER_PITCH_RUN_END || self.frame < PLAYER_PITCH_RUN_START)
-		{
-			self.frame = PLAYER_PITCH_RUN_START;
-			return;
-		}
-	}
-	else if (self.frame >= $run6 || self.frame < $run1)
-	{
-		self.frame = $run1;
-		return;
-	}
-	self.frame = self.frame + 1;
-};
 
 /*
 ====================
@@ -112,38 +46,11 @@ void() Player_Reset =
 //============================================================================
 // Brink Of Death
 //============================================================================
-void() player_bod1  = [$fall1, player_bod2 ] {};
-void() player_bod2  = [$fall2, player_bod3 ] {};
-void() player_bod3  = [$fall3, player_bod4 ] {};
-void() player_bod4  = [$fall4, player_bod5 ] {};
-void() player_bod5  = [$fall5, player_bod6 ] {};
-void() player_bod6  = [$fall6, player_bod7 ] {};
-void() player_bod7  = [$fall7, player_bod8 ] {};
-void() player_bod8  = [$fall8, player_bod9 ] {};
-void() player_bod9  = [$fall9, player_bod10] {self.takedamage = DAMAGE_AIM;};
-void() player_bod10 = [$sway1, player_bod11] {};
-void() player_bod11 = [$sway2, player_bod12] {};
-void() player_bod12 = [$sway3, player_bod13] {};
-void() player_bod13 = [$sway4, player_bod14] {};
-void() player_bod14 = [$sway5, player_bod15] {};
-void() player_bod15 = [$sway6, player_bod16] {};
-void() player_bod16 = [$sway7, player_bod17] {};
-void() player_bod17 = [$sway8, player_bod10] {};
-
-void() player_bod_die1 = [$deathc1, player_bod_die2] {};
-void() player_bod_die2 = [$deathc2, player_bod_die3] {};
-void() player_bod_die3 = [$deathc3, player_bod_die4] {};
-void() player_bod_die4 = [$deathc4, SUB_Remove     ] {};
-
-void() player_bod_dieh1 = [$deathb1, player_bod_dieh2] {};
-void() player_bod_dieh2 = [$deathb2, player_bod_dieh3] {};
-void() player_bod_dieh3 = [$deathb3, player_bod_dieh3] {PlayerDead();};
-
 void(entity player, entity attacker) Player_BrinkOfDeath =
 {
 	local entity oself;
 
-	player.player_state = PS_BRINK_OF_DEATH;
+	player.player_state = PS_BOD_FALL;
 
 	player.health = 1;  // 0 toggles the dead view on the client
 
@@ -153,7 +60,6 @@ void(entity player, entity attacker) Player_BrinkOfDeath =
 
 	oself = self;
 	self = player;
-	player_bod1();
 	self = oself;
 
 	player.t_length = time + 15;  // the effect will last 15 sec
@@ -168,7 +74,6 @@ void() Player_LiveAgain =
 {
 	sound(self, CHAN_VOICE, "player/taunts/t1010.wav", 1, ATTN_NORM);  // I live ... again!
 	self.player_state = PS_IDLE;
-	//player_run();
 	W_DrawWeapon(self.weapon);
 };
 
@@ -234,33 +139,10 @@ float() PainSound =
 	return TRUE;
 };
 
-void() player_pain1 = [$pain1, player_pain2] {};
-void() player_pain2 = [$pain2, player_pain3] {};
-void() player_pain3 = [$pain3, player_pain4] {};
-void() player_pain4 = [$pain4, player_pain5] {};
-void() player_pain5 = [$pain5, player_run  ] {};
-
-void() player_axpain1 = [$pitchpain1, player_axpain2] {};
-void() player_axpain2 = [$pitchpain2, player_axpain3] {};
-void() player_axpain3 = [$pitchpain3, player_axpain4] {};
-void() player_axpain4 = [$pitchpain4, player_axpain5] {};
-void() player_axpain5 = [$pitchpain5, player_run    ] {};
-
 void() player_pain =
 {
-	if (self.invisible_finished > time)
-		return;     // eyes don't have pain frames
-
-	// Changed so player only shows pain when player make noise.
 	if (PainSound())
-	{
-		//FIXME - player re-animation.
-		/*if (self.weapon == IT_PITCHFORK)
-			player_axpain1();
-		else
-			player_pain1();*/
-		return;
-	}
+		self.player_state = PS_PAIN;
 };
 
 void() PlayerDead =
@@ -272,13 +154,6 @@ void() PlayerDead =
 	if (self.player_state != PS_MENU)
 		self.player_state = PS_IDLE;  // so that he can enter the menu
 };
-
-void() player_die1 = [$deatha1, player_die2] {};
-void() player_die2 = [$deatha2, player_die3] {};
-void() player_die3 = [$deatha3, player_die4] {};
-void() player_die4 = [$deatha4, player_die5] {};
-void() player_die5 = [$deatha5, player_die6] {};
-void() player_die6 = [$deatha6, player_die6] {PlayerDead();};
 
 void() DeathSound =
 {
@@ -611,7 +486,7 @@ void() PlayerDie =
 	self.angles_z = 0;
 
 	// If the player was on the Brink Of Death
-	if (self.player_state == PS_BRINK_OF_DEATH)
+	if (self.player_state >= PS_BOD_FALL && self.player_state <= PS_BOD_SWAY)
 	{
 		// If the head is removed in the process
 		if (self.health < -10)
@@ -629,24 +504,24 @@ void() PlayerDie =
 			self.colormap = player_head.colormap;
 			self.movetype = player_head.movetype;
 			self.velocity = player_head.velocity;
-			player_bod_die1();
+			self.player_state = PS_HEADLESS_DEATH;
 
 			self = player_head;
 			self.deadflag = DEAD_DEAD;
 			ThrowHead("progs/h_player.mdl", self.health);
 		}
 		else
-			player_bod_dieh1();
+			self.player_state = PS_BOD_DEATH;
 	}
 	else
-		player_die1();
+		self.player_state = PS_DEATH;
 };
 
 // used by kill command and disconnect command
 void() set_suicide_frame =
 {
 	if (self.model == "progs/player.mdl")
-		self.frame = $deatha6;
+		self.frame = PLAYER_DEATH_END;
 
 	// Make copy of self
 	CloneCorpse(self);
@@ -660,4 +535,160 @@ void() set_suicide_frame =
 	self.reset = SUB_Remove;
 	self.think = SUB_Remove;
 	self.nextthink = time + 0.1;
+};
+
+/*
+====================
+player_animate
+
+animate the player, this is really ugly, because of the only two-weapons builtins
+====================
+*/
+void() player_animate =
+{
+	local float pw; //player weapon
+	if (self.weapon == IT_PITCHFORK) pw = 1; else pw = 2;
+
+	self.nextthink = time + 0.1;
+	self.think = player_animate;
+
+	if (self.crouch) //crouching has not firing or running animtion
+	{
+		self.frame = PLAYER_CROUCH;
+		return;
+	}
+	else if (self.player_state == PS_IDLE)
+	{
+		if (self.velocity_x || self.velocity_y) //we're moving
+		{
+			if (pw == 1)
+			{
+				if (self.frame < PLAYER_PITCH_RUN_START || self.frame >= PLAYER_PITCH_RUN_END)
+					self.frame = PLAYER_PITCH_RUN_START;
+				else
+					self.frame = self.frame + 1;
+			}
+			else //player_weapon == 2
+			{
+				if (self.frame < PLAYER_RUN_START || self.frame >= PLAYER_RUN_END)
+					self.frame = PLAYER_RUN_START;
+				else
+					self.frame = self.frame + 1;
+			}
+		}
+		else //standing still
+		{
+			if (pw == 1)
+				self.frame = PLAYER_PITCH_STAND;
+			else
+				self.frame = PLAYER_STAND;
+		}
+	}
+	else if (self.player_state == PS_FIRE || self.player_state == PS_ALTFIRE)
+	{
+		if (pw == 1 && (self.frame < PLAYER_PITCH_ATTACK_START || self.frame >= PLAYER_PITCH_ATTACK_END))
+			self.frame = PLAYER_PITCH_ATTACK_START;
+		else if (pw == 2 && (self.frame < PLAYER_ATTACK_START || self.frame >= PLAYER_ATTACK_END))
+			self.frame = PLAYER_ATTACK_START;
+		else
+			self.frame = self.frame + 1;
+	}
+	else if (self.player_state == PS_CHARGE || self.player_state == PS_HOLD_FIRE)
+	{
+		self.frame = PLAYER_ATTACK_START;
+		return;
+	}
+	else if (self.player_state == PS_DRAW)
+	{
+		if (pw == 1 && (self.frame < PLAYER_DRAW_PITCH_START || self.frame >= PLAYER_DRAW_PITCH_END))
+			self.frame = PLAYER_DRAW_PITCH_START;
+		else if (pw == 2 && (self.frame < PLAYER_DRAW_GUN_START || self.frame >= PLAYER_DRAW_GUN_END))
+			self.frame = PLAYER_DRAW_GUN_START;
+		else
+			self.frame = self.frame + 1;
+	}
+	else if (self.player_state == PS_HOLSTER || self.player_state == PS_MENU)
+	{
+		if (pw == 1)
+			self.frame = PLAYER_PITCH_STAND;
+		else
+			self.frame = PLAYER_STAND;
+	}
+	else if (self.player_state == PS_BOD_FALL)
+	{
+		if (self.frame == PLAYER_BOD_FALL_END)
+		{
+			self.player_state = PS_BOD_SWAY;
+			self.takedamage = DAMAGE_AIM;
+			return;
+		}
+
+		if (self.frame < PLAYER_BOD_FALL_START || self.frame > PLAYER_BOD_FALL_END)
+			self.frame = PLAYER_BOD_FALL_START;
+		else
+			self.frame = self.frame + 1;
+	}
+	else if (self.player_state == PS_BOD_SWAY)
+	{
+		if (self.frame < PLAYER_BOD_SWAY_START || self.frame >= PLAYER_BOD_SWAY_END)
+			self.frame = PLAYER_BOD_SWAY_START;
+		else
+			self.frame = self.frame + 1;
+	}
+	else if (self.player_state == PS_BOD_DEATH)
+	{
+		if (self.frame == PLAYER_BOD_DEATH_END)
+		{
+			self.frame = PLAYER_BOD_DEATH_END;
+			PlayerDead();
+			return;
+		}
+
+		if (self.frame < PLAYER_BOD_DEATH_START || self.frame > PLAYER_BOD_DEATH_END)
+			self.frame = PLAYER_BOD_DEATH_START;
+		else
+			self.frame = self.frame + 1;
+	}
+	else if (self.player_state == PS_HEADLESS_DEATH)
+	{
+		if (self.frame == PLAYER_DEATH_HEADLESS_END)
+		{
+			self.think = SUB_Remove;
+			return;
+		}
+
+		if (self.frame < PLAYER_DEATH_HEADLESS_START || self.frame > PLAYER_DEATH_HEADLESS_END)
+			self.frame = PLAYER_DEATH_HEADLESS_START;
+		else
+			self.frame = self.frame + 1;
+	}
+	else if (self.player_state == PS_PAIN)
+	{
+		if (self.frame == PLAYER_PAIN_END || self.frame == PLAYER_PITCH_PAIN_END)
+		{
+			self.player_state = PS_IDLE;
+			return;
+		}
+
+		if ((pw == 1) && (self.frame < PLAYER_PITCH_PAIN_START || self.frame > PLAYER_PITCH_PAIN_END))
+			self.frame = PLAYER_PITCH_PAIN_START;
+		else if ((pw == 2) && (self.frame < PLAYER_PAIN_START || self.frame > PLAYER_PAIN_END))
+			self.frame = PLAYER_PAIN_START;
+		else
+			self.frame = self.frame + 1;
+	}
+	else if (self.player_state == PS_DEATH)
+	{
+		if (self.frame == PLAYER_DEATH_END)
+		{
+			self.frame = PLAYER_DEATH_END;
+			PlayerDead();
+			return;
+		}
+
+		if (self.frame < PLAYER_DEATH_START || self.frame > PLAYER_DEATH_END)
+			self.frame = PLAYER_DEATH_START;
+		else
+			self.frame = self.frame + 1;
+	}
 };

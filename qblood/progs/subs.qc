@@ -361,6 +361,11 @@ entity(string targ_class, float closeness) SUB_GetPointedClass =
 	// Temp vars.
 	local vector diff, start_point;
 	local float currclose, length;
+	local entity oldself;
+
+	oldself = self;
+	if (self == self.weaponentity)
+		self = self.weaponentity.owner;
 
 	// Normalize self.angles so we can do a length-independent
 	// consideration
@@ -395,6 +400,7 @@ entity(string targ_class, float closeness) SUB_GetPointedClass =
 		e = find(e, classname, targ_class);
 	}
 
+	self = oldself;
 	return guy;
 };
 
