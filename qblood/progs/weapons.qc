@@ -1141,12 +1141,6 @@ Called every frame so impulse events can be handled as well as possible
 void(float isAlive) Impulses_Player;
 void() W_WeaponFrame =
 {
-	if ((self.weaponentity.attack_finished > time) && ((self.weaponentity.anim_type != DRAW) && (self.weaponentity.anim_type != HOLSTER)))
-		return;
-
-	//check for changeweapon before ammo incase we currently have no weapon drawn
-	Impulses_Player(TRUE);
-
 	if (!W_AmmoAvailable())
 	{
 		if ((self.player_state != PS_HOLD_FIRE) && (self.weaponentity.tnt_type != REMOTE_ONLY))
@@ -1155,6 +1149,12 @@ void() W_WeaponFrame =
 			return;
 		}
 	}
+
+	if ((self.weaponentity.attack_finished > time) && ((self.weaponentity.anim_type != DRAW) && (self.weaponentity.anim_type != HOLSTER)))
+		return;
+
+	//check for changeweapon before ammo incase we currently have no weapon drawn
+	Impulses_Player(TRUE);
 
 	if (self.akimbo_finished)
 		W_SetCurrentAmmo();

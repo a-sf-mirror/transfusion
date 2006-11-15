@@ -176,14 +176,13 @@ Attack code for the tommygun
 void() Tommy_Attack =
 {
 	// If it's a tommy gun altfire start and if we have enough ammo
-	if (self.button3 && (! (self.items & IT_GUNS_AKIMBO) || self.ammo_nails >= 2))
+	if (self.button3)
 	{
-		if ((self.weaponentity.attack_finished < time) && (self.player_state != PS_ALTFIRE))
+		if (self.weaponentity.attack_finished < time)
 		{
 			self.player_state = PS_ALTFIRE;
 			self.weaponentity.anim_type = ALTFIRE;
 			self.weaponentity.attack_finished = time + TOMMY_ALTFIRE_TIME;
-			self.weaponentity.nextthink = time;
 		}
 	}
 	else
@@ -191,7 +190,6 @@ void() Tommy_Attack =
 		self.player_state = PS_FIRE;
 		self.weaponentity.anim_type = FIRE;
 		self.weaponentity.attack_finished = time + TOMMY_FIRE_TIME;
-		self.weaponentity.nextthink = time + TOMMY_FIRE_TIME / (TOMMY_FIRE_END - TOMMY_FIRE_START + 1);
 	}
 	self.weaponentity.nextthink = time;
 	self.weaponentity.think = tommy_animate;
@@ -338,7 +336,6 @@ void() tommy_animate =
 	{
 		if (!self.owner.button3 && self.weaponentity.frame == TOMMY_ALTFIRE_END)
 			Tommy_Idle();
-
 		muzzleflash();
 		Tommy_Fire();
 		self.owner.impulse = IMP_NONE;
