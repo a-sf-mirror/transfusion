@@ -209,6 +209,7 @@ void() Tommy_Draw =
 	Tommy_UpdateView();
 	self.weaponentity.attack_finished = time + TOMMY_DRAW_TIME;
 	self.weaponentity.frame = TOMMY_DRAW_START;
+	self.weaponentity.skin = 0;
 	self.weaponentity.anim_type = DRAW;
 	self.weaponentity.nextthink = time;
 	self.weaponentity.think = tommy_animate;
@@ -253,7 +254,6 @@ void() Tommy_UpdateView =
 void() Tommy_Idle =
 {
 	self.weaponentity.anim_type = IDLE;
-	self.owner.player_state = PS_IDLE;
 	self.weaponentity.frame = TOMMY_IDLE;
 	self.weaponentity.nextthink = time;
 	self.weaponentity.think = tommy_animate;
@@ -327,7 +327,10 @@ void() tommy_animate =
 	if (self.weaponentity.anim_type == FIRE)
 	{
 		if (!self.owner.button0 && self.weaponentity.attack_finished <= time)
+		{
+			self.owner.player_state = PS_IDLE;
 			Tommy_Idle();
+		}
 		muzzleflash();
 		Tommy_Fire();
 		self.owner.impulse = IMP_NONE;
@@ -335,15 +338,18 @@ void() tommy_animate =
 	else if (self.weaponentity.anim_type == ALTFIRE)
 	{
 		if (!self.owner.button3 && self.weaponentity.frame == TOMMY_ALTFIRE_END)
+		{
+			self.owner.player_state = PS_IDLE;
 			Tommy_Idle();
+		}
 		muzzleflash();
 		Tommy_Fire();
 		self.owner.impulse = IMP_NONE;
 	}
 	else if ((self.weaponentity.frame == self.weaponentity.anim_end) && (self.weaponentity.anim_type == DRAW))
 	{
-		self.weaponentity.nextthink = time;
-		self.weaponentity.think = Tommy_Idle;
+		self.owner.player_state = PS_IDLE;
+		Tommy_Idle();
 	}
 	else if ((self.weaponentity.frame == self.weaponentity.anim_end) && (self.weaponentity.anim_type == HOLSTER))
 	{

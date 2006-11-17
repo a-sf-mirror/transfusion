@@ -320,12 +320,13 @@ void(float hand) Flare_Fire =
 
 	self.owner.punchangle_x = -2;
 
-	mspeed = 1000;
-	dir = aim(self.owner, mspeed);
-
 	// Spawn the flare a little ahead of the player
 	local vector orig;
 	makevectors(self.owner.v_angle);
+
+	mspeed = 1000;
+	dir = aim(self.owner, mspeed);
+
 	if (self.owner.items & IT_GUNS_AKIMBO)
 	{
 		if (hand == RIGHT)
@@ -389,6 +390,7 @@ void() Flare_Draw =
 	self.weaponentity.attack_finished = time + FLARE_DRAW_TIME;
 	self.weaponentity.anim_type = DRAW;
 	self.weaponentity.frame = FLARE_DRAW_START;
+	self.weaponentity.skin = 0;
 	self.weaponentity.nextthink = time;
 	self.weaponentity.think = flare_animate;
 };
@@ -432,7 +434,6 @@ void() Flare_UpdateView =
 void() Flare_Idle =
 {
 	self.weaponentity.anim_type = IDLE;
-	self.owner.player_state = PS_IDLE;
 	self.weaponentity.frame = FLARE_IDLE;
 	self.weaponentity.nextthink = time;
 	self.weaponentity.think = flare_animate;
@@ -525,8 +526,8 @@ void() flare_animate =
 		{
 			if ((!self.button0) || (!self.button3))
 			{
-				self.weaponentity.nextthink = time;
-				self.weaponentity.think = Flare_Idle;
+				self.owner.player_state = PS_IDLE;
+				Flare_Idle();
 			}
 		}
 	}
@@ -554,15 +555,15 @@ void() flare_animate =
 
 			if ((!self.button0) || (!self.button3))
 			{
-				self.weaponentity.nextthink = time;
-				self.weaponentity.think = Flare_Idle;
+				self.owner.player_state = PS_IDLE;
+				Flare_Idle();
 			}
 		}
 	}
 	else if ((self.weaponentity.frame == self.weaponentity.anim_end) && (self.weaponentity.anim_type == DRAW))
 	{
-		self.weaponentity.nextthink = time;
-		self.weaponentity.think = Flare_Idle;
+		self.owner.player_state = PS_IDLE;
+		Flare_Idle();
 	}
 	else if ((self.weaponentity.frame == self.weaponentity.anim_end) && (self.weaponentity.anim_type == HOLSTER))
 	{
@@ -571,8 +572,5 @@ void() flare_animate =
 		return;
 	}
 	else if (self.weaponentity.anim_type == IDLE)
-	{
-		self.weaponentity.nextthink = time + FLARE_IDLE_TIME;
 		self.weaponentity.think = Flare_Idle;
-	}
 };

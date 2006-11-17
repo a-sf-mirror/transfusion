@@ -202,9 +202,10 @@ void() Voodoo_Draw =
 	self.weapon = IT_VOODOO_DOLL;
 	self.currentammo = self.ammo_voodoo;
 	Voodoo_UpdateView();
-	self.weaponentity.frame = VOODOO_DRAW_START;
 	self.weaponentity.attack_finished = time + VOODOO_DRAW_TIME;
 	self.weaponentity.anim_type = DRAW;
+	self.weaponentity.frame = VOODOO_DRAW_START;
+	self.weaponentity.skin = 0;
 	self.weaponentity.nextthink = time;
 	self.weaponentity.think = voodoo_animate;
 };
@@ -240,7 +241,6 @@ void() Voodoo_UpdateView =
 void() Voodoo_Idle =
 {
 	self.weaponentity.anim_type = IDLE;
-	self.owner.player_state = PS_IDLE;
 	self.weaponentity.frame = VOODOO_IDLE;
 	self.weaponentity.nextthink = time;
 	self.weaponentity.think = voodoo_animate;
@@ -364,7 +364,10 @@ void() voodoo_animate =
 			Voodoo_ApplyDamage();
 
 		if (self.weaponentity.frame == self.weaponentity.anim_end)
+		{
+			self.owner.player_state = PS_IDLE;
 			Voodoo_Idle();
+		}
 	}
 	else if (self.weaponentity.anim_type == ALTFIRE)
 	{
@@ -376,8 +379,8 @@ void() voodoo_animate =
 	}
 	else if ((self.weaponentity.frame == self.weaponentity.anim_end) && (self.weaponentity.anim_type == DRAW))
 	{
-		self.weaponentity.nextthink = time;
-		self.weaponentity.think = Voodoo_Idle;
+		self.owner.player_state = PS_IDLE;
+		Voodoo_Idle();
 	}
 	else if ((self.weaponentity.frame == self.weaponentity.anim_end) && (self.weaponentity.anim_type == HOLSTER))
 	{

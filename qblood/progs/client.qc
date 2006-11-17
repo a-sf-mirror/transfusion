@@ -333,16 +333,19 @@ void(string s) SV_ParseClientCommand =
 {
 	local float args;
 	args = tokenize(s);
-	if (gametype < GT_BLOODBATH) //FIXME -? was cheating available in co-op?
+	if (gametype < GT_BLOODBATH || cvar("developer")) //FIXME -? was cheating available in co-op?
 	{
 		if (argv(0) == "say")
 		{
+			precache_sound("bludbath/powerup.wav");
 			//special case, if mario/calgon code messed up, don't say anything.
 			if ((argv(1) == "mario" || argv(1) == "calgon" || argv(1) == "spielberg") && args != 4)
 				return;
 			if (args == 2) //one word cheat codes
 			{
-				if (argv(1) == "mpkfa" || argv(1) == "nocapinmyass")
+				if (argv(1) == "bod")
+					Player_BrinkOfDeath(self, world);
+				else if (argv(1) == "mpkfa" || argv(1) == "nocapinmyass")
 				{
 					if (!(self.flags & FL_GODMODE) || argv(1) == "nocapinmyass")
 					{
@@ -450,6 +453,7 @@ void(string s) SV_ParseClientCommand =
 					{
 						sprint(self, "You are invisible.\n");
 						self.invisible_finished = time + 30;
+						self.invisible_time = 1;
 					}
 				}
 				else if (argv(1) == "goonies")
@@ -1025,6 +1029,13 @@ void() PutClientInServer =
 
 	spawn_tdeath(self.origin, self);
 
+	self.overhead = spawn();
+	self.overhead.owner = self;
+	self.overhead.solid = SOLID_NOT;
+	self.overhead.movetype = MOVETYPE_NONE;
+	self.overhead.reset = SUB_Remove;
+	setmodel(self.overhead, "");
+
 	SpawnWeaponentity();
 	// Let's start with our best weapon
 	self.weapon = W_BestWeapon();
@@ -1551,14 +1562,12 @@ void() CheckPowerups =
 
 		if (self.invisible_finished < time)
 		{   // just stopped
+			self.alpha = self.weaponentity.alpha = 1;
 			self.items = self.items - IT_INVISIBILITY;
 			self.invisible_finished = 0;
 			self.invisible_time = 0;
-			self.alpha = 1;
 		}
 	}
-	else
-		self.modelindex = modelindex_player;    // don't use eyes
 
 	// invincibility
 	if (self.invincible_finished)
@@ -1602,7 +1611,7 @@ void() CheckPowerups =
 			self.akimbo_finished = 0;
 
 			// Don't reset the weapon view while on the BOD
-			if (self.player_state < PS_BOD_FALL || self.player_state > PS_BOD_SWAY)
+			if (self.player_state >= PS_BOD_FALL && self.player_state <= PS_BOD_SWAY)
 				W_SetCurrentAmmo();
 		}
 	}
@@ -1861,6 +1870,7 @@ void() PlayerPostThink =
 	self.oldbutton4 = self.button4;
 
 	W_WeaponFrame();
+	DrawOverheadWeapon();
 
 	// Check for boredom.
 	if (self.velocity == '0 0 0' && self.idle_time <= time && !self.idle_done)

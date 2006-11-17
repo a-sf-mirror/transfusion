@@ -151,6 +151,7 @@ void() Fork_Draw =
 	self.weaponentity.anim_type = DRAW;
 	self.weaponentity.nextthink = time;
 	self.weaponentity.frame = FORK_DRAW_START;
+	self.weaponentity.skin = 0;
 	self.weaponentity.think = fork_animate;
 };
 
@@ -185,7 +186,6 @@ void() Fork_UpdateView =
 void() Fork_Idle =
 {
 	self.weaponentity.anim_type = IDLE;
-	self.owner.player_state = PS_IDLE;
 	self.weaponentity.frame = FORK_IDLE;
 	self.weaponentity.nextthink = time;
 	self.weaponentity.think = fork_animate;
@@ -258,12 +258,15 @@ void() fork_animate =
 		if (self.weaponentity.frame == FORK_FIRE_START + 2)
 			Fork_Fire();
 		if (self.weaponentity.frame == FORK_FIRE_END && (!self.button0 || !self.button3))
+		{
+			self.owner.player_state = PS_IDLE;
 			Fork_Idle();
+		}
 	}
 	else if ((self.weaponentity.frame == self.weaponentity.anim_end) && (self.weaponentity.anim_type == DRAW))
 	{
-		self.weaponentity.nextthink = time;
-		self.weaponentity.think = Fork_Idle;
+		self.owner.player_state = PS_IDLE;
+		Fork_Idle();
 	}
 	else if ((self.weaponentity.frame == self.weaponentity.anim_end) && (self.weaponentity.anim_type == HOLSTER))
 	{

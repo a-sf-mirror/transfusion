@@ -202,7 +202,6 @@ Proxy_Idle
 void() Proxy_Idle =
 {
 	self.weaponentity.anim_type = IDLE;
-	self.owner.player_state = PS_IDLE;
 	self.weaponentity.frame = PROXY_IDLE;
 	self.weaponentity.nextthink = time;
 	self.weaponentity.think = proxy_animate;
@@ -228,7 +227,6 @@ void() proxy_animate =
 	{
 		if (self.weaponentity.anim_type == IDLE)
 		{
-			self.player_state = PS_IDLE;
 			self.weaponentity.anim_end = PROXY_IDLE;
 			self.weaponentity.anim_end_num = PROXY_IDLE + 1;
 			self.weaponentity.anim_time = PROXY_IDLE_TIME;
@@ -275,6 +273,7 @@ void() proxy_animate =
 		self.weaponentity.skin = 0;
 	else
 		self.weaponentity.skin = self.weaponentity.skin + 1;
+
 	if (self.owner.button0)
 	{
 		if (self.weaponentity.charge < 20)
@@ -301,8 +300,8 @@ void() proxy_animate =
 	}
 	else if ((self.weaponentity.frame == self.weaponentity.anim_end) && (self.weaponentity.anim_type == DRAW))
 	{
-		self.weaponentity.nextthink = time;
-		self.weaponentity.think = Proxy_Idle;
+		self.owner.player_state = PS_IDLE;
+		Proxy_Idle();
 	}
 	else if ((self.weaponentity.frame == self.weaponentity.anim_end) && (self.weaponentity.anim_type == HOLSTER))
 	{

@@ -414,11 +414,12 @@ float sight_entity_time;
 .float		anim_time;		//the length in seconds of one animation cycle
 
 //new player weapon animation variables
-.entity		weaponentity;			//Entity for the client's weapon
+.entity		weaponentity;		//Entity for the client's weapon
 .float		ammo_in_chamber;	//the number of shells the shotgun has in its chamber.
-.float		stab_damage;	//Voodoo Doll damage value
-.float		stab_type;		//Voodoo Doll stab method
+.float		stab_damage;		//Voodoo Doll damage value
+.float		stab_type;			//Voodoo Doll stab method
 
+.entity		overhead;			//weapon floating above head for multiplayer
 
 //
 // player only fields

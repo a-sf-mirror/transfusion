@@ -471,13 +471,13 @@ void(entity targ, entity inflictor, entity attacker, float damage, float dflags,
 	// Do the damage.
 	targ.health = targ.health - take;
 
-	if (targ.health >= -1				&& // If a player reaches between -1 and 1 HP (Brink Of Death)
-		targ.health <= 1				&&
-		targ.classname == "player"		&& // BOD can only be done player to player
-		attacker.classname == "player"	&&
-		targ.player_state < PS_BOD_FALL	&& // If he wasn't already on the Brink Of Death
-		targ.player_state > PS_BOD_SWAY	&&
-		targ != attacker				&& // and if he doesn't kill himself
+	if (targ.health >= -1					&& // If a player reaches between -1 and 1 HP (Brink Of Death)
+		targ.health <= 1					&&
+		targ.classname == "player"			&& // BOD can only be done player to player
+		attacker.classname == "player"		&&
+		targ.player_state != PS_BOD_FALL	&& // If he wasn't already on the Brink Of Death
+		targ.player_state != PS_BOD_SWAY	&&
+		targ != attacker					&& // and if he doesn't kill himself
 		targ.burner == world)
 	{
 		Player_BrinkOfDeath(targ, attacker);

@@ -341,7 +341,6 @@ void() Napalm_Idle =
 	else
 		self.weaponentity.skin = self.weaponentity.skin + 1;
 	self.weaponentity.anim_type = IDLE;
-	self.owner.player_state = PS_IDLE;
 	self.weaponentity.frame = NAPALM_IDLE;
 	self.weaponentity.nextthink = time;
 	self.weaponentity.think = napalm_animate;
@@ -421,21 +420,27 @@ void() napalm_animate =
 		if (self.weaponentity.frame == NAPALM_FIRE_START)
 			Napalm_Fire();
 		else if (self.weaponentity.frame == NAPALM_FIRE_END)
+		{
+			self.owner.player_state = PS_IDLE;
 			Napalm_Idle();
+		}
 	}
 	else if (self.weaponentity.anim_type == AKIMBO_FIRE)
 	{
 		if ((self.weaponentity.frame == NAPALM_AKIMBO_FIRE_START) || (self.weaponentity.frame == NAPALM_AKIMBO_FIRE_START + 2))
 			Napalm_Fire();
 		else if (self.weaponentity.frame == NAPALM_AKIMBO_FIRE_END)
+		{
+			self.owner.player_state = PS_IDLE;
 			Napalm_Idle();
+		}
 	}
 	else if (self.weaponentity.anim_type == IDLE)
-		self.think = Napalm_Idle;
+		self.weaponentity.think = Napalm_Idle;
 	else if ((self.weaponentity.frame == self.weaponentity.anim_end) && (self.weaponentity.anim_type == DRAW))
 	{
-		self.weaponentity.nextthink = time;
-		self.weaponentity.think = Napalm_Idle;
+		self.owner.player_state = PS_IDLE;
+		Napalm_Idle();
 	}
 	else if ((self.weaponentity.frame == self.weaponentity.anim_end) && (self.weaponentity.anim_type == HOLSTER))
 	{

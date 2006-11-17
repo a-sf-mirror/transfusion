@@ -217,9 +217,12 @@ void() Tesla_Attack =
 {
 	if (self.button0 || self.ammo_cells < 35 || ((self.items & IT_GUNS_AKIMBO) && self.ammo_cells < 70))
 	{
+		if (self.weaponentity.last_action == FIRE)
+			return; //animation will continue the firing.
+
 		self.player_state = PS_FIRE;
-		self.weaponentity.attack_finished = time + TESLA_FIRE_TIME - 0.01;
 		self.weaponentity.anim_type = FIRE;
+		self.weaponentity.attack_finished = time + TESLA_FIRE_TIME - 0.01; //remove just a bit of time to avoid 6 fires.
 		self.weaponentity.nextthink = time;
 		self.weaponentity.think = tesla_animate;
 	}
@@ -293,20 +296,19 @@ void() Tesla_UpdateView =
 	}
 };
 
-void() Tesla_Idle =
+void() Tesla_Rebound =
 {
-	self.weaponentity.anim_type = IDLE;
 	self.owner.player_state = PS_IDLE;
-	self.weaponentity.frame = TESLA_IDLE;
+	self.weaponentity.anim_type = REBOUND;
+	self.weaponentity.frame = TESLA_REBOUND_START;
 	self.weaponentity.nextthink = time;
 	self.weaponentity.think = tesla_animate;
 };
 
-void() Tesla_Rebound =
+void() Tesla_Idle =
 {
-	self.weaponentity.anim_type = REBOUND;
-	self.owner.player_state = PS_IDLE;
-	self.weaponentity.frame = TESLA_REBOUND_START;
+	self.weaponentity.anim_type = IDLE;
+	self.weaponentity.frame = TESLA_IDLE;
 	self.weaponentity.nextthink = time;
 	self.weaponentity.think = tesla_animate;
 };
@@ -398,10 +400,7 @@ void() tesla_animate =
 		{
 			// Check to see if we are supposed to stop shooting.
 			if ((!self.owner.button0) || (intermission_running) || (self.owner.ammo_cells < 1))
-			{
-				self.weaponentity.nextthink = time + 0.01;
-				self.weaponentity.think = Tesla_Rebound;
-			}
+				Tesla_Rebound();
 			else
 				Tesla_Fire();
 		}
@@ -423,16 +422,16 @@ void() tesla_animate =
 		{
 			if (!self.owner.button3)
 			{
-				self.weaponentity.nextthink = time + TESLA_IDLE_TIME;
-				self.weaponentity.think = Tesla_Idle;
+				self.owner.player_state = PS_IDLE;
+				Tesla_Idle();
 			}
 		}
 	}
 
 	if ((self.weaponentity.frame == self.weaponentity.anim_end) && (self.weaponentity.anim_type == DRAW))
 	{
-		self.weaponentity.nextthink = time + TESLA_IDLE_TIME;
-		self.weaponentity.think = Tesla_Idle;
+		self.owner.player_state = PS_IDLE;
+		Tesla_Idle();
 	}
 	else if ((self.weaponentity.frame == self.weaponentity.anim_end) && (self.weaponentity.anim_type == HOLSTER))
 	{
@@ -441,13 +440,5 @@ void() tesla_animate =
 		return;
 	}
 	else if ((self.weaponentity.frame == self.weaponentity.anim_end) && (self.weaponentity.anim_type == REBOUND))
-	{
-		self.weaponentity.nextthink = time;
-		self.weaponentity.think = Tesla_Idle;
-	}
-	if (self.weaponentity.anim_type == IDLE)
-	{
-		self.weaponentity.nextthink = time + TESLA_IDLE_TIME;
-		self.weaponentity.think = Tesla_Idle;
-	}
+		Tesla_Idle();
 };

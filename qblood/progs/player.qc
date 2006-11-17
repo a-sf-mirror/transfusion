@@ -48,19 +48,16 @@ void() Player_Reset =
 //============================================================================
 void(entity player, entity attacker) Player_BrinkOfDeath =
 {
-	local entity oself;
-
 	player.player_state = PS_BOD_FALL;
-
 	player.health = 1;  // 0 toggles the dead view on the client
+
+	self.weaponentity.nextthink = 0;
+	setmodel(player.weaponentity, "");
+	setmodel(player.overhead, "");
 
 	// We make the BODed player invincible for 1 sec
 	// so that attackers will have the time to stop firing
 	player.takedamage = DAMAGE_NO;
-
-	oself = self;
-	self = player;
-	self = oself;
 
 	player.t_length = time + 15;  // the effect will last 15 sec
 	sound(player, CHAN_VOICE, "thevoice/vo15.wav", 1, ATTN_NONE);
@@ -141,7 +138,7 @@ float() PainSound =
 
 void() player_pain =
 {
-	if (PainSound())
+	if (PainSound() && self.player_state < PS_BOD_FALL)
 		self.player_state = PS_PAIN;
 };
 
@@ -441,6 +438,7 @@ void() PlayerDie =
 	}
 
 	remove(self.weaponentity);
+	remove(self.overhead);
 	self.items = self.items - (self.items & IT_INVISIBILITY);
 
 	if (self.akimbo_finished > 0)
@@ -535,6 +533,49 @@ void() set_suicide_frame =
 	self.reset = SUB_Remove;
 	self.think = SUB_Remove;
 	self.nextthink = time + 0.1;
+};
+
+void() DrawOverheadWeapon =
+{
+	if (self.weapon > IT_PITCHFORK)
+	{
+		local string g_wep;
+
+		if (self.weapon == IT_FLAREGUN)
+			g_wep = "models/weapons/g_flare.md3";
+		else if (self.weapon == IT_SAWED_OFF)
+			g_wep = "models/weapons/g_shotgun.md3";
+		else if (self.weapon == IT_TOMMYGUN)
+			g_wep = "models/weapons/g_tommy.md3";
+		else if (self.weapon == IT_NAPALM_LAUNCHER)
+			g_wep = "models/weapons/g_napalm.md3";
+		else if (self.weapon == IT_TNT)
+			g_wep = "models/ammo/a_tnt.md3";
+		else if (self.weapon == IT_PROXIMITY_BOMB)
+			g_wep = "models/weapons/g_proxy.md3";
+		else if (self.weapon == IT_REMOTE_DETONATOR)
+			g_wep = "models/weapons/g_remote.md3";
+		else if (self.weapon == IT_SPRAY_CAN)
+			g_wep = "models/ammo/g_aerosol.md3";
+		else if (self.weapon == IT_TESLA_CANNON)
+			g_wep = "models/weapons/g_tesla.md3";
+		else if (self.weapon == IT_LIFE_LEECH)
+			g_wep = "models/weapons/g_leech.md3";
+		else if (self.weapon == IT_VOODOO_DOLL)
+			g_wep = "models/weapons/g_voodoo.md3";
+
+		self.overhead.angles_y = self.angles_y + 90;
+
+		if (self.weapon == IT_VOODOO_DOLL)
+			self.overhead.angles_y = self.angles_y + 180;
+
+		self.overhead.origin = self.origin + v_up * 37;
+		self.overhead.scale = 0.6;
+
+		setmodel(self.overhead, g_wep);
+	}
+	else
+		setmodel(self.overhead, "");
 };
 
 /*

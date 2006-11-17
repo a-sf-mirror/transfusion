@@ -117,6 +117,7 @@ void() Spray_Draw =
 	}
 	self.weapon = IT_SPRAY_CAN;
 	self.weaponentity.attack_finished = time + SPRAY_DRAW_TIME; // possibly divide by 2 when halfdraw?
+	self.weaponentity.skin = 0;
 	self.weaponentity.nextthink = time;
 	self.weaponentity.think = spray_animate;
 };
@@ -160,6 +161,19 @@ void() Spray_UpdateView =
 
 /*
 ============
+Spray_Idle
+============
+*/
+void() Spray_Idle =
+{
+	self.weaponentity.anim_type = IDLE;
+	self.weaponentity.frame = SPRAY_IDLE_START;
+	self.weaponentity.nextthink = time;
+	self.weaponentity.think = spray_animate;
+};
+
+/*
+============
 spray_animate
 
 Animation and frame based code for the Hairspray Can
@@ -178,7 +192,6 @@ void() spray_animate =
 	{
 		if (self.weaponentity.anim_type == IDLE)
 		{
-			self.owner.player_state = PS_IDLE;
 			self.weaponentity.anim_end = SPRAY_IDLE_END;
 			self.weaponentity.anim_end_num = SPRAY_IDLE_END - SPRAY_IDLE_START + 1;
 			self.weaponentity.anim_time = SPRAY_IDLE_TIME;
@@ -343,9 +356,7 @@ void() spray_animate =
 	{
 		self.weaponentity.anim_type = IDLE;
 		self.owner.player_state = PS_IDLE;
-		self.weaponentity.frame = SPRAY_IDLE_START;
-		self.weaponentity.nextthink = time;
-		self.weaponentity.think = spray_animate;
+		Spray_Idle();
 	}
 	else if ((self.weaponentity.frame == self.weaponentity.anim_end) && ((self.weaponentity.anim_type == HOLSTER) || (self.weaponentity.anim_type == HALF_HOLSTER)))
 	{

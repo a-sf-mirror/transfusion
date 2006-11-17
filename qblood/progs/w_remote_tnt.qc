@@ -169,7 +169,6 @@ Remote_Idle
 void() Remote_Idle =
 {
 	self.weaponentity.anim_type = IDLE;
-	self.owner.player_state = PS_IDLE;
 	self.weaponentity.frame = REMOTE_IDLE;
 
 	//self.weaponentity.attack_finished = time + 0.5; // don't throw instantly after detonating.
@@ -334,8 +333,8 @@ void() remote_animate =
 	}
 	else if ((self.weaponentity.frame == self.weaponentity.anim_end) && ((self.weaponentity.anim_type == DRAW) || (self.weaponentity.anim_type == HALF_DRAW)))
 	{
-		self.weaponentity.nextthink = time;
-		self.weaponentity.think = Remote_Idle;
+		self.owner.player_state = PS_IDLE;
+		Remote_Idle();
 	}
 	else if ((self.weaponentity.frame == self.weaponentity.anim_end) && ((self.weaponentity.anim_type == HOLSTER) || (self.weaponentity.anim_type == HALF_HOLSTER)))
 	{

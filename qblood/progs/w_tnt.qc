@@ -67,6 +67,7 @@ void() TNT_Draw =
 		self.weaponentity.frame = TNT_HALF_DRAW_START;
 	}
 	self.weapon = IT_TNT;
+	self.weaponentity.skin = 0;
 	self.weaponentity.nextthink = time;
 	self.weaponentity.think = tnt_animate;
 };
@@ -115,7 +116,6 @@ TNT_Idle
 void() TNT_Idle =
 {
 	self.weaponentity.anim_type = IDLE;
-	self.owner.player_state = PS_IDLE;
 	self.weaponentity.frame = TNT_IDLE_START;
 	self.weaponentity.nextthink = time;
 	self.weaponentity.think = tnt_animate;
@@ -142,7 +142,6 @@ void() tnt_animate =
 		local float last_action_start;
 		if (self.weaponentity.anim_type == IDLE)
 		{
-			self.owner.player_state = PS_IDLE;
 			self.weaponentity.anim_end = TNT_IDLE_END;
 			self.weaponentity.anim_end_num = TNT_IDLE_END - TNT_IDLE_START + 1;
 			self.weaponentity.anim_time = TNT_IDLE_TIME;
@@ -302,8 +301,8 @@ void() tnt_animate =
 	}
 	else if ((self.weaponentity.frame == self.weaponentity.anim_end) && ((self.weaponentity.anim_type == DRAW) || (self.weaponentity.anim_type == HALF_DRAW)))
 	{
-		self.weaponentity.nextthink = time;
-		self.weaponentity.think = TNT_Idle;
+		self.owner.player_state = PS_IDLE;
+		TNT_Idle();
 	}
 	else if ((self.weaponentity.frame == self.weaponentity.anim_end) && ((self.weaponentity.anim_type == HOLSTER) || (self.weaponentity.anim_type == HALF_HOLSTER)))
 	{

@@ -68,7 +68,7 @@ void() Shotgun_SpawnShell =
 
 	// 1st shell
 	shell = spawn();
-	shell.owner = self;
+	shell.owner = self.owner;
 	shell.solid = SOLID_NOT;
 	shell.mdl   = "models/weapons/objects/shotgunshell.md3";
 	shell.noise = "weapons/shtshl2.wav";
@@ -79,7 +79,7 @@ void() Shotgun_SpawnShell =
 
 	// 2nd shell
 	shell2 = spawn();
-	shell2.owner = self;
+	shell2.owner = self.owner;
 	shell2.solid = SOLID_NOT;
 	shell2.mdl   = shell.mdl;
 	shell2.noise = shell.noise;
@@ -182,6 +182,7 @@ void() Shotgun_Draw =
 	Shotgun_UpdateView();
 	self.weaponentity.attack_finished = time + SHOTGUN_DRAW_TIME;
 	self.weaponentity.frame = SHOTGUN_DRAW_START;
+	self.weaponentity.skin = 0;
 	self.weaponentity.anim_type = DRAW;
 	self.weaponentity.nextthink = time;
 	self.weaponentity.think = shotgun_animate;
@@ -226,7 +227,6 @@ void() Shotgun_UpdateView =
 void() Shotgun_Idle =
 {
 	self.weaponentity.anim_type = IDLE;
-	self.owner.player_state = PS_IDLE;
 	self.weaponentity.frame = SHOTGUN_IDLE;
 	self.weaponentity.nextthink = time;
 	self.weaponentity.think = shotgun_animate;
@@ -347,7 +347,10 @@ void() shotgun_animate =
 				shotgun_animate();
 			}
 			else
+			{
+				self.owner.player_state = PS_IDLE;
 				Shotgun_Idle();
+			}
 		}
 	}
 	else if (self.weaponentity.anim_type == ALTFIRE)
@@ -375,14 +378,15 @@ void() shotgun_animate =
 			Shotgun_SpawnShell();
 		if (self.weaponentity.frame >= SHOTGUN_RELOAD_END)
 		{
+			self.owner.player_state = PS_IDLE;
 			self.weaponentity.ammo_in_chamber = 2;
-			self.weaponentity.think = Shotgun_Idle;
+			Shotgun_Idle();
 		}
 	}
 	else if ((self.weaponentity.frame == self.weaponentity.anim_end) && (self.weaponentity.anim_type == DRAW))
 	{
-		self.weaponentity.nextthink = time;
-		self.weaponentity.think = Shotgun_Idle;
+		self.owner.player_state = PS_IDLE;
+		Shotgun_Idle();
 	}
 	else if ((self.weaponentity.frame == self.weaponentity.anim_end) && (self.weaponentity.anim_type == HOLSTER))
 	{

@@ -1141,6 +1141,9 @@ Called every frame so impulse events can be handled as well as possible
 void(float isAlive) Impulses_Player;
 void() W_WeaponFrame =
 {
+	if (self.player_state == PS_BOD_FALL || self.player_state == PS_BOD_SWAY)
+		return;
+
 	if (!W_AmmoAvailable())
 	{
 		if ((self.player_state != PS_HOLD_FIRE) && (self.weaponentity.tnt_type != REMOTE_ONLY))

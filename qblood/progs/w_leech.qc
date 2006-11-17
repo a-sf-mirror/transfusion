@@ -438,6 +438,7 @@ void() Leech_Draw =
 	self.weaponentity.attack_finished = time + LEECH_DRAW_TIME;
 	self.weaponentity.anim_type = DRAW;
 	self.weaponentity.frame = LEECH_DRAW_START;
+	self.weaponentity.skin = 0;
 	self.weaponentity.nextthink = time;
 	self.weaponentity.think = leech_animate;
 };
@@ -473,7 +474,6 @@ void() Leech_UpdateView =
 void() Leech_Idle =
 {
 	self.weaponentity.anim_type = IDLE;
-	self.owner.player_state = PS_IDLE;
 	self.weaponentity.frame = LEECH_IDLE;
 	self.weaponentity.nextthink = time;
 	self.weaponentity.think = leech_animate;
@@ -559,12 +559,15 @@ void() leech_animate =
 			self.weaponentity.frame == LEECH_FIRE_START + 26 || self.weaponentity.frame == LEECH_FIRE_START + 28)
 			Leech_BallFire();
 		if (self.weaponentity.frame == LEECH_FIRE_END)
+		{
+			self.owner.player_state = PS_IDLE;
 			Leech_Idle();
+		}
 	}
 	else if ((self.weaponentity.frame == self.weaponentity.anim_end) && (self.weaponentity.anim_type == DRAW))
 	{
-		self.weaponentity.nextthink = time;
-		self.weaponentity.think = Leech_Idle;
+		self.owner.player_state = PS_IDLE;
+		Leech_Idle();
 	}
 	else if ((self.weaponentity.frame == self.weaponentity.anim_end) && (self.weaponentity.anim_type == HOLSTER))
 	{

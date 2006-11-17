@@ -1544,7 +1544,9 @@ void() weapon_spraycan =
 void() precache_tnt =
 {
 	precache_model("models/weapons/v_tnt.md3");
-	precache_model("models/weapons/grenades/gr_tnt.md3");	
+	precache_model("models/weapons/grenades/gr_tnt.md3");
+	precache_model("models/weapons/g_tnt.md3");
+	precache_model("models/ammo/a_tnt.md3");
 	precache_model(self.model);
 	// Precache the necessary sounds
 	PsychoCaleb_Precache();
