@@ -333,7 +333,7 @@ void(string s) SV_ParseClientCommand =
 {
 	local float args;
 	args = tokenize(s);
-	if (gametype < GT_BLOODBATH || cvar("developer")) //FIXME -? was cheating available in co-op?
+	if (gametype < GT_BLOODBATH || cvar("developer") > 0) //FIXME -? was cheating available in co-op?
 	{
 		if (argv(0) == "say")
 		{
