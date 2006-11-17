@@ -338,6 +338,7 @@ void(string s) SV_ParseClientCommand =
 		if (argv(0) == "say")
 		{
 			precache_sound("bludbath/powerup.wav");
+
 			//special case, if mario/calgon code messed up, don't say anything.
 			if ((argv(1) == "mario" || argv(1) == "calgon" || argv(1) == "spielberg") && args != 4)
 				return;
