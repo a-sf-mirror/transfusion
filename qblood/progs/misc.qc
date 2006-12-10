@@ -120,25 +120,31 @@ void(string flame_model) light_flame_generic =
 	FireAmbient();
 };
 
+void() move_flame =
+{
+	//wow is this ever a hack, but for some stupid reason it appears to work
+	setorigin(self, self.owner.origin + v_forward * 4);
+	//for some reason, it needs v_forward instead of v_up, which baffels me.
+};
+
 // Small wall torch
 void() light_torch_small_walltorch =
 {
-	local vector torchorig;
-	torchorig = self.origin;
+	local entity flame;
 	
-	remove(self);
-	self = spawn();
-
-	setorigin(self, torchorig);
+	setorigin(self, self.origin);
 	light_flame_generic("models/world/torch1.md3");
-	self.attachedobject = spawn();
-	self.attachedobject.owner = self;
-	setattachment(self.attachedobject, self, "tag_flame");
-	//setorigin(self.attachedobject, self.origin + v_up * 4);
-	setorigin(self.attachedobject, self.attachedobject.origin + v_up * 4);
+
+	flame = spawn();
+	flame.owner = self;
+	//just set the flames origin to the same as the torch,
+	//set it properly in another function.
+	setorigin(flame, self.origin);
 	precache_model("progs/flame2.spr");
-	setmodel(self.attachedobject, "progs/flame2.spr");
-	self.attachedobject.scale = 0.35;
+	setmodel(flame, "progs/flame2.spr");
+	flame.scale = 0.35;
+	flame.nextthink = time;
+	flame.think = move_flame;
 };
 
 // Large yellow flame

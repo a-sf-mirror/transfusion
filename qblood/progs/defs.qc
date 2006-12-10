@@ -740,3 +740,11 @@ float(string s) tokenize = #441;
 string(float n) argv = #442;
 //description:
 //provides QC the ability to completely control server interpretation of client commands ("say" and "color" for example, clientcommand is necessary for this and substring (FRIK_FILE) is useful) as well as adding new commands (tokenize, argv, and stof (FRIK_FILE) are useful for this)), whenever a clc_stringcmd is received the QC function is called, and it is up to the QC to decide what (if anything) to do with it
+
+//DP_ENT_COLORMOD
+//idea: LordHavoc
+//darkplaces implementation: LordHavoc
+//field definition:
+.vector colormod;
+//description:
+//controls color of the entity, '0 0 0', is forced to be '1 1 1' (otherwise everything would be black), used for tinting objects, for instance using '1 0.6 0.4' on an ogre would give you an orange ogre (order is red green blue), note the colors can go up to '8 8 8' (8x as bright as normal).
