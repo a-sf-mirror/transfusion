@@ -1,7 +1,7 @@
 <?php
 	$page_title = "The ReBUILD Project";
 	$page_topic = "The ReBUILD Project";
-	$page_cvs = "rebuild";
+	$page_vcs = "rebuild";
 	$page_links = array (
 		"Introduction" => array ("Address" => "#introduction-section", "Text" => "Introduction"),
 		"Downloads" => array ("Address" => "#downloads-section", "Text" => "Downloads"),
@@ -27,7 +27,7 @@
 	and so many people thought the Blood source code release was a matter of weeks.
 	Unfortunately, this release didn't happen. Timothy, Mathieu and Greg then decided to
 	move on and founded qBlood (now known as
-	<a href="http://transfusion.deathmask.net/">the Transfusion Project</a>) in March 2001.
+	<a href="http://www.transfusion-game.com/">the Transfusion Project</a>) in March 2001.
 	As a consequence, there isn't much activity on ReBUILD nowadays, although the project
 	isn't officially dead. If you want to get support or information about the ReBUILD
 	Project, contact Timothy Hale or Mathieu Olivier via the Transfusion Project.<br />
@@ -37,7 +37,7 @@
 <div class="section">
 	<h2 id="downloads-section" class="section">Downloads</h2>
 	The utilities marked with an empty dot are now maintained in the Transfusion project's
-	CVS tree and are the only ones that are really supported. Their source codes and binaries
+	SVN tree and are the only ones that are really supported. Their source codes and binaries
 	can be found <a href="snapshots.php#rebuild-section">here</a>. Below is the complete list
 	of the utilities the ReBUILD Project has created or modified:<br />
 	<br />

@@ -8,10 +8,10 @@
 		echo ("<a href=\"$url\">$url</a>");
 	}
 
-	// ----- ViewCvsURL ----- //
+	// ----- ViewVcsUrl ----- //
 
-	function ViewCvsURL ($url, $link) {
-		echo ("<a href=\"http://blood.cvs.sourceforge.net/blood/$url/\">$link</a>");
+	function ViewVcsUrl ($url, $link) {
+		echo ("<a href=\"http://blood.svn.sourceforge.net/viewvc/blood/trunk/$url/\">$link</a>");
 	}
 
 
@@ -41,7 +41,7 @@
 		a:visited { color: #6f6c81; }
 		a:active { color: #d5ae83; }
 
-		div.cvs-module-name {
+		div.vcs-directory-name {
 			font-style: italic;
 			text-align: center;
 		}
@@ -101,10 +101,10 @@
 			<td align="center" valign="middle">
 				<?php
 				echo ("				<h1 class=\"title\">" . $page_topic . "</h1>\n");
-				if ($page_cvs)
+				if ($page_vcs)
 				{
-					echo ("<div class=\"cvs-module-name\">CVS module name: ");
-					ViewCvsURL ($page_cvs, $page_cvs);
+					echo ("<div class=\"vcs-directory-name\">SVN directory: ");
+					ViewVcsUrl ($page_vcs, $page_vcs);
 					echo ("</div><br />\n");
 				}
 				?>

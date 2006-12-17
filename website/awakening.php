@@ -1,7 +1,7 @@
 <?php
 	$page_title = "Transfusion II: Caleb's Awakening";
 	$page_topic = "Transfusion II: Caleb's Awakening";
-	$page_cvs = "awakening";
+	$page_vcs = "awakening";
 	$page_links = array (
 		"Introduction" => array ("Address" => "#introduction-section", "Text" => "Introduction")
 	);
@@ -24,7 +24,7 @@
 	for the single player support instead of restarting a complete development
 	with another engine.<br />
 	<br />
-	The <?php ViewCvsURL ("awakening", "awakening branch"); ?> of our CVS
+	The <?php ViewVcsUrl ("awakening", "awakening directory"); ?> of our SVN 
 	repository contains an unfinished merged version of Quake 2 and Quake 2 CTF
 	game codes, and an improved version of the pcx2wal tool.<br />
 </div>

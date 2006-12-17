@@ -1,7 +1,7 @@
 <?php
 	$page_title = "Transfusion";
 	$page_topic = "Transfusion";
-	$page_cvs = "qblood";
+	$page_vcs = "qblood";
 	$page_links = array (
 		"Introduction" => array ("Address" => "#introduction-section", "Text" => "Introduction"),
 		"GameCode" => array ("Address" => "#gamecode-section", "Text" => "The game code"),
@@ -77,7 +77,7 @@
 	<a href="snapshots.php">snapshots directory</a> in "qblood-bin-*" ZIP files.
 	Darkplaces compiles and runs on at least Win32 systems and Linux.<br />
 	So far, we have absolutely no intention to get the DarkPlaces source code into
-	our own CVS tree to maintain our own engine. We don't say it will never happen,
+	our own SVN tree to maintain our own engine. We don't say it will never happen,
 	but it's extremely unlikely.<br />
 </div>
 
