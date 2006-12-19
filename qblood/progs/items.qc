@@ -463,21 +463,19 @@ void() obj_calipers =
 // Short Candelabra (tile0584)
 void() obj_candlbr1 =
 {
-	// Set animation loop
-	self.anim_len = 4;
-	self.think1 = SUB_AutoAnimation;
-
 	StartObject("models/world/candlbr1.md3", '-3.3 -10.4 0', '3.3 10.4 38.6');
 };
 
 // Tall Candelabra (tile0580)
 void() obj_candlbr2 =
 {
-	// Set animation loop
-	self.anim_len = 4;
-	self.think1 = SUB_AutoAnimation;
-
 	StartObject("models/world/candlbr2.md3", '-4.9 -7.4 0', '4.8 7.4 53.8');
+};
+
+// Candle (tile0938)
+void() obj_candle3 = 
+{
+    StartObject("models/world/candle3.md3", '-1.6 -1.6 0', '1.6 1.6 7.9');
 };
 
 // Candle in Skull (tile0601)
@@ -573,6 +571,12 @@ void() obj_jar2 =
 	StartObject("models/world/jar2.md3", '-2.6 -3 0', '2.6 3 9');
 };
 
+// Lampstand (tile0560)
+void() obj_lampstand =
+{
+	StartObject("models/world/lampstand.md3", '-5.5 -5.5 0', '5.5 5.5 34.4');
+};
+
 // Garden Lantern (tile0640)
 void() obj_lantern1 =
 {
@@ -633,6 +637,12 @@ void() obj_pot5 =
 	StartObject("models/world/pot5.md3", '-7.1 -7 0', '6.9 7 15.3');
 };
 
+// Vase (tile0739)
+void() obj_pot7 =
+{
+	StartObject("models/world/pot7.md3", '-9 -9 0', '9 9 27.8');
+};
+
 // Pram (tile0183)
 void() obj_pram =
 {
@@ -656,6 +666,12 @@ void() obj_saw =
 void() obj_shovel =
 {
 	StartObject("models/world/shovel.md3", '-0.2 -6.6 -27.2', '3.4 6.6 26.2');
+};
+
+// Shower Head (tile0753)
+void() obj_shower =
+{
+	StartObject("models/world/shower.md3", '-3.2 -3.2 -32', '3.2 3.2 0');
 };
 
 // Sink taps (tile0485)
