@@ -63,16 +63,16 @@ void(entity targ, vector org, float damage) TineHit =
 		{
 			SpawnBlood(org, '0 0 0', damage);
 			SpawnBloodSpray(trace_ent, org);
-			sound(self, CHAN_WEAPON, "weapons/pitchfrk/pflesh.wav", 1, ATTN_NORM);
+			sound(self.owner, CHAN_WEAPON, "weapons/pitchfrk/pflesh.wav", 1, ATTN_NORM);
 		}
 		else
-			sound(self, CHAN_WEAPON, "weapons/pitchfrk/pstone.wav", 1, ATTN_NORM);
+			sound(self.owner, CHAN_WEAPON, "weapons/pitchfrk/pstone.wav", 1, ATTN_NORM);
 		AddMultiDamage(targ, damage);
 	}
 	else
 	{
 		// hit wall
-		sound(self, CHAN_WEAPON, "weapons/pitchfrk/pstone.wav", 1, ATTN_NORM);
+		sound(self.owner, CHAN_WEAPON, "weapons/pitchfrk/pstone.wav", 1, ATTN_NORM);
 
 		WriteByte(MSG_BROADCAST, SVC_TEMPENTITY);
 		WriteByte(MSG_BROADCAST, TE_GUNSHOT);
