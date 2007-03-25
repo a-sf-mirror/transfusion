@@ -593,7 +593,7 @@ void() player_animate =
 	self.nextthink = time + 0.1;
 	self.think = player_animate;
 
-	if (self.crouch) //crouching has not firing or running animtion
+	if (self.crouch && self.health && self.player_state < PS_BOD_FALL) //crouching has not firing or running animtion
 	{
 		self.frame = PLAYER_CROUCH;
 		return;
