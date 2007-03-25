@@ -984,6 +984,7 @@ void() PutClientInServer =
 
 	self.impulse = IMP_NONE;
 
+	self.crouch = 0;
 	self.th_pain = player_pain;
 	self.th_die = PlayerDie;
 	self.touch = SUB_Null;  // remove the "HeadTouch" binding (if any)
