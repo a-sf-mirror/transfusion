@@ -739,6 +739,8 @@ void() ClientKill =
 
 	bprint3("Kevorkian approves ", self.netname, "!\n");
 	sound(self, CHAN_AUTO, "thevoice/vo5.wav", 1, ATTN_NORM);
+	remove(self.weaponentity);
+	remove(self.overhead);
 	CTF_PlayerDropFlag();
 	set_suicide_frame();
 	self.modelindex = modelindex_player;
