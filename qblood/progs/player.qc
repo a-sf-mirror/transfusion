@@ -24,6 +24,7 @@ void() CTF_PlayerDropFlag;
 void() PlayerDead;
 void(float cloneCorpse) respawn;
 void(entity ent) CloneCorpse;
+void() Player_Idle;
 
 /*
 ==============================================================================
@@ -51,7 +52,7 @@ void(entity player, entity attacker) Player_BrinkOfDeath =
 	player.player_state = PS_BOD_FALL;
 	player.health = 1;  // 0 toggles the dead view on the client
 
-	self.weaponentity.nextthink = 0;
+	player.weaponentity.nextthink = 0;
 	setmodel(player.weaponentity, "");
 	setmodel(player.overhead, "");
 
@@ -70,7 +71,7 @@ void(entity player, entity attacker) Player_BrinkOfDeath =
 void() Player_LiveAgain =
 {
 	sound(self, CHAN_VOICE, "player/taunts/t1010.wav", 1, ATTN_NORM);  // I live ... again!
-	self.player_state = PS_IDLE;
+	Player_Idle();
 	W_DrawWeapon(self.weapon);
 };
 
@@ -580,6 +581,19 @@ void() DrawOverheadWeapon =
 
 /*
 ====================
+Player_Idle
+
+Change the player to idle animation if we're not BoD or dead
+====================
+*/
+void() Player_Idle =
+{
+	if (self.player_state < PS_BOD_FALL)
+		self.player_state = PS_IDLE;
+};
+
+/*
+====================
 player_animate
 
 animate the player, this is really ugly, because of the only two-weapons builtins
@@ -588,12 +602,15 @@ animate the player, this is really ugly, because of the only two-weapons builtin
 void() player_animate =
 {
 	local float pw; //player weapon
-	if (self.weapon == IT_PITCHFORK) pw = 1; else pw = 2;
+	if (self.weapon == IT_PITCHFORK)
+		pw = 1;
+	else
+		pw = 2;
 
 	self.nextthink = time + 0.1;
 	self.think = player_animate;
 
-	if (self.crouch && self.health && self.player_state < PS_BOD_FALL) //crouching has not firing or running animtion
+	if (self.crouch && self.player_state < PS_BOD_FALL) //crouching has no firing or running animtion
 	{
 		self.frame = PLAYER_CROUCH;
 		return;
@@ -707,7 +724,7 @@ void() player_animate =
 	{
 		if (self.frame == PLAYER_PAIN_END || self.frame == PLAYER_PITCH_PAIN_END)
 		{
-			self.player_state = PS_IDLE;
+			Player_Idle();
 			return;
 		}
 

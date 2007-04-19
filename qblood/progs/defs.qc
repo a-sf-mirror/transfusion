@@ -337,6 +337,11 @@ float sight_entity_time;
 .float      armor_fire;
 .float      armor_body;
 .float      armor_spirit;
+.float		item_boots;
+.float		item_divingsuit;
+.float		item_medkit;
+.float		item_crystalball;
+.float		item_beastvision;
 
 .float      remain_arm;
 .float      remain_dmg;

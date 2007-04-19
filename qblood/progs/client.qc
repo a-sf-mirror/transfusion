@@ -80,6 +80,11 @@ void() InitPlayerCharacteristics =
 	self.inven1				= 0;
 	self.inven2				= 0;
 	self.it_select			= 0;
+	self.item_boots			= 0;
+	self.item_crystalball	= 0;
+	self.item_medkit		= 0;
+	self.item_beastvision	= 0;
+	self.item_divingsuit	= 0;
 
 	// In BloodBath, all players are given all keys
 	if (gametype == GT_BLOODBATH)
