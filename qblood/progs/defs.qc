@@ -342,6 +342,7 @@ float sight_entity_time;
 .float		item_medkit;
 .float		item_crystalball;
 .float		item_beastvision;
+.float		active_inventory;
 
 .float      remain_arm;
 .float      remain_dmg;

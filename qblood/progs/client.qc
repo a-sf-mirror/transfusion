@@ -85,6 +85,7 @@ void() InitPlayerCharacteristics =
 	self.item_medkit		= 0;
 	self.item_beastvision	= 0;
 	self.item_divingsuit	= 0;
+	self.active_inventory	= 0;
 
 	// In BloodBath, all players are given all keys
 	if (gametype == GT_BLOODBATH)
@@ -1274,7 +1275,7 @@ WaterMove
 void() WaterMove =
 {
 	if (self.movetype == MOVETYPE_NOCLIP)
-	return;
+		return;
 	if (self.health < 0)
 		return;
 
@@ -1713,14 +1714,14 @@ void(float isAlive) Impulses_Player =
 
 		// Inventory selection/usage.
 		else if (self.impulse == IMP_INV_NEXT)
-			InvenSelect(TRUE, FALSE);
+			InvenSelect(TRUE);
 		else if (self.impulse == IMP_INV_PREV)
-			InvenSelect(FALSE, FALSE);
+			InvenSelect(FALSE);
 		else if (self.impulse == IMP_INV_USE)
 			InvenUse();
 		else if (self.impulse >= IMP_FIRST_AID && self.impulse <= IMP_JUMP_BOOTS)
 		{
-			InventChange();
+			InvenChange();
 			InvenUse();
 		}
 

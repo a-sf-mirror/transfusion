@@ -51,13 +51,13 @@
 //========================================================================
 //  Item Power Settings
 
-void(float add, float noprint) InvenSelect;
+void(float add) InvenSelect;
 
 // Set the current item as the first available one
 void() InvenSetOnFirst =
 {
 	self.it_select  = 0;    // Default to first-aid.
-	InvenSelect(TRUE, TRUE);
+	InvenSelect(FALSE);
 };
 
 // This returns the amount of power left in an item.
@@ -97,9 +97,8 @@ void(entity who, float itype, float fuel) InvenSet =
 	local   float   noitems;
 
 	noitems = FALSE;
-	if (!who.inven1)
-		if (!who.inven2)
-			noitems = TRUE;
+	if (!who.inven1 && !who.inven2)
+		noitems = TRUE;
 
 	// Make sure the power setting is legal.
 	fuel = floor(fuel);
@@ -114,12 +113,14 @@ void(entity who, float itype, float fuel) InvenSet =
 	// Now reset the desired item.
 	if (itype == INV_FIRST_AID)
 	{        
+		who.item_medkit = fuel;
 		who.inven1 = who.inven1 - (who.inven1 & (SEVEN_BITS * IT3_FIRST_AID));
 		who.inven1 = who.inven1 + (fuel * IT3_FIRST_AID);
 		return;
 	}
 	else if (itype == INV_DIVING_SUIT)
 	{
+		who.item_divingsuit = fuel;
 		who.inven1 = who.inven1 - (who.inven1 & (SEVEN_BITS * IT3_DIVING_SUIT));
 		who.inven1 = who.inven1 + (fuel * IT3_DIVING_SUIT);
 		who.dive_time = 0;
@@ -127,6 +128,7 @@ void(entity who, float itype, float fuel) InvenSet =
 	}
 	else if (itype == INV_CRYSTAL_BALL)
 	{
+		who.item_crystalball = fuel;
 		who.inven2 = who.inven2 - (who.inven2 & (SEVEN_BITS * IT4_CRYSTAL_BALL));
 		who.inven2 = who.inven2 + (fuel * IT4_CRYSTAL_BALL);
 		who.xray_time = 0;
@@ -134,13 +136,15 @@ void(entity who, float itype, float fuel) InvenSet =
 	}
 	else if (itype == INV_BEAST_VISION)
 	{
+		who.item_beastvision = fuel;
 		who.inven2 = who.inven2 - (who.inven2 & (SEVEN_BITS * IT4_BEAST_VISION));
 		who.inven2 = who.inven2 + (fuel * IT4_BEAST_VISION);
 		who.beast_time = 0;
 		return;
 	}
 	else if (itype == INV_JUMP_BOOTS)
-	{        
+	{
+		who.item_boots = fuel;
 		who.inven1 = who.inven1 - (who.inven1 & (SEVEN_BITS * IT3_JUMP_BOOTS));
 		who.inven1 = who.inven1 + (fuel * IT3_JUMP_BOOTS);
 		who.boots_time = 0;
@@ -173,17 +177,11 @@ void() Use_FirstAid =
 	{
 		self.health = self.max_health;
 		faid = faid - need;
-
-		local   string  text;
-
-		text = ftos(faid);
-		sprint3(self, "Doctor's Bag health level is now at ", text, "%\n");
 	}
 	else
 	{
 		self.health = self.health + faid;
 		faid = 0;
-		sprint(self, "Doctor's Bag is used up\n");
 	}
 
 	InvenSet(self, INV_FIRST_AID, faid);
@@ -196,7 +194,7 @@ void() Use_FirstAid =
 void() Use_DivingSuit =
 {
 	if (!InvenFuel(INV_DIVING_SUIT))
-	return;
+		return;
 
 	self.dive_on = !self.dive_on;
 	if (self.dive_on)
@@ -208,14 +206,12 @@ void() Use_DivingSuit =
 			return;
 		}
 
-		sprint(self, "Diving Suit ON\n");
 		self.items = self.items | IT_SUIT;
 		self.dive_time = time + self.dive_time;
 		sound(self, CHAN_ITEM, "foley/swimuw.wav", 1, ATTN_NORM);
 	}
 	else
 	{
-		sprint(self, "Diving Suit OFF\n");
 		self.items = self.items - (self.items & IT_SUIT);
 		self.dive_time = self.dive_time - time;
 	}
@@ -228,6 +224,7 @@ void() Use_CrystalBall =
 
 	sprint(self, "FIXME:  Crystal ball\n");
 	InvenSet(self, INV_CRYSTAL_BALL, 0);     // Remove it from inventory.
+	InvenSetOnFirst();
 	sound(self, CHAN_ITEM, "bludbath/powerup.wav", 1, ATTN_NORM);
 };
 
@@ -259,14 +256,12 @@ void() Use_BeastVision =
 	self.beast_on = !self.beast_on;    
 	if (self.beast_on)
 	{
-		sprint(self, "Beast vision ON\n");
 		self.beast_time = time + self.beast_time;
 		sound(self, CHAN_ITEM, "bludbath/powerup.wav", 1, ATTN_NORM);
 		ToggleBeastVision(TRUE);
 	}
 	else
 	{
-		sprint(self, "Beast vision OFF\n");
 		self.beast_time = self.beast_time - time;
 		ToggleBeastVision(FALSE);
 	}    
@@ -275,20 +270,16 @@ void() Use_BeastVision =
 void() Use_JumpBoots =
 {
 	if (!InvenFuel(INV_JUMP_BOOTS))
-	return;
+		return;
 
 	self.boots_on = !self.boots_on;
 	if (self.boots_on)
 	{
-		sprint(self, "Boots of Jumping ON\n");
 		self.boots_time = time + self.boots_time;
 		sound(self, CHAN_ITEM, "bludbath/powerup.wav", 1, ATTN_NORM);
 	}
 	else
-	{
-		sprint(self, "Boots of Jumping OFF\n");
 		self.boots_time = self.boots_time - time;
-	}
 };
 
 //========================================================================
@@ -307,100 +298,17 @@ void() InvenUse =
 		Use_BeastVision();
 	else if (self.it_select == INV_JUMP_BOOTS)
 		Use_JumpBoots();
-	else
-		sprint(self, "Tried to use unknown item\n");
-};
-
-// This displays the inventory.  Selected item is displayed in red.
-void(float chosen) InvenList =
-{
-	local   float   fuel, i;
-	local   string  text;
-
-	i = 0;
-	fuel = InvenFuel(INV_FIRST_AID);
-	if (fuel)
-	{
-		text = ftos(fuel);
-		if (chosen == INV_FIRST_AID)
-			sprint(self, "Äïãôïò§ó Âáçº ");
-		else
-			sprint(self, "Doctor's Bag: ");
-		sprint(self, text);
-		i = i + 1;
-	}
-
-	fuel = InvenFuel(INV_DIVING_SUIT);
-	if (fuel)
-	{
-		text = ftos(fuel);
-		if (i)
-			sprint(self, " / ");
-		if (chosen == INV_DIVING_SUIT)
-			sprint(self, "Äéöéîç Óõéôº ");
-		else
-			sprint(self, "Diving Suit: ");
-		sprint(self, text);
-		i = i + 1;
-	}
-
-	fuel = InvenFuel(INV_CRYSTAL_BALL);
-	if (fuel)
-	{
-		text = ftos(fuel);
-		if (i)
-			sprint(self, " / ");
-		if (chosen == INV_CRYSTAL_BALL)
-			sprint(self, "Ãòùóôáì Âáììº ");
-		else
-			sprint(self, "Crystal Ball: ");
-		sprint(self, text);
-		i = i + 1;
-	}
-
-	fuel = InvenFuel(INV_BEAST_VISION);
-	if (fuel)
-	{
-		text = ftos(fuel);
-		if (i)
-			sprint(self, " / ");
-		if (chosen == INV_BEAST_VISION)
-			sprint(self, "Âåáóô Öéóéïîº ");
-		else
-			sprint(self, "Beast Vision: ");
-		sprint(self, text);
-		i = i + 1;
-	}
-
-	fuel = InvenFuel(INV_JUMP_BOOTS);
-	if (fuel)
-	{
-		text = ftos(fuel);
-		if (i)
-			sprint(self, " / ");
-		if (chosen == INV_JUMP_BOOTS)
-			sprint(self, "Âïïôó ïæ Êõíðéîçº ");
-		else
-			sprint(self, "Boots of Jumping: ");
-		sprint(self, text);
-		i = i + 1;
-	}
-
-	if (!i)
-		sprint(self, "You aren't carrying anything");
-
-	sprint(self, "\n");
 };
 
 /*
 ====================
-InventChange
+InvenChange
 
 Called when the player explicitely switches
 its current inventory item using an impulse
 ====================
 */
-void() InventChange =
+void() InvenChange =
 {
 	local float choice;
 
@@ -426,19 +334,15 @@ void() InventChange =
 	}
 
 	self.it_select = choice;
-	InvenList(choice);
 };
 
 // This lets a player select another item in the inventory.
-void(float add, float noprint) InvenSelect =
+void(float add) InvenSelect =
 {
-	if (!self.inven1)
-	if (!self.inven2)
+	if (!self.inven1 && !self.inven2)
 	{
 		// No items.
 		self.it_select = 0;
-		if (!noprint)
-			sprint(self, "You aren't carrying anything\n");
 		return;
 	}
 
@@ -480,10 +384,6 @@ void(float add, float noprint) InvenSelect =
 		}
 		while (!fuel);
 	}
-
-	// Display inventory.
-	if (!noprint)
-		InvenList(self.it_select);
 };
 
 //========================================================================
@@ -493,7 +393,6 @@ void(float add, float noprint) InvenSelect =
 void() InvenCheck =
 {
 	local   float   fuel;
-	local   string  text;
 
 	// Diving Suit
 	if (self.dive_on)
@@ -508,17 +407,8 @@ void() InvenCheck =
 				fuel = fuel - 1;
 				InvenSet(self, INV_DIVING_SUIT, fuel);
 				self.dive_time = time + 0.3;
-
-				// Debug message.
-				fuel = fuel * 0.1;
-				if (floor(fuel) == fuel)
-				{
-					text = ftos(fuel * 10);
-					sprint3(self, "Dive Suit air remaining: ", text, "%\n");
-				}
 			}
-			// All gone. Turn it off
-			else
+			else // All gone. Turn it off
 			{
 				self.dive_time  = 0;
 				self.items      = self.items - (self.items & IT_SUIT);
@@ -540,16 +430,8 @@ void() InvenCheck =
 				InvenSet(self, INV_JUMP_BOOTS, fuel);
 				self.boots_time = time + 0.3;
 
-				// Debug message.
-				fuel = fuel * 0.1;
-				if (floor(fuel) == fuel)
-				{
-					text = ftos(fuel * 10);
-					sprint3(self, "Boots of Jumping time remaining ", text, "%\n");
-				}
 			}
-			// All gone. Turn it off
-			else
+			else // All gone. Turn it off
 			{
 				self.boots_on   = 0;
 				self.boots_time = 0;
@@ -569,17 +451,8 @@ void() InvenCheck =
 				fuel = fuel - 1;
 				InvenSet(self, INV_BEAST_VISION, fuel);
 				self.beast_time = time + 0.3;
-
-				// Debug message.
-				fuel = fuel * 0.1;
-				if (floor(fuel) == fuel)
-				{
-					text = ftos(fuel * 10);
-					sprint3(self, "Beast Vision time remaining ", text, "%\n");
-				}
 			}
-			// All gone. Turn it off
-			else
+			else // All gone. Turn it off
 			{
 				ToggleBeastVision(FALSE);
 				self.beast_on   = 0;
