@@ -384,6 +384,7 @@ void(float add) InvenSelect =
 		}
 		while (!fuel);
 	}
+	self.active_inventory = self.it_select;
 };
 
 //========================================================================
