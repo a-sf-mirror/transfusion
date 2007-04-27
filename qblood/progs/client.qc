@@ -1210,7 +1210,9 @@ void() PlayerDeathThink =
 	// wait for any button down
 	if (!self.button2 && !self.button3 && !self.button0 && !self.button4)
 		return;
-
+	
+	remove(self.weaponentity);
+	remove(self.overhead);
 	self.button0 = self.button1 = self.button2 = self.button3 = self.button4 = self.button5 = 0;
 	respawn(TRUE);
 };
@@ -1963,6 +1965,8 @@ void() ClientDisconnect =
 
 	World_CheckWarmup();
 	self.classname = string_null;  // just to be sure he won't appear while searching for players
+	remove(self.weaponentity);
+	remove(self.overhead);
 };
 
 /*
