@@ -538,7 +538,7 @@ void() set_suicide_frame =
 
 void() DrawOverheadWeapon =
 {
-	if (self.weapon > IT_PITCHFORK)
+	if (self.weapon > IT_PITCHFORK && cvar("cl_showweapon"))
 	{
 		local string g_wep;
 
