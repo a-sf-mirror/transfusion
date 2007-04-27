@@ -108,7 +108,7 @@ void(entity who, float itype, float fuel) InvenSet =
 		fuel = 0;
 
 	if (noitems)
-		who.it_select = itype;
+		who.it_select = who.active_inventory = itype;
 
 	// Now reset the desired item.
 	if (itype == INV_FIRST_AID)
