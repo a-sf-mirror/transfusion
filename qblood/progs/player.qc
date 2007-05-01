@@ -438,6 +438,7 @@ void() PlayerDie =
 		}
 	}
 
+	self.weaponentity.nextthink = 0;
 	remove(self.weaponentity);
 	remove(self.overhead);
 	self.items = self.items - (self.items & IT_INVISIBILITY);

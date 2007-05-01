@@ -771,7 +771,6 @@ void(string h) BotSay = // simulate talking by composing a 'chat' message
 	WriteByte(MSG_ALL, 1);
 	WriteString(MSG_ALL, self.netname);
 	WriteByte(MSG_ALL, 8);
-	WriteByte(MSG_ALL, 2);
 	WriteString(MSG_ALL, h);
 };
 void() BotSayInit =

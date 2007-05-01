@@ -280,10 +280,10 @@ void() proxy_animate =
 			self.weaponentity.charge = self.weaponentity.charge + 1;
 		ShowThrowMeter();
 	}
-	else if (self.weaponentity.charge)
+	else if (self.weaponentity.charge && self.weaponentity.anim_type != THROW)
 	{
 		self.weaponentity.anim_type = THROW;
-		self.weaponentity.attack_finished = PROXY_THROW_TIME;
+		self.weaponentity.attack_finished = time + PROXY_THROW_TIME;
 		self.owner.player_state = PS_FIRE;
 		ShowThrowMeter();
 		self.weaponentity.nextthink = time;

@@ -745,8 +745,6 @@ void() ClientKill =
 
 	bprint3("Kevorkian approves ", self.netname, "!\n");
 	sound(self, CHAN_AUTO, "thevoice/vo5.wav", 1, ATTN_NORM);
-	remove(self.weaponentity);
-	remove(self.overhead);
 	CTF_PlayerDropFlag();
 	set_suicide_frame();
 	self.modelindex = modelindex_player;
@@ -954,12 +952,8 @@ void() PutClientInServer =
 {
 	local   entity spot;
 
-	//Hack, force our 2D sized for the HUD
-	cvar_set("vid_conwidth", "640");
-	cvar_set("vid_conheight", "480");
-
 	// Reset poison fade effect in case player was killed while screen was darkened
-	ResetPlayerDisplay();
+	//ResetPlayerDisplay(); //FIXME this is just bringing up an error
 
 	spot = SelectSpawnPoint();
 
@@ -1210,9 +1204,7 @@ void() PlayerDeathThink =
 	// wait for any button down
 	if (!self.button2 && !self.button3 && !self.button0 && !self.button4)
 		return;
-	
-	remove(self.weaponentity);
-	remove(self.overhead);
+
 	self.button0 = self.button1 = self.button2 = self.button3 = self.button4 = self.button5 = 0;
 	respawn(TRUE);
 };
@@ -1965,8 +1957,12 @@ void() ClientDisconnect =
 
 	World_CheckWarmup();
 	self.classname = string_null;  // just to be sure he won't appear while searching for players
-	remove(self.weaponentity);
-	remove(self.overhead);
+	if (self.weaponentity)
+	{
+		self.weaponentity.nextthink = 0;
+		remove(self.weaponentity);
+		remove(self.overhead);
+	}
 };
 
 /*

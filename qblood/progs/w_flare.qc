@@ -41,7 +41,7 @@ void() flare_animate;
 
 #define FLARE_IDLE_TIME				0.1
 #define FLARE_DRAW_TIME				0.3
-#define FLARE_FIRE_TIME				1.0
+#define FLARE_FIRE_TIME				0.5
 #define FLARE_HOLSTER_TIME			0.3
 
 //============================================================================

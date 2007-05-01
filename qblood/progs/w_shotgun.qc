@@ -150,9 +150,17 @@ void() Shotgun_Attack =
 {
 	if (self.button3) // If it's an altfire shot
 	{
-		self.weaponentity.attack_finished = time + SHOTGUN_ALTFIRE_TIME;
-		self.player_state = PS_ALTFIRE;
-		self.weaponentity.anim_type = ALTFIRE;
+		if (self.weaponentity.ammo_in_chamber == 1) //regular fire if we only have 1 shell in chamber
+		{
+			self.weaponentity.attack_finished = time + SHOTGUN_FIRE_TIME;
+			self.player_state = PS_FIRE;
+			self.weaponentity.anim_type = FIRE;
+		}
+		else {
+			self.weaponentity.attack_finished = time + SHOTGUN_ALTFIRE_TIME;
+			self.player_state = PS_ALTFIRE;
+			self.weaponentity.anim_type = ALTFIRE;
+		}
 	}
 	else if (self.button0) // Regular fire
 	{
