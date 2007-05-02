@@ -161,7 +161,7 @@ Impulse list for observers
 void() Impulses_Observer =
 {
 	if (self.impulse == IMP_NONE && !self.button0 && !self.button2 && !self.button4)
-	return;
+		return;
 
 	// If we're not in a team mode, join the game on impulse 1 or 2, or on "jump" or "fire"
 	if ((gametype != GT_TEAM_BLOODBATH && gametype != GT_CAPTURE_THE_FLAG))
@@ -169,6 +169,7 @@ void() Impulses_Observer =
 		if (self.impulse == 1 || self.impulse == 2 || self.button0 || self.button1 || self.button2 || self.button3 || self.button4)
 		{
 			self.observer = 0;
+			self.frags = 0;
 			respawn(FALSE);
 		}
 	}
@@ -273,13 +274,15 @@ void(entity player) BecomeObserver =
 {
 	player.health           = 999;
 	player.armorvalue       = 0;
+	player.frags			= -666;
 	player.takedamage       = DAMAGE_NO;
 	player.solid            = SOLID_NOT;
 	player.movetype         = MOVETYPE_FLY;
 	player.deadflag         = DEAD_NO;
 	player.player_state     = PS_IDLE;
 	player.team             = 0;
-	player.nextthink        = -1;
+	player.nextthink        = time + 0.1;
+	player.think			= ObserverThink;
 
 	player.skin = 0;
 	player.frame = 0;
