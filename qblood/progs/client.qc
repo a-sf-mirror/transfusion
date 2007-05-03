@@ -955,6 +955,10 @@ void() PutClientInServer =
 	// Reset poison fade effect in case player was killed while screen was darkened
 	//ResetPlayerDisplay(); //FIXME this is just bringing up an error
 
+	//force 640x480 2D HUD
+	stuffcmd(self, "vid_conwidth 640\n");
+	stuffcmd(self, "vid_conheight 480\n");
+
 	spot = SelectSpawnPoint();
 
 	self.classname = "player";
