@@ -738,7 +738,6 @@ Player entered the suicide command
 void() set_suicide_frame;
 void() ClientKill =
 {
-	bprint("ClientKill\n");
 	// can't suicide when observer
 	if (self.observer)
 		return;
@@ -1684,16 +1683,14 @@ void(float isAlive) Impulses_Player =
 	else if (self.impulse == IMP_IDENT_PLAYER)
 		identify_player();
 
-	// If we're dead
-	else if (!isAlive)
+	// If we want to go back to the observer mode
+	if (self.impulse == IMP_OBSERVER)
 	{
-		// If we want to go back to the observer mode
-		if (self.impulse == IMP_OBSERVER)
-		{
-			self.do_observer = 1;
-			respawn (TRUE);
-			bprint2(self.netname, " cowardly flees this bloodbath!\n");
-		}
+		self.weaponentity.nextthink = 0;
+		remove(self.weaponentity);
+		self.do_observer = 1;
+		respawn (FALSE);
+		bprint2(self.netname, " cowardly flees this bloodbath!\n");
 	}
 
 	// If we aren't dead, we can play with our stuff

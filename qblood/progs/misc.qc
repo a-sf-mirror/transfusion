@@ -123,7 +123,7 @@ void(string flame_model) light_flame_generic =
 void() move_flame =
 {
 	//wow is this ever a hack, but for some stupid reason it appears to work
-	setorigin(self, self.owner.origin + v_forward * 4);
+	setorigin(self, self.owner.origin + v_up * 4);
 	//for some reason, it needs v_forward instead of v_up, which baffels me.
 };
 
@@ -142,7 +142,7 @@ void() light_torch_small_walltorch =
 	setorigin(flame, self.origin);
 	precache_model("progs/flame2.spr");
 	setmodel(flame, "progs/flame2.spr");
-	flame.scale = 0.35;
+	flame.scale = 0.33;
 	flame.nextthink = time;
 	flame.think = move_flame;
 };

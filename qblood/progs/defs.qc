@@ -612,7 +612,7 @@ void(entity client, string s) sprint                                = #24;
 void(entity client, string s1, string s2) sprint2                   = #24;
 void(entity client, string s1, string s2, string s3) sprint3        = #24;
 #endif
-void(string s) dprint                                               = #25;
+void	dprint (string s, ...)										= #25;
 string(float f) ftos                                                = #26;
 string(vector v) vtos                                               = #27;
 void() coredump                                                     = #28;  // prints all edicts
