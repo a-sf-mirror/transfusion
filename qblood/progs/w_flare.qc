@@ -330,12 +330,12 @@ void(float hand) Flare_Fire =
 	if (self.owner.items & IT_GUNS_AKIMBO)
 	{
 		if (hand == RIGHT)
-			orig = W_Origin() + v_forward * 32 + v_right * 10 + v_up * -5;
+			orig = W_Origin() + v_right * 10 + v_up * -5;
 		else
-			orig = W_Origin() + v_forward * 32 + v_right * -16 + v_up * -5;
+			orig = W_Origin() + v_right * -16 + v_up * -5;
 	}
 	else
-		orig = W_Origin() + v_forward * 32 + v_right * 5 + v_up * -5;
+		orig = W_Origin() + v_right * 5 + v_up * -5;
 
 	// If we want to (and can) launch alt-flares
 	if (self.owner.player_state == PS_ALTFIRE && self.owner.ammo_flare >= 8)

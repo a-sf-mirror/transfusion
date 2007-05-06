@@ -47,7 +47,7 @@ Tommy_SpawnShell
 Spawns new shell entity but doesn't display it until reloadtime
 ================
 */
-void(vector orig, string gun) Tommy_SpawnShell =
+void(float hand) Tommy_SpawnShell =
 {
 	local entity shell;
 
@@ -60,20 +60,53 @@ void(vector orig, string gun) Tommy_SpawnShell =
 	else
 		shell.noise = "weapons/shtshl3.wav";
 
-	if (gun == "right" && !self.owner.akimbo_finished && self.owner.player_state != PS_ALTFIRE)
+	if (self.owner.player_state == PS_FIRE)
 	{
-		setorigin(shell, orig + v_right * -5);
-		shell.velocity = (crandom() + 1)*v_forward*40 - v_right*(80 + crandom()*10) + v_up*(110 + crandom()*10);
+		if (hand == RIGHT && self.owner.items & IT_GUNS_AKIMBO)
+		{
+			setorigin(shell, W_Origin() + v_forward * 15 + v_right * 8);
+			shell.velocity = (crandom() + 1)*v_forward*40 + v_right*(80 + crandom()*10) + v_up*(110 + crandom()*10);
+		}
+		else if (hand == RIGHT)
+		{
+			setorigin(shell, W_Origin() + v_forward * 15 + v_right * -1);
+			shell.velocity = (crandom() + 1)*v_forward*40 - v_right*(80 + crandom()*10) + v_up*(110 + crandom()*10);
+		}
+		else if (hand == LEFT)
+		{
+			setorigin(shell, W_Origin() + v_forward * 15 + v_right * -8);
+			shell.velocity = (crandom() + 1)*v_forward*40 - v_right*(80 + crandom()*10) + v_up*(110 + crandom()*10);
+		}
 	}
-	else if (gun == "right" && self.owner.akimbo_finished && self.owner.player_state != PS_ALTFIRE)
+	else //altfire
 	{
-		setorigin(shell, orig + v_right * 5);
-		shell.velocity = (crandom() + 1)*v_forward*40 + v_right*(80 + crandom()*10) + v_up*(110 + crandom()*10);
-	}
-	else if (gun == "left")
-	{
-		setorigin(shell, orig + v_right * -13);
-		shell.velocity = (crandom() + 1)*v_forward*40 - v_right*(80 + crandom()*10) + v_up*(110 + crandom()*10);
+		if (self.owner.items & IT_GUNS_AKIMBO)
+		{
+			if (hand == RIGHT)
+			{
+				setorigin(shell, W_Origin() + v_forward * 15 + v_right * (6 + crandom() * 2));
+				if (crandom() > 0)
+					shell.velocity = (crandom() + 1)*v_forward*40 - v_right*(65 + crandom()*10) + v_up*(75 + crandom()*10);
+				else
+					shell.velocity = (crandom() + 1)*v_forward*40 + v_right*(65 + crandom()*10) + v_up*(75 + crandom()*10);
+			}
+			else
+			{
+				setorigin(shell, W_Origin() + v_forward * 15 - v_right * (6 + crandom() * 2));
+				if (crandom() > 0)
+					shell.velocity = (crandom() + 1)*v_forward*40 - v_right*(65 + crandom()*10) + v_up*(75 + crandom()*10);
+				else
+					shell.velocity = (crandom() + 1)*v_forward*40 + v_right*(65 + crandom()*10) + v_up*(75 + crandom()*10);
+			}
+		}
+		else
+		{
+			setorigin(shell, W_Origin() + v_forward * 15 + v_right * (crandom() * 2));
+			if (crandom() > 0)
+				shell.velocity = (crandom() + 1)*v_forward*40 - v_right*(65 + crandom()*10) + v_up*(75 + crandom()*10);
+			else
+				shell.velocity = (crandom() + 1)*v_forward*40 + v_right*(65 + crandom()*10) + v_up*(75 + crandom()*10);
+		}
 	}
 
 	DropShell(shell);
@@ -90,20 +123,19 @@ void() Tommy_Fire =
 {
 	local vector    dir;
 	local vector    orig;
-	local float     akimboFactor;  // 2 if guns akimbo, else 1
 	local vector    spread;
 	local float     damage;
-
-	if (self.owner.items & IT_GUNS_AKIMBO)
-		akimboFactor = 2;
-	else
-		akimboFactor = 1;
 
 	makevectors(self.owner.v_angle);
 
 	sound(self.owner, CHAN_WEAPON, "weapons/tommygun/_tom.wav", 1, ATTN_NORM);
 	if (!(self.owner.flags & FL_INFINATE_AMMO))
-		self.owner.currentammo = self.owner.ammo_nails = self.owner.ammo_nails - akimboFactor;
+	{
+		if (self.owner.items & IT_GUNS_AKIMBO)
+			self.owner.currentammo = self.owner.ammo_nails = self.owner.ammo_nails - 2;
+		else
+			self.owner.currentammo = self.owner.ammo_nails = self.owner.ammo_nails - 1;
+	}
 
 	/* Set the bullet direction according to the weapon's real direction.
 	   These are arbitrary values with a small bit of further horizontal spread. */
@@ -127,26 +159,25 @@ void() Tommy_Fire =
 
 	// If we are in altfire mode
 	if (self.owner.player_state == PS_ALTFIRE)
+	{
 		damage = 20;
-	else
-		damage = 12;
-
-	if (self.owner.player_state == PS_FIRE) // Normal Fire
-		spread = '0.05 0.02 0';
-	else // Altfire
 		spread = '0.03 0.001 0';
+	}
+	else
+	{
+		damage = 12;
+		spread = '0.05 0.02 0';
+	}
 
-	// If we're in akimbo mode
-	if (akimboFactor == 2)
+	if (self.owner.items & IT_GUNS_AKIMBO)
 	{
 		// Spawn 1 shell alternatively for each gun
-		Tommy_SpawnShell(orig, "right");
-		Tommy_SpawnShell(orig, "left");
+		Tommy_SpawnShell(RIGHT);
+		Tommy_SpawnShell(LEFT);
 
 		orig = W_Origin() + v_right * 4;
-
 		FireBullets(orig, dir, 1, damage, spread);
-		orig = orig - v_right * 8;
+		orig = W_Origin() - v_right * 4;
 		FireBullets(orig, dir, 1, damage, spread);
 
 		// If we don't have enough ammo anymore, drop the akimbo mode for now
@@ -155,15 +186,12 @@ void() Tommy_Fire =
 	}
 	else
 	{
-		orig = W_Origin() + v_forward * 15 + v_right * 4;
 		// Spawn 1 shell every 2 shots
-		if ((self.weaponentity.frame == TOMMY_FIRE_START) || (self.weaponentity.frame & 1)) // FIXME PS_ALTFIRE && &1
-			Tommy_SpawnShell(orig, "right");
-
+		if ((self.weaponentity.frame == TOMMY_FIRE_START) || (self.weaponentity.frame >= TOMMY_ALTFIRE_START && self.weaponentity.frame / 2 == floor(self.weaponentity.frame / 2))) // FIXME PS_ALTFIRE && &1
+			Tommy_SpawnShell(RIGHT);
+		orig = W_Origin() + v_right * 4;
 		FireBullets(orig, dir, 1, damage, spread);
 	}
-
-	//self.punchangle_x = -2 * akimboFactor;
 };
 
 /*

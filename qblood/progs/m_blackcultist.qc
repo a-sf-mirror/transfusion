@@ -69,7 +69,7 @@ void() blackcultist_fireTommygun =
 	orig = self.origin + v_forward * 15 + v_up * 12 + v_right * 4;
 
 	// Spawn 1 shell every 2 shots
-	Tommy_SpawnShell(orig, "right");
+	Tommy_SpawnShell(RIGHT);
 
 	org = self.origin;
 
