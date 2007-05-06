@@ -58,10 +58,11 @@ void() Spray_Fire =
 	newmis.nextthink = time + 0.6;
 	setmodel(newmis, "progs/sprayfir.spr");
 	setsize(newmis, '-1 -1 -1', '1 1 1');
-	setorigin(newmis, W_Origin() + v_forward * 50 + v_right * 2 + v_up * -5);
+	setorigin(newmis, W_Origin() +v_forward * 20 + v_right * 2 + v_up * -5);
 
 	newmis.velocity = dir * 550;
 	newmis.owner = self.owner;
+	newmis.scale = 0.5;
 	newmis.frame = floor(random() * 3);
 };
 
