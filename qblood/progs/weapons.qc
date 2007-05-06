@@ -1144,7 +1144,7 @@ void() W_WeaponFrame =
 	if (self.player_state == PS_BOD_FALL || self.player_state == PS_BOD_SWAY)
 		return;
 
-	if (!W_AmmoAvailable())
+	if (!W_AmmoAvailable() && self.weapon) //self.weapon is a check for dropping your weapons such as TNT self-explosion.
 	{
 		if ((self.player_state != PS_HOLD_FIRE) && (self.weaponentity.tnt_type != REMOTE_ONLY))
 		{

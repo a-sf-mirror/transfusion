@@ -327,6 +327,7 @@ void() spray_animate =
 				Bomb_Uncharge();
 				setmodel(self.weaponentity, "");
 				self.owner.weapon = 0;
+				self.weaponentity.nextthink = 0;
 			}
 			if (self.weaponentity.charge && !self.owner.button0)
 			{

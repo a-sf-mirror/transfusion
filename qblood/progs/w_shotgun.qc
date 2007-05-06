@@ -51,6 +51,8 @@ void() shotgun_animate;
 #define SHOTGUN_ALTFIRE_TIME			0.3
 #define SHOTGUN_RELOAD_TIME				0.7
 #define SHOTGUN_HOLSTER_TIME			0.3
+#define	SHOTGUN_AKIMBO_FIRE_TIME		0.5
+#define SHOTGUN_AKIMBO_ALTFIRE_TIME		0.75
 
 //============================================================================
 
@@ -157,16 +159,34 @@ void() Shotgun_Attack =
 			self.weaponentity.anim_type = FIRE;
 		}
 		else {
-			self.weaponentity.attack_finished = time + SHOTGUN_ALTFIRE_TIME;
-			self.player_state = PS_ALTFIRE;
-			self.weaponentity.anim_type = ALTFIRE;
+			if (self.items & IT_GUNS_AKIMBO)
+			{
+				self.weaponentity.attack_finished = time + SHOTGUN_AKIMBO_ALTFIRE_TIME;
+				self.player_state = PS_ALTFIRE;
+				self.weaponentity.anim_type = AKIMBO_ALTFIRE;
+			}
+			else
+			{
+				self.weaponentity.attack_finished = time + SHOTGUN_ALTFIRE_TIME;
+				self.player_state = PS_ALTFIRE;
+				self.weaponentity.anim_type = ALTFIRE;
+			}
 		}
 	}
 	else if (self.button0) // Regular fire
 	{
-		self.weaponentity.attack_finished = time + SHOTGUN_FIRE_TIME;
-		self.player_state = PS_FIRE;
-		self.weaponentity.anim_type = FIRE;
+		if (self.items & IT_GUNS_AKIMBO)
+		{
+			self.weaponentity.attack_finished = time + SHOTGUN_AKIMBO_FIRE_TIME;
+			self.player_state = PS_FIRE;
+			self.weaponentity.anim_type = AKIMBO_FIRE;
+		}
+		else
+		{
+			self.weaponentity.attack_finished = time + SHOTGUN_FIRE_TIME;
+			self.player_state = PS_FIRE;
+			self.weaponentity.anim_type = FIRE;
+		}
 	}
 	self.weaponentity.nextthink = time;
 	self.weaponentity.think = shotgun_animate;
@@ -189,9 +209,18 @@ void() Shotgun_Draw =
 		self.weaponentity.ammo_in_chamber = 1;
 	Shotgun_UpdateView();
 	self.weaponentity.attack_finished = time + SHOTGUN_DRAW_TIME;
-	self.weaponentity.frame = SHOTGUN_DRAW_START;
 	self.weaponentity.skin = 0;
-	self.weaponentity.anim_type = DRAW;
+	if (self.akimbo_finished > time && self.currentammo >= 2) //akimbo draw
+	{
+		self.weaponentity.anim_type = AKIMBO_DRAW;
+		self.weaponentity.frame = SHOTGUN_AKIMBO_DRAW_START;
+	}
+	else //normal draw
+	{
+		self.weaponentity.anim_type = DRAW;
+		self.weaponentity.frame = SHOTGUN_DRAW_START;
+	}
+
 	self.weaponentity.nextthink = time;
 	self.weaponentity.think = shotgun_animate;
 };
@@ -205,8 +234,11 @@ Holster code for the sawed-off
 */
 void() Shotgun_Holster =
 {
+	if (self.akimbo_finished > time && self.currentammo >= 2)
+		self.weaponentity.anim_type = AKIMBO_HOLSTER;
+	else //normal holster
+		self.weaponentity.anim_type = HOLSTER;
 	self.weaponentity.attack_finished = time + SHOTGUN_HOLSTER_TIME;
-	self.weaponentity.anim_type = HOLSTER;
 	self.weaponentity.nextthink = time;
 	self.weaponentity.think = shotgun_animate;
 };
@@ -279,6 +311,13 @@ void() shotgun_animate =
 			self.weaponentity.anim_time = SHOTGUN_DRAW_TIME;
 			self.weaponentity.frame = SHOTGUN_DRAW_START;
 		}
+		else if (self.weaponentity.anim_type == AKIMBO_DRAW)
+		{
+			self.weaponentity.anim_end = SHOTGUN_AKIMBO_DRAW_END;
+			self.weaponentity.anim_end_num = SHOTGUN_AKIMBO_DRAW_END - SHOTGUN_AKIMBO_DRAW_START + 1;
+			self.weaponentity.anim_time = SHOTGUN_DRAW_TIME;
+			self.weaponentity.frame = SHOTGUN_AKIMBO_DRAW_START;
+		}
 		else if (self.weaponentity.anim_type == FIRE)
 		{
 			if (self.weaponentity.ammo_in_chamber == 2)
@@ -296,12 +335,26 @@ void() shotgun_animate =
 				self.weaponentity.frame = SHOTGUN_FIRER_START;
 			}
 		}
+		else if (self.weaponentity.anim_type == AKIMBO_FIRE)
+		{
+			self.weaponentity.anim_end = SHOTGUN_AKIMBO_FIRE_END;
+			self.weaponentity.anim_end_num = SHOTGUN_AKIMBO_FIRE_END - SHOTGUN_AKIMBO_FIRE_START + 1;
+			self.weaponentity.anim_time = SHOTGUN_AKIMBO_FIRE_TIME;
+			self.weaponentity.frame = SHOTGUN_AKIMBO_FIRE_START;
+		}
 		else if (self.weaponentity.anim_type == ALTFIRE)
 		{
 			self.weaponentity.anim_end = SHOTGUN_ALTFIRE_END;
 			self.weaponentity.anim_end_num = SHOTGUN_ALTFIRE_END - SHOTGUN_ALTFIRE_START + 1;
 			self.weaponentity.anim_time = SHOTGUN_ALTFIRE_TIME;
 			self.weaponentity.frame = SHOTGUN_ALTFIRE_START;
+		}
+		else if (self.weaponentity.anim_type == AKIMBO_ALTFIRE)
+		{
+			self.weaponentity.anim_end = SHOTGUN_AKIMBO_ALTFIRE_END;
+			self.weaponentity.anim_end_num = SHOTGUN_AKIMBO_ALTFIRE_END - SHOTGUN_AKIMBO_ALTFIRE_START + 1;
+			self.weaponentity.anim_time = SHOTGUN_AKIMBO_ALTFIRE_TIME;
+			self.weaponentity.frame = SHOTGUN_AKIMBO_ALTFIRE_START;
 		}
 		else if (self.weaponentity.anim_type == RELOAD)
 		{
@@ -326,6 +379,24 @@ void() shotgun_animate =
 				self.weaponentity.anim_end_num = SHOTGUN_HOLSTER_END - SHOTGUN_HOLSTER_START + 1;
 				self.weaponentity.anim_time = SHOTGUN_HOLSTER_TIME;
 				self.weaponentity.frame = SHOTGUN_HOLSTER_START;
+			}
+		}
+		else if (self.weaponentity.anim_type == AKIMBO_HOLSTER)
+		{
+			if (self.weaponentity.last_action == AKIMBO_DRAW)
+			{
+				self.weaponentity.anim_end = SHOTGUN_AKIMBO_HOLSTER_END;
+				self.weaponentity.anim_end_num = SHOTGUN_AKIMBO_HOLSTER_END - SHOTGUN_AKIMBO_HOLSTER_START + 1;
+				self.weaponentity.anim_time = (SHOTGUN_HOLSTER_TIME / (SHOTGUN_AKIMBO_HOLSTER_END - SHOTGUN_AKIMBO_HOLSTER_START + 1)) * (self.weaponentity.frame - SHOTGUN_AKIMBO_DRAW_START + 1);
+				self.weaponentity.attack_finished = time + self.weaponentity.anim_time;
+				self.weaponentity.frame = SHOTGUN_AKIMBO_HOLSTER_END - (self.weaponentity.frame - SHOTGUN_AKIMBO_DRAW_START + 1) + 1;
+			}
+			else
+			{
+				self.weaponentity.anim_end = SHOTGUN_AKIMBO_HOLSTER_END;
+				self.weaponentity.anim_end_num = SHOTGUN_AKIMBO_HOLSTER_END - SHOTGUN_AKIMBO_HOLSTER_START + 1;
+				self.weaponentity.anim_time = SHOTGUN_HOLSTER_TIME;
+				self.weaponentity.frame = SHOTGUN_AKIMBO_HOLSTER_START;
 			}
 		}
 		self.weaponentity.last_action = self.weaponentity.anim_type;
@@ -361,6 +432,17 @@ void() shotgun_animate =
 			}
 		}
 	}
+	else if (self.weaponentity.anim_type == AKIMBO_FIRE)
+	{
+		if (self.weaponentity.frame == SHOTGUN_AKIMBO_FIRE_START || self.weaponentity.frame == SHOTGUN_AKIMBO_FIRE_START + 2)
+			Shotgun_Fire();
+		else if (self.weaponentity.frame == SHOTGUN_AKIMBO_FIRE_END)
+		{
+			self.owner.player_state = PS_IDLE;
+			Shotgun_Idle();
+		}
+
+	}
 	else if (self.weaponentity.anim_type == ALTFIRE)
 	{
 		if (self.weaponentity.frame == SHOTGUN_ALTFIRE_START)
@@ -370,14 +452,25 @@ void() shotgun_animate =
 			muzzleflash();
 			Shotgun_Fire();
 			self.weaponentity.ammo_in_chamber = self.weaponentity.ammo_in_chamber - self.owner.player_state;
-			if (self.owner.items & IT_GUNS_AKIMBO)
-				Shotgun_Fire();
 		}
 		else if (self.weaponentity.frame == SHOTGUN_ALTFIRE_END)
 		{
 			self.weaponentity.anim_type = RELOAD;
 			self.weaponentity.attack_finished = time + SHOTGUN_RELOAD_TIME;
 			shotgun_animate();
+		}
+	}
+	else if (self.weaponentity.anim_type == AKIMBO_ALTFIRE)
+	{
+		if (self.weaponentity.frame == SHOTGUN_AKIMBO_ALTFIRE_START)
+		{
+			Shotgun_Fire();
+			Shotgun_Fire();
+		}
+		else if (self.weaponentity.frame == SHOTGUN_AKIMBO_ALTFIRE_END)
+		{
+			self.owner.player_state = PS_IDLE;
+			Shotgun_Idle();
 		}
 	}
 	else if (self.weaponentity.anim_type == RELOAD)
@@ -391,12 +484,12 @@ void() shotgun_animate =
 			Shotgun_Idle();
 		}
 	}
-	else if ((self.weaponentity.frame == self.weaponentity.anim_end) && (self.weaponentity.anim_type == DRAW))
+	else if ((self.weaponentity.frame == self.weaponentity.anim_end) && ((self.weaponentity.anim_type == DRAW) || (self.weaponentity.anim_type == AKIMBO_DRAW)))
 	{
 		self.owner.player_state = PS_IDLE;
 		Shotgun_Idle();
 	}
-	else if ((self.weaponentity.frame == self.weaponentity.anim_end) && (self.weaponentity.anim_type == HOLSTER))
+	else if ((self.weaponentity.frame == self.weaponentity.anim_end) && ((self.weaponentity.anim_type == HOLSTER) || (self.weaponentity.anim_type == AKIMBO_HOLSTER)))
 	{
 		setmodel(self.weaponentity, "");
 		W_DrawWeapon(self.owner.newweapon);

@@ -50,19 +50,18 @@ Draw code for the TNT
 */
 void() TNT_Draw =
 {
+	self.weaponentity.attack_finished = time + TNT_DRAW_TIME;
 	self.currentammo = self.ammo_tnt_bundle;
 	TNT_UpdateView();
 	// If we need to pop up the lighter
 	if (self.weapon != IT_SPRAY_CAN)
 	{
 		sound(self, CHAN_WEAPON, "weapons/tnt/lighter.wav", 1, ATTN_NORM);
-		self.weaponentity.attack_finished = time + TNT_DRAW_TIME;
 		self.weaponentity.anim_type = DRAW;
 		self.weaponentity.frame = TNT_DRAW_START;
 	}
 	else
 	{
-		self.weaponentity.attack_finished = time + TNT_DRAW_TIME;
 		self.weaponentity.anim_type = HALF_DRAW;
 		self.weaponentity.frame = TNT_HALF_DRAW_START;
 	}

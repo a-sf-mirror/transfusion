@@ -330,9 +330,9 @@ void(float hand) Flare_Fire =
 	if (self.owner.items & IT_GUNS_AKIMBO)
 	{
 		if (hand == RIGHT)
-			orig = W_Origin() + v_forward * 32 + v_right * 10;
+			orig = W_Origin() + v_forward * 32 + v_right * 10 + v_up * -5;
 		else
-			orig = W_Origin() + v_forward * 32 + v_right * -16;
+			orig = W_Origin() + v_forward * 32 + v_right * -16 + v_up * -5;
 	}
 	else
 		orig = W_Origin() + v_forward * 32 + v_right * 5 + v_up * -5;
@@ -384,13 +384,21 @@ Draw code for the flaregun
 */
 void() Flare_Draw =
 {
+	self.weaponentity.attack_finished = time + FLARE_DRAW_TIME;
 	self.weapon = IT_FLAREGUN;
 	self.currentammo = self.ammo_flare;
 	Flare_UpdateView();
-	self.weaponentity.attack_finished = time + FLARE_DRAW_TIME;
-	self.weaponentity.anim_type = DRAW;
-	self.weaponentity.frame = FLARE_DRAW_START;
 	self.weaponentity.skin = 0;
+	if (self.akimbo_finished > time && self.currentammo >= 2) //akimbo draw
+	{
+		self.weaponentity.anim_type = AKIMBO_DRAW;
+		self.weaponentity.frame = FLARE_AKIMBO_DRAW_START;
+	}
+	else //normal draw
+	{
+		self.weaponentity.anim_type = DRAW;
+		self.weaponentity.frame = FLARE_DRAW_START;
+	}
 	self.weaponentity.nextthink = time;
 	self.weaponentity.think = flare_animate;
 };
@@ -404,8 +412,11 @@ Holster code for the flaregun
 */
 void() Flare_Holster =
 {
+	if (self.akimbo_finished > time && self.currentammo >= 2)
+		self.weaponentity.anim_type = AKIMBO_HOLSTER;
+	else //normal holster
+		self.weaponentity.anim_type = HOLSTER;
 	self.weaponentity.attack_finished = time + FLARE_HOLSTER_TIME;
-	self.weaponentity.anim_type = HOLSTER;
 	self.weaponentity.nextthink = time;
 	self.weaponentity.think = flare_animate;
 };
@@ -471,6 +482,13 @@ void() flare_animate =
 			self.weaponentity.anim_time = FLARE_DRAW_TIME;
 			self.weaponentity.frame = FLARE_DRAW_START;
 		}
+		else if (self.weaponentity.anim_type == AKIMBO_DRAW)
+		{
+			self.weaponentity.anim_end = FLARE_AKIMBO_DRAW_END;
+			self.weaponentity.anim_end_num = FLARE_AKIMBO_DRAW_END - FLARE_AKIMBO_DRAW_START + 1;
+			self.weaponentity.anim_time = FLARE_DRAW_TIME;
+			self.weaponentity.frame = FLARE_AKIMBO_DRAW_START;
+		}
 		else if (self.weaponentity.anim_type == FIRE)
 		{
 			self.weaponentity.anim_end = FLARE_FIRE_END;
@@ -501,6 +519,24 @@ void() flare_animate =
 				self.weaponentity.anim_end_num = FLARE_HOLSTER_END - FLARE_HOLSTER_START + 1;
 				self.weaponentity.anim_time = FLARE_HOLSTER_TIME;
 				self.weaponentity.frame = FLARE_HOLSTER_START;
+			}
+		}
+		else if (self.weaponentity.anim_type == AKIMBO_HOLSTER)
+		{
+			if (self.weaponentity.last_action == AKIMBO_DRAW)
+			{
+				self.weaponentity.anim_end = FLARE_AKIMBO_HOLSTER_END;
+				self.weaponentity.anim_end_num = FLARE_AKIMBO_HOLSTER_END - FLARE_AKIMBO_HOLSTER_START + 1;
+				self.weaponentity.anim_time = (FLARE_HOLSTER_TIME / (FLARE_AKIMBO_HOLSTER_END - FLARE_AKIMBO_HOLSTER_START + 1)) * (self.weaponentity.frame - FLARE_DRAW_START + 1);
+				self.weaponentity.attack_finished = time + self.weaponentity.anim_time;
+				self.weaponentity.frame = FLARE_AKIMBO_HOLSTER_END - (self.weaponentity.frame - FLARE_AKIMBO_DRAW_START + 1) + 1;
+			}
+			else
+			{
+				self.weaponentity.anim_end = FLARE_AKIMBO_HOLSTER_END;
+				self.weaponentity.anim_end_num = FLARE_AKIMBO_HOLSTER_END - FLARE_AKIMBO_HOLSTER_START + 1;
+				self.weaponentity.anim_time = FLARE_HOLSTER_TIME;
+				self.weaponentity.frame = FLARE_AKIMBO_HOLSTER_START;
 			}
 		}
 		self.weaponentity.last_action = self.weaponentity.anim_type;
@@ -560,12 +596,12 @@ void() flare_animate =
 			}
 		}
 	}
-	else if ((self.weaponentity.frame == self.weaponentity.anim_end) && (self.weaponentity.anim_type == DRAW))
+	else if ((self.weaponentity.frame == self.weaponentity.anim_end) && ((self.weaponentity.anim_type == DRAW) || (self.weaponentity.anim_type == AKIMBO_DRAW)))
 	{
 		self.owner.player_state = PS_IDLE;
 		Flare_Idle();
 	}
-	else if ((self.weaponentity.frame == self.weaponentity.anim_end) && (self.weaponentity.anim_type == HOLSTER))
+	else if ((self.weaponentity.frame == self.weaponentity.anim_end) && ((self.weaponentity.anim_type == HOLSTER) || (self.weaponentity.anim_type == AKIMBO_HOLSTER)))
 	{
 		setmodel(self.weaponentity, "");
 		W_DrawWeapon(self.owner.newweapon);

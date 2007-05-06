@@ -287,13 +287,21 @@ Draw code for the napalm launcher
 */
 void() Napalm_Draw =
 {
+	self.weaponentity.attack_finished = time + NAPALM_DRAW_TIME;
 	self.weapon = IT_NAPALM_LAUNCHER;
 	self.currentammo = self.ammo_rockets;
 	Napalm_UpdateView();
-	self.weaponentity.attack_finished = time + NAPALM_DRAW_TIME;
-	self.weaponentity.anim_type = DRAW;
+	if (self.akimbo_finished > time && self.currentammo >= 2)
+	{
+		self.weaponentity.anim_type = AKIMBO_DRAW;
+		self.weaponentity.frame = NAPALM_AKIMBO_DRAW_START;
+	}
+	else //normal draw
+	{
+		self.weaponentity.anim_type = DRAW;
+		self.weaponentity.frame = NAPALM_DRAW_START;
+	}
 	self.weaponentity.skin = 1;
-	self.weaponentity.frame = NAPALM_DRAW_START;
 	self.weaponentity.nextthink = time;
 	self.weaponentity.think = napalm_animate;
 };
@@ -307,8 +315,11 @@ Holster code for the napalm launcher
 */
 void() Napalm_Holster =
 {
+	if (self.akimbo_finished > time && self.currentammo >= 2)
+		self.weaponentity.anim_type = AKIMBO_HOLSTER;
+	else
+		self.weaponentity.anim_type = HOLSTER;
 	self.weaponentity.attack_finished = time + NAPALM_HOLSTER_TIME;
-	self.weaponentity.anim_type = HOLSTER;
 	self.weaponentity.nextthink = time;
 	self.weaponentity.think = napalm_animate;
 };
@@ -378,6 +389,13 @@ void() napalm_animate =
 			self.weaponentity.anim_time = NAPALM_DRAW_TIME;
 			self.weaponentity.frame = NAPALM_DRAW_START;
 		}
+		else if (self.weaponentity.anim_type == AKIMBO_DRAW)
+		{
+			self.weaponentity.anim_end = NAPALM_AKIMBO_DRAW_END;
+			self.weaponentity.anim_end_num = NAPALM_AKIMBO_DRAW_END - NAPALM_AKIMBO_DRAW_START + 1;
+			self.weaponentity.anim_time = NAPALM_DRAW_TIME;
+			self.weaponentity.frame = NAPALM_AKIMBO_DRAW_START;
+		}
 		else if ((self.weaponentity.anim_type == FIRE) || (self.weaponentity.anim_type == ALTFIRE))
 		{
 			self.weaponentity.anim_end = NAPALM_FIRE_END;
@@ -410,6 +428,24 @@ void() napalm_animate =
 				self.weaponentity.frame = NAPALM_HOLSTER_START;
 			}
 		}
+		else if (self.weaponentity.anim_type == AKIMBO_HOLSTER)
+		{
+			if (self.weaponentity.last_action == AKIMBO_DRAW)
+			{
+				self.weaponentity.anim_end = NAPALM_AKIMBO_HOLSTER_END;
+				self.weaponentity.anim_end_num = NAPALM_AKIMBO_HOLSTER_END - NAPALM_AKIMBO_HOLSTER_START + 1;
+				self.weaponentity.anim_time = (NAPALM_HOLSTER_TIME / (NAPALM_AKIMBO_HOLSTER_END - NAPALM_AKIMBO_HOLSTER_START + 1)) * (self.weaponentity.frame - NAPALM_AKIMBO_DRAW_START + 1);
+				self.weaponentity.attack_finished = time + self.weaponentity.anim_time;
+				self.weaponentity.frame = NAPALM_AKIMBO_HOLSTER_END - (self.weaponentity.frame - NAPALM_AKIMBO_DRAW_START + 1) + 1;
+			}
+			else
+			{
+				self.weaponentity.anim_end = NAPALM_AKIMBO_HOLSTER_END;
+				self.weaponentity.anim_end_num = NAPALM_AKIMBO_HOLSTER_END - NAPALM_AKIMBO_HOLSTER_START + 1;
+				self.weaponentity.anim_time = NAPALM_HOLSTER_TIME;
+				self.weaponentity.frame = NAPALM_AKIMBO_HOLSTER_START;
+			}
+		}
 		self.weaponentity.last_action = self.weaponentity.anim_type;
 	}
 	self.weaponentity.nextthink = time + (self.weaponentity.anim_time / self.weaponentity.anim_end_num);
@@ -437,12 +473,12 @@ void() napalm_animate =
 	}
 	else if (self.weaponentity.anim_type == IDLE)
 		self.weaponentity.think = Napalm_Idle;
-	else if ((self.weaponentity.frame == self.weaponentity.anim_end) && (self.weaponentity.anim_type == DRAW))
+	else if ((self.weaponentity.frame == self.weaponentity.anim_end) && ((self.weaponentity.anim_type == DRAW) || (self.weaponentity.anim_type == AKIMBO_DRAW)))
 	{
 		self.owner.player_state = PS_IDLE;
 		Napalm_Idle();
 	}
-	else if ((self.weaponentity.frame == self.weaponentity.anim_end) && (self.weaponentity.anim_type == HOLSTER))
+	else if ((self.weaponentity.frame == self.weaponentity.anim_end) && ((self.weaponentity.anim_type == HOLSTER) || (self.weaponentity.anim_type == AKIMBO_HOLSTER)))
 	{
 		setmodel(self.weaponentity, "");
 		W_DrawWeapon(self.owner.newweapon);

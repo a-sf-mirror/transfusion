@@ -427,13 +427,12 @@ void() tesla_animate =
 			}
 		}
 	}
-
-	if ((self.weaponentity.frame == self.weaponentity.anim_end) && (self.weaponentity.anim_type == DRAW))
+	else if ((self.weaponentity.frame == self.weaponentity.anim_end) && ((self.weaponentity.anim_type == DRAW) || (self.weaponentity.anim_type == AKIMBO_DRAW)))
 	{
 		self.owner.player_state = PS_IDLE;
 		Tesla_Idle();
 	}
-	else if ((self.weaponentity.frame == self.weaponentity.anim_end) && (self.weaponentity.anim_type == HOLSTER))
+	else if ((self.weaponentity.frame == self.weaponentity.anim_end) && ((self.weaponentity.anim_type == HOLSTER) || (self.weaponentity.anim_type == AKIMBO_HOLSTER)))
 	{
 		setmodel(self.weaponentity, "");
 		W_DrawWeapon(self.owner.newweapon);
