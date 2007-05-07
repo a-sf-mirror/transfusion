@@ -244,7 +244,7 @@ void() Napalm_Fire =
 	muzzleflash();
 	if (!(self.owner.flags & FL_INFINATE_AMMO))
 		self.owner.currentammo = self.owner.ammo_rockets;
-	setorigin(newmis, W_Origin() + v_forward * 24 + v_right * 3 + v_up * -8);
+	setorigin(newmis, W_Origin() + v_forward * 20 + v_right * 3 + v_up * -8);
 };
 
 /*
