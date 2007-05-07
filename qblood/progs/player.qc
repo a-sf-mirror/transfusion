@@ -571,7 +571,10 @@ void() DrawOverheadWeapon =
 		if (self.weapon == IT_VOODOO_DOLL)
 			self.overhead.angles_y = self.angles_y + 180;
 
-		self.overhead.origin = self.origin + v_up * 40;
+		if (self.crouch)
+			self.overhead.origin = self.origin + PL_CROUCH_VIEW_OFS + v_up * 15;
+		else
+			self.overhead.origin = self.origin + PL_VIEW_OFS + v_up * 15;
 		self.overhead.scale = 0.6;
 
 		setmodel(self.overhead, g_wep);

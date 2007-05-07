@@ -352,6 +352,18 @@ void() tommy_animate =
 		self.weaponentity.think = tommy_animate;
 	}
 
+	if (self.owner.player_state == PS_FIRE || self.owner.player_state == PS_ALTFIRE)
+	{
+		if (self.weaponentity.frame / 2 == floor(self.weaponentity.frame / 2))
+			self.weaponentity.origin = '0 0 0';
+		else
+		{
+			local float displacement;
+			displacement = crandom() / 1.5;
+			self.weaponentity.origin = '0 0 0' + v_forward * (displacement * 1.5) + v_up * (displacement * 1.5) - v_right * displacement;
+		}
+	}
+
 	if (self.weaponentity.anim_type == FIRE)
 	{
 		if (!self.owner.button0 && self.weaponentity.attack_finished <= time)
@@ -370,6 +382,8 @@ void() tommy_animate =
 			self.owner.player_state = PS_IDLE;
 			Tommy_Idle();
 		}
+		else if (self.weaponentity.frame == TOMMY_ALTFIRE_END)
+			self.weaponentity.attack_finished = time + TOMMY_ALTFIRE_TIME;
 		muzzleflash();
 		Tommy_Fire();
 		self.owner.impulse = IMP_NONE;
