@@ -462,7 +462,7 @@ float sight_entity_time;
 .float      poison;         // for spider bites / choking hands
 
 .float      invincible_time, invincible_sound;
-.float      invisible_time, invisible_sound;
+.float      invisible_time;
 .float      fly_sound;
 
 .float      show_hostile;   // set to time+0.2 whenever a client fires a

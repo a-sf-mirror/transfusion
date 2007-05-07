@@ -459,6 +459,7 @@ void(string s) SV_ParseClientCommand =
 					else
 					{
 						sprint(self, "You are invisible.\n");
+						self.items = self.items | IT_INVISIBILITY;
 						self.invisible_finished = time + 30;
 						self.invisible_time = 1;
 					}
@@ -1541,38 +1542,16 @@ void() CheckPowerups =
 	if (self.invisible_finished)
 	{
 		self.alpha = 0.15;
-		self.weaponentity.alpha = 0.25;
-		// sound and screen flash when items starts to run out
-		if (self.invisible_sound < time)
-		{
-			sound(self, CHAN_AUTO, "bludbath/powerup.wav", 0.5, ATTN_IDLE);
-			self.invisible_sound = time + ((random() * 3) + 1);
-		}
-
-
-		if (self.invisible_finished < time + 3)
-		{
-			if (self.invisible_time == 1)
-			{
-				sprint(self, "Cloak of Invisibility is draining\n");
-				stuffcmd (self, "bf\n");
-				sound(self, CHAN_AUTO, "bludbath/powerup.wav", 1, ATTN_NORM);
-				self.invisible_time = time + 1;
-			}
-
-			if (self.invisible_time < time)
-			{
-				self.invisible_time = time + 1;
-				stuffcmd (self, "bf\n");
-			}
-		}
+		if (self.invisible_finished - time <= 7 && floor(self.invisible_finished) * 10 - floor(time * 10) / 5 == floor(floor(self.invisible_finished) * 10 - floor(time * 10) / 5))
+			self.weaponentity.alpha = 1;
+		else
+			self.weaponentity.alpha = 0.25;
 
 		if (self.invisible_finished < time)
 		{   // just stopped
 			self.alpha = self.weaponentity.alpha = 1;
 			self.items = self.items - IT_INVISIBILITY;
 			self.invisible_finished = 0;
-			self.invisible_time = 0;
 		}
 	}
 

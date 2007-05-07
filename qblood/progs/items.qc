@@ -835,10 +835,7 @@ void() powerup_touch =
 		InvenSet(other, INV_DIVING_SUIT, 100);
 	}
 	else if (self.classname == "item_artifact_invisibility")
-	{
-		other.invisible_time = 1;
 		other.invisible_finished = time + 30;
-	}
 	else if (self.classname == "item_artifact_deathmask")
 	{
 		other.invincible_time = 1;
