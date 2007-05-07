@@ -60,7 +60,7 @@ void() Spray_Fire =
 	setsize(newmis, '-1 -1 -1', '1 1 1');
 	setorigin(newmis, W_Origin() +v_forward * 20 + v_right * 2 + v_up * -5);
 
-	newmis.velocity = dir * 550;
+	newmis.velocity = dir * 550 + v_right * (22 * crandom()) + v_up * (22 * crandom());
 	newmis.owner = self.owner;
 	newmis.scale = 0.5;
 	newmis.frame = floor(random() * 3);
