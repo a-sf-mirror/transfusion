@@ -122,7 +122,7 @@ void() Leech_BallFire =
 	setmodel(newmis, "progs/leechball.spr");
 	newmis.skin = 1;
 	setsize(newmis, '0 0 0', '0 0 0');
-	setorigin(newmis, W_Origin() + v_forward * 40 + v_up * -12);
+	setorigin(newmis, W_Origin() + v_forward * 15 + v_up * -12);
 
 	newmis.dmg = 40;
 

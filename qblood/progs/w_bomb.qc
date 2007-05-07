@@ -325,7 +325,7 @@ void() Bomb_Fire =
 	newmis.nextthink = 0.1;
 	newmis.think     = BombThink;
 
-	setorigin(newmis, W_Origin() + v_forward * 15 + v_right * 6);
+	setorigin(newmis, W_Origin() + v_up * -5 + v_right * 4);
 
 	self.owner.player_state = PS_FIRE;
 
