@@ -571,12 +571,11 @@ void() DrawOverheadWeapon =
 		if (self.weapon == IT_VOODOO_DOLL)
 			self.overhead.angles_y = self.angles_y + 180;
 
+		self.overhead.angles_y = 90;
 		if (self.crouch)
-			self.overhead.origin = self.origin + PL_CROUCH_VIEW_OFS + v_up * 15;
+			setorigin(self.overhead, '0 0 5');
 		else
-			self.overhead.origin = self.origin + PL_VIEW_OFS + v_up * 15;
-		self.overhead.scale = 0.6;
-
+			setorigin(self.overhead, '0 0 40');
 		setmodel(self.overhead, g_wep);
 	}
 	else

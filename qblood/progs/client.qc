@@ -1038,9 +1038,11 @@ void() PutClientInServer =
 	spawn_tdeath(self.origin, self);
 
 	self.overhead = spawn();
+	setattachment(self.overhead, self, "");
 	self.overhead.owner = self;
 	self.overhead.solid = SOLID_NOT;
 	self.overhead.movetype = MOVETYPE_NONE;
+	self.overhead.scale = 0.6;
 	self.overhead.reset = SUB_Remove;
 	setmodel(self.overhead, "");
 

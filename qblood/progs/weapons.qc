@@ -793,6 +793,11 @@ float() W_BestWeapon =
 	if (it & IT_LIFE_LEECH)
 		return IT_LIFE_LEECH;
 
+	/* if you only have a pitchfork drawn, you can draw the Napalm Launcher
+		otherwise it won't draw if you run out of ammo of any other weapon */
+	if (self.weapon == IT_PITCHFORK && it & IT_NAPALM_LAUNCHER)
+		return IT_NAPALM_LAUNCHER;
+
 	// 8- Fork
 	return IT_PITCHFORK;
 };
