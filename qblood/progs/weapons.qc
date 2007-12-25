@@ -67,6 +67,21 @@ void() muzzle_remove =
 	return;
 };
 
+void() muzzle_animate =
+{
+	if (self.frame == self.anim_end)
+	{
+		muzzle_remove();
+		return;
+	}
+	else
+	{
+		self.frame = self.frame + 1;
+		self.nextthink = time + 0.1;
+		self.think = muzzle_animate;
+	}
+};
+
 /*
 ================
 muzzleflash
@@ -74,57 +89,101 @@ muzzleflash
 creates the muzzle flash for weapons
 ================
 */
-void() muzzleflash =
+void(float hand) muzzleflash =
 {
-	if (cvar("developer"))
-	{
+	local float has_akimbo;
 	local entity muzzle;
+	has_akimbo = self.owner.akimbo_finished;
 	muzzle = spawn();
-	muzzle.viewmodelforclient = self;
-	muzzle.origin = W_Origin();
+	muzzle.owner = self;
+	muzzle.viewmodelforclient = self.owner;
+	
 	muzzle.solid = SOLID_NOT;
-	muzzle.aiment = self;
-	muzzle.punchangle = self.angles;
-	muzzle.view_ofs = muzzle.origin - self.origin;
-	muzzle.v_angle = muzzle.angles - self.angles;
-
-//hole.movetype = MOVETYPE_FOLLOW; // make the hole follow
-//hole.solid = SOLID_NOT; // MOVETYPE_FOLLOW is always non-solid
-//hole.aiment = bmodel; // make the hole follow bmodel
-//hole.punchangle = bmodel.angles; // the original angles of bmodel
-//hole.view_ofs = hole.origin - bmodel.origin; // relative origin
-//hole.v_angle = hole.angles - bmodel.angles; // relative angles
+	if (has_akimbo)
+	{
+		if (hand == LEFT)
+			setattachment(muzzle, self.weaponentity, "LMuzzle");
+		else
+			setattachment(muzzle, self.weaponentity, "RMuzzle");
+	}
+	else
+		setattachment(muzzle, self.weaponentity, "Muzzle");
 
 	local string sprite;
-	local float offset;
-	if (self.weapon == IT_SAWED_OFF)
+
+	if (self.owner.weapon == IT_FLAREGUN)
 	{
-		sprite = "models/weapons/objects/muzzle_shotgun.spr32";
-		if ((self.player_state == PS_ALTFIRE) && (self.weaponentity.ammo_in_chamber == 2))
-			offset = 0;
+
+	}
+	else if (self.owner.weapon == IT_SAWED_OFF)
+	{
+		if (has_akimbo)
+		{
+			sprite = "models/weapons/objects/muzzle_shotgun.spr32";
+			setmodel(muzzle, sprite);
+			muzzle.scale = 0.45;
+			muzzle.frame = 0;
+			muzzle.anim_end = 1;
+			muzzle.nextthink = time + 0.1;
+			muzzle.think = muzzle_animate;
+			muzzle.th_die = muzzle_remove;
+		}
 		else
 		{
-			if (self.weaponentity.ammo_in_chamber == 2)
-				offset = -4;
+			if ((self.owner.player_state == PS_ALTFIRE) && (self.weaponentity.ammo_in_chamber == 2))
+			{
+				muzzle.scale = 0.65;
+				setattachment(muzzle, self.weaponentity, "Muzzle_L");
+				setorigin(muzzle, self.weaponentity.origin + v_right * -13 + v_up * -4);
+			}
 			else
-				offset = 4;
+			{
+				if (self.weaponentity.ammo_in_chamber == 2)
+				{
+					setattachment(muzzle, self.weaponentity, "Muzzle_L");
+					setorigin(muzzle, '0 0 0' + v_right * -10.6);
+				}
+				else
+				{
+					setattachment(muzzle, self.weaponentity, "Muzzle_R");
+					setorigin(muzzle, '0 0 0' + v_right * -10.4);
+				}
+				muzzle.scale = 0.45;
+			}
 		}
-		//muzzle.scale = 0.4;
+		sprite = "models/weapons/objects/muzzle_shotgun.spr32";
 		setmodel(muzzle, sprite);
-		setorigin(muzzle, W_Origin() + v_forward * 100 + v_right * offset);
-		muzzle.nextthink = time + 0.15;
-		muzzle.think = muzzle_remove;
-		//muzzle.think = muzzleflash_animate;
-		//effect(W_Origin() + v_forward * 100 + v_right * offset, sprite, 0, 2, 20);
+		muzzle.frame = 0;
+		muzzle.anim_end = 1;
+		muzzle.nextthink = time + 0.1;
+		muzzle.think = muzzle_animate;
+		muzzle.th_die = muzzle_remove;
 	}
-	else if (self.weapon == IT_TOMMYGUN)
+	else if (self.owner.weapon == IT_TOMMYGUN)
 	{
-		setorigin(muzzle, self.origin + v_forward * 50 + v_up * 30);
 		sprite = "models/weapons/objects/muzzle_tommy.spr32";
-		effect(W_Origin() + v_forward * 75 + v_up * 8 + v_right * 8, sprite, 0, 2, 20);
+		setmodel(muzzle, sprite);
+		muzzle.alpha = 0.5;
+		if (!has_akimbo)
+			muzzle.scale = 0.6;
+		else
+			muzzle.scale = 0.4;
+		muzzle.frame = floor((random() * 10) / 2.5);
+		muzzle.nextthink = time + 0.1;
+		muzzle.think = muzzle_remove;
+	}
+	else if (self.owner.weapon == IT_NAPALM_LAUNCHER)
+	{
+		sprite = "models/weapons/objects/muzzle_napalm_2.spr32";
+		setmodel(muzzle, sprite);
+		//muzzle.scale = 0.65;
+		muzzle.frame = 0;
+		muzzle.anim_end = 1;
+		muzzle.nextthink = time + 0.1;
+		muzzle.think = muzzle_animate;
+		muzzle.th_die = muzzle_remove;
 	}
 	//FIXME - add other weapons, and fix shotgun
-	}
 };
 
 /*

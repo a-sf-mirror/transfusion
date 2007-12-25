@@ -241,7 +241,7 @@ void() Napalm_Fire =
 		newmis.think = SUB_Remove;
 		newmis.reset = SUB_Remove;
 	}
-	muzzleflash();
+	muzzleflash(RIGHT);
 	if (!(self.owner.flags & FL_INFINATE_AMMO))
 		self.owner.currentammo = self.owner.ammo_rockets;
 	setorigin(newmis, W_Origin() + v_forward * 18 + v_right * 3 + v_up * -8);

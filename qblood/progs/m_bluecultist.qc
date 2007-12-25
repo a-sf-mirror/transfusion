@@ -66,7 +66,7 @@ void() bluecultist_fireTesla =
 	local   vector  org;
 	local   vector  dir;
 
-	muzzleflash();
+	muzzleflash(RIGHT);
 
 	sound(self, CHAN_WEAPON, "weapons/tesla/tessngfr.wav", 1, ATTN_NORM);
 

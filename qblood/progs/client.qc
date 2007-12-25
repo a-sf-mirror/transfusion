@@ -222,7 +222,7 @@ When the player presses attack or jump, change to the next level
 void() IntermissionThink =
 {
 	if (time < intermission_exittime)
-	return;
+		return;
 
 	if (!self.button0 && !self.button3 && !self.button2 && !self.button4)
 		return;
@@ -350,9 +350,7 @@ void(string s) SV_ParseClientCommand =
 				return;
 			if (args == 2) //one word cheat codes
 			{
-				if (argv(1) == "bod")
-					Player_BrinkOfDeath(self, world);
-				else if (argv(1) == "mpkfa" || argv(1) == "nocapinmyass")
+				if (argv(1) == "mpkfa" || argv(1) == "nocapinmyass")
 				{
 					if (!(self.flags & FL_GODMODE) || argv(1) == "nocapinmyass")
 					{
@@ -680,7 +678,7 @@ void(entity player, float fragsToAdd) Cl_UpdatePlayerFrags =
 {
 	// No frag until the warmup is finished
 	if (!warmup_done)
-	return;
+		return;
 
 	player.frags = player.frags + fragsToAdd;
 

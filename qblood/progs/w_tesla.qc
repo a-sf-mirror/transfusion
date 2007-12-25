@@ -55,7 +55,7 @@ void() Tesla_JoltTouch =
 {
 	// Don't explode on owner
 	if (other == self.owner)
-	return;
+		return;
 
 	// If we go out of the map
 	if (pointcontents(self.origin) == CONTENT_SKY)
@@ -161,7 +161,7 @@ void() Tesla_Fire =
 	if (self.owner.ammo_cells < akimboFactor)
 		return;
 
-	muzzleflash();
+	muzzleflash(RIGHT);
 
 	self.owner.punchangle_x = -2;
 

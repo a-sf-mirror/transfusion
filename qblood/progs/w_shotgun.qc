@@ -411,7 +411,7 @@ void() shotgun_animate =
 	{
 		if ((self.weaponentity.frame == SHOTGUN_FIRER_START) || (self.weaponentity.frame == SHOTGUN_FIREL_START))
 		{
-			muzzleflash();
+			muzzleflash(RIGHT);
 			Shotgun_Fire();
 			self.weaponentity.ammo_in_chamber = self.weaponentity.ammo_in_chamber - 1;
 			if (self.items & IT_GUNS_AKIMBO)
@@ -434,8 +434,16 @@ void() shotgun_animate =
 	}
 	else if (self.weaponentity.anim_type == AKIMBO_FIRE)
 	{
-		if (self.weaponentity.frame == SHOTGUN_AKIMBO_FIRE_START || self.weaponentity.frame == SHOTGUN_AKIMBO_FIRE_START + 2)
+		if (self.weaponentity.frame == SHOTGUN_AKIMBO_FIRE_START)
+		{
+			muzzleflash(LEFT);
 			Shotgun_Fire();
+		}
+		else if (self.weaponentity.frame == SHOTGUN_AKIMBO_FIRE_START + 2)
+		{
+			muzzleflash(RIGHT);
+			Shotgun_Fire();
+		}
 		else if (self.weaponentity.frame == SHOTGUN_AKIMBO_FIRE_END)
 		{
 			self.owner.player_state = PS_IDLE;
@@ -449,7 +457,7 @@ void() shotgun_animate =
 		{
 			if (self.weaponentity.ammo_in_chamber < 2)
 				self.player_state = PS_FIRE;
-			muzzleflash();
+			muzzleflash(RIGHT);
 			Shotgun_Fire();
 			self.weaponentity.ammo_in_chamber = self.weaponentity.ammo_in_chamber - self.owner.player_state;
 		}

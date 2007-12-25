@@ -34,7 +34,7 @@ void() tommy_animate;
 
 #define TOMMY_IDLE_TIME			0.1
 #define TOMMY_DRAW_TIME			0.3
-#define TOMMY_FIRE_TIME			0.13
+#define TOMMY_FIRE_TIME			0.064
 #define TOMMY_ALTFIRE_TIME		1.0
 #define TOMMY_HOLSTER_TIME		0.3
 
@@ -177,8 +177,10 @@ void() Tommy_Fire =
 
 		orig = W_Origin() + v_right * 4;
 		FireBullets(orig, dir, 1, damage, spread);
+		muzzleflash(RIGHT);
 		orig = W_Origin() - v_right * 4;
 		FireBullets(orig, dir, 1, damage, spread);
+		muzzleflash(LEFT);
 
 		// If we don't have enough ammo anymore, drop the akimbo mode for now
 		if (self.owner.currentammo < 2)
@@ -186,11 +188,10 @@ void() Tommy_Fire =
 	}
 	else
 	{
-		// Spawn 1 shell every 2 shots
-		if ((self.weaponentity.frame == TOMMY_FIRE_START) || (self.weaponentity.frame >= TOMMY_ALTFIRE_START && self.weaponentity.frame / 2 == floor(self.weaponentity.frame / 2))) // FIXME PS_ALTFIRE && &1
-			Tommy_SpawnShell(RIGHT);
+		Tommy_SpawnShell(RIGHT);
 		orig = W_Origin() + v_right * 4;
 		FireBullets(orig, dir, 1, damage, spread);
+		muzzleflash(RIGHT);
 	}
 };
 
@@ -281,6 +282,7 @@ void() Tommy_UpdateView =
 
 void() Tommy_Idle =
 {
+	self.owner.player_state = PS_IDLE;
 	self.weaponentity.anim_type = IDLE;
 	self.weaponentity.frame = TOMMY_IDLE;
 	self.weaponentity.nextthink = time;
@@ -360,20 +362,18 @@ void() tommy_animate =
 		{
 			local float displacement;
 			displacement = crandom() / 1.5;
-			self.weaponentity.origin = '0 0 0' + v_forward * (displacement * 1.5) + v_up * (displacement * 1.5) - v_right * displacement;
+			self.weaponentity.origin = '0 0 0' + v_forward * (displacement * 1.5) + v_up * (displacement * 2.25) - v_right * displacement;
 		}
 	}
 
 	if (self.weaponentity.anim_type == FIRE)
 	{
 		if (!self.owner.button0 && self.weaponentity.attack_finished <= time)
-		{
-			self.owner.player_state = PS_IDLE;
 			Tommy_Idle();
-		}
-		muzzleflash();
-		Tommy_Fire();
-		self.owner.impulse = IMP_NONE;
+		if (self.weaponentity.frame == TOMMY_FIRE_START)
+			Tommy_Fire();
+		else
+			Tommy_Idle();
 	}
 	else if (self.weaponentity.anim_type == ALTFIRE)
 	{
@@ -384,7 +384,6 @@ void() tommy_animate =
 		}
 		else if (self.weaponentity.frame == TOMMY_ALTFIRE_END)
 			self.weaponentity.attack_finished = time + TOMMY_ALTFIRE_TIME;
-		muzzleflash();
 		Tommy_Fire();
 		self.owner.impulse = IMP_NONE;
 	}

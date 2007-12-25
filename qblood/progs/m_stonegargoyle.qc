@@ -100,7 +100,7 @@ void(vector misorig) stonegargoyle_eye_shot =
 	local vector vec;
 
 	sound(self, CHAN_WEAPON, "stonegargoyle/sargblst.wav", 1, ATTN_NORM);
-	muzzleflash();
+	muzzleflash(RIGHT);
 
 	newmis = spawn();
 	vec = (self.enemy.origin - self.origin);

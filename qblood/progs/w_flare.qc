@@ -179,7 +179,7 @@ void() AltFlareTouch =
 	}
 
 	// Explode!
-	muzzleflash();
+	//muzzleflash(RIGHT);
 
 	// Do the damage.
 	BurnRadius(self, 120, self.dmg, self.cnt, other);
@@ -324,7 +324,7 @@ void(float hand) Flare_Fire =
 	local vector orig;
 	makevectors(self.owner.v_angle);
 
-	mspeed = 1000;
+	mspeed = 1300;
 	dir = aim(self.owner, mspeed);
 
 	if (self.owner.items & IT_GUNS_AKIMBO)
@@ -555,7 +555,7 @@ void() flare_animate =
 			self.owner.frame = PLAYER_ATTACK_END;
 		if (self.weaponentity.frame == FLARE_FIRE_START)
 		{
-			muzzleflash();
+			muzzleflash(RIGHT);
 			Flare_Fire(RIGHT);
 		}
 		if (self.weaponentity.frame == FLARE_FIRE_END)
@@ -575,12 +575,12 @@ void() flare_animate =
 			self.owner.frame = PLAYER_ATTACK_END;
 		if (self.weaponentity.frame == FLARE_AKIMBO_FIRE_START)
 		{
-			muzzleflash();
+			muzzleflash(RIGHT);
 			Flare_Fire(RIGHT);
 		}			
 		else if (self.weaponentity.frame == FLARE_AKIMBO_FIRE_START + 5)
 		{
-			muzzleflash();
+			muzzleflash(LEFT);
 			Flare_Fire(LEFT);
 		}
 		if (self.weaponentity.frame == FLARE_AKIMBO_FIRE_END)

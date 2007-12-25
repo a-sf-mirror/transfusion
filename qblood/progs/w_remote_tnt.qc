@@ -291,14 +291,14 @@ void() remote_animate =
 	self.weaponentity.nextthink = time + (self.weaponentity.anim_time / self.weaponentity.anim_end_num);
 	self.weaponentity.think = remote_animate;
 
-	if (self.weaponentity.skin == 3)
+	if (self.weaponentity.skin == 4)
 	{
-		self.weaponentity.skin = 2;
+		self.weaponentity.skin = 3;
 		self.weaponentity.ammo_in_chamber = 1; //hack, using another weapons variable, indicating backwards animation
 	}
-	else if (!self.weaponentity.skin) // == 0
+	else if (self.weaponentity.skin == 1)
 	{
-		self.weaponentity.skin = 1;
+		self.weaponentity.skin = 2;
 		self.weaponentity.ammo_in_chamber = 0; //animation is going forward when 0
 	}
 	else if (!self.weaponentity.ammo_in_chamber)

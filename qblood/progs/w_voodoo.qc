@@ -44,7 +44,6 @@ void() voodoo_animate;
 
 #define VOODOO_IDLE_TIME			0.1
 #define VOODOO_DRAW_TIME			0.3
-#define VOODOO_FIRE_TIME			0.5	//This is only for attack_finished
 #define VOODOO_FIRE_STOMACH_TIME	0.4	//used in combination with FIRE_TIME keeps animation at
 #define VOODOO_FIRE_EYE_TIME		0.4 //the correct speed and all fire modes at the same pace
 #define VOODOO_FIRE_SHOULDER_TIME	0.4
@@ -115,25 +114,29 @@ void() Voodoo_Stab =
 {
 	local float random_stab_type;
 
-	random_stab_type = random()*4;
+	random_stab_type = random()*100;
 	self.weaponentity.stab_damage = random();
-	if (random_stab_type >= 3) // Stab Groin
+	if (random_stab_type >= 90) // Stab Groin
 	{
+		self.weaponentity.attack_finished = time + VOODOO_FIRE_GROIN_TIME;
 		self.weaponentity.stab_type = STAB_GROIN;
 		self.weaponentity.stab_damage = self.weaponentity.stab_damage*49 + 4;
 	}
-	else if (random_stab_type >= 2) // Stab Shoulder (supposed to make player lower weapon in MP mode)
+	else if (random_stab_type >= 70) // Stab Shoulder (supposed to make player lower weapon in MP mode)
 	{
+		self.weaponentity.attack_finished = time + VOODOO_FIRE_SHOULDER_TIME;
 		self.weaponentity.stab_type = STAB_SHOULDER;
 		self.weaponentity.stab_damage = self.weaponentity.stab_damage*9 + 4;
 	}
-	else if (random_stab_type >= 1) // Stab Stomach
+	else if (random_stab_type >= 10) // Stab Stomach
 	{
+		self.weaponentity.attack_finished = time + VOODOO_FIRE_STOMACH_TIME;
 		self.weaponentity.stab_type = STAB_STOMACH;
 		self.weaponentity.stab_damage = self.weaponentity.stab_damage*17 + 4;
 	}
-	else if (random_stab_type < 1) // Stab Eye (supposed to blind player in MP mode)
+	else if (random_stab_type < 10) // Stab Eye (supposed to blind player in MP mode)
 	{
+		self.weaponentity.attack_finished = time + VOODOO_FIRE_EYE_TIME;
 		self.weaponentity.stab_type = STAB_EYE;
 		self.weaponentity.stab_damage = self.weaponentity.stab_damage*11 + 4;
 	}
@@ -182,7 +185,6 @@ void() Voodoo_Attack =
 			self.player_state = PS_FIRE;
 
 			Voodoo_Stab();
-			self.weaponentity.attack_finished = time + VOODOO_FIRE_TIME;
 			self.weaponentity.anim_type = FIRE;
 		}
 		self.weaponentity.nextthink = time;
@@ -287,28 +289,28 @@ void() voodoo_animate =
 				self.weaponentity.anim_time = VOODOO_FIRE_STOMACH_TIME;
 				self.weaponentity.frame = VOODOO_FIRE_STOMACH_START;
 			}
-			if (self.weaponentity.stab_type == STAB_EYE)
+			else if (self.weaponentity.stab_type == STAB_EYE)
 			{
 				self.weaponentity.anim_end = VOODOO_FIRE_EYE_END;
 				self.weaponentity.anim_end_num = VOODOO_FIRE_EYE_END - VOODOO_FIRE_EYE_START + 1;
 				self.weaponentity.anim_time = VOODOO_FIRE_EYE_TIME;
 				self.weaponentity.frame = VOODOO_FIRE_EYE_START;
 			}
-			if (self.weaponentity.stab_type == STAB_SHOULDER)
+			else if (self.weaponentity.stab_type == STAB_SHOULDER)
 			{
 				self.weaponentity.anim_end = VOODOO_FIRE_SHOULDER_END;
 				self.weaponentity.anim_end_num = VOODOO_FIRE_SHOULDER_END - VOODOO_FIRE_SHOULDER_START + 1;
 				self.weaponentity.anim_time = VOODOO_FIRE_SHOULDER_TIME;
 				self.weaponentity.frame = VOODOO_FIRE_SHOULDER_START;
 			}
-			if (self.weaponentity.stab_type == STAB_GROIN)
+			else if (self.weaponentity.stab_type == STAB_GROIN)
 			{
 				self.weaponentity.anim_end = VOODOO_FIRE_GROIN_END;
 				self.weaponentity.anim_end_num = VOODOO_FIRE_GROIN_END - VOODOO_FIRE_GROIN_START + 1;
 				self.weaponentity.anim_time = VOODOO_FIRE_GROIN_TIME;
 				self.weaponentity.frame = VOODOO_FIRE_GROIN_START;
 			}
-			if (self.weaponentity.stab_type == STAB_THUMB)
+			else if (self.weaponentity.stab_type == STAB_THUMB)
 			{
 				self.weaponentity.anim_end = VOODOO_FIRE_THUMB_END;
 				self.weaponentity.anim_end_num = VOODOO_FIRE_THUMB_END - VOODOO_FIRE_THUMB_START + 1;

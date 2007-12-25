@@ -87,7 +87,7 @@ void() Leech_BallFire =
 	local vector spread;
 
 	self.owner.punchangle_x = -2;
-	muzzleflash();
+	muzzleflash(RIGHT);
 
 	newmis = spawn();
 
