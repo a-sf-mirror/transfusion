@@ -23,7 +23,7 @@ void(entity bomb, entity attacker, float rad, float dflags, entity ignore, strin
 
 //============================================================================
 
-void() precache_weapons =
+void() PrecacheWeapons =
 {
 	precache_pitchfork();
 	precache_flaregun();
@@ -61,19 +61,11 @@ muzzleflash_animate
 runs the animation and removal of completed muzzle flashes
 ================
 */
-void() muzzle_remove =
-{
-	remove(self);
-	return;
-};
-
+void() muzzle_remove = { remove(self); };
 void() muzzle_animate =
 {
 	if (self.frame == self.anim_end)
-	{
 		muzzle_remove();
-		return;
-	}
 	else
 	{
 		self.frame = self.frame + 1;
@@ -504,8 +496,7 @@ void(entity client) PsychoCaleb =
 {
 	// If we're already talking
 	if (client.voice_finished >= time)
-	return;
-
+		return;
 	if (random() > 0.15)
 		return;     // Only 15% chance per call.
 	if (client.health <= 0 || client.deadflag)

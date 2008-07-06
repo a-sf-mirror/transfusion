@@ -59,33 +59,15 @@ void() SetNewParms =
 
 void() InitPlayerCharacteristics =
 {
-	self.items				= IT_PITCHFORK;
-	self.items2				= 0;
-	self.health				= 100;
-	self.ammo_flare			= 0;
-	self.ammo_shells		= 0;
-	self.ammo_nails			= 0;
-	self.ammo_rockets		= 0;
-	self.ammo_tnt_bundle	= 0;
-	self.ammo_tnt_proxy		= 0;
-	self.ammo_tnt_remote	= 0;
-	self.ammo_spray			= 0;
-	self.ammo_cells			= 0;
-	self.ammo_voodoo		= 0;
-	self.ammo_leech			= 0;
-	self.weapon				= IT_PITCHFORK;
-	self.armor_fire			= 0;
-	self.armor_body			= 0;
-	self.armor_spirit		= 0;
-	self.inven1				= 0;
-	self.inven2				= 0;
-	self.it_select			= 0;
-	self.item_boots			= 0;
-	self.item_crystalball	= 0;
-	self.item_medkit		= 0;
-	self.item_beastvision	= 0;
-	self.item_divingsuit	= 0;
-	self.active_inventory	= 0;
+	self.health = 100;
+	self.items = IT_PITCHFORK;
+	self.weapon = IT_PITCHFORK;
+	self.items2 = self.ammo_flare = self.ammo_shells = self.ammo_nails = self.ammo_rockets =
+	self.ammo_tnt_bundle = self.ammo_tnt_proxy = self.ammo_tnt_remote = self.ammo_spray =
+	self.ammo_cells = self.ammo_voodoo = self.ammo_leech = self.armor_fire = self.armor_body =
+	self.armor_spirit = self.inven1 = self.inven2 = self.it_select = self.item_boots =
+	self.item_crystalball = self.item_medkit = self.item_beastvision = self.item_divingsuit =
+	self.active_inventory = 0;
 
 	// In BloodBath, all players are given all keys
 	if (gametype == GT_BLOODBATH)
@@ -98,31 +80,19 @@ void() InitPlayerCharacteristics =
 		self.armor_body = 50;
 		self.armor_fire = 50;
 		self.armor_spirit = 50;
-		if (available_weapons & IT_FLAREGUN)
-			self.ammo_flare = self.ammo_flare + 10;
-		if (available_weapons & IT_SAWED_OFF)
-			self.ammo_shells = self.ammo_shells + 15;
-		if (available_weapons & IT_TOMMYGUN)
-			self.ammo_nails = self.ammo_nails + 50;
-		if (available_weapons & IT_NAPALM_LAUNCHER)
-			self.ammo_rockets = self.ammo_rockets + 5;
-		if (available_weapons & IT_TNT)
-			self.ammo_tnt_bundle = self.ammo_tnt_bundle + 5;
-		if (available_weapons & IT_PROXIMITY_BOMB)
-			self.ammo_tnt_proxy = self.ammo_tnt_proxy + 2;
-		if (available_weapons & IT_REMOTE_DETONATOR)
-			self.ammo_tnt_remote = self.ammo_tnt_remote + 5;
-		if (available_weapons & IT_SPRAY_CAN)
-			self.ammo_spray = self.ammo_spray + 50;
-		if (available_weapons & IT_TESLA_CANNON)
-			self.ammo_cells = self.ammo_cells + 40;
-		if (available_weapons & IT_VOODOO_DOLL)
-			self.ammo_voodoo = self.ammo_voodoo + 100;
-		if (available_weapons & IT_LIFE_LEECH)
-			self.ammo_leech = self.ammo_leech + 30;
+		self.armorvalue = self.armor_body;
+		if (available_weapons & IT_FLAREGUN)			self.ammo_flare = 10;
+		if (available_weapons & IT_SAWED_OFF)			self.ammo_shells = 15;
+		if (available_weapons & IT_TOMMYGUN)			self.ammo_nails = 50;
+		if (available_weapons & IT_NAPALM_LAUNCHER)		self.ammo_rockets = 5;
+		if (available_weapons & IT_TNT)					self.ammo_tnt_bundle = 5;
+		if (available_weapons & IT_PROXIMITY_BOMB)		self.ammo_tnt_proxy = 2;
+		if (available_weapons & IT_REMOTE_DETONATOR)	self.ammo_tnt_remote = 5;
+		if (available_weapons & IT_SPRAY_CAN)			self.ammo_spray = 50;
+		if (available_weapons & IT_TESLA_CANNON)		self.ammo_cells = 40;
+		if (available_weapons & IT_VOODOO_DOLL)			self.ammo_voodoo = 100;
+		if (available_weapons & IT_LIFE_LEECH)			self.ammo_leech = 30;
 	}
-
-	self.armorvalue = self.armor_body;
 };
 
 /*
@@ -1947,6 +1917,38 @@ void() ClientDisconnect =
 
 /*
 ===========
+BuildDeathString
+
+build the deathstring, one part message
+============
+*/
+void(entity attacker, string deathnoise, string deathstring1) BuildDeathString =
+{
+	self.noise1 = deathnoise;
+	deathstring1 = deathstring1;
+	bprint3(attacker.netname, deathstring1, self.netname);
+	bprint("\n");
+};
+
+/*
+===========
+BuildDeathString2
+
+build the deathstring, 2 part message
+============
+*/
+void(entity attacker, string deathnoise, string deathstring1, string deathstring2) BuildDeathString2 =
+{
+	self.noise1 = deathnoise;
+	deathstring1 = deathstring1;
+	deathstring2 = deathstring2;
+	bprint3(attacker.netname, deathstring1, self.netname);
+	bprint(deathstring2);
+	bprint("\n");
+};
+
+/*
+===========
 ClientObituary
 
 called when a player dies (self is the victim)
@@ -1955,7 +1957,7 @@ called when a player dies (self is the victim)
 void(entity attacker) ClientObituary =
 {
 	local   float rnum;
-	local   string deathstring, deathstring2;
+	local   string deathstring;
 
 	rnum = random();
 
@@ -2056,327 +2058,61 @@ void(entity attacker) ClientObituary =
 		{
 			// no weapon associations, just random message and Announcer voice
 			Cl_UpdatePlayerFrags(attacker, 1);
-
 			rnum = random()*54;
-
-			deathstring2 = string_null;
-
-			// Beaten like a Cur
-			if (rnum <= 1)
-			{
-				deathstring = " beat ";
-				deathstring2 = " like a cur";
-				self.noise1 = "thevoice/vo39.wav";
-			}
-			// Bobbettized!
-			else if (rnum <= 2)
-			{
-				deathstring = " bobbettized ";
-				self.noise1 = "thevoice/vo31.wav";
-			}
-			// Destroyed!
-			else if (rnum <= 3)
-			{
-				deathstring = " destroyed ";
-				self.noise1 = "thevoice/vo24.wav";
-			}
-			// Dog meat
-			else if (rnum <= 4)
-			{
-				deathstring = " butchered ";
-				deathstring2 = " into dog meat";
-				self.noise1 = "thevoice/vo36.wav";
-			}
-			// Excellent!
-			else if (rnum <= 5)
-			{
-				deathstring = " showed his excellence to ";
-				self.noise1 = "thevoice/vo44.wav";
-			}
-			// Fine work
-			else if (rnum <= 6)
-			{
-				deathstring = " made a fine work of ";
-				self.noise1 = "thevoice/vo22.wav";
-			}
-			// Good one
-			else if (rnum <= 7)
-			{
-				deathstring = " showed ";
-				deathstring2 = " how good he is";
-				self.noise1 = "thevoice/vo20.wav";
-			}
-			// He shoots! He scores!
-			else if (rnum <= 8)
-			{
-				deathstring = " scored on ";
-				self.noise1 = "thevoice/vo33.wav";
-			}
-			// Hosed!
-			else if (rnum <= 8)
-			{
-				deathstring = " hosed ";
-				self.noise1 = "thevoice/vo25.wav";
-			}
-			// Humiliated!
-			else if (rnum <= 10)
-			{
-				deathstring = " humiliated ";
-				self.noise1 = "thevoice/vo26.wav";
-			}
-			// Lunch meat!
-			else if (rnum <= 11)
-			{
-				deathstring = " made lunch meat with ";
-				self.noise1 = "thevoice/vo21.wav";
-			}
-			// Pass the chili!
-			else if (rnum <= 12)
-			{
-				deathstring = " passed the chili to ";
-				self.noise1 = "thevoice/vo29.wav";
-			}
-			// Punishment delivered
-			else if (rnum <= 13)
-			{
-				deathstring = " punished ";
-				self.noise1 = "thevoice/vo30.wav";
-			}
-			// Ripped 'em loose
-			else if (rnum <= 14)
-			{
-				deathstring = " ripped ";
-				self.noise1 = "thevoice/vo38.wav";
-			}
-			// Sent to HELL!
-			else if (rnum <= 15)
-			{
-				deathstring = " sent ";
-				deathstring2 = " to hell!";
-				self.noise1 = "thevoice/vo28.wav";
-			}
-			// Snuffed!
-			else if (rnum <= 16)
-			{
-				deathstring = " snuffed ";
-				self.noise1 = "thevoice/vo41.wav";
-			}
-			// Spillage!
-			else if (rnum <= 17)
-			{
-				deathstring = " spilt ";
-				deathstring2 = "'s blood";
-				self.noise1 = "thevoice/vo34.wav";
-			}
-			// Sprayed!
-			else if (rnum <= 18)
-			{
-				deathstring = " sprayed ";
-				self.noise1 = "thevoice/vo35.wav";
-			}
-			// Stiffed!
-			else if (rnum <= 19)
-			{
-				deathstring = " stiffed ";
-				self.noise1 = "thevoice/vo32.wav";
-			}
-			// Talented!
-			else if (rnum <= 20)
-			{
-				deathstring = " dazzled ";
-				deathstring2 = " with his talent";
-				self.noise1 = "thevoice/vo19.wav";
-			}
-			// Toasted!
-			else if (rnum <= 21)
-			{
-				deathstring = " toasted ";
-				self.noise1 = "thevoice/vo27.wav";
-			}
-			// Vaporized!
-			else if (rnum <= 22)
-			{
-				deathstring = " vaporized ";
-				self.noise1 = "thevoice/vo43.wav";
-			}
-			// Well done!
-			else if (rnum <= 23)
-			{
-				deathstring = " did well with ";
-				self.noise1 = "thevoice/vo23.wav";
-			}
-			// Whipped and creamed!
-			else if (rnum <= 24)
-			{
-				deathstring = " whipped and creamed ";
-				self.noise1 = "thevoice/vo40.wav";
-			}
-			// Scrotum separation
-			else if (rnum <= 25)
-			{
-				deathstring = " made ";
-				deathstring2 = " suffer scrotum separation";
-				self.noise1 = "thevoice/vo9.wav";
-			}
-			// Excrement
-			else if (rnum <= 26)
-			{
-				deathstring = " turned ";
-				deathstring2 = " into excrement";
-				self.noise1 = "thevoice/vo7.wav";
-			}
-			// Hamburger
-			else if (rnum <= 27)
-			{
-				deathstring = " turned ";
-				deathstring2 = " into hamburger";
-				self.noise1 = "thevoice/vo8.wav";
-			}
-			else if (rnum <= 28)
-			{
-				deathstring = " vented ";
-				deathstring2 = "'s spleen";
-				self.noise1 = "thevoice/vo42.wav";
-			}
-			else if (rnum <= 29)
-			{
-				deathstring = " body bagged ";
-				self.noise1 = "thevoice/vo10.wav";
-			}
-			else if (rnum <= 30)
-			{
-				deathstring = " boned ";
-				deathstring2 = " like a fish!";
-				self.noise1 = "thevoice/boned.wav";
-			}
-			else if (rnum <= 31)
-			{
-				deathstring = " gave ";
-				deathstring2 = " Anal Justice!";
-				self.noise1 = "thevoice/justice.wav";
-			}
-			else if (rnum <= 32)
-			{
-				deathstring = " hurt ";
-				deathstring2 = " real bad!";
-				self.noise1 = string_null;
-			}
-			else if (rnum <= 33)
-			{
-				deathstring = " ripped ";
-				deathstring2 = " a new orifice!";
-				self.noise1 = "thevoice/ripped.wav";
-			}
-			else if (rnum <= 34)
-			{
-				deathstring = " castrated ";
-				self.noise1 = "thevoice/castra.wav";
-			}
-			else if (rnum <= 35)
-			{
-				deathstring = " creamed ";
-				self.noise1 = "thevoice/creamed.wav";
-			}
-			else if (rnum <= 36)
-			{
-				deathstring = " decimated ";
-				self.noise1 = "thevoice/decimat.wav";
-			}
-			else if (rnum <= 37)
-			{
-				deathstring = " destroyed ";
-				self.noise1 = "thevoice/destro.wav";
-			}
-			else if (rnum <= 38)
-			{
-				deathstring = " diced ";
-				self.noise1 = "thevoice/diced.wav";
-			}
-			else if (rnum <= 39)
-			{
-				deathstring = " disembowled ";
-				self.noise1 = "thevoice/disembo.wav";
-			}
-			else if (rnum <= 40)
-			{
-				deathstring = " flattened ";
-				self.noise1 = "thevoice/flatte.wav";
-			}
-			else if (rnum <= 41)
-			{
-				deathstring = " killed ";
-				self.noise1 = "thevoice/killed.wav";
-			}
-			else if (rnum <= 42)
-			{
-				deathstring = " gave AnAl MaDnEsS to ";
-				self.noise1 = "thevoice/madness.wav";
-			}
-			else if (rnum <= 43)
-			{
-				deathstring = " massacred ";
-				self.noise1 = "thevoice/massacr.wav";
-			}
-			else if (rnum <= 44)
-			{
-				deathstring = " made mincemeat out of ";
-				self.noise1 = "thevoice/mincmeat.wav";
-			}
-			else if (rnum <= 45)
-			{
-				deathstring = " mutilated ";
-				self.noise1 = "thevoice/mutila.wav";
-			}
-			else if (rnum <= 46)
-			{
-				deathstring = " reamed ";
-				self.noise1 = "thevoice/reamed.wav";
-			}
-			else if (rnum <= 47)
-			{
-				deathstring = " shat upon ";
-				self.noise1 = "thevoice/vo14.wav";
-			}
-			else if (rnum <= 48)
-			{
-				deathstring = " slaughtered ";
-				self.noise1 = "thevoice/slaught.wav";
-			}
-			else if (rnum <= 49)
-			{
-				deathstring = " sliced ";
-				self.noise1 = "thevoice/sliced.wav";
-			}
-			else if (rnum <= 50)
-			{
-				deathstring = " smashed ";
-				self.noise1 = "thevoice/smashed.wav";
-			}
-			else if (rnum <= 51)
-			{
-				deathstring = " sodomized ";
-				self.noise1 = "thevoice/sodomiz.wav";
-			}
-			else if (rnum <= 52)
-			{
-				deathstring = " splattered ";
-				self.noise1 = "thevoice/splatt.wav";
-			}
-			else if (rnum <= 53)
-			{
-				deathstring = " throttled ";
-				self.noise1 = "thevoice/throttl.wav";
-			}
-			else
-			{
-				deathstring = " wasted ";
-				self.noise1 = "thevoice/wasted.wav";
-			}
-
-			bprint3(attacker.netname, deathstring, self.netname);
-			if (deathstring2)
-				bprint(deathstring2);
-			bprint("\n");
+			if (rnum <= 1) BuildDeathString2(attacker, "thevoice/vo39.wav", " beat ", " like a cur"); // Beaten like a Cur
+			else if (rnum <= 2) BuildDeathString(attacker, "thevoice/vo31.wav", " bobbettized "); // Bobbettized!
+			else if (rnum <= 3) BuildDeathString(attacker, "thevoice/vo24.wav", " destroyed "); // Destroyed!
+			else if (rnum <= 4) BuildDeathString2(attacker, "thevoice/vo36.wav", " butchered ", " into dog meat"); // Dog meat
+			else if (rnum <= 5) BuildDeathString(attacker, "thevoice/vo44.wav", " showed his excellence to "); // Excellent!
+			else if (rnum <= 6) BuildDeathString(attacker, "thevoice/vo22.wav", " made fine work of "); // Fine work
+			else if (rnum <= 7) BuildDeathString2(attacker, "thevoice/vo20.wav", " showed ", " how good he is"); // Good one
+			else if (rnum <= 8) BuildDeathString(attacker, "thevoice/vo33.wav", " scored on "); // He shoots! He scores!
+			else if (rnum <= 8) BuildDeathString(attacker, "thevoice/vo25.wav", " hosed "); // Hosed!
+			else if (rnum <= 10) BuildDeathString(attacker, "thevoice/vo26.wav", " humiliated "); // Humiliated!
+			else if (rnum <= 11) BuildDeathString(attacker, "thevoice/vo21.wav", " made lunch meat with "); // Lunch meat!
+			else if (rnum <= 12) BuildDeathString(attacker, "thevoice/vo29.wav", " passed the chili to "); // Pass the chili!
+			else if (rnum <= 13) BuildDeathString(attacker, "thevoice/vo30.wav", " punished "); // Punishment delivered
+			else if (rnum <= 14) BuildDeathString(attacker, "thevoice/vo38.wav", " ripped "); // Ripped 'em loose
+			else if (rnum <= 15) BuildDeathString2(attacker, "thevoice/vo28.wav", " sent ", " to hell!"); // Sent to HELL!
+			else if (rnum <= 16) BuildDeathString(attacker, "thevoice/vo41.wav", " snuffed "); // Snuffed!
+			else if (rnum <= 17) BuildDeathString2(attacker, "thevoice/vo34.wav", " split ", "'s blood"); // Spillage!
+			else if (rnum <= 18) BuildDeathString(attacker, "thevoice/vo35.wav", " sprayed "); // Sprayed!
+			else if (rnum <= 19) BuildDeathString(attacker, "thevoice/vo32.wav", " stiffed "); // Stiffed!
+			else if (rnum <= 20) BuildDeathString2(attacker, "thevoice/vo19.wav", " dazzled ", " with his talent"); // Talented!
+			else if (rnum <= 21) BuildDeathString(attacker, "thevoice/vo27.wav", " toasted "); // Toasted!
+			else if (rnum <= 22) BuildDeathString(attacker, "thevoice/vo43.wav", " vaporized "); // Vaporized!
+			else if (rnum <= 23) BuildDeathString(attacker, "thevoice/vo23.wav", " did well with "); // Well done!
+			else if (rnum <= 24) BuildDeathString(attacker, "thevoice/vo40.wav", " whipped and creamed "); // Whipped and creamed!
+			else if (rnum <= 25) BuildDeathString2(attacker, "thevoice/vo9.wav", " made ", " suffer scrotum seperation"); // Scrotum separation
+			else if (rnum <= 26) BuildDeathString2(attacker, "thevoice/vo7.wav", " turned ", " into excrement"); // Excrement
+			else if (rnum <= 27) BuildDeathString2(attacker, "thevoice/vo8.wav", " turned ", " into hamburger"); // Hamburger
+			else if (rnum <= 28) BuildDeathString2(attacker, "thevoice/vo42.wav", " vented ", "'s spleen"); //Vented spleen
+			else if (rnum <= 29) BuildDeathString(attacker, "thevoice/vo10.wav", " body bagged "); //Boddy bagged
+			else if (rnum <= 30) BuildDeathString2(attacker, "thevoice/boned.wav", " boned ", " like a fish!"); //Boned
+			else if (rnum <= 31) BuildDeathString2(attacker, "thevoice/justice.wav", " gave ", " Anal Justice!"); //Anal Justice
+			else if (rnum <= 32) BuildDeathString2(attacker, string_null, " hurt ", " real bad!"); //Hurt them real bad
+			else if (rnum <= 33) BuildDeathString2(attacker, "thevoice/ripped.wav", " ripped ", " a new orifice!"); //Ripped
+			else if (rnum <= 34) BuildDeathString(attacker, "thevoice/castra.wav", " castrated "); //Castrated
+			else if (rnum <= 35) BuildDeathString(attacker, "thevoice/creamed.wav", " creamed "); //Creamed
+			else if (rnum <= 36) BuildDeathString(attacker, "thevoice/decimat.wav", " decimated "); //Decimated
+			else if (rnum <= 37) BuildDeathString(attacker, "thevoice/destro.wav", " destroyed "); //Destroyed
+			else if (rnum <= 38) BuildDeathString(attacker, "thevoice/diced.wav", " diced "); //Diced
+			else if (rnum <= 39) BuildDeathString(attacker, "thevoice/disembo.wav", " disembowled "); //Disembowled
+			else if (rnum <= 40) BuildDeathString(attacker, "thevoice/flatte.wav", " flattened "); //Flattened
+			else if (rnum <= 41) BuildDeathString(attacker, "thevoice/killed.wav", " killed "); //Killed
+			else if (rnum <= 42) BuildDeathString(attacker, "thevoice/madness.wav", " gave AnAl MaDnEsS to "); //Anal madness
+			else if (rnum <= 43) BuildDeathString(attacker, "thevoice/massacr.wav", " massacred "); //Massacred
+			else if (rnum <= 44) BuildDeathString(attacker, "thevoice/mincmeat.wav", " made mincemeat out of "); //Mincemeat
+			else if (rnum <= 45) BuildDeathString(attacker, "thevoice/mutila.wav", " mutilated "); //Mutilated
+			else if (rnum <= 46) BuildDeathString(attacker, "thevoice/reamed.wav", " reamed "); //Reamed
+			else if (rnum <= 47) BuildDeathString(attacker, "thevoice/vo14.wav", " shat upon "); //Shat upon
+			else if (rnum <= 48) BuildDeathString(attacker, "thevoice/slaught.wav", " slaughtered "); //Slaughtered
+			else if (rnum <= 49) BuildDeathString(attacker, "thevoice/cliced.wav", " sliced "); //Sliced
+			else if (rnum <= 50) BuildDeathString(attacker, "thevoice/smashed.wav", " smashed "); //Smashed
+			else if (rnum <= 51) BuildDeathString(attacker, "thevoice/sodomiz.wav", " sodomized "); //Sodomized
+			else if (rnum <= 52) BuildDeathString(attacker, "thevoice/splatt.wav", " splattered "); //Splattered
+			else if (rnum <= 53) BuildDeathString(attacker, "thevoice/throttl.wav", " throttled "); //Throttled
+			else BuildDeathString(attacker, "thevoice/wasted.wav", " wasted "); //Wasted
 		}
 	}
 	else if (attacker.classname == "player" && gametype == GT_SINGLE_PLAYER)
@@ -2437,60 +2173,25 @@ void() ResetPlayerDisplay =
 	localcmd("v_cshift 0 0 0 0\n");
 };
 
+void(string sound_name, float sound_time) PlayTaunt =
+{
+	sound(self, CHAN_AUTO, sound_name, 1, ATTN_NORM);
+	self.voice_finished = time + sound_time;
+};
+
 // Player taunts
 void(float snd) Taunt = 
 {
-	if (self.voice_finished < time)
-	{
-		if (snd == 0)
-		{
-			sound(self, CHAN_AUTO, "player/taunts/taunt0.wav", 1, ATTN_NORM);
-			self.voice_finished = time + 3.11;
-		}
-		else if (snd == 1)
-		{
-			sound(self, CHAN_AUTO, "player/taunts/taunt1.wav", 1, ATTN_NORM);
-			self.voice_finished = time + 2.38;
-		}
-		else if (snd == 2)
-		{
-			sound(self, CHAN_AUTO, "player/taunts/taunt2.wav", 1, ATTN_NORM);
-			self.voice_finished = time + 0.83;
-		}
-		else if (snd == 3)
-		{
-			sound(self, CHAN_AUTO, "player/taunts/taunt3.wav", 1, ATTN_NORM);
-			self.voice_finished = time + 2.56;
-		}
-		else if (snd == 4)
-		{
-			sound(self, CHAN_AUTO, "player/taunts/taunt4.wav", 1, ATTN_NORM);
-			self.voice_finished = time + 2.14;
-		}
-		else if (snd == 5)
-		{
-			sound(self, CHAN_AUTO, "player/taunts/taunt5.wav", 1, ATTN_NORM);
-			self.voice_finished = time + 3.16;
-		}
-		else if (snd == 6)
-		{
-			sound(self, CHAN_AUTO, "player/taunts/taunt6.wav", 1, ATTN_NORM);
-			self.voice_finished = time + 0.64;
-		}
-		else if (snd == 7)
-		{
-			sound(self, CHAN_AUTO, "player/taunts/taunt7.wav", 1, ATTN_NORM);
-			self.voice_finished = time + 2;
-		}
-		else if (snd == 8)
-		{
-			sound(self, CHAN_AUTO, "player/taunts/taunt8.wav", 1, ATTN_NORM);
-			self.voice_finished = time + 0.95;
-		}
-		else// if (snd == 9)
-		{
-			sound(self, CHAN_AUTO, "player/taunts/taunt9.wav", 1, ATTN_NORM);
-			self.voice_finished = time + 2.19;
-		}
-	}
+	if (self.voice_finished > time)
+		return;
+	if (snd == 0) PlayTaunt("player/taunts/taunt0.wav", 3.11);
+	else if (snd == 1) PlayTaunt("player/taunts/taunt1.wav", 2.38);
+	else if (snd == 2) PlayTaunt("player/taunts/taunt2.wav", 0.83);
+	else if (snd == 3) PlayTaunt("player/taunts/taunt3.wav", 2.56);
+	else if (snd == 4) PlayTaunt("player/taunts/taunt4.wav", 2.14);
+	else if (snd == 5) PlayTaunt("player/taunts/taunt5.wav", 3.16);
+	else if (snd == 6) PlayTaunt("player/taunts/taunt6.wav", 0.64);
+	else if (snd == 7) PlayTaunt("player/taunts/taunt7.wav", 2);
+	else if (snd == 8) PlayTaunt("player/taunts/taunt8.wav", 0.95);
+	else/*if (snd == 9)*/ PlayTaunt("player/taunts/taunt9.wav", 2.19);
 };

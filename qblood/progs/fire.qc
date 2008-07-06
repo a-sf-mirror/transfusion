@@ -298,9 +298,11 @@ void(entity victim, entity attacker, float dmgtype, float burn, float burntime) 
 		victim.classname == "head")
 		return;
 
-	if (victim.flags & FL_MONSTER) 
+	if (victim.flags & FL_MONSTER)
+	{
 		if (victim.health / victim.max_health > 0.33) // Not every entity should have max_health, so only check monsters
 			return;
+	}
 
 	// Check if the entity is linked to a burning flame.
 	if (victim.burner)
@@ -330,7 +332,7 @@ void(entity victim, entity attacker, float dmgtype, float burn, float burntime) 
 	fire = spawn();
 	setmodel(fire, string_null);
 	setsize(fire, '0 0 0', '0 0 0');
-	setorigin(fire, PL_ORIGIN);       // Doesn't matter where it is.
+	setorigin(fire, PL_ORIGIN); // Doesn't matter where it is.
 	fire.solid      = SOLID_NOT;
 	fire.takedamage = DAMAGE_NO;
 	fire.frame      = 0;
@@ -338,9 +340,9 @@ void(entity victim, entity attacker, float dmgtype, float burn, float burntime) 
 	fire.enemy      = victim;
 	fire.classname  = "burner";
 	fire.deathtype  = "fire";
-	fire.dmg        = burn / (1 / frametime);        // points of damage per 1/10th sec
+	fire.dmg        = burn / (1 / frametime); // points of damage per 1/10th sec
 	fire.dmgtime    = time + burntime;
-	fire.style      = dmgtype;			// damage-flag (DF_BURN or DF_SPIRIT)
+	fire.style      = dmgtype; // damage-flag (DF_BURN or DF_SPIRIT)
 	fire.nextthink  = time + frametime;
 	fire.think      = Burn;
 	fire.reset      = SUB_Remove;
@@ -348,7 +350,7 @@ void(entity victim, entity attacker, float dmgtype, float burn, float burntime) 
 	if (!victim.effects & EF_FLAME)
 		victim.effects = victim.effects | EF_FLAME;
 
-	victim.burner   = fire;     // Link entity to fire.
+	victim.burner = fire; // Link entity to fire.
 };
 
 //==========================================================================

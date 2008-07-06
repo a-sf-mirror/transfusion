@@ -27,6 +27,39 @@ void() main =
 
 /*
 ================
+PrecacheModels
+
+Precache all necessary models
+================
+*/
+void() PrecacheModels =
+{
+	precache_model("progs/flame.spr");     // Used for people on fire
+	precache_model("progs/s_oldexp.spr");
+	precache_model("progs/player.mdl");    // Warning: this model is also referenced by the engine itself
+	precache_model("models/objects/eyes.md3");
+
+	// Gibs and other stuff
+	precache_model("progs/h_player.mdl");
+	precache_model("models/objects/gib1.md3");
+	precache_model("models/objects/gib2.md3");
+	precache_model("models/objects/gib3.md3");
+	precache_model("models/objects/gib4.md3");
+	precache_model("models/objects/gib5.md3");
+	precache_model("models/objects/m_arm.md3");
+	precache_model("models/objects/m_brain.md3");
+	precache_model("models/objects/m_chest.md3");
+	precache_model("models/objects/m_foot.md3");
+	precache_model("models/objects/m_guts.md3");
+	precache_model("models/objects/m_leg.md3");
+	precache_model("models/objects/m_eyeball.md3");
+	precache_model("models/objects/m_hand.md3");
+
+	precache_model("progs/s_explod.spr");  // napalm sprite explosion
+};
+
+/*
+================
 PrecacheSounds
 
 Precache all necessary sounds
@@ -197,6 +230,35 @@ void() PrecacheSounds =
 
 /*
 ================
+PrecacheLightstyles
+
+Setup light animation tables. 'a' is total darkness, 'z' is maxbright.
+================
+*/
+void() PrecacheLightstyles =
+{
+	//
+	
+	//
+	lightstyle(0, "m"); // 0 normal
+	lightstyle(1, "mmnmmommommnonmmonqnmmo"); // 1 FLICKER (first variety)
+	lightstyle(2, "abcdefghijklmnopqrstuvwxyzyxwvutsrqponmlkjihgfedcba"); // 2 SLOW STRONG PULSE
+	lightstyle(3, "mmmmmaaaaammmmmaaaaaabcdefgabcdefg"); // 3 CANDLE (first variety)
+	lightstyle(4, "mamamamamama"); // 4 FAST STROBE
+	lightstyle(5,"jklmnopqrstuvwxyzyxwvutsrqponmlkj"); // 5 GENTLE PULSE 1
+	lightstyle(6, "nmonqnmomnmomomno"); // 6 FLICKER (second variety)
+	lightstyle(7, "mmmaaaabcdefgmmmmaaaammmaamm"); // 7 CANDLE (second variety)
+	lightstyle(8, "mmmaaammmaaammmabcdefaaaammmmabcdefmmmaaaa"); // 8 CANDLE (third variety)
+	lightstyle(9, "aaaaaaaazzzzzzzz"); // 9 SLOW STROBE (fourth variety)
+	lightstyle(10, "mmamammmmammamamaaamammma"); // 10 FLUORESCENT FLICKER
+	lightstyle(11, "abcdefghijklmnopqrrqponmlkjihgfedcba"); // 11 SLOW PULSE NOT FADE TO BLACK
+	// styles 32-62 are assigned by the light program for switchable lights
+	// 63 testing
+	lightstyle(63, "a");
+};
+
+/*
+================
 MandatoryExtension
 
 Check the availability of a QuakeC extension we absolutely need
@@ -297,79 +359,11 @@ void() worldspawn =
 	// Some CTF variables need an initialization
 	team1score = team2score = 0;
 
-	// It's time to precache some sounds...
+	// It's time to precache some stuff...
+	PrecacheModels();
 	PrecacheSounds();
-
-	precache_model("progs/flame.spr");     // Used for people on fire
-	precache_model("progs/s_oldexp.spr");
-	precache_model("progs/player.mdl");    // Warning: this model is also referenced by the engine itself
-	precache_model("models/objects/eyes.md3");
-
-	// Gibs and other stuff
-	precache_model("progs/h_player.mdl");
-	precache_model("models/objects/gib1.md3");
-	precache_model("models/objects/gib2.md3");
-	precache_model("models/objects/gib3.md3");
-	precache_model("models/objects/gib4.md3");
-	precache_model("models/objects/gib5.md3");
-	precache_model("models/objects/m_arm.md3");
-	precache_model("models/objects/m_brain.md3");
-	precache_model("models/objects/m_chest.md3");
-	precache_model("models/objects/m_foot.md3");
-	precache_model("models/objects/m_guts.md3");
-	precache_model("models/objects/m_leg.md3");
-	precache_model("models/objects/m_eyeball.md3");
-	precache_model("models/objects/m_hand.md3");
-
-	precache_model("progs/s_explod.spr");  // napalm sprite explosion
-
-	//weapons
-	precache_weapons();
-
-	//
-	// Setup light animation tables. 'a' is total darkness, 'z' is maxbright.
-	//
-
-	// 0 normal
-	lightstyle(0, "m");
-
-	// 1 FLICKER (first variety)
-	lightstyle(1, "mmnmmommommnonmmonqnmmo");
-
-	// 2 SLOW STRONG PULSE
-	lightstyle(2, "abcdefghijklmnopqrstuvwxyzyxwvutsrqponmlkjihgfedcba");
-
-	// 3 CANDLE (first variety)
-	lightstyle(3, "mmmmmaaaaammmmmaaaaaabcdefgabcdefg");
-
-	// 4 FAST STROBE
-	lightstyle(4, "mamamamamama");
-
-	// 5 GENTLE PULSE 1
-	lightstyle(5,"jklmnopqrstuvwxyzyxwvutsrqponmlkj");
-
-	// 6 FLICKER (second variety)
-	lightstyle(6, "nmonqnmomnmomomno");
-
-	// 7 CANDLE (second variety)
-	lightstyle(7, "mmmaaaabcdefgmmmmaaaammmaamm");
-
-	// 8 CANDLE (third variety)
-	lightstyle(8, "mmmaaammmaaammmabcdefaaaammmmabcdefmmmaaaa");
-
-	// 9 SLOW STROBE (fourth variety)
-	lightstyle(9, "aaaaaaaazzzzzzzz");
-
-	// 10 FLUORESCENT FLICKER
-	lightstyle(10, "mmamammmmammamamaaamammma");
-
-	// 11 SLOW PULSE NOT FADE TO BLACK
-	lightstyle(11, "abcdefghijklmnopqrrqponmlkjihgfedcba");
-
-	// styles 32-62 are assigned by the light program for switchable lights
-
-	// 63 testing
-	lightstyle(63, "a");
+	PrecacheWeapons();
+	PrecacheLightstyles();
 };
 
 void() World_WarmupCountdown;

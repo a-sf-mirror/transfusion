@@ -47,7 +47,7 @@ void() door_blocked =
 {
 	// Don't hurt players
 	if (other.classname == "player")
-	return;
+		return;
 
 	// Used to do self.dmg for damage.
 	T_Damage(other, self, self, 999/*other.health + 10*/, DF_NO_PROTECT, "squish");
@@ -99,7 +99,7 @@ void() door_go_up =
 {
 	//dprint("door_go_up\n");
 	if (self.state == STATE_UP)
-	return;     // already going up
+		return;     // already going up
 
 	if (self.state == STATE_TOP)
 	{   // reset top wait time
@@ -327,7 +327,7 @@ entity(vector fmins, vector fmaxs) spawn_field =
 float(entity e1, entity e2) EntitiesTouching =
 {
 	if (e1.mins_x > e2.maxs_x)
-	return FALSE;
+		return FALSE;
 	if (e1.mins_y > e2.maxs_y)
 		return FALSE;
 	if (e1.mins_z > e2.maxs_z)

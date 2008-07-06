@@ -81,16 +81,12 @@ float() CheckAttack =
 
 	if (enemy_range == RANGE_MELEE)
 		chance = 1;
-
 	else if (time < self.attack_finished)
 		return FALSE;
-
 	else if (enemy_range == RANGE_NEAR)
 		chance = 0.2;
-
 	else if (enemy_range == RANGE_MID)
 		chance = 0.05;
-
 	else
 		chance = 0;
 
