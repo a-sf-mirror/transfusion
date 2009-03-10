@@ -3,10 +3,12 @@
 					<span id="ack" class="footnotes-title">Acknowledgments:</span><br />
 					Blood is a trademark of Atari (formerly Infogrames).<br />
 					This page is generously hosted by:<br />
-					<a href="http://sourceforge.net/">
-						<img style="border:0" src="http://sourceforge.net/sflogo.php?group_id=22136"
-							width="88" height="31" alt="SourceForge" />
-					</a><br />
+					<a href="http://sourceforge.net/projects/blood">
+						<img src="http://sflogo.sourceforge.net/sflogo.php?group_id=22136&type=12"
+							width="120" height="30" border="0"
+							alt="Get The Transfusion Project at SourceForge.net. Fast, secure and Free Open Source software downloads"
+						/>
+					</a>
 
 					<p>
 						<a href="http://validator.w3.org/check?uri=referer">
