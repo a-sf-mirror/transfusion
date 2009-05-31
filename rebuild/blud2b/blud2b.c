@@ -2,12 +2,10 @@
  blud2b.c
 
  Convert a Blood MAP file to a BUILD MAP file
-
- Version 0.0 beta 
 */
 
-/* Copyright (C) 2001  Mathieu Olivier <elric@planetblood.com> and
- *					    Timothy Hale <timhale@planetblood.com>
+/* Copyright (C) 2001-2009     Mathieu Olivier <elric@planetblood.com>
+ *                         and Timothy Hale <timhale@planetblood.com>
  *
  * This program is free software; you can redistribute it and/or modify
  * it under the terms of the GNU General Public License as published by
@@ -25,11 +23,10 @@
  */
 
 /*  TODO / WISH list
-	Try to differentiate between user and official maps.
+    Try to differentiate between user and official maps.
     Try to find the first sector the right way
-	Try to figure out what all the other values are in the header.
-	Try to figure out the skies/copyright stuff
-    Do the loops based on the Matt S. decryption code
+    Try to figure out what all the other values are in the header.
+    Try to figure out the skies/copyright stuff
 */
 
 #include <assert.h>   // assert
@@ -42,7 +39,7 @@
 /* ----------------- */
 
 // Current version of this software
-#define VERSION "0.01 beta"
+#define VERSION "0.01"
 
 
 /* ------------- */
@@ -59,19 +56,19 @@ typedef struct
 {
     int StartX;
     int StartY;
-    int StartZ;      
+    int StartZ;
     short StartAngle;
-    short SectorNum;   
-} header_t; // 16 + 6(header)
+    short SectorNum;
+} header_part1_t; // size = 16, preceded by a 6-byte header (4 bytes for a magic number + 2 bytes for the version)
 
 // The hard core numbers
 typedef struct
 {
-	int MapRevisions;
-	short NumSectors;
-	short NumWalls;
-	short NumSprites;
-} mapnumbers_t;
+    int MapRevisions;
+    short NumSectors;
+    short NumWalls;
+    short NumSprites;
+} header_part3_t; // size = 10
 
 // Informations about a sector
 
@@ -88,7 +85,7 @@ typedef struct
     unsigned char floorpal, floorxpanning, floorypanning;
     unsigned char visibility, filler; // Filler "should" == 0
     short lotag, hitag, extra;
-} sector_t;  // 40
+} sector_t;  // size = 40
 
 // Informations about a sprite
 typedef struct
@@ -102,7 +99,7 @@ typedef struct
     short sectnum, statnum;
     short ang, owner, xvel, yvel, zvel;
     short lotag, hitag, extra;
-} sprite_t;  // 44
+} sprite_t;  // size = 44
 
 // Informations about a wall
 typedef struct
@@ -113,7 +110,7 @@ typedef struct
    signed char  shade;
    unsigned char pal, xrepeat, yrepeat, xpanning, ypanning;
    short lotag, hitag, extra;
-} wall_t;  // 32
+} wall_t;  // size = 32
 
 
 /* ------------- */
@@ -127,6 +124,7 @@ static FILE* NewFile = NULL;
 int PosX = 0, PosY = 0, PosZ = 0, Revisions;
 short Angle = 0;
 unsigned short SectorNum = 0, Sectors, Walls, Sprites;
+bool IsEncrypted = true;
 
 /* ----------------- */
 /* --- Functions --- */
@@ -135,7 +133,7 @@ unsigned short SectorNum = 0, Sectors, Walls, Sprites;
 /* ------ Prototypes ------ */
 
 // Check if the contents of a buffer have been correctly decrypted
-static bool CheckBufferValidity (const unsigned short Size, const unsigned char* Buffer);
+static bool CheckBufferValidity (const unsigned short Size, const unsigned char* Buffer, bool HardCheck);
 
 // Decrypt a buffer
 static void DecryptBuffer (unsigned char* Buffer, const size_t DataSize, unsigned char DecryptKey);
@@ -151,9 +149,6 @@ bool ExtractWalls (FILE* SourceFile);
 
 // Seek the first sector offset
 static long FindFirstSector (FILE* SourceFile);
-
-// Try to guess the decryption key for a buffer
-static unsigned char GuessDecryptKey (const unsigned short Size, const unsigned char* Buffer);
 
 // Extract infos from the header
 static bool ParseHeader (FILE* SourceFile);
@@ -172,22 +167,28 @@ CheckBufferValidity
 Check if the contents of a buffer have been correctly decrypted
 ====================
 */
-static bool CheckBufferValidity (const unsigned short size, const unsigned char* Buffer)
+static bool CheckBufferValidity (const unsigned short Size, const unsigned char* Buffer, bool HardCheck)
 {
     // Local variables
-    unsigned int i, NullCount = 0;
+    unsigned int i, NullCount = 0, TestLimit;
 
     assert (Buffer != NULL);
 
     // Count the number of 0
-    for (i = 0; i < size; i++)
+    for (i = 0; i < Size; i++)
         if (Buffer[i] == 0)
             NullCount++;
 
-    // If the test has failed
-    if (NullCount < i / 3)
+    // For some buffers (ex: sprites), the test has to be less strict
+    if (HardCheck)
+        TestLimit = i / 3;
+    else
+        TestLimit = i / 4;
+
+    // If the test has failed (the buffer must contain a least a certain amount of zeros)
+    if (NullCount < TestLimit)
     {
-        printf ("Validity test FAILED (%u / %u)\n", NullCount, i);
+        printf ("%s validity test FAILED (%u / %u)\n", HardCheck ? "Hard" : "Soft", NullCount, i);
         return false;
     }
 
@@ -208,9 +209,13 @@ static void DecryptBuffer (unsigned char* Buffer, const size_t DataSize, unsigne
 
     assert (Buffer != NULL);
 
+    // If the map isn't encrypted
+    if (! IsEncrypted)
+        return;
+
     // Decryption
     for (i = 0; i < DataSize; i++)
-		Buffer[i] ^= (unsigned char)(DecryptKey + i);
+        Buffer[i] ^= (unsigned char)(DecryptKey + i);
 }
 
 /*
@@ -226,25 +231,29 @@ bool ExtractSectors (FILE* SourceFile)
     unsigned char Buffer [128];
     unsigned char DecryptKey;
     const sector_t* SectorPtr = (const sector_t*)Buffer;
-    long CrtOffset = ftell (SourceFile);
     unsigned short Ind = 0;
 
     // Write the number of sectors
     fwrite (&Sectors, 2, 1, NewFile);
 
-    // First sector
-    if (fread (Buffer, 1, sizeof (sector_t), SourceFile) != sizeof (sector_t))
-        return false;
-    DecryptKey = GuessDecryptKey (sizeof (sector_t), Buffer);
-     printf("Matt S. style key: 0X%02X\n\n", (Revisions * sizeof (sector_t)) & 0xFF );
+    DecryptKey = ((Revisions * sizeof (sector_t)) & 0xFF);
 
-    DecryptBuffer (Buffer, sizeof (sector_t), DecryptKey);
-
-    for (Ind=0; Ind < Sectors; Ind++)
+    for (Ind = 0; Ind < Sectors; Ind++)
     {
-        CrtOffset += sizeof (sector_t);
-     
-        // Save the sector to the new file
+        if (fread (Buffer, 1, sizeof (sector_t), SourceFile) != sizeof (sector_t))
+        {
+            printf("Unable to read sector %u fully\n", Ind);
+            return false;
+        }
+
+        DecryptBuffer (Buffer, sizeof (sector_t), DecryptKey);
+        if (! CheckBufferValidity (sizeof (sector_t), Buffer, true))
+        {
+            printf ("Validity test FAILED for sector %u\n", Ind);
+            return false;
+        }
+
+         // Save the sector to the new file
         fwrite (SectorPtr, 1, sizeof (*SectorPtr), NewFile);
 
         // If extra data follow
@@ -252,34 +261,22 @@ bool ExtractSectors (FILE* SourceFile)
         {
             // skip the next 60 bytes
             if (fread (Buffer, 1, 60, SourceFile) != 60)
+            {
+                printf("Unable to skip extra data in sector %u\n", Ind);
                 return false;
-
-            CrtOffset += 60;
+            }
         }
         else switch (SectorPtr->extra)
         {
             case 0:
-			case -1:
-			break;
+            case -1:
+            break;
             default:
-				printf ("ERROR: unknown extra data value (%hd)\n", SectorPtr->extra);
+                printf ("ERROR: unknown extra data value (%hd)\n", SectorPtr->extra);
                 return false;
         }
-
-        if (fread (Buffer, 1, sizeof (sector_t), SourceFile) != sizeof (sector_t))
-		{
-			printf("Unable to read in a sector fully\n");
-			return false;
-		}
-        DecryptBuffer (Buffer, sizeof (sector_t), DecryptKey);
-        if (! CheckBufferValidity (sizeof (sector_t), Buffer))
-        break;
     }
-    
-    fseek (NewFile, 0, SEEK_END);
 
-    // Go back to the beginning of the current chunk
-    fseek (SourceFile, CrtOffset, SEEK_SET);
     return true;
 }
 
@@ -296,36 +293,28 @@ bool ExtractSprites (FILE* SourceFile)
     unsigned char Buffer [128];
     unsigned char DecryptKey;
     const sprite_t* SpritePtr = (const sprite_t*)Buffer;
-    long SpritesOffset = ftell (NewFile);
-    unsigned short Ind = 0;
+    unsigned short Ind;
 
     // Write the number of sprites
-    fwrite (&Ind, 2, 1, NewFile);
-    Ind = 1;
+    fwrite (&Sprites, 2, 1, NewFile);
 
-    // First sprite
-    if (fread (Buffer, 1, sizeof (sprite_t), SourceFile) != sizeof (sprite_t))
-        return true;  // no sprite in the map ?
-    DecryptKey = GuessDecryptKey (sizeof (sprite_t), Buffer);
-    printf("Matt S. style key: 0X%02X\n\n", (Revisions * sizeof (sprite_t)| 0x4d) & 0xFF );
-    DecryptBuffer (Buffer, sizeof (sprite_t), DecryptKey);
+    DecryptKey = (((Revisions * sizeof (sprite_t)) | 0x4d) & 0xFF);
 
-    // Save the sprite to the new file
-    fwrite (SpritePtr, 1, sizeof (*SpritePtr), NewFile);
-
-    // If extra data follow
-    if (SpritePtr->extra > 0)
+    for (Ind = 0; Ind < Sprites; Ind++)
     {
-        // skip the next 56 bytes
-            if (fread (Buffer, 1, 56, SourceFile) != 56)
-                return false;        
-    }
+        if (fread (Buffer, 1, sizeof (sprite_t), SourceFile) != sizeof (sprite_t))
+        {
+            printf("Unable to read in a sprite %u fully\n", Ind);
+            return false;
+        }
 
-    // Other sprites
-    while (fread (Buffer, 1, sizeof (sprite_t), SourceFile) == sizeof (sprite_t))
-    {
         DecryptBuffer (Buffer, sizeof (sprite_t), DecryptKey);
-        
+        if (! CheckBufferValidity (sizeof (sprite_t), Buffer, false))
+        {
+            printf ("Validity test FAILED for sprite %u\n", Ind);
+            return false;
+        }
+
         // Save the sprite to the new file
         fwrite (SpritePtr, 1, sizeof (*SpritePtr), NewFile);
 
@@ -334,8 +323,11 @@ bool ExtractSprites (FILE* SourceFile)
         {
             // skip the next 56 bytes
             if (fread (Buffer, 1, 56, SourceFile) != 56)
+            {
+                printf("Unable to skip extra data in sprite %u\n", Ind);
                 return false;
-		}
+            }
+        }
         else switch (SpritePtr->extra)
         {
             case -1: // The end ?
@@ -344,14 +336,7 @@ bool ExtractSprites (FILE* SourceFile)
                 printf ("ERROR: unknown extra data value  (%hd)\n", SpritePtr->extra);
                 return false;
         }
-
-        Ind++;
     }
-
-    // Write the real number of sectors
-    fseek (NewFile, SpritesOffset, SEEK_SET);
-    fwrite (&Ind, 2, 1, NewFile);
-    fseek (NewFile, 0, SEEK_END);
 
     return true;
 }
@@ -376,31 +361,22 @@ bool ExtractWalls (FILE* SourceFile)
     // Write the number of walls
     fwrite (&Walls, 2, 1, NewFile);
 
-    printf ("\n-> Number of walls to extract: %u\n", Walls);
+    DecryptKey = (((Revisions * sizeof (sector_t)) | 0x4d) & 0xFF);
 
-    // First sector
-    if (fread (Buffer, 1, sizeof (wall_t), SourceFile) != sizeof (wall_t))
-        return false;
-    DecryptKey = GuessDecryptKey (sizeof (wall_t), Buffer);
-    printf("Matt S. style key: 0X%02X\n\n", (Revisions * sizeof (sector_t)| 0x4d) & 0xFF );
-    DecryptBuffer (Buffer, sizeof (wall_t), DecryptKey);
-
-    // Save the wall to the new file
-    fwrite (WallPtr, 1, sizeof (*WallPtr), NewFile);
-
-    // If extra data follow
-    if (WallPtr->extra > 0)
-    {
-       // skip the next 24 bytes
-            if (fread (Buffer, 1, 24, SourceFile) != 24)
-                return false;
-    }
-
-    for (Ind = 1; Ind < Walls; Ind++)
+    for (Ind = 0; Ind < Walls; Ind++)
     {
         if (fread (Buffer, 1, sizeof (wall_t), SourceFile) != sizeof (wall_t))
+        {
+            printf("Unable to read in a wall %u fully\n", Ind);
             return false;
+        }
+
         DecryptBuffer (Buffer, sizeof (wall_t), DecryptKey);
+        if (! CheckBufferValidity (sizeof (sector_t), Buffer, false))
+        {
+            printf ("Validity test FAILED for wall %u\n", Ind);
+            return false;
+        }
 
         // Save the wall to the new file
         fwrite (WallPtr, 1, sizeof (*WallPtr), NewFile);
@@ -441,6 +417,9 @@ static long FindFirstSector (FILE* SourceFile)
 
     assert (SourceFile != NULL);
 
+    if (! IsEncrypted)
+        return 75;
+
     if (fseek (SourceFile, 171, SEEK_SET) != 0)
         return -1;
 
@@ -454,7 +433,7 @@ static long FindFirstSector (FILE* SourceFile)
 
         case 0x0302 :
             return 173;
-        
+
         case 0x1110 : // E2M7
             return 187; // Try every 40 against Matt S. key if it doesn't work
 
@@ -463,50 +442,6 @@ static long FindFirstSector (FILE* SourceFile)
             printf ("     -> %x\n", Buffer);
             return -3;
     }
-}
-
-/*
-====================
-GuessDecryptKey
-
-Try to guess the decryption key for a buffer
-====================
-*/
-static unsigned char GuessDecryptKey (const unsigned short Size, const unsigned char* Buffer)
-{
-    // Variables
-    size_t Ind;
-    unsigned int BestScore = 0;
-    unsigned int CrtScore;
-    unsigned char BestKey = 0;
-    unsigned char CrtKey;
-
-    // The key is probably the value of one of the bytes
-    for (Ind = 0; Ind < Size; Ind++)
-    {
-        // Local variables
-        size_t Ind2;
-
-        // Set key to the current byte value minus its index
-        CrtKey = (unsigned char)(Buffer[Ind] - Ind);
-        CrtScore = 0;
-
-        // Try this key on the buffer
-        for (Ind2 = 0; Ind2 < Size; Ind2++)
-            if (((unsigned char)(CrtKey + Ind2) ^ Buffer[Ind2]) == 0)
-                CrtScore++;
-
-        // If this key has the best score, record it
-        if (CrtScore >= BestScore)
-        {
-            BestScore = CrtScore;
-            BestKey   = CrtKey;
-        }
-    }
-
-    printf ("Best decryption key is 0X%02X with a score of %u / %d\n", BestKey, BestScore, Size);
-
-    return BestKey;
 }
 
 
@@ -525,10 +460,9 @@ int main (int ArgC, char* ArgV [])
 
     // Header
     printf ("\n"
-            "Blud2b version " VERSION " by Mathieu Olivier <elric@planetblood.com>\n"
-			
-			__DATE__"	           and Timothy Hale <timhale@planetblood.com>\n"
-            "=====================================================================\n"
+            "Blud2b, version " VERSION " - " __DATE__ "\n"
+            "By Mathieu Olivier and Timothy Hale <elric and timhale @planetblood.com>\n"
+            "========================================================================\n"
             "\n");
 
     // Check parameters
@@ -577,7 +511,7 @@ int main (int ArgC, char* ArgV [])
         fclose (SourceFile);
         return EXIT_FAILURE;
     }
-    printf ("     First sector found at offset %ld\n", StartOffset);
+    printf ("      First sector found at offset %ld\n", StartOffset);
 
     // Positioning...
     if (fseek (SourceFile, StartOffset, SEEK_SET) != 0)
@@ -591,28 +525,25 @@ int main (int ArgC, char* ArgV [])
     // Write temporary MAP header
     WriteMapHeader ();
 
-    printf ("\nExtracting...\n");
-
     // Extract the sectors
+    printf ("   * Extracting sectors...\n");
     if (! ExtractSectors (SourceFile))
-        printf ("Error: can't extract sectors\n");
+        printf ("      ERROR\n");
     else
     {
-        printf ("Sectors successfully extracted\n");
-
         // Extract the walls
+        printf ("   * Extracting walls...\n");
         if (! ExtractWalls (SourceFile))
-            printf ("Error: can't extract walls\n");
+        printf ("      ERROR\n");
         else
         {
-            printf ("Walls successfully extracted\n");
-
             // Extract the sprites
+            printf ("   * Extracting sprites...\n");
             if (! ExtractSprites (SourceFile))
-                printf ("Error: can't extract sprites\n");
+                printf ("      ERROR\n");
             else
-                printf ("Sprites successfully extracted\n");
-        }
+                printf ("\n   Done!\n");
+         }
     }
 
     fclose (NewFile);
@@ -631,64 +562,77 @@ Extract infos from the header
 static bool ParseHeader (FILE* SourceFile)
 {
     // Variables
-    header_t Header;
-	mapnumbers_t Numbers;
+    header_part1_t Header1;
+    header_part3_t Header3;
 
-	char MapSignature[4];
-	char MapVersion[2];
+    char MapSignature[4];
+    struct
+    {
+        unsigned char Minor, Major;
+    } MapVersion;
 
-	fread(MapSignature,4,1,SourceFile);
-	fread(&MapVersion,2,1,SourceFile);
-		
-	if (MapVersion[0] == 0x03 && MapVersion[1] == 0x06)
-	{
-		printf("\nblud2b can't handle 6.03 blood maps yet\n"
-			   "Try bringing the map up in the latest version of mapedit, then save it.\n"
-			   "This should produce a 7.0 version map, which blud2b CAN convert to build.\n");
-		return false;
-	} 
-	else if (MapSignature[0] != 'B'  ||
-			 MapSignature[1] != 'L'  ||
-			 MapSignature[2] != 'M'  ||
-			 MapSignature[3] != 0x1A ||
-			 MapVersion[0]   != 0x00 ||
-			 MapVersion[1]   != 0x07)
-	
-	{
-		printf("\nThis files signature is not consistant with the blood map signature.\n");
-		return false;
-	} 
+    fread(MapSignature,4,1,SourceFile);
+    fread(&MapVersion,2,1,SourceFile);
 
-    if (fread (&Header, 1, sizeof (Header), SourceFile) != sizeof (Header))
+    if (MapSignature[0] != 'B'  ||
+        MapSignature[1] != 'L'  ||
+        MapSignature[2] != 'M'  ||
+        MapSignature[3] != 0x1A )
+    {
+        printf("\nThis files signature is not consistant with the blood map signature.\n");
         return false;
-	
-	fseek(SourceFile, 33, SEEK_SET); // The magic!
-	if (fread (&Numbers, 1, sizeof (Numbers), SourceFile) != sizeof (Numbers))
-        return false;
+    }
 
-    DecryptBuffer ((unsigned char*)&Header, sizeof (Header), 0x4D);
-	DecryptBuffer ((unsigned char*)&Numbers, sizeof (Numbers), 0x68);
+    printf ("      Version = %u.%u\n", MapVersion.Major, MapVersion.Minor);
+
+    if (MapVersion.Major == 6 && MapVersion.Minor == 3)
+        IsEncrypted = false;
+    else if (MapVersion.Major == 7 && MapVersion.Minor == 0)
+        IsEncrypted = true;
+    else
+    {
+        printf("\nBlud2b can only handle map versions 6.3 and 7.0.\n"
+               "Try bringing the map up in the latest version of mapedit, then save it.\n"
+               "This should produce a 7.0 version map, which blud2b CAN convert to build.\n");
+        return false;
+    }
+
+    // Load and decrypt the first part of the header
+    if (fread (&Header1, 1, sizeof (Header1), SourceFile) != sizeof (Header1))
+        return false;
+    DecryptBuffer ((unsigned char*)&Header1, sizeof (Header1), 0x4D);
 
     // Store the infos
-    PosX = Header.StartX;
-    PosY = Header.StartY;
-    PosZ = Header.StartZ;
-    Angle = Header.StartAngle;
-    SectorNum = Header.SectorNum;
-	Revisions = Numbers.MapRevisions;
-	Sectors = Numbers.NumSectors;
-	Walls = Numbers.NumWalls;
-	Sprites = Numbers.NumSprites;
+    PosX = Header1.StartX;
+    PosY = Header1.StartY;
+    PosZ = Header1.StartZ;
+    Angle = Header1.StartAngle;
+    SectorNum = Header1.SectorNum;
 
-	printf ("      PosX = %d\n", PosX);
+    printf ("      PosX = %d\n", PosX);
     printf ("      PosY = %d\n", PosY);
     printf ("      PosZ = %d\n", PosZ);
     printf ("      Angle = %hd\n", Angle);
     printf ("      SectorNum = %hd\n", SectorNum);
-	printf ("      Maprevisions = %d\n", Revisions);
-	printf ("      NumSectors = %d\n", Sectors);
-	printf ("      NumWalls = %d\n", Walls);
-	printf ("      NumSprites = %d\n", Sprites);
+
+    // Skip the part 2 of the header, since we don't know what it is, and we don't care
+    fseek(SourceFile, 11, SEEK_CUR);
+
+    // Load and decrypt the third part of the header
+    if (fread (&Header3, 1, sizeof (Header3), SourceFile) != sizeof (Header3))
+        return false;
+    DecryptBuffer ((unsigned char*)&Header3, sizeof (Header3), 0x68);
+
+    // Store the infos
+    Revisions = Header3.MapRevisions;
+    Sectors = Header3.NumSectors;
+    Walls = Header3.NumWalls;
+    Sprites = Header3.NumSprites;
+
+    printf ("      Maprevisions = %d\n", Revisions);
+    printf ("      NumSectors = %d\n", Sectors);
+    printf ("      NumWalls = %d\n", Walls);
+    printf ("      NumSprites = %d\n", Sprites);
 
     return true;
 }
