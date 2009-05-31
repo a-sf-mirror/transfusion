@@ -341,13 +341,17 @@
 	converter that works. In other words, we don't know the Blood MAP format well,
 	we just know enough of it.<br />
 	Our converter, BLUD2B, is more a series of hacks than a real tool. It's full
-	of arbitrary constants and little tricks to do the job. For example, it does not
-	know how to compute the encryption / decryption keys a map uses, but we found
-	a way to guess them! (it's easily doable thanks to the simplicity of the
-	encryption method and the fact that BUILD map data are mostly zeros).<br />
-	If you're interested by this format, take a look at BLUD2B source code and the
-	following email by Matt Saettler. None of them contain "The Truth" about the
-	MAP format, but they should help you to figure it out.<br />
+	of arbitrary constants and little tricks to do the job. For example, for a
+	long period of time, it didn't know how to compute the decryption keys a map
+	uses, but we had found a way to guess them! It was easily doable thanks to the
+	simplicity of the encryption method (XOR based, with a 1-byte incrementing
+	constant) and the fact that BUILD map data are mostly zeros. The current
+	version of BLUD2B knows how to compute those decrypting keys though, so this
+	hack is no longer needed.<br />
+	If you're interested in this format, take a look at BLUD2B source code and the
+	following email by Matt Saettler. None of them contain "The Complete Truth"
+	about the MAP format, but they should help you to figure it out if you need
+	to.<br />
 	<pre>
 	Typical header with signature.
 
