@@ -372,7 +372,7 @@ bool ExtractWalls (FILE* SourceFile)
         }
 
         DecryptBuffer (Buffer, sizeof (wall_t), DecryptKey);
-        if (! CheckBufferValidity (sizeof (sector_t), Buffer, false))
+        if (! CheckBufferValidity (sizeof (wall_t), Buffer, false))
         {
             printf ("Validity test FAILED for wall %u\n", Ind);
             return false;
