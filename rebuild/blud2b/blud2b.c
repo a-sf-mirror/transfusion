@@ -4,8 +4,7 @@
  Convert a Blood MAP file to a BUILD MAP file
 */
 
-/* Copyright (C) 2001-2009     Mathieu Olivier <elric@planetblood.com>
- *                         and Timothy Hale <timhale@planetblood.com>
+/* Copyright (C) 2001-2010  Mathieu Olivier and Timothy Hale
  *
  * This program is free software; you can redistribute it and/or modify
  * it under the terms of the GNU General Public License as published by
@@ -27,6 +26,7 @@
     Try to find the first sector the right way
     Try to figure out what all the other values are in the header.
     Try to figure out the skies/copyright stuff
+    Make it work on big-endian machines
 */
 
 #include <assert.h>   // assert
@@ -39,7 +39,7 @@
 /* ----------------- */
 
 // Current version of this software
-#define VERSION "0.01"
+#define VERSION "1.0 beta"
 
 
 /* ------------- */
@@ -132,9 +132,6 @@ bool IsEncrypted = true;
 
 /* ------ Prototypes ------ */
 
-// Check if the contents of a buffer have been correctly decrypted
-static bool CheckBufferValidity (const unsigned short Size, const unsigned char* Buffer, bool HardCheck);
-
 // Decrypt a buffer
 static void DecryptBuffer (unsigned char* Buffer, const size_t DataSize, unsigned char DecryptKey);
 
@@ -159,41 +156,6 @@ static void WriteMapHeader (void);
 
 
 /* ------ Implementations ------ */
-
-/*
-====================
-CheckBufferValidity
-
-Check if the contents of a buffer have been correctly decrypted
-====================
-*/
-static bool CheckBufferValidity (const unsigned short Size, const unsigned char* Buffer, bool HardCheck)
-{
-    // Local variables
-    unsigned int i, NullCount = 0, TestLimit;
-
-    assert (Buffer != NULL);
-
-    // Count the number of 0
-    for (i = 0; i < Size; i++)
-        if (Buffer[i] == 0)
-            NullCount++;
-
-    // For some buffers (ex: sprites), the test has to be less strict
-    if (HardCheck)
-        TestLimit = i / 3;
-    else
-        TestLimit = i / 4;
-
-    // If the test has failed (the buffer must contain a least a certain amount of zeros)
-    if (NullCount < TestLimit)
-    {
-        printf ("%s validity test FAILED (%u / %u)\n", HardCheck ? "Hard" : "Soft", NullCount, i);
-        return false;
-    }
-
-    return true;
-}
 
 /*
 ====================
@@ -247,11 +209,6 @@ bool ExtractSectors (FILE* SourceFile)
         }
 
         DecryptBuffer (Buffer, sizeof (sector_t), DecryptKey);
-        if (! CheckBufferValidity (sizeof (sector_t), Buffer, true))
-        {
-            printf ("Validity test FAILED for sector %u\n", Ind);
-            return false;
-        }
 
          // Save the sector to the new file
         fwrite (SectorPtr, 1, sizeof (*SectorPtr), NewFile);
@@ -270,7 +227,7 @@ bool ExtractSectors (FILE* SourceFile)
         {
             case 0:
             case -1:
-            break;
+				break;
             default:
                 printf ("ERROR: unknown extra data value (%hd)\n", SectorPtr->extra);
                 return false;
@@ -309,11 +266,6 @@ bool ExtractSprites (FILE* SourceFile)
         }
 
         DecryptBuffer (Buffer, sizeof (sprite_t), DecryptKey);
-        if (! CheckBufferValidity (sizeof (sprite_t), Buffer, false))
-        {
-            printf ("Validity test FAILED for sprite %u\n", Ind);
-            return false;
-        }
 
         // Save the sprite to the new file
         fwrite (SpritePtr, 1, sizeof (*SpritePtr), NewFile);
@@ -372,11 +324,6 @@ bool ExtractWalls (FILE* SourceFile)
         }
 
         DecryptBuffer (Buffer, sizeof (wall_t), DecryptKey);
-        if (! CheckBufferValidity (sizeof (wall_t), Buffer, false))
-        {
-            printf ("Validity test FAILED for wall %u\n", Ind);
-            return false;
-        }
 
         // Save the wall to the new file
         fwrite (WallPtr, 1, sizeof (*WallPtr), NewFile);
@@ -461,8 +408,8 @@ int main (int ArgC, char* ArgV [])
     // Header
     printf ("\n"
             "Blud2b, version " VERSION " - " __DATE__ "\n"
-            "By Mathieu Olivier and Timothy Hale <elric and timhale @planetblood.com>\n"
-            "========================================================================\n"
+            "By Mathieu Olivier and Timothy Hale\n"
+            "========================================\n"
             "\n");
 
     // Check parameters
@@ -579,7 +526,7 @@ static bool ParseHeader (FILE* SourceFile)
         MapSignature[2] != 'M'  ||
         MapSignature[3] != 0x1A )
     {
-        printf("\nThis files signature is not consistant with the blood map signature.\n");
+        printf("\nThe file's signature does not match the blood map signature.\n");
         return false;
     }
 
