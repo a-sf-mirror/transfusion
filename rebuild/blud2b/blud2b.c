@@ -39,7 +39,7 @@
 /* ----------------- */
 
 // Current version of this software
-#define VERSION "1.0 beta"
+#define VERSION "1.0"
 
 
 /* ------------- */
