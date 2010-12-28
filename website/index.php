@@ -24,6 +24,14 @@
 	<h2 id="news-section" class="section">News</h2>
 	<ul>
 		<li>
+			<span class="title">November 21, 2010:</span> (by Elric)<br />
+			Our Blood-to-BUILD map conversion tool Blud2B has finally reached
+			version 1.0. Aside from a lot of code cleaning, this new version adds support
+			for the unencrypted Blood map format (6.3), used by BB9.<br />
+			Blud2B source code and Win32 binary are part of
+			the <a href="snapshots.php#rebuild-section">ReBUILD snapshots</a>.<p />
+		</li>
+		<li>
 			<span class="title">December 18, 2006:</span> (by Elric)<br />
 			The project now uses Subversion (SVN) as its version control system.<p />
 		</li>
