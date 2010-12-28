@@ -378,36 +378,19 @@ static bool LoadRffInformations (void)
     }
 
     // Decrypt the directory (depend on the version)
-    switch (EncryptionMode)
+    if (EncryptionMode != ENCRYPT_NONE)
     {
-        case ENCRYPT_NONE:
-            // Nothing to do!
-            break;
+        uint32 CryptoKey;
 
-        case ENCRYPT_3_0:
+        if (EncryptionMode == ENCRYPT_3_0)
+            CryptoKey = RffHeader.DirOffset;
+        else
+            CryptoKey = (RffHeader.DirOffset << 1);
+
+        for (Ind = 0; Ind < RffHeader.DirNbEntries * sizeof (DirectoryEntry_t); Ind++)
         {
-            for (Ind = 0; Ind < RffHeader.DirNbEntries * sizeof (DirectoryEntry_t); Ind++)
-            {
-                uint8 CryptoByte;
-                
-                CryptoByte = (uint8)((RffHeader.DirOffset + Ind) >> 1);
-                Directory[Ind] ^= CryptoByte;
-            }
-            break;
-        }
-
-        case ENCRYPT_3_1:
-        {
-            uint8 CryptoByte;
-
-            CryptoByte = (uint8)RffHeader.DirOffset;
-            for (Ind = 0; Ind < RffHeader.DirNbEntries * sizeof (DirectoryEntry_t); Ind += 2)
-            {
-                Directory[Ind    ] ^= CryptoByte;
-                Directory[Ind + 1] ^= CryptoByte;
-                CryptoByte++;
-            }
-            break;
+            Directory[Ind] ^= (CryptoKey >> 1);
+            CryptoKey++;
         }
     }
 
