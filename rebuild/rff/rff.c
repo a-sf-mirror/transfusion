@@ -3,10 +3,8 @@
 //
 // Read and extract the contents of a RFF file
 //
-// Version 0.1
-//
 
-/* Copyright (C) 2001-2004  Mathieu Olivier
+/* Copyright (C) 2001-2010  Mathieu Olivier
  *
  * This program is free software; you can redistribute it and/or modify
  * it under the terms of the GNU General Public License as published by
@@ -59,7 +57,7 @@
 /* ----------------- */
 
 // Current version of this software
-#define VERSION "0.1"
+#define VERSION "0.2"
 
 // Default size of Buffer in Kb
 #define DEFAULT_BUFFER_SIZE 4
@@ -102,7 +100,8 @@ typedef enum
 typedef struct
 {
     uint8  Magic [4];
-    uint32 Version;
+    uint16 Version;
+    uint16 Unknown0;
     uint32 DirOffset;
     uint32 DirNbEntries;
     uint32 Unknown1;
@@ -110,6 +109,14 @@ typedef struct
     uint32 Unknown3;
     uint32 Unknown4;
 } RffHeader_t;
+
+// Encryption modes
+typedef enum
+{
+    ENCRYPT_NONE,  // RFF 2.0
+    ENCRYPT_3_0,   // RFF 3.0
+    ENCRYPT_3_1,   // RFF 3.1
+} Encryption_t;
 
 // Directory entry for a file
 typedef struct
@@ -160,7 +167,7 @@ static bool Opt_Verbose         = false;
 static bool Opt_ExtractAllFiles = false;
 
 // Is the file encrypted ?
-static bool IsEncrypted = false;
+static Encryption_t EncryptionMode = ENCRYPT_3_1;
 
 
 /* ----------------- */
@@ -242,7 +249,7 @@ static bool ExtractFile (const char* MatchName)
     }
 
     // Decrypt the first bytes if they're encrypted (256 bytes max)
-    if (IsEncrypted && (FileInfos[FileInfosIndex].Flags & FLAG_ENCRYPTED) != 0)
+    if (EncryptionMode != ENCRYPT_NONE && (FileInfos[FileInfosIndex].Flags & FLAG_ENCRYPTED) != 0)
         for (Ind = 0; Ind < ((NbReadBytes > 256) ? 256 : NbReadBytes); Ind++)
             Buffer[Ind] ^= (Ind >> 1);
 
@@ -291,7 +298,6 @@ static bool LoadRffInformations (void)
     uint32 Ind, Ind2;
     char FileName [9] = {0, 0, 0, 0, 0, 0, 0, 0, 0};
     char FileExtension [4] = {0, 0, 0, 0};
-    uint8 CryptoByte;
 
     // Read the header
     NbReadBytes = fread (&RffHeader, 1, sizeof (RffHeader), RffFile);
@@ -311,27 +317,41 @@ static bool LoadRffInformations (void)
         return false;
     }
 
-    // Check the version
-    if (RffHeader.Version != 0x301 && RffHeader.Version != 0x470200)
+    // Check the version and set the encryption mode
+    switch (RffHeader.Version)
     {
-        printf ("Error: unsupported RFF format (%hu.%hu)\n"
-                "       Please, upgrade your Blood copy\n"
-                , RffHeader.Version >> 8
-                , RffHeader.Version & 0xFF);
-        return false;
+        case 0x200:
+            EncryptionMode = ENCRYPT_NONE;
+            break;
+
+        case 0x300:
+            EncryptionMode = ENCRYPT_3_0;
+            break;
+
+        case 0x301:
+            EncryptionMode = ENCRYPT_3_1;
+            break;
+
+        default:
+            printf ("Error: unsupported RFF format (%hu.%hu)\n"
+                    "       Please, upgrade your Blood copy\n"
+                    , RffHeader.Version >> 8
+                    , RffHeader.Version & 0xFF);
+            return false;
     }
-    IsEncrypted = (RffHeader.Version == 0x301);
 
     if (Command == CMD_LIST)
         VerbosePrintf ("====== Header ======\n"
                        "Magic: 0x%02X.%02X.%02X.%02X\n"
                        "Version: %u.%u\n"
+                       "Unknown0: %hu\n"
                        "DirOffset: %u\n"
                        "DirNbEntries: %u\n"
                        "Unknown1: %u / Unknown2: %u\n"
                        "Unknown3: %u / Unknown4: %u\n\n"
                        , RffHeader.Magic[0], RffHeader.Magic[1], RffHeader.Magic[2], RffHeader.Magic[3]
                        , (RffHeader.Version >> 8) & 0xFF, RffHeader.Version & 0xFF
+                       , RffHeader.Unknown0
                        , RffHeader.DirOffset
                        , RffHeader.DirNbEntries
                        , RffHeader.Unknown1, RffHeader.Unknown2
@@ -358,14 +378,36 @@ static bool LoadRffInformations (void)
     }
 
     // Decrypt the directory (depend on the version)
-    if (IsEncrypted)
+    switch (EncryptionMode)
     {
-        CryptoByte = (uint8)RffHeader.DirOffset;
-        for (Ind = 0; Ind < RffHeader.DirNbEntries * sizeof (DirectoryEntry_t); Ind += 2)
+        case ENCRYPT_NONE:
+            // Nothing to do!
+            break;
+
+        case ENCRYPT_3_0:
         {
-            Directory[Ind    ] ^= CryptoByte;
-            Directory[Ind + 1] ^= CryptoByte;
-            CryptoByte++;
+            for (Ind = 0; Ind < RffHeader.DirNbEntries * sizeof (DirectoryEntry_t); Ind++)
+            {
+                uint8 CryptoByte;
+                
+                CryptoByte = (uint8)((RffHeader.DirOffset + Ind) >> 1);
+                Directory[Ind] ^= CryptoByte;
+            }
+            break;
+        }
+
+        case ENCRYPT_3_1:
+        {
+            uint8 CryptoByte;
+
+            CryptoByte = (uint8)RffHeader.DirOffset;
+            for (Ind = 0; Ind < RffHeader.DirNbEntries * sizeof (DirectoryEntry_t); Ind += 2)
+            {
+                Directory[Ind    ] ^= CryptoByte;
+                Directory[Ind + 1] ^= CryptoByte;
+                CryptoByte++;
+            }
+            break;
         }
     }
 
