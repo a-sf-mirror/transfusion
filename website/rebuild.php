@@ -452,11 +452,11 @@
 	there will be an increasing sequence of bytes in the file. You should be able
 	to figure out the starting XOR from what the sequence is at.
 
-	The first 256 (or maybe 255) bytes of files were also compressed (based on a
-	flag in the directory struct). The key was probably constant to allow moving
-	the file without having to re-crypt the data. Use the same trick to reverse
-	engineer to find the starting key. Use a file with all zeros for easiest
-	finding.
+	The first 256 (or maybe 255) bytes of files were also <s>compressed</s> <font color="red">encrypted</font>
+	(based on a flag in the directory struct). The key was probably constant to
+	allow moving the file without having to re-crypt the data. Use the same trick
+	to reverse engineer to find the starting key. Use a file with all zeros for
+	easiest finding.
 
 	Here is the crypt routine that I've often used. I'm pretty sure this is what
 	I also used in Blood. (note this this is a two-way routine; it encrypts and
@@ -483,12 +483,17 @@
 	considered 'protected'.... It should be obvious by what doesn't get
 	extracted.... :)</pre>
 
-	From our experiments, Matt were partially wrong about encryption and compression.
-	First, we have never found any clue of a compression scheme in any RFF file. Most files
-	are indeed partially encrypted, except in the RFF 2.0 format (the version of RFF format
-	used in shareware Blood). A flag in the file properties controls whether or not a
-	particular file is encrypted. When it is the case, only the 256 first bytes are encrypted,
-	using the 8 lowest bits of the file offset.<br />
+	First, we have never found any clue of a compression scheme in any RFF file,
+	so Matt's reference to compression was certainly a typo, hence the correction 
+	in the text. Most files are indeed partially encrypted, except in the RFF 2.0
+	format (the version of RFF format used in shareware Blood). A flag in the file
+	properties controls whether or not a particular file is encrypted in later RFF 
+	versions. When it is the case, only the 256 first bytes are encrypted, using
+	the position in the embedded file as the encryption key, as Matt explained.<br />
+	The directory block is also encrypted, using the directory offset in the RFF
+	file. Depending on the version of RFF, the key is either the offset itself
+	(for RFF version 3.0, used on the Blood original CD), or "offset x 2" (for RFF
+	version 3.1, used by all patched versions of Blood).<br />
 	If you're a developer and are interested in having the exact structures of the RFF format,
 	take a look at the source code of our RFF utility. The code is well commented and although
 	some parts of the RFF format are still obscure to us, we know it enough to be able to extract
