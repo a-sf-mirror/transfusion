@@ -23,10 +23,8 @@
 
 /*  TODO / WISH list
     Try to differentiate between user and official maps.
-    Try to find the first sector the right way
     Try to figure out what all the other values are in the header.
-    Try to figure out the skies/copyright stuff
-    Make it work on big-endian machines
+    Make it work on big-endian and 64-bit machines
 */
 
 #include <assert.h>   // assert
@@ -39,7 +37,7 @@
 /* ----------------- */
 
 // Current version of this software
-#define VERSION "1.0"
+#define VERSION "1.1-dev"
 
 
 /* ------------- */
@@ -51,7 +49,15 @@
     typedef enum { false, true } bool;
 #endif
 
-// Header structure
+
+// Header structures
+//    We define the header sizes explicitely instead of using "sizeof(...)"
+//    because this operator would also count the padding of the structure in memory
+
+// Preceded by a 6-byte header (4 bytes for a magic number + 2 bytes for the version)
+#define SIZEOF_MAGIC_AND_VERSION (4 + 2)
+
+#define SIZEOF_HEADER1 18
 typedef struct
 {
     int StartX;
@@ -59,9 +65,13 @@ typedef struct
     int StartZ;
     short StartAngle;
     short SectorNum;
-} header_part1_t; // size = 16, preceded by a 6-byte header (4 bytes for a magic number + 2 bytes for the version)
+    short PowerOfTwoUnknownElts;
+} header_part1_t;
 
-// The hard core numbers
+#define SIZEOF_HEADER2 9
+// The structure of the 2nd part of the header is unknown
+
+#define SIZEOF_HEADER3 10
 typedef struct
 {
     int MapRevisions;
@@ -70,8 +80,15 @@ typedef struct
     short NumSprites;
 } header_part3_t; // size = 10
 
-// Informations about a sector
+// Encrypted maps have some extra info after the header
+#define SIZEOF_EXTRA_HEADER 128
 
+
+// A map contains a series of tiny unknown elements between the headers and the sectors
+#define SIZEOF_UNKNOWN_ELEMENT 2
+
+
+// Informations about a sector
 typedef struct
 {
     short wallptr, wallnum;
@@ -100,6 +117,7 @@ typedef struct
     short ang, owner, xvel, yvel, zvel;
     short lotag, hitag, extra;
 } sprite_t;  // size = 44
+// TOCHECK / WARNING: "sizeof (sprite_t)" may report 48 bytes on a 64-bit system
 
 // Informations about a wall
 typedef struct
@@ -124,6 +142,7 @@ static FILE* NewFile = NULL;
 int PosX = 0, PosY = 0, PosZ = 0, Revisions;
 short Angle = 0;
 unsigned short SectorNum = 0, Sectors, Walls, Sprites;
+unsigned int NbUnknownElements = 0;
 bool IsEncrypted = true;
 
 /* ----------------- */
@@ -144,8 +163,8 @@ bool ExtractSprites (FILE* SourceFile);
 // Extract all walls from the source file
 bool ExtractWalls (FILE* SourceFile);
 
-// Seek the first sector offset
-static long FindFirstSector (FILE* SourceFile);
+// Compute the first sector offset
+static long FindFirstSector (void);
 
 // Extract infos from the header
 static bool ParseHeader (FILE* SourceFile);
@@ -227,7 +246,7 @@ bool ExtractSectors (FILE* SourceFile)
         {
             case 0:
             case -1:
-				break;
+                break;
             default:
                 printf ("ERROR: unknown extra data value (%hd)\n", SectorPtr->extra);
                 return false;
@@ -357,38 +376,19 @@ FindFirstSector
 Seek the first sector offset
 ====================
 */
-static long FindFirstSector (FILE* SourceFile)
+static long FindFirstSector (void)
 {
     // Variables
-    unsigned short Buffer;
+    long Offset = SIZEOF_MAGIC_AND_VERSION + SIZEOF_HEADER1 + SIZEOF_HEADER2 + SIZEOF_HEADER3;
 
-    assert (SourceFile != NULL);
-
-    if (! IsEncrypted)
-        return 75;
-
-    if (fseek (SourceFile, 171, SEEK_SET) != 0)
-        return -1;
-
-    if (fread (&Buffer, 1, 2, SourceFile) != 2)
-        return -2;
-
-    switch (Buffer)
-    {
-        case 0x2120 :
-            return 203;
-
-        case 0x0302 :
-            return 173;
-
-        case 0x1110 : // E2M7
-            return 187; // Try every 40 against Matt S. key if it doesn't work
-
-        default :
-            printf ("     -> Unknown map format\n");
-            printf ("     -> %x\n", Buffer);
-            return -3;
-    }
+    // Encrypted maps have some extra info after the header
+    if (IsEncrypted)
+        Offset += SIZEOF_EXTRA_HEADER;
+    
+    // Skip the unknown elements
+    Offset += (NbUnknownElements * SIZEOF_UNKNOWN_ELEMENT);
+    
+    return Offset;
 }
 
 
@@ -448,19 +448,8 @@ int main (int ArgC, char* ArgV [])
         return EXIT_FAILURE;
     }
 
-    // Find the first sector's offset
-    printf ("   * Seeking first sector...\n");
-    StartOffset = FindFirstSector (SourceFile);
-    if (StartOffset < 0)
-    {
-        printf ("     Can't find it (error %ld) ! Exiting...\n", -StartOffset);
-        fclose (NewFile);
-        fclose (SourceFile);
-        return EXIT_FAILURE;
-    }
-    printf ("      First sector found at offset %ld\n", StartOffset);
-
     // Positioning...
+    StartOffset = FindFirstSector ();
     if (fseek (SourceFile, StartOffset, SEEK_SET) != 0)
     {
         printf ("   Error: can't go to starting position\n");
@@ -545,9 +534,9 @@ static bool ParseHeader (FILE* SourceFile)
     }
 
     // Load and decrypt the first part of the header
-    if (fread (&Header1, 1, sizeof (Header1), SourceFile) != sizeof (Header1))
+    if (fread (&Header1, 1, SIZEOF_HEADER1, SourceFile) != SIZEOF_HEADER1)
         return false;
-    DecryptBuffer ((unsigned char*)&Header1, sizeof (Header1), 0x4D);
+    DecryptBuffer ((unsigned char*)&Header1, SIZEOF_HEADER1, 0x4D);
 
     // Store the infos
     PosX = Header1.StartX;
@@ -555,20 +544,22 @@ static bool ParseHeader (FILE* SourceFile)
     PosZ = Header1.StartZ;
     Angle = Header1.StartAngle;
     SectorNum = Header1.SectorNum;
+    NbUnknownElements = (1 << Header1.PowerOfTwoUnknownElts);
 
     printf ("      PosX = %d\n", PosX);
     printf ("      PosY = %d\n", PosY);
     printf ("      PosZ = %d\n", PosZ);
     printf ("      Angle = %hd\n", Angle);
     printf ("      SectorNum = %hd\n", SectorNum);
+    printf ("      NbUnknownElements = %hu\n", NbUnknownElements);
 
     // Skip the part 2 of the header, since we don't know what it is, and we don't care
-    fseek(SourceFile, 11, SEEK_CUR);
+    fseek(SourceFile, SIZEOF_HEADER2, SEEK_CUR);
 
     // Load and decrypt the third part of the header
-    if (fread (&Header3, 1, sizeof (Header3), SourceFile) != sizeof (Header3))
+    if (fread (&Header3, 1, SIZEOF_HEADER3, SourceFile) != SIZEOF_HEADER3)
         return false;
-    DecryptBuffer ((unsigned char*)&Header3, sizeof (Header3), 0x68);
+    DecryptBuffer ((unsigned char*)&Header3, SIZEOF_HEADER3, 0x68);
 
     // Store the infos
     Revisions = Header3.MapRevisions;
