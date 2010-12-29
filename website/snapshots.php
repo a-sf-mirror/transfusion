@@ -128,7 +128,7 @@
 	<?php PrintAndExtractFilesByVersion ("Win32 binaries", "rebuild-bin-win32-"); ?>
 	<?php PrintAndExtractFilesByVersion ("Linux binaries", "rebuild-bin-linux.i386-"); ?>
 	<?php PrintAndExtractFilesByFormat ("ART Tools HOWTO", "ART-Tools-HOWTO"); ?>
-	<?php PrintAndExtractFilesByVersion ("Source code", "rebuild-CVS-"); ?>
+	<?php PrintAndExtractFilesByVersion ("Source code", "rebuild-src-"); ?>
 	</ul>
 </div>
 
