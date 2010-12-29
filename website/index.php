@@ -24,6 +24,15 @@
 	<h2 id="news-section" class="section">News</h2>
 	<ul>
 		<li>
+			<span class="title">December 29, 2010:</span> (by Elric)<br />
+			Our RFF unpacker now has support for RFF format 3.0, used on the original
+			Blood CD, thanks to recent works by Barry Duncan. You can find the source
+			code and the Win32 binary of this new version (0.2) in the
+			<a href="snapshots.php#rebuild-section">ReBUILD snapshots</a>, as usual.<br />
+			The section devoted to the RFF file format on our <a href="rebuild.php">ReBUILD page</a>
+			has also been corrected and updated accordingly.<p />
+		</li>
+		<li>
 			<span class="title">November 21, 2010:</span> (by Elric)<br />
 			Our Blood-to-BUILD map conversion tool Blud2B has finally reached
 			version 1.0. Aside from a lot of code cleaning, this new version adds support
