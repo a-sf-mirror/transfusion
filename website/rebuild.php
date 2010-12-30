@@ -51,7 +51,8 @@
 		</li>
 		<li style="list-style-type: circle;">
 			<a href="snapshots.php#rebuild-section">RFF</a> - Allows you to read RFF files
-			and to extract their contents. Supports Version 2.0 and 3.1 RFF files
+			and to extract their contents. Supports all RFF formats used by Blood (2.0, 3.0
+			and 3.1)
 		</li>
 		<li style="list-style-type: circle;">
 			<a href="snapshots.php#rebuild-section">Sfx2Wav</a> - Convert a SFX/RAW pair into
@@ -70,7 +71,8 @@
 			of Art2Tga
 		</li>
 		<li>
-			<a href="files/winbarf.zip">WinBarf</a> - Win32 GUI version of RFF
+			<a href="files/winbarf.zip">WinBarf</a> - Win32 GUI version of RFF (only support
+			RFF format 3.1)
 		</li>
 		<li>
 			<a href="files/xtract.zip">Xtract</a> - Art and map extraction utility for GRP
@@ -121,7 +123,7 @@
 	most part, the file formats have to be guessed from reverse-engineering technics and experiments.
 	The contact <a href="bloodsource.php">the BloodSource campaign</a> once maintained with
 	<a href="http://www.saettler.com/">Matt Saettler</a>, one of the Blood developers, proved extremely
-	valuable here since Matt provided us with several important information regarding several of those
+	valuable here since Matt provided us with some important information regarding several of those
 	formats.<br />
 	<br />
 
