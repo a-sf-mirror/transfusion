@@ -4,7 +4,7 @@
 // Read and extract the contents of a RFF file
 //
 
-/* Copyright (C) 2001-2010  Mathieu Olivier
+/* Copyright (C) 2001-2012  Mathieu Olivier
  *
  * This program is free software; you can redistribute it and/or modify
  * it under the terms of the GNU General Public License as published by
@@ -41,7 +41,7 @@
 // Win32
 #ifdef WIN32
     #include <windows.h>
-    #define StrCaseCmp stricmp
+    #define StrCaseCmp _stricmp
 
 // Linux
 #elif defined (linux) || defined (__linux__)
@@ -57,7 +57,7 @@
 /* ----------------- */
 
 // Current version of this software
-#define VERSION "0.2"
+#define VERSION "0.3-beta"
 
 // Default size of Buffer in Kb
 #define DEFAULT_BUFFER_SIZE 4
@@ -101,6 +101,12 @@ typedef struct
 {
     uint8  Magic [4];
     uint16 Version;
+} RffHeader_t;
+
+// RFF info (version 2.0 or higher)
+typedef struct
+{
+    uint16 _Padding;      // we must be sure all the following fields are correctly aligned in memory
     uint16 Unknown0;
     uint32 DirOffset;
     uint32 DirNbEntries;
@@ -108,17 +114,25 @@ typedef struct
     uint32 Unknown2;
     uint32 Unknown3;
     uint32 Unknown4;
-} RffHeader_t;
+} RffInfo_2_0_t;
+
+// RFF info (version 1.48)
+typedef struct
+{
+    uint32 DirOffset;
+    uint32 DirNbEntries;
+    uint32 DirNbFiles;
+} RffInfo_1_48_t;
 
 // Encryption modes
 typedef enum
 {
-    ENCRYPT_NONE,  // RFF 2.0
+    ENCRYPT_NONE,  // RFF 2.0 or lower
     ENCRYPT_3_0,   // RFF 3.0
     ENCRYPT_3_1,   // RFF 3.1
 } Encryption_t;
 
-// Directory entry for a file
+// Directory entry for a file (version 2.0 or higher)
 typedef struct
 {
     uint8  Unknown0 [16];
@@ -129,14 +143,26 @@ typedef struct
     uint8  Flags;
     char   Name [11];
     uint32 Unknown2;       // ID ? Maybe for an enumeration function...
-} DirectoryEntry_t;
+} DirectoryEntry_2_0_t;
+
+// Directory entry for a file (version 1.48)
+typedef struct
+{
+    uint8  Unknown0 [16];
+    char   BaseName [8];
+    char   Dot;
+    char   Extension [3];
+    uint32 Offset;
+    uint32 Size;
+    uint32 Unknown1;
+} DirectoryEntry_1_48_t;
 
 // Informations about a packed file
 typedef struct
 {
     char   Name [13];
     uint8  Flags;
-    uint32 Time;
+    time_t Time;
     uint32 Size;
     uint32 Offset;
 } FileInfos_t;
@@ -283,6 +309,263 @@ static bool ExtractFile (const char* MatchName)
 
 /*
 ====================
+LoadRffInformations_1_48
+
+Load informations about the contents of a RFF 1.48 file
+====================
+*/
+static bool LoadRffInformations_1_48 (void)
+{
+    // Variables
+    uint32 NbReadBytes, NbExpectedBytes;
+    RffInfo_1_48_t RffInfo;
+    uint8* Directory;
+    DirectoryEntry_1_48_t* DirectoryEntry;
+    uint32 Ind, Ind2;
+    char FileName [9] = {0, 0, 0, 0, 0, 0, 0, 0, 0};
+    char FileExtension [4] = {0, 0, 0, 0};
+
+    // Read the info
+    NbReadBytes = fread (&RffInfo, 1, sizeof (RffInfo), RffFile);
+    if (NbReadBytes != sizeof (RffInfo))
+    {
+        printf ("Error: RFF file is too short to be valid\n");
+        return false;
+    }
+    if (Command == CMD_LIST)
+        VerbosePrintf ("====== Info ======\n"
+                       "DirOffset: %u\n"
+                       "DirNbEntries: %u\n"
+                       "DirNbFiles: %u\n\n"
+                       , RffInfo.DirOffset
+                       , RffInfo.DirNbEntries
+                       , RffInfo.DirNbFiles);
+
+    VerbosePrintf ("%u entries(s) found\n\n", RffInfo.DirNbEntries);
+
+    // Read the directory
+    fseek (RffFile, RffInfo.DirOffset, SEEK_SET);
+    Directory = malloc (RffInfo.DirNbEntries * sizeof (DirectoryEntry_1_48_t));
+    if (Directory == NULL)
+    {
+        printf ("Error: Not enough memory to load the directory\n");
+        return false;
+    }
+    NbExpectedBytes = RffInfo.DirNbEntries * sizeof (DirectoryEntry_1_48_t);
+    NbReadBytes = fread (Directory, 1, NbExpectedBytes, RffFile);
+    if (NbReadBytes != NbExpectedBytes)
+    {
+        printf ("Error: can't read the whole directory (%d bytes read instead of %u)",
+                NbReadBytes, NbExpectedBytes);
+        free (Directory);
+        return false;
+    }
+
+    // Allocate "FileInfos"
+    FileInfos = malloc (RffInfo.DirNbEntries * sizeof (FileInfos_t));
+    if (FileInfos == NULL)
+    {
+        printf ("Error: Not enough memory to store the directory\n");
+        free (Directory);
+        return false;
+    }
+
+    NbFiles = 0;
+
+    // Print the directory informations and store them in "FileInfos"
+    DirectoryEntry = (DirectoryEntry_1_48_t*)Directory;
+    for (Ind = 0; Ind < RffInfo.DirNbEntries; Ind++)
+    {
+        if (DirectoryEntry->BaseName[0] != '\0' || DirectoryEntry->Extension[0] != '\0')
+        {
+            // Extract the file name
+            strncpy (FileExtension, DirectoryEntry->Extension, 3);
+            if (StrCaseCmp (FileExtension, "SEQ") == 0)  // SEQ files use a number as their file name!
+                sprintf (FileName, "%03u", *((uint32*)DirectoryEntry->BaseName));
+            else
+                strncpy (FileName, DirectoryEntry->BaseName, 8);
+
+            // If we must print the file list
+            if (Command == CMD_LIST)
+            {
+                printf (" * %s.%s\t(size: %u bytes)\n", FileName, FileExtension, DirectoryEntry->Size);
+                VerbosePrintf ("\tOffset: %u\n"
+                               "\t--- Unknown fields ---\n"
+                               "\tUnknown1: 0x%08X\n"
+                               "\tUnknown0: 0x"
+                               , DirectoryEntry->Offset
+                               , DirectoryEntry->Unknown1
+                              );
+                for (Ind2 = 0; Ind2 < sizeof (DirectoryEntry->Unknown0); Ind2++)
+                    VerbosePrintf ("%02X", DirectoryEntry->Unknown0[Ind2]);
+                VerbosePrintf ("\n\n");
+            }
+
+            sprintf (FileInfos[NbFiles].Name, "%s.%s", FileName, FileExtension);
+            FileInfos[NbFiles].Offset = DirectoryEntry->Offset;
+            FileInfos[NbFiles].Size   = DirectoryEntry->Size;
+            FileInfos[NbFiles].Flags  = 0;
+            FileInfos[NbFiles].Time   = 0;
+
+            NbFiles++;
+        }
+        else
+        {
+            if (Command == CMD_LIST)
+                VerbosePrintf (" * <empty entry>\n");
+        }
+
+        DirectoryEntry++;
+    }
+
+    if (Command == CMD_LIST)
+        printf ("\n");
+    printf ("%u file(s) found\n\n", NbFiles);
+
+    free (Directory);
+    return true;
+}
+
+
+/*
+====================
+LoadRffInformations_2_0
+
+Load informations about the contents of a RFF 2.0 (or higher) file
+====================
+*/
+static bool LoadRffInformations_2_0 (void)
+{
+    // Variables
+    void* MemoryPtr;
+    uint32 NbReadBytes, NbExpectedBytes;
+    RffInfo_2_0_t RffInfo;
+    uint8* Directory;
+    DirectoryEntry_2_0_t* DirectoryEntry;
+    uint32 Ind, Ind2;
+    char FileName [9] = {0, 0, 0, 0, 0, 0, 0, 0, 0};
+    char FileExtension [4] = {0, 0, 0, 0};
+
+    // Read the info
+    MemoryPtr = (&RffInfo._Padding) + 1;  // Little trick to point right after the padding field
+    NbReadBytes = fread (MemoryPtr, 1, sizeof (RffInfo) - sizeof (RffInfo._Padding), RffFile);
+    if (NbReadBytes != sizeof (RffInfo) - sizeof (RffInfo._Padding))
+    {
+        printf ("Error: RFF file is too short to be valid\n");
+        return false;
+    }
+    if (Command == CMD_LIST)
+        VerbosePrintf ("====== Info ======\n"
+                       "Unknown0: %hu\n"
+                       "DirOffset: %u\n"
+                       "DirNbEntries: %u\n"
+                       "Unknown1: %u / Unknown2: %u\n"
+                       "Unknown3: %u / Unknown4: %u\n\n"
+                       , RffInfo.Unknown0
+                       , RffInfo.DirOffset
+                       , RffInfo.DirNbEntries
+                       , RffInfo.Unknown1, RffInfo.Unknown2
+                       , RffInfo.Unknown3, RffInfo.Unknown4);
+
+    printf ("%u file(s) found\n\n", RffInfo.DirNbEntries);
+    NbFiles = RffInfo.DirNbEntries;
+
+    // Read the directory
+    fseek (RffFile, RffInfo.DirOffset, SEEK_SET);
+    Directory = malloc (RffInfo.DirNbEntries * sizeof (DirectoryEntry_2_0_t));
+    if (Directory == NULL)
+    {
+        printf ("Error: Not enough memory to load the directory\n");
+        return false;
+    }
+    NbExpectedBytes = RffInfo.DirNbEntries * sizeof (DirectoryEntry_2_0_t);
+    NbReadBytes = fread (Directory, 1, NbExpectedBytes, RffFile);
+    if (NbReadBytes != NbExpectedBytes)
+    {
+        printf ("Error: can't read the whole directory (%d bytes read instead of %u)",
+                NbReadBytes, NbExpectedBytes);
+        free (Directory);
+        return false;
+    }
+
+    // Decrypt the directory (depend on the version)
+    if (EncryptionMode != ENCRYPT_NONE)
+    {
+        uint32 CryptoKey;
+
+        if (EncryptionMode == ENCRYPT_3_0)
+            CryptoKey = RffInfo.DirOffset;
+        else
+            CryptoKey = (RffInfo.DirOffset << 1);
+
+        for (Ind = 0; Ind < RffInfo.DirNbEntries * sizeof (DirectoryEntry_2_0_t); Ind++)
+        {
+            Directory[Ind] ^= (CryptoKey >> 1);
+            CryptoKey++;
+        }
+    }
+
+    // Allocate "FileInfos"
+    FileInfos = malloc (RffInfo.DirNbEntries * sizeof (FileInfos_t));
+    if (FileInfos == NULL)
+    {
+        printf ("Error: Not enough memory to store the directory\n");
+        free (Directory);
+        return false;
+    }
+
+    // Print the directory informations and store them in "FileInfos"
+    DirectoryEntry = (DirectoryEntry_2_0_t*)Directory;
+    for (Ind = 0; Ind < RffInfo.DirNbEntries; Ind++)
+    {
+        // Extract the file name
+        strncpy (FileExtension, DirectoryEntry->Name,     3);
+        strncpy (FileName,      &DirectoryEntry->Name[3], 8);
+
+        // If we must print the file list
+        if (Command == CMD_LIST)
+        {
+            printf (" * %s.%s\t(size: %u bytes)\n", FileName, FileExtension, DirectoryEntry->Size);
+            if (Opt_Verbose)
+            {
+                time_t FileTime;
+
+                FileTime = DirectoryEntry->Time;
+                VerbosePrintf ("\tOffset: %u\n"
+                               "\tTime:   %s"
+                               "\tFlags:  0x%02X\n"
+                               "\t--- Unknown fields ---\n"
+                               "\tUnknown1:        0x%08X\n"
+                               "\tUnknown2 (ID ?): 0x%08X\n"
+                               "\tUnknown0:        0x"
+                               , DirectoryEntry->Offset
+                               , ctime (&FileTime)
+                               , DirectoryEntry->Flags
+                               , DirectoryEntry->Unknown1
+                               , DirectoryEntry->Unknown2
+                              );
+                for (Ind2 = 0; Ind2 < 16; Ind2++)
+                    VerbosePrintf ("%02X", DirectoryEntry->Unknown0[Ind2]);
+                VerbosePrintf ("\n\n");
+            }
+        }
+
+        sprintf (FileInfos[Ind].Name, "%s.%s", FileName, FileExtension);
+        FileInfos[Ind].Offset = DirectoryEntry->Offset;
+        FileInfos[Ind].Size   = DirectoryEntry->Size;
+        FileInfos[Ind].Flags  = DirectoryEntry->Flags;
+        FileInfos[Ind].Time   = DirectoryEntry->Time;
+
+        DirectoryEntry++;
+    }
+
+    free (Directory);
+    return true;
+}
+
+
+/*
+====================
 LoadRffInformations
 
 Load informations about the contents of the RFF file
@@ -291,13 +574,8 @@ Load informations about the contents of the RFF file
 static bool LoadRffInformations (void)
 {
     // Variables
-    uint8* Directory;
     uint32 NbReadBytes;
     RffHeader_t RffHeader;
-    DirectoryEntry_t* DirectoryEntry;
-    uint32 Ind, Ind2;
-    char FileName [9] = {0, 0, 0, 0, 0, 0, 0, 0, 0};
-    char FileExtension [4] = {0, 0, 0, 0};
 
     // Read the header
     NbReadBytes = fread (&RffHeader, 1, sizeof (RffHeader), RffFile);
@@ -320,6 +598,10 @@ static bool LoadRffInformations (void)
     // Check the version and set the encryption mode
     switch (RffHeader.Version)
     {
+        case 0x130:
+            EncryptionMode = ENCRYPT_NONE;
+            break;
+
         case 0x200:
             EncryptionMode = ENCRYPT_NONE;
             break;
@@ -334,7 +616,6 @@ static bool LoadRffInformations (void)
 
         default:
             printf ("Error: unsupported RFF format (%hu.%hu)\n"
-                    "       Please, upgrade your Blood copy\n"
                     , RffHeader.Version >> 8
                     , RffHeader.Version & 0xFF);
             return false;
@@ -343,107 +624,14 @@ static bool LoadRffInformations (void)
     if (Command == CMD_LIST)
         VerbosePrintf ("====== Header ======\n"
                        "Magic: 0x%02X.%02X.%02X.%02X\n"
-                       "Version: %u.%u\n"
-                       "Unknown0: %hu\n"
-                       "DirOffset: %u\n"
-                       "DirNbEntries: %u\n"
-                       "Unknown1: %u / Unknown2: %u\n"
-                       "Unknown3: %u / Unknown4: %u\n\n"
+                       "Version: %u.%u\n\n"
                        , RffHeader.Magic[0], RffHeader.Magic[1], RffHeader.Magic[2], RffHeader.Magic[3]
-                       , (RffHeader.Version >> 8) & 0xFF, RffHeader.Version & 0xFF
-                       , RffHeader.Unknown0
-                       , RffHeader.DirOffset
-                       , RffHeader.DirNbEntries
-                       , RffHeader.Unknown1, RffHeader.Unknown2
-                       , RffHeader.Unknown3, RffHeader.Unknown4);
+                       , (RffHeader.Version >> 8) & 0xFF, RffHeader.Version & 0xFF);
 
-    printf ("%u file(s) found\n\n", RffHeader.DirNbEntries);
-    NbFiles = RffHeader.DirNbEntries;
-
-    // Read the directory
-    fseek (RffFile, RffHeader.DirOffset, SEEK_SET);
-    Directory = malloc (RffHeader.DirNbEntries * sizeof (DirectoryEntry_t));
-    if (Directory == NULL)
-    {
-        printf ("Error: Not enough memory to load the directory\n");
-        return false;
-    }
-    NbReadBytes = fread (Directory, 1, RffHeader.DirNbEntries * sizeof (DirectoryEntry_t), RffFile);
-    if (NbReadBytes != RffHeader.DirNbEntries * sizeof (DirectoryEntry_t))
-    {
-        printf ("Error: can't read the whole dictionary (%d bytes read instead of %u)",
-                NbReadBytes, RffHeader.DirNbEntries * sizeof (DirectoryEntry_t));
-        free (Directory);
-        return false;
-    }
-
-    // Decrypt the directory (depend on the version)
-    if (EncryptionMode != ENCRYPT_NONE)
-    {
-        uint32 CryptoKey;
-
-        if (EncryptionMode == ENCRYPT_3_0)
-            CryptoKey = RffHeader.DirOffset;
-        else
-            CryptoKey = (RffHeader.DirOffset << 1);
-
-        for (Ind = 0; Ind < RffHeader.DirNbEntries * sizeof (DirectoryEntry_t); Ind++)
-        {
-            Directory[Ind] ^= (CryptoKey >> 1);
-            CryptoKey++;
-        }
-    }
-
-    // Allocate "FileInfos"
-    FileInfos = malloc (RffHeader.DirNbEntries * sizeof (FileInfos_t));
-    if (FileInfos == NULL)
-    {
-        printf ("Error: Not enough memory to store the directory\n");
-        free (Directory);
-        return false;
-    }
-
-    // Print the directory informations and store them in "FileInfos"
-    DirectoryEntry = (DirectoryEntry_t*)Directory;
-    for (Ind = 0; Ind < RffHeader.DirNbEntries; Ind++)
-    {
-        // Extract the file name
-        strncpy (FileExtension, DirectoryEntry->Name,     3);
-        strncpy (FileName,      &DirectoryEntry->Name[3], 8);
-
-        // If we must print the file list
-        if (Command == CMD_LIST)
-        {
-            printf (" * %s.%s\t(size: %u bytes)\n", FileName, FileExtension, DirectoryEntry->Size);
-            VerbosePrintf ("\tOffset: %u\n"
-                           "\tTime:   %s"
-                           "\tFlags:  0x%02X\n"
-                           "\t--- Unknown fields ---\n"
-                           "\tUnknown1:        0x%08X\n"
-                           "\tUnknown2 (ID ?): 0x%08X\n"
-                           "\tUnknown0:        0x"
-                           , DirectoryEntry->Offset
-                           , ctime ((const long*)&DirectoryEntry->Time)
-                           , DirectoryEntry->Flags
-                           , DirectoryEntry->Unknown1
-                           , DirectoryEntry->Unknown2
-                          );
-            for (Ind2 = 0; Ind2 < 16; Ind2++)
-                VerbosePrintf ("%02X", DirectoryEntry->Unknown0[Ind2]);
-            VerbosePrintf ("\n\n");
-        }
-
-        sprintf (FileInfos[Ind].Name, "%s.%s", FileName, FileExtension);
-        FileInfos[Ind].Offset = DirectoryEntry->Offset;
-        FileInfos[Ind].Size   = DirectoryEntry->Size;
-        FileInfos[Ind].Flags  = DirectoryEntry->Flags;
-        FileInfos[Ind].Time   = DirectoryEntry->Time;
-
-        DirectoryEntry++;
-    }
-
-    free (Directory);
-    return true;
+    if (RffHeader.Version == 0x130)
+        return LoadRffInformations_1_48();
+    else
+        return LoadRffInformations_2_0();
 }
 
 
