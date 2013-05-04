@@ -24,6 +24,18 @@
 	<h2 id="news-section" class="section">News</h2>
 	<ul>
 		<li>
+			<span class="title">May 4, 2013:</span> (by Elric)<br />
+			The Subversion repository has moved. Take a look at
+			<a href="http://sourceforge.net/p/blood/code/">the SF code page</a> for details.<p />
+		</li>
+		<li>
+			<span class="title">August 22, 2012:</span> (by Elric)<br />
+			Our RFF unpacker now has support for RFF format 1.48, used by the alpha
+			version of Blood. You can find the source code and the Win32 binary of this
+			new version (0.3 beta) in the <a href="snapshots.php#rebuild-section">ReBUILD
+			snapshots</a>, as usual.<p />
+		</li>
+		<li>
 			<span class="title">December 29, 2010:</span> (by Elric)<br />
 			Our RFF unpacker now has support for RFF format 3.0, used on the original
 			Blood CD, thanks to recent works by Barry Duncan. You can find the source
@@ -40,14 +52,6 @@
 			Blud2B source code and Win32 binary are part of
 			the <a href="snapshots.php#rebuild-section">ReBUILD snapshots</a>.<p />
 		</li>
-		<li>
-			<span class="title">December 18, 2006:</span> (by Elric)<br />
-			The project now uses Subversion (SVN) as its version control system.<p />
-		</li>
-		<li>
-			<span class="title">July 12, 2005:</span> (by Elric)<br />
-			GroupSPR has been updated to version 1.0, with support for DarkPlaces' SPR32 format.<p />
-		</li>
 	</ul>
 </div>
 
@@ -62,10 +66,10 @@
 			SourceForge page: <?php ExplicitURL ("http://sourceforge.net/projects/blood/"); ?><p />
 		</li>
 		<li>
-			Mailing lists: <?php ExplicitURL ("http://sourceforge.net/mail/?group_id=22136"); ?><p />
+			Mailing lists: <?php ExplicitURL ("http://sourceforge.net/p/blood/mailman/"); ?><p />
 		</li>
 		<li>
-			SVN repository: <?php ExplicitURL ("http://sourceforge.net/svn/?group_id=22136"); ?><p />
+			SVN repository: <?php ExplicitURL ("http://sourceforge.net/p/blood/code/"); ?><p />
 		</li>
 		<li>
 			DarkPlaces home page: <?php ExplicitURL ("http://icculus.org/twilight/darkplaces/"); ?><p />

@@ -11,7 +11,7 @@
 	// ----- ViewVcsUrl ----- //
 
 	function ViewVcsUrl ($url, $link) {
-		echo ("<a href=\"http://blood.svn.sourceforge.net/viewvc/blood/trunk/$url/\">$link</a>");
+		echo ("<a href=\"http://sourceforge.net/p/blood/code/HEAD/tree/trunk/$url/\">$link</a>");
 	}
 
 
@@ -135,7 +135,7 @@
 				&nbsp;::&nbsp;
 				<a href="rebuild.php">ReBUILD</a>
 				&nbsp;::&nbsp;
-				<a href="http://sourceforge.net/project/showfiles.php?group_id=22136">Files</a>
+				<a href="http://sourceforge.net/projects/blood/files/">Files</a>
 				&nbsp;::&nbsp;
 				<a href="snapshots.php">Snapshots</a>
 				</b>
