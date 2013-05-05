@@ -11,7 +11,7 @@
 	// ----- ViewVcsUrl ----- //
 
 	function ViewVcsUrl ($url, $link) {
-		echo ("<a href=\"http://sourceforge.net/p/blood/code/HEAD/tree/trunk/$url/\">$link</a>");
+		echo ("<a href=\"http://sourceforge.net/p/blood/code/ci/default/tree/$url/\">$link</a>");
 	}
 
 

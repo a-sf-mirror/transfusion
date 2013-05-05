@@ -24,9 +24,12 @@
 	<h2 id="news-section" class="section">News</h2>
 	<ul>
 		<li>
-			<span class="title">May 4, 2013:</span> (by Elric)<br />
-			The Subversion repository has moved. Take a look at
-			<a href="http://sourceforge.net/p/blood/code/">the SF code page</a> for details.<p />
+			<span class="title">May 5, 2013:</span> (by Elric)<br />
+			Our code repository has been converted from Subversion to
+			<a href="http://mercurial.selenic.com/">Mercurial</a>. You can find a quick introduction
+			to Mercurial <a href="http://sourceforge.net/p/forge/documentation/Mercurial/">in the SF
+			documentation</a>. URLs for accessing this new repository can also be found in
+			<a href="http://sourceforge.net/p/blood/code/">our code page</a>.<p />
 		</li>
 		<li>
 			<span class="title">August 22, 2012:</span> (by Elric)<br />
@@ -69,7 +72,7 @@
 			Mailing lists: <?php ExplicitURL ("http://sourceforge.net/p/blood/mailman/"); ?><p />
 		</li>
 		<li>
-			SVN repository: <?php ExplicitURL ("http://sourceforge.net/p/blood/code/"); ?><p />
+			Code repository: <?php ExplicitURL ("http://sourceforge.net/p/blood/code/"); ?><p />
 		</li>
 		<li>
 			DarkPlaces home page: <?php ExplicitURL ("http://icculus.org/twilight/darkplaces/"); ?><p />
